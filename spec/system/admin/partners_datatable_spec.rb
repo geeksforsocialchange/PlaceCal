@@ -47,10 +47,10 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
 
   def wait_for_datatable
     # Wait for loading to complete - check that tbody doesn't have loading state
-    expect(page).not_to have_css("[data-admin-table-target='tbody']", text: "Loading data...", wait: 5)
+    expect(page).not_to have_css("[data-admin-table-target='tbody']", text: "Loading data...")
     # Wait for the datatable info to show actual counts (not loading state)
     # The info target shows "1–X of Y" or "No entries" when loaded
-    expect(page).to have_css("[data-admin-table-target='info']", text: /\d+–\d+ of \d+|No entries/, wait: 5)
+    expect(page).to have_css("[data-admin-table-target='info']", text: /\d+–\d+ of \d+|No entries/)
   end
 
   def datatable_row_count
@@ -93,8 +93,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
 
   describe "search functionality" do
     it "filters partners by name" do
-      fill_in "Search...", with: "Alpha"
-      sleep 0.3 # Wait for debounce
+      fill_in_datatable_search "Alpha"
 
       wait_for_datatable
       expect(datatable_row_count).to eq(1)
@@ -103,33 +102,25 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     end
 
     it "shows no results message for non-matching search" do
-      fill_in "Search...", with: "nonexistent12345"
-      sleep 0.3
+      fill_in_datatable_search "nonexistent12345"
 
       expect(page).to have_content("No records found")
     end
 
     it "clears search when input is emptied" do
-      fill_in "Search...", with: "Alpha"
-      sleep 0.3
+      fill_in_datatable_search "Alpha"
       wait_for_datatable
 
-      # Clear the search input using JavaScript and trigger input event
-      page.execute_script(<<~JS)
-        var input = document.querySelector("[data-admin-table-target='search']");
-        input.value = '';
-        input.dispatchEvent(new Event('input', { bubbles: true }));
-      JS
-      sleep 0.3
+      # Clear the search and flush debounce
+      fill_in_datatable_search ""
       # Wait specifically for unfiltered state (no "(filtered)" indicator)
-      expect(page).to have_css("[data-admin-table-target='info']", text: /3–3 of 3|1–3 of 3/, wait: 10)
+      expect(page).to have_css("[data-admin-table-target='info']", text: /3–3 of 3|1–3 of 3/)
 
       expect(datatable_row_count).to eq(3)
     end
 
     it "search is case insensitive" do
-      fill_in "Search...", with: "ALPHA"
-      sleep 0.3
+      fill_in_datatable_search "ALPHA"
       wait_for_datatable
 
       datatable_contains("Alpha Community Centre")
@@ -275,9 +266,9 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
       wait_for_datatable
 
       click_button "Clear filters"
-      wait_for_datatable
 
-      expect(datatable_row_count).to eq(3)
+      # Wait for all 3 rows to reappear (Capybara retries until data reloads)
+      expect(page).to have_css("[data-admin-table-target='tbody'] tr", count: 3)
       expect(page).not_to have_button("Clear filters")
     end
   end
@@ -285,8 +276,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
   describe "search combined with filters" do
     it "applies both search and filter" do
       select_datatable_filter "Partnership One", column: "partnership"
-      fill_in "Search...", with: "Alpha"
-      sleep 0.3
+      fill_in_datatable_search "Alpha"
       wait_for_datatable
 
       expect(datatable_row_count).to eq(1)
@@ -295,8 +285,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
 
     it "clear filters does not clear search" do
       click_radio_filter "Yes", column: "has_admins"
-      fill_in "Search...", with: "Alpha"
-      sleep 0.3
+      fill_in_datatable_search "Alpha"
       wait_for_datatable
 
       click_button "Clear filters"
@@ -411,8 +400,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     end
 
     it "updates summary when search reduces results" do
-      fill_in "Search...", with: "Alpha"
-      sleep 0.3
+      fill_in_datatable_search "Alpha"
       wait_for_datatable
 
       within("[data-admin-table-target='summary']") do
@@ -434,8 +422,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
 
     it "shows combined filter and search count" do
       select_datatable_filter "Partnership One", column: "partnership"
-      fill_in "Search...", with: "Alpha"
-      sleep 0.3
+      fill_in_datatable_search "Alpha"
       wait_for_datatable
 
       within("[data-admin-table-target='summary']") do

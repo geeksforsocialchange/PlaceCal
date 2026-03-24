@@ -54,8 +54,6 @@ When("I filter by {string} with value {string}") do |filter_label, value|
   select_element = find('select[data-admin-table-target="filter"]', text: filter_label)
   select_element.select(value)
 
-  # Wait for the table to reload
-  sleep 0.3
   await_datatables
 end
 
@@ -68,8 +66,6 @@ When("I click {string} in the {string} radio filter") do |button_text, filter_la
     click_button button_text
   end
 
-  # Wait for the table to reload
-  sleep 0.3
   await_datatables
 end
 
@@ -83,7 +79,6 @@ When("I filter the {string} dropdown to {string}") do |filter_label, value|
   expect(matching_select).not_to be_nil, "Could not find filter dropdown for '#{filter_label}'"
   matching_select.select(value)
 
-  sleep 0.3
   await_datatables
 end
 
@@ -129,7 +124,6 @@ When("I click the clickable cell {string} in the admin table") do |cell_text|
   within('[data-controller="admin-table"] tbody') do
     click_button cell_text
   end
-  sleep 0.3
   await_datatables
 end
 
@@ -138,7 +132,6 @@ When("I click {string} in the table to filter") do |cell_text|
   within('[data-controller="admin-table"] tbody') do
     click_button cell_text
   end
-  sleep 0.3
   await_datatables
 end
 
@@ -148,25 +141,18 @@ end
 
 When("I search for {string} in the admin table") do |search_term|
   await_datatables
-  # Find the search input - it may have different placeholder text
-  search_input = find('input[data-admin-table-target="search"]')
-  search_input.fill_in(with: search_term)
-  sleep 0.3 # Debounce delay
+  fill_in_datatable_search(search_term)
   await_datatables
 end
 
 When("I search the table for {string}") do |search_term|
   await_datatables
-  search_input = find('input[data-admin-table-target="search"]')
-  search_input.fill_in(with: search_term)
-  sleep 0.3
+  fill_in_datatable_search(search_term)
   await_datatables
 end
 
 When("I clear the search") do
-  search_input = find('input[data-admin-table-target="search"]')
-  search_input.fill_in(with: "")
-  sleep 0.3
+  fill_in_datatable_search("")
   await_datatables
 end
 

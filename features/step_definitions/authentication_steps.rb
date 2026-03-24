@@ -24,7 +24,7 @@ Given("I am logged in") do
   fill_in "Email", with: @current_user.email
   fill_in "Password", with: "password"
   click_button "Log in"
-  expect(page).to have_button("Sign out", wait: 10)
+  expect(page).to have_button("Sign out")
 end
 
 Given("I am logged in as a root user") do

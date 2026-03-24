@@ -16,11 +16,6 @@ RSpec.describe "Admin Accessibility", :slow, type: :system do
   let!(:collection) { create(:collection) }
   let!(:supporter) { create(:supporter) }
 
-  def admin_url(path)
-    port = Capybara.current_session.server.port
-    "http://admin.lvh.me:#{port}#{path}"
-  end
-
   describe "index pages" do
     it "dashboard has no accessibility violations" do
       visit admin_url("/")
