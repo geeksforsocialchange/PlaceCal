@@ -1,0 +1,306 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+BASE_DIR="$PROJECT_ROOT/tmp/visual_regression"
+BASELINE_DIR="$BASE_DIR/baselines"
+CURRENT_DIR="$BASE_DIR/current"
+DIFF_DIR="$BASE_DIR/diff"
+SPEC_FILE="spec/system/visual_regression_spec.rb"
+SHARED_CONTEXT_FILE="spec/support/shared_contexts/normal_island_data.rb"
+BACKUP_DIR="$PROJECT_ROOT/tmp/.vr_backup"
+
+# Layout-level fuzz: ignore anti-aliasing and font rendering differences
+FUZZ_PERCENT="5%"
+
+# State for cleanup trap
+_VR_ORIGINAL_BRANCH=""
+_VR_STASHED=false
+_VR_FILES_COPIED=false
+
+usage() {
+  cat <<HELP
+Visual regression testing for PlaceCal
+
+Usage:
+  bin/visual-regression [--base <branch>]   Compare current branch against base (default: main)
+  bin/visual-regression clean               Remove all cached screenshots
+  bin/visual-regression help                Show this help
+
+Examples:
+  bin/visual-regression                              # compare against main
+  bin/visual-regression --base refactor/my-branch    # compare against a specific branch
+
+How it works:
+  1. Resolves the HEAD SHA of the base branch
+  2. If no cached baseline for that SHA, stashes changes, checks out
+     the base branch, captures screenshots, then restores your branch
+  3. Captures screenshots for your current branch
+  4. Diffs the two sets with ImageMagick (${FUZZ_PERCENT} fuzz)
+
+Baselines are cached in tmp/visual_regression/baselines/{sha}/
+and reused until the base branch moves forward.
+
+Prerequisites:
+  brew install imagemagick
+HELP
+}
+
+# Restore branch and stash if the script exits unexpectedly during baseline capture
+cleanup_baseline() {
+  # Remove files we copied onto main before switching back
+  if [ "$_VR_FILES_COPIED" = true ]; then
+    rm -f "$PROJECT_ROOT/$SPEC_FILE"
+    rm -f "$PROJECT_ROOT/$SHARED_CONTEXT_FILE"
+    git checkout --quiet -- spec/rails_helper.rb 2>/dev/null || true
+    _VR_FILES_COPIED=false
+  fi
+  if [ -n "$_VR_ORIGINAL_BRANCH" ]; then
+    echo ""
+    echo "Restoring branch $_VR_ORIGINAL_BRANCH..."
+    git checkout --quiet "$_VR_ORIGINAL_BRANCH" 2>/dev/null || true
+    _VR_ORIGINAL_BRANCH=""
+  fi
+  if [ "$_VR_STASHED" = true ]; then
+    echo "Restoring stashed changes..."
+    git stash pop --quiet 2>/dev/null || true
+    _VR_STASHED=false
+  fi
+  rm -rf "$BACKUP_DIR"
+}
+
+get_base_sha() {
+  local base_branch="$1"
+  # Try to fetch and resolve as a remote branch first, then fall back to local
+  git fetch origin "$base_branch" --quiet 2>/dev/null || true
+  git rev-parse "origin/$base_branch" 2>/dev/null || git rev-parse "$base_branch"
+}
+
+capture_screenshots() {
+  local dest_dir="$1"
+  local screenshot_tmp="$PROJECT_ROOT/tmp/screenshots"
+
+  rm -rf "$screenshot_tmp"
+
+  echo "  Running visual regression specs..."
+  VISUAL_REGRESSION=1 bundle exec rspec "$SPEC_FILE" --format progress --order defined 2>&1
+
+  if [ ! -d "$screenshot_tmp" ] || [ -z "$(ls -A "$screenshot_tmp" 2>/dev/null)" ]; then
+    echo "  Error: No screenshots were captured"
+    return 1
+  fi
+
+  rm -rf "$dest_dir"
+  mkdir -p "$dest_dir"
+  mv "$screenshot_tmp"/* "$dest_dir"/
+  rm -rf "$screenshot_tmp"
+
+  local count
+  count=$(find "$dest_dir" -name '*.png' | wc -l | tr -d ' ')
+  echo "  Captured $count screenshots"
+}
+
+capture_baseline() {
+  local sha="$1"
+  local dest_dir="$BASELINE_DIR/$sha"
+
+  if [ -d "$dest_dir" ]; then
+    local count
+    count=$(find "$dest_dir" -name '*.png' | wc -l | tr -d ' ')
+    echo "Baseline: using cached ($count screenshots for ${sha:0:8})"
+    return 0
+  fi
+
+  echo "Baseline: capturing for ${BASE_BRANCH} (${sha:0:8})..."
+
+  _VR_ORIGINAL_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+  trap cleanup_baseline EXIT
+
+  # Save spec file, shared context, and rails_helper — they may not exist or differ on the base branch
+  mkdir -p "$BACKUP_DIR"
+  cp "$PROJECT_ROOT/$SPEC_FILE" "$BACKUP_DIR/visual_regression_spec.rb"
+  cp "$PROJECT_ROOT/$SHARED_CONTEXT_FILE" "$BACKUP_DIR/normal_island_data.rb"
+  cp "$PROJECT_ROOT/spec/rails_helper.rb" "$BACKUP_DIR/rails_helper.rb"
+
+  # Stash uncommitted changes to tracked files
+  if ! git diff --quiet || ! git diff --cached --quiet; then
+    git stash push --quiet -m "visual-regression: auto-stash"
+    _VR_STASHED=true
+  fi
+
+  # Checkout base branch (removes feature-branch-only files like the spec)
+  git checkout --quiet "$sha"
+
+  # Copy spec file, shared context, and rails_helper onto base branch so we can run the spec
+  mkdir -p "$(dirname "$PROJECT_ROOT/$SPEC_FILE")"
+  mkdir -p "$(dirname "$PROJECT_ROOT/$SHARED_CONTEXT_FILE")"
+  cp "$BACKUP_DIR/visual_regression_spec.rb" "$PROJECT_ROOT/$SPEC_FILE"
+  cp "$BACKUP_DIR/normal_island_data.rb" "$PROJECT_ROOT/$SHARED_CONTEXT_FILE"
+  cp "$BACKUP_DIR/rails_helper.rb" "$PROJECT_ROOT/spec/rails_helper.rb"
+  _VR_FILES_COPIED=true
+
+  capture_screenshots "$dest_dir"
+
+  # Clean up copied files before switching back
+  rm -f "$PROJECT_ROOT/$SPEC_FILE"
+  rm -f "$PROJECT_ROOT/$SHARED_CONTEXT_FILE"
+  git checkout --quiet -- spec/rails_helper.rb
+  _VR_FILES_COPIED=false
+
+  # Restore original branch
+  git checkout --quiet "$_VR_ORIGINAL_BRANCH"
+  _VR_ORIGINAL_BRANCH=""
+
+  if [ "$_VR_STASHED" = true ]; then
+    git stash pop --quiet
+    _VR_STASHED=false
+  fi
+
+  trap - EXIT
+  rm -rf "$BACKUP_DIR"
+
+  echo "  Baseline cached"
+}
+
+capture_current() {
+  echo "Current branch: capturing screenshots..."
+  capture_screenshots "$CURRENT_DIR"
+}
+
+generate_diffs() {
+  local baseline="$1"
+
+  rm -rf "$DIFF_DIR"
+  mkdir -p "$DIFF_DIR"
+
+  declare -i changed=0
+  declare -i unchanged=0
+  declare -i missing=0
+
+  for before_file in "$baseline"/*.png; do
+    [ -f "$before_file" ] || continue
+    local name
+    name=$(basename "$before_file")
+    local after_file="$CURRENT_DIR/$name"
+    local diff_file="$DIFF_DIR/$name"
+
+    if [ ! -f "$after_file" ]; then
+      echo "  MISSING: $name"
+      missing+=1
+      continue
+    fi
+
+    local raw_diff
+    declare -i pixel_diff
+    raw_diff=$(compare -metric AE -fuzz "$FUZZ_PERCENT" \
+      "$before_file" "$after_file" "$diff_file" 2>&1 || true)
+    # ImageMagick may output "RMSE (AE)" or just "AE" — extract the number
+    pixel_diff=$(echo "$raw_diff" | grep -oE '[0-9]+' | tail -1)
+    pixel_diff="${pixel_diff:-0}"
+
+    if [[ $pixel_diff -eq 0 ]]; then
+      rm -f "$diff_file"
+      unchanged+=1
+    else
+      echo "  CHANGED: $name ($pixel_diff pixels)"
+      changed+=1
+    fi
+  done
+
+  for after_file in "$CURRENT_DIR"/*.png; do
+    [ -f "$after_file" ] || continue
+    local name
+    name=$(basename "$after_file")
+    if [ ! -f "$baseline/$name" ]; then
+      echo "  NEW: $name"
+      cp "$after_file" "$DIFF_DIR/$name"
+      changed+=1
+    fi
+  done
+
+  echo ""
+  echo "Results: $changed changed, $unchanged unchanged, $missing missing"
+
+  if [ "$changed" -gt 0 ]; then
+    echo "Diff images in tmp/visual_regression/diff/ (red pixels = layout differences)"
+  else
+    echo "No visual differences detected."
+  fi
+}
+
+run_comparison() {
+  # Check ImageMagick is available before doing any work
+  if ! command -v compare &>/dev/null; then
+    echo "Error: ImageMagick 'compare' not found. Install with: brew install imagemagick"
+    exit 1
+  fi
+
+  local base_sha
+  base_sha=$(get_base_sha "$BASE_BRANCH")
+  local current_branch
+  current_branch=$(git rev-parse --abbrev-ref HEAD)
+
+  echo "=== Visual Regression Test ==="
+  echo "Base:   ${BASE_BRANCH} (${base_sha:0:8})"
+  echo "Branch: $current_branch"
+  echo ""
+
+  if [ "$current_branch" = "$BASE_BRANCH" ] || [ "$current_branch" = "HEAD" ]; then
+    echo "Note: You're on the base branch — baseline and current will be identical."
+    echo ""
+  fi
+
+  mkdir -p "$BASELINE_DIR"
+
+  capture_baseline "$base_sha"
+  echo ""
+
+  capture_current
+  echo ""
+
+  echo "Comparing..."
+  generate_diffs "$BASELINE_DIR/$base_sha"
+}
+
+clean_all() {
+  rm -rf "$BASE_DIR" "$PROJECT_ROOT/tmp/screenshots" "$BACKUP_DIR"
+  echo "Cleaned all visual regression data."
+}
+
+# Parse arguments
+BASE_BRANCH="main"
+COMMAND="run"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --base)
+      BASE_BRANCH="${2:?'--base requires a branch name'}"
+      shift 2
+      ;;
+    clean|help|--help|-h)
+      COMMAND="$1"
+      shift
+      ;;
+    run|"")
+      COMMAND="run"
+      shift
+      ;;
+    *)
+      echo "Unknown argument: $1"
+      usage
+      exit 1
+      ;;
+  esac
+done
+
+case "$COMMAND" in
+  run)
+    run_comparison
+    ;;
+  clean)
+    clean_all
+    ;;
+  help|--help|-h)
+    usage
+    ;;
+esac
