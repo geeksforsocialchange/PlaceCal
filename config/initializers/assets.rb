@@ -19,18 +19,8 @@ Rails.application.config.assets.paths << Rails.root.join(Rails.public_path, 'upl
 # application.js, application.css, and all non-JS/CSS in app/assets folder are already added.
 # Rails.application.config.assets.precompile += %w( search.js )
 
-# Bypass segfault in sassc 2.* + sprockets 4: https://github.com/rails/sprockets/issues/581#issuecomment-486984663
-Rails.application.config.assets.configure do |env|
-  env.export_concurrent = false
-end
-
 Rails.application.config.assets.precompile += %w[
   print.css
-  sites/hulme.css
-  sites/moss-side.css
-  sites/rusholme.css
-  sites/moston.css
-  sites/mossley.css
   es-module-shims.js
 ]
 

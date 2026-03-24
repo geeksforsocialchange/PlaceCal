@@ -5,8 +5,8 @@
 	&--audience {
 		@include for-tablet-landscape-up {
 			background-image:
-				image-url("home/patterns/landscape/audience_bl.svg"),
-				image-url("home/patterns/landscape/audience_br.svg");
+				url("/assets/home/patterns/landscape/audience_bl.svg"),
+				url("/assets/home/patterns/landscape/audience_br.svg");
 			background-position:
 				bottom left,
 				bottom right;
@@ -14,8 +14,8 @@
 
 		@include for-desktop-up {
 			background-image:
-				image-url("home/patterns/desktop/audience_bl.svg"),
-				image-url("home/patterns/desktop/audience_br.svg");
+				url("/assets/home/patterns/desktop/audience_bl.svg"),
+				url("/assets/home/patterns/desktop/audience_br.svg");
 		}
 	}
 
@@ -23,8 +23,8 @@
 	&--fixall {
 		@include for-tablet-landscape-up {
 			background-image:
-				image-url("home/patterns/landscape/fixall_bl.svg"),
-				image-url("home/patterns/landscape/fixall_tr.svg");
+				url("/assets/home/patterns/landscape/fixall_bl.svg"),
+				url("/assets/home/patterns/landscape/fixall_tr.svg");
 			background-position:
 				bottom left,
 				top right;
@@ -32,8 +32,8 @@
 
 		@include for-desktop-up {
 			background-image:
-				image-url("home/patterns/desktop/fixall_br.svg"),
-				image-url("home/patterns/desktop/fixall_tl.svg");
+				url("/assets/home/patterns/desktop/fixall_br.svg"),
+				url("/assets/home/patterns/desktop/fixall_tl.svg");
 			background-position:
 				bottom right,
 				top left;
@@ -44,22 +44,22 @@
 	&--research {
 		@include for-tablet-portrait-up {
 			background-image:
-				image-url("home/patterns/portrait/research_br.svg"),
-				image-url("home/patterns/portrait/research_tl.svg");
+				url("/assets/home/patterns/portrait/research_br.svg"),
+				url("/assets/home/patterns/portrait/research_tl.svg");
 			background-position:
 				bottom right,
 				top left;
 		}
 
 		@include for-tablet-landscape-up {
-			background-image: image-url("home/patterns/landscape/research_bl.svg");
+			background-image: url("/assets/home/patterns/landscape/research_bl.svg");
 			background-position: bottom left;
 		}
 
 		@include for-desktop-up {
 			background-image:
-				image-url("home/patterns/desktop/research_br.svg"),
-				image-url("home/patterns/desktop/research_tl.svg");
+				url("/assets/home/patterns/desktop/research_br.svg"),
+				url("/assets/home/patterns/desktop/research_tl.svg");
 			background-position:
 				bottom right,
 				top left;
@@ -70,8 +70,8 @@
 	&--thrive {
 		@include for-tablet-portrait-up {
 			background-image:
-				image-url("home/patterns/portrait/thrive_br.svg"),
-				image-url("home/patterns/portrait/thrive_tl.svg");
+				url("/assets/home/patterns/portrait/thrive_br.svg"),
+				url("/assets/home/patterns/portrait/thrive_tl.svg");
 			background-position:
 				bottom right,
 				top left;
@@ -79,14 +79,14 @@
 
 		@include for-tablet-landscape-up {
 			background-image:
-				image-url("home/patterns/landscape/thrive_br.svg"),
-				image-url("home/patterns/landscape/thrive_tl.svg");
+				url("/assets/home/patterns/landscape/thrive_br.svg"),
+				url("/assets/home/patterns/landscape/thrive_tl.svg");
 		}
 
 		@include for-desktop-up {
 			background-image:
-				image-url("home/patterns/desktop/thrive_br.svg"),
-				image-url("home/patterns/desktop/thrive_tl.svg");
+				url("/assets/home/patterns/desktop/thrive_br.svg"),
+				url("/assets/home/patterns/desktop/thrive_tl.svg");
 		}
 	}
 
@@ -94,8 +94,8 @@
 	&--who {
 		@include for-tablet-landscape-up {
 			background-image:
-				image-url("home/patterns/landscape/who_bl.svg"),
-				image-url("home/patterns/landscape/who_tr.svg");
+				url("/assets/home/patterns/landscape/who_bl.svg"),
+				url("/assets/home/patterns/landscape/who_tr.svg");
 			background-position:
 				bottom left,
 				top right;
@@ -103,8 +103,8 @@
 
 		@include for-desktop-up {
 			background-image:
-				image-url("home/patterns/desktop/who_bl.svg"),
-				image-url("home/patterns/desktop/who_tr.svg");
+				url("/assets/home/patterns/desktop/who_bl.svg"),
+				url("/assets/home/patterns/desktop/who_tr.svg");
 		}
 	}
 }
