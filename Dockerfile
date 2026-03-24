@@ -60,8 +60,11 @@ RUN bundle exec bootsnap precompile app/ lib/
 # Build Tailwind CSS
 RUN yarn build
 
-# Precompile assets (sprockets + importmap)
-RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
+# Build SCSS with Dart Sass (outputs to app/assets/builds/)
+RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails dartsass:build
+
+# Precompile assets (sprockets + importmap — picks up dartsass output from builds/)
+RUN SECRET_KEY_BASE_DUMMY=1 SKIP_CSS_BUILD=true ./bin/rails assets:precompile
 
 # Remove node_modules — not needed at runtime (saves ~100-300MB)
 RUN rm -rf node_modules
