@@ -7,6 +7,7 @@ BASELINE_DIR="$BASE_DIR/baselines"
 CURRENT_DIR="$BASE_DIR/current"
 DIFF_DIR="$BASE_DIR/diff"
 SPEC_FILE="spec/system/visual_regression_spec.rb"
+SHARED_CONTEXT_FILE="spec/support/shared_contexts/normal_island_data.rb"
 BACKUP_DIR="$PROJECT_ROOT/tmp/.vr_backup"
 
 # Layout-level fuzz: ignore anti-aliasing and font rendering differences
@@ -46,6 +47,7 @@ cleanup_baseline() {
   # Remove files we copied onto main before switching back
   if [ "$_VR_FILES_COPIED" = true ]; then
     rm -f "$PROJECT_ROOT/$SPEC_FILE"
+    rm -f "$PROJECT_ROOT/$SHARED_CONTEXT_FILE"
     git checkout --quiet -- spec/rails_helper.rb 2>/dev/null || true
     _VR_FILES_COPIED=false
   fi
@@ -108,9 +110,10 @@ capture_baseline() {
   _VR_ORIGINAL_BRANCH=$(git rev-parse --abbrev-ref HEAD)
   trap cleanup_baseline EXIT
 
-  # Save spec file and rails_helper — they may not exist or differ on main
+  # Save spec file, shared context, and rails_helper — they may not exist or differ on main
   mkdir -p "$BACKUP_DIR"
   cp "$PROJECT_ROOT/$SPEC_FILE" "$BACKUP_DIR/visual_regression_spec.rb"
+  cp "$PROJECT_ROOT/$SHARED_CONTEXT_FILE" "$BACKUP_DIR/normal_island_data.rb"
   cp "$PROJECT_ROOT/spec/rails_helper.rb" "$BACKUP_DIR/rails_helper.rb"
 
   # Stash uncommitted changes to tracked files
@@ -122,9 +125,11 @@ capture_baseline() {
   # Checkout main (removes feature-branch-only files like the spec)
   git checkout --quiet "$sha"
 
-  # Copy spec file and rails_helper onto main so we can run the spec
+  # Copy spec file, shared context, and rails_helper onto main so we can run the spec
   mkdir -p "$(dirname "$PROJECT_ROOT/$SPEC_FILE")"
+  mkdir -p "$(dirname "$PROJECT_ROOT/$SHARED_CONTEXT_FILE")"
   cp "$BACKUP_DIR/visual_regression_spec.rb" "$PROJECT_ROOT/$SPEC_FILE"
+  cp "$BACKUP_DIR/normal_island_data.rb" "$PROJECT_ROOT/$SHARED_CONTEXT_FILE"
   cp "$BACKUP_DIR/rails_helper.rb" "$PROJECT_ROOT/spec/rails_helper.rb"
   _VR_FILES_COPIED=true
 
@@ -132,6 +137,7 @@ capture_baseline() {
 
   # Clean up copied files before switching back
   rm -f "$PROJECT_ROOT/$SPEC_FILE"
+  rm -f "$PROJECT_ROOT/$SHARED_CONTEXT_FILE"
   git checkout --quiet -- spec/rails_helper.rb
   _VR_FILES_COPIED=false
 
