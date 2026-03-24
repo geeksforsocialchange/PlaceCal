@@ -104,9 +104,37 @@ expect(page).to have_content("result")
 Common patterns and their fixes:
 
 - **Search debounce**: Use `fill_in_datatable_search(term)` helper — it flushes the debounce via JS
-- **Tab switching**: Wait for the tab panel visibility: `expect(page).to have_css("[data-section='#{hash}']", visible: true)`
+- **Tab switching**: Use `click_tab("hash")` helper — it clicks and waits for panel visibility
 - **JS event processing**: Assert on the expected outcome (counter text, disabled state) — Capybara retries automatically
 - **Scroll delays**: `scroll_to` is synchronous, no wait needed
+
+### Use shared test helpers
+
+System/feature specs have shared helpers auto-included. Use them instead of writing inline boilerplate:
+
+```ruby
+# URLs (SystemHelpers)
+visit admin_url("/partners")       # http://admin.lvh.me:<port>/partners
+visit public_url("/users/sign_in") # http://lvh.me:<port>/users/sign_in
+
+# Auth (SystemHelpers) — named sign_in_as to avoid Warden::Test::Helpers#login_as collision
+sign_in_as(user)
+
+# Flash assertions (SystemHelpers)
+assert_has_flash(:success, "Saved successfully")
+assert_has_flash(:error)
+
+# Tabs (TabHelpers)
+click_tab("settings")           # any tab by data-hash
+go_to_partner_tab("📋 Basic Info") # partner form tab by aria-label
+go_to_settings_tab              # named shortcut
+
+# Datatables (DatatableSystemHelpers)
+await_datatables                           # wait for table to load
+fill_in_datatable_search("search term")    # search + flush debounce
+select_datatable_filter("Active", column: "status")
+click_radio_filter("Yes", column: "has_events")
+```
 
 ### Don't add redundant `wait:` parameters
 
