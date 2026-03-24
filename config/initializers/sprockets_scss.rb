@@ -8,7 +8,5 @@
 # the removed 'sass' gem when it encounters .scss source files in
 # app/assets/stylesheets/. Override it with a no-op so Sprockets skips
 # SCSS processing entirely.
-Rails.application.config.after_initialize do
-  noop = ->(input) { { data: input[:data] } }
-  Sprockets.register_transformer 'text/scss', 'text/css', noop
-end
+noop = ->(input) { { data: input[:data] } }
+Sprockets.register_transformer 'text/scss', 'text/css', noop
