@@ -93,7 +93,6 @@ module TomSelectHelpers
       JS
 
       # Wait for the item element to exist and have the correct text
-      # Use Capybara's built-in waiting with longer timeout for CI
       expect(wrapper).to have_selector(".ts-control .item", text: option)
     end
   end
@@ -102,7 +101,6 @@ module TomSelectHelpers
   def assert_tom_select_single(option, node)
     await_tom_select(10)
     within(:xpath, node.path) do
-      # Use longer wait time for CI environments
       expect(page).to have_selector(".ts-control .item", text: option)
     end
   end
