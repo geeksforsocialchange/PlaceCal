@@ -27,7 +27,7 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
       click_button "Save"
 
       # Verify success
-      expect(page).to have_selector("[role='alert'].bg-green-50, .alert-success", wait: 10)
+      expect(page).to have_selector("[role='alert'].bg-green-50, .alert-success")
 
       # Verify data persists by re-editing
       click_link "Calendars"
@@ -48,7 +48,7 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
       find('input[data-hash="location"]').click
 
       # Wait for tab content
-      expect(page).to have_content("Default Location", wait: 5)
+      expect(page).to have_content("Default Location")
 
       # Select default location using Tom Select
       place_select_fieldset = find("fieldset", text: "Default Location")
@@ -58,7 +58,7 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
       click_button "Save"
 
       # Verify success
-      expect(page).to have_selector("[role='alert'].bg-green-50, .alert-success", wait: 10)
+      expect(page).to have_selector("[role='alert'].bg-green-50, .alert-success")
 
       # Verify data persists by re-editing
       click_link "Calendars"

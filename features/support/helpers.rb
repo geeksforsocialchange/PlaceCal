@@ -16,6 +16,27 @@ module CucumberHelpers
     # Admin table not present on this page
   end
 
+  # Fill in datatable search and flush the 300ms debounce immediately via JS.
+  def fill_in_datatable_search(term)
+    search_input = find('input[data-admin-table-target="search"]')
+    search_input.fill_in(with: term)
+    flush_datatable_search_debounce
+  end
+
+  # Flush the admin-table controller's search debounce timer so it fires immediately.
+  def flush_datatable_search_debounce
+    page.execute_script(<<~JS)
+      var el = document.querySelector('[data-controller*="admin-table"]');
+      var ctrl = window.Stimulus.getControllerForElementAndIdentifier(el, 'admin-table');
+      if (ctrl && ctrl.searchDebounceTimer) {
+        clearTimeout(ctrl.searchDebounceTimer);
+        ctrl.searchTerm = el.querySelector('[data-admin-table-target="search"]').value;
+        ctrl.currentPage = 0;
+        ctrl.loadData();
+      }
+    JS
+  end
+
   # Wait for page to settle after JavaScript actions
   def wait_for_page_load
     Timeout.timeout(Capybara.default_max_wait_time) do

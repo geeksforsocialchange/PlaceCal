@@ -43,7 +43,6 @@ module TomSelectHelpers
     options.each do |option|
       # Scroll the element into view
       scroll_to(wrapper)
-      sleep 0.1
 
       # Tom Select stores the instance on the original select element
       # The select is a sibling of .ts-wrapper, so look in the parent container
@@ -95,7 +94,7 @@ module TomSelectHelpers
 
       # Wait for the item element to exist and have the correct text
       # Use Capybara's built-in waiting with longer timeout for CI
-      expect(wrapper).to have_selector(".ts-control .item", text: option, wait: 15)
+      expect(wrapper).to have_selector(".ts-control .item", text: option)
     end
   end
 
@@ -104,7 +103,7 @@ module TomSelectHelpers
     await_tom_select(10)
     within(:xpath, node.path) do
       # Use longer wait time for CI environments
-      expect(page).to have_selector(".ts-control .item", text: option, wait: 15)
+      expect(page).to have_selector(".ts-control .item", text: option)
     end
   end
 
@@ -137,7 +136,6 @@ module TomSelectHelpers
 
     options.each do |option|
       scroll_to(wrapper)
-      sleep 0.1
 
       # Find the tom-select within this wrapper
       result = page.evaluate_script(<<~JS)
@@ -180,7 +178,7 @@ module TomSelectHelpers
       JS
 
       # Wait for item to appear in the stacked list (not in tom-select)
-      expect(wrapper).to have_selector("[data-item-name]", text: option, wait: 15)
+      expect(wrapper).to have_selector("[data-item-name]", text: option)
     end
   end
 
@@ -191,7 +189,7 @@ module TomSelectHelpers
     find_element_with_retry do
       within(wrapper) do
         options_array.each do |opt|
-          expect(page).to have_selector("[data-item-name]", text: opt, wait: 10)
+          expect(page).to have_selector("[data-item-name]", text: opt)
         end
       end
     end

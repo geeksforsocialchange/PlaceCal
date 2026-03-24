@@ -6,14 +6,15 @@ module SystemHelpers
   # Uses the aria-label attribute to find the correct tab
   def go_to_partner_tab(tab_label)
     # Wait for form-tabs controller to be initialized
-    expect(page).to have_css("[data-controller*='form-tabs']", wait: 10)
+    expect(page).to have_css("[data-controller*='form-tabs']")
 
     # Find and click the tab by its aria-label
-    tab = find("input.tab[aria-label='#{tab_label}']", wait: 10)
+    tab = find("input.tab[aria-label='#{tab_label}']")
     tab.click
 
-    # Wait for the tab content to be visible
-    sleep 0.2 # Brief pause for tab switch
+    # Wait for the tab panel to be visible (CSS-only via :checked sibling selector)
+    tab_hash = tab["data-hash"]
+    expect(page).to have_css("[data-section='#{tab_hash}']", visible: true) if tab_hash
   end
 
   # Named helpers for common form tabs (with emoji icons)
@@ -91,8 +92,27 @@ module SystemHelpers
     select_element.select(value)
     # Trigger change event to ensure Stimulus controller handles it
     select_element.evaluate_script("this.dispatchEvent(new Event('change', { bubbles: true }))")
-    # Brief pause for event dispatch
-    sleep 0.1
+  end
+
+  # Fill in datatable search and flush the 300ms debounce immediately via JS.
+  # This avoids sleeping and makes the search trigger instantly.
+  def fill_in_datatable_search(term)
+    fill_in "Search...", with: term
+    flush_datatable_search_debounce
+  end
+
+  # Flush the admin-table controller's search debounce timer so it fires immediately.
+  def flush_datatable_search_debounce
+    page.execute_script(<<~JS)
+      var el = document.querySelector('[data-controller*="admin-table"]');
+      var ctrl = window.Stimulus.getControllerForElementAndIdentifier(el, 'admin-table');
+      if (ctrl && ctrl.searchDebounceTimer) {
+        clearTimeout(ctrl.searchDebounceTimer);
+        ctrl.searchTerm = el.querySelector('[data-admin-table-target="search"]').value;
+        ctrl.currentPage = 0;
+        ctrl.loadData();
+      }
+    JS
   end
 
   # Click a radio filter button by its data-filter-column and value
@@ -101,7 +121,6 @@ module SystemHelpers
     within("[data-filter-column='#{column}']") do
       click_button value
     end
-    sleep 0.1
   end
 
   # Wait for admin-table datatable to finish loading after filter/search

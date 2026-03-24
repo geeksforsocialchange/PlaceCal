@@ -31,7 +31,7 @@ RSpec.describe "User Invitation Flow", :slow, type: :system do
     fill_in "user_email", with: invited_user_email
 
     # Wait for email validation to complete
-    expect(page).to have_selector("[data-user-wizard-target='emailAvailable']", visible: true, wait: 5)
+    expect(page).to have_selector("[data-user-wizard-target='emailAvailable']", visible: true)
 
     # Set role (only visible to root users)
     choose "Root: Can do everything - use with care!"

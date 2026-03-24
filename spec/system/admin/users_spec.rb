@@ -69,7 +69,7 @@ RSpec.describe "Admin Users", :slow, type: :system do
       click_link "Add neighbourhood"
 
       # Should see cascading neighbourhood controller initialized
-      expect(page).to have_css('[data-controller="cascading-neighbourhood"]', wait: 10)
+      expect(page).to have_css('[data-controller="cascading-neighbourhood"]')
 
       # The country selector should be present and populated
       within(all('[data-controller="cascading-neighbourhood"]').last) do

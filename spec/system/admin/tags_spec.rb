@@ -36,7 +36,7 @@ RSpec.describe "Admin Tags", :slow, type: :system do
   def assert_has_flash(type, message)
     # Support daisyUI alert classes
     alert_class = type == :success ? "alert-success" : "alert-error"
-    expect(page).to have_css("[role='alert'].#{alert_class}, .flashes .alert-#{type}", text: message, wait: 10)
+    expect(page).to have_css("[role='alert'].#{alert_class}, .flashes .alert-#{type}", text: message)
   end
 
   describe "system tag visibility" do
@@ -46,7 +46,7 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
 
       # Wait for tabs to be present, then click Settings
-      expect(page).to have_css(".tabs.tabs-lift", wait: 10)
+      expect(page).to have_css(".tabs.tabs-lift")
       find('input.tab[data-hash="settings"]').click
       expect(page).to have_css("input#tag_system_tag", visible: :all)
     end
@@ -62,9 +62,9 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
 
       # Wait for tabs, navigate to Basic Info tab (tab state may be stored from previous tests)
-      expect(page).to have_css(".tabs.tabs-lift", wait: 10)
+      expect(page).to have_css(".tabs.tabs-lift")
       find('input.tab[data-hash="basic"]').click
-      expect(page).to have_field("Name", wait: 5)
+      expect(page).to have_field("Name")
 
       fill_in "Name", with: "A new tag name"
       click_button "Save"
@@ -79,18 +79,18 @@ RSpec.describe "Admin Tags", :slow, type: :system do
 
       # Toggle on - navigate to Settings tab first
       visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
-      expect(page).to have_css(".tabs.tabs-lift", wait: 10)
+      expect(page).to have_css(".tabs.tabs-lift")
       find('input.tab[data-hash="settings"]').click
-      expect(page).to have_field("System Tag", visible: true, wait: 5)
+      expect(page).to have_field("System Tag", visible: true)
       check "System Tag"
       click_button "Save"
       assert_has_flash(:success, "Tag was saved successfully")
 
       # Check is toggled - navigate to Settings tab
       visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
-      expect(page).to have_css(".tabs.tabs-lift", wait: 10)
+      expect(page).to have_css(".tabs.tabs-lift")
       find('input.tab[data-hash="settings"]').click
-      expect(page).to have_checked_field("System Tag", visible: true, wait: 5)
+      expect(page).to have_checked_field("System Tag", visible: true)
 
       # Toggle off
       uncheck "System Tag"
@@ -99,9 +99,9 @@ RSpec.describe "Admin Tags", :slow, type: :system do
 
       # Check is NOT toggled - navigate to Settings tab
       visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
-      expect(page).to have_css(".tabs.tabs-lift", wait: 10)
+      expect(page).to have_css(".tabs.tabs-lift")
       find('input.tab[data-hash="settings"]').click
-      expect(page).to have_unchecked_field("System Tag", visible: true, wait: 5)
+      expect(page).to have_unchecked_field("System Tag", visible: true)
     end
   end
 
@@ -113,7 +113,7 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       visit "http://admin.lvh.me:#{port}/tags/new"
 
       # Wait for form to be fully loaded
-      expect(page).to have_css("input#tag_name", wait: 5)
+      expect(page).to have_css("input#tag_name")
 
       fill_in "Name", with: "AlphaFacility"
       fill_in "Slug", with: "alpha-facility"
@@ -139,7 +139,7 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       assert_has_flash(:success, "Tag was saved successfully")
 
       # After save, we stay on the edit page - navigate to Settings tab
-      expect(page).to have_css(".tabs.tabs-lift", wait: 10)
+      expect(page).to have_css(".tabs.tabs-lift")
       find('input.tab[data-hash="settings"]').click
       expect(page).to have_css('input[name="tag[slug]"][value="alpha-facility"]')
       fill_in "Slug", with: "alpha-facility-2"

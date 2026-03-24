@@ -17,14 +17,15 @@ RSpec.describe "Admin Sites", :slow, type: :system do
     # Helper to click site form tabs (daisyUI radio tab inputs)
     # Accepts any unsaved changes confirmation that may appear
     def click_site_tab(tab_name)
+      tab = find("input.tab[aria-label*='#{tab_name}']")
       begin
-        accept_confirm do
-          find("input.tab[aria-label*='#{tab_name}']", wait: 10).click
-        end
+        accept_confirm { tab.click }
       rescue Capybara::ModalNotFound
         # No confirmation dialog appeared, which is fine
       end
-      sleep 0.2
+      # Wait for tab panel to be visible
+      tab_hash = tab["data-hash"]
+      expect(page).to have_css("[data-section='#{tab_hash}']", visible: true) if tab_hash
     end
 
     it "allows adding neighbourhoods via cascading picker", :aggregate_failures do
@@ -38,7 +39,7 @@ RSpec.describe "Admin Sites", :slow, type: :system do
       click_link "Add neighbourhood"
 
       # Should see cascading neighbourhood controller initialized
-      expect(page).to have_css('[data-controller="cascading-neighbourhood"]', wait: 10)
+      expect(page).to have_css('[data-controller="cascading-neighbourhood"]')
 
       # The country selector should be present
       within(all('[data-controller="cascading-neighbourhood"]').last) do
@@ -66,10 +67,10 @@ RSpec.describe "Admin Sites", :slow, type: :system do
       click_link site.name
 
       # Wait for the page to load
-      find("button", text: "Save", wait: 5)
+      find("button", text: "Save")
 
       # Navigate to Neighbourhoods tab
-      find("input.tab[aria-label*='Neighbourhoods']", wait: 10).click
+      find("input.tab[aria-label*='Neighbourhoods']").click
 
       # The site has a primary neighbourhood (sites_neighbourhood created in setup)
       # Check that the nested form for additional neighbourhoods only has the "Add" button,

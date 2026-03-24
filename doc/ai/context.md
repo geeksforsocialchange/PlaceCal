@@ -86,6 +86,43 @@ For reusable UI patterns with hover/focus states, **create component classes** i
 class="hover:bg-red-50 hover:text-red-600"
 ```
 
+## System/Feature Test Guidelines
+
+### Never use `sleep` in Capybara tests
+
+`sleep` introduces fixed delays that waste time on fast runs and cause flakiness on slow CI. Always use deterministic waits instead:
+
+```ruby
+# BAD: Fixed delay, always wastes time
+sleep 0.3
+expect(page).to have_content("result")
+
+# GOOD: Returns instantly when condition is met, waits up to default_max_wait_time otherwise
+expect(page).to have_content("result")
+```
+
+Common patterns and their fixes:
+
+- **Search debounce**: Use `fill_in_datatable_search(term)` helper — it flushes the debounce via JS
+- **Tab switching**: Wait for the tab panel visibility: `expect(page).to have_css("[data-section='#{hash}']", visible: true)`
+- **JS event processing**: Assert on the expected outcome (counter text, disabled state) — Capybara retries automatically
+- **Scroll delays**: `scroll_to` is synchronous, no wait needed
+
+### Don't add redundant `wait:` parameters
+
+Capybara's `default_max_wait_time` is 5 seconds. Only add explicit `wait:` when you need a _different_ value:
+
+```ruby
+# BAD: Same as default, adds noise
+expect(page).to have_css(".tabs", wait: 5)
+
+# GOOD: Uses default wait time
+expect(page).to have_css(".tabs")
+
+# OK: Intentionally shorter for quick probing / fallback logic
+form_group.has_css?(".ts-wrapper", wait: 2)
+```
+
 ### Stimulus Controller Visibility Toggling
 
 When toggling element visibility in Stimulus controllers, prefer `style.display` over `classList.toggle("hidden")` when using flexbox:
