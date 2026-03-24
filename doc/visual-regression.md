@@ -11,13 +11,14 @@ Compare screenshots of every public page before and after CSS changes to catch u
 From your feature branch:
 
 ```bash
-bin/visual-regression
+bin/visual-regression                              # compare against main (default)
+bin/visual-regression --base refactor/my-branch    # compare against a specific branch
 ```
 
 This does everything in one command:
 
-1. Checks the current `origin/main` SHA
-2. If no cached baseline exists for that SHA, temporarily checks out main, captures screenshots, then restores your branch
+1. Resolves the HEAD SHA of the base branch (default: `main`)
+2. If no cached baseline exists for that SHA, temporarily checks out the base branch, captures screenshots, then restores your branch
 3. Captures screenshots on your current branch
 4. Diffs the two sets with ImageMagick (5% fuzz to ignore anti-aliasing)
 5. Reports which pages changed
@@ -26,8 +27,8 @@ This does everything in one command:
 
 ```
 === Visual Regression Test ===
-Main SHA: ea8cc003
-Branch:   feature/tailwind-migration
+Base:   main (ea8cc003)
+Branch: feature/tailwind-migration
 
 Baseline: using cached (56 screenshots for ea8cc003)
 

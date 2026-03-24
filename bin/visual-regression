@@ -23,19 +23,23 @@ usage() {
 Visual regression testing for PlaceCal
 
 Usage:
-  bin/visual-regression         Compare current branch against main
-  bin/visual-regression clean   Remove all cached screenshots
-  bin/visual-regression help    Show this help
+  bin/visual-regression [--base <branch>]   Compare current branch against base (default: main)
+  bin/visual-regression clean               Remove all cached screenshots
+  bin/visual-regression help                Show this help
+
+Examples:
+  bin/visual-regression                              # compare against main
+  bin/visual-regression --base refactor/my-branch    # compare against a specific branch
 
 How it works:
-  1. Checks the HEAD SHA of origin/main
+  1. Resolves the HEAD SHA of the base branch
   2. If no cached baseline for that SHA, stashes changes, checks out
-     main, captures screenshots, then restores your branch
+     the base branch, captures screenshots, then restores your branch
   3. Captures screenshots for your current branch
   4. Diffs the two sets with ImageMagick (${FUZZ_PERCENT} fuzz)
 
 Baselines are cached in tmp/visual_regression/baselines/{sha}/
-and reused until main moves forward.
+and reused until the base branch moves forward.
 
 Prerequisites:
   brew install imagemagick
@@ -65,9 +69,11 @@ cleanup_baseline() {
   rm -rf "$BACKUP_DIR"
 }
 
-get_main_sha() {
-  git fetch origin main --quiet 2>/dev/null || true
-  git rev-parse origin/main 2>/dev/null || git rev-parse main
+get_base_sha() {
+  local base_branch="$1"
+  # Try to fetch and resolve as a remote branch first, then fall back to local
+  git fetch origin "$base_branch" --quiet 2>/dev/null || true
+  git rev-parse "origin/$base_branch" 2>/dev/null || git rev-parse "$base_branch"
 }
 
 capture_screenshots() {
@@ -105,12 +111,12 @@ capture_baseline() {
     return 0
   fi
 
-  echo "Baseline: capturing for main (${sha:0:8})..."
+  echo "Baseline: capturing for ${BASE_BRANCH} (${sha:0:8})..."
 
   _VR_ORIGINAL_BRANCH=$(git rev-parse --abbrev-ref HEAD)
   trap cleanup_baseline EXIT
 
-  # Save spec file, shared context, and rails_helper — they may not exist or differ on main
+  # Save spec file, shared context, and rails_helper — they may not exist or differ on the base branch
   mkdir -p "$BACKUP_DIR"
   cp "$PROJECT_ROOT/$SPEC_FILE" "$BACKUP_DIR/visual_regression_spec.rb"
   cp "$PROJECT_ROOT/$SHARED_CONTEXT_FILE" "$BACKUP_DIR/normal_island_data.rb"
@@ -122,10 +128,10 @@ capture_baseline() {
     _VR_STASHED=true
   fi
 
-  # Checkout main (removes feature-branch-only files like the spec)
+  # Checkout base branch (removes feature-branch-only files like the spec)
   git checkout --quiet "$sha"
 
-  # Copy spec file, shared context, and rails_helper onto main so we can run the spec
+  # Copy spec file, shared context, and rails_helper onto base branch so we can run the spec
   mkdir -p "$(dirname "$PROJECT_ROOT/$SPEC_FILE")"
   mkdir -p "$(dirname "$PROJECT_ROOT/$SHARED_CONTEXT_FILE")"
   cp "$BACKUP_DIR/visual_regression_spec.rb" "$PROJECT_ROOT/$SPEC_FILE"
@@ -229,31 +235,31 @@ run_comparison() {
     exit 1
   fi
 
-  local main_sha
-  main_sha=$(get_main_sha)
+  local base_sha
+  base_sha=$(get_base_sha "$BASE_BRANCH")
   local current_branch
   current_branch=$(git rev-parse --abbrev-ref HEAD)
 
   echo "=== Visual Regression Test ==="
-  echo "Main SHA: ${main_sha:0:8}"
-  echo "Branch:   $current_branch"
+  echo "Base:   ${BASE_BRANCH} (${base_sha:0:8})"
+  echo "Branch: $current_branch"
   echo ""
 
-  if [ "$current_branch" = "main" ] || [ "$current_branch" = "HEAD" ]; then
-    echo "Note: You're on main — baseline and current will be identical."
+  if [ "$current_branch" = "$BASE_BRANCH" ] || [ "$current_branch" = "HEAD" ]; then
+    echo "Note: You're on the base branch — baseline and current will be identical."
     echo ""
   fi
 
   mkdir -p "$BASELINE_DIR"
 
-  capture_baseline "$main_sha"
+  capture_baseline "$base_sha"
   echo ""
 
   capture_current
   echo ""
 
   echo "Comparing..."
-  generate_diffs "$BASELINE_DIR/$main_sha"
+  generate_diffs "$BASELINE_DIR/$base_sha"
 }
 
 clean_all() {
@@ -261,8 +267,34 @@ clean_all() {
   echo "Cleaned all visual regression data."
 }
 
-case "${1:-run}" in
-  run|"")
+# Parse arguments
+BASE_BRANCH="main"
+COMMAND="run"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --base)
+      BASE_BRANCH="${2:?'--base requires a branch name'}"
+      shift 2
+      ;;
+    clean|help|--help|-h)
+      COMMAND="$1"
+      shift
+      ;;
+    run|"")
+      COMMAND="run"
+      shift
+      ;;
+    *)
+      echo "Unknown argument: $1"
+      usage
+      exit 1
+      ;;
+  esac
+done
+
+case "$COMMAND" in
+  run)
     run_comparison
     ;;
   clean)
@@ -270,10 +302,5 @@ case "${1:-run}" in
     ;;
   help|--help|-h)
     usage
-    ;;
-  *)
-    echo "Unknown command: $1"
-    usage
-    exit 1
     ;;
 esac
