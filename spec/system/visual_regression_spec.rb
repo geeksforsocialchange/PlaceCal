@@ -32,6 +32,8 @@ RSpec.describe "Visual regression screenshots", :visual_regression, type: :syste
 
   before do
     FileUtils.mkdir_p(SCREENSHOT_DIR)
+    # Pin Faker so factory-generated text is identical across runs
+    Faker::Config.random = Random.new(42)
   end
 
   def screenshot_page(name)
@@ -41,12 +43,6 @@ RSpec.describe "Visual regression screenshots", :visual_regression, type: :syste
       page.save_screenshot(SCREENSHOT_DIR.join("#{name}_#{label}.png")) # rubocop:disable Lint/Debugger
     end
   end
-
-  # Fixed content so screenshots are deterministic across runs.
-  # Faker/sequences would produce different text each time, making every diff noisy.
-  FIXED_DESCRIPTION = "A welcoming space for the local community to connect, learn, and grow together."
-  FIXED_BODY = "We are pleased to announce new activities and programmes for the coming months. " \
-               "Our community continues to thrive thanks to the dedication of our volunteers."
 
   let!(:site) { create(:default_site) }
 
@@ -83,15 +79,9 @@ RSpec.describe "Visual regression screenshots", :visual_regression, type: :syste
   end
 
   describe "events" do
-    let!(:partner) { create(:riverside_community_hub, description: FIXED_DESCRIPTION) }
+    let!(:partner) { create(:riverside_community_hub) }
     let!(:calendar) { create(:calendar, partner: partner) }
-    let!(:event) do
-      create(:event,
-             partner: partner,
-             calendar: calendar,
-             summary: "Community Gathering",
-             description: "A weekly gathering for neighbours to share food and conversation.")
-    end
+    let!(:event) { create(:event, partner: partner, calendar: calendar) }
 
     it "events index" do
       visit "/events"
@@ -105,7 +95,7 @@ RSpec.describe "Visual regression screenshots", :visual_regression, type: :syste
   end
 
   describe "partners" do
-    let!(:partner) { create(:riverside_community_hub, description: FIXED_DESCRIPTION) }
+    let!(:partner) { create(:riverside_community_hub) }
 
     it "partners index" do
       visit "/partners"
@@ -119,7 +109,7 @@ RSpec.describe "Visual regression screenshots", :visual_regression, type: :syste
   end
 
   describe "news" do
-    let!(:article) { create(:published_article, title: "Community Update", body: FIXED_BODY) }
+    let!(:article) { create(:published_article) }
 
     it "news index" do
       visit "/news"
@@ -133,7 +123,7 @@ RSpec.describe "Visual regression screenshots", :visual_regression, type: :syste
   end
 
   describe "collections" do
-    let!(:collection) { create(:collection, name: "Winter Events", description: "Seasonal community events") }
+    let!(:collection) { create(:collection) }
 
     it "collection show" do
       visit "/collections/#{collection.id}"
@@ -143,15 +133,9 @@ RSpec.describe "Visual regression screenshots", :visual_regression, type: :syste
 
   describe "partner-themed site" do
     let!(:themed_site) { create(:millbrook_site) }
-    let!(:partner) { create(:riverside_community_hub, description: FIXED_DESCRIPTION) }
+    let!(:partner) { create(:riverside_community_hub) }
     let!(:calendar) { create(:calendar, partner: partner) }
-    let!(:event) do
-      create(:event,
-             partner: partner,
-             calendar: calendar,
-             summary: "Millbrook Social",
-             description: "A social event for the Millbrook community.")
-    end
+    let!(:event) { create(:event, partner: partner, calendar: calendar) }
 
     before do
       if themed_site.neighbourhoods.any?
