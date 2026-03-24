@@ -136,7 +136,6 @@ Metrics/ModuleLength:
   Exclude:
     - "lib/normal_island.rb"
     - "app/helpers/svg_icons_helper.rb"
-    - "spec/support/system_helpers.rb"
 
 Metrics/PerceivedComplexity:
   Exclude:
