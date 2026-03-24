@@ -1,0 +1,222 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+BASE_DIR="$PROJECT_ROOT/tmp/visual_regression"
+BASELINE_DIR="$BASE_DIR/baselines"
+CURRENT_DIR="$BASE_DIR/current"
+DIFF_DIR="$BASE_DIR/diff"
+SPEC_FILE="spec/system/visual_regression_spec.rb"
+
+# Layout-level fuzz: ignore anti-aliasing and font rendering differences
+FUZZ_PERCENT="5%"
+
+usage() {
+  cat <<HELP
+Visual regression testing for PlaceCal
+
+Usage:
+  bin/visual-regression         Compare current branch against main
+  bin/visual-regression clean   Remove all cached screenshots
+  bin/visual-regression help    Show this help
+
+How it works:
+  1. Checks the HEAD SHA of origin/main
+  2. If no cached baseline for that SHA, stashes changes, checks out
+     main, captures screenshots, then restores your branch
+  3. Captures screenshots for your current branch
+  4. Diffs the two sets with ImageMagick (${FUZZ_PERCENT} fuzz)
+
+Baselines are cached in tmp/visual_regression/baselines/{sha}/
+and reused until main moves forward.
+HELP
+}
+
+get_main_sha() {
+  git fetch origin main --quiet 2>/dev/null || true
+  git rev-parse origin/main 2>/dev/null || git rev-parse main
+}
+
+capture_screenshots() {
+  local dest_dir="$1"
+  local screenshot_tmp="$PROJECT_ROOT/tmp/screenshots"
+
+  rm -rf "$screenshot_tmp"
+
+  echo "  Running visual regression specs..."
+  bundle exec rspec "$SPEC_FILE" --format progress --order defined 2>&1
+
+  if [ ! -d "$screenshot_tmp" ] || [ -z "$(ls -A "$screenshot_tmp" 2>/dev/null)" ]; then
+    echo "  Error: No screenshots were captured"
+    return 1
+  fi
+
+  rm -rf "$dest_dir"
+  mkdir -p "$dest_dir"
+  mv "$screenshot_tmp"/* "$dest_dir"/
+  rm -rf "$screenshot_tmp"
+
+  local count
+  count=$(find "$dest_dir" -name '*.png' | wc -l | tr -d ' ')
+  echo "  Captured $count screenshots"
+}
+
+capture_baseline() {
+  local sha="$1"
+  local dest_dir="$BASELINE_DIR/$sha"
+
+  if [ -d "$dest_dir" ]; then
+    local count
+    count=$(find "$dest_dir" -name '*.png' | wc -l | tr -d ' ')
+    echo "Baseline: using cached ($count screenshots for ${sha:0:8})"
+    return 0
+  fi
+
+  echo "Baseline: capturing for main (${sha:0:8})..."
+
+  local current_branch
+  current_branch=$(git rev-parse --abbrev-ref HEAD)
+  local stashed=false
+
+  # Stash any uncommitted changes
+  if ! git diff --quiet || ! git diff --cached --quiet; then
+    git stash push --quiet -m "visual-regression: auto-stash"
+    stashed=true
+  fi
+
+  # Checkout main, capture, then restore
+  git checkout --quiet "$sha"
+
+  capture_screenshots "$dest_dir" || {
+    git checkout --quiet "$current_branch"
+    if [ "$stashed" = true ]; then git stash pop --quiet; fi
+    return 1
+  }
+
+  git checkout --quiet "$current_branch"
+  if [ "$stashed" = true ]; then
+    git stash pop --quiet
+  fi
+
+  echo "  Baseline cached"
+}
+
+capture_current() {
+  echo "Current branch: capturing screenshots..."
+  capture_screenshots "$CURRENT_DIR"
+}
+
+generate_diffs() {
+  local baseline="$1"
+
+  if ! command -v compare &>/dev/null; then
+    echo "Error: ImageMagick 'compare' not found. Install with: brew install imagemagick"
+    exit 1
+  fi
+
+  rm -rf "$DIFF_DIR"
+  mkdir -p "$DIFF_DIR"
+
+  local changed=0
+  local unchanged=0
+  local missing=0
+
+  for before_file in "$baseline"/*.png; do
+    [ -f "$before_file" ] || continue
+    local name
+    name=$(basename "$before_file")
+    local after_file="$CURRENT_DIR/$name"
+    local diff_file="$DIFF_DIR/$name"
+
+    if [ ! -f "$after_file" ]; then
+      echo "  MISSING: $name"
+      missing=$((missing + 1))
+      continue
+    fi
+
+    local raw_diff pixel_diff
+    raw_diff=$(compare -metric AE -fuzz "$FUZZ_PERCENT" \
+      "$before_file" "$after_file" "$diff_file" 2>&1 || true)
+    # ImageMagick may output "RMSE (AE)" or just "AE" — extract the number
+    pixel_diff=$(echo "$raw_diff" | grep -oE '[0-9]+' | tail -1)
+    pixel_diff="${pixel_diff:-0}"
+
+    if [ "$pixel_diff" = "0" ]; then
+      rm -f "$diff_file"
+      unchanged=$((unchanged + 1))
+    else
+      echo "  CHANGED: $name ($pixel_diff pixels)"
+      changed=$((changed + 1))
+    fi
+  done
+
+  for after_file in "$CURRENT_DIR"/*.png; do
+    [ -f "$after_file" ] || continue
+    local name
+    name=$(basename "$after_file")
+    if [ ! -f "$baseline/$name" ]; then
+      echo "  NEW: $name"
+      cp "$after_file" "$DIFF_DIR/$name"
+      changed=$((changed + 1))
+    fi
+  done
+
+  echo ""
+  echo "Results: $changed changed, $unchanged unchanged, $missing missing"
+
+  if [ "$changed" -gt 0 ]; then
+    echo "Diff images in tmp/visual_regression/diff/ (red pixels = layout differences)"
+  else
+    echo "No visual differences detected."
+  fi
+}
+
+run_comparison() {
+  local main_sha
+  main_sha=$(get_main_sha)
+  local current_branch
+  current_branch=$(git rev-parse --abbrev-ref HEAD)
+
+  echo "=== Visual Regression Test ==="
+  echo "Main SHA: ${main_sha:0:8}"
+  echo "Branch:   $current_branch"
+  echo ""
+
+  # Safety check: don't run with untracked files that might get lost
+  if [ "$current_branch" = "main" ] || [ "$current_branch" = "HEAD" ]; then
+    echo "Note: You're on main — baseline and current will be identical."
+  fi
+
+  mkdir -p "$BASELINE_DIR"
+
+  capture_baseline "$main_sha"
+  echo ""
+
+  capture_current
+  echo ""
+
+  echo "Comparing..."
+  generate_diffs "$BASELINE_DIR/$main_sha"
+}
+
+clean_all() {
+  rm -rf "$BASE_DIR" "$PROJECT_ROOT/tmp/screenshots"
+  echo "Cleaned all visual regression data."
+}
+
+case "${1:-run}" in
+  run|"")
+    run_comparison
+    ;;
+  clean)
+    clean_all
+    ;;
+  help|--help|-h)
+    usage
+    ;;
+  *)
+    echo "Unknown command: $1"
+    usage
+    exit 1
+    ;;
+esac
