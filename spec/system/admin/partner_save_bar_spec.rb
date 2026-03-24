@@ -16,17 +16,8 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     create_default_site
   end
 
-  def login_as(user)
-    port = Capybara.current_session.server.port
-    visit "http://lvh.me:#{port}/users/sign_in"
-    fill_in "Email", with: user.email
-    fill_in "Password", with: "password"
-    click_button "Log in"
-  end
-
   def visit_partner_edit
-    port = Capybara.current_session.server.port
-    url = "http://admin.lvh.me:#{port}/partners/#{partner.id}/edit"
+    url = admin_url("/partners/#{partner.id}/edit")
     visit url
 
     # Wait for page to fully load with retries for CI stability
@@ -66,7 +57,7 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
 
   describe "tab-aware buttons" do
     before do
-      login_as(root_user)
+      sign_in_as(root_user)
       visit_partner_edit
     end
 
@@ -99,8 +90,8 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     end
 
     it "shows only Save button on Settings tab" do
-      # Go to Settings tab - use data-hash attribute which is more stable than emoji-containing labels
-      find('input.tab[data-hash="settings"]').click
+      # Go to Settings tab
+      click_tab("settings")
 
       expect(page).to have_button("Save")
       expect(page).not_to have_button("Back", visible: :visible)
@@ -110,7 +101,7 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
 
   describe "unsaved changes indicator" do
     before do
-      login_as(root_user)
+      sign_in_as(root_user)
       visit_partner_edit
     end
 
@@ -153,7 +144,7 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
 
   describe "unsaved changes confirmation" do
     before do
-      login_as(root_user)
+      sign_in_as(root_user)
       visit_partner_edit
     end
 
@@ -191,7 +182,7 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
 
   describe "navigation with Continue/Back buttons" do
     before do
-      login_as(root_user)
+      sign_in_as(root_user)
       visit_partner_edit
     end
 

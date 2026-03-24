@@ -24,30 +24,14 @@ RSpec.describe "Admin Tags", :slow, type: :system do
     create_default_site
   end
 
-  def login_as(user)
-    port = Capybara.current_session.server.port
-    visit "http://lvh.me:#{port}/users/sign_in"
-    fill_in "Email", with: user.email
-    fill_in "Password", with: "password"
-    click_button "Log in"
-    expect(page).to have_css("h1", text: /Good (morning|afternoon|evening)/) # wait for login redirect
-  end
-
-  def assert_has_flash(type, message)
-    # Support daisyUI alert classes
-    alert_class = type == :success ? "alert-success" : "alert-error"
-    expect(page).to have_css("[role='alert'].#{alert_class}, .flashes .alert-#{type}", text: message)
-  end
-
   describe "system tag visibility" do
     it "shows system_tag option for root users" do
-      login_as(root_user)
-      port = Capybara.current_session.server.port
-      visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
+      sign_in_as(root_user)
+      visit admin_url("/tags/#{tag.id}/edit")
 
       # Wait for tabs to be present, then click Settings
       expect(page).to have_css(".tabs.tabs-lift")
-      find('input.tab[data-hash="settings"]').click
+      click_tab("settings")
       expect(page).to have_css("input#tag_system_tag", visible: :all)
     end
 
@@ -57,13 +41,12 @@ RSpec.describe "Admin Tags", :slow, type: :system do
 
   describe "tag editing" do
     it "allows root users to modify tags" do
-      login_as(root_user)
-      port = Capybara.current_session.server.port
-      visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
+      sign_in_as(root_user)
+      visit admin_url("/tags/#{tag.id}/edit")
 
       # Wait for tabs, navigate to Basic Info tab (tab state may be stored from previous tests)
       expect(page).to have_css(".tabs.tabs-lift")
-      find('input.tab[data-hash="basic"]').click
+      click_tab("basic")
       expect(page).to have_field("Name")
 
       fill_in "Name", with: "A new tag name"
@@ -74,22 +57,21 @@ RSpec.describe "Admin Tags", :slow, type: :system do
     end
 
     it "allows root users to toggle system tag on and off" do
-      login_as(root_user)
-      port = Capybara.current_session.server.port
+      sign_in_as(root_user)
 
       # Toggle on - navigate to Settings tab first
-      visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
+      visit admin_url("/tags/#{tag.id}/edit")
       expect(page).to have_css(".tabs.tabs-lift")
-      find('input.tab[data-hash="settings"]').click
+      click_tab("settings")
       expect(page).to have_field("System Tag", visible: true)
       check "System Tag"
       click_button "Save"
       assert_has_flash(:success, "Tag was saved successfully")
 
       # Check is toggled - navigate to Settings tab
-      visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
+      visit admin_url("/tags/#{tag.id}/edit")
       expect(page).to have_css(".tabs.tabs-lift")
-      find('input.tab[data-hash="settings"]').click
+      click_tab("settings")
       expect(page).to have_checked_field("System Tag", visible: true)
 
       # Toggle off
@@ -98,19 +80,18 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       assert_has_flash(:success, "Tag was saved successfully")
 
       # Check is NOT toggled - navigate to Settings tab
-      visit "http://admin.lvh.me:#{port}/tags/#{tag.id}/edit"
+      visit admin_url("/tags/#{tag.id}/edit")
       expect(page).to have_css(".tabs.tabs-lift")
-      find('input.tab[data-hash="settings"]').click
+      click_tab("settings")
       expect(page).to have_unchecked_field("System Tag", visible: true)
     end
   end
 
   describe "creating and editing FacilityTag" do
     it "allows creating and editing a Facility tag" do
-      login_as(root_user)
+      sign_in_as(root_user)
 
-      port = Capybara.current_session.server.port
-      visit "http://admin.lvh.me:#{port}/tags/new"
+      visit admin_url("/tags/new")
 
       # Wait for form to be fully loaded
       expect(page).to have_css("input#tag_name")
@@ -140,7 +121,7 @@ RSpec.describe "Admin Tags", :slow, type: :system do
 
       # After save, we stay on the edit page - navigate to Settings tab
       expect(page).to have_css(".tabs.tabs-lift")
-      find('input.tab[data-hash="settings"]').click
+      click_tab("settings")
       expect(page).to have_css('input[name="tag[slug]"][value="alpha-facility"]')
       fill_in "Slug", with: "alpha-facility-2"
       click_button "Save"
@@ -151,16 +132,15 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       expect(page).to have_css('input[name="tag[slug]"][value="alpha-facility-2"]')
 
       # Verify name on Basic Info tab
-      find('input.tab[data-hash="basic"]').click
+      click_tab("basic")
       expect(page).to have_css('input[name="tag[name]"][value="AlphaFacility 2"]')
     end
   end
 
   describe "assigned users field" do
     it "shows assigned users field on New tag page" do
-      login_as(root_user)
-      port = Capybara.current_session.server.port
-      visit "http://admin.lvh.me:#{port}/tags/new"
+      sign_in_as(root_user)
+      visit admin_url("/tags/new")
 
       expect(page).to have_css("h1", text: "New Tag")  # wait for page load
       expect(page).to have_css("h3", text: "Assigned Users")
@@ -168,9 +148,8 @@ RSpec.describe "Admin Tags", :slow, type: :system do
 
     it "shows assigned users field on Edit of Partnership tag" do
       partnership_tag = create(:partnership)
-      login_as(root_user)
-      port = Capybara.current_session.server.port
-      visit "http://admin.lvh.me:#{port}/tags/#{partnership_tag.id}/edit"
+      sign_in_as(root_user)
+      visit admin_url("/tags/#{partnership_tag.id}/edit")
 
       # Assigned Users is on the Basic Info tab (default)
       expect(page).to have_css("h2", text: "Assigned Users")
@@ -178,9 +157,8 @@ RSpec.describe "Admin Tags", :slow, type: :system do
 
     it "hides assigned users field on Edit of non-Partnership tag" do
       facility_tag = create(:tag, type: "Facility")
-      login_as(root_user)
-      port = Capybara.current_session.server.port
-      visit "http://admin.lvh.me:#{port}/tags/#{facility_tag.id}/edit"
+      sign_in_as(root_user)
+      visit admin_url("/tags/#{facility_tag.id}/edit")
 
       # Assigned Users should not show for non-Partnership tags
       expect(page).not_to have_css("h2", text: "Assigned Users")

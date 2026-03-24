@@ -13,8 +13,7 @@ RSpec.describe "User Invitation Flow", :slow, type: :system do
 
   it "allows admin to invite a user who can then set their password" do
     # Log in as admin via admin subdomain
-    port = Capybara.current_session.server.port
-    visit "http://admin.lvh.me:#{port}/users/sign_in"
+    visit admin_url("/users/sign_in")
     fill_in "Email", with: admin_user.email
     fill_in "Password", with: "password"
     click_button "Log in"
@@ -61,9 +60,7 @@ RSpec.describe "User Invitation Flow", :slow, type: :system do
     Capybara.reset_sessions!
 
     # Build the invitation URL using the current test session's port
-    # This is more reliable than using the URL from the email which may have
-    # a different host/port depending on ActionMailer configuration timing
-    visit "http://lvh.me:#{port}/users/invitation/accept?invitation_token=#{invitation_token}"
+    visit public_url("/users/invitation/accept?invitation_token=#{invitation_token}")
     fill_in "New password", with: "password123"
     fill_in "Repeat password", with: "password123"
     click_button "Set password"
