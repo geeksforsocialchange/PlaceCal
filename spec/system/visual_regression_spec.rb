@@ -42,11 +42,40 @@ RSpec.describe "Visual regression screenshots", :visual_regression, type: :syste
     "http://#{site.slug}.lvh.me:#{port}#{path}"
   end
 
+  # Wait for images and map tiles to fully load before capturing.
+  def wait_for_resources
+    # Wait for all <img> elements to finish loading
+    page.driver.browser.execute_async_script(<<~JS)
+      var done = arguments[arguments.length - 1];
+      Promise.all(
+        Array.from(document.images)
+          .filter(function(img) { return !img.complete; })
+          .map(function(img) {
+            return new Promise(function(resolve) {
+              img.addEventListener('load', resolve, { once: true });
+              img.addEventListener('error', resolve, { once: true });
+            });
+          })
+      ).then(done);
+    JS
+
+    # Wait for MapLibre GL canvases to render (if any maps are on the page)
+    has_maps = page.execute_script("return document.querySelectorAll('[data-controller*=leaflet]').length > 0")
+    if has_maps
+      # Give MapLibre GL time to load and render vector tiles
+      sleep 2
+    end
+
+    # Brief settle for layout reflows after resize
+    sleep 0.3
+  end
+
   # Capture full-page screenshots at each viewport width.
   # Uses CDP to get true page dimensions and capture everything including footer.
   def screenshot_page(name)
     VIEWPORTS.each do |label, width|
       page.driver.browser.manage.window.resize_to(width, 900)
+      wait_for_resources
 
       # Get full page dimensions via CDP
       metrics = page.driver.browser.execute_cdp("Page.getLayoutMetrics")
