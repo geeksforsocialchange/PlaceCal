@@ -14,8 +14,8 @@
 			padding-left: $text-spacing-desktop;
 			padding-right: $text-spacing-desktop;
 			background-image:
-				image-url("home/our_story/patterns/intro_tl.svg"),
-				image-url("home/our_story/patterns/intro_br.svg");
+				url("/assets/home/our_story/patterns/intro_tl.svg"),
+				url("/assets/home/our_story/patterns/intro_br.svg");
 			background-position:
 				top left,
 				bottom right;
@@ -36,8 +36,8 @@
 
 		@include for-desktop-up {
 			background-image:
-				image-url("home/our_story/patterns/fix_tl.svg"),
-				image-url("home/our_story/patterns/fix_br.svg");
+				url("/assets/home/our_story/patterns/fix_tl.svg"),
+				url("/assets/home/our_story/patterns/fix_br.svg");
 			background-size:
 				275px 480px,
 				300px 480px;

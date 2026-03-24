@@ -9,7 +9,8 @@ body {
 
 	@include for-desktop-up {
 		background-image:
-			image-url("patterns/widescreen.svg"), image-url("patterns/widescreen.svg");
+			url("/assets/patterns/widescreen.svg"),
+			url("/assets/patterns/widescreen.svg");
 		background-position:
 			calc(50% - #{$bg-offset}) $bg-top,
 			calc(50% + #{$bg-offset}) $bg-top;

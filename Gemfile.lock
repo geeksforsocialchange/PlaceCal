@@ -204,6 +204,9 @@ GEM
       cucumber (>= 7, < 11)
       railties (>= 6.1, < 9)
     cucumber-tag-expressions (8.1.0)
+    dartsass-rails (0.5.1)
+      railties (>= 6.0.0)
+      sass-embedded (~> 1.63)
     database_cleaner-active_record (2.2.2)
       activerecord (>= 5.a)
       database_cleaner-core (~> 2.0)
@@ -326,6 +329,27 @@ GEM
       csv (>= 3.0.0)
     globalid (1.3.0)
       activesupport (>= 6.1)
+    google-protobuf (4.34.1)
+      bigdecimal
+      rake (~> 13.3)
+    google-protobuf (4.34.1-aarch64-linux-gnu)
+      bigdecimal
+      rake (~> 13.3)
+    google-protobuf (4.34.1-aarch64-linux-musl)
+      bigdecimal
+      rake (~> 13.3)
+    google-protobuf (4.34.1-arm64-darwin)
+      bigdecimal
+      rake (~> 13.3)
+    google-protobuf (4.34.1-x86_64-darwin)
+      bigdecimal
+      rake (~> 13.3)
+    google-protobuf (4.34.1-x86_64-linux-gnu)
+      bigdecimal
+      rake (~> 13.3)
+    google-protobuf (4.34.1-x86_64-linux-musl)
+      bigdecimal
+      rake (~> 13.3)
     graphiql-rails (1.10.5)
       railties
     graphql (2.5.21)
@@ -674,16 +698,22 @@ GEM
       ffi (~> 1.12)
       logger
     rubyzip (3.2.2)
-    sass-rails (6.0.0)
-      sassc-rails (~> 2.1, >= 2.1.1)
-    sassc (2.4.0)
-      ffi (~> 1.9)
-    sassc-rails (2.1.2)
-      railties (>= 4.0.0)
-      sassc (>= 2.0)
-      sprockets (> 3.0)
-      sprockets-rails
-      tilt
+    sass-embedded (1.98.0-aarch64-linux-gnu)
+      google-protobuf (~> 4.31)
+    sass-embedded (1.98.0-aarch64-linux-musl)
+      google-protobuf (~> 4.31)
+    sass-embedded (1.98.0-arm-linux-gnueabihf)
+      google-protobuf (~> 4.31)
+    sass-embedded (1.98.0-arm-linux-musleabihf)
+      google-protobuf (~> 4.31)
+    sass-embedded (1.98.0-arm64-darwin)
+      google-protobuf (~> 4.31)
+    sass-embedded (1.98.0-x86_64-darwin)
+      google-protobuf (~> 4.31)
+    sass-embedded (1.98.0-x86_64-linux-gnu)
+      google-protobuf (~> 4.31)
+    sass-embedded (1.98.0-x86_64-linux-musl)
+      google-protobuf (~> 4.31)
     securerandom (0.4.1)
     selenium-webdriver (4.41.0)
       base64 (~> 0.2)
@@ -730,7 +760,6 @@ GEM
       memoist3 (~> 1.0.0)
     thor (1.5.0)
     thread_safe (0.3.6)
-    tilt (2.7.0)
     timecop (0.9.10)
     timeout (0.6.1)
     traces (0.18.2)
@@ -799,6 +828,7 @@ DEPENDENCIES
   claude-on-rails
   csv
   cucumber-rails
+  dartsass-rails
   database_cleaner-active_record
   database_consistency
   delayed_job_active_record
@@ -847,12 +877,12 @@ DEPENDENCIES
   rubocop-rspec
   ruby-lsp
   ruby-lsp-rails
-  sass-rails (= 6.0.0)
   selenium-webdriver
   shoulda-matchers (~> 7.0)
   simple_form
   simplecov
   spring
+  sprockets-rails
   stimulus-rails
   strict_ivars
   timecop
