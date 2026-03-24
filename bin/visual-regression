@@ -7,9 +7,15 @@ BASELINE_DIR="$BASE_DIR/baselines"
 CURRENT_DIR="$BASE_DIR/current"
 DIFF_DIR="$BASE_DIR/diff"
 SPEC_FILE="spec/system/visual_regression_spec.rb"
+BACKUP_DIR="$PROJECT_ROOT/tmp/.vr_backup"
 
 # Layout-level fuzz: ignore anti-aliasing and font rendering differences
 FUZZ_PERCENT="5%"
+
+# State for cleanup trap
+_VR_ORIGINAL_BRANCH=""
+_VR_STASHED=false
+_VR_FILES_COPIED=false
 
 usage() {
   cat <<HELP
@@ -29,7 +35,32 @@ How it works:
 
 Baselines are cached in tmp/visual_regression/baselines/{sha}/
 and reused until main moves forward.
+
+Prerequisites:
+  brew install imagemagick
 HELP
+}
+
+# Restore branch and stash if the script exits unexpectedly during baseline capture
+cleanup_baseline() {
+  # Remove files we copied onto main before switching back
+  if [ "$_VR_FILES_COPIED" = true ]; then
+    rm -f "$PROJECT_ROOT/$SPEC_FILE"
+    git checkout --quiet -- spec/rails_helper.rb 2>/dev/null || true
+    _VR_FILES_COPIED=false
+  fi
+  if [ -n "$_VR_ORIGINAL_BRANCH" ]; then
+    echo ""
+    echo "Restoring branch $_VR_ORIGINAL_BRANCH..."
+    git checkout --quiet "$_VR_ORIGINAL_BRANCH" 2>/dev/null || true
+    _VR_ORIGINAL_BRANCH=""
+  fi
+  if [ "$_VR_STASHED" = true ]; then
+    echo "Restoring stashed changes..."
+    git stash pop --quiet 2>/dev/null || true
+    _VR_STASHED=false
+  fi
+  rm -rf "$BACKUP_DIR"
 }
 
 get_main_sha() {
@@ -44,7 +75,7 @@ capture_screenshots() {
   rm -rf "$screenshot_tmp"
 
   echo "  Running visual regression specs..."
-  bundle exec rspec "$SPEC_FILE" --format progress --order defined 2>&1
+  VISUAL_REGRESSION=1 bundle exec rspec "$SPEC_FILE" --format progress --order defined 2>&1
 
   if [ ! -d "$screenshot_tmp" ] || [ -z "$(ls -A "$screenshot_tmp" 2>/dev/null)" ]; then
     echo "  Error: No screenshots were captured"
@@ -74,29 +105,47 @@ capture_baseline() {
 
   echo "Baseline: capturing for main (${sha:0:8})..."
 
-  local current_branch
-  current_branch=$(git rev-parse --abbrev-ref HEAD)
-  local stashed=false
+  _VR_ORIGINAL_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+  trap cleanup_baseline EXIT
 
-  # Stash any uncommitted changes
+  # Save spec file and rails_helper — they may not exist or differ on main
+  mkdir -p "$BACKUP_DIR"
+  cp "$PROJECT_ROOT/$SPEC_FILE" "$BACKUP_DIR/visual_regression_spec.rb"
+  cp "$PROJECT_ROOT/spec/rails_helper.rb" "$BACKUP_DIR/rails_helper.rb"
+
+  # Stash uncommitted changes to tracked files
   if ! git diff --quiet || ! git diff --cached --quiet; then
     git stash push --quiet -m "visual-regression: auto-stash"
-    stashed=true
+    _VR_STASHED=true
   fi
 
-  # Checkout main, capture, then restore
+  # Checkout main (removes feature-branch-only files like the spec)
   git checkout --quiet "$sha"
 
-  capture_screenshots "$dest_dir" || {
-    git checkout --quiet "$current_branch"
-    if [ "$stashed" = true ]; then git stash pop --quiet; fi
-    return 1
-  }
+  # Copy spec file and rails_helper onto main so we can run the spec
+  mkdir -p "$(dirname "$PROJECT_ROOT/$SPEC_FILE")"
+  cp "$BACKUP_DIR/visual_regression_spec.rb" "$PROJECT_ROOT/$SPEC_FILE"
+  cp "$BACKUP_DIR/rails_helper.rb" "$PROJECT_ROOT/spec/rails_helper.rb"
+  _VR_FILES_COPIED=true
 
-  git checkout --quiet "$current_branch"
-  if [ "$stashed" = true ]; then
+  capture_screenshots "$dest_dir"
+
+  # Clean up copied files before switching back
+  rm -f "$PROJECT_ROOT/$SPEC_FILE"
+  git checkout --quiet -- spec/rails_helper.rb
+  _VR_FILES_COPIED=false
+
+  # Restore original branch
+  git checkout --quiet "$_VR_ORIGINAL_BRANCH"
+  _VR_ORIGINAL_BRANCH=""
+
+  if [ "$_VR_STASHED" = true ]; then
     git stash pop --quiet
+    _VR_STASHED=false
   fi
+
+  trap - EXIT
+  rm -rf "$BACKUP_DIR"
 
   echo "  Baseline cached"
 }
@@ -108,11 +157,6 @@ capture_current() {
 
 generate_diffs() {
   local baseline="$1"
-
-  if ! command -v compare &>/dev/null; then
-    echo "Error: ImageMagick 'compare' not found. Install with: brew install imagemagick"
-    exit 1
-  fi
 
   rm -rf "$DIFF_DIR"
   mkdir -p "$DIFF_DIR"
@@ -172,6 +216,12 @@ generate_diffs() {
 }
 
 run_comparison() {
+  # Check ImageMagick is available before doing any work
+  if ! command -v compare &>/dev/null; then
+    echo "Error: ImageMagick 'compare' not found. Install with: brew install imagemagick"
+    exit 1
+  fi
+
   local main_sha
   main_sha=$(get_main_sha)
   local current_branch
@@ -182,9 +232,9 @@ run_comparison() {
   echo "Branch:   $current_branch"
   echo ""
 
-  # Safety check: don't run with untracked files that might get lost
   if [ "$current_branch" = "main" ] || [ "$current_branch" = "HEAD" ]; then
     echo "Note: You're on main — baseline and current will be identical."
+    echo ""
   fi
 
   mkdir -p "$BASELINE_DIR"
@@ -200,7 +250,7 @@ run_comparison() {
 }
 
 clean_all() {
-  rm -rf "$BASE_DIR" "$PROJECT_ROOT/tmp/screenshots"
+  rm -rf "$BASE_DIR" "$PROJECT_ROOT/tmp/screenshots" "$BACKUP_DIR"
   echo "Cleaned all visual regression data."
 }
 

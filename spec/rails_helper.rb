@@ -93,6 +93,10 @@ RSpec.configure do |config|
 
   # Filter slow tests unless explicitly requested
   config.filter_run_excluding :slow unless ENV["RUN_SLOW_TESTS"]
+
+  # Visual regression specs are a separate tool, not part of the regular suite.
+  # Run explicitly with: VISUAL_REGRESSION=1 bundle exec rspec spec/system/visual_regression_spec.rb
+  config.filter_run_excluding :visual_regression unless ENV["VISUAL_REGRESSION"]
 end
 
 # Shoulda Matchers configuration
