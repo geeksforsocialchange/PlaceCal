@@ -22,6 +22,11 @@ RSpec.describe "Visual regression screenshots", :visual_regression, type: :syste
 
   SCREENSHOT_DIR = Rails.root.join("tmp/screenshots")
 
+  # false: visit once per url, resize for each size. faster
+  # true: visit once per size. slower but helps with map rendering and layout aliasing
+  # run with `clean` afterr changing this value
+  VISIT_PER_SIZE = false
+
   # Don't fail on missing assets — we're just capturing screenshots.
   around do |example|
     original = Capybara.raise_server_errors
@@ -43,39 +48,81 @@ RSpec.describe "Visual regression screenshots", :visual_regression, type: :syste
   end
 
   # Wait for images and map tiles to fully load before capturing.
-  def wait_for_resources
-    # Wait for all <img> elements to finish loading
-    page.driver.browser.execute_async_script(<<~JS)
-      var done = arguments[arguments.length - 1];
-      Promise.all(
-        Array.from(document.images)
-          .filter(function(img) { return !img.complete; })
-          .map(function(img) {
-            return new Promise(function(resolve) {
-              img.addEventListener('load', resolve, { once: true });
-              img.addEventListener('error', resolve, { once: true });
-            });
-          })
-      ).then(done);
+  def wait_for_resources(name, label = nil)
+    # Wait for `load` event and all maps to have a size
+    output = page.driver.browser.execute_async_script(<<~JS)
+      const TIMEOUT_MS = 5_000;
+      // promise resolver provided by selenium
+      const [done] = arguments;
+      const started = Date.now();
+      const { readyState } = document;
+      let readyStateTimeout = false;
+      let mapResult = null;
+
+      // wait for `load` event if not already fired
+      if (readyState !== 'complete')
+        await new Promise((resolve) => {
+          document.addEventListener('load', resolve, { once: true })
+          setTimeout(() => {
+            readyStateTimeout = true;
+            resolve();
+          }, TIMEOUT_MS);
+        });
+
+      // wait for all maps to have a size. ideally we'd wait for an event (maybe a debounced TileEvent) from each map but getting an object ref from the js controller would be difficult
+      // https://leafletjs.com/reference.html#event-objects
+      const maps = document.querySelectorAll('[data-controller="leaflet"]');
+      if (maps.length)
+        mapResult = await new Promise((resolve) => {
+          setTimeout(() => resolve('timeout'), TIMEOUT_MS);
+          function resolveIfAllSized(reason){
+            for (const map of maps) {
+              const bounds = map.getBoundingClientRect();
+              if (bounds.width < 1 || bounds.height < 1) return false;
+            };
+            resolve(reason);
+            return true;
+          }
+          if (resolveIfAllSized('initial')) return;
+          const observer = new ResizeObserver(() => resolveIfAllSized('observed'));
+          for (const map of maps) observer.observe(map);
+        })
+
+      const elapsed = (Date.now() - started) / 1000;
+      /** @type {{ readyState: 'loading' | 'interactive' | 'complete', mapResult: null | 'initial' | 'observed' | 'timeout', elapsed: number}} */
+      done({ readyState, mapResult, elapsed });
     JS
 
-    # Wait for MapLibre GL canvases to render (if any maps are on the page)
-    has_maps = page.execute_script("return document.querySelectorAll('[data-controller*=leaflet]').length > 0")
-    if has_maps
-      # Give MapLibre GL time to load and render vector tiles
-      sleep 2
+    return
+    # rubocop: disable Lint/UnreachableCode
+    # rubocop: disable RSpec/Output
+    if label
+      puts "#{name}, #{label}: #{output}"
+    else
+      puts "#{name}: #{output}"
     end
-
-    # Brief settle for layout reflows after resize
-    sleep 0.3
+    # rubocop: enable RSpec/Output
+    # rubocop: enable Lint/UnreachableCode
   end
 
   # Capture full-page screenshots at each viewport width.
   # Uses CDP to get true page dimensions and capture everything including footer.
-  def screenshot_page(name)
+  def screenshot_page(url, name)
+    unless VISIT_PER_SIZE
+      visit(url)
+      wait_for_resources(name)
+    end
+
     VIEWPORTS.each do |label, width|
       page.driver.browser.manage.window.resize_to(width, 900)
-      wait_for_resources
+      if VISIT_PER_SIZE
+        visit(url)
+        # resize_to before a visit is more correct but seems unreliable
+        page.driver.browser.manage.window.resize_to(width, 900)
+        wait_for_resources(name, width)
+      else
+        sleep 0.3
+      end
 
       # Get full page dimensions via CDP
       metrics = page.driver.browser.execute_cdp("Page.getLayoutMetrics")
@@ -92,75 +139,61 @@ RSpec.describe "Visual regression screenshots", :visual_regression, type: :syste
 
   describe "static pages" do
     it "homepage" do
-      visit "/"
-      screenshot_page("home")
+      screenshot_page("/", "home")
     end
 
     it "find-placecal" do
-      visit "/find-placecal"
-      screenshot_page("find_placecal")
+      screenshot_page("/find-placecal", "find_placecal")
     end
 
     it "our-story" do
-      visit "/our-story"
-      screenshot_page("our_story")
+      screenshot_page("/our-story", "our_story")
     end
 
     it "privacy" do
-      visit "/privacy"
-      screenshot_page("privacy")
+      screenshot_page("/privacy", "privacy")
     end
 
     it "terms-of-use" do
-      visit "/terms-of-use"
-      screenshot_page("terms_of_use")
+      screenshot_page("/terms-of-use", "terms_of_use")
     end
 
     it "get-in-touch" do
-      visit "/get-in-touch"
-      screenshot_page("get_in_touch")
+      screenshot_page("/get-in-touch", "get_in_touch")
     end
   end
 
   describe "site pages" do
     it "site homepage" do
-      visit site_url(millbrook_site, "/")
-      screenshot_page("site_home")
+      screenshot_page(site_url(millbrook_site, "/"), "site_home")
     end
 
     it "events index" do
-      visit site_url(millbrook_site, "/events")
-      screenshot_page("events_index")
+      screenshot_page(site_url(millbrook_site, "/events"), "events_index")
     end
 
     it "event show" do
-      visit site_url(millbrook_site, "/events/#{event_one.id}")
-      screenshot_page("event_show")
+      screenshot_page(site_url(millbrook_site, "/events/#{event_one.id}"), "event_show")
     end
 
     it "partners index" do
-      visit site_url(millbrook_site, "/partners")
-      screenshot_page("partners_index")
+      screenshot_page(site_url(millbrook_site, "/partners"), "partners_index")
     end
 
     it "partner show" do
-      visit site_url(millbrook_site, "/partners/#{riverside_hub.friendly_id}")
-      screenshot_page("partner_show")
+      screenshot_page(site_url(millbrook_site, "/partners/#{riverside_hub.friendly_id}"), "partner_show")
     end
 
     it "news index", skip: "News not yet a supported feature" do
-      visit site_url(millbrook_site, "/news")
-      screenshot_page("news_index")
+      screenshot_page(site_url(millbrook_site, "/news"), "news_index")
     end
 
     it "news show", skip: "News not yet a supported feature" do
-      visit site_url(millbrook_site, "/news/#{article_one.friendly_id}")
-      screenshot_page("news_show")
+      screenshot_page(site_url(millbrook_site, "/news/#{article_one.friendly_id}"), "news_show")
     end
 
     it "collection show", skip: "Collections not yet a supported feature" do
-      visit site_url(millbrook_site, "/collections/#{collection.id}")
-      screenshot_page("collection_show")
+      screenshot_page(site_url(millbrook_site, "/collections/#{collection.id}"), "collection_show")
     end
   end
 end
