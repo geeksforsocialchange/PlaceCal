@@ -8,7 +8,7 @@
 
 	// Background graphics
 	background-image:
-		image-url("patterns/mobile-l.svg"), image-url("patterns/mobile-r.svg");
+		url("/assets/patterns/mobile-l.svg"), url("/assets/patterns/mobile-r.svg");
 	background-position:
 		(-2.5rem) 1.5rem,
 		right -2.5rem top 1.5rem;
@@ -16,7 +16,7 @@
 
 	@include for-tablet-portrait-up {
 		background-image:
-			image-url("patterns/tablet-l.svg"), image-url("patterns/tablet-r.svg");
+			url("/assets/patterns/tablet-l.svg"), url("/assets/patterns/tablet-r.svg");
 		background-position:
 			(-6.5rem) -1rem,
 			right -6.5rem top -1rem;
