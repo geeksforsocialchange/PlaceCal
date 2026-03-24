@@ -4,24 +4,25 @@ require "rails_helper"
 
 # Visual regression screenshot spec
 #
-# Captures screenshots of every public page at multiple viewports.
+# Captures full-page screenshots of every public page at multiple viewports.
 # Used to validate CSS changes by comparing before/after screenshots.
 #
 # Run via:  bin/visual-regression
-# Or directly:  bundle exec rspec spec/system/visual_regression_spec.rb --order defined
+# Or directly:  VISUAL_REGRESSION=1 bundle exec rspec spec/system/visual_regression_spec.rb --order defined
 #
 RSpec.describe "Visual regression screenshots", :visual_regression, type: :system do
+  include_context "normal island data"
+
   VIEWPORTS = {
-    mobile: [450, 900],
-    tablet: [650, 900],
-    desktop: [950, 900],
-    wide: [1250, 900]
+    mobile: 450,
+    tablet: 650,
+    desktop: 950,
+    wide: 1250
   }.freeze
 
   SCREENSHOT_DIR = Rails.root.join("tmp/screenshots")
 
   # Don't fail on missing assets — we're just capturing screenshots.
-  # Uses `around` so the setting stays false through Capybara's after-hook cleanup.
   around do |example|
     original = Capybara.raise_server_errors
     Capybara.raise_server_errors = false
@@ -32,19 +33,33 @@ RSpec.describe "Visual regression screenshots", :visual_regression, type: :syste
 
   before do
     FileUtils.mkdir_p(SCREENSHOT_DIR)
-    # Pin Faker so factory-generated text is identical across runs
     Faker::Config.random = Random.new(42)
   end
 
-  def screenshot_page(name)
-    VIEWPORTS.each do |label, (width, height)|
-      page.driver.browser.manage.window.resize_to(width, height)
-      sleep 0.3
-      page.save_screenshot(SCREENSHOT_DIR.join("#{name}_#{label}.png")) # rubocop:disable Lint/Debugger
-    end
+  # Build a URL on a site's subdomain
+  def site_url(site, path)
+    port = Capybara.current_session.server.port
+    "http://#{site.slug}.lvh.me:#{port}#{path}"
   end
 
-  let!(:site) { create(:default_site) }
+  # Capture full-page screenshots at each viewport width.
+  # Uses CDP to get true page dimensions and capture everything including footer.
+  def screenshot_page(name)
+    VIEWPORTS.each do |label, width|
+      page.driver.browser.manage.window.resize_to(width, 900)
+
+      # Get full page dimensions via CDP
+      metrics = page.driver.browser.execute_cdp("Page.getLayoutMetrics")
+      full_width = metrics.dig("contentSize", "width")
+      full_height = metrics.dig("contentSize", "height")
+
+      result = page.driver.browser.execute_cdp("Page.captureScreenshot",
+                                               format: "png",
+                                               captureBeyondViewport: true,
+                                               clip: { x: 0, y: 0, width: full_width, height: full_height, scale: 1 })
+      File.binwrite(SCREENSHOT_DIR.join("#{name}_#{label}.png"), Base64.decode64(result["data"]))
+    end
+  end
 
   describe "static pages" do
     it "homepage" do
@@ -78,75 +93,45 @@ RSpec.describe "Visual regression screenshots", :visual_regression, type: :syste
     end
   end
 
-  describe "events" do
-    let!(:partner) { create(:riverside_community_hub) }
-    let!(:calendar) { create(:calendar, partner: partner) }
-    let!(:event) { create(:event, partner: partner, calendar: calendar) }
+  describe "site pages" do
+    it "site homepage" do
+      visit site_url(millbrook_site, "/")
+      screenshot_page("site_home")
+    end
 
     it "events index" do
-      visit "/events"
+      visit site_url(millbrook_site, "/events")
       screenshot_page("events_index")
     end
 
     it "event show" do
-      visit "/events/#{event.id}"
+      visit site_url(millbrook_site, "/events/#{event_one.id}")
       screenshot_page("event_show")
     end
-  end
-
-  describe "partners" do
-    let!(:partner) { create(:riverside_community_hub) }
 
     it "partners index" do
-      visit "/partners"
+      visit site_url(millbrook_site, "/partners")
       screenshot_page("partners_index")
     end
 
     it "partner show" do
-      visit "/partners/#{partner.friendly_id}"
+      visit site_url(millbrook_site, "/partners/#{riverside_hub.friendly_id}")
       screenshot_page("partner_show")
     end
-  end
 
-  describe "news" do
-    let!(:article) { create(:published_article) }
-
-    it "news index" do
-      visit "/news"
+    it "news index", skip: "News not yet a supported feature" do
+      visit site_url(millbrook_site, "/news")
       screenshot_page("news_index")
     end
 
-    it "news show" do
-      visit "/news/#{article.friendly_id}"
+    it "news show", skip: "News not yet a supported feature" do
+      visit site_url(millbrook_site, "/news/#{article_one.friendly_id}")
       screenshot_page("news_show")
     end
-  end
 
-  describe "collections" do
-    let!(:collection) { create(:collection) }
-
-    it "collection show" do
-      visit "/collections/#{collection.id}"
+    it "collection show", skip: "Collections not yet a supported feature" do
+      visit site_url(millbrook_site, "/collections/#{collection.id}")
       screenshot_page("collection_show")
-    end
-  end
-
-  describe "partner-themed site" do
-    let!(:themed_site) { create(:millbrook_site) }
-    let!(:partner) { create(:riverside_community_hub) }
-    let!(:calendar) { create(:calendar, partner: partner) }
-    let!(:event) { create(:event, partner: partner, calendar: calendar) }
-
-    before do
-      if themed_site.neighbourhoods.any?
-        partner.address.neighbourhood = themed_site.neighbourhoods.first
-        partner.address.save!
-      end
-    end
-
-    it "themed site homepage" do
-      visit "http://#{themed_site.slug}.lvh.me:#{Capybara.current_session.server.port}/"
-      screenshot_page("themed_site_home")
     end
   end
 end

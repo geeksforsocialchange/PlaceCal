@@ -161,9 +161,9 @@ generate_diffs() {
   rm -rf "$DIFF_DIR"
   mkdir -p "$DIFF_DIR"
 
-  local changed=0
-  local unchanged=0
-  local missing=0
+  declare -i changed=0
+  declare -i unchanged=0
+  declare -i missing=0
 
   for before_file in "$baseline"/*.png; do
     [ -f "$before_file" ] || continue
@@ -174,23 +174,24 @@ generate_diffs() {
 
     if [ ! -f "$after_file" ]; then
       echo "  MISSING: $name"
-      missing=$((missing + 1))
+      missing+=1
       continue
     fi
 
-    local raw_diff pixel_diff
+    local raw_diff
+    declare -i pixel_diff
     raw_diff=$(compare -metric AE -fuzz "$FUZZ_PERCENT" \
       "$before_file" "$after_file" "$diff_file" 2>&1 || true)
     # ImageMagick may output "RMSE (AE)" or just "AE" — extract the number
     pixel_diff=$(echo "$raw_diff" | grep -oE '[0-9]+' | tail -1)
     pixel_diff="${pixel_diff:-0}"
 
-    if [ "$pixel_diff" = "0" ]; then
+    if [[ $pixel_diff -eq 0 ]]; then
       rm -f "$diff_file"
-      unchanged=$((unchanged + 1))
+      unchanged+=1
     else
       echo "  CHANGED: $name ($pixel_diff pixels)"
-      changed=$((changed + 1))
+      changed+=1
     fi
   done
 
@@ -201,7 +202,7 @@ generate_diffs() {
     if [ ! -f "$baseline/$name" ]; then
       echo "  NEW: $name"
       cp "$after_file" "$DIFF_DIR/$name"
-      changed=$((changed + 1))
+      changed+=1
     fi
   done
 
