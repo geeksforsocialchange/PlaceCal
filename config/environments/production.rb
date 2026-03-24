@@ -33,6 +33,11 @@ Rails.application.configure do
   # Do not fallback to assets pipeline if a precompiled asset is missed.
   config.assets.compile = false
 
+  # Use a fixed manifest filename so Kamal's asset_path volume doesn't
+  # accumulate old .sprockets-manifest-<random>.json files across deploys,
+  # causing Rails to read a stale manifest with wrong digests.
+  config.assets.manifest = Rails.public_path.join('assets/.sprockets-manifest.json').to_s
+
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.action_controller.asset_host = 'http://assets.example.com'
 
