@@ -8,8 +8,8 @@
 
 	@include for-tablet-landscape-up {
 		background-image:
-			url("/assets/home/site_title/landscape_left.svg"),
-			url("/assets/home/site_title/landscape_right.svg");
+			url("/images/home/site_title/landscape_left.svg"),
+			url("/images/home/site_title/landscape_right.svg");
 		background-repeat: no-repeat;
 		background-position:
 			0 50%,
@@ -24,8 +24,8 @@
 
 	@include for-desktop-up {
 		background-image:
-			url("/assets/home/site_title/desktop_left.svg"),
-			url("/assets/home/site_title/desktop_right.svg");
+			url("/images/home/site_title/desktop_left.svg"),
+			url("/images/home/site_title/desktop_right.svg");
 		min-height: 477px;
 	}
 }
@@ -40,8 +40,8 @@
 		// the top margin is extending outside of the card and causing layout bugs at smaller sizes
 		margin-top: 0;
 		background-image:
-			url("/assets/home/site_title/mobile_top.svg"),
-			url("/assets/home/site_title/mobile_bottom.svg");
+			url("/images/home/site_title/mobile_top.svg"),
+			url("/images/home/site_title/mobile_bottom.svg");
 		background-repeat: no-repeat;
 		background-position:
 			50% 0,
