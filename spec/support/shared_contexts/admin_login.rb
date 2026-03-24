@@ -5,16 +5,11 @@ RSpec.shared_context "admin login" do
 
   before do
     create_default_site
-    login_as_admin
+    sign_in_as_admin
   end
 
-  def login_as_admin
-    # Visit admin subdomain for login
-    port = Capybara.current_session.server.port
-    visit "http://admin.lvh.me:#{port}/users/sign_in"
-    fill_in "Email", with: admin_user.email
-    fill_in "Password", with: "password"
-    click_button "Log in"
+  def sign_in_as_admin
+    sign_in_as(admin_user)
   end
 end
 

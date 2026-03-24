@@ -10,8 +10,8 @@ end
 
 # Select from the service area drop down (nested form field)
 When("I select {string} from the service area drop down select box") do |option|
-  # Wait for Stimulus nested-form controller to add the element
-  sleep 0.5
+  # Wait for nested-fields to appear (Stimulus nested-form controller adds them)
+  expect(page).to have_css(".nested-fields")
 
   # Find the service area nested fields specifically
   # The address fields have data-controller="partner-address", service area fields don't
@@ -25,7 +25,6 @@ When("I select {string} from the service area drop down select box") do |option|
       el[:class].to_s.exclude?("partner-address") &&
         (el["data-controller"].nil? || el["data-controller"].to_s.empty? || el["data-controller"].exclude?("partner-address"))
     end
-    sleep 0.5 if service_area_container.nil?
     attempts += 1
   end
 
@@ -35,7 +34,7 @@ When("I select {string} from the service area drop down select box") do |option|
   if service_area_container.has_css?(".ts-wrapper", wait: 3)
     container = service_area_container.find(".ts-wrapper", match: :first)
     container.find(".ts-control").click
-    dropdown = page.find(".ts-dropdown", visible: true, wait: 5)
+    dropdown = page.find(".ts-dropdown", visible: true)
     within(dropdown) do
       find(".option", text: option, match: :prefer_exact).click
     end
@@ -92,14 +91,11 @@ module TomSelectHelpers
     # Check if this is a Tom Select or a regular select (e.g., partnership-selector)
     if form_group.has_css?(".ts-wrapper", wait: 2)
       # Tom Select - use the special handling
-      container = form_group.find(".ts-wrapper", match: :first, wait: 5)
+      container = form_group.find(".ts-wrapper", match: :first)
 
       # Click the control to open the dropdown
       control = container.find(".ts-control")
       control.click
-
-      # Wait a moment for dropdown to render
-      sleep 0.5
 
       # First try finding dropdown with standard visibility check
       # Then fall back to visible: :all since Capybara's visibility detection

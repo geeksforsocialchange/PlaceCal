@@ -25,7 +25,7 @@ RSpec.describe "Admin Users", :slow, type: :system do
       click_link full_name
 
       # Navigate to Permissions tab where stacked list selectors are located
-      find('input[data-hash="permissions"]').click
+      click_tab("permissions")
 
       # Select partners using stacked list selector
       stacked_list_select partner.name, partner_two.name, wrapper_class: "user_partners"
@@ -47,7 +47,7 @@ RSpec.describe "Admin Users", :slow, type: :system do
       end
 
       # Navigate to Permissions tab again
-      find('input[data-hash="permissions"]').click
+      click_tab("permissions")
 
       assert_stacked_list_items [partner.name, partner_two.name], "user_partners"
       assert_stacked_list_items [partnership.name], "user_tags"
@@ -63,13 +63,13 @@ RSpec.describe "Admin Users", :slow, type: :system do
       click_link full_name
 
       # Navigate to Permissions tab
-      find('input[data-hash="permissions"]').click
+      click_tab("permissions")
 
       # Click Add neighbourhood button
       click_link "Add neighbourhood"
 
       # Should see cascading neighbourhood controller initialized
-      expect(page).to have_css('[data-controller="cascading-neighbourhood"]', wait: 10)
+      expect(page).to have_css('[data-controller="cascading-neighbourhood"]')
 
       # The country selector should be present and populated
       within(all('[data-controller="cascading-neighbourhood"]').last) do

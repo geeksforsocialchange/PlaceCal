@@ -132,6 +132,7 @@ Metrics/CyclomaticComplexity:
     - "app/controllers/application_controller.rb"
 
 Metrics/ModuleLength:
+  CountComments: false
   Exclude:
     - "lib/normal_island.rb"
     - "app/helpers/svg_icons_helper.rb"

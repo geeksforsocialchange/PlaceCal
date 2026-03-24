@@ -16,17 +16,8 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     create_default_site
   end
 
-  def login_as(user)
-    port = Capybara.current_session.server.port
-    visit "http://lvh.me:#{port}/users/sign_in"
-    fill_in "Email", with: user.email
-    fill_in "Password", with: "password"
-    click_button "Log in"
-  end
-
   def visit_partner_edit
-    port = Capybara.current_session.server.port
-    url = "http://admin.lvh.me:#{port}/partners/#{partner.id}/edit"
+    url = admin_url("/partners/#{partner.id}/edit")
     visit url
 
     # Wait for page to fully load with retries for CI stability
@@ -35,7 +26,7 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
 
     loop do
       attempts += 1
-      break if page.has_css?('input[aria-label="📋 Basic Info"]', wait: 10)
+      break if page.has_css?('input[aria-label="📋 Basic Info"]')
 
       if attempts >= max_attempts
         # Debug output on final failure
@@ -66,7 +57,7 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
 
   describe "tab-aware buttons" do
     before do
-      login_as(root_user)
+      sign_in_as(root_user)
       visit_partner_edit
     end
 
@@ -78,13 +69,13 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
 
     it "shows Back, Save, and Continue buttons on middle tabs" do
       # Wait for Stimulus save-bar controller to connect
-      expect(page).to have_css('[data-controller="save-bar"]', wait: 5)
+      expect(page).to have_css('[data-controller="save-bar"]')
 
       # Go to Location tab
       find('input[aria-label="📍 Location"]').click
 
       # Wait for button visibility to update (JavaScript runs on setTimeout)
-      expect(page).to have_button("Back", wait: 5)
+      expect(page).to have_button("Back")
       expect(page).to have_button("Save")
       expect(page).to have_button("Continue", visible: :all)
     end
@@ -99,8 +90,8 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     end
 
     it "shows only Save button on Settings tab" do
-      # Go to Settings tab - use data-hash attribute which is more stable than emoji-containing labels
-      find('input.tab[data-hash="settings"]').click
+      # Go to Settings tab
+      click_tab("settings")
 
       expect(page).to have_button("Save")
       expect(page).not_to have_button("Back", visible: :visible)
@@ -110,7 +101,7 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
 
   describe "unsaved changes indicator" do
     before do
-      login_as(root_user)
+      sign_in_as(root_user)
       visit_partner_edit
     end
 
@@ -121,18 +112,18 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     it "shows indicator when form field is modified" do
       modify_field('input[name="partner[name]"]', "Modified Partner Name")
 
-      expect(page).to have_text("Unsaved changes", wait: 5)
+      expect(page).to have_text("Unsaved changes")
     end
 
     it "changes button text to include Save when dirty" do
       # Wait for Stimulus save-bar controller to connect
-      expect(page).to have_css('[data-controller="save-bar"]', wait: 5)
+      expect(page).to have_css('[data-controller="save-bar"]')
 
       # Go to a middle tab first
       find('input[aria-label="📍 Location"]').click
 
       # Initially shows "Back" and "Continue"
-      expect(page).to have_button("Back", wait: 5)
+      expect(page).to have_button("Back")
       expect(page).to have_button("Continue", visible: :all)
 
       # Go back to basic and modify
@@ -146,14 +137,14 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
       end
 
       # Now should show "Save & Back" and "Save & Continue"
-      expect(page).to have_button("Save & Back", wait: 5)
+      expect(page).to have_button("Save & Back")
       expect(page).to have_button("Save & Continue", visible: :all)
     end
   end
 
   describe "unsaved changes confirmation" do
     before do
-      login_as(root_user)
+      sign_in_as(root_user)
       visit_partner_edit
     end
 
@@ -191,32 +182,32 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
 
   describe "navigation with Continue/Back buttons" do
     before do
-      login_as(root_user)
+      sign_in_as(root_user)
       visit_partner_edit
     end
 
     it "navigates to next tab when clicking Continue without changes" do
       # Wait for Stimulus save-bar controller to connect and show the Continue button
-      expect(page).to have_css('[data-controller="save-bar"]', wait: 5)
-      expect(page).to have_button("Continue", visible: :visible, wait: 5)
+      expect(page).to have_css('[data-controller="save-bar"]')
+      expect(page).to have_button("Continue", visible: :visible)
       click_button "Continue"
 
       # Wait for tab navigation and verify Location tab is checked
-      expect(page).to have_css('input[aria-label="📍 Location"]:checked', visible: :all, wait: 5)
+      expect(page).to have_css('input[aria-label="📍 Location"]:checked', visible: :all)
     end
 
     it "navigates to previous tab when clicking Back without changes" do
       # Wait for Stimulus save-bar controller to connect
-      expect(page).to have_css('[data-controller="save-bar"]', wait: 5)
+      expect(page).to have_css('[data-controller="save-bar"]')
 
       # Go to Location tab first
       find('input[aria-label="📍 Location"]').click
-      expect(page).to have_button("Back", visible: :visible, wait: 5)
+      expect(page).to have_button("Back", visible: :visible)
 
       click_button "Back"
 
       # Should be back on Basic Info tab
-      expect(page).to have_css('input[aria-label="📋 Basic Info"]:checked', visible: :all, wait: 5)
+      expect(page).to have_css('input[aria-label="📋 Basic Info"]:checked', visible: :all)
     end
   end
 end

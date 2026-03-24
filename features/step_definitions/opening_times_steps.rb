@@ -4,7 +4,7 @@
 
 When("I add opening time {string} from {string} to {string}") do |day, open_time, close_time|
   # Wait for Stimulus controller to be connected
-  expect(page).to have_css("[data-controller='opening-times']", wait: 5)
+  expect(page).to have_css("[data-controller='opening-times']")
 
   # Select the day using the Stimulus target
   find("[data-opening-times-target='day']").select(day)
@@ -19,12 +19,12 @@ When("I add opening time {string} from {string} to {string}") do |day, open_time
   find("button[data-action*='opening-times#addOpeningTime']").click
 
   # Wait for the opening time to be added to the list (the list item is a div with flex class)
-  expect(page).to have_css("[data-opening-times-target='list'] div.flex", text: day, wait: 5)
+  expect(page).to have_css("[data-opening-times-target='list'] div.flex", text: day)
 end
 
 When("I add all-day opening time for {string}") do |day|
   # Wait for Stimulus controller to be connected
-  expect(page).to have_css("[data-controller='opening-times']", wait: 5)
+  expect(page).to have_css("[data-controller='opening-times']")
 
   # Select the day using the Stimulus target
   find("[data-opening-times-target='day']").select(day)
@@ -36,7 +36,7 @@ When("I add all-day opening time for {string}") do |day|
   find("button[data-action*='opening-times#addOpeningTime']").click
 
   # Wait for the opening time to be added to the list (the list item is a div with flex class)
-  expect(page).to have_css("[data-opening-times-target='list'] div.flex", text: day, wait: 5)
+  expect(page).to have_css("[data-opening-times-target='list'] div.flex", text: day)
 end
 
 Then("the partner should have opening time on {string}") do |day|

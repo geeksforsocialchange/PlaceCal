@@ -162,7 +162,7 @@ When("I go to the {string} step") do |step_name|
   raise "Unknown step: #{step_name}" unless tab_hash
 
   # Find and click the tab by data-hash attribute (more reliable than emoji aria-labels)
-  tab = page.find("input.tab[data-hash='#{tab_hash}']", wait: 10)
+  tab = page.find("input.tab[data-hash='#{tab_hash}']")
 
   # Handle unsaved changes confirmation if it appears
   begin
@@ -171,8 +171,8 @@ When("I go to the {string} step") do |step_name|
     # No confirmation appeared, which is fine
   end
 
-  # Wait for the tab content to be visible
-  sleep 0.2
+  # Wait for tab panel to be visible (CSS-only via :checked sibling selector)
+  expect(page).to have_css("[data-section='#{tab_hash}']", visible: true)
 end
 
 When("I click the {string} tab") do |tab_name|
@@ -202,9 +202,9 @@ When("I click the {string} tab") do |tab_name|
   # Try data-hash first, fall back to aria-label match
   tab_hash = tab_hashes[tab_name]
   tab = if tab_hash
-          page.find("input.tab[data-hash='#{tab_hash}']", wait: 10)
+          page.find("input.tab[data-hash='#{tab_hash}']")
         else
-          page.find("input.tab[aria-label*='#{tab_name}']", wait: 10)
+          page.find("input.tab[aria-label*='#{tab_name}']")
         end
 
   # Handle unsaved changes confirmation if it appears
@@ -213,7 +213,10 @@ When("I click the {string} tab") do |tab_name|
   rescue Capybara::ModalNotFound
     # No confirmation appeared, which is fine
   end
-  sleep 0.2
+
+  # Wait for tab panel to be visible
+  tab_hash_value = tab["data-hash"]
+  expect(page).to have_css("[data-section='#{tab_hash_value}']", visible: true) if tab_hash_value
 end
 
 When("I go to form step {int}") do |step_number|
@@ -223,12 +226,14 @@ When("I go to form step {int}") do |step_number|
   tab_hash = tab_hashes[step_number - 1]
   raise "Invalid step number: #{step_number}" unless tab_hash
 
-  tab = page.find("input.tab[data-hash='#{tab_hash}']", wait: 10)
+  tab = page.find("input.tab[data-hash='#{tab_hash}']")
   # Handle unsaved changes confirmation if it appears
   begin
     accept_confirm { tab.click }
   rescue Capybara::ModalNotFound
     # No confirmation appeared
   end
-  sleep 0.2
+
+  # Wait for tab panel to be visible
+  expect(page).to have_css("[data-section='#{tab_hash}']", visible: true)
 end

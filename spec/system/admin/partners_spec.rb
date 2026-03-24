@@ -32,7 +32,7 @@ RSpec.describe "Admin Partners", :slow, type: :system do
       click_button "Save"
 
       # Verify save succeeded (flash message shows)
-      expect(page).to have_selector("[role='alert']", wait: 10)
+      expect(page).to have_selector("[role='alert']")
     end
   end
 
@@ -50,7 +50,7 @@ RSpec.describe "Admin Partners", :slow, type: :system do
       go_to_tags_tab
 
       # Wait for checkbox-limit controller to initialize
-      expect(page).to have_css("[data-controller='checkbox-limit']", wait: 10)
+      expect(page).to have_css("[data-controller='checkbox-limit']")
 
       # Counter should show 0 selected initially
       expect(page).to have_css("[data-counter]", text: "0 / #{Partner::MAX_CATEGORIES}")
@@ -58,11 +58,12 @@ RSpec.describe "Admin Partners", :slow, type: :system do
       # Select MAX_CATEGORIES categories using find and click to ensure JS triggers
       Partner::MAX_CATEGORIES.times do |i|
         find(:checkbox, test_categories[i].name).click
-        sleep 0.1 # Allow JS to process the change
+        # Wait for counter to reflect the change before clicking next
+        expect(page).to have_css("[data-counter]", text: "#{i + 1} / #{Partner::MAX_CATEGORIES}")
       end
 
       # Counter should update to show limit reached
-      expect(page).to have_css("[data-counter]", text: "#{Partner::MAX_CATEGORIES} / #{Partner::MAX_CATEGORIES}", wait: 5)
+      expect(page).to have_css("[data-counter]", text: "#{Partner::MAX_CATEGORIES} / #{Partner::MAX_CATEGORIES}")
 
       # Additional checkboxes should be disabled
       remaining_checkbox = find(:checkbox, test_categories[Partner::MAX_CATEGORIES].name, disabled: :all)
@@ -73,13 +74,12 @@ RSpec.describe "Admin Partners", :slow, type: :system do
 
       # Unchecking one should re-enable the others
       find(:checkbox, test_categories[0].name).click
-      sleep 0.1
 
       # Counter should update
-      expect(page).to have_css("[data-counter]", text: "#{Partner::MAX_CATEGORIES - 1} / #{Partner::MAX_CATEGORIES}", wait: 5)
+      expect(page).to have_css("[data-counter]", text: "#{Partner::MAX_CATEGORIES - 1} / #{Partner::MAX_CATEGORIES}")
 
       # Previously disabled checkbox should now be enabled
-      expect(page).to have_field(test_categories[Partner::MAX_CATEGORIES].name, disabled: false, wait: 5)
+      expect(page).to have_field(test_categories[Partner::MAX_CATEGORIES].name, disabled: false)
     end
 
     it "initializes counter correctly with pre-selected categories" do
@@ -94,10 +94,10 @@ RSpec.describe "Admin Partners", :slow, type: :system do
       go_to_tags_tab
 
       # Wait for checkbox-limit controller to initialize
-      expect(page).to have_css("[data-controller='checkbox-limit']", wait: 10)
+      expect(page).to have_css("[data-controller='checkbox-limit']")
 
       # Counter should show 2 selected initially
-      expect(page).to have_css("[data-counter]", text: "2 / #{Partner::MAX_CATEGORIES}", wait: 5)
+      expect(page).to have_css("[data-counter]", text: "2 / #{Partner::MAX_CATEGORIES}")
     end
   end
 
@@ -108,13 +108,13 @@ RSpec.describe "Admin Partners", :slow, type: :system do
       click_link partner.name
 
       # Image upload is on Basic Info tab (default)
-      find(:css, "#partner_image", wait: 5)
+      find(:css, "#partner_image")
 
       image_path = Rails.root.join("spec/fixtures/files/test_image.jpg")
       attach_file "partner_image", image_path
 
       # Wait for preview image to update (uses Stimulus image-preview controller)
-      preview = find(:css, "[data-image-preview-target='img']", visible: true, wait: 5)
+      preview = find(:css, "[data-image-preview-target='img']", visible: true)
       expect(preview["src"]).to start_with("data:image/")
     end
   end
@@ -138,7 +138,7 @@ RSpec.describe "Admin Partners", :slow, type: :system do
         data = find('[data-opening-times-target="textarea"]', visible: :hidden).value
 
         # New UI uses div elements, not li.list-group-item
-        expect(find('[data-opening-times-target="list"] div', text: /Sunday/, wait: 5).text).to include("Sunday all day")
+        expect(find('[data-opening-times-target="list"] div', text: /Sunday/).text).to include("Sunday all day")
         expect(data).to include(expected_time)
 
         # Remove the opening time - click the button inside the div
@@ -160,7 +160,7 @@ RSpec.describe "Admin Partners", :slow, type: :system do
 
       # If opening times has malformed data, it will cause problems for
       # the JavaScript that runs the page - verify Tags tab loads
-      expect(page).to have_content("Categories", wait: 5)
+      expect(page).to have_content("Categories")
     end
   end
 
@@ -177,7 +177,7 @@ RSpec.describe "Admin Partners", :slow, type: :system do
       click_link "Add Service Area"
 
       # Wait for the cascading neighbourhood controller to initialize
-      expect(page).to have_css("[data-controller='cascading-neighbourhood']", wait: 10)
+      expect(page).to have_css("[data-controller='cascading-neighbourhood']")
 
       # The cascading dropdowns should be present
       within(all("[data-controller='cascading-neighbourhood']").last) do
@@ -195,18 +195,18 @@ RSpec.describe "Admin Partners", :slow, type: :system do
       fill_in "partner_name", with: "Test Partner For Service Areas"
       # Wait for name availability check to complete (debounced 400ms + API call)
       # The name available indicator appears when validation passes
-      expect(page).to have_content("This name is available!", wait: 10)
+      expect(page).to have_content("This name is available!")
       expect(page).to have_button("Continue", disabled: false)
       click_button "Continue"
 
       # Step 2: Location - service areas are visible here
-      expect(page).to have_content("Set Location", wait: 5)
+      expect(page).to have_content("Set Location")
 
       # Add a service area using cascading dropdowns
       click_link "Add Service Area"
 
       # Wait for the cascading neighbourhood controller to initialize
-      expect(page).to have_css("[data-controller='cascading-neighbourhood']", wait: 10)
+      expect(page).to have_css("[data-controller='cascading-neighbourhood']")
 
       # The cascading dropdowns should be present
       within(all("[data-controller='cascading-neighbourhood']").last) do

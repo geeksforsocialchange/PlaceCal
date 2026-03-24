@@ -34,12 +34,12 @@ When("I create a new partner with name {string}") do |name|
   # Step 1: Name - wizard form uses partner_wizard controller
   fill_in "partner_name", with: name
 
-  # Wait for name validation debounce to complete
-  sleep 0.5
+  # Wait for name validation debounce to complete and enable Continue button
+  expect(page).to have_button("Continue", disabled: false)
   click_button "Continue"
 
   # Step 2: Location - address fields
-  expect(page).to have_css("[data-step='2']:not(.hidden) h2", text: "Set Location", wait: 10)
+  expect(page).to have_css("[data-step='2']:not(.hidden) h2", text: "Set Location")
   fill_in "partner_address_attributes_street_address", with: "123 Main Street"
   fill_in "partner_address_attributes_city", with: "Millbrook"
   fill_in "partner_address_attributes_postcode", with: "ZZMB 1RS"
@@ -47,19 +47,19 @@ When("I create a new partner with name {string}") do |name|
   click_button "Continue"
 
   # Step 3: Tags & Categories
-  expect(page).to have_content("Tags & Categories", wait: 5)
+  expect(page).to have_content("Tags & Categories")
   click_button "Continue"
 
   # Step 4: Contact Information
-  expect(page).to have_content("Contact Information", wait: 5)
+  expect(page).to have_content("Contact Information")
   click_button "Continue"
 
   # Step 5: Invite a Partner Admin (optional)
-  expect(page).to have_content("Invite a Partner Admin", wait: 5)
+  expect(page).to have_content("Invite a Partner Admin")
   click_button "Continue"
 
   # Step 6: Confirm & Create
-  expect(page).to have_content("Partner will be created", wait: 5)
+  expect(page).to have_content("Partner will be created")
   click_button "Create Partner"
 end
 

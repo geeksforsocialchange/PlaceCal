@@ -6,13 +6,15 @@
 #
 # Seeded on boot by config/initializers/recurring_jobs.rb
 class RecurringCalendarScanJob < ApplicationJob
+  include SelfRescheduling
+
   INTERVAL = 1.hour
 
   def perform
-    Appsignal::CheckIn.cron('calendar_scan') do
-      Calendar.queue_all_for_import!
+    run do
+      Appsignal::CheckIn.cron('calendar_scan') do
+        Calendar.queue_all_for_import!
+      end
     end
-  ensure
-    self.class.set(wait: INTERVAL).perform_later
   end
 end

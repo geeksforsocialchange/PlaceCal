@@ -5,16 +5,18 @@
 #
 # Seeded on boot by config/initializers/recurring_jobs.rb
 class RecurringMaintenanceJob < ApplicationJob
+  include SelfRescheduling
+
   INTERVAL = 1.day
 
   def perform
-    Appsignal::CheckIn.cron('daily_maintenance') do
-      Event.deduplicate!
-      Site.refresh_all_counts!
-      Neighbourhood.refresh_partners_count!
-      Address.delete_orphaned!
+    run do
+      Appsignal::CheckIn.cron('daily_maintenance') do
+        Event.deduplicate!
+        Site.refresh_all_counts!
+        Neighbourhood.refresh_partners_count!
+        Address.delete_orphaned!
+      end
     end
-  ensure
-    self.class.set(wait: INTERVAL).perform_later
   end
 end

@@ -57,21 +57,74 @@ end
 
 ### System Specs
 
+System/feature specs have shared helpers auto-included from `spec/support/`. Use them instead of writing inline boilerplate:
+
 ```ruby
-RSpec.describe 'User Registration', type: :system do
-  it 'allows a user to sign up' do
-    visit new_user_registration_path
+# URLs (SystemHelpers)
+visit admin_url("/partners")       # http://admin.lvh.me:<port>/partners
+visit public_url("/users/sign_in") # http://lvh.me:<port>/users/sign_in
 
-    fill_in User.human_attribute_name(:email), with: 'test@example.com'
-    fill_in User.human_attribute_name(:password), with: 'password123'
-    fill_in User.human_attribute_name(:password_confirmation), with: 'password123'
+# Auth (SystemHelpers) — named sign_in_as to avoid Warden::Test::Helpers#login_as collision
+sign_in_as(user)
 
-    click_button I18n.t('devise.registrations.new.sign_up')
+# Flash assertions (SystemHelpers)
+assert_has_flash(:success, "Saved successfully")
+assert_has_flash(:error)
 
-    expect(page).to have_content(I18n.t('devise.registrations.signed_up'))
-    expect(User.last.email).to eq('test@example.com')
-  end
+# Tabs (TabHelpers)
+click_tab("settings")              # any tab by data-hash
+go_to_partner_tab("📋 Basic Info") # partner form tab by aria-label
+go_to_settings_tab                 # named shortcut
+
+# Datatables (DatatableSystemHelpers)
+await_datatables                           # wait for table to load
+fill_in_datatable_search("search term")    # search + flush debounce
+select_datatable_filter("Active", column: "status")
+click_radio_filter("Yes", column: "has_events")
+```
+
+For admin specs that need a logged-in root user, use the shared context:
+
+```ruby
+RSpec.describe "Admin Feature", :slow, type: :system do
+  include_context "admin login"
+  # admin_user is available, already logged in
 end
+```
+
+### Never use `sleep` in Capybara tests
+
+`sleep` introduces fixed delays that waste time on fast runs and cause flakiness on slow CI. Always use deterministic waits instead:
+
+```ruby
+# BAD: Fixed delay, always wastes time
+sleep 0.3
+expect(page).to have_content("result")
+
+# GOOD: Returns instantly when condition is met, waits up to default_max_wait_time otherwise
+expect(page).to have_content("result")
+```
+
+Common patterns and their fixes:
+
+- **Search debounce**: Use `fill_in_datatable_search(term)` — flushes the debounce via JS
+- **Tab switching**: Use `click_tab("hash")` — clicks and waits for panel visibility
+- **JS event processing**: Assert on the expected outcome (counter text, disabled state) — Capybara retries automatically
+- **Scroll delays**: `scroll_to` is synchronous, no wait needed
+
+### Don't add redundant `wait:` parameters
+
+Capybara's `default_max_wait_time` is 5 seconds. Only add explicit `wait:` when you need a _different_ value:
+
+```ruby
+# BAD: Same as default, adds noise
+expect(page).to have_css(".tabs", wait: 5)
+
+# GOOD: Uses default wait time
+expect(page).to have_css(".tabs")
+
+# OK: Intentionally shorter for quick probing / fallback logic
+form_group.has_css?(".ts-wrapper", wait: 2)
 ```
 
 <% else %>
