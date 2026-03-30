@@ -12,7 +12,7 @@ gem 'rails', '~> 8.0'             # Web framework
 # Frontend
 gem 'dartsass-rails'              # SCSS stylesheets (public site)
 gem 'importmap-rails'             # ES module imports without bundling
-gem 'sprockets-rails'             # Asset pipeline (was pulled in by sass-rails)
+gem 'propshaft'                    # Asset pipeline (replaces sprockets-rails)
 gem 'stimulus-rails'              # Stimulus JS controllers
 gem 'turbo-rails'                 # Turbo Drive/Frames/Streams
 
