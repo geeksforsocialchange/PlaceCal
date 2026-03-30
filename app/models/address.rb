@@ -59,6 +59,20 @@ class Address < ApplicationRecord
     all_address_lines.join(', ')
   end
 
+  def self.build_from_components(components, postcode)
+    return if components.blank?
+
+    address = Address.new(
+      street_address: components[0]&.strip,
+      street_address2: components[1]&.strip,
+      street_address3: components[2]&.strip,
+      postcode: postcode
+    )
+    address.save ? address : nil
+  end
+
+  private
+
   # Set the (lat,lon) and neighbourhood from address data.
   #
   # This differs from calling the Geocoder::Store::ActiveRecord#geocode method
