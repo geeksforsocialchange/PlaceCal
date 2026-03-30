@@ -53,7 +53,7 @@ class PartnersController < ApplicationController
       @paginator = false
     else
       # If a lot, paginate - default to "upcoming" which shows next N events
-      partner_events = Event.by_partner(@partner)
+      partner_events = Event.by_organiser(@partner)
       weekly_count = partner_events.find_next_7_days(@current_day).count
       @date_period = weekly_count >= EventsQuery::WEEKLY_DENSITY_THRESHOLD ? 'week' : 'month'
       @period = params[:period] || 'upcoming'

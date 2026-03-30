@@ -198,9 +198,9 @@ RSpec.describe EventsQuery do
 
   describe "period: 'month'" do
     before do
-      create(:future_event, partner: partner, dtstart: 2.days.from_now)
-      create(:future_event, partner: partner, dtstart: 5.days.from_now)
-      create(:future_event, partner: partner, dtstart: 40.days.from_now)
+      create(:future_event, organiser: partner, dtstart: 2.days.from_now)
+      create(:future_event, organiser: partner, dtstart: 5.days.from_now)
+      create(:future_event, organiser: partner, dtstart: 40.days.from_now)
     end
 
     it "returns events from today to end of month" do
@@ -231,7 +231,7 @@ RSpec.describe EventsQuery do
   describe "period: 'upcoming'" do
     before do
       15.times do |i|
-        create(:future_event, partner: partner, dtstart: (i + 1).days.from_now)
+        create(:future_event, organiser: partner, dtstart: (i + 1).days.from_now)
       end
     end
 
@@ -261,8 +261,8 @@ RSpec.describe EventsQuery do
 
   describe "#monthly_count" do
     before do
-      create(:future_event, partner: partner, dtstart: 2.days.from_now)
-      create(:future_event, partner: partner, dtstart: 40.days.from_now)
+      create(:future_event, organiser: partner, dtstart: 2.days.from_now)
+      create(:future_event, organiser: partner, dtstart: 40.days.from_now)
     end
 
     it "returns the count of events from today to end of month" do
@@ -273,7 +273,7 @@ RSpec.describe EventsQuery do
 
   describe "#show_monthly?" do
     context "when monthly count is within FUTURE_LIMIT" do
-      before { create(:future_event, partner: partner, dtstart: 2.days.from_now) }
+      before { create(:future_event, organiser: partner, dtstart: 2.days.from_now) }
 
       it "returns true" do
         query = described_class.new(site: site, day: today)
@@ -285,7 +285,7 @@ RSpec.describe EventsQuery do
       before do
         # Use a fixed date at start of month so all events fit within the month
         (described_class::FUTURE_LIMIT + 1).times do |i|
-          create(:future_event, partner: partner, dtstart: today + i.hours)
+          create(:future_event, organiser: partner, dtstart: today + i.hours)
         end
       end
 
