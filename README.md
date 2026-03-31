@@ -48,6 +48,7 @@ See [SEEDS.md](SEEDS.md) for full details on what gets created (users, sites, pa
 - Make sure you use `lvh.me:3000` instead of `localhost:3000` or you **will** have authentication problems
 - The admin interface is at `admin.lvh.me:3000`
 - Access code docs through your local filesystem and update them with `bin/rails yard`
+- Browse component previews at `lvh.me:3000/lookbook` (see [Lookbook](https://github.com/ViewComponent/lookbook))
 
 ### Quickstart with docker for GFSC devs
 
@@ -208,6 +209,7 @@ If you are working with the code and are completely lost you can also try the [G
 ├── .kamal                      # Kamal secrets configuration
 ├── spec                        # RSpec test suite
 │   ├── components              # Phlex component specs
+│   │   └── previews            # Lookbook component previews
 │   ├── datatables              # Datatable specs
 │   ├── factories               # FactoryBot factories using Normal Island data
 │   │   └── normal_island       # Normal Island-specific factories
