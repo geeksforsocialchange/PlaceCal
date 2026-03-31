@@ -415,6 +415,9 @@ GEM
       rack (>= 2.2, < 4)
       rdf (~> 3.3)
       rexml (~> 3.2)
+    json-schema (6.2.0)
+      addressable (~> 2.8)
+      bigdecimal (>= 3.1, < 5)
     kamal (2.11.0)
       activesupport (>= 7.0)
       base64 (~> 0.2)
@@ -867,6 +870,7 @@ DEPENDENCIES
   inline_svg
   invisible_captcha
   json-ld
+  json-schema
   kamal
   kramdown
   letter_opener

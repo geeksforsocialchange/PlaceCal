@@ -5,6 +5,7 @@ class Event < ApplicationRecord
   has_paper_trail ignore: %i[rrule notices]
 
   include HtmlRenderCache
+  include EventJsonLd
 
   html_render_cache :description
   html_render_cache :summary
