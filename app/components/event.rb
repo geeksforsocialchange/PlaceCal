@@ -10,8 +10,12 @@ class Components::Event < Components::Base
 
   def view_template
     div(class: "event #{page? ? 'event--full' : 'event--list'}") do
-      article do
-        page? ? render_page_layout : render_list_layout
+      if page?
+        render_page_layout
+      else
+        div(class: 'h-event') do
+          render_list_layout
+        end
       end
     end
   end
@@ -20,6 +24,7 @@ class Components::Event < Components::Base
 
   def render_page_layout
     Hero(summary, @site_tagline)
+    a(class: 'p-name u-url', href: event_path(id), hidden: true) { summary }
     div(class: 'c') { render_event_details }
   end
 
@@ -32,7 +37,7 @@ class Components::Event < Components::Base
 
   def render_list_header
     div(class: 'event__header') do
-      h3(itemprop: 'name') { link_to(summary, event_path(id), data: { turbo_frame: '_top' }) }
+      h3 { link_to(summary, event_path(id), class: 'p-name u-url', data: { turbo_frame: '_top' }) }
       if neighbourhood_name && @show_neighbourhoods
         css = "neighbourhood #{primary_neighbourhood? ? 'neighbourhood--primary' : 'neighbourhood--secondary'} event__neighbourhood"
         div(class: css) { span { neighbourhood_name } }
@@ -42,12 +47,31 @@ class Components::Event < Components::Base
 
   def render_event_details
     div(class: 'event__details') do
-      render_detail('event__time', :event_time, time)
+      render_time_detail
       render_detail('event__duration', :event_duration, duration) if duration
-      render_detail('event__date', :event_date, date)
+      render_date_detail
       render_detail('event__repeats', :event_online, 'Online') if online?
       render_location if partner_at_location || first_address_line
       render_detail('event__repeats', :event_repeats, repeats) if repeats
+    end
+  end
+
+  def render_time_detail
+    div(class: 'event__detail event__time') do
+      raw(view_context.icon(:event_time, size: nil))
+      plain ' '
+      time(class: 'dt-start', datetime: @event.dtstart.iso8601) { fmt_time(@event.dtstart) }
+      if @event.dtend
+        plain " \u2013 "
+        time(class: 'dt-end', datetime: @event.dtend.iso8601) { fmt_time(@event.dtend) }
+      end
+    end
+  end
+
+  def render_date_detail
+    div(class: 'event__detail event__date') do
+      raw(view_context.icon(:event_date, size: nil))
+      plain " #{date}"
     end
   end
 
@@ -59,7 +83,7 @@ class Components::Event < Components::Base
   end
 
   def render_location
-    div(class: 'event__detail event__location') do
+    div(class: 'event__detail event__location p-location') do
       raw(view_context.icon(:event_place, size: nil))
       if partner_at_location
         plain ' '
@@ -67,14 +91,6 @@ class Components::Event < Components::Base
       elsif first_address_line
         plain " #{first_address_line}"
       end
-    end
-  end
-
-  def time
-    if @event.dtend
-      "#{fmt_time(@event.dtstart)} \u2013 #{fmt_time(@event.dtend)}"
-    else
-      fmt_time(@event.dtstart)
     end
   end
 

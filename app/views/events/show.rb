@@ -13,23 +13,26 @@ class Views::Events::Show < Views::Base
     content_for(:title) { event.og_title }
     content_for(:image) { site.og_image }
     content_for(:description) { html_to_plaintext(event.description_html) }
+    content_for(:json_ld) { safe(event.to_json_ld(base_url: request.base_url).to_json) }
 
-    Event(
-      display_context: :page,
-      event: event,
-      primary_neighbourhood: site.primary_neighbourhood,
-      site_tagline: site.tagline
-    )
+    div(class: 'h-event') do
+      Event(
+        display_context: :page,
+        event: event,
+        primary_neighbourhood: site.primary_neighbourhood,
+        site_tagline: site.tagline
+      )
 
-    render_event_details
-    Map(points: map, site: site.slug, style: :multi)
-    render_event_meta
+      render_event_details
+      Map(points: map, site: site.slug, style: :multi)
+      render_event_meta
+    end
   end
 
   private
 
   def render_event_details
-    div(class: 'c c--narrowish c--space-after event__fullinfo') do
+    div(class: 'c c--narrowish c--space-after event__fullinfo e-content') do
       raw safe(event.description_html.to_s)
       event_link(event)
 

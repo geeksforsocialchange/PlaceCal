@@ -24,9 +24,10 @@ class Views::Partners::Show < Views::Base
       content_for(:image) { site.og_image }
     end
     content_for(:description) { partner.summary } if partner.summary
+    content_for(:json_ld) { safe(partner.to_json_ld.to_json) }
 
-    div(vocab: 'http://schema.org/', typeof: 'Organization') do
-      Hero(partner.name, site.tagline, 'name')
+    div do
+      Hero(partner.name, site.tagline)
 
       div(class: 'c c--lg-space-after') do
         Breadcrumb(
@@ -69,7 +70,7 @@ class Views::Partners::Show < Views::Base
     end
     return if partner.description_html.blank?
 
-    div(property: 'description') do
+    div do
       raw safe(partner.description_html.to_s)
     end
   end

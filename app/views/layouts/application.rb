@@ -78,6 +78,47 @@ class Views::Layouts::Application < Phlex::HTML
     meta(name: 'twitter:creator', content: '@gfscstudio')
     meta(property: 'og:url', content: request.original_url)
     meta(name: 'robots', content: 'noarchive')
+
+    render_site_json_ld
+    return unless content_for?(:json_ld)
+
+    script(type: 'application/ld+json') { raw safe(content_for(:json_ld)) }
+  end
+
+  def render_site_json_ld
+    site_data = if site&.default_site?
+                  {
+                    '@context' => 'https://schema.org',
+                    '@type' => 'WebSite',
+                    'name' => 'PlaceCal',
+                    'url' => request.base_url,
+                    'publisher' => {
+                      '@type' => 'Organization',
+                      'name' => 'PlaceCal',
+                      'url' => 'https://placecal.org',
+                      'sameAs' => ['https://twitter.com/PlaceCal']
+                    }
+                  }
+                elsif site
+                  data = {
+                    '@context' => 'https://schema.org',
+                    '@type' => 'WebSite',
+                    'name' => site.name,
+                    'url' => site.url || request.base_url
+                  }
+                  if site.logo.present?
+                    data['publisher'] = {
+                      '@type' => 'Organization',
+                      'name' => site.name,
+                      'logo' => site.logo.url
+                    }
+                  end
+                  data
+                end
+
+    return unless site_data
+
+    script(type: 'application/ld+json') { raw safe(site_data.to_json) }
   end
 
   def compute_title
