@@ -174,6 +174,8 @@ GEM
       bigdecimal
       rexml
     crass (1.0.6)
+    css_parser (2.0.0)
+      addressable
     csv (3.3.5)
     cucumber (10.2.0)
       base64 (~> 0.2)
@@ -362,6 +364,7 @@ GEM
     groupdate (6.7.0)
       activesupport (>= 7.1)
     hashdiff (1.2.1)
+    htmlbeautifier (1.4.3)
     htmlentities (4.4.2)
     http-accept (1.7.0)
     http-cookie (1.1.0)
@@ -434,12 +437,22 @@ GEM
       launchy (>= 2.2, < 4)
     link_header (0.0.8)
     lint_roller (1.1.0)
+    listen (3.10.0)
+      logger
+      rb-fsevent (~> 0.10, >= 0.10.3)
+      rb-inotify (~> 0.9, >= 0.9.10)
     literal (1.9.0)
       zeitwerk
     logger (1.7.0)
     loofah (2.25.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
+    lookbook (3.0.0.alpha.2)
+      css_parser
+      htmlbeautifier
+      redcarpet
+      yard
+      zeitwerk
     mail (2.9.0)
       logger
       mini_mime (>= 0.1.1)
@@ -595,6 +608,9 @@ GEM
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
     rake (13.3.1)
+    rb-fsevent (0.11.2)
+    rb-inotify (0.11.1)
+      ffi (~> 1.0)
     rbs (4.0.2)
       logger
       prism (>= 1.6.0)
@@ -612,6 +628,7 @@ GEM
       tsort
     readline (0.0.4)
       reline
+    redcarpet (3.6.1)
     refract (1.1.0)
       prism
       zeitwerk
@@ -853,7 +870,9 @@ DEPENDENCIES
   kamal
   kramdown
   letter_opener
+  listen
   literal
+  lookbook (>= 2.3.14)
   paper_trail
   pg
   phlex-rails (~> 2.3)
