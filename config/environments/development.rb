@@ -78,4 +78,7 @@ Rails.application.configure do
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :letter_opener
   config.action_mailer.perform_deliveries = true
+
+  # Allow the app to be iframed in dev to allow more testing options
+  config.action_dispatch.default_headers['X-Frame-Options'] = nil
 end
