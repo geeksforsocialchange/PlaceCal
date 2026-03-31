@@ -1,3 +1,5 @@
 /* Public site Tailwind CSS — currently empty.
-   Jo will populate this as part of the SCSS → Tailwind migration. */
-@import "tailwindcss";
+   Will be populated as part of the SCSS → Tailwind migration.
+   Do NOT add @import "tailwindcss" here until the SCSS migration is
+   complete — Tailwind's Preflight reset layer conflicts with the
+   existing SCSS styles (strips margins, heading sizes, etc). */
