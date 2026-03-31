@@ -1,5 +1,193 @@
-/* Public site Tailwind CSS — currently empty.
-   Will be populated as part of the SCSS → Tailwind migration.
-   Do NOT add @import "tailwindcss" here until the SCSS migration is
-   complete — Tailwind's Preflight reset layer conflicts with the
-   existing SCSS styles (strips margins, heading sizes, etc). */
+/* Public site Tailwind CSS  */
+@import "tailwindcss";
+@import "./public/fonts.css";
+
+/* https://tailwindcss.com/docs/detecting-classes-in-source-files#ignoring-specific-paths
+   TODO: verify and maybe rework as source(none) then @source explicit roots only
+   TODO: also exclude non-admin from admin_tailwind.css
+*/
+@source not '../../app/assets';
+@source not '../../app/datatables';
+@source not '../../app/components/admin';
+@source not '../../app/helpers/neighbourhoods_helper.rb'
+@source not '../../app/views/admin';
+@source not '../../app/views/layouts/admin';
+@source not '../../db';
+@source not '../../doc';
+@source not '../../features';
+@source not '../../public';
+@source not '../../spec';
+
+/* remove tailwind theme: https://tailwindcss.com/docs/theme#using-a-custom-theme */
+@theme {
+	--*: initial;
+}
+
+/* base theme
+https://tailwindcss.com/docs/theme
+https://tailwindcss.com/docs/theme#default-theme-variable-reference
+*/
+/* TODO: validate that these can be overridden at runtime as-is. Probably need to declare vars in :root but maybe not */
+@theme inline {
+	/* our root element size is 18px rather than the usual 16, but the sizes and spacing are based on a mix of both which is why the values are so as they are
+   that means that there is not a good value to put here
+   app/assets/stylesheets/base/typography.scss#L2
+   */
+	--spacing: 0.25rem;
+
+	/* app/assets/stylesheets/variables/typography.scss (we do not have Raleway so I have removed it) */
+	/* TODO: preload */
+	--font-sans: Rawline, sans-serif;
+	--font-serif: Trocchi, Georgia, serif;
+	--font-weight-extra-bold: 800;
+	--font-weight-bold: 700;
+	--font-weight-regular: 500;
+	/* small */
+	--text-sm: 0.8rem;
+	/* base */
+	--text-base: 1rem;
+	/* h3.5 */
+	--text-lg: 1.222222222rem;
+	/* h3 */
+	--text-xl: 1.33333rem;
+	/* h2 */
+	--text-2xl: 1.77778rem;
+	/* h1 */
+	--text-3xl: 2.22222rem;
+
+	/* app/assets/stylesheets/variables/colours.scss and app/assets/stylesheets/application.scss */
+	/* Main site colour */
+	--color-primary: #afcf5a;
+	--color-primary-light: #c3db83;
+	/* Main page background */
+	--color-background: #fffcf0;
+	/* Main copy colour */
+	--color-text: #5b4e46;
+	/* Horizontal lines, for example around events */
+	--color-rules: #f1e9da;
+	/* Currently just used on breadcrumb */
+	--color-rules-dark: #decbba;
+	/* Contrast colours */
+	--color-secondary: #f19089;
+	--color-secondary-light: #f4a6a1;
+	/* Used for top map stripe and navigation in some states */
+	--color-tertiary: #998675;
+	/* Bottom of the double line on the map */
+	--color-map-stripe-second: #c7b299;
+	/* Print stylesheet greyscale for borders */
+	--color-print-grey: #dadada;
+
+	/* Default-site
+   some of these reuse colours from above but I've hardcoded them to prevent accidental overwrites
+   FIXME: pink is here twice
+   */
+	/* this was originally #fffbef (0, -1, +1 from --color-background). i'm assuming it was a mistake */
+	--color-home-background: #fffcf0;
+	--color-home-background-2: #f19089;
+	--color-home-background-3: #f0e9da;
+	--color-home-blue: #74d4ec;
+	--color-home-blue-soft: #97dff1;
+	--color-home-pink: #f19089;
+	--color-home-pink-soft: #f4a6a1;
+	--color-home-green: #afcf5a;
+	--color-home-green-soft: #c3db83;
+
+	/* app/assets/stylesheets/modules/breakpoints.scss
+		tablet portrait, landscape, desktop
+	*/
+	--breakpoint-tp: 600px;
+	--breakpoint-tl: 900px;
+	--breakpoint-dt: 1200px;
+	/* app/assets/stylesheets/home/pages/_index.scss
+		FIXME: this seems very arbitrary
+	*/
+	--breakpoint-home: 1388px;
+
+	--container-tp: var(--breakpoint-tp);
+	--container-tl: var(--breakpoint-tl);
+	--container-dt: var(--breakpoint-dt);
+	/* app/assets/stylesheets/home/pages/_index.scss */
+	--container-home: var(--breakpoint-home);
+}
+
+/* base overrides for things which aren't yet componentised */
+@layer base {
+	html {
+		/* FIXME: everything should be standardised to be based on either 16 or 18 but not both */
+		font-size: 18px;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
+	/* app/assets/stylesheets/variables/typography.scss */
+	h1 {
+		@apply text-3xl font-bold;
+	}
+	h2 {
+		@apply text-2xl font-bold;
+	}
+	h3 {
+		@apply text-xl font-bold;
+	}
+	h4 {
+		@apply text-base;
+	}
+
+	/* the site previously had no reset so these are browser defaults which were not overridden
+		TODO: decide whether to leave units as-is or convert to --spacing multiples
+		TODO: set at point of use if that seems sensible
+   */
+	h1 {
+		margin-block: 0.67em;
+	}
+	h2 {
+		margin-block: 0.83em;
+	}
+	h3 {
+		margin-block: 1em;
+	}
+	/* haven't come across a h4 yet */
+	h5 {
+		font-size: 0.83em;
+		font-weight: bold;
+		margin-block: 1.67em;
+	}
+	p {
+		margin-block: 1em;
+	}
+	/* TODO: this is a child of pullquote. move the margins there */
+	blockquote {
+		margin-inline: 40px;
+	}
+	/* TODO: probably should switch to a theme colour */
+	textarea {
+		background-color: #fff;
+	}
+	/* TODO: should be in a flex */
+	input[type="checkbox"] {
+		margin-block: 3px;
+		margin-inline: 4px 3px;
+	}
+	ul {
+		margin-block: 1em;
+	}
+	/* TODO: this should only be enabled where it's wanted */
+	a {
+		text-decoration-line: underline;
+	}
+	/* TODO: this should only be enabled where it's wanted */
+	hr {
+		margin-block: 0.5em;
+	}
+	/* TODO: this seems only relevant in breadcrumb */
+	button {
+		padding-block: 1px;
+		padding-inline: 4px;
+		line-height: normal;
+	}
+	/* FIXME: these are just bad. they cause jank in the existing layout and should be removed - will need Kim to agree */
+	img,
+	svg {
+		display: inline;
+		vertical-align: baseline;
+	}
+}

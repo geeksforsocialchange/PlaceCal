@@ -114,10 +114,10 @@ module SvgIconsHelper
 
     # Forms - app/assets/images/icons/forms/
     # note that checkbox and radio outers have hardcoded colour classes
-    form_checkbox: { path: 'M5.6,4 h12.8 a1.6,1.6,90,0,1,1.6,1.6 v12.8 a1.6,1.6,90,0,1,-1.6,1.6 h-12.8 a1.6,1.6,90,0,1,-1.6,-1.6 v-12.8 a1.6,1.6,90,0,1,1.6,-1.6', css_class: 'text-base-background' },
+    form_checkbox: { path: 'M5.6,4 h12.8 a1.6,1.6,90,0,1,1.6,1.6 v12.8 a1.6,1.6,90,0,1,-1.6,1.6 h-12.8 a1.6,1.6,90,0,1,-1.6,-1.6 v-12.8 a1.6,1.6,90,0,1,1.6,-1.6', css_class: 'text-background' },
     form_checkbox_check: { path: 'M4.48,11.04 l5.2,5.2 l10.4,-10.4', stroke_linecap: 'butt', stroke_linejoin: 'butt', stroke_width: '5.36' },
     form_cross: { path: 'M19.932,7.2,16.548,3.768,12.3,8.004,8.052,3.768,4.668,7.2,8.904,11.4,4.668,15.6 l3.384,3.384,4.248,-4.236,4.248,4.236 L19.932,15.6,15.696,11.4 Z', stroke: 'none', fill: 'currentColor' },
-    form_radio: { path: 'M12,1 A11,11,0,1,0,12.001,1', css_class: 'text-base-background' },
+    form_radio: { path: 'M12,1 A11,11,0,1,0,12.001,1', css_class: 'text-background' },
     form_radio_check: { path: 'M12,6 A6,6,0,1,0,12.001,6', stroke: 'none', fill: 'currentColor' },
     form_tick: { path: 'M20.328,8.532 l-3.804,-3.84 L10.8,10.428,8.076,7.644,4.272,11.484 l2.76,2.784,3.192,3.216 L20.328,8.532 Z', stroke: 'none', fill: 'currentColor' },
 
