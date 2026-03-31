@@ -62,6 +62,37 @@ RSpec.describe Components::Event, type: :component do
 
       expect(page).to have_link("Community Meetup", href: "/events/1")
     end
+
+    it "wraps content in h-event microformat" do
+      render_inline(described_class.new(display_context: :list, event: event))
+
+      expect(page).to have_css(".h-event")
+    end
+
+    it "marks title with p-name and u-url classes" do
+      render_inline(described_class.new(display_context: :list, event: event))
+
+      expect(page).to have_css("a.p-name.u-url", text: "Community Meetup")
+    end
+
+    it "renders time elements with dt-start and dt-end" do
+      render_inline(described_class.new(display_context: :list, event: event))
+
+      expect(page).to have_css("time.dt-start[datetime]")
+      expect(page).to have_css("time.dt-end[datetime]")
+    end
+
+    it "renders location with p-location class" do
+      render_inline(described_class.new(display_context: :list, event: event))
+
+      expect(page).to have_css(".p-location")
+    end
+
+    it "does not use article tag" do
+      render_inline(described_class.new(display_context: :list, event: event))
+
+      expect(page).not_to have_css("article")
+    end
   end
 
   context "with page context" do
@@ -69,6 +100,18 @@ RSpec.describe Components::Event, type: :component do
       render_inline(described_class.new(display_context: :page, event: event, site_tagline: "The Community Calendar"))
 
       expect(page).to have_css(".event.event--full")
+    end
+
+    it "does not wrap in h-event (handled by show view)" do
+      render_inline(described_class.new(display_context: :page, event: event, site_tagline: "The Community Calendar"))
+
+      expect(page).not_to have_css(".h-event")
+    end
+
+    it "renders hidden p-name u-url anchor" do
+      render_inline(described_class.new(display_context: :page, event: event, site_tagline: "The Community Calendar"))
+
+      expect(page).to have_css("a.p-name.u-url[hidden]", text: "Community Meetup", visible: :hidden)
     end
   end
 
