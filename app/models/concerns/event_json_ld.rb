@@ -26,8 +26,9 @@ module EventJsonLd
 
   def build_json_ld_location(data)
     if address
-      place = {
+      location = {
         '@type' => 'Place',
+        'name' => partner_at_location&.name,
         'address' => {
           '@type' => 'PostalAddress',
           'streetAddress' => address.full_street_address,
@@ -35,17 +36,17 @@ module EventJsonLd
           'postalCode' => address.postcode,
           'addressCountry' => address.country_code
         }.compact
-      }
+      }.compact
 
       if address.latitude && address.longitude
-        place['geo'] = {
+        location['geo'] = {
           '@type' => 'GeoCoordinates',
           'latitude' => address.latitude,
           'longitude' => address.longitude
         }
       end
 
-      data['location'] = place
+      data['location'] = location
     elsif online_address
       data['location'] = {
         '@type' => 'VirtualLocation',

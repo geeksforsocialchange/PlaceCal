@@ -24,6 +24,7 @@
 					"required": ["@type", "address"],
 					"properties": {
 						"@type": { "type": "string", "enum": ["Place"] },
+						"name": { "type": "string", "minLength": 1 },
 						"address": {
 							"type": "object",
 							"required": ["@type"],
