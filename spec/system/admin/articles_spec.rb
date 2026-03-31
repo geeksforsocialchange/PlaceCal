@@ -36,6 +36,7 @@ RSpec.describe "Admin Articles", :slow, type: :system do
       assert_stacked_list_items [partnership.name], "article_tags"
 
       click_button "Save"
+      assert_has_flash(:success)
 
       # Verify data persists
       click_link "Articles"
