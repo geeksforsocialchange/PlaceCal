@@ -6,4 +6,13 @@ then
   gem install foreman
 fi
 
+# Remove stale precompiled assets that override live builds in dev.
+# Propshaft serves from public/assets/ first, so leftover precompiled
+# files can mask changes to app/assets/builds/.
+if [ -d public/assets ] && [ "$(ls -A public/assets 2>/dev/null)" ]; then
+  echo "Cleaning stale precompiled assets from public/assets/..."
+  rm -rf public/assets
+  mkdir -p public/assets
+fi
+
 foreman start -f Procfile.dev "$@"
