@@ -17,6 +17,10 @@ class ApplicationController < ActionController::Base
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
   rescue_from ActiveRecord::RecordNotFound, with: :resource_not_found
+  rescue_from ActionController::UnknownFormat, with: :not_acceptable
+  rescue_from ActionDispatch::Http::MimeNegotiation::InvalidType, with: :not_acceptable
+  rescue_from ActionController::BadRequest, with: :bad_request
+  rescue_from ActionController::InvalidAuthenticityToken, with: :session_expired
 
   private
 
@@ -30,6 +34,19 @@ class ApplicationController < ActionController::Base
 
   def resource_not_found
     render Views::Pages::ResourceNotFound.new, status: :not_found
+  end
+
+  def not_acceptable
+    head :not_acceptable
+  end
+
+  def bad_request
+    head :bad_request
+  end
+
+  def session_expired
+    flash[:danger] = 'Your session has expired. Please sign in again.'
+    redirect_to new_user_session_path
   end
 
   # Set the day either using the URL or by today's date
