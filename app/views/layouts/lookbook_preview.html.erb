@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%= csrf_meta_tags %>
+  <%= stylesheet_link_tag 'application', media: 'all' %>
+  <%= stylesheet_link_tag 'public_tailwind', media: 'all' %>
+  <link rel="stylesheet" href="/vendor/maplibre-gl.css" media="all">
+  <%= javascript_importmap_tags %>
+</head>
+<body>
+  <div class="background">
+    <%= yield %>
+  </div>
+</body>
+</html>
