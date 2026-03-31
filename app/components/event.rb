@@ -10,13 +10,7 @@ class Components::Event < Components::Base
 
   def view_template
     div(class: "event #{page? ? 'event--full' : 'event--list'}") do
-      if page?
-        render_page_layout
-      else
-        div(class: 'h-event') do
-          render_list_layout
-        end
-      end
+      page? ? render_page_layout : render_list_layout
     end
   end
 

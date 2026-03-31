@@ -63,12 +63,6 @@ RSpec.describe Components::Event, type: :component do
       expect(page).to have_link("Community Meetup", href: "/events/1")
     end
 
-    it "wraps content in h-event microformat" do
-      render_inline(described_class.new(display_context: :list, event: event))
-
-      expect(page).to have_css(".h-event")
-    end
-
     it "marks title with p-name and u-url classes" do
       render_inline(described_class.new(display_context: :list, event: event))
 
