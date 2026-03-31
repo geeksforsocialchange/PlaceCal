@@ -9,7 +9,7 @@ class Components::Event < Components::Base
   prop :site_tagline, _Nilable(String), default: nil
 
   def view_template
-    div(class: "event #{page? ? 'event--full' : 'event--list'}") do
+    div(class: "h-event event #{page? ? 'event--full' : 'event--list'}") do
       page? ? render_page_layout : render_list_layout
     end
   end

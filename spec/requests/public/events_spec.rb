@@ -191,7 +191,7 @@ RSpec.describe "Public Events", type: :request do
 
     it "wraps event in h-event microformat" do
       get event_url(event, host: "#{site.slug}.lvh.me")
-      expect(response.body).to include('class="h-event"')
+      expect(response.body).to match(/class="[^"]*h-event[^"]*"/)
       expect(response.body).to include('class="dt-start"')
     end
   end

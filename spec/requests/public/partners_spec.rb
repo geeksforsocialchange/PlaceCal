@@ -311,7 +311,7 @@ RSpec.describe "Public Partners", type: :request do
         expect(response).to be_successful
         expect(response.body).to include("Upcoming")
         # Upcoming shows next 10 events regardless of month
-        expect(response.body).to match(/class="h-event"/)
+        expect(response.body).to match(/class="[^"]*h-event[^"]*"/)
       end
     end
   end

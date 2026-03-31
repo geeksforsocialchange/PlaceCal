@@ -96,10 +96,10 @@ RSpec.describe Components::Event, type: :component do
       expect(page).to have_css(".event.event--full")
     end
 
-    it "does not wrap in h-event (handled by show view)" do
+    it "wraps in h-event" do
       render_inline(described_class.new(display_context: :page, event: event, site_tagline: "The Community Calendar"))
 
-      expect(page).not_to have_css(".h-event")
+      expect(page).to have_css(".h-event")
     end
 
     it "renders hidden p-name u-url anchor" do

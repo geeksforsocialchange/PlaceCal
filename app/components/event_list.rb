@@ -27,7 +27,7 @@ class Components::EventList < Components::Base
   def render_day(day_events)
     ol(class: 'events reset') do
       day_events.each do |event|
-        li(class: 'h-event') { render_event(event) }
+        li { render_event(event) }
       end
     end
   end

@@ -15,18 +15,16 @@ class Views::Events::Show < Views::Base
     content_for(:description) { html_to_plaintext(event.description_html) }
     content_for(:json_ld) { safe(event.to_json_ld(base_url: request.base_url).to_json) }
 
-    div(class: 'h-event') do
-      Event(
-        display_context: :page,
-        event: event,
-        primary_neighbourhood: site.primary_neighbourhood,
-        site_tagline: site.tagline
-      )
+    Event(
+      display_context: :page,
+      event: event,
+      primary_neighbourhood: site.primary_neighbourhood,
+      site_tagline: site.tagline
+    )
 
-      render_event_details
-      Map(points: map, site: site.slug, style: :multi)
-      render_event_meta
-    end
+    render_event_details
+    Map(points: map, site: site.slug, style: :multi)
+    render_event_meta
   end
 
   private
