@@ -12,13 +12,7 @@ RSpec.describe "User Invitation Flow", :slow, type: :system do
   end
 
   it "allows admin to invite a user who can then set their password" do
-    # Log in as admin via admin subdomain
-    visit admin_url("/users/sign_in")
-    fill_in "Email", with: admin_user.email
-    fill_in "Password", with: "password"
-    click_button "Log in"
-
-    expect(page).to have_selector("[role='alert']", text: "Signed in successfully.")
+    sign_in_as(admin_user)
 
     # Navigate to create user
     click_link "Users"

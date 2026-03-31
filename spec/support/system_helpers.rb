@@ -14,12 +14,15 @@ module SystemHelpers
     "http://lvh.me:#{port}#{path}"
   end
 
-  # Named sign_in_as to avoid collision with Warden::Test::Helpers#login_as
+  # Named sign_in_as to avoid collision with Warden::Test::Helpers#login_as.
+  # Waits for the post-login page to load before returning, preventing race
+  # conditions where the next `visit` fires before authentication completes.
   def sign_in_as(user)
     visit admin_url("/users/sign_in")
     fill_in "Email", with: user.email
     fill_in "Password", with: "password"
     click_button "Log in"
+    assert_has_flash(:success, "Signed in successfully.")
   end
 
   def assert_has_flash(type, message = nil)
