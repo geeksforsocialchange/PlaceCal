@@ -3,7 +3,8 @@
 	"extends": [
 		"config:recommended",
 		"helpers:pinGitHubActionDigests",
-		"schedule:nonOfficeHours"
+		"schedule:nonOfficeHours",
+		"customManagers:dockerfileVersions"
 	],
 	"automerge": true,
 	"automergeStrategy": "squash",
@@ -26,6 +27,11 @@
 		{
 			"matchManagers": ["npm", "rubygems"],
 			"minimumReleaseAge": "7 days"
+		},
+		{
+			"groupName": "node version",
+			"matchDepNames": ["node"],
+			"matchManagers": ["nodenv", "npm", "custom.regex"]
 		}
 	]
 }
