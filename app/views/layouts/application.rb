@@ -28,12 +28,14 @@ class Views::Layouts::Application < Phlex::HTML
       end
 
       body do
-        div(class: 'background') do
+        div(class: "page #{page_classes}") do
           Navigation(navigation: navigation, site: site)
+          # FIXME: move main elem into component to save excess divs
           main do
             Flash()
             yield
           end
+          # FIXME: move footer elem into footer component to save excess divs
           footer do
             if site&.default_site?
               HomeFooter()
@@ -47,6 +49,16 @@ class Views::Layouts::Application < Phlex::HTML
   end
 
   private
+
+  def page_classes
+    # app/assets/stylesheets/base/layout.scss
+    # app/assets/stylesheets/home/_layout.scss
+    # app/assets/stylesheets/home/pages/_index.scss
+    return 'max-w-home bg-text border-none mx-auto' if site&.default_site?
+
+    # TODO: deal with arbitrary sizes once i have a --spacing
+    return 'max-w-dt bg-background mx-auto dt:border dt:border-x-[35px] dt:border-text'
+  end
 
   def render_meta
     title_text = compute_title
