@@ -5,6 +5,9 @@ if [ -z "${LD_PRELOAD+x}" ] && [ -f /usr/lib/*/libjemalloc.so.2 ]; then
   export LD_PRELOAD="$(echo /usr/lib/*/libjemalloc.so.2)"
 fi
 
+# Ensure uploads directory exists (volume mount may be empty on fresh deploys)
+mkdir -p public/uploads/tmp
+
 # Only prepare the database when starting the Rails server (web role).
 # Job worker and cron roles skip this to avoid race conditions.
 if [ "${2}" == "server" ]; then
