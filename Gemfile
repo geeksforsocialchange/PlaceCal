@@ -75,6 +75,8 @@ group :development do
   gem 'foreman'                   # Process manager (Procfile.dev)
   gem 'graphiql-rails'            # GraphQL IDE at /graphiql
   gem 'letter_opener'             # Preview emails in browser
+  gem 'listen'                    # File-watching for Lookbook live reload
+  gem 'lookbook', '>= 2.3.14'    # Component preview UI (Storybook for Rails)
   gem 'rails-erd'                 # Entity-relationship diagrams
   gem 'rdoc'                      # Documentation generator
   gem 'rubocop', '1.86.0', require: false

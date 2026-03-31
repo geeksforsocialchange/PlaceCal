@@ -81,4 +81,9 @@ Rails.application.configure do
 
   # Allow the app to be iframed in dev to allow more testing options
   config.action_dispatch.default_headers['X-Frame-Options'] = nil
+
+  # Lookbook component preview tool (http://lvh.me:3000/lookbook)
+  config.lookbook.project_name = 'PlaceCal'
+  config.lookbook.preview_paths = ['spec/components/previews']
+  config.lookbook.preview_layout = 'lookbook_preview'
 end
