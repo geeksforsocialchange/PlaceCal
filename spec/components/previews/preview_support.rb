@@ -23,26 +23,22 @@ module PreviewSupport
   module_function
 
   def sample_address(overrides = {})
-    AddressMock.new({
-      street_address: "42 Oak Lane, Hulme",
-      postcode: "M15 5AA",
-      neighbourhood: nil
-    }.merge(overrides))
+    AddressMock.new(street_address: "42 Oak Lane, Hulme",
+                    postcode: "M15 5AA",
+                    neighbourhood: nil, **overrides)
   end
 
   def sample_event(overrides = {})
-    EventMock.new({
-      id: 1,
-      dtstart: Time.zone.parse("2025-06-15 10:00"),
-      dtend: Time.zone.parse("2025-06-15 12:00"),
-      summary: "Community Coffee Morning",
-      description: "A friendly weekly coffee morning for everyone in the neighbourhood.",
-      partner_at_location: nil,
-      address: sample_address,
-      rrule: nil,
-      neighbourhood: nil,
-      online_address: nil
-    }.merge(overrides))
+    EventMock.new(id: 1,
+                  dtstart: Time.zone.parse("2025-06-15 10:00"),
+                  dtend: Time.zone.parse("2025-06-15 12:00"),
+                  summary: "Community Coffee Morning",
+                  description: "A friendly weekly coffee morning for everyone in the neighbourhood.",
+                  partner_at_location: nil,
+                  address: sample_address,
+                  rrule: nil,
+                  neighbourhood: nil,
+                  online_address: nil, **overrides)
   end
 
   def sample_online_event
