@@ -8,6 +8,7 @@ class Partner < ApplicationRecord
   after_commit :refresh_neighbourhood_partners_count
 
   include Validation
+  include PartnerJsonLd
 
   extend FriendlyId
 

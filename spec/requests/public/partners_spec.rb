@@ -66,6 +66,23 @@ RSpec.describe "Public Partners", type: :request do
       expect(response.body).to include("<title>#{partner.name} | #{site.name}</title>")
     end
 
+    it "includes Organization JSON-LD structured data" do
+      get partner_url(partner, host: "#{site.slug}.lvh.me")
+      json_ld_blocks = response.body.scan(%r{<script type="application/ld\+json">(.+?)</script>}m)
+      org_ld = json_ld_blocks.map { |m| JSON.parse(m[0]) }.find { |d| d["@type"] == "Organization" }
+
+      expect(org_ld).to be_present
+      expect(org_ld["name"]).to eq(partner.name)
+    end
+
+    it "includes site-level WebSite JSON-LD" do
+      get partner_url(partner, host: "#{site.slug}.lvh.me")
+      json_ld_blocks = response.body.scan(%r{<script type="application/ld\+json">(.+?)</script>}m)
+      website_ld = json_ld_blocks.map { |m| JSON.parse(m[0]) }.find { |d| d["@type"] == "WebSite" }
+
+      expect(website_ld).to be_present
+    end
+
     context "without accessibility info" do
       it "hides accessibility section" do
         get partner_url(partner, host: "#{site.slug}.lvh.me")
@@ -294,7 +311,7 @@ RSpec.describe "Public Partners", type: :request do
         expect(response).to be_successful
         expect(response.body).to include("Upcoming")
         # Upcoming shows next 10 events regardless of month
-        expect(response.body).to match(/<article/)
+        expect(response.body).to match(/class="[^"]*h-event[^"]*"/)
       end
     end
   end
