@@ -1,10 +1,19 @@
 {
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"type": "object",
-	"required": ["@context", "@type", "name", "startDate", "url", "eventStatus"],
+	"required": [
+		"@context",
+		"@type",
+		"@id",
+		"name",
+		"startDate",
+		"url",
+		"eventStatus"
+	],
 	"properties": {
 		"@context": { "type": "string", "enum": ["https://schema.org"] },
 		"@type": { "type": "string", "enum": ["Event"] },
+		"@id": { "type": "string", "minLength": 1 },
 		"name": { "type": "string", "minLength": 1 },
 		"startDate": {
 			"type": "string",
@@ -66,8 +75,29 @@
 			"required": ["@type", "name"],
 			"properties": {
 				"@type": { "type": "string", "enum": ["Organization"] },
+				"@id": { "type": "string", "minLength": 1 },
 				"name": { "type": "string", "minLength": 1 },
 				"url": { "type": "string" }
+			},
+			"additionalProperties": false
+		},
+		"offers": {
+			"type": "object",
+			"required": ["@type", "url"],
+			"properties": {
+				"@type": { "type": "string", "enum": ["Offer"] },
+				"url": { "type": "string", "minLength": 1 },
+				"availability": { "type": "string" }
+			},
+			"additionalProperties": false
+		},
+		"superEvent": {
+			"type": "object",
+			"required": ["@type", "@id", "name"],
+			"properties": {
+				"@type": { "type": "string", "enum": ["EventSeries"] },
+				"@id": { "type": "string", "minLength": 1 },
+				"name": { "type": "string", "minLength": 1 }
 			},
 			"additionalProperties": false
 		}

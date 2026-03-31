@@ -24,7 +24,7 @@ class Views::Partners::Show < Views::Base
       content_for(:image) { site.og_image }
     end
     content_for(:description) { partner.summary } if partner.summary
-    content_for(:json_ld) { safe(partner.to_json_ld.to_json) }
+    content_for(:json_ld) { safe(partner.to_json_ld(base_url: request.base_url).to_json) }
 
     div do
       Hero(partner.name, site.tagline)

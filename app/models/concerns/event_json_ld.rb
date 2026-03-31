@@ -4,12 +4,14 @@ module EventJsonLd
   extend ActiveSupport::Concern
 
   def to_json_ld(base_url:)
+    event_url = "#{base_url}/events/#{id}"
     data = {
       '@context' => 'https://schema.org',
       '@type' => 'Event',
+      '@id' => event_url,
       'name' => summary,
       'startDate' => dtstart.iso8601,
-      'url' => "#{base_url}/events/#{id}",
+      'url' => event_url,
       'eventStatus' => 'https://schema.org/EventScheduled'
     }
 
@@ -17,7 +19,9 @@ module EventJsonLd
     data['description'] = ActionController::Base.helpers.strip_tags(description_html).presence if description_html.present?
 
     build_json_ld_location(data)
-    build_json_ld_organizer(data)
+    build_json_ld_organizer(data, base_url)
+    build_json_ld_offers(data)
+    build_json_ld_event_series(data, event_url)
 
     data
   end
@@ -55,13 +59,34 @@ module EventJsonLd
     end
   end
 
-  def build_json_ld_organizer(data)
+  def build_json_ld_organizer(data, base_url)
     return unless partner
 
     data['organizer'] = {
       '@type' => 'Organization',
+      '@id' => "#{base_url}/partners/#{partner.to_param}",
       'name' => partner.name,
       'url' => partner.url
     }.compact
+  end
+
+  def build_json_ld_offers(data)
+    return if publisher_url.blank?
+
+    data['offers'] = {
+      '@type' => 'Offer',
+      'url' => publisher_url,
+      'availability' => 'https://schema.org/InStock'
+    }
+  end
+
+  def build_json_ld_event_series(data, event_url)
+    return if rrule.blank?
+
+    data['superEvent'] = {
+      '@type' => 'EventSeries',
+      '@id' => "#{event_url}#series",
+      'name' => summary
+    }
   end
 end
