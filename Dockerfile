@@ -57,14 +57,14 @@ COPY . .
 # Precompile bootsnap code for faster boot
 RUN bundle exec bootsnap precompile app/ lib/
 
-# Build Tailwind CSS
+# Build Tailwind CSS (admin + public)
 RUN yarn build
 
-# Build SCSS with Dart Sass (outputs to app/assets/builds/)
+# Compile SCSS to CSS
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails dartsass:build
 
-# Precompile assets (sprockets + importmap — picks up dartsass output from builds/)
-RUN SECRET_KEY_BASE_DUMMY=1 SKIP_CSS_BUILD=true ./bin/rails assets:precompile
+# Precompile assets (Propshaft fingerprinting + importmap)
+RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
 # Remove node_modules — not needed at runtime (saves ~100-300MB)
 RUN rm -rf node_modules
