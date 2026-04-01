@@ -113,6 +113,10 @@ class Address < ApplicationRecord
     [*street_lines, city, postcode].compact_blank
   end
 
+  def to_s
+    all_address_lines.join(', ')
+  end
+
   private
 
   # ==== Private methods ====
