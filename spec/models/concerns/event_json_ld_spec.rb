@@ -96,7 +96,7 @@ RSpec.describe EventJsonLd do
       it "includes Organization from partner" do
         organizer = data["organizer"]
         expect(organizer["@type"]).to eq("Organization")
-        expect(organizer["name"]).to eq(event.partner.name)
+        expect(organizer["name"]).to eq(event.organiser.name)
       end
     end
   end

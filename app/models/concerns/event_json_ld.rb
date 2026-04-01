@@ -60,13 +60,13 @@ module EventJsonLd
   end
 
   def build_json_ld_organizer(data, base_url)
-    return unless partner
+    return unless organiser
 
     data['organizer'] = {
       '@type' => 'Organization',
-      '@id' => "#{base_url}/partners/#{partner.to_param}",
-      'name' => partner.name,
-      'url' => partner.url
+      '@id' => "#{base_url}/partners/#{organiser.to_param}",
+      'name' => organiser.name,
+      'url' => organiser.url
     }.compact
   end
 
