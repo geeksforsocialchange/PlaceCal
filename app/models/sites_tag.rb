@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 class SitesTag < ApplicationRecord
-  # -- Associations --
+  # ==== Associations ====
   belongs_to :tag
   belongs_to :site
 
-  # -- Validations --
+  # ==== Validations ====
   validates :tag_id,
             uniqueness: {
               scope: :site_id,

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Supporter < ApplicationRecord
-  # -- Attributes --
+  # ==== Attributes ====
   attribute :description, :string
   attribute :is_global,   :boolean, default: false
   # logo -- managed by CarrierWave, attribute declaration skipped
@@ -9,17 +9,17 @@ class Supporter < ApplicationRecord
   attribute :url,         :string
   attribute :weight,      :integer
 
-  # -- Associations --
+  # ==== Associations ====
   has_many :sites_supporters, dependent: :destroy
   has_and_belongs_to_many :sites
 
-  # -- Uploaders --
+  # ==== Uploaders ====
   mount_uploader :logo, SupporterLogoUploader
 
-  # -- Validations --
+  # ==== Validations ====
   validates :name, presence: true
 
-  # -- Scopes --
+  # ==== Scopes ====
   default_scope { order(:weight) }
   scope :global, -> { where(is_global: true) }
 end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
-  # -- Includes / Extends --
+  # ==== Includes / Extends ====
   include Validation
   extend Enumerize
 
@@ -10,7 +10,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :recoverable, :rememberable, :trackable,
          :validatable, :invitable
 
-  # -- Enums / Enumerize --
+  # ==== Enums / Enumerize ====
   # Site-wide roles
   # - root: Can do everything
   # - national_admin: Can manage all partners unless restricted to partnerships
@@ -21,7 +21,7 @@ class User < ApplicationRecord
             default: :citizen
   # role -- managed by enumerize, attribute declaration skipped
 
-  # -- Attributes --
+  # ==== Attributes ====
   # Columns marked (nullable) have no NOT NULL constraint in the DB.
   attribute :access_token,             :string                  # nullable
   attribute :access_token_expires_at,  :string                  # nullable
@@ -41,7 +41,7 @@ class User < ApplicationRecord
 
   auto_strip_attributes :first_name, :last_name, :email, :phone
 
-  # -- Associations --
+  # ==== Associations ====
   # TODO: set up join models properly
   # has_many :partners_users, dependent: :destroy
   # has_many :partners, through: :partners_users
@@ -58,10 +58,10 @@ class User < ApplicationRecord
   has_many :tags, through: :tags_users
   has_many :partnerships, -> { where(type: 'Partnership') }, through: :tags_users, source: :tag
 
-  # -- Uploaders --
+  # ==== Uploaders ====
   mount_uploader :avatar, AvatarUploader
 
-  # -- Validations --
+  # ==== Validations ====
   validates :email,
             presence: true,
             uniqueness: true,
@@ -70,7 +70,7 @@ class User < ApplicationRecord
 
   validate :validate_tags_are_partnerships
 
-  # -- Instance methods --
+  # ==== Instance methods ====
 
   # @return [String] "Firstname Lastname" or empty string
   def full_name
@@ -255,7 +255,7 @@ class User < ApplicationRecord
 
   protected
 
-  # -- Protected methods --
+  # ==== Protected methods ====
 
   # @param partner_id [Integer]
   # @return [Boolean] whether partner's neighbourhoods overlap with user's

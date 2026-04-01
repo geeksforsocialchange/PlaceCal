@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 class Collection < ApplicationRecord
-  # -- Includes / Extends --
+  # ==== Includes / Extends ====
   include Permalinkable
 
-  # -- Attributes --
+  # ==== Attributes ====
   attribute :description, :text
   # image -- managed by CarrierWave, attribute declaration skipped
   attribute :name,        :string
@@ -12,13 +12,13 @@ class Collection < ApplicationRecord
 
   permalink_resource 'collections'
 
-  # -- Associations --
+  # ==== Associations ====
   has_and_belongs_to_many :events
 
-  # -- Uploaders --
+  # ==== Uploaders ====
   mount_uploader :image, ImageUploader
 
-  # -- Instance methods --
+  # ==== Instance methods ====
 
   # @return [ActiveRecord::Relation<Event>] events ordered by start date
   def sorted_events

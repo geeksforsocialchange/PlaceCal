@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 class PartnerTag < ApplicationRecord
-  # -- Associations --
+  # ==== Associations ====
   belongs_to :partner
   belongs_to :tag
 
-  # -- Validations --
+  # ==== Validations ====
   validates :tag_id,
             uniqueness: {
               scope: :partner_id,

@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 class Event < ApplicationRecord
-  # -- Includes / Extends --
+  # ==== Includes / Extends ====
   has_paper_trail ignore: %i[rrule notices]
 
   include HtmlRenderCache
   include EventJsonLd
   include Permalinkable
 
-  # -- Attributes --
+  # ==== Attributes ====
   # Columns marked (nullable) have no NOT NULL constraint in the DB.
   attribute :are_spaces_available,     :string                      # nullable
   attribute :description,              :text                        # nullable
@@ -29,7 +29,7 @@ class Event < ApplicationRecord
   html_render_cache :summary
   permalink_resource 'events'
 
-  # -- Associations --
+  # ==== Associations ====
   belongs_to :organiser, class_name: 'Partner', optional: true
   belongs_to :place, class_name: 'Partner', optional: true
   belongs_to :address, optional: true
@@ -37,12 +37,12 @@ class Event < ApplicationRecord
   belongs_to :calendar, optional: true
   has_and_belongs_to_many :collections
 
-  # -- Validations --
+  # ==== Validations ====
   validates :summary, :dtstart, :organiser, presence: true
   validate :require_location
   validate :unique_event, on: :create # If we are updating the event we don't want it to trigger!
 
-  # -- Scopes --
+  # ==== Scopes ====
   # has_many :service_areas, through: :partner
 
   # Find events that start on a given day
@@ -129,10 +129,10 @@ class Event < ApplicationRecord
   # Global feed
   scope :ical_feed, -> { where(dtstart: (Time.now - 1.week)..).where(dtend: ...(Time.now + 2.years)) }
 
-  # -- Callbacks --
+  # ==== Callbacks ====
   before_save :sanitize_rrule
 
-  # -- Class methods --
+  # ==== Class methods ====
   # Remove duplicate events (same uid, dtstart, dtend, calendar_id),
   # keeping the oldest record. Returns the number of deleted rows.
   def self.deduplicate!
@@ -151,7 +151,7 @@ class Event < ApplicationRecord
     result.cmd_tuples
   end
 
-  # -- Instance methods --
+  # ==== Instance methods ====
 
   # @return [String, nil] human-readable recurrence label (e.g. "Weekly")
   def repeat_frequency
@@ -221,7 +221,7 @@ class Event < ApplicationRecord
 
   private
 
-  # -- Private methods --
+  # ==== Private methods ====
 
   def sanitize_rrule
     self.rrule = false if rrule.nil? || rrule == []

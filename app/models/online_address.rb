@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
 class OnlineAddress < ApplicationRecord
-  # -- Includes / Extends --
+  # ==== Includes / Extends ====
   extend Enumerize
 
-  # -- Enums / Enumerize --
+  # ==== Enums / Enumerize ====
   enumerize :link_type,
             in: %i[direct indirect],
             default: :indirect
   # link_type -- managed by enumerize, attribute declaration skipped
 
-  # -- Attributes --
+  # ==== Attributes ====
   attribute :url, :string
 
-  # -- Associations --
+  # ==== Associations ====
   has_many :events, dependent: :nullify
 end

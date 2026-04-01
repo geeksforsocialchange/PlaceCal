@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
 class Partner < ApplicationRecord
-  # -- Includes / Extends --
+  # ==== Includes / Extends ====
   include Validation
   include PartnerJsonLd
   include Permalinkable
   extend FriendlyId
   include HtmlRenderCache
 
-  # -- Constants --
+  # ==== Constants ====
 
   MAX_CATEGORIES = 3
 
-  # -- Attributes --
+  # ==== Attributes ====
   # Columns marked (nullable) have no NOT NULL constraint in the DB.
   attribute :accessibility_info,      :text                        # nullable
   attribute :accessibility_info_html, :string                      # nullable, populated by HtmlRenderCache
@@ -59,7 +59,7 @@ class Partner < ApplicationRecord
   auto_strip_attributes :name, :summary, :url, :twitter_handle, :instagram_handle, :facebook_link, :public_phone, :public_email
   permalink_resource 'partners'
 
-  # -- Associations --
+  # ==== Associations ====
   has_and_belongs_to_many :users
   has_many :calendars, foreign_key: :organiser_id, dependent: :destroy, inverse_of: :organiser
   has_many :events, foreign_key: :organiser_id, dependent: :destroy, inverse_of: :organiser
@@ -106,10 +106,10 @@ class Partner < ApplicationRecord
 
   accepts_nested_attributes_for :service_areas, allow_destroy: true
 
-  # -- Uploaders --
+  # ==== Uploaders ====
   mount_uploader :image, ImageUploader
 
-  # -- Validations --
+  # ==== Validations ====
   validates :name,
             presence: true,
             uniqueness: { case_sensitive: false },
@@ -159,7 +159,7 @@ class Partner < ApplicationRecord
   validate :must_give_reason_to_hide
   validate :must_record_who_has_hidden
 
-  # -- Scopes --
+  # ==== Scopes ====
   scope :visible, -> { where(hidden: false) }
   scope :recently_updated, -> { order(updated_at: desc) }
 
@@ -174,13 +174,13 @@ class Partner < ApplicationRecord
       .where(o_r: { verb: :manages }).distinct
   }
 
-  # -- Delegates --
+  # ==== Delegates ====
   delegate :neighbourhood_id, to: :address, allow_nil: true
 
-  # -- Callbacks --
+  # ==== Callbacks ====
   after_commit :refresh_neighbourhood_partners_count
 
-  # -- Class methods --
+  # ==== Class methods ====
 
   # Find a place-partner whose name matches one of the address street lines.
   # @param address [Address] the address to match against
@@ -198,7 +198,7 @@ class Partner < ApplicationRecord
            )
   end
 
-  # -- Instance methods --
+  # ==== Instance methods ====
 
   # Strips leading @ from Twitter handles before saving.
   # @param handle [String, nil]
@@ -371,7 +371,7 @@ class Partner < ApplicationRecord
 
   private
 
-  # -- Private methods --
+  # ==== Private methods ====
 
   def refresh_neighbourhood_partners_count
     # Refresh count for current neighbourhood (via address)

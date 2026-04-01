@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 class Neighbourhood < ApplicationRecord
-  # -- Includes / Extends --
+  # ==== Includes / Extends ====
   has_ancestry
   extend Enumerize
 
-  # -- Constants --
+  # ==== Constants ====
 
   # WARNING: this must be updated for every new ONS dataset
   #    see /lib/tasks/neighbourhoods.rake
@@ -23,13 +23,13 @@ class Neighbourhood < ApplicationRecord
 
   LEVEL_NAMES = LEVELS.invert.freeze
 
-  # -- Enums / Enumerize --
+  # ==== Enums / Enumerize ====
   enumerize :unit,
             in: %i[ward district county region country],
             default: :ward
   # unit -- managed by enumerize, attribute declaration skipped
 
-  # -- Attributes --
+  # ==== Attributes ====
   # ancestry -- managed by Ancestry gem, attribute declaration skipped
   attribute :level,           :integer
   attribute :name,            :string
@@ -41,7 +41,7 @@ class Neighbourhood < ApplicationRecord
   attribute :unit_code_value, :string
   attribute :unit_name,       :string
 
-  # -- Associations --
+  # ==== Associations ====
   has_many :sites_neighbourhoods, dependent: :destroy
   has_many :sites, through: :sites_neighbourhoods
 
@@ -60,7 +60,7 @@ class Neighbourhood < ApplicationRecord
            source: :partners,
            class_name: 'Partner'
 
-  # -- Validations --
+  # ==== Validations ====
   # validates :unit_code_value, presence: true, uniqueness: true
   # validates :name, presence: true
   validates :level, inclusion: { in: LEVELS.values }, allow_nil: true
@@ -68,7 +68,7 @@ class Neighbourhood < ApplicationRecord
             length: { is: 9 },
             allow_blank: true
 
-  # -- Scopes --
+  # ==== Scopes ====
   scope :latest_release, -> { where release_date: LATEST_RELEASE_DATE }
   scope :at_level, ->(level) { where(level: level) }
   scope :countries, -> { where(level: 5) }
@@ -77,10 +77,10 @@ class Neighbourhood < ApplicationRecord
   scope :districts, -> { where(level: 2) }
   scope :wards, -> { where(level: 1) }
 
-  # -- Callbacks --
+  # ==== Callbacks ====
   before_update :inject_parent_name_field
 
-  # -- Class methods --
+  # ==== Class methods ====
 
   class << self
     # @param res [Hash] parsed postcodes.io API response with 'codes' sub-hash
@@ -130,7 +130,7 @@ class Neighbourhood < ApplicationRecord
     end
   end
 
-  # -- Instance methods --
+  # ==== Instance methods ====
 
   # @return [Array<Partner>] unique partners from address + service area associations
   def partners
@@ -246,7 +246,7 @@ class Neighbourhood < ApplicationRecord
 
   private
 
-  # -- Private methods --
+  # ==== Private methods ====
 
   def inject_parent_name_field
     self.parent_name = parent.name if parent

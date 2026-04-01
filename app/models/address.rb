@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 class Address < ApplicationRecord
-  # -- Includes / Extends --
+  # ==== Includes / Extends ====
   include NeighbourhoodCacheInvalidator
 
-  # -- Attributes --
+  # ==== Attributes ====
   attribute :city,            :string
   attribute :country_code,    :string, default: 'UK'
   attribute :latitude,        :float
@@ -16,13 +16,13 @@ class Address < ApplicationRecord
 
   auto_strip_attributes :street_address, :street_address2, :street_address3, :city, :postcode
 
-  # -- Associations --
+  # ==== Associations ====
   has_many :events, dependent: :nullify
   has_many :partners, dependent: :nullify
 
   belongs_to :neighbourhood, optional: true
 
-  # -- Validations --
+  # ==== Validations ====
   # Geocoding with postcodes.io
   # Only postcode changes will change the result that postodes.io returns.
   # (do this first)
@@ -31,15 +31,15 @@ class Address < ApplicationRecord
   validates :street_address, :country_code, presence: true
   validates :postcode, presence: true, postcode: true
 
-  # -- Scopes --
+  # ==== Scopes ====
   scope :find_by_street_or_postcode, lambda { |street, postcode|
     where(street_address: street).or(where(postcode: postcode))
   }
 
-  # -- Callbacks --
+  # ==== Callbacks ====
   after_commit :invalidate_neighbourhood_partners_count!, if: :neighbourhood_id_previously_changed?
 
-  # -- Class methods --
+  # ==== Class methods ====
 
   # Build and save an address from an array of street components.
   # @param components [Array<String>] up to 3 street address lines
@@ -69,7 +69,7 @@ class Address < ApplicationRecord
     count
   end
 
-  # -- Instance methods --
+  # ==== Instance methods ====
 
   # Normalizes postcode via UKPostcode before saving.
   # @param str [String]
@@ -115,7 +115,7 @@ class Address < ApplicationRecord
 
   private
 
-  # -- Private methods --
+  # ==== Private methods ====
 
   # Set the (lat,lon) and neighbourhood from address data.
   #

@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 class Article < ApplicationRecord
-  # -- Includes / Extends --
+  # ==== Includes / Extends ====
   extend FriendlyId
   include HtmlRenderCache
 
-  # -- Attributes --
+  # ==== Attributes ====
   # article_image -- managed by CarrierWave, attribute declaration skipped
   attribute :body,         :text
   attribute :body_html,    :string # populated by HtmlRenderCache
@@ -17,7 +17,7 @@ class Article < ApplicationRecord
   friendly_id :slug_candidates, use: :slugged
   html_render_cache :body
 
-  # -- Associations --
+  # ==== Associations ====
   has_many :article_partners, dependent: :destroy
   has_many :partners, through: :article_partners
 
@@ -26,14 +26,14 @@ class Article < ApplicationRecord
 
   belongs_to :author, class_name: 'User', inverse_of: :articles
 
-  # -- Uploaders --
+  # ==== Uploaders ====
   mount_uploader :article_image, ArticleImageUploader
 
-  # -- Validations --
+  # ==== Validations ====
   validates :title, :body, presence: true
   validates :slug, uniqueness: true
 
-  # -- Scopes --
+  # ==== Scopes ====
   scope :published, -> { where is_draft: false }
   scope :by_publish_date, -> { order(published_at: :desc) }
 
@@ -108,10 +108,10 @@ class Article < ApplicationRecord
     scope.distinct('articles.id')
   }
 
-  # -- Callbacks --
+  # ==== Callbacks ====
   before_save :update_published_at, if: ->(obj) { obj.is_draft_changed? }
 
-  # -- Instance methods --
+  # ==== Instance methods ====
 
   # @return [String] author's full name, or empty string if unset
   def author_name
@@ -130,7 +130,7 @@ class Article < ApplicationRecord
 
   private
 
-  # -- Private methods --
+  # ==== Private methods ====
   def update_published_at
     self.published_at = is_draft ? nil : DateTime.now
   end

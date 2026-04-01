@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
 class Calendar < ApplicationRecord
-  # -- Includes / Extends --
+  # ==== Includes / Extends ====
   include ActionView::Helpers::DateHelper
   include Validation
   extend Enumerize
 
-  # -- Constants --
+  # ==== Constants ====
 
   self.inheritance_column = nil
 
   ALLOWED_STATES = %i[idle in_queue in_worker error bad_source].freeze
 
-  # -- Enums / Enumerize --
+  # ==== Enums / Enumerize ====
   # Defines the strategy this Calendar uses to assign events to locations.
   # @attr [Enumerable<Symbol>] :strategy
   enumerize(
@@ -31,7 +31,7 @@ class Calendar < ApplicationRecord
   )
   # calendar_state -- managed by enumerize, attribute declaration skipped
 
-  # -- Attributes --
+  # ==== Attributes ====
   # Columns marked (nullable) have no NOT NULL constraint in the DB.
   attribute :api_token,            :string                       # nullable
   attribute :checksum_updated_at,  :datetime                     # nullable
@@ -53,12 +53,12 @@ class Calendar < ApplicationRecord
 
   auto_strip_attributes :name, :source, :public_contact_name, :public_contact_email, :public_contact_phone
 
-  # -- Associations --
+  # ==== Associations ====
   belongs_to :organiser, class_name: 'Partner', optional: true
   belongs_to :place, class_name: 'Partner', optional: true
   has_many :events, dependent: :destroy
 
-  # -- Validations --
+  # ==== Validations ====
   validates :name, :organiser, :source, presence: true
   validates :place, presence: { if: :requires_default_location?,
                                 message: "can't be blank with this strategy" }
@@ -68,7 +68,7 @@ class Calendar < ApplicationRecord
   validate :check_source_reachable
   validate :source_not_private_ip
 
-  # -- Scopes --
+  # ==== Scopes ====
   scope :that_appear_on_site, lambda { |site|
     site_partnership_tag_ids = site.tags.map(&:id)
 
@@ -94,13 +94,13 @@ class Calendar < ApplicationRecord
     end
   }
 
-  # -- Callbacks --
+  # ==== Callbacks ====
   before_save :clear_status_on_source_change
   before_save :update_notice_count
 
   after_create :automatically_queue_calendar
 
-  # -- Class methods --
+  # ==== Class methods ====
 
   # @return [Time] the furthest future date to import events up to
   def self.import_up_to
@@ -117,7 +117,7 @@ class Calendar < ApplicationRecord
     end
   end
 
-  # -- Instance methods --
+  # ==== Instance methods ====
 
   # @return [Boolean] whether this strategy requires a default place
   def requires_default_location?
@@ -283,7 +283,7 @@ class Calendar < ApplicationRecord
 
   private
 
-  # -- Private methods --
+  # ==== Private methods ====
 
   # Wraps a block in a transaction with timestamps disabled, so that
   # state-machine transitions don't clobber updated_at.

@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 class ArticleTag < ApplicationRecord
-  # -- Associations --
+  # ==== Associations ====
   belongs_to :article
   belongs_to :tag
 
-  # -- Validations --
+  # ==== Validations ====
   validates :tag_id,
             uniqueness: {
               scope: :article_id,

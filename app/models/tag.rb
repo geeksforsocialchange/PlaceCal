@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 class Tag < ApplicationRecord
-  # -- Includes / Extends --
+  # ==== Includes / Extends ====
   extend FriendlyId
   extend Enumerize
 
-  # -- Constants --
+  # ==== Constants ====
 
   self.table_name = 'tags' # Maybe we can remove this? Tag should automagically railsify to tags right?
 
-  # -- Attributes --
+  # ==== Attributes ====
   attribute :description, :text
   attribute :name,        :string
   attribute :slug,        :string
@@ -18,7 +18,7 @@ class Tag < ApplicationRecord
 
   friendly_id :name, use: :slugged
 
-  # -- Associations --
+  # ==== Associations ====
   has_many :tags_users, dependent: :destroy
   has_many :users, through: :tags_users
 
@@ -31,7 +31,7 @@ class Tag < ApplicationRecord
   has_many :article_tags, dependent: :destroy
   has_many :articles, through: :article_tags
 
-  # -- Validations --
+  # ==== Validations ====
   validates :name, :slug, :type, presence: true
   validates :name, :slug, uniqueness: { scope: :type }
   validates :description,
@@ -46,7 +46,7 @@ class Tag < ApplicationRecord
             }
   validate :check_editable_fields
 
-  # -- Scopes --
+  # ==== Scopes ====
   # TECHDEBT
   # we should look to work this out of the system as we now cover this with a scope on Partnership
   scope :users_tags, lambda { |user|
@@ -58,7 +58,7 @@ class Tag < ApplicationRecord
                        Tag.where(id: partnership_tags + other_tags)
                      }
 
-  # -- Instance methods --
+  # ==== Instance methods ====
 
   # @return [String] e.g. "Partnership: My Tag"
   def name_with_type
@@ -68,7 +68,7 @@ class Tag < ApplicationRecord
 
   private
 
-  # -- Private methods --
+  # ==== Private methods ====
 
   def check_editable_fields
     return if new_record? || !system_tag

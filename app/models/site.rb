@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 
 class Site < ApplicationRecord
-  # -- Includes / Extends --
+  # ==== Includes / Extends ====
   extend FriendlyId
   extend Enumerize
   include HtmlRenderCache
   include SiteJsonLd
 
-  # -- Constants --
+  # ==== Constants ====
 
   # ASSUMPTION: There is no row in the sites table for the admin site, hence
   # defining the admin subdomain string here.
   ADMIN_SUBDOMAIN = 'admin'
 
-  # -- Enums / Enumerize --
+  # ==== Enums / Enumerize ====
   # Theme picker
   enumerize :theme,
             in: %i[pink orange green blue custom],
@@ -25,7 +25,7 @@ class Site < ApplicationRecord
             default: :ward
   # badge_zoom_level -- managed by enumerize, attribute declaration skipped
 
-  # -- Attributes --
+  # ==== Attributes ====
   # Columns marked (nullable) have no NOT NULL constraint in the DB.
   attribute :description,       :text                            # nullable
   attribute :description_html,  :string                          # nullable, populated by HtmlRenderCache
@@ -45,7 +45,7 @@ class Site < ApplicationRecord
   friendly_id :name, use: :slugged
   html_render_cache :description
 
-  # -- Associations --
+  # ==== Associations ====
   has_one :sites_neighbourhood, dependent: :destroy
   has_one :primary_neighbourhood, lambda {
                                     where(sites_neighbourhoods: { relation_type: 'Primary' })
@@ -71,21 +71,21 @@ class Site < ApplicationRecord
                                                                     c[:neighbourhood_id].blank?
                                                                   }, allow_destroy: true
 
-  # -- Uploaders --
+  # ==== Uploaders ====
   mount_uploader :logo, SiteLogoUploader
   mount_uploader :footer_logo, SiteLogoUploader
   mount_uploader :hero_image, HeroImageUploader
 
-  # -- Validations --
+  # ==== Validations ====
   validates :name, :slug, :url, presence: true
   validates :slug, uniqueness: true
   validates :place_name unless :default_site?
   validates :hero_text, length: { maximum: 120 }
 
-  # -- Scopes --
+  # ==== Scopes ====
   scope :published, -> { where(is_published: true) }
 
-  # -- Instance methods --
+  # ==== Instance methods ====
 
   # @return [Array<Neighbourhood>] all neighbourhoods in this site's subtrees
   def owned_neighbourhoods
@@ -205,7 +205,7 @@ class Site < ApplicationRecord
     end
   end
 
-  # -- Class methods --
+  # ==== Class methods ====
 
   class << self
     # @param value [Array] enumerize value pair

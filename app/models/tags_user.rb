@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 class TagsUser < ApplicationRecord
-  # -- Constants --
+  # ==== Constants ====
   self.table_name = 'tags_users'
 
-  # -- Associations --
+  # ==== Associations ====
   belongs_to :tag
   belongs_to :user
 
-  # -- Validations --
+  # ==== Validations ====
   validates :tag_id,
             uniqueness: {
               scope: :user_id,

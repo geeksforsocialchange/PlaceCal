@@ -1,25 +1,25 @@
 # frozen_string_literal: true
 
 class SitesNeighbourhood < ApplicationRecord
-  # -- Constants --
+  # ==== Constants ====
 
   self.table_name = 'sites_neighbourhoods'
 
-  # -- Attributes --
+  # ==== Attributes ====
   attribute :relation_type, :string
 
-  # -- Associations --
+  # ==== Associations ====
   belongs_to :neighbourhood
   belongs_to :site
 
-  # -- Validations --
+  # ==== Validations ====
   validates :neighbourhood_id,
             uniqueness: {
               scope: :site_id,
               message: 'Neighbourhood cannot be assigned more than once to a site'
             }
 
-  # -- Instance methods --
+  # ==== Instance methods ====
 
   # @return [String] neighbourhood display name
   def name
