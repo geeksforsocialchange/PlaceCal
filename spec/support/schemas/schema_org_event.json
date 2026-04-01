@@ -1,0 +1,106 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"type": "object",
+	"required": [
+		"@context",
+		"@type",
+		"@id",
+		"name",
+		"startDate",
+		"url",
+		"eventStatus"
+	],
+	"properties": {
+		"@context": { "type": "string", "enum": ["https://schema.org"] },
+		"@type": { "type": "string", "enum": ["Event"] },
+		"@id": { "type": "string", "minLength": 1 },
+		"name": { "type": "string", "minLength": 1 },
+		"startDate": {
+			"type": "string",
+			"pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}"
+		},
+		"endDate": {
+			"type": "string",
+			"pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}"
+		},
+		"url": { "type": "string", "minLength": 1 },
+		"eventStatus": { "type": "string", "pattern": "^https://schema\\.org/" },
+		"description": { "type": "string", "minLength": 1 },
+		"location": {
+			"oneOf": [
+				{
+					"type": "object",
+					"required": ["@type", "address"],
+					"properties": {
+						"@type": { "type": "string", "enum": ["Place"] },
+						"name": { "type": "string", "minLength": 1 },
+						"address": {
+							"type": "object",
+							"required": ["@type"],
+							"properties": {
+								"@type": { "type": "string", "enum": ["PostalAddress"] },
+								"streetAddress": { "type": "string" },
+								"addressLocality": { "type": "string" },
+								"postalCode": { "type": "string" },
+								"addressCountry": { "type": "string" }
+							},
+							"additionalProperties": false
+						},
+						"geo": {
+							"type": "object",
+							"required": ["@type", "latitude", "longitude"],
+							"properties": {
+								"@type": { "type": "string", "enum": ["GeoCoordinates"] },
+								"latitude": { "type": "number" },
+								"longitude": { "type": "number" }
+							},
+							"additionalProperties": false
+						}
+					},
+					"additionalProperties": false
+				},
+				{
+					"type": "object",
+					"required": ["@type", "url"],
+					"properties": {
+						"@type": { "type": "string", "enum": ["VirtualLocation"] },
+						"url": { "type": "string", "minLength": 1 }
+					},
+					"additionalProperties": false
+				}
+			]
+		},
+		"organizer": {
+			"type": "object",
+			"required": ["@type", "name"],
+			"properties": {
+				"@type": { "type": "string", "enum": ["Organization"] },
+				"@id": { "type": "string", "minLength": 1 },
+				"name": { "type": "string", "minLength": 1 },
+				"url": { "type": "string" }
+			},
+			"additionalProperties": false
+		},
+		"offers": {
+			"type": "object",
+			"required": ["@type", "url"],
+			"properties": {
+				"@type": { "type": "string", "enum": ["Offer"] },
+				"url": { "type": "string", "minLength": 1 },
+				"availability": { "type": "string" }
+			},
+			"additionalProperties": false
+		},
+		"superEvent": {
+			"type": "object",
+			"required": ["@type", "@id", "name"],
+			"properties": {
+				"@type": { "type": "string", "enum": ["EventSeries"] },
+				"@id": { "type": "string", "minLength": 1 },
+				"name": { "type": "string", "minLength": 1 }
+			},
+			"additionalProperties": false
+		}
+	},
+	"additionalProperties": false
+}

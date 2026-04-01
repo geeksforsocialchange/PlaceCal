@@ -64,6 +64,43 @@ RSpec.describe UserPolicy, type: :policy do
     end
   end
 
+  describe "#permitted_attributes_for_update" do
+    subject(:permitted_attributes) { described_class.new(current_user, target_user).permitted_attributes_for_update }
+
+    describe "for a root user" do
+      let(:current_user) { create(:root_user) }
+
+      it "includes all attributes including role" do
+        expect(permitted_attributes).to include(:first_name, :last_name, :email, :role)
+      end
+    end
+
+    describe "for a neighbourhood admin" do
+      let(:ward) { create(:riverside_ward) }
+      let(:current_user) { create(:neighbourhood_admin, neighbourhood: ward) }
+
+      it "allows only partner assignment" do
+        expect(permitted_attributes).to eq([{ partner_ids: [] }])
+      end
+    end
+
+    describe "for a partner admin" do
+      let(:current_user) { create(:partner_admin) }
+
+      it "allows only partner assignment" do
+        expect(permitted_attributes).to eq([{ partner_ids: [] }])
+      end
+    end
+
+    describe "for a citizen" do
+      let(:current_user) { create(:citizen_user) }
+
+      it "returns an empty array" do
+        expect(permitted_attributes).to eq([])
+      end
+    end
+  end
+
   describe "Scope" do
     let!(:user1) { create(:user) }
     let!(:user2) { create(:user) }

@@ -75,6 +75,8 @@ group :development do
   gem 'foreman'                   # Process manager (Procfile.dev)
   gem 'graphiql-rails'            # GraphQL IDE at /graphiql
   gem 'letter_opener'             # Preview emails in browser
+  gem 'listen'                    # File-watching for Lookbook live reload
+  gem 'lookbook', '>= 2.3.14'    # Component preview UI (Storybook for Rails)
   gem 'rails-erd'                 # Entity-relationship diagrams
   gem 'rdoc'                      # Documentation generator
   gem 'rubocop', '1.86.0', require: false
@@ -98,6 +100,7 @@ group :test do
   gem 'factory_bot_rails'         # Test data factories
   gem 'faker'                     # Fake data generation
   gem 'graphql-client'            # GraphQL API test client
+  gem 'json-schema'               # JSON Schema validation for structured data tests
   gem 'pundit-matchers', '~> 4.0' # Policy spec matchers
   gem 'rspec-rails', '~> 8.0'     # Test framework
   gem 'selenium-webdriver'        # Browser driver for system tests

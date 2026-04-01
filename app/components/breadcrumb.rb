@@ -19,5 +19,21 @@ class Components::Breadcrumb < Components::Base
       end
       div(class: 'breadcrumb__element breadcrumb__element--last', &)
     end
+
+    emit_breadcrumb_json_ld
+  end
+
+  private
+
+  def emit_breadcrumb_json_ld
+    base = request.base_url
+    items = [{ '@type' => 'ListItem', 'position' => 1, 'name' => @site_name, 'item' => "#{base}/" }]
+
+    @trail.each_with_index do |link, index|
+      items << { '@type' => 'ListItem', 'position' => index + 2, 'name' => link[0], 'item' => "#{base}#{link[1]}" }
+    end
+
+    data = { '@context' => 'https://schema.org', '@type' => 'BreadcrumbList', 'itemListElement' => items }
+    script(type: 'application/ld+json') { raw safe(data.to_json) }
   end
 end

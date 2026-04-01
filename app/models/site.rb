@@ -5,6 +5,7 @@ class Site < ApplicationRecord
   extend Enumerize
 
   include HtmlRenderCache
+  include SiteJsonLd
 
   html_render_cache :description
 

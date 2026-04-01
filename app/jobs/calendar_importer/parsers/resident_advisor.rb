@@ -59,8 +59,8 @@ module CalendarImporter::Parsers
         }
       GRAPHQL
 
-      events = query_graphql_endpoint(query)
-      events['data']['promoter']['events']
+      response = query_graphql_endpoint(query)
+      response.dig('data', 'promoter', 'events') || []
     end
 
     def get_club_events(id)
@@ -82,8 +82,8 @@ module CalendarImporter::Parsers
         }
       GRAPHQL
 
-      events = query_graphql_endpoint(query)
-      events['data']['venue']['events']
+      response = query_graphql_endpoint(query)
+      response.dig('data', 'venue', 'events') || []
     end
 
     # Send a POST request to the GraphQL endpoint

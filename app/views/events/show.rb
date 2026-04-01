@@ -13,6 +13,7 @@ class Views::Events::Show < Views::Base
     content_for(:title) { event.og_title }
     content_for(:image) { site.og_image }
     content_for(:description) { html_to_plaintext(event.description_html) }
+    content_for(:json_ld) { safe(event.to_json_ld(base_url: request.base_url).to_json) }
 
     Event(
       display_context: :page,
@@ -29,7 +30,7 @@ class Views::Events::Show < Views::Base
   private
 
   def render_event_details
-    div(class: 'c c--narrowish c--space-after event__fullinfo') do
+    div(class: 'c c--narrowish c--space-after event__fullinfo e-content') do
       raw safe(event.description_html.to_s)
       event_link(event)
 

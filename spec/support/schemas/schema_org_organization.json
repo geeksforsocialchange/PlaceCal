@@ -1,0 +1,52 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"type": "object",
+	"required": ["@context", "@type", "name"],
+	"properties": {
+		"@context": { "type": "string", "enum": ["https://schema.org"] },
+		"@type": { "type": "string", "enum": ["Organization"] },
+		"@id": { "type": "string", "minLength": 1 },
+		"name": { "type": "string", "minLength": 1 },
+		"url": { "type": "string" },
+		"description": { "type": "string", "minLength": 1 },
+		"telephone": { "type": "string" },
+		"email": { "type": "string" },
+		"image": { "type": "string" },
+		"sameAs": {
+			"type": "array",
+			"items": { "type": "string", "minLength": 1 },
+			"minItems": 1
+		},
+		"address": {
+			"type": "object",
+			"required": ["@type"],
+			"properties": {
+				"@type": { "type": "string", "enum": ["PostalAddress"] },
+				"streetAddress": { "type": "string" },
+				"addressLocality": { "type": "string" },
+				"postalCode": { "type": "string" },
+				"addressCountry": { "type": "string" }
+			},
+			"additionalProperties": false
+		},
+		"event": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"required": ["@type", "@id", "name", "startDate"],
+				"properties": {
+					"@type": { "type": "string", "enum": ["Event"] },
+					"@id": { "type": "string", "minLength": 1 },
+					"name": { "type": "string", "minLength": 1 },
+					"startDate": {
+						"type": "string",
+						"pattern": "^\\d{4}-\\d{2}-\\d{2}T"
+					},
+					"endDate": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T" }
+				},
+				"additionalProperties": false
+			}
+		}
+	},
+	"additionalProperties": false
+}
