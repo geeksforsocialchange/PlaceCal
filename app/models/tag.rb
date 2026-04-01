@@ -6,6 +6,7 @@ class Tag < ApplicationRecord
   extend Enumerize
 
   # -- Constants --
+
   self.table_name = 'tags' # Maybe we can remove this? Tag should automagically railsify to tags right?
 
   # -- Attributes --
@@ -58,6 +59,8 @@ class Tag < ApplicationRecord
                      }
 
   # -- Instance methods --
+
+  # @return [String] e.g. "Partnership: My Tag"
   def name_with_type
     s_type = type || 'Tag'
     "#{s_type}: #{name}"
@@ -66,6 +69,7 @@ class Tag < ApplicationRecord
   private
 
   # -- Private methods --
+
   def check_editable_fields
     return if new_record? || !system_tag
 

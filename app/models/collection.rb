@@ -19,16 +19,18 @@ class Collection < ApplicationRecord
   mount_uploader :image, ImageUploader
 
   # -- Instance methods --
-  # Sort associated events by start date
+
+  # @return [ActiveRecord::Relation<Event>] events ordered by start date
   def sorted_events
     events.order(:dtstart).includes(:place)
   end
 
-  # The first date in this time sequence
+  # @return [DateTime, nil] earliest event start date in this collection
   def start_date
     sorted_events&.first&.dtstart
   end
 
+  # @return [String] URL path using custom route or fallback to /collections/:id
   def named_route
     route.length.positive? ? "/#{route}" : "/collections/#{id}"
   end

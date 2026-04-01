@@ -112,18 +112,18 @@ class Article < ApplicationRecord
   before_save :update_published_at, if: ->(obj) { obj.is_draft_changed? }
 
   # -- Instance methods --
-  # This retrieves the author's name for use in the GQL output
-  # We return emptystring because that indicates to the user that this field is required
+
+  # @return [String] author's full name, or empty string if unset
   def author_name
     author&.full_name ? author.full_name : ''
   end
 
-  # This retrieves the url of the highres header image for use in GQL output
-  # We let it return nil because articles are not guaranteed to have images
+  # @return [String, nil] high-resolution header image URL
   def highres_image
     article_image&.highres&.url
   end
 
+  # @return [Array] FriendlyId slug candidates
   def slug_candidates
     [%i[title id]]
   end

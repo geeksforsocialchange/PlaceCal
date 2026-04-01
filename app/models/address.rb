@@ -40,6 +40,11 @@ class Address < ApplicationRecord
   after_commit :invalidate_neighbourhood_partners_count!, if: :neighbourhood_id_previously_changed?
 
   # -- Class methods --
+
+  # Build and save an address from an array of street components.
+  # @param components [Array<String>] up to 3 street address lines
+  # @param postcode [String]
+  # @return [Address, nil] persisted address, or nil if save fails
   def self.build_from_components(components, postcode)
     return if components.blank?
 
@@ -53,7 +58,7 @@ class Address < ApplicationRecord
   end
 
   # Delete addresses not referenced by any partner or event.
-  # Returns the number of deleted rows.
+  # @return [Integer] number of deleted rows
   def self.delete_orphaned!
     in_use_ids = Set.new(Partner.pluck(:address_id).compact) |
                  Set.new(Event.pluck(:address_id).compact)
@@ -65,10 +70,17 @@ class Address < ApplicationRecord
   end
 
   # -- Instance methods --
+
+  # Normalizes postcode via UKPostcode before saving.
+  # @param str [String]
+  # @return [String]
   def postcode=(str)
     super(UKPostcode.parse(str).to_s)
   end
 
+  # Shift existing street lines down and insert a room number as line 1.
+  # @param room_number_string [String]
+  # @return [Address] self
   def prepend_room_number(room_number_string)
     self.street_address3 = street_address2
     self.street_address2 = street_address
@@ -76,29 +88,29 @@ class Address < ApplicationRecord
     self
   end
 
+  # @return [Array<String>] non-blank street address lines
   def street_lines
     [street_address, street_address2, street_address3].compact_blank
   end
 
+  # @return [Boolean] true if all address fields are blank
   def missing_values?
     street_lines.empty? && city.blank? && postcode.blank?
   end
 
+  # @return [String, nil]
   def first_address_line
     street_address
   end
 
-  # Needed for schema.org outputs as streetAddress
+  # @return [String] comma-joined street lines (for schema.org streetAddress)
   def full_street_address
     street_lines.join(', ')
   end
 
+  # @return [Array<String>] all non-blank lines including city and postcode
   def all_address_lines
     [*street_lines, city, postcode].compact_blank
-  end
-
-  def to_s
-    all_address_lines.join(', ')
   end
 
   private

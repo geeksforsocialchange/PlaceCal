@@ -2,6 +2,7 @@
 
 class SitesNeighbourhood < ApplicationRecord
   # -- Constants --
+
   self.table_name = 'sites_neighbourhoods'
 
   # -- Attributes --
@@ -19,6 +20,8 @@ class SitesNeighbourhood < ApplicationRecord
             }
 
   # -- Instance methods --
+
+  # @return [String] neighbourhood display name
   def name
     neighbourhood.to_s
   end
