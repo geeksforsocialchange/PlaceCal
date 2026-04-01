@@ -1,15 +1,19 @@
 # frozen_string_literal: true
 
 class ServiceArea < ApplicationRecord
+  # -- Associations --
   belongs_to :neighbourhood
   belongs_to :partner
 
+  # -- Validations --
   validates :partner, uniqueness: { scope: :neighbourhood }
 
+  # -- Callbacks --
   after_commit :refresh_neighbourhood_partners_count
 
   private
 
+  # -- Private methods --
   def refresh_neighbourhood_partners_count
     # Refresh current neighbourhood
     neighbourhood&.refresh_partners_count!
