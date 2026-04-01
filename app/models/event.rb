@@ -6,6 +6,7 @@ class Event < ApplicationRecord
 
   include HtmlRenderCache
   include EventJsonLd
+  include Permalinkable
 
   # -- Attributes --
   attribute :summary,                  :text
@@ -25,6 +26,7 @@ class Event < ApplicationRecord
 
   html_render_cache :description
   html_render_cache :summary
+  permalink_resource 'events'
 
   # -- Associations --
   belongs_to :organiser, class_name: 'Partner', optional: true
@@ -173,10 +175,6 @@ class Event < ApplicationRecord
 
   def date_year
     dtstart.strftime('%e %b %Y')
-  end
-
-  def permalink
-    "https://placecal.org/events/#{id}"
   end
 
   def neighbourhood

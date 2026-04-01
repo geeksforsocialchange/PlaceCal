@@ -4,6 +4,7 @@ class Partner < ApplicationRecord
   # -- Includes / Extends --
   include Validation
   include PartnerJsonLd
+  include Permalinkable
   extend FriendlyId
   include HtmlRenderCache
 
@@ -54,6 +55,7 @@ class Partner < ApplicationRecord
   html_render_cache :hidden_reason
 
   auto_strip_attributes :name, :summary, :url, :twitter_handle, :instagram_handle, :facebook_link, :public_phone, :public_email
+  permalink_resource 'partners'
 
   # -- Associations --
   has_and_belongs_to_many :users
@@ -259,10 +261,6 @@ class Partner < ApplicationRecord
 
       old_address&.destroy
     end
-  end
-
-  def permalink
-    "https://placecal.org/partners/#{id}"
   end
 
   def twitter_url

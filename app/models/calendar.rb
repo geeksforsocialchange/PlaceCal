@@ -169,16 +169,11 @@ class Calendar < ApplicationRecord
   #
   # @return nothing
   def queue_for_import!(force_import, from_date = Time.now)
-    transaction do
+    without_timestamps do
       return if is_busy?
 
-      Calendar.record_timestamps = false
       update! calendar_state: :in_queue, notices: nil
-
       CalendarImporterJob.perform_later id, from_date, force_import
-
-    ensure
-      Calendar.record_timestamps = true
     end
   end
 
@@ -186,14 +181,10 @@ class Calendar < ApplicationRecord
   #
   # @return nothing
   def flag_start_import_job!
-    transaction do
+    without_timestamps do
       return unless calendar_state.in_queue?
 
-      Calendar.record_timestamps = false
       update! calendar_state: :in_worker, notices: nil
-
-    ensure
-      Calendar.record_timestamps = true
     end
   end
 
@@ -207,10 +198,8 @@ class Calendar < ApplicationRecord
   #   integer checksum of retrieved source payload
   # @return nothing
   def flag_complete_import_job!(notices, importer_used)
-    transaction do
+    without_timestamps do
       return unless calendar_state.in_worker?
-
-      Calendar.record_timestamps = false
 
       update!(
         calendar_state: :idle,
@@ -219,39 +208,29 @@ class Calendar < ApplicationRecord
         critical_error: nil,
         importer_used: importer_used
       )
-
-    ensure
-      Calendar.record_timestamps = true
     end
   end
 
   def flag_checksum_change!(checksum)
-    transaction do
-      Calendar.record_timestamps = false
+    without_timestamps do
       update!(
         last_checksum: checksum,
         checksum_updated_at: DateTime.current
       )
-    ensure
-      Calendar.record_timestamps = true
     end
   end
 
   def flag_bad_source!(problem)
-    transaction do
+    without_timestamps do
       return unless calendar_state.in_worker?
 
       # we need the state to be valid so we discard everything
       # before saving error
       reload
 
-      Calendar.record_timestamps = false
       self.calendar_state = :bad_source
       self.critical_error = problem
       save!
-
-    ensure
-      Calendar.record_timestamps = true
     end
   end
 
@@ -267,20 +246,16 @@ class Calendar < ApplicationRecord
   # @eturn
   #   nothing
   def flag_error_import_job!(problem)
-    transaction do
+    without_timestamps do
       return unless calendar_state.in_worker?
 
       # we need the state to be valid so we discard everything
       # before saving error
       reload
 
-      Calendar.record_timestamps = false
       self.calendar_state = :error
       self.critical_error = problem
       save validate: false
-
-    ensure
-      Calendar.record_timestamps = true
     end
   end
 
@@ -310,6 +285,17 @@ class Calendar < ApplicationRecord
   private
 
   # -- Private methods --
+
+  # Wraps a block in a transaction with timestamps disabled, so that
+  # state-machine transitions don't clobber updated_at.
+  def without_timestamps
+    transaction do
+      Calendar.record_timestamps = false
+      yield
+    ensure
+      Calendar.record_timestamps = true
+    end
+  end
 
   # called for validation
   def check_source_reachable

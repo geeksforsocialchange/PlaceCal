@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class Address < ApplicationRecord
+  # -- Includes / Extends --
+  include NeighbourhoodCacheInvalidator
+
   # -- Attributes --
   attribute :street_address,  :string
   attribute :street_address2, :string
@@ -34,7 +37,7 @@ class Address < ApplicationRecord
   }
 
   # -- Callbacks --
-  after_commit :refresh_neighbourhood_partners_count, if: :neighbourhood_id_previously_changed?
+  after_commit :invalidate_neighbourhood_partners_count!, if: :neighbourhood_id_previously_changed?
 
   # -- Class methods --
   def self.build_from_components(components, postcode)
@@ -132,16 +135,5 @@ class Address < ApplicationRecord
     # Makes it easier to catch dupes
     self.longitude = res['longitude']
     self.latitude = res['latitude']
-  end
-
-  def refresh_neighbourhood_partners_count
-    # Refresh current neighbourhood
-    neighbourhood&.refresh_partners_count!
-
-    # Refresh old neighbourhood if it changed
-    old_neighbourhood_id = previous_changes.dig('neighbourhood_id', 0)
-    return unless old_neighbourhood_id
-
-    Neighbourhood.find_by(id: old_neighbourhood_id)&.refresh_partners_count!
   end
 end

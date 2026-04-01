@@ -1,11 +1,16 @@
 # frozen_string_literal: true
 
 class Collection < ApplicationRecord
+  # -- Includes / Extends --
+  include Permalinkable
+
   # -- Attributes --
   attribute :name,        :string
   attribute :description, :text
   attribute :route,       :string
   # image -- managed by CarrierWave, attribute declaration skipped
+
+  permalink_resource 'collections'
 
   # -- Associations --
   has_and_belongs_to_many :events
@@ -22,10 +27,6 @@ class Collection < ApplicationRecord
   # The first date in this time sequence
   def start_date
     sorted_events&.first&.dtstart
-  end
-
-  def permalink
-    "https://placecal.org/collections/#{id}"
   end
 
   def named_route
