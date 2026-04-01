@@ -47,7 +47,7 @@ class CalendarImporter::CalendarImporter
   def validate_feed!
     url = @calendar.source.to_s.strip
     raise UnsupportedFeed, 'The provided URL is missing' if url.blank?
-    raise UnsupportedFeed, 'The provided URL is not a valid URL' unless Calendar::CALENDAR_REGEX.match?(url)
+    raise UnsupportedFeed, 'The provided URL is not a valid URL' unless Validation::CALENDAR_URL_REGEX.match?(url)
 
     # API-based parsers validate connectivity through their own authenticated
     # API calls, and their source URLs may be behind Cloudflare challenges.

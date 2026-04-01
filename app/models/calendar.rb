@@ -9,8 +9,6 @@ class Calendar < ApplicationRecord
   # -- Constants --
   self.inheritance_column = nil
 
-  CALENDAR_REGEX = %r{\A(?:(?:(https?|webcal))://)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:/[^\s]*)?\z}i.freeze
-
   ALLOWED_STATES = %i[idle in_queue in_worker error bad_source].freeze
 
   # -- Enums / Enumerize --
@@ -63,9 +61,10 @@ class Calendar < ApplicationRecord
   validates :place, presence: { if: :requires_default_location?,
                                 message: "can't be blank with this strategy" }
   validates :source, uniqueness: { message: 'calendar source already in use' },
-                     format: { with: CALENDAR_REGEX, message: 'not a valid URL' }
+                     format: { with: CALENDAR_URL_REGEX, message: 'not a valid URL' }
 
   validate :check_source_reachable
+  validate :source_not_private_ip
 
   # -- Scopes --
   scope :that_appear_on_site, lambda { |site|
@@ -295,6 +294,13 @@ class Calendar < ApplicationRecord
     ensure
       Calendar.record_timestamps = true
     end
+  end
+
+  def source_not_private_ip
+    return unless source.present? && source_changed?
+    return if errors[:source].any?
+
+    errors.add :source, 'must not point to a private network address' if Validation.private_ip?(source)
   end
 
   # called for validation
