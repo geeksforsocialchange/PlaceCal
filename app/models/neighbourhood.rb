@@ -22,17 +22,17 @@ class Neighbourhood < ApplicationRecord
   LEVEL_NAMES = LEVELS.invert.freeze
 
   # -- Attributes --
+  # ancestry -- managed by Ancestry gem, attribute declaration skipped
+  attribute :level,           :integer
   attribute :name,            :string
   attribute :name_abbr,       :string
   attribute :parent_name,     :string
+  attribute :partners_count,  :integer, default: 0
+  attribute :release_date,    :datetime
   attribute :unit,            :string, default: 'ward'
   attribute :unit_code_key,   :string, default: 'WD19CD'
   attribute :unit_code_value, :string
   attribute :unit_name,       :string
-  attribute :level,           :integer
-  attribute :release_date,    :datetime
-  attribute :partners_count,  :integer, default: 0
-  # ancestry -- managed by Ancestry gem, attribute declaration skipped
 
   # -- Associations --
   has_many :sites_neighbourhoods, dependent: :destroy

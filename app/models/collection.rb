@@ -5,10 +5,10 @@ class Collection < ApplicationRecord
   include Permalinkable
 
   # -- Attributes --
-  attribute :name,        :string
   attribute :description, :text
-  attribute :route,       :string
   # image -- managed by CarrierWave, attribute declaration skipped
+  attribute :name,        :string
+  attribute :route,       :string
 
   permalink_resource 'collections'
 

@@ -9,9 +9,9 @@ class Tag < ApplicationRecord
   self.table_name = 'tags' # Maybe we can remove this? Tag should automagically railsify to tags right?
 
   # -- Attributes --
+  attribute :description, :text
   attribute :name,        :string
   attribute :slug,        :string
-  attribute :description, :text
   attribute :system_tag,  :boolean, default: false
   # type -- managed by Rails STI, attribute declaration skipped
 

@@ -25,20 +25,20 @@ class Site < ApplicationRecord
   # badge_zoom_level -- managed by enumerize, attribute declaration skipped
 
   # -- Attributes --
-  attribute :name,              :string
-  attribute :slug,              :string
-  attribute :url,               :string
-  attribute :place_name,        :string
-  attribute :tagline,           :string
   attribute :description,       :text
   attribute :description_html,  :string # populated by HtmlRenderCache
-  attribute :hero_text,         :string
+  attribute :events_count,      :integer, default: 0
   attribute :hero_alttext,      :string
   attribute :hero_image_credit, :string
+  attribute :hero_text,         :string
   attribute :is_published,      :boolean, default: false
-  attribute :partners_count,    :integer, default: 0
-  attribute :events_count,      :integer, default: 0
   # logo, footer_logo, hero_image -- managed by CarrierWave, attribute declarations skipped
+  attribute :name,              :string
+  attribute :partners_count,    :integer, default: 0
+  attribute :place_name,        :string
+  attribute :slug,              :string
+  attribute :tagline,           :string
+  attribute :url,               :string
 
   friendly_id :name, use: :slugged
   html_render_cache :description

@@ -5,14 +5,14 @@ class Address < ApplicationRecord
   include NeighbourhoodCacheInvalidator
 
   # -- Attributes --
-  attribute :street_address,  :string
-  attribute :street_address2, :string
-  attribute :street_address3, :string
   attribute :city,            :string
-  attribute :postcode,        :string
   attribute :country_code,    :string, default: 'UK'
   attribute :latitude,        :float
   attribute :longitude,       :float
+  attribute :postcode,        :string
+  attribute :street_address,  :string
+  attribute :street_address2, :string
+  attribute :street_address3, :string
 
   auto_strip_attributes :street_address, :street_address2, :street_address3, :city, :postcode
 

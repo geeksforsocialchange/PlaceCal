@@ -2,12 +2,12 @@
 
 class Supporter < ApplicationRecord
   # -- Attributes --
-  attribute :name,        :string
   attribute :description, :string
-  attribute :url,         :string
   attribute :is_global,   :boolean, default: false
-  attribute :weight,      :integer
   # logo -- managed by CarrierWave, attribute declaration skipped
+  attribute :name,        :string
+  attribute :url,         :string
+  attribute :weight,      :integer
 
   # -- Associations --
   has_many :sites_supporters, dependent: :destroy

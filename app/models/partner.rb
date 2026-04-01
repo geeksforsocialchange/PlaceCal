@@ -12,38 +12,38 @@ class Partner < ApplicationRecord
   MAX_CATEGORIES = 3
 
   # -- Attributes --
+  attribute :accessibility_info,      :text
+  attribute :accessibility_info_html, :string  # populated by HtmlRenderCache
+  attribute :admin_email,             :string
+  attribute :admin_name,              :string
+  attribute :booking_info,            :text
+  attribute :calendar_email,          :string
+  attribute :calendar_name,           :string
+  attribute :calendar_phone,          :string
+  attribute :can_be_assigned_events,  :boolean, default: false
+  attribute :description,             :text
+  attribute :description_html,        :string  # populated by HtmlRenderCache
+  attribute :facebook_link,           :string
+  attribute :hidden,                  :boolean, default: false
+  attribute :hidden_blame_id,         :integer
+  attribute :hidden_reason,           :text
+  attribute :hidden_reason_html,      :string  # populated by HtmlRenderCache
+  # image -- managed by CarrierWave, attribute declaration skipped
+  attribute :instagram_handle,        :string
+  attribute :is_a_place,              :boolean, default: false
   attribute :name,                    :string
+  attribute :opening_times,           :json
+  attribute :partner_email,           :string
+  attribute :partner_name,            :string
+  attribute :partner_phone,           :string
+  attribute :public_email,            :string
+  attribute :public_name,             :string
+  attribute :public_phone,            :string
   attribute :slug,                    :string
   attribute :summary,                 :string
   attribute :summary_html,            :string  # populated by HtmlRenderCache
-  attribute :description,             :text
-  attribute :description_html,        :string  # populated by HtmlRenderCache
-  attribute :url,                     :string
-  attribute :hidden,                  :boolean, default: false
-  attribute :hidden_reason,           :text
-  attribute :hidden_reason_html,      :string  # populated by HtmlRenderCache
-  attribute :hidden_blame_id,         :integer
-  attribute :opening_times,           :json
-  attribute :accessibility_info,      :text
-  attribute :accessibility_info_html, :string  # populated by HtmlRenderCache
-  attribute :booking_info,            :text
-  attribute :is_a_place,              :boolean, default: false
-  attribute :can_be_assigned_events,  :boolean, default: false
   attribute :twitter_handle,          :string
-  attribute :instagram_handle,        :string
-  attribute :facebook_link,           :string
-  attribute :admin_name,              :string
-  attribute :admin_email,             :string
-  attribute :calendar_name,           :string
-  attribute :calendar_email,          :string
-  attribute :calendar_phone,          :string
-  attribute :partner_name,            :string
-  attribute :partner_email,           :string
-  attribute :partner_phone,           :string
-  attribute :public_name,             :string
-  attribute :public_email,            :string
-  attribute :public_phone,            :string
-  # image -- managed by CarrierWave, attribute declaration skipped
+  attribute :url,                     :string
 
   attr_accessor :accessed_by_user
 

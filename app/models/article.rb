@@ -6,13 +6,13 @@ class Article < ApplicationRecord
   include HtmlRenderCache
 
   # -- Attributes --
-  attribute :title,        :text
+  # article_image -- managed by CarrierWave, attribute declaration skipped
   attribute :body,         :text
   attribute :body_html,    :string # populated by HtmlRenderCache
-  attribute :slug,         :string
   attribute :is_draft,     :boolean, default: true
   attribute :published_at, :date
-  # article_image -- managed by CarrierWave, attribute declaration skipped
+  attribute :slug,         :string
+  attribute :title,        :text
 
   friendly_id :slug_candidates, use: :slugged
   html_render_cache :body

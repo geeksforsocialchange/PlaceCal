@@ -22,21 +22,21 @@ class User < ApplicationRecord
   # role -- managed by enumerize, attribute declaration skipped
 
   # -- Attributes --
-  attribute :first_name,               :string
-  attribute :last_name,                :string
-  attribute :email,                    :string, default: ''
-  attribute :phone,                    :string
   attribute :access_token,             :string
   attribute :access_token_expires_at,  :string
-  attribute :skip_password_validation, :boolean, default: false # virtual, used by Devise password_required?
-  attribute :current_password,         :string                  # virtual, used by password change forms
-  # role -- managed by enumerize, attribute declaration skipped
   # avatar -- managed by CarrierWave, attribute declaration skipped
+  attribute :current_password,         :string                  # virtual, used by password change forms
   # Devise columns (encrypted_password, reset_password_token, reset_password_sent_at,
   #   remember_created_at, sign_in_count, current_sign_in_at, last_sign_in_at,
   #   current_sign_in_ip, last_sign_in_ip, invitation_token, invitation_created_at,
   #   invitation_sent_at, invitation_accepted_at, invitation_limit, invited_by_type,
   #   invited_by_id) -- managed by Devise, attribute declarations skipped
+  attribute :email,                    :string, default: ''
+  attribute :first_name,               :string
+  attribute :last_name,                :string
+  attribute :phone,                    :string
+  # role -- managed by enumerize, attribute declaration skipped
+  attribute :skip_password_validation, :boolean, default: false # virtual, used by Devise password_required?
 
   auto_strip_attributes :first_name, :last_name, :email, :phone
 

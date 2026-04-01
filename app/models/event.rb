@@ -9,20 +9,20 @@ class Event < ApplicationRecord
   include Permalinkable
 
   # -- Attributes --
-  attribute :summary,                  :text
-  attribute :summary_html,             :string # populated by HtmlRenderCache
+  attribute :are_spaces_available,     :string
   attribute :description,              :text
   attribute :description_html,         :string # populated by HtmlRenderCache
-  attribute :dtstart,                  :datetime
   attribute :dtend,                    :datetime
-  attribute :rrule,                    :json
-  attribute :notices,                  :json
-  attribute :uid,                      :string
-  attribute :raw_location_from_source, :text
-  attribute :publisher_url,            :string
+  attribute :dtstart,                  :datetime
   attribute :footer,                   :text
-  attribute :are_spaces_available,     :string
   attribute :is_active,                :boolean, default: true
+  attribute :notices,                  :json
+  attribute :publisher_url,            :string
+  attribute :raw_location_from_source, :text
+  attribute :rrule,                    :json
+  attribute :summary,                  :text
+  attribute :summary_html,             :string # populated by HtmlRenderCache
+  attribute :uid,                      :string
 
   html_render_cache :description
   html_render_cache :summary

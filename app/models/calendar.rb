@@ -33,21 +33,21 @@ class Calendar < ApplicationRecord
   # calendar_state -- managed by enumerize, attribute declaration skipped
 
   # -- Attributes --
-  attribute :name,                 :string
-  attribute :source,               :string
-  attribute :notices,              :json
-  attribute :notice_count,         :integer
+  attribute :api_token,            :string
+  attribute :checksum_updated_at,  :datetime
   attribute :critical_error,       :text
   attribute :importer_mode,        :string, default: 'auto'
   attribute :importer_used,        :string
   attribute :is_working,           :boolean, default: true
-  attribute :last_import_at,       :datetime
   attribute :last_checksum,        :string
-  attribute :checksum_updated_at,  :datetime
-  attribute :public_contact_name,  :string
+  attribute :last_import_at,       :datetime
+  attribute :name,                 :string
+  attribute :notice_count,         :integer
+  attribute :notices,              :json
   attribute :public_contact_email, :string
+  attribute :public_contact_name,  :string
   attribute :public_contact_phone, :string
-  attribute :api_token,            :string
+  attribute :source,               :string
 
   alias_attribute :to_s, :name
 
