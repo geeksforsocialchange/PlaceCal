@@ -225,6 +225,10 @@ class Partner < ApplicationRecord
     arr.flatten.uniq
   end
 
+  def to_s
+    name
+  end
+
   # @return [Boolean] whether FriendlyId should generate a new slug
   def should_generate_new_friendly_id?
     slug.blank?

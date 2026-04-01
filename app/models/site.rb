@@ -87,6 +87,10 @@ class Site < ApplicationRecord
 
   # ==== Instance methods ====
 
+  def to_s
+    "#{id}: #{name}"
+  end
+
   # @return [Array<Neighbourhood>] all neighbourhoods in this site's subtrees
   def owned_neighbourhoods
     neighbourhoods.map(&:subtree).flatten

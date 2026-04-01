@@ -187,6 +187,10 @@ class Neighbourhood < ApplicationRecord
     self['name_abbr'] = value.presence
   end
 
+  def to_s
+    "#{fullname} (#{unit})"
+  end
+
   # @return [Neighbourhood, nil] ancestor at district level
   def district
     ancestors.where(unit: 'district').first
