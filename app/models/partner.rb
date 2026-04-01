@@ -12,38 +12,39 @@ class Partner < ApplicationRecord
   MAX_CATEGORIES = 3
 
   # -- Attributes --
-  attribute :accessibility_info,      :text
-  attribute :accessibility_info_html, :string  # populated by HtmlRenderCache
-  attribute :admin_email,             :string
-  attribute :admin_name,              :string
-  attribute :booking_info,            :text
-  attribute :calendar_email,          :string
-  attribute :calendar_name,           :string
-  attribute :calendar_phone,          :string
-  attribute :can_be_assigned_events,  :boolean, default: false
-  attribute :description,             :text
-  attribute :description_html,        :string  # populated by HtmlRenderCache
-  attribute :facebook_link,           :string
-  attribute :hidden,                  :boolean, default: false
-  attribute :hidden_blame_id,         :integer
-  attribute :hidden_reason,           :text
-  attribute :hidden_reason_html,      :string  # populated by HtmlRenderCache
+  # Columns marked (nullable) have no NOT NULL constraint in the DB.
+  attribute :accessibility_info,      :text                        # nullable
+  attribute :accessibility_info_html, :string                      # nullable, populated by HtmlRenderCache
+  attribute :admin_email,             :string                      # nullable
+  attribute :admin_name,              :string                      # nullable
+  attribute :booking_info,            :text                        # nullable
+  attribute :calendar_email,          :string                      # nullable
+  attribute :calendar_name,           :string                      # nullable
+  attribute :calendar_phone,          :string                      # nullable
+  attribute :can_be_assigned_events,  :boolean, default: false     # NOT NULL
+  attribute :description,             :text                        # nullable
+  attribute :description_html,        :string                      # nullable, populated by HtmlRenderCache
+  attribute :facebook_link,           :string                      # nullable
+  attribute :hidden,                  :boolean, default: false     # NOT NULL
+  attribute :hidden_blame_id,         :integer                     # nullable
+  attribute :hidden_reason,           :text                        # nullable
+  attribute :hidden_reason_html,      :string                      # nullable, populated by HtmlRenderCache
   # image -- managed by CarrierWave, attribute declaration skipped
-  attribute :instagram_handle,        :string
-  attribute :is_a_place,              :boolean, default: false
-  attribute :name,                    :string
-  attribute :opening_times,           :json
-  attribute :partner_email,           :string
-  attribute :partner_name,            :string
-  attribute :partner_phone,           :string
-  attribute :public_email,            :string
-  attribute :public_name,             :string
-  attribute :public_phone,            :string
-  attribute :slug,                    :string
-  attribute :summary,                 :string
-  attribute :summary_html,            :string  # populated by HtmlRenderCache
-  attribute :twitter_handle,          :string
-  attribute :url,                     :string
+  attribute :instagram_handle,        :string                      # nullable
+  attribute :is_a_place,              :boolean, default: false     # NOT NULL
+  attribute :name,                    :string                      # NOT NULL
+  attribute :opening_times,           :json                        # nullable — Array<Hash{dayOfWeek, opens, closes}>, schema.org OpeningHoursSpecification
+  attribute :partner_email,           :string                      # nullable
+  attribute :partner_name,            :string                      # nullable
+  attribute :partner_phone,           :string                      # nullable
+  attribute :public_email,            :string                      # nullable
+  attribute :public_name,             :string                      # nullable
+  attribute :public_phone,            :string                      # nullable
+  attribute :slug,                    :string                      # nullable
+  attribute :summary,                 :string                      # nullable
+  attribute :summary_html,            :string                      # nullable, populated by HtmlRenderCache
+  attribute :twitter_handle,          :string                      # nullable
+  attribute :url,                     :string                      # nullable
 
   attr_accessor :accessed_by_user
 

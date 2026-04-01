@@ -31,21 +31,22 @@ class Calendar < ApplicationRecord
   # calendar_state -- managed by enumerize, attribute declaration skipped
 
   # -- Attributes --
-  attribute :api_token,            :string
-  attribute :checksum_updated_at,  :datetime
-  attribute :critical_error,       :text
-  attribute :importer_mode,        :string, default: 'auto'
-  attribute :importer_used,        :string
-  attribute :is_working,           :boolean, default: true
-  attribute :last_checksum,        :string
-  attribute :last_import_at,       :datetime
-  attribute :name,                 :string
-  attribute :notice_count,         :integer
-  attribute :notices,              :json
-  attribute :public_contact_email, :string
-  attribute :public_contact_name,  :string
-  attribute :public_contact_phone, :string
-  attribute :source,               :string
+  # Columns marked (nullable) have no NOT NULL constraint in the DB.
+  attribute :api_token,            :string                       # nullable
+  attribute :checksum_updated_at,  :datetime                     # nullable
+  attribute :critical_error,       :text                         # nullable
+  attribute :importer_mode,        :string, default: 'auto'      # nullable
+  attribute :importer_used,        :string                       # nullable
+  attribute :is_working,           :boolean, default: true       # NOT NULL
+  attribute :last_checksum,        :string                       # nullable
+  attribute :last_import_at,       :datetime                     # nullable
+  attribute :name,                 :string                       # NOT NULL
+  attribute :notice_count,         :integer                      # nullable
+  attribute :notices,              :json                         # nullable — Array<String>, importer messages
+  attribute :public_contact_email, :string                       # nullable
+  attribute :public_contact_name,  :string                       # nullable
+  attribute :public_contact_phone, :string                       # nullable
+  attribute :source,               :string                       # NOT NULL
 
   alias_attribute :to_s, :name
 
