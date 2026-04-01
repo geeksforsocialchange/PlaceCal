@@ -247,7 +247,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base
                 span(class: 'text-sm font-medium text-base-content truncate') { event.summary }
                 p(class: 'text-xs text-gray-600 truncate') do
                   plain event.dtstart.strftime('%H:%M')
-                  plain " \u00B7 #{event.partner.name}" if event.partner
+                  plain " \u00B7 #{event.organiser.name}" if event.organiser
                 end
               end
             end

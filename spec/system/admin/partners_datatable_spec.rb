@@ -20,7 +20,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
   let!(:partner_alpha) do
     address = create(:address, neighbourhood: ward1)
     partner = create(:partner, name: "Alpha Community Centre", address: address)
-    create(:calendar, partner: partner)
+    create(:calendar, organiser: partner)
     create(:partner_admin, partner: partner)
     partner.tags << partnership1
     partner.tags << category1

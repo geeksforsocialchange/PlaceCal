@@ -99,8 +99,8 @@ class Views::Admin::Calendars::FormTabPreview < Views::Admin::Base
   def render_event_location(event)
     if event.address
       plain truncate(event.address.to_s, length: 40)
-    elsif event.partner
-      plain event.partner.name
+    elsif event.organiser
+      plain event.organiser.name
     else
       span(class: 'text-gray-500') { t('admin.calendars.events.no_location') }
     end

@@ -36,16 +36,16 @@ class Views::Admin::Calendars::FormTabSource < Views::Admin::Base
 
   def render_partner_field(calendar)
     fieldset(class: 'fieldset') do
-      label(for: 'calendar_partner_id', class: 'fieldset-legend') do
+      label(for: 'calendar_organiser_id', class: 'fieldset-legend') do
         plain t('admin.calendars.fields.partner_organiser')
         whitespace
         span(class: 'text-error') { t('admin.labels.required') }
       end
-      raw form.input_field(:partner_id,
+      raw form.input_field(:organiser_id,
                            as: :select,
                            collection: options_for_organiser,
                            include_blank: t('admin.placeholders.select_model', model: Partner.model_name.human.downcase),
-                           selected: (calendar.partner&.id || calendar.partner_id).to_s,
+                           selected: (calendar.organiser&.id || calendar.organiser_id).to_s,
                            class: 'select select-bordered w-full',
                            'aria-label': t('admin.calendars.fields.partner_organiser'),
                            data: {

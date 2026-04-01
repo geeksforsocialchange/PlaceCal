@@ -41,7 +41,7 @@ class PartnersController < ApplicationController
   def show
     redirect_to root_path if @partner.hidden
 
-    upcoming_count = Event.by_partner(@partner).upcoming.count
+    upcoming_count = Event.by_organiser_or_place(@partner).upcoming.count
     if upcoming_count.zero?
       # If no events, show an appropriate message why
       @events = []
@@ -49,11 +49,11 @@ class PartnersController < ApplicationController
     elsif upcoming_count < PAGINATION_THRESHOLD
       # If only a few, show them all with no pagination
       query = EventsQuery.new(site: nil, day: @current_day)
-      @events = query.call(period: 'future', partner_or_place: @partner, sort: 'time')
+      @events = query.call(period: 'future', organiser_or_place: @partner, sort: 'time')
       @paginator = false
     else
       # If a lot, paginate - default to "upcoming" which shows next N events
-      partner_events = Event.by_partner(@partner)
+      partner_events = Event.by_organiser(@partner)
       weekly_count = partner_events.find_next_7_days(@current_day).count
       @date_period = weekly_count >= EventsQuery::WEEKLY_DENSITY_THRESHOLD ? 'week' : 'month'
       @period = params[:period] || 'upcoming'
@@ -62,7 +62,7 @@ class PartnersController < ApplicationController
       query = EventsQuery.new(site: nil, day: @current_day)
       @events = query.call(
         period: @period,
-        partner_or_place: @partner,
+        organiser_or_place: @partner,
         repeating: @repeating,
         sort: @sort
       )
@@ -85,7 +85,7 @@ class PartnersController < ApplicationController
       end
       format.ics do
         track_ical_download
-        cal = create_calendar(Event.by_partner(@partner).ical_feed, "#{@partner} - Powered by PlaceCal")
+        cal = create_calendar(Event.by_organiser_or_place(@partner).ical_feed, "#{@partner} - Powered by PlaceCal")
         cal.publish
         render plain: cal.to_ical
       end

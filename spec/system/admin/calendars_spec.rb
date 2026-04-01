@@ -9,7 +9,7 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
   let!(:partner_two) { create(:oldtown_library) }
 
   describe "tom-select inputs on calendar edit form" do
-    let!(:calendar) { create(:calendar, partner: partner, name: "Test Calendar") }
+    let!(:calendar) { create(:calendar, organiser: partner, name: "Test Calendar") }
 
     it "allows changing partner organiser", :aggregate_failures do
       click_link "Calendars"
@@ -35,7 +35,7 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
       click_link "Test Calendar"
 
       # Check partner changed
-      partner_select = find("#calendar_partner_id", visible: :all)
+      partner_select = find("#calendar_organiser_id", visible: :all)
       expect(partner_select.value).to eq(partner_two.id.to_s)
     end
 

@@ -7,6 +7,9 @@ class Components::Event < Components::Base
   prop :show_neighbourhoods, _Boolean, default: false
   prop :badge_zoom_level, _Nilable(String), default: nil
   prop :site_tagline, _Nilable(String), default: nil
+  # When rendered on a partner page, set this to that partner so we don't
+  # redundantly show "By X" or "at X" when X is the page we're already on.
+  prop :context_partner, _Nilable(::Partner), default: nil
 
   def view_template
     div(class: "h-event event #{page? ? 'event--full' : 'event--list'}") do
@@ -44,9 +47,10 @@ class Components::Event < Components::Base
       render_time_detail
       render_detail('event__duration', :event_duration, duration) if duration
       render_date_detail
-      render_detail('event__repeats', :event_online, 'Online') if online?
-      render_location if partner_at_location || first_address_line
       render_detail('event__repeats', :event_repeats, repeats) if repeats
+      render_detail('event__repeats', :event_online, 'Online') if online?
+      render_organiser if show_organiser?
+      render_place if show_place?
     end
   end
 
@@ -76,14 +80,39 @@ class Components::Event < Components::Base
     end
   end
 
-  def render_location
+  def show_organiser?
+    organiser = @event.try(:organiser)
+    return false if organiser.blank?
+    return false if organiser == partner_at_location  # place row already shows it
+    return false if organiser == @context_partner      # we're on their page
+
+    true
+  end
+
+  def show_place?
+    return false if partner_at_location.blank? && first_address_line.blank?
+    return true if @context_partner.blank?  # no context to suppress against
+
+    partner_at_location != @context_partner  # hide if we're on the place's page
+  end
+
+  def render_organiser
+    organiser = @event.organiser
+    div(class: 'event__detail event__organiser') do
+      raw(view_context.icon(:partner, size: nil))
+      plain ' '
+      link_to(organiser.name.truncate(25), partner_path(organiser), data: { turbo_frame: '_top' })
+    end
+  end
+
+  def render_place
     div(class: 'event__detail event__location p-location') do
       raw(view_context.icon(:event_place, size: nil))
+      plain ' '
       if partner_at_location
-        plain ' '
-        link_to(partner_at_location, partner_path(partner_at_location), data: { turbo_frame: '_top' })
+        link_to(partner_at_location.name.truncate(25), partner_path(partner_at_location), data: { turbo_frame: '_top' })
       elsif first_address_line
-        plain " #{first_address_line}"
+        plain first_address_line.truncate(25)
       end
     end
   end

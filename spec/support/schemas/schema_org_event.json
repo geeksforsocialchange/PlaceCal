@@ -8,7 +8,8 @@
 		"name",
 		"startDate",
 		"url",
-		"eventStatus"
+		"eventStatus",
+		"eventAttendanceMode"
 	],
 	"properties": {
 		"@context": { "type": "string", "enum": ["https://schema.org"] },
@@ -25,6 +26,11 @@
 		},
 		"url": { "type": "string", "minLength": 1 },
 		"eventStatus": { "type": "string", "pattern": "^https://schema\\.org/" },
+		"eventAttendanceMode": {
+			"type": "string",
+			"pattern": "^https://schema\\.org/"
+		},
+		"image": { "type": "string", "minLength": 1 },
 		"description": { "type": "string", "minLength": 1 },
 		"location": {
 			"oneOf": [

@@ -9,6 +9,7 @@ class Components::EventList < Components::Base
   prop :next_date, _Nilable(Time), default: nil
   prop :site_tagline, _Nilable(String), default: nil
   prop :truncated, _Boolean, default: false
+  prop :context_partner, _Nilable(::Partner), default: nil
 
   def view_template
     @events.any? ? render_events : render_empty_state
@@ -39,7 +40,8 @@ class Components::EventList < Components::Base
       primary_neighbourhood: @primary_neighbourhood,
       show_neighbourhoods: @show_neighbourhoods,
       badge_zoom_level: @badge_zoom_level,
-      site_tagline: @site_tagline
+      site_tagline: @site_tagline,
+      context_partner: @context_partner
     )
   end
 

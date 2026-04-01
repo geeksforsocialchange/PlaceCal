@@ -85,10 +85,10 @@ RSpec.describe Site, type: :model do
     let(:partner) { create(:partner, address: address) }
 
     it "counts events in the current week" do
-      create(:event, partner: partner, dtstart: Time.zone.now)
-      create(:event, partner: partner, dtstart: 2.days.from_now)
+      create(:event, organiser: partner, dtstart: Time.zone.now)
+      create(:event, organiser: partner, dtstart: 2.days.from_now)
       # Event outside the week
-      create(:event, partner: partner, dtstart: 2.weeks.from_now)
+      create(:event, organiser: partner, dtstart: 2.weeks.from_now)
 
       expect(site.events_this_week).to eq(2)
     end
@@ -119,8 +119,8 @@ RSpec.describe Site, type: :model do
     let(:partner) { create(:partner, address: address) }
 
     it "updates the cached events_count" do
-      create(:event, partner: partner, dtstart: Time.zone.now)
-      create(:event, partner: partner, dtstart: 1.day.from_now)
+      create(:event, organiser: partner, dtstart: Time.zone.now)
+      create(:event, organiser: partner, dtstart: 1.day.from_now)
 
       site.refresh_events_count!
       expect(site.reload.events_count).to eq(2)

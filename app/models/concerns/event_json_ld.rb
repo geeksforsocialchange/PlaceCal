@@ -17,8 +17,10 @@ module EventJsonLd
 
     data['endDate'] = dtend.iso8601 if dtend
     data['description'] = ActionController::Base.helpers.strip_tags(description_html).presence if description_html.present?
+    data['eventAttendanceMode'] = json_ld_attendance_mode
 
     build_json_ld_location(data)
+    build_json_ld_image(data)
     build_json_ld_organizer(data, base_url)
     build_json_ld_offers(data)
     build_json_ld_event_series(data, event_url)
@@ -27,6 +29,21 @@ module EventJsonLd
   end
 
   private
+
+  def json_ld_attendance_mode
+    if address && online_address
+      'https://schema.org/MixedEventAttendanceMode'
+    elsif online_address
+      'https://schema.org/OnlineEventAttendanceMode'
+    else
+      'https://schema.org/OfflineEventAttendanceMode'
+    end
+  end
+
+  def build_json_ld_image(data)
+    image_partner = [organiser, partner_at_location].compact.find(&:image?)
+    data['image'] = image_partner.image.url if image_partner
+  end
 
   def build_json_ld_location(data)
     if address
@@ -60,13 +77,13 @@ module EventJsonLd
   end
 
   def build_json_ld_organizer(data, base_url)
-    return unless partner
+    return unless organiser
 
     data['organizer'] = {
       '@type' => 'Organization',
-      '@id' => "#{base_url}/partners/#{partner.to_param}",
-      'name' => partner.name,
-      'url' => partner.url
+      '@id' => "#{base_url}/partners/#{organiser.to_param}",
+      'name' => organiser.name,
+      'url' => organiser.url
     }.compact
   end
 

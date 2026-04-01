@@ -96,7 +96,52 @@ RSpec.describe EventJsonLd do
       it "includes Organization from partner" do
         organizer = data["organizer"]
         expect(organizer["@type"]).to eq("Organization")
-        expect(organizer["name"]).to eq(event.partner.name)
+        expect(organizer["name"]).to eq(event.organiser.name)
+      end
+    end
+
+    context "eventAttendanceMode" do
+      it "is OfflineEventAttendanceMode for physical events" do
+        expect(data["eventAttendanceMode"]).to eq("https://schema.org/OfflineEventAttendanceMode")
+      end
+
+      it "is OnlineEventAttendanceMode for online-only events" do
+        online_event = create(:event, address: nil, online_address: create(:online_address),
+                                      calendar: create(:calendar, strategy: "online_only"))
+        result = online_event.to_json_ld(base_url: base_url)
+        expect(result["eventAttendanceMode"]).to eq("https://schema.org/OnlineEventAttendanceMode")
+      end
+
+      it "is MixedEventAttendanceMode for hybrid events" do
+        hybrid_event = create(:event, online_address: create(:online_address))
+        result = hybrid_event.to_json_ld(base_url: base_url)
+        expect(result["eventAttendanceMode"]).to eq("https://schema.org/MixedEventAttendanceMode")
+      end
+    end
+
+    context "image" do
+      it "uses organiser image when available" do
+        organiser = event.organiser
+        fake_image = instance_double(ImageUploader, url: "https://example.com/organiser.jpg")
+        allow(organiser).to receive_messages(image?: true, image: fake_image)
+
+        result = event.to_json_ld(base_url: base_url)
+        expect(result["image"]).to eq("https://example.com/organiser.jpg")
+      end
+
+      it "falls back to partner_at_location image" do
+        place = create(:partner)
+        event_with_place = create(:event, place: place)
+        fake_image = instance_double(ImageUploader, url: "https://example.com/venue.jpg")
+        allow(event_with_place.organiser).to receive(:image?).and_return(false)
+        allow(place).to receive_messages(image?: true, image: fake_image)
+
+        result = event_with_place.to_json_ld(base_url: base_url)
+        expect(result["image"]).to eq("https://example.com/venue.jpg")
+      end
+
+      it "omits image when no partner has one" do
+        expect(data).not_to have_key("image")
       end
     end
   end

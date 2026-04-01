@@ -9,7 +9,7 @@
 
 Given("there is a partner called {string} with a calendar") do |name|
   partner = create(:partner, name: name)
-  create(:calendar, partner: partner, name: "#{name} Calendar")
+  create(:calendar, organiser: partner, name: "#{name} Calendar")
 end
 
 Given("the partner {string} has the partnership {string}") do |partner_name, partnership_name|
@@ -28,7 +28,7 @@ end
 
 Given("the partner {string} has a calendar") do |partner_name|
   partner = Partner.find_by(name: partner_name)
-  create(:calendar, partner: partner, name: "#{partner_name} Calendar")
+  create(:calendar, organiser: partner, name: "#{partner_name} Calendar")
 end
 
 Given("the partner {string} has an admin user") do |partner_name|

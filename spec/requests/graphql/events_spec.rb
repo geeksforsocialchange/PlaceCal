@@ -14,7 +14,7 @@ RSpec.describe "GraphQL Events", type: :request do
   describe "eventConnection query" do
     before do
       create_list(:event, 5,
-                  partner: partner,
+                  organiser: partner,
                   dtstart: Time.current,
                   address: address)
     end
@@ -56,7 +56,7 @@ RSpec.describe "GraphQL Events", type: :request do
   describe "event query" do
     let!(:event) do
       create(:event,
-             partner: partner,
+             organiser: partner,
              summary: "Test Event Summary",
              description: "Detailed description of the event",
              dtstart: Time.current,
@@ -136,7 +136,7 @@ RSpec.describe "GraphQL Events", type: :request do
     before do
       site.neighbourhoods << ward
       create_list(:event, 3,
-                  partner: partner,
+                  organiser: partner,
                   dtstart: 1.day.from_now,
                   address: address)
     end
@@ -177,8 +177,8 @@ RSpec.describe "GraphQL Events", type: :request do
     let(:partner2) { create(:partner, address: address2) }
 
     before do
-      create_list(:event, 3, partner: partner1, dtstart: 1.hour.from_now, address: address1)
-      create_list(:event, 5, partner: partner2, dtstart: 1.hour.from_now, address: address2)
+      create_list(:event, 3, organiser: partner1, dtstart: 1.hour.from_now, address: address1)
+      create_list(:event, 5, organiser: partner2, dtstart: 1.hour.from_now, address: address2)
     end
 
     it "filters events by neighbourhood" do
@@ -211,8 +211,8 @@ RSpec.describe "GraphQL Events", type: :request do
       blue_partner.tags << blue_tag
       red_partner.tags << red_tag
 
-      create_list(:event, 6, partner: blue_partner, dtstart: 1.hour.from_now, address: blue_partner.address)
-      create_list(:event, 2, partner: red_partner, dtstart: 1.hour.from_now, address: red_partner.address)
+      create_list(:event, 6, organiser: blue_partner, dtstart: 1.hour.from_now, address: blue_partner.address)
+      create_list(:event, 2, organiser: red_partner, dtstart: 1.hour.from_now, address: red_partner.address)
     end
 
     it "filters events by partner tag" do
@@ -227,7 +227,7 @@ RSpec.describe "GraphQL Events", type: :request do
   describe "event geo location" do
     let!(:event) do
       create(:event,
-             partner: partner,
+             organiser: partner,
              dtstart: Time.current,
              address: create(:address, latitude: 53.4808, longitude: -2.2426))
     end
@@ -268,7 +268,7 @@ RSpec.describe "GraphQL Events", type: :request do
   describe "online event details" do
     let!(:online_address) { OnlineAddress.create!(url: "https://zoom.us/j/123456", link_type: "direct") }
     let!(:online_event) do
-      create(:event, partner: partner, dtstart: Time.current, address: address, online_address: online_address)
+      create(:event, organiser: partner, dtstart: Time.current, address: address, online_address: online_address)
     end
 
     let(:query) do

@@ -4,8 +4,8 @@ require "rails_helper"
 
 RSpec.describe Event, type: :model do
   describe "associations" do
-    # NOTE: partner association is optional: true but has presence validation
-    it { is_expected.to belong_to(:partner).optional(false) }
+    # NOTE: organiser association is optional: true but has presence validation
+    it { is_expected.to belong_to(:organiser).class_name("Partner").optional(false) }
     it { is_expected.to belong_to(:place).class_name("Partner").optional }
     it { is_expected.to belong_to(:address).optional }
     it { is_expected.to belong_to(:online_address).optional }
@@ -16,7 +16,7 @@ RSpec.describe Event, type: :model do
   describe "validations" do
     it { is_expected.to validate_presence_of(:summary) }
     it { is_expected.to validate_presence_of(:dtstart) }
-    it { is_expected.to validate_presence_of(:partner) }
+    it { is_expected.to validate_presence_of(:organiser) }
   end
 
   describe "paper_trail" do
@@ -59,13 +59,13 @@ RSpec.describe Event, type: :model do
     describe ".find_by_day" do
       let!(:event_today) do
         create(:event,
-               partner: partner,
+               organiser: partner,
                dtstart: Time.current.beginning_of_day + 10.hours,
                dtend: Time.current.beginning_of_day + 12.hours)
       end
       let!(:event_tomorrow) do
         create(:event,
-               partner: partner,
+               organiser: partner,
                dtstart: 1.day.from_now.beginning_of_day + 10.hours,
                dtend: 1.day.from_now.beginning_of_day + 12.hours)
       end
@@ -81,13 +81,13 @@ RSpec.describe Event, type: :model do
       let(:this_week_start) { Time.current.beginning_of_week }
       let!(:event_this_week) do
         create(:event,
-               partner: partner,
+               organiser: partner,
                dtstart: this_week_start + 2.days,
                dtend: this_week_start + 2.days + 2.hours)
       end
       let!(:event_next_week) do
         create(:event,
-               partner: partner,
+               organiser: partner,
                dtstart: this_week_start + 9.days,
                dtend: this_week_start + 9.days + 2.hours)
       end
@@ -103,31 +103,31 @@ RSpec.describe Event, type: :model do
       let(:today) { Time.current.to_date }
       let!(:event_today) do
         create(:event,
-               partner: partner,
+               organiser: partner,
                dtstart: today.to_datetime + 10.hours,
                dtend: today.to_datetime + 12.hours)
       end
       let!(:event_in_3_days) do
         create(:event,
-               partner: partner,
+               organiser: partner,
                dtstart: (today + 3.days).to_datetime + 10.hours,
                dtend: (today + 3.days).to_datetime + 12.hours)
       end
       let!(:event_in_6_days) do
         create(:event,
-               partner: partner,
+               organiser: partner,
                dtstart: (today + 6.days).to_datetime + 10.hours,
                dtend: (today + 6.days).to_datetime + 12.hours)
       end
       let!(:event_in_7_days) do
         create(:event,
-               partner: partner,
+               organiser: partner,
                dtstart: (today + 7.days).to_datetime + 10.hours,
                dtend: (today + 7.days).to_datetime + 12.hours)
       end
       let!(:event_yesterday) do
         create(:event,
-               partner: partner,
+               organiser: partner,
                dtstart: (today - 1.day).to_datetime + 10.hours,
                dtend: (today - 1.day).to_datetime + 12.hours)
       end
@@ -160,10 +160,10 @@ RSpec.describe Event, type: :model do
 
     describe ".future" do
       let!(:past_event) do
-        create(:event, partner: partner, dtstart: 1.day.ago, dtend: 1.day.ago + 2.hours)
+        create(:event, organiser: partner, dtstart: 1.day.ago, dtend: 1.day.ago + 2.hours)
       end
       let!(:future_event) do
-        create(:event, partner: partner, dtstart: 1.day.from_now, dtend: 1.day.from_now + 2.hours)
+        create(:event, organiser: partner, dtstart: 1.day.from_now, dtend: 1.day.from_now + 2.hours)
       end
 
       it "returns only future events" do
@@ -180,7 +180,7 @@ RSpec.describe Event, type: :model do
       let(:partner) { create(:partner, address: address) }
       let!(:event1) do
         create(:event,
-               partner: partner,
+               organiser: partner,
                summary: "Event in site neighbourhood",
                dtstart: 1.hour.from_now,
                dtend: 2.hours.from_now,
@@ -188,7 +188,7 @@ RSpec.describe Event, type: :model do
       end
       let!(:event2) do
         create(:event,
-               partner: partner,
+               organiser: partner,
                summary: "Second event in site",
                dtstart: 1.hour.from_now,
                dtend: 2.hours.from_now,
@@ -233,8 +233,8 @@ RSpec.describe Event, type: :model do
 
     it "requires some form of location when calendar strategy requires it" do
       # Create calendar with 'place' strategy which requires location
-      place_calendar = create(:place_calendar, partner: partner)
-      event = build(:event, partner: partner, calendar: place_calendar, address: nil, online_address: nil, place: nil)
+      place_calendar = create(:place_calendar, organiser: partner)
+      event = build(:event, organiser: partner, calendar: place_calendar, address: nil, online_address: nil, place: nil)
       event.address = nil
       event.place = nil
       event.online_address = nil
@@ -244,18 +244,18 @@ RSpec.describe Event, type: :model do
     end
 
     it "is valid with just an address" do
-      event = build(:event, partner: partner, online_address: nil, place: nil)
+      event = build(:event, organiser: partner, online_address: nil, place: nil)
       expect(event).to be_valid
     end
 
     it "is valid with just an online address" do
-      event = build(:online_event, partner: partner, address: nil, place: nil)
+      event = build(:online_event, organiser: partner, address: nil, place: nil)
       expect(event).to be_valid
     end
 
     it "does not require location for event strategy calendar" do
       # Default calendar factory uses 'event' strategy
-      event = build(:event, partner: partner, address: nil, online_address: nil)
+      event = build(:event, organiser: partner, address: nil, online_address: nil)
       event.address = nil
       event.online_address = nil
       expect(event).to be_valid
