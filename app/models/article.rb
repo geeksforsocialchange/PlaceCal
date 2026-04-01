@@ -1,19 +1,23 @@
 # frozen_string_literal: true
 
 class Article < ApplicationRecord
+  # -- Includes / Extends --
   extend FriendlyId
-
   include HtmlRenderCache
 
-  html_render_cache :body
+  # -- Attributes --
+  attribute :title,        :text
+  attribute :body,         :text
+  attribute :body_html,    :string # populated by HtmlRenderCache
+  attribute :slug,         :string
+  attribute :is_draft,     :boolean, default: true
+  attribute :published_at, :date
+  # article_image -- managed by CarrierWave, attribute declaration skipped
 
   friendly_id :slug_candidates, use: :slugged
+  html_render_cache :body
 
-  validates :title, :body, presence: true
-  validates :slug, uniqueness: true
-
-  before_save :update_published_at, if: ->(obj) { obj.is_draft_changed? }
-
+  # -- Associations --
   has_many :article_partners, dependent: :destroy
   has_many :partners, through: :article_partners
 
@@ -22,8 +26,14 @@ class Article < ApplicationRecord
 
   belongs_to :author, class_name: 'User', inverse_of: :articles
 
+  # -- Uploaders --
   mount_uploader :article_image, ArticleImageUploader
 
+  # -- Validations --
+  validates :title, :body, presence: true
+  validates :slug, uniqueness: true
+
+  # -- Scopes --
   scope :published, -> { where is_draft: false }
   scope :by_publish_date, -> { order(published_at: :desc) }
 
@@ -98,10 +108,10 @@ class Article < ApplicationRecord
     scope.distinct('articles.id')
   }
 
-  def update_published_at
-    self.published_at = is_draft ? nil : DateTime.now
-  end
+  # -- Callbacks --
+  before_save :update_published_at, if: ->(obj) { obj.is_draft_changed? }
 
+  # -- Instance methods --
   # This retrieves the author's name for use in the GQL output
   # We return emptystring because that indicates to the user that this field is required
   def author_name
@@ -116,5 +126,12 @@ class Article < ApplicationRecord
 
   def slug_candidates
     [%i[title id]]
+  end
+
+  private
+
+  # -- Private methods --
+  def update_published_at
+    self.published_at = is_draft ? nil : DateTime.now
   end
 end

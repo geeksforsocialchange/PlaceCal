@@ -1,28 +1,67 @@
 # frozen_string_literal: true
 
-# app/models/address.rb
 class Address < ApplicationRecord
-  # Geocoding with postcodes.io
-  # Only postcode changes will change the result that postodes.io returns.
-  # (do this first)
-  validate :geocode_with_ward, if: ->(obj) { obj.postcode_changed? }
+  # -- Attributes --
+  attribute :street_address,  :string
+  attribute :street_address2, :string
+  attribute :street_address3, :string
+  attribute :city,            :string
+  attribute :postcode,        :string
+  attribute :country_code,    :string, default: 'UK'
+  attribute :latitude,        :float
+  attribute :longitude,       :float
 
-  after_commit :refresh_neighbourhood_partners_count, if: :neighbourhood_id_previously_changed?
+  auto_strip_attributes :street_address, :street_address2, :street_address3, :city, :postcode
 
-  validates :street_address, :country_code, presence: true
-  validates :postcode, presence: true, postcode: true
-
+  # -- Associations --
   has_many :events, dependent: :nullify
   has_many :partners, dependent: :nullify
 
   belongs_to :neighbourhood, optional: true
 
-  auto_strip_attributes :street_address, :street_address2, :street_address3, :city, :postcode
+  # -- Validations --
+  # Geocoding with postcodes.io
+  # Only postcode changes will change the result that postodes.io returns.
+  # (do this first)
+  validate :geocode_with_ward, if: ->(obj) { obj.postcode_changed? }
 
+  validates :street_address, :country_code, presence: true
+  validates :postcode, presence: true, postcode: true
+
+  # -- Scopes --
   scope :find_by_street_or_postcode, lambda { |street, postcode|
     where(street_address: street).or(where(postcode: postcode))
   }
 
+  # -- Callbacks --
+  after_commit :refresh_neighbourhood_partners_count, if: :neighbourhood_id_previously_changed?
+
+  # -- Class methods --
+  def self.build_from_components(components, postcode)
+    return if components.blank?
+
+    address = Address.new(
+      street_address: components[0],
+      street_address2: components[1],
+      street_address3: components[2],
+      postcode: postcode
+    )
+    address.save ? address : nil
+  end
+
+  # Delete addresses not referenced by any partner or event.
+  # Returns the number of deleted rows.
+  def self.delete_orphaned!
+    in_use_ids = Set.new(Partner.pluck(:address_id).compact) |
+                 Set.new(Event.pluck(:address_id).compact)
+
+    orphaned = where.not(id: in_use_ids)
+    count = orphaned.count
+    orphaned.in_batches(of: 1000).delete_all if count.positive?
+    count
+  end
+
+  # -- Instance methods --
   def postcode=(str)
     super(UKPostcode.parse(str).to_s)
   end
@@ -59,31 +98,9 @@ class Address < ApplicationRecord
     all_address_lines.join(', ')
   end
 
-  def self.build_from_components(components, postcode)
-    return if components.blank?
-
-    address = Address.new(
-      street_address: components[0],
-      street_address2: components[1],
-      street_address3: components[2],
-      postcode: postcode
-    )
-    address.save ? address : nil
-  end
-
-  # Delete addresses not referenced by any partner or event.
-  # Returns the number of deleted rows.
-  def self.delete_orphaned!
-    in_use_ids = Set.new(Partner.pluck(:address_id).compact) |
-                 Set.new(Event.pluck(:address_id).compact)
-
-    orphaned = where.not(id: in_use_ids)
-    count = orphaned.count
-    orphaned.in_batches(of: 1000).delete_all if count.positive?
-    count
-  end
-
   private
+
+  # -- Private methods --
 
   # Set the (lat,lon) and neighbourhood from address data.
   #
