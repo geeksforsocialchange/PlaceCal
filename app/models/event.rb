@@ -9,20 +9,21 @@ class Event < ApplicationRecord
   include Permalinkable
 
   # -- Attributes --
-  attribute :are_spaces_available,     :string
-  attribute :description,              :text
-  attribute :description_html,         :string # populated by HtmlRenderCache
-  attribute :dtend,                    :datetime
-  attribute :dtstart,                  :datetime
-  attribute :footer,                   :text
-  attribute :is_active,                :boolean, default: true
-  attribute :notices,                  :json
-  attribute :publisher_url,            :string
-  attribute :raw_location_from_source, :text
-  attribute :rrule,                    :json
-  attribute :summary,                  :text
-  attribute :summary_html,             :string # populated by HtmlRenderCache
-  attribute :uid,                      :string
+  # Columns marked (nullable) have no NOT NULL constraint in the DB.
+  attribute :are_spaces_available,     :string                      # nullable
+  attribute :description,              :text                        # nullable
+  attribute :description_html,         :string                      # nullable, populated by HtmlRenderCache
+  attribute :dtend,                    :datetime                    # nullable
+  attribute :dtstart,                  :datetime                    # NOT NULL
+  attribute :footer,                   :text                        # nullable
+  attribute :is_active,                :boolean, default: true      # NOT NULL
+  attribute :notices,                  :json                        # nullable — Array<String>, importer messages
+  attribute :publisher_url,            :string                      # nullable
+  attribute :raw_location_from_source, :text                        # nullable
+  attribute :rrule,                    :json                        # nullable — Array<Hash{table: {frequency: String}}>, or false
+  attribute :summary,                  :text                        # NOT NULL
+  attribute :summary_html,             :string                      # nullable, populated by HtmlRenderCache
+  attribute :uid,                      :string                      # nullable
 
   html_render_cache :description
   html_render_cache :summary

@@ -3,6 +3,7 @@
 class Neighbourhood < ApplicationRecord
   # -- Includes / Extends --
   has_ancestry
+  extend Enumerize
 
   # -- Constants --
   # WARNING: this must be updated for every new ONS dataset
@@ -21,6 +22,12 @@ class Neighbourhood < ApplicationRecord
 
   LEVEL_NAMES = LEVELS.invert.freeze
 
+  # -- Enums / Enumerize --
+  enumerize :unit,
+            in: %i[ward district county region country],
+            default: :ward
+  # unit -- managed by enumerize, attribute declaration skipped
+
   # -- Attributes --
   # ancestry -- managed by Ancestry gem, attribute declaration skipped
   attribute :level,           :integer
@@ -29,7 +36,6 @@ class Neighbourhood < ApplicationRecord
   attribute :parent_name,     :string
   attribute :partners_count,  :integer, default: 0
   attribute :release_date,    :datetime
-  attribute :unit,            :string, default: 'ward'
   attribute :unit_code_key,   :string, default: 'WD19CD'
   attribute :unit_code_value, :string
   attribute :unit_name,       :string
@@ -56,6 +62,7 @@ class Neighbourhood < ApplicationRecord
   # -- Validations --
   # validates :unit_code_value, presence: true, uniqueness: true
   # validates :name, presence: true
+  validates :level, inclusion: { in: LEVELS.values }, allow_nil: true
   validates :unit_code_value,
             length: { is: 9 },
             allow_blank: true
@@ -74,6 +81,8 @@ class Neighbourhood < ApplicationRecord
 
   # -- Class methods --
   class << self
+    # @param res [Hash] parsed postcodes.io API response with 'codes' sub-hash
+    # @return [Neighbourhood, nil] matching neighbourhood or nil
     def find_from_postcodesio_response(res)
       # Try ward first (most specific)
       ward_code = res.dig('codes', 'admin_ward')
@@ -106,6 +115,9 @@ class Neighbourhood < ApplicationRecord
       SQL
     end
 
+    # @param scope [ActiveRecord::Relation<Neighbourhood>] base query to filter
+    # @param legacy_neighbourhoods [ActiveRecord::Relation<Neighbourhood>] old neighbourhoods to include
+    # @return [ActiveRecord::Relation<Neighbourhood>]
     def find_latest_neighbourhoods_maybe_with_legacy_neighbourhoods(scope, legacy_neighbourhoods)
       scope = scope
               .where('name is not null and name != \'\'')
@@ -199,6 +211,8 @@ class Neighbourhood < ApplicationRecord
     ancestors.where(unit: 'country').first
   end
 
+  # @param badge_zoom_level [String] 'ward' or 'district'
+  # @return [String]
   def name_from_badge_zoom(badge_zoom_level)
     badge_zoom_level == 'district' ? district&.shortname : shortname
   end

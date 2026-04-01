@@ -25,20 +25,21 @@ class Site < ApplicationRecord
   # badge_zoom_level -- managed by enumerize, attribute declaration skipped
 
   # -- Attributes --
-  attribute :description,       :text
-  attribute :description_html,  :string # populated by HtmlRenderCache
-  attribute :events_count,      :integer, default: 0
-  attribute :hero_alttext,      :string
-  attribute :hero_image_credit, :string
-  attribute :hero_text,         :string
-  attribute :is_published,      :boolean, default: false
+  # Columns marked (nullable) have no NOT NULL constraint in the DB.
+  attribute :description,       :text                            # nullable
+  attribute :description_html,  :string                          # nullable, populated by HtmlRenderCache
+  attribute :events_count,      :integer, default: 0             # NOT NULL
+  attribute :hero_alttext,      :string                          # nullable
+  attribute :hero_image_credit, :string                          # nullable
+  attribute :hero_text,         :string                          # nullable
+  attribute :is_published,      :boolean, default: false         # NOT NULL
   # logo, footer_logo, hero_image -- managed by CarrierWave, attribute declarations skipped
-  attribute :name,              :string
-  attribute :partners_count,    :integer, default: 0
-  attribute :place_name,        :string
-  attribute :slug,              :string
-  attribute :tagline,           :string
-  attribute :url,               :string
+  attribute :name,              :string                          # NOT NULL
+  attribute :partners_count,    :integer, default: 0             # NOT NULL
+  attribute :place_name,        :string                          # nullable
+  attribute :slug,              :string                          # NOT NULL
+  attribute :tagline,           :string                          # nullable
+  attribute :url,               :string                          # NOT NULL
 
   friendly_id :name, use: :slugged
   html_render_cache :description
