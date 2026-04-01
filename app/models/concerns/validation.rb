@@ -29,8 +29,9 @@ module Validation
 
   EMAIL_REGEX = /\A([\w+-].?)+@[a-z\d-]+(\.[a-z]+)*\.[a-z]+\z/i.freeze
 
-  # Check whether a URL points to a private/reserved IP address.
-  # Used to prevent SSRF when fetching calendar sources.
+  # Check whether a URL points to a private/reserved IP address (SSRF prevention).
+  # @param url [String] the URL to check
+  # @return [Boolean] true if the host resolves to a private IP range
   def self.private_ip?(url)
     host = URI.parse(url).host
     return false unless host

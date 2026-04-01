@@ -9,6 +9,7 @@ class Partner < ApplicationRecord
   include HtmlRenderCache
 
   # -- Constants --
+
   MAX_CATEGORIES = 3
 
   # -- Attributes --
@@ -180,6 +181,10 @@ class Partner < ApplicationRecord
   after_commit :refresh_neighbourhood_partners_count
 
   # -- Class methods --
+
+  # Find a place-partner whose name matches one of the address street lines.
+  # @param address [Address] the address to match against
+  # @return [Partner, nil]
   def self.matching_venue_for(address)
     return unless address&.street_lines&.any? && address&.postcode
 
@@ -194,20 +199,25 @@ class Partner < ApplicationRecord
   end
 
   # -- Instance methods --
+
+  # Strips leading @ from Twitter handles before saving.
+  # @param handle [String, nil]
+  # @return [String, nil]
   def twitter_handle=(handle)
     super(handle&.gsub('@', ''))
   end
 
-  # Get all Partners that manage this Partner.
+  # @return [ActiveRecord::Relation<Partner>] partners that manage this one
   def managers
     subjects.where(organisation_relationships: { verb: :manages })
   end
 
-  # Get all Partners that this Partner manages.
+  # @return [ActiveRecord::Relation<Partner>] partners this one manages
   def managees
     objects.where(organisation_relationships: { verb: :manages })
   end
 
+  # @return [Array<Neighbourhood>] unique neighbourhoods from address + service areas
   def neighbourhoods
     arr = []
     arr << address.neighbourhood if address&.neighbourhood
@@ -215,18 +225,19 @@ class Partner < ApplicationRecord
     arr.flatten.uniq
   end
 
-  def to_s
-    name
-  end
-
+  # @return [Boolean] whether FriendlyId should generate a new slug
   def should_generate_new_friendly_id?
     slug.blank?
   end
 
+  # @return [Boolean]
   def has_service_areas?
     service_areas.any?
   end
 
+  # Whether the current user is allowed to remove this partner's address.
+  # @param user [User, nil]
+  # @return [Boolean]
   def can_clear_address?(user = nil)
     return false if address.blank? || address.missing_values?
     return false if service_areas.empty?
@@ -240,6 +251,10 @@ class Partner < ApplicationRecord
     user_hood_ids.include?(address.neighbourhood_id)
   end
 
+  # Whether the user should see a warning before clearing the address
+  # (i.e. their only link to this partner is through its address).
+  # @param user [User]
+  # @return [Boolean]
   def warn_user_clear_address?(user)
     return false if user.root?
     return false if user.admin_for_partner?(id)
@@ -255,6 +270,8 @@ class Partner < ApplicationRecord
     any_service_areas == false
   end
 
+  # Destroy the partner's address in a transaction.
+  # @return [void]
   def clear_address!
     Partner.transaction do
       old_address = address
@@ -264,23 +281,27 @@ class Partner < ApplicationRecord
     end
   end
 
+  # @return [String, nil] full Twitter profile URL
   def twitter_url
     "https://twitter.com/#{twitter_handle}" if twitter_handle.present?
   end
 
+  # @return [String, nil] full Instagram profile URL
   def instagram_url
     "https://instagram.com/#{instagram_handle}" if instagram_handle.present?
   end
 
+  # @return [String, nil] CarrierWave image URL
   def logo_url
     image&.url
   end
 
-  # Get a count of all the events this week
+  # @return [Integer] number of events starting this week
   def events_this_week
     events.find_by_week(Time.now).count
   end
 
+  # @return [String] JSON string of opening times, or "[]" if blank/invalid
   def opening_times_data
     # FIXME: opening_times field is really just a string
     #  even tho we use jsonb as a field type. this should
@@ -292,6 +313,7 @@ class Partner < ApplicationRecord
     opening_times
   end
 
+  # @return [Array<String>] HTML-safe strings like "Monday 9:00am – 5:00pm"
   def human_readable_opening_times
     return [] if !opening_times || opening_times.length.zero?
 
@@ -307,6 +329,7 @@ class Partner < ApplicationRecord
     []
   end
 
+  # @return [Boolean] whether public_phone passes format validation
   def valid_public_phone?
     self.class.validators_on(:public_phone).each do |validator|
       validator.validate_each(self, :public_phone, public_phone)
@@ -315,6 +338,7 @@ class Partner < ApplicationRecord
     errors.blank?
   end
 
+  # @return [Boolean] whether name passes format/length validation
   def valid_name?
     self.class.validators_on(:name).each do |validator|
       validator.validate_each(self, :name, name)
@@ -323,7 +347,7 @@ class Partner < ApplicationRecord
     errors.blank?
   end
 
-  # @return [Array<Int>] A list of Neighbourhood IDs
+  # @return [Array<Integer>] neighbourhood IDs from address + service areas
   def owned_neighbourhood_ids
     neighbourhood_ids = service_areas.pluck(:neighbourhood_id)
     neighbourhood_ids << address.neighbourhood_id if address&.neighbourhood_id
@@ -331,6 +355,8 @@ class Partner < ApplicationRecord
     neighbourhood_ids
   end
 
+  # @param badge_zoom_level [String] zoom level for badge display
+  # @return [String, nil] neighbourhood name appropriate for the site's zoom
   def neighbourhood_name_for_site(badge_zoom_level)
     if service_areas.any?
       if service_areas.many?
@@ -346,6 +372,7 @@ class Partner < ApplicationRecord
   private
 
   # -- Private methods --
+
   def refresh_neighbourhood_partners_count
     # Refresh count for current neighbourhood (via address)
     address&.neighbourhood&.refresh_partners_count!

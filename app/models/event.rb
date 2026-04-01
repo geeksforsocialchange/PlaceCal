@@ -152,10 +152,13 @@ class Event < ApplicationRecord
   end
 
   # -- Instance methods --
+
+  # @return [String, nil] human-readable recurrence label (e.g. "Weekly")
   def repeat_frequency
     rrule[0]['table']['frequency'].titleize if rrule
   end
 
+  # @return [String] formatted time range, e.g. "09:00 – 10:00"
   def time
     if dtend
       "#{dtstart.strftime('%H:%M')} – #{dtend.strftime('%H:%M')}"
@@ -164,24 +167,29 @@ class Event < ApplicationRecord
     end
   end
 
+  # @return [String, false] ISO 8601 duration, or false if no end time
   def duration
     return false unless dtend
 
     (dtend - dtstart).seconds.iso8601
   end
 
+  # @return [String] short date, e.g. " 1 Jan"
   def date
     dtstart.strftime('%e %b')
   end
 
+  # @return [String] date with year, e.g. " 1 Jan 2026"
   def date_year
     dtstart.strftime('%e %b %Y')
   end
 
+  # @return [Neighbourhood, nil]
   def neighbourhood
     address&.neighbourhood
   end
 
+  # @return [String] human-readable address string, or empty string
   def location
     use_address = address || partner_at_location&.address || organiser&.address
     return '' if use_address.nil?
@@ -189,12 +197,13 @@ class Event < ApplicationRecord
     use_address.to_s
   end
 
+  # @return [Partner, nil] the place partner, or a venue matching the address
   def partner_at_location
     @partner_at_location ||= place || Partner.matching_venue_for(address)
   end
 
   # TODO: plan this out on paper, currently half finished
-  # Who to contact if the event is wrong
+  # @return [String, false] contact-blame string, or false if no organiser
   def blame
     organiser = calendar&.organiser
     return false unless organiser
@@ -204,6 +213,7 @@ class Event < ApplicationRecord
     "Something wrong with this listing? Contact #{name} <#{email}> with reference {url}"
   end
 
+  # @return [String] Open Graph title combining summary, date, time, and organiser
   def og_title
     str = "#{summary}, #{date}, #{time}"
     str += " @ #{organiser.name}" if organiser
@@ -212,6 +222,7 @@ class Event < ApplicationRecord
   private
 
   # -- Private methods --
+
   def sanitize_rrule
     self.rrule = false if rrule.nil? || rrule == []
   end

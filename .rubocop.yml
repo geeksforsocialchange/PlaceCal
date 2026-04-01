@@ -83,6 +83,7 @@ Layout/ClassStructure:
       - auto_strip_attributes
       - friendly_id
       - html_render_cache
+      - permalink_resource
       - alias_attribute
     associations:
       - belongs_to

@@ -6,6 +6,7 @@ class Neighbourhood < ApplicationRecord
   extend Enumerize
 
   # -- Constants --
+
   # WARNING: this must be updated for every new ONS dataset
   #    see /lib/tasks/neighbourhoods.rake
   LATEST_RELEASE_DATE = DateTime.new(2024, 5).freeze
@@ -80,6 +81,7 @@ class Neighbourhood < ApplicationRecord
   before_update :inject_parent_name_field
 
   # -- Class methods --
+
   class << self
     # @param res [Hash] parsed postcodes.io API response with 'codes' sub-hash
     # @return [Neighbourhood, nil] matching neighbourhood or nil
@@ -96,8 +98,8 @@ class Neighbourhood < ApplicationRecord
       Neighbourhood.where(unit_code_value: district_code).first if district_code.present?
     end
 
-    # Refresh cached partners_count for all neighbourhoods
-    # Run periodically or after bulk partner changes
+    # Bulk-refresh cached partners_count for all neighbourhoods via SQL.
+    # @return [void]
     def refresh_partners_count!
       connection.execute(<<~SQL.squish)
         UPDATE neighbourhoods SET partners_count = (
@@ -129,14 +131,18 @@ class Neighbourhood < ApplicationRecord
   end
 
   # -- Instance methods --
+
+  # @return [Array<Partner>] unique partners from address + service area associations
   def partners
     (service_area_partners + address_partners).uniq
   end
 
+  # @return [Boolean] whether this neighbourhood predates the latest ONS release
   def legacy_neighbourhood?
     release_date < Neighbourhood::LATEST_RELEASE_DATE
   end
 
+  # @return [String] abbreviated name, falling back to name or "[not set]"
   def shortname
     if name_abbr.present?
       name_abbr
@@ -147,6 +153,7 @@ class Neighbourhood < ApplicationRecord
     end
   end
 
+  # @return [String] name with parent and unit, e.g. "Hulme, Manchester (Ward)"
   def contextual_name
     # "Wardname, Countryname (Region)"
     return "#{shortname}, #{parent_name} (#{unit.titleize})" if parent_name
@@ -155,6 +162,7 @@ class Neighbourhood < ApplicationRecord
     "#{shortname} (#{unit&.titleize})"
   end
 
+  # @return [String] full name, falling back to abbreviation or "[not set]"
   def fullname
     if name.present?
       name
@@ -165,48 +173,36 @@ class Neighbourhood < ApplicationRecord
     end
   end
 
-  # give us a name we can use for the abbreviated name even if
-  # such a thing does not exist
-  #
-  # == Parameters: none
-  #
-  # == Returns
-  #   A string of the name
+  # @return [String] name_abbr if present, otherwise name
   def abbreviated_name
     name_abbr.presence || name
   end
 
-  # normalize abbreviated names (usually coming from calendar
-  #   importer)
-  #
-  # == Parameters:
-  # value::
-  #   A string with the name value, or a blank string, or nil
-  #
-  # == Returns
-  #   The input value normalized as a string or nil
+  # Normalize abbreviated names (usually from calendar importer).
+  # @param value [String, nil] raw name value
+  # @return [String, nil] stripped value or nil if blank
   def name_abbr=(value)
     value = value.to_s.strip
 
     self['name_abbr'] = value.presence
   end
 
-  def to_s
-    "#{fullname} (#{unit})"
-  end
-
+  # @return [Neighbourhood, nil] ancestor at district level
   def district
     ancestors.where(unit: 'district').first
   end
 
+  # @return [Neighbourhood, nil] ancestor at county level
   def county
     ancestors.where(unit: 'county').first
   end
 
+  # @return [Neighbourhood, nil] ancestor at region level
   def region
     ancestors.where(unit: 'region').first
   end
 
+  # @return [Neighbourhood, nil] ancestor at country level
   def country
     ancestors.where(unit: 'country').first
   end
@@ -217,12 +213,12 @@ class Neighbourhood < ApplicationRecord
     badge_zoom_level == 'district' ? district&.shortname : shortname
   end
 
-  # Returns the localized name for this level (e.g., "Ward", "District")
+  # @return [Symbol, nil] localized level name (e.g. :ward, :district)
   def level_name
     LEVEL_NAMES[level]&.to_s
   end
 
-  # Full hierarchy path as array of ancestors (from country down to self)
+  # @return [Array<Neighbourhood>] ancestors from country down to self
   def hierarchy_path
     [*ancestors.order(:ancestry), self]
   end
@@ -234,13 +230,12 @@ class Neighbourhood < ApplicationRecord
     hierarchy_path.map(&:shortname).join(separator)
   end
 
-  # Check if this neighbourhood has children with actual data
-  # Used for smart-skip in cascading pickers
+  # @return [Boolean] whether any children have data (for cascading pickers)
   def populated_children?
     children.where.not(name: [nil, '']).latest_release.exists?
   end
 
-  # Refresh cached partners_count for this neighbourhood
+  # @return [void]
   def refresh_partners_count!
     return unless persisted?
 
@@ -252,6 +247,7 @@ class Neighbourhood < ApplicationRecord
   private
 
   # -- Private methods --
+
   def inject_parent_name_field
     self.parent_name = parent.name if parent
   end

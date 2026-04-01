@@ -8,6 +8,7 @@ class Site < ApplicationRecord
   include SiteJsonLd
 
   # -- Constants --
+
   # ASSUMPTION: There is no row in the sites table for the admin site, hence
   # defining the admin subdomain string here.
   ADMIN_SUBDOMAIN = 'admin'
@@ -85,14 +86,13 @@ class Site < ApplicationRecord
   scope :published, -> { where(is_published: true) }
 
   # -- Instance methods --
-  def to_s
-    "#{id}: #{name}"
-  end
 
+  # @return [Array<Neighbourhood>] all neighbourhoods in this site's subtrees
   def owned_neighbourhoods
     neighbourhoods.map(&:subtree).flatten
   end
 
+  # @return [Array<Integer>] all neighbourhood IDs in this site's subtrees
   def owned_neighbourhood_ids
     neighbourhoods
       .select(:id, :ancestry)
@@ -100,6 +100,7 @@ class Site < ApplicationRecord
       .flatten
   end
 
+  # @return [Integer] published articles count for this site
   def news_article_count
     Article
       .for_site(self)
@@ -107,20 +108,22 @@ class Site < ApplicationRecord
       .count
   end
 
+  # @return [Boolean]
   def default_site?
     slug == 'default-site'
   end
 
-  # ASSUMPTION: All valid sites, other than the default site, are local sites.
+  # @return [Boolean] true for any non-default site
   def local_site?
     !default_site?
   end
 
-  # Should we show the neighbourhood lozenge out on this site?
+  # @return [Boolean] whether neighbourhood badges should be shown
   def show_neighbourhoods?
     owned_neighbourhood_ids.many?
   end
 
+  # @return [String] "near" for multi-neighbourhood sites, "in" otherwise
   def join_word
     if owned_neighbourhoods.many?
       'near'
@@ -129,21 +132,22 @@ class Site < ApplicationRecord
     end
   end
 
+  # @return [EventsQuery]
   def events_query
     EventsQuery.new(site: self)
   end
 
-  # Get a count of all the events this week
+  # @return [Integer] number of events starting this week
   def events_this_week
     events_query.count_for_period('week')
   end
 
-  # Get a count of all the events last week
+  # @return [Integer] number of events that started last week
   def events_last_week
     EventsQuery.new(site: self, day: Time.zone.today - 1.week).count_for_period('week')
   end
 
-  # Refresh cached partners_count for this site
+  # @return [void]
   def refresh_partners_count!
     return unless persisted?
 
@@ -151,7 +155,7 @@ class Site < ApplicationRecord
     update_column(:partners_count, count) # rubocop:disable Rails/SkipsModelValidations
   end
 
-  # Refresh cached events_count for this site (events this week)
+  # @return [void]
   def refresh_events_count!
     return unless persisted?
 
@@ -159,12 +163,13 @@ class Site < ApplicationRecord
     update_column(:events_count, count) # rubocop:disable Rails/SkipsModelValidations
   end
 
-  # Refresh both cached counts
+  # @return [void]
   def refresh_counts!
     refresh_partners_count!
     refresh_events_count!
   end
 
+  # @return [String] Sprockets stylesheet path for this site's theme
   def stylesheet_link
     return 'home' if default_site?
 
@@ -175,14 +180,17 @@ class Site < ApplicationRecord
     end
   end
 
+  # @return [String, false] Open Graph image URL, or false
   def og_image
     hero_image&.opengraph&.url ? hero_image.opengraph.url : false
   end
 
+  # @return [String, false] tagline for OG description, or false
   def og_description
     tagline && tagline.empty? ? false : tagline
   end
 
+  # @return [String] robots.txt content, blocking crawlers if unpublished
   def robots
     config = File.read(Rails.root.join("config/robots/robots.#{Rails.env}.txt"))
 
@@ -198,13 +206,16 @@ class Site < ApplicationRecord
   end
 
   # -- Class methods --
+
   class << self
+    # @param value [Array] enumerize value pair
+    # @return [String] titleized label
     def badge_zoom_level_label(value)
       value.second.to_s.titleize
     end
 
-    # Refresh cached counts for all sites
-    # Run periodically or after bulk partner/event changes
+    # Refresh cached counts for all sites.
+    # @return [void]
     def refresh_all_counts!
       find_each(&:refresh_counts!)
     end
