@@ -76,6 +76,8 @@ class UserPolicy < ApplicationPolicy
       permitted_attributes
     elsif user.neighbourhood_admin?
       [{ partner_ids: [] }]
+    else
+      []
     end
   end
 
