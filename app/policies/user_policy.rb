@@ -74,8 +74,10 @@ class UserPolicy < ApplicationPolicy
   def permitted_attributes_for_update
     if user.root?
       permitted_attributes
-    elsif user.neighbourhood_admin?
+    elsif user.neighbourhood_admin? || user.partner_admin?
       [{ partner_ids: [] }]
+    else
+      []
     end
   end
 
