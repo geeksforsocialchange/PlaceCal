@@ -1,27 +1,61 @@
 # frozen_string_literal: true
 
-# app/models/partner.rb
 class Partner < ApplicationRecord
-  MAX_CATEGORIES = 3
-
-  after_initialize :set_defaults, unless: :persisted?
-  after_commit :refresh_neighbourhood_partners_count
-
+  # -- Includes / Extends --
   include Validation
   include PartnerJsonLd
-
   extend FriendlyId
+  include HtmlRenderCache
+
+  # -- Constants --
+  MAX_CATEGORIES = 3
+
+  # -- Attributes --
+  attribute :name,                    :string
+  attribute :slug,                    :string
+  attribute :summary,                 :string
+  attribute :summary_html,            :string  # populated by HtmlRenderCache
+  attribute :description,             :text
+  attribute :description_html,        :string  # populated by HtmlRenderCache
+  attribute :url,                     :string
+  attribute :hidden,                  :boolean, default: false
+  attribute :hidden_reason,           :text
+  attribute :hidden_reason_html,      :string  # populated by HtmlRenderCache
+  attribute :hidden_blame_id,         :integer
+  attribute :opening_times,           :json
+  attribute :accessibility_info,      :text
+  attribute :accessibility_info_html, :string  # populated by HtmlRenderCache
+  attribute :booking_info,            :text
+  attribute :is_a_place,              :boolean, default: false
+  attribute :can_be_assigned_events,  :boolean, default: false
+  attribute :twitter_handle,          :string
+  attribute :instagram_handle,        :string
+  attribute :facebook_link,           :string
+  attribute :admin_name,              :string
+  attribute :admin_email,             :string
+  attribute :calendar_name,           :string
+  attribute :calendar_email,          :string
+  attribute :calendar_phone,          :string
+  attribute :partner_name,            :string
+  attribute :partner_email,           :string
+  attribute :partner_phone,           :string
+  attribute :public_name,             :string
+  attribute :public_email,            :string
+  attribute :public_phone,            :string
+  # image -- managed by CarrierWave, attribute declaration skipped
+
+  attr_accessor :accessed_by_user
 
   friendly_id :name, use: :slugged
-
-  include HtmlRenderCache
 
   html_render_cache :description
   html_render_cache :summary
   html_render_cache :accessibility_info
   html_render_cache :hidden_reason
 
-  # Associations
+  auto_strip_attributes :name, :summary, :url, :twitter_handle, :instagram_handle, :facebook_link, :public_phone, :public_email
+
+  # -- Associations --
   has_and_belongs_to_many :users
   has_many :calendars, foreign_key: :organiser_id, dependent: :destroy, inverse_of: :organiser
   has_many :events, foreign_key: :organiser_id, dependent: :destroy, inverse_of: :organiser
@@ -38,8 +72,6 @@ class Partner < ApplicationRecord
            through: :service_areas,
            source: :neighbourhood,
            class_name: 'Neighbourhood'
-
-  validates_associated :service_areas
 
   has_many :article_partners, dependent: :destroy
   has_many :articles, through: :article_partners
@@ -68,13 +100,12 @@ class Partner < ApplicationRecord
      c[:street_address3]].all?(&:blank?)
   }
 
-  validates_associated :address
-
   accepts_nested_attributes_for :service_areas, allow_destroy: true
 
-  auto_strip_attributes :name, :summary, :url, :twitter_handle, :instagram_handle, :facebook_link, :public_phone, :public_email
+  # -- Uploaders --
+  mount_uploader :image, ImageUploader
 
-  # Validations
+  # -- Validations --
   validates :name,
             presence: true,
             uniqueness: { case_sensitive: false },
@@ -112,28 +143,20 @@ class Partner < ApplicationRecord
             allow_blank: true
   validates :slug, uniqueness: true
 
+  validates_associated :service_areas
+  validates_associated :address
+
   validate :check_neighbourhood_access
-
   validate :neighbourhood_admin_address_access, on: %i[create update]
-
   validate :must_have_address_or_service_area
-
   validate :opening_times_is_json_or_nil
-
   validate :three_or_less_category_tags
-
   validate :partnership_admins_must_add_partnership, on: %i[create]
-
   validate :must_give_reason_to_hide
-
   validate :must_record_who_has_hidden
 
-  attr_accessor :accessed_by_user
-
-  mount_uploader :image, ImageUploader
-
+  # -- Scopes --
   scope :visible, -> { where(hidden: false) }
-
   scope :recently_updated, -> { order(updated_at: desc) }
 
   # only select partners that have addresses
@@ -147,8 +170,27 @@ class Partner < ApplicationRecord
       .where(o_r: { verb: :manages }).distinct
   }
 
+  # -- Delegates --
   delegate :neighbourhood_id, to: :address, allow_nil: true
 
+  # -- Callbacks --
+  after_commit :refresh_neighbourhood_partners_count
+
+  # -- Class methods --
+  def self.matching_venue_for(address)
+    return unless address&.street_lines&.any? && address&.postcode
+
+    Partner.left_joins(:address)
+           .find_by(
+             'can_be_assigned_events AND '\
+             'lower(name) IN (:components) AND '\
+             'lower(addresses.postcode) = (:postcode)',
+             components: address.street_lines.map(&:downcase),
+             postcode: address.postcode.downcase
+           )
+  end
+
+  # -- Instance methods --
   def twitter_handle=(handle)
     super(handle&.gsub('@', ''))
   end
@@ -173,10 +215,6 @@ class Partner < ApplicationRecord
   def to_s
     name
   end
-
-  # def custom_validation_method_with_message
-  #   errors.add(:_, "Select at least one Tag") if tag_ids.blank?
-  # end
 
   def should_generate_new_friendly_id?
     slug.blank?
@@ -306,21 +344,9 @@ class Partner < ApplicationRecord
     end
   end
 
-  def self.matching_venue_for(address)
-    return unless address&.street_lines&.any? && address&.postcode
-
-    Partner.left_joins(:address)
-           .find_by(
-             'can_be_assigned_events AND '\
-             'lower(name) IN (:components) AND '\
-             'lower(addresses.postcode) = (:postcode)',
-             components: address.street_lines.map(&:downcase),
-             postcode: address.postcode.downcase
-           )
-  end
-
   private
 
+  # -- Private methods --
   def refresh_neighbourhood_partners_count
     # Refresh count for current neighbourhood (via address)
     address&.neighbourhood&.refresh_partners_count!
@@ -453,9 +479,5 @@ class Partner < ApplicationRecord
     return if hidden && hidden_blame_id.present?
 
     errors.add :base, 'You must record who has hidden the partner'
-  end
-
-  def set_defaults
-    self.hidden ||= false
   end
 end

@@ -1,16 +1,49 @@
 # frozen_string_literal: true
 
 class Site < ApplicationRecord
+  # -- Includes / Extends --
   extend FriendlyId
   extend Enumerize
-
   include HtmlRenderCache
   include SiteJsonLd
 
-  html_render_cache :description
+  # -- Constants --
+  # ASSUMPTION: There is no row in the sites table for the admin site, hence
+  # defining the admin subdomain string here.
+  ADMIN_SUBDOMAIN = 'admin'
+
+  # -- Enums / Enumerize --
+  # Theme picker
+  enumerize :theme,
+            in: %i[pink orange green blue custom],
+            default: :pink
+  # theme -- managed by enumerize, attribute declaration skipped
+
+  enumerize :badge_zoom_level,
+            in: %i[ward district],
+            default: :ward
+  # badge_zoom_level -- managed by enumerize, attribute declaration skipped
+
+  # -- Attributes --
+  attribute :name,              :string
+  attribute :slug,              :string
+  attribute :url,               :string
+  attribute :place_name,        :string
+  attribute :tagline,           :string
+  attribute :description,       :text
+  attribute :description_html,  :string # populated by HtmlRenderCache
+  attribute :hero_text,         :string
+  attribute :hero_alttext,      :string
+  attribute :hero_image_credit, :string
+  attribute :is_published,      :boolean, default: false
+  attribute :partners_count,    :integer, default: 0
+  attribute :events_count,      :integer, default: 0
+  # logo, footer_logo, hero_image -- managed by CarrierWave, attribute declarations skipped
 
   friendly_id :name, use: :slugged
+  html_render_cache :description
 
+  # -- Associations --
   has_one :sites_neighbourhood, dependent: :destroy
   has_one :primary_neighbourhood, lambda {
                                     where(sites_neighbourhoods: { relation_type: 'Primary' })
@@ -36,26 +69,21 @@ class Site < ApplicationRecord
                                                                     c[:neighbourhood_id].blank?
                                                                   }, allow_destroy: true
 
+  # -- Uploaders --
+  mount_uploader :logo, SiteLogoUploader
+  mount_uploader :footer_logo, SiteLogoUploader
+  mount_uploader :hero_image, HeroImageUploader
+
+  # -- Validations --
   validates :name, :slug, :url, presence: true
   validates :slug, uniqueness: true
   validates :place_name unless :default_site?
   validates :hero_text, length: { maximum: 120 }
 
+  # -- Scopes --
   scope :published, -> { where(is_published: true) }
 
-  mount_uploader :logo, SiteLogoUploader
-  mount_uploader :footer_logo, SiteLogoUploader
-  mount_uploader :hero_image, HeroImageUploader
-
-  # Theme picker
-  enumerize :theme,
-            in: %i[pink orange green blue custom],
-            default: :pink
-
-  enumerize :badge_zoom_level,
-            in: %i[ward district],
-            default: :ward
-
+  # -- Instance methods --
   def to_s
     "#{id}: #{name}"
   end
@@ -70,10 +98,6 @@ class Site < ApplicationRecord
       .map(&:subtree_ids)
       .flatten
   end
-
-  # ASSUMPTION: There is no row in the sites table for the admin site, hence
-  # defining the admin subdomain string here.
-  ADMIN_SUBDOMAIN = 'admin'
 
   def news_article_count
     Article
@@ -94,10 +118,6 @@ class Site < ApplicationRecord
   # Should we show the neighbourhood lozenge out on this site?
   def show_neighbourhoods?
     owned_neighbourhood_ids.many?
-  end
-
-  def self.badge_zoom_level_label(value)
-    value.second.to_s.titleize
   end
 
   def join_word
@@ -176,7 +196,12 @@ class Site < ApplicationRecord
     end
   end
 
+  # -- Class methods --
   class << self
+    def badge_zoom_level_label(value)
+      value.second.to_s.titleize
+    end
+
     # Refresh cached counts for all sites
     # Run periodically or after bulk partner/event changes
     def refresh_all_counts!

@@ -1,15 +1,32 @@
 # frozen_string_literal: true
 
-# app/models/event.rb
 class Event < ApplicationRecord
+  # -- Includes / Extends --
   has_paper_trail ignore: %i[rrule notices]
 
   include HtmlRenderCache
   include EventJsonLd
 
+  # -- Attributes --
+  attribute :summary,                  :text
+  attribute :summary_html,             :string # populated by HtmlRenderCache
+  attribute :description,              :text
+  attribute :description_html,         :string # populated by HtmlRenderCache
+  attribute :dtstart,                  :datetime
+  attribute :dtend,                    :datetime
+  attribute :rrule,                    :json
+  attribute :notices,                  :json
+  attribute :uid,                      :string
+  attribute :raw_location_from_source, :text
+  attribute :publisher_url,            :string
+  attribute :footer,                   :text
+  attribute :are_spaces_available,     :string
+  attribute :is_active,                :boolean, default: true
+
   html_render_cache :description
   html_render_cache :summary
 
+  # -- Associations --
   belongs_to :organiser, class_name: 'Partner', optional: true
   belongs_to :place, class_name: 'Partner', optional: true
   belongs_to :address, optional: true
@@ -17,12 +34,12 @@ class Event < ApplicationRecord
   belongs_to :calendar, optional: true
   has_and_belongs_to_many :collections
 
+  # -- Validations --
   validates :summary, :dtstart, :organiser, presence: true
   validate :require_location
   validate :unique_event, on: :create # If we are updating the event we don't want it to trigger!
 
-  before_save :sanitize_rrule
-
+  # -- Scopes --
   # has_many :service_areas, through: :partner
 
   # Find events that start on a given day
@@ -109,12 +126,31 @@ class Event < ApplicationRecord
   # Global feed
   scope :ical_feed, -> { where(dtstart: (Time.now - 1.week)..).where(dtend: ...(Time.now + 2.years)) }
 
-  def repeat_frequency
-    rrule[0]['table']['frequency'].titleize if rrule
+  # -- Callbacks --
+  before_save :sanitize_rrule
+
+  # -- Class methods --
+  # Remove duplicate events (same uid, dtstart, dtend, calendar_id),
+  # keeping the oldest record. Returns the number of deleted rows.
+  def self.deduplicate!
+    result = connection.execute(<<~SQL.squish)
+      WITH duplicates AS (
+        SELECT id, ROW_NUMBER() OVER (
+          PARTITION BY uid, dtstart, dtend, calendar_id
+          ORDER BY id
+        ) as rn
+        FROM events
+      )
+      DELETE FROM events WHERE id IN (
+        SELECT id FROM duplicates WHERE rn > 1
+      )
+    SQL
+    result.cmd_tuples
   end
 
-  def sanitize_rrule
-    self.rrule = false if rrule.nil? || rrule == []
+  # -- Instance methods --
+  def repeat_frequency
+    rrule[0]['table']['frequency'].titleize if rrule
   end
 
   def time
@@ -174,25 +210,12 @@ class Event < ApplicationRecord
     str += " @ #{organiser.name}" if organiser
   end
 
-  # Remove duplicate events (same uid, dtstart, dtend, calendar_id),
-  # keeping the oldest record. Returns the number of deleted rows.
-  def self.deduplicate!
-    result = connection.execute(<<~SQL.squish)
-      WITH duplicates AS (
-        SELECT id, ROW_NUMBER() OVER (
-          PARTITION BY uid, dtstart, dtend, calendar_id
-          ORDER BY id
-        ) as rn
-        FROM events
-      )
-      DELETE FROM events WHERE id IN (
-        SELECT id FROM duplicates WHERE rn > 1
-      )
-    SQL
-    result.cmd_tuples
-  end
-
   private
+
+  # -- Private methods --
+  def sanitize_rrule
+    self.rrule = false if rrule.nil? || rrule == []
+  end
 
   def require_location
     # 'event', 'no_location', and 'online_only' do not require a Location

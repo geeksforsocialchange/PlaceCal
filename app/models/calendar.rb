@@ -1,37 +1,19 @@
 # frozen_string_literal: true
 
-# app/models/calendar.rb
 class Calendar < ApplicationRecord
+  # -- Includes / Extends --
   include ActionView::Helpers::DateHelper
   include Validation
   extend Enumerize
 
-  CALENDAR_REGEX = %r{\A(?:(?:(https?|webcal))://)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:/[^\s]*)?\z}i.freeze
-
+  # -- Constants --
   self.inheritance_column = nil
 
-  belongs_to :organiser, class_name: 'Partner', optional: true
-  belongs_to :place, class_name: 'Partner', optional: true
-  has_many :events, dependent: :destroy
+  CALENDAR_REGEX = %r{\A(?:(?:(https?|webcal))://)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:/[^\s]*)?\z}i.freeze
 
-  validates :name, :organiser, :source, presence: true
-  validates :place, presence: { if: :requires_default_location?,
-                                message: "can't be blank with this strategy" }
-  validates :source, uniqueness: { message: 'calendar source already in use' },
-                     format: { with: CALENDAR_REGEX, message: 'not a valid URL' }
+  ALLOWED_STATES = %i[idle in_queue in_worker error bad_source].freeze
 
-  validate :check_source_reachable
-
-  before_save :clear_status_on_source_change
-  before_save :update_notice_count
-
-  after_create :automatically_queue_calendar
-
-  # Output the calendar's name when it's requested as a string
-  alias_attribute :to_s, :name
-
-  auto_strip_attributes :name, :source, :public_contact_name, :public_contact_email, :public_contact_phone
-
+  # -- Enums / Enumerize --
   # Defines the strategy this Calendar uses to assign events to locations.
   # @attr [Enumerable<Symbol>] :strategy
   enumerize(
@@ -40,15 +22,52 @@ class Calendar < ApplicationRecord
     default: :place,
     scope: true
   )
+  # strategy -- managed by enumerize, attribute declaration skipped
 
-  ALLOWED_STATES = %i[idle in_queue in_worker error bad_source].freeze
   # State machine values
   enumerize(
     :calendar_state,
     in: ALLOWED_STATES,
     default: :idle
   )
+  # calendar_state -- managed by enumerize, attribute declaration skipped
 
+  # -- Attributes --
+  attribute :name,                 :string
+  attribute :source,               :string
+  attribute :notices,              :json
+  attribute :notice_count,         :integer
+  attribute :critical_error,       :text
+  attribute :importer_mode,        :string, default: 'auto'
+  attribute :importer_used,        :string
+  attribute :is_working,           :boolean, default: true
+  attribute :last_import_at,       :datetime
+  attribute :last_checksum,        :string
+  attribute :checksum_updated_at,  :datetime
+  attribute :public_contact_name,  :string
+  attribute :public_contact_email, :string
+  attribute :public_contact_phone, :string
+  attribute :api_token,            :string
+
+  alias_attribute :to_s, :name
+
+  auto_strip_attributes :name, :source, :public_contact_name, :public_contact_email, :public_contact_phone
+
+  # -- Associations --
+  belongs_to :organiser, class_name: 'Partner', optional: true
+  belongs_to :place, class_name: 'Partner', optional: true
+  has_many :events, dependent: :destroy
+
+  # -- Validations --
+  validates :name, :organiser, :source, presence: true
+  validates :place, presence: { if: :requires_default_location?,
+                                message: "can't be blank with this strategy" }
+  validates :source, uniqueness: { message: 'calendar source already in use' },
+                     format: { with: CALENDAR_REGEX, message: 'not a valid URL' }
+
+  validate :check_source_reachable
+
+  # -- Scopes --
   scope :that_appear_on_site, lambda { |site|
     site_partnership_tag_ids = site.tags.map(&:id)
 
@@ -73,6 +92,25 @@ class Calendar < ApplicationRecord
                      .distinct
     end
   }
+
+  # -- Callbacks --
+  before_save :clear_status_on_source_change
+  before_save :update_notice_count
+
+  after_create :automatically_queue_calendar
+
+  # -- Class methods --
+  def self.import_up_to
+    1.year.from_now
+  end
+
+  def self.queue_all_for_import!(force: false, from: Date.current.beginning_of_day)
+    find_each do |calendar|
+      calendar.queue_for_import! force, from
+    end
+  end
+
+  # -- Instance methods --
 
   # We need a default location for some strategies
   def requires_default_location?
@@ -106,20 +144,6 @@ class Calendar < ApplicationRecord
       [place.public_email, place.public_name]
     else
       false
-    end
-  end
-
-  #
-  # calendar importer support methods
-  #
-
-  def self.import_up_to
-    1.year.from_now
-  end
-
-  def self.queue_all_for_import!(force: false, from: Date.current.beginning_of_day)
-    find_each do |calendar|
-      calendar.queue_for_import! force, from
     end
   end
 
@@ -284,6 +308,8 @@ class Calendar < ApplicationRecord
   end
 
   private
+
+  # -- Private methods --
 
   # called for validation
   def check_source_reachable
