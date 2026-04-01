@@ -169,6 +169,31 @@ RSpec.describe "Public Events", type: :request do
       get event_url(event, host: "#{site.slug}.lvh.me")
       expect(response.body).to include("contact")
     end
+
+    it "includes Event JSON-LD structured data" do
+      get event_url(event, host: "#{site.slug}.lvh.me")
+      json_ld_blocks = response.body.scan(%r{<script type="application/ld\+json">(.+?)</script>}m)
+      event_ld = json_ld_blocks.map { |m| JSON.parse(m[0]) }.find { |d| d["@type"] == "Event" }
+
+      expect(event_ld).to be_present
+      expect(event_ld["name"]).to eq("Community Workshop")
+      expect(event_ld["startDate"]).to match(/^\d{4}-\d{2}-\d{2}T/)
+    end
+
+    it "includes site-level WebSite JSON-LD" do
+      get event_url(event, host: "#{site.slug}.lvh.me")
+      json_ld_blocks = response.body.scan(%r{<script type="application/ld\+json">(.+?)</script>}m)
+      website_ld = json_ld_blocks.map { |m| JSON.parse(m[0]) }.find { |d| d["@type"] == "WebSite" }
+
+      expect(website_ld).to be_present
+      expect(website_ld["name"]).to eq(site.name)
+    end
+
+    it "wraps event in h-event microformat" do
+      get event_url(event, host: "#{site.slug}.lvh.me")
+      expect(response.body).to match(/class="[^"]*h-event[^"]*"/)
+      expect(response.body).to include('class="dt-start"')
+    end
   end
 
   describe "GET /events/:id with bad ID" do

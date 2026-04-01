@@ -29,7 +29,7 @@ Rails.application.routes.draw do
   get 'culture-tourism', to: 'pages#culture_tourism'
 
   scope module: :admin, as: :admin, constraints: { subdomain: 'admin' } do
-    resources :articles
+    resources :articles, except: [:show]
     resources :calendars do
       collection do
         post :test_source
@@ -57,7 +57,7 @@ Rails.application.routes.draw do
     resources :partnerships
     resources :sites
     resources :supporters
-    resources :users do
+    resources :users, except: [:show] do
       collection do
         get :lookup_email
       end

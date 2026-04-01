@@ -78,6 +78,11 @@ class Views::Layouts::Application < Phlex::HTML
     meta(name: 'twitter:creator', content: '@gfscstudio')
     meta(property: 'og:url', content: request.original_url)
     meta(name: 'robots', content: 'noarchive')
+
+    script(type: 'application/ld+json') { raw safe(site.to_json_ld(base_url: request.base_url).to_json) } if site
+    return unless content_for?(:json_ld)
+
+    script(type: 'application/ld+json') { raw safe(content_for(:json_ld)) }
   end
 
   def compute_title
