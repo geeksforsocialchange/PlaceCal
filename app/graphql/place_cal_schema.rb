@@ -4,12 +4,9 @@ class PlaceCalSchema < GraphQL::Schema
   # mutation(Types::MutationType)
 
   default_max_page_size 100
-  # Deepest legitimate query is 4 levels (e.g. event → address → geo → latitude)
-  max_depth 10
-  # Highest real-world query scores ~1100 (articleConnection with all fields).
-  # Trans Dimension queries score ~100 each.
-  # Set per-query in GraphqlController to exempt introspection queries.
-  # max_complexity 1500
+  # Query depth and complexity limits are set per-query in GraphqlController
+  # to exempt introspection queries (which are inherently deep and complex).
+  # Limits: max_depth 10, max_complexity 1500
 
   query Types::QueryType
 

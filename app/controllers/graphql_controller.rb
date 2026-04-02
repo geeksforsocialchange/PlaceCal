@@ -22,11 +22,18 @@ class GraphqlController < ApplicationController
       # Query context goes here, for example:
       # current_user: current_user,
     }
-    # Apply complexity limit to regular queries but not introspection (__schema/__type)
-    max_complexity = query&.include?('__schema') ? nil : 1500
+    # Apply depth/complexity limits to regular queries but not introspection (__schema/__type),
+    # which is inherently deep and complex.
+    introspection = query&.include?('__schema')
+    # Deepest legitimate query is 4 levels (e.g. event → address → geo → latitude)
+    max_depth = introspection ? nil : 10
+    # Highest real-world query scores ~1100 (articleConnection with all fields).
+    # Trans Dimension queries score ~100 each.
+    max_complexity = introspection ? nil : 1500
 
     result = PlaceCalSchema.execute(query, variables: variables, context: context,
                                            operation_name: operation_name,
+                                           max_depth: max_depth,
                                            max_complexity: max_complexity)
     render json: result
   rescue StandardError => e
