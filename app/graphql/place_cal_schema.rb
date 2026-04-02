@@ -4,6 +4,8 @@ class PlaceCalSchema < GraphQL::Schema
   # mutation(Types::MutationType)
 
   default_max_page_size 100
+  max_depth 10
+  max_complexity 1500
 
   query Types::QueryType
 
