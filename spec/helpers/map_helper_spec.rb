@@ -100,6 +100,58 @@ RSpec.describe MapHelper, type: :helper do
     end
   end
 
+  describe "#group_colocated_markers" do
+    it "returns markers unchanged when all positions are unique" do
+      markers = [
+        { position: [53.0, -2.0], anchor: "A" },
+        { position: [54.0, -3.0], anchor: "B" }
+      ]
+      result = helper.send(:group_colocated_markers, markers)
+      expect(result.length).to eq(2)
+    end
+
+    it "groups markers at the same position into a single marker" do
+      markers = [
+        { position: [53.0, -2.0], anchor: "Link A".html_safe },
+        { position: [53.0, -2.0], anchor: "Link B".html_safe }
+      ]
+      result = helper.send(:group_colocated_markers, markers)
+      expect(result.length).to eq(1)
+      expect(result.first[:position]).to eq([53.0, -2.0])
+    end
+
+    it "combines anchor HTML with br separators" do
+      markers = [
+        { position: [53.0, -2.0], anchor: "<a>A</a>".html_safe },
+        { position: [53.0, -2.0], anchor: "<a>B</a>".html_safe }
+      ]
+      result = helper.send(:group_colocated_markers, markers)
+      expect(result.first[:anchor]).to include("<a>A</a>")
+      expect(result.first[:anchor]).to include("<br")
+      expect(result.first[:anchor]).to include("<a>B</a>")
+    end
+
+    it "handles markers without anchors" do
+      markers = [
+        { position: [53.0, -2.0] },
+        { position: [53.0, -2.0] }
+      ]
+      result = helper.send(:group_colocated_markers, markers)
+      expect(result.length).to eq(1)
+      expect(result.first).not_to have_key(:anchor)
+    end
+
+    it "preserves separate groups at different positions" do
+      markers = [
+        { position: [53.0, -2.0], anchor: "A".html_safe },
+        { position: [53.0, -2.0], anchor: "B".html_safe },
+        { position: [54.0, -3.0], anchor: "C".html_safe }
+      ]
+      result = helper.send(:group_colocated_markers, markers)
+      expect(result.length).to eq(2)
+    end
+  end
+
   describe "#args_for_map" do
     let(:site) { create(:site, theme: "pink") }
     let(:map_points) do
@@ -133,6 +185,26 @@ RSpec.describe MapHelper, type: :helper do
     it "includes marker positions" do
       result = JSON.parse(helper.args_for_map(map_points, site, :single, false))
       expect(result["markers"].first["position"]).to eq([53.4668, -2.2339])
+    end
+
+    it "groups colocated markers into a single marker" do
+      colocated_points = [
+        { lat: 53.4668, lon: -2.2339, name: "Partner A", id: "partner-a" },
+        { lat: 53.4668, lon: -2.2339, name: "Partner B", id: "partner-b" }
+      ]
+      result = JSON.parse(helper.args_for_map(colocated_points, site, nil, false))
+      expect(result["markers"].length).to eq(1)
+      expect(result["markers"].first["anchor"]).to include("Partner A")
+      expect(result["markers"].first["anchor"]).to include("Partner B")
+    end
+
+    it "preserves map--multiple style class for colocated markers" do
+      colocated_points = [
+        { lat: 53.4668, lon: -2.2339, name: "Partner A", id: "partner-a" },
+        { lat: 53.4668, lon: -2.2339, name: "Partner B", id: "partner-b" }
+      ]
+      result = JSON.parse(helper.args_for_map(colocated_points, site, nil, false))
+      expect(result["styleClass"]).to include("map--multiple")
     end
 
     it "filters out nil map points" do

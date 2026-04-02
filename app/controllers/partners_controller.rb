@@ -24,10 +24,7 @@ class PartnersController < ApplicationController
       tag_id: @selected_category
     )
 
-    # When no filters active, show only partners with physical addresses (no service_areas)
-    # When filters are active, show all filtered partners that have addresses
-    addresses_only = @selected_category.blank? && @selected_neighbourhood.blank?
-    @map = get_map_markers(@partners, addresses_only) if @partners.detect(&:address)
+    @map = get_map_markers(@partners) if @partners.detect(&:address)
 
     render Views::Partners::Index.new(
       partners: @partners, site: @site,
