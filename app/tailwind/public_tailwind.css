@@ -23,15 +23,29 @@
 	--*: initial;
 }
 
+:root {
+	font-size: 18px;
+	line-height: 1.5;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+
+	/* allow transition between keywords (i.e. `auto`, `min-content`) and numerics
+	not in firefox yet https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/interpolate-size#browser_compatibility */
+	interpolate-size: allow-keywords;
+	/* transition discrete properties (i.e. `display`) at the start/end of transition rather than at 50% */
+	transition-behavior: allow-discrete;
+}
+
 /* base theme
 https://tailwindcss.com/docs/theme
 https://tailwindcss.com/docs/theme#default-theme-variable-reference
 */
 /* TODO: validate that these can be overridden at runtime as-is. Probably need to declare vars in :root but maybe not */
 @theme inline {
-	/* our root element size is 18px rather than the usual 16, but the sizes and spacing are based on a mix of both which is why the values are so as they are
+	/* our root element size is 18px rather than the usual 16, but the sizes and spacing are based on a mix of both, and also percentages, and also base10
    that means that there is not a good value to put here
    app/assets/stylesheets/base/typography.scss#L2
+	 large FIXME: normalise sizing
    */
 	--spacing: 0.25rem;
 
@@ -42,11 +56,13 @@ https://tailwindcss.com/docs/theme#default-theme-variable-reference
 	--font-weight-extra-bold: 800;
 	--font-weight-bold: 700;
 	--font-weight-regular: 500;
+	/* this one only from app/assets/stylesheets/components/navigation_component.scss */
+	--font-weight-semibold: 600;
 	/* small */
 	--text-sm: 0.8rem;
 	/* base */
 	--text-base: 1rem;
-	/* h3.5 */
+	/* h3.5 - not certain that this is used */
 	--text-lg: 1.222222222rem;
 	/* h3 */
 	--text-xl: 1.33333rem;
@@ -95,28 +111,29 @@ https://tailwindcss.com/docs/theme#default-theme-variable-reference
 	/* app/assets/stylesheets/modules/breakpoints.scss
 		tablet portrait, landscape, desktop
 	*/
-	--breakpoint-tp: 600px;
-	--breakpoint-tl: 900px;
-	--breakpoint-dt: 1200px;
+	--breakpoint-md: 600px;
+	--breakpoint-lg: 900px;
+	--breakpoint-xl: 1200px;
 	/* app/assets/stylesheets/home/pages/_index.scss
 		FIXME: this seems very arbitrary
 	*/
 	--breakpoint-home: 1388px;
 
-	--container-tp: var(--breakpoint-tp);
-	--container-tl: var(--breakpoint-tl);
-	--container-dt: var(--breakpoint-dt);
+	--container-md: var(--breakpoint-md);
+	--container-lg: var(--breakpoint-lg);
+	--container-xl: var(--breakpoint-xl);
 	/* app/assets/stylesheets/home/pages/_index.scss */
 	--container-home: var(--breakpoint-home);
+
+	/* app/assets/stylesheets/variables/typography.scss */
+	--tracking-wide: 0.16667rem;
 }
 
 /* base overrides for things which aren't yet componentised */
 @layer base {
-	html {
-		/* FIXME: everything should be standardised to be based on either 16 or 18 but not both */
-		font-size: 18px;
-		-webkit-font-smoothing: antialiased;
-		-moz-osx-font-smoothing: grayscale;
+	body {
+		/* app/assets/stylesheets/base/typography.scss */
+		@apply font-sans;
 	}
 	/* app/assets/stylesheets/variables/typography.scss */
 	h1 {
@@ -129,12 +146,13 @@ https://tailwindcss.com/docs/theme#default-theme-variable-reference
 		@apply text-xl font-bold;
 	}
 	h4 {
-		@apply text-base;
+		@apply text-base font-bold;
 	}
 
 	/* the site previously had no reset so these are browser defaults which were not overridden
 		TODO: decide whether to leave units as-is or convert to --spacing multiples
 		TODO: set at point of use if that seems sensible
+		FIXME: add not(.with-reset) to selectors so these can be overriden then properly cleaned up when deprecated instead of duplicating the tailwind reset
    */
 	h1 {
 		margin-block: 0.67em;
@@ -145,7 +163,7 @@ https://tailwindcss.com/docs/theme#default-theme-variable-reference
 	h3 {
 		margin-block: 1em;
 	}
-	/* haven't come across a h4 yet */
+	/* haven't come across a h4 which wasn't overriding default margins yet */
 	h5 {
 		font-size: 0.83em;
 		font-weight: bold;
@@ -171,7 +189,7 @@ https://tailwindcss.com/docs/theme#default-theme-variable-reference
 		margin-block: 1em;
 	}
 	/* TODO: this should only be enabled where it's wanted */
-	a {
+	a:not(.with-reset) {
 		text-decoration-line: underline;
 	}
 	/* TODO: this should only be enabled where it's wanted */
