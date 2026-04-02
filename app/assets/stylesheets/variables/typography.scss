@@ -1,4 +1,4 @@
-/** BEGIN ported */
+/** BEGIN ported (need to be kept until no sass is using them though) */
 $sans-serif: "Rawline", "Raleway", sans-serif;
 $serif: "Trocchi", Georgia, serif;
 $extra-bold: 800;
@@ -11,32 +11,10 @@ $h1-size: 2.22222rem;
 $h2-size: 1.77778rem;
 $h3-size: 1.33333rem;
 $h3-5-size: 1.222222222rem;
-
+$title-letter-spacing: 0.16667rem;
 /** END ported */
 
 // TODO
-$title-letter-spacing: 0.16667rem;
 $small-page-margin: 1rem;
 $page-margin: 1.66667rem;
 $big-page-margin: $page-margin * 2;
-
-/** BEGIN ported */
-@mixin h2 {
-	font-size: $h2-size;
-	font-weight: $bold;
-}
-
-@mixin h3 {
-	font-size: $h3-size;
-	font-weight: $bold;
-}
-
-@mixin h35 {
-	font-size: $h3-5-size;
-	font-weight: $regular;
-}
-
-@mixin h4 {
-	font-size: 1rem;
-}
-/** END ported */

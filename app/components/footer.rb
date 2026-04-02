@@ -6,7 +6,7 @@ class Components::Footer < Components::Base
   prop :site, _Nilable(::Site), :positional, default: nil
 
   def view_template
-    div(class: 'footer') do
+    footer(class: 'footer') do
       div(class: 'c') do
         div(class: footer_inner_class) { render_footer_content }
       end

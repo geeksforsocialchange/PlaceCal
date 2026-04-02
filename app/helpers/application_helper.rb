@@ -73,18 +73,15 @@ module ApplicationHelper
   end
 
   # ported from https://github.com/comfy/active_link_to/blob/master/lib/active_link_to/active_link_to.rb
-  def active_link_to(title, url, data: nil)
+  def active_link_to(title, url, data: nil, base_css_class: nil, active_css_class: 'active')
     current_path = request.original_fullpath
     link_path = Addressable::URI.parse(url).path
     is_current_path = current_path.match(%r{^#{Regexp.escape(link_path)}/?(\?.*)?$}).present?
 
     options = {}
     options[:data] = data if data.present?
-
-    if is_current_path # current_path == link_path
-      options[:class] = 'active'
-      options['aria-current'] = 'page'
-    end
+    options[:class] = "#{base_css_class} #{active_css_class if is_current_path}"
+    options['aria-current'] = 'page' if is_current_path
 
     link_to(title, url, options).html_safe
   end

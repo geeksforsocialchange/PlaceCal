@@ -27,21 +27,23 @@ class Views::Layouts::Application < Phlex::HTML
         meta(name: 'turbo-refresh-method', content: 'morph')
       end
 
+      # app/assets/stylesheets/base/layout.scss
+      # app/assets/stylesheets/home/_layout.scss
+      # app/assets/stylesheets/home/pages/_index.scss
+      # TODO: deal with arbitrary border width
+      css_class = site&.default_site? ? 'max-w-home bg-text border-none mx-auto' : 'max-w-xl bg-background mx-auto xl:border xl:border-x-[35px] dt:border-text'
       body do
-        div(class: "page #{page_classes}") do
+        div(class: "page #{css_class}") do
           Navigation(navigation: navigation, site: site)
           # FIXME: move main elem into component to save excess divs
           main do
             Flash()
             yield
           end
-          # FIXME: move footer elem into footer component to save excess divs
-          footer do
-            if site&.default_site?
-              HomeFooter()
-            else
-              Footer(site)
-            end
+          if site&.default_site?
+            HomeFooter()
+          else
+            Footer(site)
           end
         end
       end
@@ -49,16 +51,6 @@ class Views::Layouts::Application < Phlex::HTML
   end
 
   private
-
-  def page_classes
-    # app/assets/stylesheets/base/layout.scss
-    # app/assets/stylesheets/home/_layout.scss
-    # app/assets/stylesheets/home/pages/_index.scss
-    return 'max-w-home bg-text border-none mx-auto' if site&.default_site?
-
-    # TODO: deal with arbitrary sizes once i have a --spacing
-    return 'max-w-dt bg-background mx-auto dt:border dt:border-x-[35px] dt:border-text'
-  end
 
   def render_meta
     title_text = compute_title
