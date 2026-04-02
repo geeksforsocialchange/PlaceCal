@@ -8,7 +8,8 @@ class PlaceCalSchema < GraphQL::Schema
   max_depth 10
   # Highest real-world query scores ~1100 (articleConnection with all fields).
   # Trans Dimension queries score ~100 each.
-  max_complexity 1500
+  # Set per-query in GraphqlController to exempt introspection queries.
+  # max_complexity 1500
 
   query Types::QueryType
 

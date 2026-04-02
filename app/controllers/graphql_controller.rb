@@ -22,7 +22,12 @@ class GraphqlController < ApplicationController
       # Query context goes here, for example:
       # current_user: current_user,
     }
-    result = PlaceCalSchema.execute(query, variables: variables, context: context, operation_name: operation_name)
+    # Apply complexity limit to regular queries but not introspection (__schema/__type)
+    max_complexity = query&.include?('__schema') ? nil : 1500
+
+    result = PlaceCalSchema.execute(query, variables: variables, context: context,
+                                           operation_name: operation_name,
+                                           max_complexity: max_complexity)
     render json: result
   rescue StandardError => e
     raise e unless Rails.env.development?
