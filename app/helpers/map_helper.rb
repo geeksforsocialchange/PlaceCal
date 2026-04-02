@@ -15,7 +15,7 @@ module MapHelper
       zoom: 16,
       iconUrl: image_path('icons/map/map-marker.png'),
       shadowUrl: image_path('icons/map/map-shadow.png'),
-      markers: data_for_markers,
+      markers: group_colocated_markers(data_for_markers),
       styleUrl: style_url_for_site(site),
       styleClass: map_style_class(data_for_markers, style_mode, compact_mode)
     }.to_json.html_safe
@@ -35,6 +35,17 @@ module MapHelper
            end
     out << 'map--compact' if compact_mode
     out
+  end
+
+  def group_colocated_markers(markers)
+    markers.group_by { |m| m[:position] }.map do |position, group|
+      next group.first if group.length == 1
+
+      anchors = group.filter_map { |m| m[:anchor] }
+      merged = { position: position }
+      merged[:anchor] = safe_join(anchors, tag.br) if anchors.any?
+      merged
+    end
   end
 
   def center(marker_data)

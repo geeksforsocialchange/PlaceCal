@@ -32,6 +32,19 @@ RSpec.describe Components::Map, type: :phlex do
     expect(args).to include("map--multiple")
   end
 
+  it "groups colocated points into a single marker" do
+    colocated_points = [
+      { lat: 53.4808, lon: -2.2426, name: "Place A", id: 1 },
+      { lat: 53.4808, lon: -2.2426, name: "Place B", id: 2 }
+    ]
+    render_inline(described_class.new(points: colocated_points, site: site_slug))
+    expect(page).to have_css('[data-controller="leaflet"]')
+    args = JSON.parse(page.find("[data-leaflet-args-value]")["data-leaflet-args-value"])
+    expect(args["markers"].length).to eq(1)
+    expect(args["markers"].first["anchor"]).to include("Place A")
+    expect(args["markers"].first["anchor"]).to include("Place B")
+  end
+
   it "passes compact to the map helper" do
     render_inline(described_class.new(points: points, site: site_slug, compact: true))
     args = page.find("[data-leaflet-args-value]")["data-leaflet-args-value"]

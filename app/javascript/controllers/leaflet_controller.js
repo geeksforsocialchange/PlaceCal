@@ -67,12 +67,20 @@ export default class extends Controller {
 			this.map.setView(this.argsValue.center, this.argsValue.zoom);
 		} else {
 			// Multiple markers: fit bounds to show all markers
-			// Extend bounds slightly south to account for marker icon height
 			const bounds = markerGroup.getBounds();
-			const south = bounds.getSouth();
-			const offset = (bounds.getNorth() - south) * 0.08; // 8% extra at bottom
-			bounds.extend([south - offset, bounds.getWest()]);
-			this.map.fitBounds(bounds);
+			if (
+				bounds.getNorth() === bounds.getSouth() &&
+				bounds.getEast() === bounds.getWest()
+			) {
+				// All markers at same position: fitBounds would fail on zero-area box
+				this.map.setView(bounds.getCenter(), this.argsValue.zoom);
+			} else {
+				// Extend bounds slightly south to account for marker icon height
+				const south = bounds.getSouth();
+				const offset = (bounds.getNorth() - south) * 0.08; // 8% extra at bottom
+				bounds.extend([south - offset, bounds.getWest()]);
+				this.map.fitBounds(bounds);
+			}
 		}
 	}
 }
