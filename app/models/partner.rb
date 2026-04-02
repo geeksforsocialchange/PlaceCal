@@ -1,27 +1,65 @@
 # frozen_string_literal: true
 
-# app/models/partner.rb
 class Partner < ApplicationRecord
-  MAX_CATEGORIES = 3
-
-  after_initialize :set_defaults, unless: :persisted?
-  after_commit :refresh_neighbourhood_partners_count
-
+  # ==== Includes / Extends ====
   include Validation
   include PartnerJsonLd
-
+  include Permalinkable
   extend FriendlyId
+  include HtmlRenderCache
+
+  # ==== Constants ====
+
+  MAX_CATEGORIES = 3
+
+  # ==== Attributes ====
+  # Columns marked (nullable) have no NOT NULL constraint in the DB.
+  attribute :accessibility_info,      :text                        # nullable
+  attribute :accessibility_info_html, :string                      # nullable, populated by HtmlRenderCache
+  attribute :admin_email,             :string                      # nullable
+  attribute :admin_name,              :string                      # nullable
+  attribute :booking_info,            :text                        # nullable
+  attribute :calendar_email,          :string                      # nullable
+  attribute :calendar_name,           :string                      # nullable
+  attribute :calendar_phone,          :string                      # nullable
+  attribute :can_be_assigned_events,  :boolean, default: false     # NOT NULL
+  attribute :description,             :text                        # nullable
+  attribute :description_html,        :string                      # nullable, populated by HtmlRenderCache
+  attribute :facebook_link,           :string                      # nullable
+  attribute :hidden,                  :boolean, default: false     # NOT NULL
+  attribute :hidden_blame_id,         :integer                     # nullable
+  attribute :hidden_reason,           :text                        # nullable
+  attribute :hidden_reason_html,      :string                      # nullable, populated by HtmlRenderCache
+  # image -- managed by CarrierWave, attribute declaration skipped
+  attribute :instagram_handle,        :string                      # nullable
+  attribute :is_a_place,              :boolean, default: false     # NOT NULL
+  attribute :name,                    :string                      # NOT NULL
+  attribute :opening_times,           :json                        # nullable — Array<Hash{dayOfWeek, opens, closes}>, schema.org OpeningHoursSpecification
+  attribute :partner_email,           :string                      # nullable
+  attribute :partner_name,            :string                      # nullable
+  attribute :partner_phone,           :string                      # nullable
+  attribute :public_email,            :string                      # nullable
+  attribute :public_name,             :string                      # nullable
+  attribute :public_phone,            :string                      # nullable
+  attribute :slug,                    :string                      # nullable
+  attribute :summary,                 :string                      # nullable
+  attribute :summary_html,            :string                      # nullable, populated by HtmlRenderCache
+  attribute :twitter_handle,          :string                      # nullable
+  attribute :url,                     :string                      # nullable
+
+  attr_accessor :accessed_by_user
 
   friendly_id :name, use: :slugged
-
-  include HtmlRenderCache
 
   html_render_cache :description
   html_render_cache :summary
   html_render_cache :accessibility_info
   html_render_cache :hidden_reason
 
-  # Associations
+  auto_strip_attributes :name, :summary, :url, :twitter_handle, :instagram_handle, :facebook_link, :public_phone, :public_email
+  permalink_resource 'partners'
+
+  # ==== Associations ====
   has_and_belongs_to_many :users
   has_many :calendars, foreign_key: :organiser_id, dependent: :destroy, inverse_of: :organiser
   has_many :events, foreign_key: :organiser_id, dependent: :destroy, inverse_of: :organiser
@@ -38,8 +76,6 @@ class Partner < ApplicationRecord
            through: :service_areas,
            source: :neighbourhood,
            class_name: 'Neighbourhood'
-
-  validates_associated :service_areas
 
   has_many :article_partners, dependent: :destroy
   has_many :articles, through: :article_partners
@@ -68,13 +104,12 @@ class Partner < ApplicationRecord
      c[:street_address3]].all?(&:blank?)
   }
 
-  validates_associated :address
-
   accepts_nested_attributes_for :service_areas, allow_destroy: true
 
-  auto_strip_attributes :name, :summary, :url, :twitter_handle, :instagram_handle, :facebook_link, :public_phone, :public_email
+  # ==== Uploaders ====
+  mount_uploader :image, ImageUploader
 
-  # Validations
+  # ==== Validations ====
   validates :name,
             presence: true,
             uniqueness: { case_sensitive: false },
@@ -112,28 +147,20 @@ class Partner < ApplicationRecord
             allow_blank: true
   validates :slug, uniqueness: true
 
+  validates_associated :service_areas
+  validates_associated :address
+
   validate :check_neighbourhood_access
-
   validate :neighbourhood_admin_address_access, on: %i[create update]
-
   validate :must_have_address_or_service_area
-
   validate :opening_times_is_json_or_nil
-
   validate :three_or_less_category_tags
-
   validate :partnership_admins_must_add_partnership, on: %i[create]
-
   validate :must_give_reason_to_hide
-
   validate :must_record_who_has_hidden
 
-  attr_accessor :accessed_by_user
-
-  mount_uploader :image, ImageUploader
-
+  # ==== Scopes ====
   scope :visible, -> { where(hidden: false) }
-
   scope :recently_updated, -> { order(updated_at: desc) }
 
   # only select partners that have addresses
@@ -147,22 +174,50 @@ class Partner < ApplicationRecord
       .where(o_r: { verb: :manages }).distinct
   }
 
+  # ==== Delegates ====
   delegate :neighbourhood_id, to: :address, allow_nil: true
 
+  # ==== Callbacks ====
+  after_commit :refresh_neighbourhood_partners_count
+
+  # ==== Class methods ====
+
+  # Find a place-partner whose name matches one of the address street lines.
+  # @param address [Address] the address to match against
+  # @return [Partner, nil]
+  def self.matching_venue_for(address)
+    return unless address&.street_lines&.any? && address&.postcode
+
+    Partner.left_joins(:address)
+           .find_by(
+             'can_be_assigned_events AND '\
+             'lower(name) IN (:components) AND '\
+             'lower(addresses.postcode) = (:postcode)',
+             components: address.street_lines.map(&:downcase),
+             postcode: address.postcode.downcase
+           )
+  end
+
+  # ==== Instance methods ====
+
+  # Strips leading @ from Twitter handles before saving.
+  # @param handle [String, nil]
+  # @return [String, nil]
   def twitter_handle=(handle)
     super(handle&.gsub('@', ''))
   end
 
-  # Get all Partners that manage this Partner.
+  # @return [ActiveRecord::Relation<Partner>] partners that manage this one
   def managers
     subjects.where(organisation_relationships: { verb: :manages })
   end
 
-  # Get all Partners that this Partner manages.
+  # @return [ActiveRecord::Relation<Partner>] partners this one manages
   def managees
     objects.where(organisation_relationships: { verb: :manages })
   end
 
+  # @return [Array<Neighbourhood>] unique neighbourhoods from address + service areas
   def neighbourhoods
     arr = []
     arr << address.neighbourhood if address&.neighbourhood
@@ -174,18 +229,19 @@ class Partner < ApplicationRecord
     name
   end
 
-  # def custom_validation_method_with_message
-  #   errors.add(:_, "Select at least one Tag") if tag_ids.blank?
-  # end
-
+  # @return [Boolean] whether FriendlyId should generate a new slug
   def should_generate_new_friendly_id?
     slug.blank?
   end
 
+  # @return [Boolean]
   def has_service_areas?
     service_areas.any?
   end
 
+  # Whether the current user is allowed to remove this partner's address.
+  # @param user [User, nil]
+  # @return [Boolean]
   def can_clear_address?(user = nil)
     return false if address.blank? || address.missing_values?
     return false if service_areas.empty?
@@ -199,6 +255,10 @@ class Partner < ApplicationRecord
     user_hood_ids.include?(address.neighbourhood_id)
   end
 
+  # Whether the user should see a warning before clearing the address
+  # (i.e. their only link to this partner is through its address).
+  # @param user [User]
+  # @return [Boolean]
   def warn_user_clear_address?(user)
     return false if user.root?
     return false if user.admin_for_partner?(id)
@@ -214,6 +274,8 @@ class Partner < ApplicationRecord
     any_service_areas == false
   end
 
+  # Destroy the partner's address in a transaction.
+  # @return [void]
   def clear_address!
     Partner.transaction do
       old_address = address
@@ -223,27 +285,27 @@ class Partner < ApplicationRecord
     end
   end
 
-  def permalink
-    "https://placecal.org/partners/#{id}"
-  end
-
+  # @return [String, nil] full Twitter profile URL
   def twitter_url
     "https://twitter.com/#{twitter_handle}" if twitter_handle.present?
   end
 
+  # @return [String, nil] full Instagram profile URL
   def instagram_url
     "https://instagram.com/#{instagram_handle}" if instagram_handle.present?
   end
 
+  # @return [String, nil] CarrierWave image URL
   def logo_url
     image&.url
   end
 
-  # Get a count of all the events this week
+  # @return [Integer] number of events starting this week
   def events_this_week
     events.find_by_week(Time.now).count
   end
 
+  # @return [String] JSON string of opening times, or "[]" if blank/invalid
   def opening_times_data
     # FIXME: opening_times field is really just a string
     #  even tho we use jsonb as a field type. this should
@@ -255,6 +317,7 @@ class Partner < ApplicationRecord
     opening_times
   end
 
+  # @return [Array<String>] HTML-safe strings like "Monday 9:00am – 5:00pm"
   def human_readable_opening_times
     return [] if !opening_times || opening_times.length.zero?
 
@@ -270,6 +333,7 @@ class Partner < ApplicationRecord
     []
   end
 
+  # @return [Boolean] whether public_phone passes format validation
   def valid_public_phone?
     self.class.validators_on(:public_phone).each do |validator|
       validator.validate_each(self, :public_phone, public_phone)
@@ -278,6 +342,7 @@ class Partner < ApplicationRecord
     errors.blank?
   end
 
+  # @return [Boolean] whether name passes format/length validation
   def valid_name?
     self.class.validators_on(:name).each do |validator|
       validator.validate_each(self, :name, name)
@@ -286,7 +351,7 @@ class Partner < ApplicationRecord
     errors.blank?
   end
 
-  # @return [Array<Int>] A list of Neighbourhood IDs
+  # @return [Array<Integer>] neighbourhood IDs from address + service areas
   def owned_neighbourhood_ids
     neighbourhood_ids = service_areas.pluck(:neighbourhood_id)
     neighbourhood_ids << address.neighbourhood_id if address&.neighbourhood_id
@@ -294,6 +359,8 @@ class Partner < ApplicationRecord
     neighbourhood_ids
   end
 
+  # @param badge_zoom_level [String] zoom level for badge display
+  # @return [String, nil] neighbourhood name appropriate for the site's zoom
   def neighbourhood_name_for_site(badge_zoom_level)
     if service_areas.any?
       if service_areas.many?
@@ -306,20 +373,9 @@ class Partner < ApplicationRecord
     end
   end
 
-  def self.matching_venue_for(address)
-    return unless address&.street_lines&.any? && address&.postcode
-
-    Partner.left_joins(:address)
-           .find_by(
-             'can_be_assigned_events AND '\
-             'lower(name) IN (:components) AND '\
-             'lower(addresses.postcode) = (:postcode)',
-             components: address.street_lines.map(&:downcase),
-             postcode: address.postcode.downcase
-           )
-  end
-
   private
+
+  # ==== Private methods ====
 
   def refresh_neighbourhood_partners_count
     # Refresh count for current neighbourhood (via address)
@@ -453,9 +509,5 @@ class Partner < ApplicationRecord
     return if hidden && hidden_blame_id.present?
 
     errors.add :base, 'You must record who has hidden the partner'
-  end
-
-  def set_defaults
-    self.hidden ||= false
   end
 end

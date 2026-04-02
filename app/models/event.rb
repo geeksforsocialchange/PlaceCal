@@ -1,15 +1,35 @@
 # frozen_string_literal: true
 
-# app/models/event.rb
 class Event < ApplicationRecord
+  # ==== Includes / Extends ====
   has_paper_trail ignore: %i[rrule notices]
 
   include HtmlRenderCache
   include EventJsonLd
+  include Permalinkable
+
+  # ==== Attributes ====
+  # Columns marked (nullable) have no NOT NULL constraint in the DB.
+  attribute :are_spaces_available,     :string                      # nullable
+  attribute :description,              :text                        # nullable
+  attribute :description_html,         :string                      # nullable, populated by HtmlRenderCache
+  attribute :dtend,                    :datetime                    # nullable
+  attribute :dtstart,                  :datetime                    # NOT NULL
+  attribute :footer,                   :text                        # nullable
+  attribute :is_active,                :boolean, default: true      # NOT NULL
+  attribute :notices,                  :json                        # nullable — Array<String>, importer messages
+  attribute :publisher_url,            :string                      # nullable
+  attribute :raw_location_from_source, :text                        # nullable
+  attribute :rrule,                    :json                        # nullable — Array<Hash{table: {frequency: String}}>, or false
+  attribute :summary,                  :text                        # NOT NULL
+  attribute :summary_html,             :string                      # nullable, populated by HtmlRenderCache
+  attribute :uid,                      :string                      # nullable
 
   html_render_cache :description
   html_render_cache :summary
+  permalink_resource 'events'
 
+  # ==== Associations ====
   belongs_to :organiser, class_name: 'Partner', optional: true
   belongs_to :place, class_name: 'Partner', optional: true
   belongs_to :address, optional: true
@@ -17,12 +37,12 @@ class Event < ApplicationRecord
   belongs_to :calendar, optional: true
   has_and_belongs_to_many :collections
 
+  # ==== Validations ====
   validates :summary, :dtstart, :organiser, presence: true
   validate :require_location
   validate :unique_event, on: :create # If we are updating the event we don't want it to trigger!
 
-  before_save :sanitize_rrule
-
+  # ==== Scopes ====
   # has_many :service_areas, through: :partner
 
   # Find events that start on a given day
@@ -109,71 +129,10 @@ class Event < ApplicationRecord
   # Global feed
   scope :ical_feed, -> { where(dtstart: (Time.now - 1.week)..).where(dtend: ...(Time.now + 2.years)) }
 
-  def repeat_frequency
-    rrule[0]['table']['frequency'].titleize if rrule
-  end
+  # ==== Callbacks ====
+  before_save :sanitize_rrule
 
-  def sanitize_rrule
-    self.rrule = false if rrule.nil? || rrule == []
-  end
-
-  def time
-    if dtend
-      "#{dtstart.strftime('%H:%M')} – #{dtend.strftime('%H:%M')}"
-    else
-      dtstart.strftime('%H:%M')
-    end
-  end
-
-  def duration
-    return false unless dtend
-
-    (dtend - dtstart).seconds.iso8601
-  end
-
-  def date
-    dtstart.strftime('%e %b')
-  end
-
-  def date_year
-    dtstart.strftime('%e %b %Y')
-  end
-
-  def permalink
-    "https://placecal.org/events/#{id}"
-  end
-
-  def neighbourhood
-    address&.neighbourhood
-  end
-
-  def location
-    use_address = address || partner_at_location&.address || organiser&.address
-    return '' if use_address.nil?
-
-    use_address.to_s
-  end
-
-  def partner_at_location
-    @partner_at_location ||= place || Partner.matching_venue_for(address)
-  end
-
-  # TODO: plan this out on paper, currently half finished
-  # Who to contact if the event is wrong
-  def blame
-    organiser = calendar&.organiser
-    return false unless organiser
-
-    email = organiser.admin_email
-    name = organiser.admin_name
-    "Something wrong with this listing? Contact #{name} <#{email}> with reference {url}"
-  end
-
-  def og_title
-    str = "#{summary}, #{date}, #{time}"
-    str += " @ #{organiser.name}" if organiser
-  end
-
+  # ==== Class methods ====
   # Remove duplicate events (same uid, dtstart, dtend, calendar_id),
   # keeping the oldest record. Returns the number of deleted rows.
   def self.deduplicate!
@@ -192,7 +151,81 @@ class Event < ApplicationRecord
     result.cmd_tuples
   end
 
+  # ==== Instance methods ====
+
+  # @return [String, nil] human-readable recurrence label (e.g. "Weekly")
+  def repeat_frequency
+    rrule[0]['table']['frequency'].titleize if rrule
+  end
+
+  # @return [String] formatted time range, e.g. "09:00 – 10:00"
+  def time
+    if dtend
+      "#{dtstart.strftime('%H:%M')} – #{dtend.strftime('%H:%M')}"
+    else
+      dtstart.strftime('%H:%M')
+    end
+  end
+
+  # @return [String, false] ISO 8601 duration, or false if no end time
+  def duration
+    return false unless dtend
+
+    (dtend - dtstart).seconds.iso8601
+  end
+
+  # @return [String] short date, e.g. " 1 Jan"
+  def date
+    dtstart.strftime('%e %b')
+  end
+
+  # @return [String] date with year, e.g. " 1 Jan 2026"
+  def date_year
+    dtstart.strftime('%e %b %Y')
+  end
+
+  # @return [Neighbourhood, nil]
+  def neighbourhood
+    address&.neighbourhood
+  end
+
+  # @return [String] human-readable address string, or empty string
+  def location
+    use_address = address || partner_at_location&.address || organiser&.address
+    return '' if use_address.nil?
+
+    use_address.to_s
+  end
+
+  # @return [Partner, nil] the place partner, or a venue matching the address
+  def partner_at_location
+    @partner_at_location ||= place || Partner.matching_venue_for(address)
+  end
+
+  # TODO: plan this out on paper, currently half finished
+  # @return [String, false] contact-blame string, or false if no organiser
+  def blame
+    organiser = calendar&.organiser
+    return false unless organiser
+
+    email = organiser.admin_email
+    name = organiser.admin_name
+    "Something wrong with this listing? Contact #{name} <#{email}> with reference {url}"
+  end
+
+  # @return [String] Open Graph title combining summary, date, time, and organiser
+  def og_title
+    str = "#{summary}, #{date}, #{time}"
+    str += " @ #{organiser.name}" if organiser
+  end
+
   private
+
+  # ==== Private methods ====
+
+  def sanitize_rrule
+    self.rrule = false if rrule.nil? || rrule == []
+  end
 
   def require_location
     # 'event', 'no_location', and 'online_only' do not require a Location

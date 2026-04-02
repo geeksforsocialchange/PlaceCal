@@ -107,7 +107,7 @@ module Admin
 
       return render json: { valid: false, error: 'Please enter a URL' } if source.blank?
 
-      return render json: { valid: false, error: 'Please enter a valid URL' } unless Calendar::CALENDAR_REGEX.match?(source)
+      return render json: { valid: false, error: 'Please enter a valid URL' } unless Validation::CALENDAR_URL_REGEX.match?(source)
 
       # Try to detect the importer
       temp_calendar = Calendar.new(source: source, importer_mode: 'auto')

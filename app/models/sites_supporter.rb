@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
-# app/models/sites_supporter.rb
 class SitesSupporter < ApplicationRecord
+  # ==== Associations ====
   belongs_to :supporter
   belongs_to :site
+
+  # ==== Validations ====
   validates :supporter_id,
             uniqueness: { scope: :site_id,
                           message: 'Supporters can not be assigned more than once to a site' }

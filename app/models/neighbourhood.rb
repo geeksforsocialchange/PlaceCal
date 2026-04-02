@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 class Neighbourhood < ApplicationRecord
+  # ==== Includes / Extends ====
+  has_ancestry
+  extend Enumerize
+
+  # ==== Constants ====
+
   # WARNING: this must be updated for every new ONS dataset
   #    see /lib/tasks/neighbourhoods.rake
   LATEST_RELEASE_DATE = DateTime.new(2024, 5).freeze
@@ -17,7 +23,25 @@ class Neighbourhood < ApplicationRecord
 
   LEVEL_NAMES = LEVELS.invert.freeze
 
-  has_ancestry
+  # ==== Enums / Enumerize ====
+  enumerize :unit,
+            in: %i[ward district county region country],
+            default: :ward
+  # unit -- managed by enumerize, attribute declaration skipped
+
+  # ==== Attributes ====
+  # ancestry -- managed by Ancestry gem, attribute declaration skipped
+  attribute :level,           :integer
+  attribute :name,            :string
+  attribute :name_abbr,       :string
+  attribute :parent_name,     :string
+  attribute :partners_count,  :integer, default: 0
+  attribute :release_date,    :datetime
+  attribute :unit_code_key,   :string, default: 'WD19CD'
+  attribute :unit_code_value, :string
+  attribute :unit_name,       :string
+
+  # ==== Associations ====
   has_many :sites_neighbourhoods, dependent: :destroy
   has_many :sites, through: :sites_neighbourhoods
 
@@ -36,15 +60,15 @@ class Neighbourhood < ApplicationRecord
            source: :partners,
            class_name: 'Partner'
 
+  # ==== Validations ====
   # validates :unit_code_value, presence: true, uniqueness: true
-
   # validates :name, presence: true
+  validates :level, inclusion: { in: LEVELS.values }, allow_nil: true
   validates :unit_code_value,
             length: { is: 9 },
             allow_blank: true
 
-  before_update :inject_parent_name_field
-
+  # ==== Scopes ====
   scope :latest_release, -> { where release_date: LATEST_RELEASE_DATE }
   scope :at_level, ->(level) { where(level: level) }
   scope :countries, -> { where(level: 5) }
@@ -53,125 +77,14 @@ class Neighbourhood < ApplicationRecord
   scope :districts, -> { where(level: 2) }
   scope :wards, -> { where(level: 1) }
 
-  def partners
-    (service_area_partners + address_partners).uniq
-  end
+  # ==== Callbacks ====
+  before_update :inject_parent_name_field
 
-  def legacy_neighbourhood?
-    release_date < Neighbourhood::LATEST_RELEASE_DATE
-  end
-
-  def shortname
-    if name_abbr.present?
-      name_abbr
-    elsif name.present?
-      name
-    else
-      '[not set]'
-    end
-  end
-
-  def contextual_name
-    # "Wardname, Countryname (Region)"
-    return "#{shortname}, #{parent_name} (#{unit.titleize})" if parent_name
-
-    # "Wardname (Region)"
-    "#{shortname} (#{unit&.titleize})"
-  end
-
-  def fullname
-    if name.present?
-      name
-    elsif name_abbr.present?
-      name_abbr
-    else
-      '[not set]'
-    end
-  end
-
-  # give us a name we can use for the abbreviated name even if
-  # such a thing does not exist
-  #
-  # == Parameters: none
-  #
-  # == Returns
-  #   A string of the name
-  def abbreviated_name
-    name_abbr.presence || name
-  end
-
-  # normalize abbreviated names (usually coming from calendar
-  #   importer)
-  #
-  # == Parameters:
-  # value::
-  #   A string with the name value, or a blank string, or nil
-  #
-  # == Returns
-  #   The input value normalized as a string or nil
-  def name_abbr=(value)
-    value = value.to_s.strip
-
-    self['name_abbr'] = value.presence
-  end
-
-  def to_s
-    "#{fullname} (#{unit})"
-  end
-
-  def district
-    ancestors.where(unit: 'district').first
-  end
-
-  def county
-    ancestors.where(unit: 'county').first
-  end
-
-  def region
-    ancestors.where(unit: 'region').first
-  end
-
-  def country
-    ancestors.where(unit: 'country').first
-  end
-
-  def name_from_badge_zoom(badge_zoom_level)
-    badge_zoom_level == 'district' ? district&.shortname : shortname
-  end
-
-  # Returns the localized name for this level (e.g., "Ward", "District")
-  def level_name
-    LEVEL_NAMES[level]&.to_s
-  end
-
-  # Full hierarchy path as array of ancestors (from country down to self)
-  def hierarchy_path
-    [*ancestors.order(:ancestry), self]
-  end
-
-  # Full hierarchy as formatted string
-  # @param separator [String] separator between levels (default: ', ')
-  # @return [String] e.g., "England, South East, East Sussex, Wealden, Uckfield North"
-  def full_hierarchy_name(separator: ', ')
-    hierarchy_path.map(&:shortname).join(separator)
-  end
-
-  # Check if this neighbourhood has children with actual data
-  # Used for smart-skip in cascading pickers
-  def populated_children?
-    children.where.not(name: [nil, '']).latest_release.exists?
-  end
-
-  # Refresh cached partners_count for this neighbourhood
-  def refresh_partners_count!
-    return unless persisted?
-
-    # Use the same logic as partners method to avoid double-counting
-    count = partners.count
-    update_column(:partners_count, count) # rubocop:disable Rails/SkipsModelValidations
-  end
+  # ==== Class methods ====
 
   class << self
+    # @param res [Hash] parsed postcodes.io API response with 'codes' sub-hash
+    # @return [Neighbourhood, nil] matching neighbourhood or nil
     def find_from_postcodesio_response(res)
       # Try ward first (most specific)
       ward_code = res.dig('codes', 'admin_ward')
@@ -185,8 +98,8 @@ class Neighbourhood < ApplicationRecord
       Neighbourhood.where(unit_code_value: district_code).first if district_code.present?
     end
 
-    # Refresh cached partners_count for all neighbourhoods
-    # Run periodically or after bulk partner changes
+    # Bulk-refresh cached partners_count for all neighbourhoods via SQL.
+    # @return [void]
     def refresh_partners_count!
       connection.execute(<<~SQL.squish)
         UPDATE neighbourhoods SET partners_count = (
@@ -204,6 +117,9 @@ class Neighbourhood < ApplicationRecord
       SQL
     end
 
+    # @param scope [ActiveRecord::Relation<Neighbourhood>] base query to filter
+    # @param legacy_neighbourhoods [ActiveRecord::Relation<Neighbourhood>] old neighbourhoods to include
+    # @return [ActiveRecord::Relation<Neighbourhood>]
     def find_latest_neighbourhoods_maybe_with_legacy_neighbourhoods(scope, legacy_neighbourhoods)
       scope = scope
               .where('name is not null and name != \'\'')
@@ -214,7 +130,127 @@ class Neighbourhood < ApplicationRecord
     end
   end
 
+  # ==== Instance methods ====
+
+  # @return [Array<Partner>] unique partners from address + service area associations
+  def partners
+    (service_area_partners + address_partners).uniq
+  end
+
+  # @return [Boolean] whether this neighbourhood predates the latest ONS release
+  def legacy_neighbourhood?
+    release_date < Neighbourhood::LATEST_RELEASE_DATE
+  end
+
+  # @return [String] abbreviated name, falling back to name or "[not set]"
+  def shortname
+    if name_abbr.present?
+      name_abbr
+    elsif name.present?
+      name
+    else
+      '[not set]'
+    end
+  end
+
+  # @return [String] name with parent and unit, e.g. "Hulme, Manchester (Ward)"
+  def contextual_name
+    # "Wardname, Countryname (Region)"
+    return "#{shortname}, #{parent_name} (#{unit.titleize})" if parent_name
+
+    # "Wardname (Region)"
+    "#{shortname} (#{unit&.titleize})"
+  end
+
+  # @return [String] full name, falling back to abbreviation or "[not set]"
+  def fullname
+    if name.present?
+      name
+    elsif name_abbr.present?
+      name_abbr
+    else
+      '[not set]'
+    end
+  end
+
+  # @return [String] name_abbr if present, otherwise name
+  def abbreviated_name
+    name_abbr.presence || name
+  end
+
+  # Normalize abbreviated names (usually from calendar importer).
+  # @param value [String, nil] raw name value
+  # @return [String, nil] stripped value or nil if blank
+  def name_abbr=(value)
+    value = value.to_s.strip
+
+    self['name_abbr'] = value.presence
+  end
+
+  def to_s
+    "#{fullname} (#{unit})"
+  end
+
+  # @return [Neighbourhood, nil] ancestor at district level
+  def district
+    ancestors.where(unit: 'district').first
+  end
+
+  # @return [Neighbourhood, nil] ancestor at county level
+  def county
+    ancestors.where(unit: 'county').first
+  end
+
+  # @return [Neighbourhood, nil] ancestor at region level
+  def region
+    ancestors.where(unit: 'region').first
+  end
+
+  # @return [Neighbourhood, nil] ancestor at country level
+  def country
+    ancestors.where(unit: 'country').first
+  end
+
+  # @param badge_zoom_level [String] 'ward' or 'district'
+  # @return [String]
+  def name_from_badge_zoom(badge_zoom_level)
+    badge_zoom_level == 'district' ? district&.shortname : shortname
+  end
+
+  # @return [Symbol, nil] localized level name (e.g. :ward, :district)
+  def level_name
+    LEVEL_NAMES[level]&.to_s
+  end
+
+  # @return [Array<Neighbourhood>] ancestors from country down to self
+  def hierarchy_path
+    [*ancestors.order(:ancestry), self]
+  end
+
+  # Full hierarchy as formatted string
+  # @param separator [String] separator between levels (default: ', ')
+  # @return [String] e.g., "England, South East, East Sussex, Wealden, Uckfield North"
+  def full_hierarchy_name(separator: ', ')
+    hierarchy_path.map(&:shortname).join(separator)
+  end
+
+  # @return [Boolean] whether any children have data (for cascading pickers)
+  def populated_children?
+    children.where.not(name: [nil, '']).latest_release.exists?
+  end
+
+  # @return [void]
+  def refresh_partners_count!
+    return unless persisted?
+
+    # Use the same logic as partners method to avoid double-counting
+    count = partners.count
+    update_column(:partners_count, count) # rubocop:disable Rails/SkipsModelValidations
+  end
+
   private
+
+  # ==== Private methods ====
 
   def inject_parent_name_field
     self.parent_name = parent.name if parent

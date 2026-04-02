@@ -1,16 +1,51 @@
 # frozen_string_literal: true
 
 class Site < ApplicationRecord
+  # ==== Includes / Extends ====
   extend FriendlyId
   extend Enumerize
-
   include HtmlRenderCache
   include SiteJsonLd
 
-  html_render_cache :description
+  # ==== Constants ====
+
+  # ASSUMPTION: There is no row in the sites table for the admin site, hence
+  # defining the admin subdomain string here.
+  ADMIN_SUBDOMAIN = 'admin'
+
+  # ==== Enums / Enumerize ====
+  # Theme picker
+  enumerize :theme,
+            in: %i[pink orange green blue custom],
+            default: :pink
+  # theme -- managed by enumerize, attribute declaration skipped
+
+  enumerize :badge_zoom_level,
+            in: %i[ward district],
+            default: :ward
+  # badge_zoom_level -- managed by enumerize, attribute declaration skipped
+
+  # ==== Attributes ====
+  # Columns marked (nullable) have no NOT NULL constraint in the DB.
+  attribute :description,       :text                            # nullable
+  attribute :description_html,  :string                          # nullable, populated by HtmlRenderCache
+  attribute :events_count,      :integer, default: 0             # NOT NULL
+  attribute :hero_alttext,      :string                          # nullable
+  attribute :hero_image_credit, :string                          # nullable
+  attribute :hero_text,         :string                          # nullable
+  attribute :is_published,      :boolean, default: false         # NOT NULL
+  # logo, footer_logo, hero_image -- managed by CarrierWave, attribute declarations skipped
+  attribute :name,              :string                          # NOT NULL
+  attribute :partners_count,    :integer, default: 0             # NOT NULL
+  attribute :place_name,        :string                          # nullable
+  attribute :slug,              :string                          # NOT NULL
+  attribute :tagline,           :string                          # nullable
+  attribute :url,               :string                          # NOT NULL
 
   friendly_id :name, use: :slugged
+  html_render_cache :description
 
+  # ==== Associations ====
   has_one :sites_neighbourhood, dependent: :destroy
   has_one :primary_neighbourhood, lambda {
                                     where(sites_neighbourhoods: { relation_type: 'Primary' })
@@ -36,34 +71,32 @@ class Site < ApplicationRecord
                                                                     c[:neighbourhood_id].blank?
                                                                   }, allow_destroy: true
 
+  # ==== Uploaders ====
+  mount_uploader :logo, SiteLogoUploader
+  mount_uploader :footer_logo, SiteLogoUploader
+  mount_uploader :hero_image, HeroImageUploader
+
+  # ==== Validations ====
   validates :name, :slug, :url, presence: true
   validates :slug, uniqueness: true
   validates :place_name unless :default_site?
   validates :hero_text, length: { maximum: 120 }
 
+  # ==== Scopes ====
   scope :published, -> { where(is_published: true) }
 
-  mount_uploader :logo, SiteLogoUploader
-  mount_uploader :footer_logo, SiteLogoUploader
-  mount_uploader :hero_image, HeroImageUploader
-
-  # Theme picker
-  enumerize :theme,
-            in: %i[pink orange green blue custom],
-            default: :pink
-
-  enumerize :badge_zoom_level,
-            in: %i[ward district],
-            default: :ward
+  # ==== Instance methods ====
 
   def to_s
     "#{id}: #{name}"
   end
 
+  # @return [Array<Neighbourhood>] all neighbourhoods in this site's subtrees
   def owned_neighbourhoods
     neighbourhoods.map(&:subtree).flatten
   end
 
+  # @return [Array<Integer>] all neighbourhood IDs in this site's subtrees
   def owned_neighbourhood_ids
     neighbourhoods
       .select(:id, :ancestry)
@@ -71,10 +104,7 @@ class Site < ApplicationRecord
       .flatten
   end
 
-  # ASSUMPTION: There is no row in the sites table for the admin site, hence
-  # defining the admin subdomain string here.
-  ADMIN_SUBDOMAIN = 'admin'
-
+  # @return [Integer] published articles count for this site
   def news_article_count
     Article
       .for_site(self)
@@ -82,24 +112,22 @@ class Site < ApplicationRecord
       .count
   end
 
+  # @return [Boolean]
   def default_site?
     slug == 'default-site'
   end
 
-  # ASSUMPTION: All valid sites, other than the default site, are local sites.
+  # @return [Boolean] true for any non-default site
   def local_site?
     !default_site?
   end
 
-  # Should we show the neighbourhood lozenge out on this site?
+  # @return [Boolean] whether neighbourhood badges should be shown
   def show_neighbourhoods?
     owned_neighbourhood_ids.many?
   end
 
-  def self.badge_zoom_level_label(value)
-    value.second.to_s.titleize
-  end
-
+  # @return [String] "near" for multi-neighbourhood sites, "in" otherwise
   def join_word
     if owned_neighbourhoods.many?
       'near'
@@ -108,21 +136,22 @@ class Site < ApplicationRecord
     end
   end
 
+  # @return [EventsQuery]
   def events_query
     EventsQuery.new(site: self)
   end
 
-  # Get a count of all the events this week
+  # @return [Integer] number of events starting this week
   def events_this_week
     events_query.count_for_period('week')
   end
 
-  # Get a count of all the events last week
+  # @return [Integer] number of events that started last week
   def events_last_week
     EventsQuery.new(site: self, day: Time.zone.today - 1.week).count_for_period('week')
   end
 
-  # Refresh cached partners_count for this site
+  # @return [void]
   def refresh_partners_count!
     return unless persisted?
 
@@ -130,7 +159,7 @@ class Site < ApplicationRecord
     update_column(:partners_count, count) # rubocop:disable Rails/SkipsModelValidations
   end
 
-  # Refresh cached events_count for this site (events this week)
+  # @return [void]
   def refresh_events_count!
     return unless persisted?
 
@@ -138,12 +167,13 @@ class Site < ApplicationRecord
     update_column(:events_count, count) # rubocop:disable Rails/SkipsModelValidations
   end
 
-  # Refresh both cached counts
+  # @return [void]
   def refresh_counts!
     refresh_partners_count!
     refresh_events_count!
   end
 
+  # @return [String] Sprockets stylesheet path for this site's theme
   def stylesheet_link
     return 'home' if default_site?
 
@@ -154,14 +184,17 @@ class Site < ApplicationRecord
     end
   end
 
+  # @return [String, false] Open Graph image URL, or false
   def og_image
     hero_image&.opengraph&.url ? hero_image.opengraph.url : false
   end
 
+  # @return [String, false] tagline for OG description, or false
   def og_description
     tagline && tagline.empty? ? false : tagline
   end
 
+  # @return [String] robots.txt content, blocking crawlers if unpublished
   def robots
     config = File.read(Rails.root.join("config/robots/robots.#{Rails.env}.txt"))
 
@@ -176,9 +209,17 @@ class Site < ApplicationRecord
     end
   end
 
+  # ==== Class methods ====
+
   class << self
-    # Refresh cached counts for all sites
-    # Run periodically or after bulk partner/event changes
+    # @param value [Array] enumerize value pair
+    # @return [String] titleized label
+    def badge_zoom_level_label(value)
+      value.second.to_s.titleize
+    end
+
+    # Refresh cached counts for all sites.
+    # @return [void]
     def refresh_all_counts!
       find_each(&:refresh_counts!)
     end

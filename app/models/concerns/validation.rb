@@ -1,7 +1,22 @@
 # frozen_string_literal: true
 
 module Validation
-  URL_REGEX = %r{\A(?:(?:https?)://)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:/[^\s]*)?\z}i.freeze
+  # Simple URL format check — validates structure, not reachability.
+  # Does NOT block private IPs (use PRIVATE_IP_RANGES for that).
+  URL_REGEX = %r{\Ahttps?://[^\s]+\z}i.freeze
+
+  # Calendar sources also accept webcal:// scheme
+  CALENDAR_URL_REGEX = %r{\A(https?|webcal)://[^\s]+\z}i.freeze
+
+  # RFC 1918 / loopback / link-local ranges that should not be used
+  # as calendar source URLs (SSRF prevention).
+  PRIVATE_IP_RANGES = [
+    IPAddr.new('10.0.0.0/8'),
+    IPAddr.new('127.0.0.0/8'),
+    IPAddr.new('169.254.0.0/16'),
+    IPAddr.new('172.16.0.0/12'),
+    IPAddr.new('192.168.0.0/16')
+  ].freeze
 
   TWITTER_REGEX = /\A@?(\w){1,15}\z/.freeze
 
@@ -13,4 +28,18 @@ module Validation
   UK_NUMBER_REGEX = /\A(?:(?:\(?(?:0(?:0|11)\)?[\s-]?\(?|\+)44\)?[\s-]?(?:\(?0\)?[\s-]?)?)|(?:\(?0))(?:(?:\d{5}\)?[\s-]?\d{4,5})|(?:\d{4}\)?[\s-]?(?:\d{5}|\d{3}[\s-]?\d{3}))|(?:\d{3}\)?[\s-]?\d{3}[\s-]?\d{3,4})|(?:\d{2}\)?[\s-]?\d{4}[\s-]?\d{4}))(?:[\s-]?(?:x|ext\.?|\#)\d{3,4})?\z/.freeze
 
   EMAIL_REGEX = /\A([\w+-].?)+@[a-z\d-]+(\.[a-z]+)*\.[a-z]+\z/i.freeze
+
+  # Check whether a URL points to a private/reserved IP address (SSRF prevention).
+  # @param url [String] the URL to check
+  # @return [Boolean] true if the host resolves to a private IP range
+  def self.private_ip?(url)
+    host = URI.parse(url).host
+    return false unless host
+
+    ip = IPAddr.new(host)
+    PRIVATE_IP_RANGES.any? { |range| range.include?(ip) }
+  rescue URI::InvalidURIError, IPAddr::InvalidAddressError
+    # Not an IP literal — domain names are fine
+    false
+  end
 end

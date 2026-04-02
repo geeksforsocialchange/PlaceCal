@@ -9,12 +9,16 @@ class OrganisationRelationship < ApplicationRecord
   #   we hope to define this relationship properly later on and remove this
   #   confusing model but leaving as is for now -IK
 
+  # ==== Includes / Extends ====
+  extend Enumerize
+
+  # ==== Enums / Enumerize ====
+  enumerize :verb, in: %i[manages]
+  # verb -- managed by enumerize, attribute declaration skipped
+
+  # ==== Associations ====
   # rubocop:disable Rails/InverseOf
   belongs_to :subject, class_name: 'Partner', foreign_key: 'partner_subject_id'
   belongs_to :object, class_name: 'Partner', foreign_key: 'partner_object_id'
   # rubocop:enable Rails/InverseOf
-
-  extend Enumerize
-
-  enumerize :verb, in: %i[manages]
 end

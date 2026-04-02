@@ -59,6 +59,83 @@ Layout/LineContinuationLeadingSpace:
 Layout/LineContinuationSpacing:
   Enabled: false
 
+# Enforce consistent section ordering in model files.
+# Maps to the section template defined in #3081.
+Layout/ClassStructure:
+  Enabled: true
+  Include:
+    - "app/models/**/*.rb"
+  Categories:
+    module_inclusion:
+      - include
+      - prepend
+      - extend
+      - has_ancestry
+      - has_paper_trail
+      - devise
+    enumerize:
+      - enumerize
+    attributes:
+      - attribute
+      - attr_accessor
+      - attr_reader
+      - attr_writer
+      - auto_strip_attributes
+      - friendly_id
+      - html_render_cache
+      - permalink_resource
+      - alias_attribute
+    associations:
+      - belongs_to
+      - has_one
+      - has_many
+      - has_and_belongs_to_many
+      - accepts_nested_attributes_for
+    uploaders:
+      - mount_uploader
+    validations:
+      - validates
+      - validates_associated
+      - validate
+    scopes:
+      - default_scope
+      - scope
+    delegates:
+      - delegate
+    callbacks:
+      - before_validation
+      - after_validation
+      - before_save
+      - around_save
+      - after_save
+      - before_create
+      - around_create
+      - after_create
+      - before_update
+      - around_update
+      - after_update
+      - before_destroy
+      - around_destroy
+      - after_destroy
+      - after_commit
+      - after_rollback
+  ExpectedOrder:
+    - module_inclusion
+    - constants
+    - enumerize
+    - attributes
+    - associations
+    - uploaders
+    - validations
+    - scopes
+    - delegates
+    - callbacks
+    - public_class_methods
+    - initializer
+    - public_methods
+    - protected_methods
+    - private_methods
+
 # =============================================================================
 # Lint cops
 # =============================================================================
