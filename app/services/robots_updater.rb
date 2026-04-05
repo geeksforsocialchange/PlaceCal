@@ -9,20 +9,28 @@
 class RobotsUpdater
   ROBOTS_JSON_URL = 'https://raw.githubusercontent.com/ai-robots-txt/ai.robots.txt/main/robots.json'
 
-  # Search-AI bots we allow to crawl PlaceCal so events appear in
-  # AI-powered search results (Google AI Overviews, Perplexity, etc.)
+  # Bots allowed to crawl PlaceCal so events appear in search results.
+  #
+  # Rubric — allow if the bot's primary purpose is one of:
+  #   1. Search: answers a user's query with attribution/links back to source
+  #   2. User agent: acts on behalf of a specific user's prompt in real-time
+  #   3. Link previews: fetches content for social sharing
+  #
+  # Block if the bot's primary purpose is:
+  #   1. Training: collects data for model training or dataset building
+  #   2. Enterprise AI platform: feeds an AI-as-a-service product
+  #   3. Unknown/undocumented: default to block
   SEARCH_ALLOW_LIST = %w[
+    AddSearchBot
+    Amzn-SearchBot
     Applebot
-    Applebot-Extended
+    AzureAI-SearchBot
     Bravebot
     ChatGPT-User
     Claude-SearchBot
     Claude-User
     DuckAssistBot
-    FacebookBot
     facebookexternalhit
-    Google-CloudVertexBot
-    Google-Extended
     OAI-SearchBot
     Perplexity-User
     PerplexityBot
@@ -72,8 +80,8 @@ class RobotsUpdater
     lines << '#'
 
     if allow_search
-      lines << '# Search-AI bots (Perplexity, ChatGPT search, Claude search, Google AI,'
-      lines << '# Apple, Brave, DuckDuckGo, Facebook) are allowed by default.'
+      lines << '# AI search bots and user agents are allowed by default.'
+      lines << '# Training crawlers and enterprise AI platforms are blocked.'
       lines << '# Set ALLOW_AI_SEARCH_BOTS=false to block all AI bots.'
     else
       lines << '# Strict mode: all AI bots are blocked.'
