@@ -262,6 +262,33 @@ RSpec.describe Event, type: :model do
     end
   end
 
+  describe "#resolved_address" do
+    it "returns the event's own address when present" do
+      event = create(:event)
+      expect(event.resolved_address).to eq(event.address)
+    end
+
+    it "falls back to place address when event has no address" do
+      place = create(:partner)
+      event = create(:event, address: nil, place: place)
+      expect(event.resolved_address).to eq(place.address)
+    end
+
+    it "falls back to organiser address when no address or place" do
+      organiser = create(:partner)
+      event = create(:event, address: nil, place: nil, organiser: organiser)
+      expect(event.resolved_address).to eq(organiser.address)
+    end
+
+    it "returns nil when no address is available" do
+      online_calendar = create(:calendar, strategy: "online_only")
+      organiser = create(:partner, address: nil, service_areas: [create(:service_area)])
+      event = create(:event, address: nil, place: nil, organiser: organiser,
+                             online_address: create(:online_address), calendar: online_calendar)
+      expect(event.resolved_address).to be_nil
+    end
+  end
+
   describe "html caching" do
     it "caches description HTML" do
       event = build(:event, description: "**bold text**")
