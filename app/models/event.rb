@@ -189,12 +189,14 @@ class Event < ApplicationRecord
     address&.neighbourhood
   end
 
+  # @return [Address, nil] the best available address for this event
+  def resolved_address
+    address || partner_at_location&.address || organiser&.address
+  end
+
   # @return [String] human-readable address string, or empty string
   def location
-    use_address = address || partner_at_location&.address || organiser&.address
-    return '' if use_address.nil?
-
-    use_address.to_s
+    resolved_address.to_s
   end
 
   # @return [Partner, nil] the place partner, or a venue matching the address

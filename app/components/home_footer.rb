@@ -51,7 +51,7 @@ class Components::HomeFooter < Components::Base
   end
 
   def render_foot
-    div(class: 'footer_home__foot') do
+    div(class: 'footer_home__foot', data_nosnippet: true) do
       p { "#{t('colophon.year', year: Time.zone.today.year)} #{t('colophon.copyright')}" }
 
       p do
