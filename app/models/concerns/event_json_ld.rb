@@ -46,32 +46,28 @@ module EventJsonLd
   end
 
   def build_json_ld_location(data)
-    resolved_address = if address
-                         address
-                       elsif online_address || %w[no_location online_only].include?(calendar&.strategy)
-                         nil
-                       else
-                         partner_at_location&.address || organiser&.address
-                       end
+    # Skip address fallback for online-only and no-location events
+    skip_fallback = !address && (online_address || %w[no_location online_only].include?(calendar&.strategy))
+    location_address = skip_fallback ? nil : resolved_address
 
-    if resolved_address
+    if location_address
       location = {
         '@type' => 'Place',
         'name' => partner_at_location&.name,
         'address' => {
           '@type' => 'PostalAddress',
-          'streetAddress' => resolved_address.full_street_address,
-          'addressLocality' => resolved_address.city,
-          'postalCode' => resolved_address.postcode,
-          'addressCountry' => resolved_address.country_code
+          'streetAddress' => location_address.full_street_address,
+          'addressLocality' => location_address.city,
+          'postalCode' => location_address.postcode,
+          'addressCountry' => location_address.country_code
         }.compact
       }.compact
 
-      if resolved_address.latitude && resolved_address.longitude
+      if location_address.latitude && location_address.longitude
         location['geo'] = {
           '@type' => 'GeoCoordinates',
-          'latitude' => resolved_address.latitude,
-          'longitude' => resolved_address.longitude
+          'latitude' => location_address.latitude,
+          'longitude' => location_address.longitude
         }
       end
 
