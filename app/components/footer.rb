@@ -119,7 +119,7 @@ class Components::Footer < Components::Base
   end
 
   def render_impressum
-    div(class: 'footer__item footer__impressum') do
+    div(class: 'footer__item footer__impressum', data_nosnippet: true) do
       p do
         plain "#{t('colophon.year', year: Time.zone.today.year)} #{t('colophon.copyright')}"
         br

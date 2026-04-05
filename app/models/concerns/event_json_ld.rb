@@ -10,12 +10,12 @@ module EventJsonLd
       '@type' => 'Event',
       '@id' => event_url,
       'name' => summary,
-      'startDate' => dtstart.iso8601,
+      'startDate' => dtstart.in_time_zone('Europe/London').iso8601,
       'url' => event_url,
       'eventStatus' => 'https://schema.org/EventScheduled'
     }
 
-    data['endDate'] = dtend.iso8601 if dtend
+    data['endDate'] = dtend.in_time_zone('Europe/London').iso8601 if dtend
     data['description'] = ActionController::Base.helpers.strip_tags(description_html).presence if description_html.present?
     data['eventAttendanceMode'] = json_ld_attendance_mode
 
@@ -28,8 +28,6 @@ module EventJsonLd
     data
   end
 
-  private
-
   def json_ld_attendance_mode
     if address && online_address
       'https://schema.org/MixedEventAttendanceMode'
@@ -40,30 +38,40 @@ module EventJsonLd
     end
   end
 
+  private
+
   def build_json_ld_image(data)
     image_partner = [organiser, partner_at_location].compact.find(&:image?)
     data['image'] = image_partner.image.url if image_partner
   end
 
   def build_json_ld_location(data)
-    if address
+    resolved_address = if address
+                         address
+                       elsif online_address || %w[no_location online_only].include?(calendar&.strategy)
+                         nil
+                       else
+                         partner_at_location&.address || organiser&.address
+                       end
+
+    if resolved_address
       location = {
         '@type' => 'Place',
         'name' => partner_at_location&.name,
         'address' => {
           '@type' => 'PostalAddress',
-          'streetAddress' => address.full_street_address,
-          'addressLocality' => address.city,
-          'postalCode' => address.postcode,
-          'addressCountry' => address.country_code
+          'streetAddress' => resolved_address.full_street_address,
+          'addressLocality' => resolved_address.city,
+          'postalCode' => resolved_address.postcode,
+          'addressCountry' => resolved_address.country_code
         }.compact
       }.compact
 
-      if address.latitude && address.longitude
+      if resolved_address.latitude && resolved_address.longitude
         location['geo'] = {
           '@type' => 'GeoCoordinates',
-          'latitude' => address.latitude,
-          'longitude' => address.longitude
+          'latitude' => resolved_address.latitude,
+          'longitude' => resolved_address.longitude
         }
       end
 
