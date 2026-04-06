@@ -29,8 +29,6 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       sign_in_as(root_user)
       visit admin_url("/tags/#{tag.id}/edit")
 
-      # Wait for Stimulus form-tabs controller to connect before clicking
-      expect(page).to have_css("[data-controller*='form-tabs']")
       click_tab("settings")
       expect(page).to have_css("input#tag_system_tag", visible: :all)
     end

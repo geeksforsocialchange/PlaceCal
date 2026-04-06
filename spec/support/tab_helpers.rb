@@ -4,6 +4,7 @@
 module TabHelpers
   # Click a tab by its data-hash attribute and wait for the panel to be visible
   def click_tab(hash)
+    expect(page).to have_css("[data-controller*='form-tabs']")
     find("input.tab[data-hash='#{hash}']").click
     expect(page).to have_css("[data-section='#{hash}']", visible: true)
   end
