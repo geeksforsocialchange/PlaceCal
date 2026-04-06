@@ -51,6 +51,13 @@ FactoryBot.define do
       slug { NormalIsland::SITES[:normal_island_central][:slug] }
       tagline { NormalIsland::SITES[:normal_island_central][:tagline] }
     end
+
+    factory :directory_site do
+      name { "PlaceCal Directory" }
+      slug { "directory" }
+      tagline { "All partners and events on PlaceCal" }
+      is_published { true }
+    end
   end
 
   factory :sites_neighbourhood do

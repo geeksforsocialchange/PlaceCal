@@ -21,7 +21,7 @@ module Permalinkable
   class_methods do
     def permalink_resource(resource_name)
       define_method(:permalink) do |base_url: nil|
-        base_url ||= Site.find_by(slug: 'default-site')&.url || 'https://placecal.org'
+        base_url ||= Site.find_by(slug: 'directory')&.url || Site.find_by(slug: 'default-site')&.url || 'https://directory.placecal.org'
         "#{base_url.chomp('/')}/#{resource_name}/#{id}"
       end
     end

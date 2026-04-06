@@ -22,11 +22,12 @@ class PartnersQuery
   # @param tag_id [Integer] filter by tag/category
   # @param tag_slug [String] filter by tag slug (e.g. 'computers', 'wifi')
   # @return [ActiveRecord::Relation<Partner>]
-  def call(neighbourhood_id: nil, tag_id: nil, tag_slug: nil)
+  def call(neighbourhood_id: nil, tag_id: nil, tag_slug: nil, partnership_id: nil)
     partners = base_scope
     partners = filter_by_neighbourhood(partners, neighbourhood_id) if neighbourhood_id.present?
     partners = filter_by_tag(partners, tag_id) if tag_id.present?
     partners = filter_by_tag_slug(partners, tag_slug) if tag_slug.present?
+    partners = filter_by_partnership(partners, partnership_id) if partnership_id.present?
     partners.includes(:address, :service_areas).order(:name)
   end
 
@@ -58,6 +59,20 @@ class PartnersQuery
       .map { |tag| { category: tag, count: tag.partner_count } }
   end
 
+  # Returns partnerships that have partners, with counts
+  # Used for filter dropdowns
+  #
+  # @return [Array<Hash>] array of { partnership: Tag, count: Integer }
+  def partnerships_with_counts
+    Tag
+      .joins(:partner_tags)
+      .where(partner_tags: { partner_id: base_scope.select(:id) }, type: 'Partnership')
+      .group(:id, :name)
+      .order(:name)
+      .select('tags.*, COUNT(partner_tags.partner_id) as partner_count')
+      .map { |tag| { partnership: tag, count: tag.partner_count } }
+  end
+
   private
 
   # ===================
@@ -72,6 +87,7 @@ class PartnersQuery
   end
 
   def build_base_scope
+    return Partner.visible if @site&.directory_site?
     return Partner.none if site_neighbourhood_ids.empty?
 
     scope = Partner.visible
@@ -102,6 +118,10 @@ class PartnersQuery
 
   def filter_by_tag_slug(partners, tag_slug)
     partners.joins(:tags).where(tags: { slug: tag_slug })
+  end
+
+  def filter_by_partnership(partners, partnership_id)
+    partners.joins(:tags).where(tags: { id: partnership_id, type: 'Partnership' })
   end
 
   # ===================

@@ -324,4 +324,48 @@ RSpec.describe "Public Partners", type: :request do
       expect(response).to be_redirect
     end
   end
+
+  describe "directory site" do
+    let!(:directory_site) { create_directory_site }
+
+    describe "GET /partners" do
+      let!(:partners) do
+        Array.new(3) do
+          create(:partner, address: create(:address))
+        end
+      end
+
+      it "returns successful response" do
+        get partners_url(host: "directory.lvh.me")
+        expect(response).to be_successful
+      end
+
+      it "shows all visible partners" do
+        get partners_url(host: "directory.lvh.me")
+        partners.each do |partner|
+          expect(response.body).to include(partner.name)
+        end
+      end
+
+      it "shows directory hero title" do
+        get partners_url(host: "directory.lvh.me")
+        expect(response.body).to include("All Partners on PlaceCal")
+      end
+    end
+
+    describe "GET /partners/:id" do
+      let(:partner) { create(:partner, address: create(:address)) }
+
+      it "shows the partner details" do
+        get partner_url(partner, host: "directory.lvh.me")
+        expect(response).to be_successful
+        expect(response.body).to include(partner.name)
+      end
+
+      it "includes canonical link" do
+        get partner_url(partner, host: "directory.lvh.me")
+        expect(response.body).to include('rel="canonical"')
+      end
+    end
+  end
 end

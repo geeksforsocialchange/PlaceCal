@@ -205,6 +205,8 @@ class ApplicationController < ActionController::Base
 
     @navigation = if default_site?
                     default_site_navigation
+                  elsif current_site&.directory_site?
+                    directory_site_navigation
                   else
                     sub_site_navigation
                   end
@@ -240,6 +242,14 @@ class ApplicationController < ActionController::Base
       ['Our story', our_story_path],
       ['Find your PlaceCal', find_placecal_path],
       ['Get in touch', get_in_touch_path]
+    ]
+  end
+
+  def directory_site_navigation
+    [
+      ['Events', events_path],
+      ['Partners', partners_path],
+      ['Partnerships', partnerships_path]
     ]
   end
 

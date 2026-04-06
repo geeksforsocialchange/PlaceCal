@@ -117,6 +117,11 @@ class Site < ApplicationRecord
     slug == 'default-site'
   end
 
+  # @return [Boolean] true for the global directory site (directory.placecal.org)
+  def directory_site?
+    slug == 'directory'
+  end
+
   # @return [Boolean] true for any non-default site
   def local_site?
     !default_site?

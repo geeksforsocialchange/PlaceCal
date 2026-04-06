@@ -11,6 +11,7 @@ class Views::Base < Phlex::HTML
   include Phlex::Rails::Helpers::ImageTag
   include Phlex::Rails::Helpers::CSRFMetaTags
   include Phlex::Rails::Helpers::Pluralize
+  include Phlex::Rails::Helpers::NumberWithDelimiter
   include Phlex::Rails::Helpers::DistanceOfTimeInWords
   include Phlex::Rails::Helpers::ImageURL
   include Phlex::Rails::Helpers::Flash

@@ -7,6 +7,11 @@ module SiteHelpers
     Site.find_by(slug: "default-site") || create(:site, slug: "default-site")
   end
 
+  # Create the directory site
+  def create_directory_site
+    Site.find_by(slug: "directory") || create(:site, slug: "directory", name: "PlaceCal Directory", tagline: "All partners and events on PlaceCal", is_published: true)
+  end
+
   # Generate a URL for a specific site subdomain
   def site_url(site, path)
     host = Rails.application.routes.default_url_options[:host]

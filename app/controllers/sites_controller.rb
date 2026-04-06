@@ -8,7 +8,9 @@ class SitesController < ApplicationController
   before_action :set_places_with_free_wifi, only: [:index]
 
   def index
-    if current_site.slug == 'mossley'
+    if current_site.directory_site?
+      render Views::Sites::Directory.new(site: @site)
+    elsif current_site.slug == 'mossley'
       render Views::Sites::Mossley.new(site: @site, places_to_get_online: @places_to_get_computer_access)
     else
       render Views::Sites::Default.new(

@@ -110,6 +110,7 @@ class EventsQuery
   # @return [Array<Hash>] array of { neighbourhood: Neighbourhood, count: Integer }
   def neighbourhoods_with_counts(period: 'future')
     return [] unless @site
+    return directory_neighbourhoods_with_counts(period) if @site.directory_site?
 
     all_descendants = @site.neighbourhoods.flat_map { |n| n.descendants.to_a }
     return [] if all_descendants.empty?
@@ -141,7 +142,11 @@ class EventsQuery
   # ===================
 
   def base_scope
-    @base_scope ||= @site ? events_for_site.includes(:place, :organiser) : Event.includes(:place, :organiser)
+    @base_scope ||= if @site.nil? || @site.directory_site?
+                      Event.includes(:place, :organiser)
+                    else
+                      events_for_site.includes(:place, :organiser)
+                    end
   end
 
   # Inline of Event.for_site - finds events belonging to partners in this site
@@ -275,5 +280,32 @@ class EventsQuery
     end
     roots.each { |id| compute.call(id) }
     counts
+  end
+
+  # For directory site: count events per neighbourhood at district level across all events
+  def directory_neighbourhoods_with_counts(period)
+    events = apply_period(base_scope, period)
+
+    raw_counts = events
+                 .left_joins(:address, organiser: :address)
+                 .where('COALESCE(addresses.neighbourhood_id, addresses_partners.neighbourhood_id) IS NOT NULL')
+                 .group('COALESCE(addresses.neighbourhood_id, addresses_partners.neighbourhood_id)')
+                 .distinct
+                 .count
+
+    # Aggregate to district level
+    district_counts = Hash.new(0)
+    raw_counts.each do |neighbourhood_id, count|
+      neighbourhood = Neighbourhood.find_by(id: neighbourhood_id)
+      next unless neighbourhood
+
+      district = neighbourhood.district || neighbourhood
+      district_counts[district.id] += count
+    end
+
+    Neighbourhood.where(id: district_counts.keys)
+                 .sort_by(&:name)
+                 .select { |n| district_counts[n.id].positive? }
+                 .map { |n| { neighbourhood: n, count: district_counts[n.id] } }
   end
 end

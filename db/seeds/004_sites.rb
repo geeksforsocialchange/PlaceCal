@@ -105,6 +105,15 @@ module SeedSites # rubocop:disable Metrics/ModuleLength
       published: false
     )
 
+    # Directory site (all partners and events)
+    create_site(
+      slug: 'directory',
+      name: 'PlaceCal Directory',
+      tagline: 'All partners and events on PlaceCal',
+      url: 'http://directory.lvh.me:3000',
+      data_key: :normal_island_default
+    )
+
     # Normal Island (country)
     create_site(
       slug: 'normal-island',

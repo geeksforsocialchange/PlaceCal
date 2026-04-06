@@ -24,6 +24,7 @@ class Views::Partners::Show < Views::Base
       content_for(:image) { site.og_image }
     end
     content_for(:description) { partner.summary } if partner.summary
+    content_for(:canonical) { partner.permalink }
     content_for(:json_ld) { safe(partner.to_json_ld(base_url: request.base_url).to_json) }
 
     div do
@@ -37,6 +38,7 @@ class Views::Partners::Show < Views::Base
 
         hr
         render_partner_details
+        render_directory_context if site.directory_site?
         render_managees
         hr
         render_events_section
@@ -149,6 +151,52 @@ class Views::Partners::Show < Views::Base
               url: place.url
             )
           end
+        end
+      end
+    end
+  end
+
+  def render_directory_context
+    div(class: 'g g--partner-directory-context') do
+      if partner.address&.neighbourhood
+        neighbourhood = partner.address.neighbourhood
+        div(class: 'gi') do
+          h3(class: 'udl udl--fw allcaps h4') { 'In:' }
+          p do
+            parts = []
+            parts << neighbourhood.name
+            parts << neighbourhood.district.name if neighbourhood.district && neighbourhood.district != neighbourhood
+            parts << neighbourhood.county.name if neighbourhood.county
+            plain parts.join(', ')
+          end
+        end
+      end
+
+      partnerships = partner.tags.where(type: 'Partnership')
+      if partnerships.any?
+        div(class: 'gi') do
+          h3(class: 'udl udl--fw allcaps h4') { 'Part of:' }
+          ul(class: 'reset') do
+            partnerships.each do |partnership|
+              li { link_to partnership.name, partnership_path(partnership) }
+            end
+          end
+        end
+      end
+
+      render_featured_on_subsites
+    end
+  end
+
+  def render_featured_on_subsites
+    subsites = Site.sites_that_contain_partner(partner)
+    return if subsites.empty?
+
+    div(class: 'gi') do
+      h3(class: 'udl udl--fw allcaps h4') { 'Featured on:' }
+      ul(class: 'reset') do
+        subsites.each do |subsite|
+          li { link_to subsite.name, "#{subsite.url}/partners/#{partner.slug}" }
         end
       end
     end

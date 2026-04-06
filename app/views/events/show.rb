@@ -13,6 +13,7 @@ class Views::Events::Show < Views::Base
     content_for(:title) { event.og_title }
     content_for(:image) { site.og_image }
     content_for(:description) { html_to_plaintext(event.description_html) }
+    content_for(:canonical) { event.permalink }
     content_for(:json_ld) { safe(event.to_json_ld(base_url: request.base_url).to_json) }
 
     Event(
