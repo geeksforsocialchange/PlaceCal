@@ -11,7 +11,7 @@ module CalendarImporter::Parsers
     DOMAINS = %w[events.manchester.ac.uk].freeze
 
     def self.allowlist_pattern
-      %r{^http(s)?://events.manchester.ac.uk/f3vf/calendar/.*}
+      %r{^https?://events\.manchester\.ac\.uk/f3vf/calendar/.*}
     end
 
     def import_events_from(data)
