@@ -15,8 +15,8 @@ class PartnersController < ApplicationController
   # GET /partners
   # GET /partners.json
   def index
-    @selected_category = params[:category]
-    @selected_neighbourhood = params[:neighbourhood]
+    @selected_category = params[:category] if params[:category].present? && Integer(params[:category], exception: false)
+    @selected_neighbourhood = params[:neighbourhood] if params[:neighbourhood].present? && Integer(params[:neighbourhood], exception: false)
 
     query = PartnersQuery.new(site: current_site)
     @partners = query.call(
