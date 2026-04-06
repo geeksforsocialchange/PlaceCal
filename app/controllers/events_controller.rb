@@ -15,7 +15,7 @@ class EventsController < ApplicationController
   def index
     @repeating = params[:repeating] || 'on'
     @sort = params[:sort] || 'time'
-    @selected_neighbourhood = params[:neighbourhood]
+    @selected_neighbourhood = params[:neighbourhood] if params[:neighbourhood].present? && Integer(params[:neighbourhood], exception: false)
     @query = EventsQuery.new(site: current_site, day: @current_day)
     @period = params[:period] || default_period
 

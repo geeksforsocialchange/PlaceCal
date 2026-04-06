@@ -9,6 +9,12 @@ class GraphqlController < ApplicationController
     render json: { errors: [{ message: e.message }], data: nil }, status: :ok
   end
 
+  rescue_from ActiveRecord::StatementInvalid do |e|
+    raise e unless e.cause.is_a?(PG::InvalidTextRepresentation)
+
+    render json: { errors: [{ message: 'Invalid query parameters' }], data: nil }, status: :ok
+  end
+
   # If accessing from outside this domain, nullify the session
   # This allows for outside API access while preventing CSRF attacks,
   # but you'll have to authenticate your user separately
