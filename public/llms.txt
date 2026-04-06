@@ -1,0 +1,22 @@
+# PlaceCal
+
+> PlaceCal is a community events calendar that aggregates events and activities from local organisations into one place, helping people find out what's happening near them.
+
+PlaceCal imports events from many different calendar sources (Google Calendar, Outlook, iCal feeds, Eventbrite, and more) and presents them organised by neighbourhood, partner organisation, and category.
+
+## Key Concepts
+
+- **Partners**: Local organisations, groups, and services that run events and activities
+- **Calendars**: Event sources connected to partners (iCal feeds, APIs, etc.)
+- **Sites**: Neighbourhood-specific instances of PlaceCal, each with their own URL and curated content
+- **Neighbourhoods**: Geographic areas (typically UK wards) used to organise content by locality
+- **Tags**: Categories and partnership groupings used to filter events and partners
+
+## API
+
+PlaceCal provides a public GraphQL API at `/api/v1/graphql` for querying events, partners, and neighbourhoods. A GraphiQL explorer is available in development at `/graphiql`.
+
+## More Information
+
+- Handbook: https://handbook.placecal.org/
+- Source code: https://github.com/geeksforsocialchange/PlaceCal

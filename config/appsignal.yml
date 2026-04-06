@@ -2,5 +2,9 @@
 
 production:
   revision: <%= ENV['GIT_REV'] %>
+  ignore_errors:
+    - ActionController::BadRequest
 staging:
   revision: <%= ENV['GIT_REV'] %>
+  ignore_errors:
+    - ActionController::BadRequest

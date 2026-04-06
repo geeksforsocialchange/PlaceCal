@@ -1,0 +1,51 @@
+name: Update AI bot list
+
+on:
+  schedule:
+    - cron: "0 9 1 * *" # 9am UTC on the 1st of each month
+  workflow_dispatch: # allow manual trigger
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+          cache-version: 3
+
+      - name: Update AI bot lists from upstream
+        run: bundle exec rails robots:update
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet config/robots/; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create pull request
+        if: steps.changes.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH="chore/update-ai-bot-list-$(date +%Y%m)"
+          git checkout -b "$BRANCH"
+          git add config/robots/
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update AI bot list from ai.robots.txt"
+          git push -u origin "$BRANCH"
+          gh pr create \
+            --title "Update AI bot list from ai.robots.txt" \
+            --body "Automated monthly update of AI crawler lists from https://github.com/ai-robots-txt/ai.robots.txt" \
+            --label "dependencies"
+          gh pr merge --auto --squash
