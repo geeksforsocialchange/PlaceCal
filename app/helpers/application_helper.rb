@@ -73,7 +73,8 @@ module ApplicationHelper
   end
 
   # ported from https://github.com/comfy/active_link_to/blob/master/lib/active_link_to/active_link_to.rb
-  def active_link_to(title, url, data: nil, base_css_class: nil, active_css_class: 'active')
+  # FIXME: I don't know how to include Literal so I can use _Nilable[String]
+  def active_link_to(title, url, data: Hash, base_css_class: '', active_css_class: 'active')
     current_path = request.original_fullpath
     link_path = Addressable::URI.parse(url).path
     is_current_path = current_path.match(%r{^#{Regexp.escape(link_path)}/?(\?.*)?$}).present?

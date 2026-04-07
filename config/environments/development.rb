@@ -80,7 +80,7 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = true
 
   # Allow the app to be iframed in dev to allow more testing options
-  config.action_dispatch.default_headers['X-Frame-Options'] = nil
+  config.action_dispatch.default_headers.delete('X-Frame-Options')
 
   # Lookbook component preview tool (http://lvh.me:3000/lookbook)
   config.lookbook.project_name = 'PlaceCal'
