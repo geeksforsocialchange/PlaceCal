@@ -564,6 +564,8 @@ GEM
       rspec-support (~> 3.12)
     racc (1.8.1)
     rack (3.2.6)
+    rack-attack (6.8.0)
+      rack (>= 1.0, < 4)
     rack-cors (3.0.0)
       logger
       rack (>= 3.0.14)
@@ -884,6 +886,7 @@ DEPENDENCIES
   puma
   pundit
   pundit-matchers (~> 4.0)
+  rack-attack
   rack-cors
   rails (~> 8.0)
   rails-erd

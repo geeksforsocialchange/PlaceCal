@@ -48,6 +48,7 @@ gem 'uk_postcode'                 # UK postcode validation and parsing
 
 # API
 gem 'graphql'                     # GraphQL API
+gem 'rack-attack'                 # API rate limiting and throttling
 gem 'rack-cors', require: 'rack/cors' # Cross-origin request support
 
 # Background jobs
