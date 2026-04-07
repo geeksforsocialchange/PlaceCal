@@ -196,7 +196,7 @@ class Site < ApplicationRecord
 
   # @return [String] robots.txt content, blocking crawlers if unpublished
   def robots
-    config = File.read(Rails.root.join("config/robots/robots.#{Rails.env}.txt"))
+    config = File.read(Rails.root.join("config/robots/#{self.class.robots_config_filename}"))
 
     if is_published?
       config
@@ -212,6 +212,17 @@ class Site < ApplicationRecord
   # ==== Class methods ====
 
   class << self
+    # Selects the robots.txt template based on ALLOW_AI_SEARCH_BOTS env var.
+    # In production, defaults to allowing search-AI bots (permissive template).
+    # Set ALLOW_AI_SEARCH_BOTS=false to block all AI bots (strict template).
+    def robots_config_filename
+      if Rails.env.production? && ENV.fetch('ALLOW_AI_SEARCH_BOTS', 'true') == 'false'
+        'robots.production.strict.txt'
+      else
+        "robots.#{Rails.env}.txt"
+      end
+    end
+
     # @param value [Array] enumerize value pair
     # @return [String] titleized label
     def badge_zoom_level_label(value)
