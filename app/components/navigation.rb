@@ -4,13 +4,13 @@
 
 class Components::Navigation < Components::Base
   prop :navigation, Array # Array of tuples of [name, URL]
-  prop :site, ::Site
+  prop :site, _Nilable(::Site), default: nil
 
   def view_template
     header(class: [
              'header grid grid-cols-[1fr_auto] items-center',
              *(
-              if @site.default_site?
+              if @site&.default_site?
                 ['header__default mx-3 py-6 md:mx-6']
               else
                 ['header__partner mx-4 pt-4', 'lg:py-4 lg:mx-12 lg:py-6']
@@ -28,10 +28,10 @@ class Components::Navigation < Components::Base
   def render_branding
     link_to(root_path, class: [
               'header__branding row-start-1 col-start-1 ',
-              ("header__branding--#{@site.slug}" if @site.slug.presence),
+              ("header__branding--#{@site.slug}" if @site&.slug.presence),
               # svg/img classes are here because partner svgs are inlined with File.read
               '[&>svg,&>img]:object-contain [&>svg,&>img]:max-w-full [&>svg,&>img]:max-h-full',
-              *(if @site.default_site?
+              *(if @site&.default_site?
                   ['w-32 h-10 md:w-42 md:h-12']
                 else
                   ['w-42 h-12']
@@ -43,15 +43,15 @@ class Components::Navigation < Components::Base
   end
 
   def render_logo
-    logo_url = @site.logo&.url.presence
-    if @site.default_site?
+    logo_url = @site&.logo&.url.presence
+    if @site&.default_site?
       raw(view_context.svg_image('home/icons/logo.svg', alt_text: 'PlaceCal'))
     elsif logo_url
       logo_path = Rails.public_path.join(logo_url.delete_prefix('/'))
       if /\.svg$/i.match?(logo_url) && File.exist?(logo_path)
         raw(safe(File.read(logo_path)))
       else
-        image_tag(logo_url, alt: @site.name)
+        image_tag(logo_url, alt: @site&.name)
       end
     else
       raw(view_context.svg_image('header.svg', alt_text: 'PlaceCal'))
@@ -59,14 +59,14 @@ class Components::Navigation < Components::Base
   end
 
   def render_site_name
-    if @site.default_site?
+    if @site&.default_site?
       if request.path == '/'
         h1(class: 'sr-only') { 'PlaceCal' }
       else
         h2(class: 'sr-only') { 'PlaceCal' }
       end
     else
-      h2(class: 'sr-only') { @site.name }
+      h2(class: 'sr-only') { @site&.name }
       p(class: 'sr-only') { 'The Community Calendar' }
     end
   end
@@ -74,7 +74,7 @@ class Components::Navigation < Components::Base
   def render_menu
     li_css_class = [
       'text-center',
-      *(if @site.default_site?
+      *(if @site&.default_site?
           ['max-md:bg-tertiary max-md:py-3']
         else
           [
@@ -88,10 +88,10 @@ class Components::Navigation < Components::Base
     a_css_class = [
       'with-reset with-no-sass text-background text-base',
       'after:block after:mx-auto after:w-10',
-      *(if @site.default_site?
+      *(if @site&.default_site?
           [
             'font-semibold',
-            'after:h-1 after:-mt-1 after:transition-colors after:duration-300',
+            'after:h-0.5 after:-mt-0.5 after:transition-colors after:duration-300',
             'md:hover:after:bg-primary ',
             'lg:after:mt-0.5 lg:hover:after:bg-tertiary'
           ]
@@ -106,15 +106,15 @@ class Components::Navigation < Components::Base
     ].join(' ')
     a_active_css_class = [
       'md:after:bg-primary',
-      ('lg:after:bg-tertiary' if @site.default_site?)
+      ('lg:after:bg-tertiary' if @site&.default_site?)
     ].join(' ')
     nav(class: [
           'nav header__menu row-start-2 col-start-1 col-span-2 flex flex-col justify-evenly',
           '-mx-6 h-auto overflow-clip transition-[display,height,margin-top,padding-block] duration-300',
           'md:flex-row',
-          *(if @site.default_site?
+          *(if @site&.default_site?
               [
-                'pt-4 gap-1  lg:row-start-1 lg:col-start-2 lg:col-span-1',
+                'pt-4 gap-0.5  lg:row-start-1 lg:col-start-2 lg:col-span-1',
                 'md:flex-row md:gap-8 md:pt-3 md:pb-4 md:mt-6',
                 'md:max-lg:[&:is(.is-hidden)]:py-0 md:max-lg:[&:is(.is-hidden)]:mt-4.5 md:max-lg:bg-tertiary',
                 'max-lg:[&:is(.is-hidden)]:h-0',
@@ -143,13 +143,13 @@ class Components::Navigation < Components::Base
     button(type: 'button', class: [
              'header__toggle row-start-1 col-start-2 flex gap-2 ms-auto me-1.5 items-center text-background',
              'md:me-4',
-             *(if @site.default_site?
+             *(if @site&.default_site?
                  ['lg:hidden']
                else
                  ['md:hidden']
                end)
            ], data: { action: 'click->mobile-menu#toggle', turbo: 'false' }) do
-      span(class: 'text-base font-semibold') { 'Menu' } if @site.default_site?
+      span(class: 'text-base font-semibold') { 'Menu' } if @site&.default_site?
       raw(view_context.icon(:misc_menu, size: nil, css_class: 'size-8 fill-secondary'))
     end
   end
