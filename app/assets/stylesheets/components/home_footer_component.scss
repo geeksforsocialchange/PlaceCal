@@ -1,5 +1,8 @@
 @import "../variables_mixins";
 
+// temporarily increased specificity of `.footer_home__foot__link` and `.footer_home__nav__link`  to override `a:not(.with-no-sass)` in `app/assets/stylesheets/base/typography.scss`
+// the entire file will be removed as part of tailwind migration
+
 .footer_home {
 	color: $base-background;
 	padding: 3rem 2rem;
@@ -42,12 +45,12 @@
 	text-align: center;
 }
 
-.footer_home__foot__link {
+.footer_home__foot__link.footer_home__foot__link {
 	color: $base-background;
 	text-decoration-color: $base-background;
 }
 
-.footer_home__foot__link:hover {
+.footer_home__foot__link.footer_home__foot__link:hover {
 	color: $base-secondary;
 	text-decoration-color: $base-background;
 }
@@ -101,14 +104,14 @@
 	}
 }
 
-.footer_home__nav__link {
+.footer_home__nav__link.footer_home__nav__link {
 	color: $base-background;
 	font-weight: 600;
 	text-decoration: none;
 	width: max-content;
 }
 
-.footer_home__nav__link:hover {
+.footer_home__nav__link.footer_home__nav__link:hover {
 	color: $base-secondary;
 	border-bottom: 3px solid $base-background;
 }

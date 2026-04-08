@@ -4,7 +4,7 @@ class Components::HomeFooter < Components::Base
   include Phlex::Rails::Helpers::MailTo
 
   def view_template
-    footer(class: 'footer_home flex flex-col') do
+    footer(class: 'footer_home') do
       render_head
       hr(class: 'footer_home__hr')
       render_body

@@ -1,4 +1,5 @@
-// TODO: add :not(.with-no-sass) to all of these selectors so they can be overriden then properly cleaned up
+// TODO: add :not(.with-no-sass) as required so these can be overriden then properly cleaned up
+// note that this will increase the selector specificity so it's still not ideal
 
 // Large titles at the top of the page
 h1 {
