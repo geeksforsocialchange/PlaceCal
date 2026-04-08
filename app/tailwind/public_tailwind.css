@@ -3,20 +3,20 @@
 @import "./public/fonts.css";
 
 /* https://tailwindcss.com/docs/detecting-classes-in-source-files#ignoring-specific-paths
-   TODO: verify and maybe rework as source(none) then @source explicit roots only
+   TODO: verify and maybe rework as `@import "tailwindcss" source(none);` then @source explicit roots only
    TODO: also exclude non-admin from admin_tailwind.css
 */
-@source not '../../app/assets';
-@source not '../../app/datatables';
-@source not '../../app/components/admin';
-@source not '../../app/helpers/neighbourhoods_helper.rb'
-@source not '../../app/views/admin';
-@source not '../../app/views/layouts/admin';
-@source not '../../db';
-@source not '../../doc';
-@source not '../../features';
-@source not '../../public';
-@source not '../../spec';
+@source not "../../app/assets";
+@source not "../../app/datatables";
+@source not "../../app/components/admin";
+@source not "../../app/helpers/neighbourhoods_helper.rb"
+@source not "../../app/views/admin";
+@source not "../../app/views/layouts/admin";
+@source not "../../db";
+@source not "../../doc";
+@source not "../../features";
+@source not "../../public";
+@source not "../../spec";
 
 /* remove tailwind theme: https://tailwindcss.com/docs/theme#using-a-custom-theme */
 @theme {
@@ -24,6 +24,7 @@
 }
 
 :root {
+	/* app/assets/stylesheets/base/typography.scss */
 	font-size: 18px;
 	line-height: 1.5;
 	-webkit-font-smoothing: antialiased;
@@ -44,7 +45,7 @@
 	/* Main page background */
 	--color-background: #fffcf0;
 	/* Main copy colour */
-	--color-text: #5b4e46;
+	--color-foreground: #5b4e46;
 	/* Horizontal lines, for example around events */
 	--color-rules: #f1e9da;
 	/* Currently just used on breadcrumb */
@@ -60,7 +61,7 @@
 	--color-print-grey: #dadada;
 
 	/* Default-site
-   some of these reuse colours from above but I've hardcoded them to prevent accidental overwrites
+   some of these reuse colours from above
    FIXME: pink is here twice
    */
 	/* this was originally #fffbef (0, -1, +1 from --color-background). i'm assuming it was a mistake */
@@ -119,7 +120,7 @@ https://tailwindcss.com/docs/theme#default-theme-variable-reference
 	/* Main page background */
 	--color-background: var(--color-background);
 	/* Main copy colour */
-	--color-text: var(--color-text);
+	--color-foreground: var(--color-foreground);
 	/* Horizontal lines, for example around events */
 	--color-rules: var(--color-rules);
 	/* Currently just used on breadcrumb */
@@ -187,9 +188,7 @@ https://tailwindcss.com/docs/theme#default-theme-variable-reference
 	}
 
 	/* the site previously had no reset so these are browser defaults which were not overridden
-		TODO: decide whether to leave units as-is or convert to --spacing multiples
-		TODO: set at point of use if that seems sensible
-		FIXME: add not(.with-reset) to selectors so these can be overriden then properly cleaned up when deprecated instead of duplicating the tailwind reset
+		TODO: add not(.with-reset) to selectors so these can be overriden then properly cleaned up when deprecated instead of duplicating the tailwind reset
    */
 	h1 {
 		margin-block: 0.67em;
@@ -213,9 +212,9 @@ https://tailwindcss.com/docs/theme#default-theme-variable-reference
 	blockquote {
 		margin-inline: 40px;
 	}
-	/* TODO: probably should switch to a theme colour */
+	/* the real default is #fff but i've switched to a theme colour for consistency */
 	textarea {
-		background-color: #fff;
+		@apply bg-home-background;
 	}
 	/* TODO: should be in a flex */
 	input[type="checkbox"] {
