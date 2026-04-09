@@ -49,7 +49,10 @@ class Components::Filter < Components::Base
         @name,
         item[:id],
         selected?(item[:id]),
-        data: { action: submit_action_value },
+        data: {
+          action: submit_action_value,
+          "#{target_key}": target_value
+        },
         class: 'tag__button'
       )
       label_tag(
@@ -93,5 +96,13 @@ class Components::Filter < Components::Base
 
   def reset_action_value
     "click->#{@controller}##{@reset_action}"
+  end
+
+  def target_key
+    "#{@controller}-target"
+  end
+
+  def target_value
+    @name
   end
 end
