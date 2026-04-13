@@ -9,6 +9,12 @@ class GraphqlController < ApplicationController
     render json: { errors: [{ message: e.message }], data: nil }, status: :ok
   end
 
+  rescue_from ActiveRecord::StatementInvalid do |e|
+    raise e unless e.cause.is_a?(PG::InvalidTextRepresentation)
+
+    render json: { errors: [{ message: 'Invalid query parameters' }], data: nil }, status: :ok
+  end
+
   # If accessing from outside this domain, nullify the session
   # This allows for outside API access while preventing CSRF attacks,
   # but you'll have to authenticate your user separately
@@ -22,7 +28,19 @@ class GraphqlController < ApplicationController
       # Query context goes here, for example:
       # current_user: current_user,
     }
-    result = PlaceCalSchema.execute(query, variables: variables, context: context, operation_name: operation_name)
+    # Apply depth/complexity limits to regular queries but not introspection (__schema/__type),
+    # which is inherently deep and complex.
+    introspection = query&.include?('__schema')
+    # Deepest legitimate query is 4 levels (e.g. event → address → geo → latitude)
+    max_depth = introspection ? nil : 10
+    # Highest real-world query scores ~1100 (articleConnection with all fields).
+    # Trans Dimension queries score ~100 each.
+    max_complexity = introspection ? nil : 1500
+
+    result = PlaceCalSchema.execute(query, variables: variables, context: context,
+                                           operation_name: operation_name,
+                                           max_depth: max_depth,
+                                           max_complexity: max_complexity)
     render json: result
   rescue StandardError => e
     raise e unless Rails.env.development?

@@ -20,14 +20,14 @@ RSpec.describe EventJsonLd do
       expect(data["url"]).to eq("#{base_url}/events/#{event.id}")
     end
 
-    it "formats startDate as ISO 8601" do
-      expect(data["startDate"]).to match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/)
+    it "formats startDate as ISO 8601 with timezone offset" do
+      expect(data["startDate"]).to match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$/)
     end
 
     context "with endDate" do
       it "includes endDate when dtend is present" do
         expect(data["endDate"]).to be_present
-        expect(data["endDate"]).to match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/)
+        expect(data["endDate"]).to match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$/)
       end
 
       it "omits endDate when dtend is nil" do
@@ -80,6 +80,17 @@ RSpec.describe EventJsonLd do
       it "validates against schema" do
         errors = JSON::Validator.fully_validate(schema, data)
         expect(errors).to be_empty, -> { "JSON-LD validation errors:\n#{errors.join("\n")}" }
+      end
+    end
+
+    context "with no direct address but with a place" do
+      let(:place) { create(:partner) }
+      let(:event) { create(:event, address: nil, place: place) }
+
+      it "falls back to place address for location" do
+        location = data["location"]
+        expect(location["@type"]).to eq("Place")
+        expect(location["address"]["streetAddress"]).to eq(place.address.full_street_address)
       end
     end
 

@@ -48,6 +48,7 @@ gem 'uk_postcode'                 # UK postcode validation and parsing
 
 # API
 gem 'graphql'                     # GraphQL API
+gem 'rack-attack'                 # API rate limiting and throttling
 gem 'rack-cors', require: 'rack/cors' # Cross-origin request support
 
 # Background jobs
@@ -79,7 +80,7 @@ group :development do
   gem 'lookbook', '>= 2.3.14'    # Component preview UI (Storybook for Rails)
   gem 'rails-erd'                 # Entity-relationship diagrams
   gem 'rdoc'                      # Documentation generator
-  gem 'rubocop', '1.86.0', require: false
+  gem 'rubocop', '1.86.1', require: false
   gem 'rubocop-graphql', '1.6.0', require: false
   gem 'rubocop-performance', '1.26.1', require: false
   gem 'rubocop-rails', '2.34.3', require: false

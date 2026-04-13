@@ -50,9 +50,25 @@ module PartnerJsonLd
         '@type' => 'Event',
         '@id' => "#{base_url}/events/#{event.id}",
         'name' => event.summary,
-        'startDate' => event.dtstart.iso8601
+        'startDate' => event.dtstart.in_time_zone('Europe/London').iso8601,
+        'eventStatus' => 'https://schema.org/EventScheduled',
+        'eventAttendanceMode' => event.json_ld_attendance_mode
       }
-      entry['endDate'] = event.dtend.iso8601 if event.dtend
+      entry['endDate'] = event.dtend.in_time_zone('Europe/London').iso8601 if event.dtend
+      entry['description'] = ActionController::Base.helpers.strip_tags(event.description_html).presence if event.description_html.present?
+      if event.address
+        entry['location'] = {
+          '@type' => 'Place',
+          'name' => event.partner_at_location&.name,
+          'address' => {
+            '@type' => 'PostalAddress',
+            'streetAddress' => event.address.full_street_address,
+            'addressLocality' => event.address.city,
+            'postalCode' => event.address.postcode,
+            'addressCountry' => event.address.country_code
+          }.compact
+        }
+      end
       entry
     end
   end

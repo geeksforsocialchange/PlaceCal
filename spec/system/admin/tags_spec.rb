@@ -29,8 +29,6 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       sign_in_as(root_user)
       visit admin_url("/tags/#{tag.id}/edit")
 
-      # Wait for tabs to be present, then click Settings
-      expect(page).to have_css(".tabs.tabs-lift")
       click_tab("settings")
       expect(page).to have_css("input#tag_system_tag", visible: :all)
     end

@@ -151,5 +151,8 @@ class Address < ApplicationRecord
     # Makes it easier to catch dupes
     self.longitude = res['longitude']
     self.latitude = res['latitude']
+
+    # TODO: backfill city for existing addresses. See #3123
+    self.city = res['admin_district'] if city.blank?
   end
 end

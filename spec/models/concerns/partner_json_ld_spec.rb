@@ -88,6 +88,26 @@ RSpec.describe PartnerJsonLd do
       end
     end
 
+    context "with embedded events" do
+      let(:base_url) { "https://hulme.placecal.org" }
+
+      it "includes location in embedded events when address exists" do
+        event = create(:event, organiser: partner)
+        result = partner.to_json_ld(base_url: base_url)
+        event_data = result["event"]&.find { |e| e["@id"].include?(event.id.to_s) }
+        expect(event_data).to be_present
+        expect(event_data["location"]["@type"]).to eq("Place")
+        expect(event_data["location"]["address"]["@type"]).to eq("PostalAddress")
+      end
+
+      it "formats event times with timezone offset" do
+        create(:event, organiser: partner)
+        result = partner.to_json_ld(base_url: base_url)
+        event_data = result["event"]&.first
+        expect(event_data["startDate"]).to match(/[+-]\d{2}:\d{2}$/)
+      end
+    end
+
     context "with description" do
       it "strips HTML from summary" do
         partner.update!(summary: "<p>A great <em>community</em> group</p>")
