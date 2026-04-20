@@ -27,19 +27,33 @@ class Views::Layouts::Application < Phlex::HTML
         meta(name: 'turbo-refresh-method', content: 'morph')
       end
 
+      # app/assets/stylesheets/base/layout.scss
+      # app/assets/stylesheets/home/_layout.scss
+      # app/assets/stylesheets/home/pages/_index.scss
       body do
-        div(class: 'background') do
+        div(class: [
+              'page',
+              *(if site&.default_site?
+                  ['max-w-home bg-foreground border-none mx-auto']
+                else
+                  [
+                    'max-w-xl bg-background mx-auto',
+                    # tailwind border-n is px, not multiples of --spacing
+                    'xl:border xl:border-x-[calc(--spacing(8))]',
+                    'dt:border-text'
+                  ]
+                end)
+            ]) do
           Navigation(navigation: navigation, site: site)
+          # FIXME: move main elem into component to save excess divs
           main do
             Flash()
             yield
           end
-          footer do
-            if site&.default_site?
-              HomeFooter()
-            else
-              Footer(site)
-            end
+          if site&.default_site?
+            HomeFooter()
+          else
+            Footer(site)
           end
         end
       end
