@@ -109,6 +109,83 @@ RSpec.describe PartnersQuery do
     end
   end
 
+  describe "#call with pagination" do
+    let!(:partners) do
+      ("A".."E").map do |letter|
+        address = create(:address, neighbourhood: neighbourhood)
+        create(:partner, name: "#{letter} Partner", address: address)
+      end
+    end
+
+    it "returns only the requested page of results" do
+      results = described_class.new(site: site).call(page: 1, per_page: 2)
+      expect(results.map(&:name)).to eq(["A Partner", "B Partner"])
+    end
+
+    it "returns the second page" do
+      results = described_class.new(site: site).call(page: 2, per_page: 2)
+      expect(results.map(&:name)).to eq(["C Partner", "D Partner"])
+    end
+
+    it "returns the last page with remaining items" do
+      results = described_class.new(site: site).call(page: 3, per_page: 2)
+      expect(results.map(&:name)).to eq(["E Partner"])
+    end
+
+    it "sets total_pages" do
+      query = described_class.new(site: site)
+      query.call(page: 1, per_page: 2)
+      expect(query.total_pages).to eq(3)
+    end
+
+    it "sets total_count" do
+      query = described_class.new(site: site)
+      query.call(page: 1, per_page: 2)
+      expect(query.total_count).to eq(5)
+    end
+
+    it "clamps page to valid range" do
+      results = described_class.new(site: site).call(page: 999, per_page: 2)
+      # Should clamp to last page
+      expect(results.map(&:name)).to eq(["E Partner"])
+    end
+
+    it "returns all results when page is nil" do
+      results = described_class.new(site: site).call
+      expect(results.count).to eq(5)
+    end
+  end
+
+  describe "#page_letter_ranges" do
+    let!(:partners) do
+      %w[Alpha Bravo Charlie Delta Epsilon].each do |name|
+        address = create(:address, neighbourhood: neighbourhood)
+        create(:partner, name: name, address: address)
+      end
+    end
+
+    it "returns letter ranges for each page" do
+      query = described_class.new(site: site)
+      query.call(page: 1, per_page: 2)
+      ranges = query.page_letter_ranges(per_page: 2)
+
+      expect(ranges.length).to eq(3)
+      expect(ranges[0][:page]).to eq(1)
+      expect(ranges[0][:first_label]).to eq("A")
+    end
+
+    it "uses two-char prefix when letter spans boundary" do
+      # With per_page: 3, page 1 = Alpha, Bravo, Charlie; page 2 = Delta, Epsilon
+      query = described_class.new(site: site)
+      query.call(page: 1, per_page: 3)
+      ranges = query.page_letter_ranges(per_page: 3)
+
+      expect(ranges.length).to eq(2)
+      expect(ranges[0][:last_label]).to eq("C")
+      expect(ranges[1][:first_label]).to eq("D")
+    end
+  end
+
   describe "#neighbourhoods_with_counts" do
     let!(:partner1) do
       address = create(:address, neighbourhood: neighbourhood)

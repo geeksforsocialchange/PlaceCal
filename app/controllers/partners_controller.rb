@@ -17,19 +17,26 @@ class PartnersController < ApplicationController
   def index
     @selected_category = params[:category] if params[:category].present? && Integer(params[:category], exception: false)
     @selected_neighbourhood = params[:neighbourhood] if params[:neighbourhood].present? && Integer(params[:neighbourhood], exception: false)
+    @page = (params[:page] || 1).to_i
 
     query = PartnersQuery.new(site: current_site)
     @partners = query.call(
       neighbourhood_id: @selected_neighbourhood,
-      tag_id: @selected_category
+      tag_id: @selected_category,
+      page: @page
     )
 
     @map = get_map_markers(@partners) if @partners.detect(&:address)
+    @filter_params = { category: @selected_category, neighbourhood: @selected_neighbourhood }.compact
 
     render Views::Partners::Index.new(
       partners: @partners, site: @site,
       map: @map, selected_category: @selected_category,
-      selected_neighbourhood: @selected_neighbourhood
+      selected_neighbourhood: @selected_neighbourhood,
+      page: @page,
+      total_pages: query.total_pages,
+      page_letter_ranges: query.page_letter_ranges,
+      filter_params: @filter_params
     )
   end
 

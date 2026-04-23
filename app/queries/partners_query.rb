@@ -11,23 +11,61 @@
 #     tag_id: 456
 #   )
 #
+# @example With pagination
+#   query = PartnersQuery.new(site: current_site)
+#   partners = query.call(page: 2)
+#   query.total_pages    # => 5
+#   query.page_letter_ranges # => [{ page: 1, first_label: "A", last_label: "C" }, ...]
+#
 class PartnersQuery
+  PER_PAGE = 50
+
   def initialize(site:)
     @site = site
   end
+
+  attr_reader :total_pages, :total_count
 
   # Main entry point - returns partners filtered and sorted
   #
   # @param neighbourhood_id [Integer] filter by neighbourhood (address or service area)
   # @param tag_id [Integer] filter by tag/category
   # @param tag_slug [String] filter by tag slug (e.g. 'computers', 'wifi')
+  # @param page [Integer] page number (1-indexed), nil for no pagination
+  # @param per_page [Integer] number of results per page
   # @return [ActiveRecord::Relation<Partner>]
-  def call(neighbourhood_id: nil, tag_id: nil, tag_slug: nil)
+  def call(neighbourhood_id: nil, tag_id: nil, tag_slug: nil, page: nil, per_page: PER_PAGE)
     partners = base_scope
     partners = filter_by_neighbourhood(partners, neighbourhood_id) if neighbourhood_id.present?
     partners = filter_by_tag(partners, tag_id) if tag_id.present?
     partners = filter_by_tag_slug(partners, tag_slug) if tag_slug.present?
-    partners.includes(:address, :service_areas).order(:name)
+    @filtered_scope = partners.includes(:address, :service_areas).order(:name)
+
+    if page
+      @total_count = @filtered_scope.count
+      @total_pages = [(@total_count.to_f / per_page).ceil, 1].max
+      page = page.clamp(1, @total_pages)
+      @filtered_scope.offset((page - 1) * per_page).limit(per_page)
+    else
+      @total_count = nil
+      @total_pages = 1
+      @filtered_scope
+    end
+  end
+
+  # Returns letter-range labels for each page of the filtered results
+  # Uses two-char prefixes when a letter spans a page boundary
+  #
+  # @param per_page [Integer] results per page
+  # @return [Array<Hash>] array of { page:, first_label:, last_label: }
+  def page_letter_ranges(per_page: PER_PAGE)
+    names = filtered_scope_names
+    return [] if names.empty?
+
+    ranges = names.each_slice(per_page).with_index.map do |slice, i|
+      { page: i + 1, first_label: slice.first, last_label: slice.last }
+    end
+    compute_labels(ranges)
   end
 
   # Returns neighbourhoods that have partners, with counts
@@ -121,5 +159,45 @@ class PartnersQuery
 
   def site_tag_ids
     @site_tag_ids ||= @site.tags.pluck(:id)
+  end
+
+  # ===================
+  # Pagination Helpers
+  # ===================
+
+  def filtered_scope_names
+    @filtered_scope_names ||= (@filtered_scope || base_scope.order(:name)).pluck(:name)
+  end
+
+  # Compute display labels for page ranges. Uses single letter when unambiguous,
+  # two-char prefix when a letter spans a page boundary (e.g. "Ce" vs "Cl")
+  def compute_labels(ranges)
+    ranges.each_with_index do |r, i|
+      prev_last = i.positive? ? ranges[i - 1][:last_label] : nil
+      next_first = i < ranges.length - 1 ? ranges[i + 1][:first_label] : nil
+
+      first_name = r[:first_label]
+      last_name = r[:last_label]
+
+      r[:first_label] = smart_label(first_name, prev_last, :start)
+      r[:last_label] = smart_label(last_name, next_first, :end)
+    end
+    ranges
+  end
+
+  # Generate a label for a page boundary name.
+  # Uses single letter if unambiguous, two-char prefix if the same letter
+  # appears on both sides of the boundary.
+  def smart_label(name, adjacent_name, _position)
+    letter = name[0].upcase
+    return letter unless adjacent_name
+
+    adjacent_letter = adjacent_name[0].upcase
+    if letter == adjacent_letter
+      # Same letter on both sides of boundary — use two-char prefix
+      name[0..1].capitalize
+    else
+      letter
+    end
   end
 end
