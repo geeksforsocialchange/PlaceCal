@@ -1,0 +1,12 @@
+{
+	// this exists so we can have js type checking
+	"compilerOptions": {
+		"checkJs": true,
+		"module": "esnext",
+		"target": "esnext",
+		"moduleResolution": "node",
+		"allowSyntheticDefaultImports": true,
+		"strict": true,
+		"noEmit": true
+	}
+}
