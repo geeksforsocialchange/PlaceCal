@@ -46,7 +46,10 @@
 
 		a {
 			padding: 0.3rem 1rem;
-			display: block;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			white-space: nowrap;
 		}
 
 		&.active,
