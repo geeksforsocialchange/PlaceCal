@@ -18,18 +18,6 @@ body {
 	}
 }
 
-.background {
-	max-width: 1200px;
-	background-color: $base-background;
-	margin: 0 auto;
-
-	@include for-desktop-up {
-		border-width: 0 35px;
-		border-color: $base-text;
-		border-style: solid;
-	}
-}
-
 .c {
 	padding: 0 $small-page-margin;
 
