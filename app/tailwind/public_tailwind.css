@@ -9,7 +9,7 @@
 @source not "../../app/assets";
 @source not "../../app/datatables";
 @source not "../../app/components/admin";
-@source not "../../app/helpers/neighbourhoods_helper.rb"
+@source not "../../app/helpers/neighbourhoods_helper.rb";
 @source not "../../app/views/admin";
 @source not "../../app/views/layouts/admin";
 @source not "../../db";
