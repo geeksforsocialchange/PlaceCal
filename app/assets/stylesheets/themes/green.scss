@@ -1,4 +1,10 @@
 :root {
-	--base-primary: #afcf5a;
-	--base-secondary: #afcf5a;
+	--color-primary: #afcf5a;
+	--color-secondary: #afcf5a;
+
+	/* Legacy theme vars
+		TODO: delete when no longer required
+	*/
+	--base-primary: #fe9263;
+	--base-secondary: #fe9263;
 }

@@ -36,8 +36,10 @@ body {
 	}
 }
 
-.background {
+.page {
 	background-color: $mossley-text-alt;
+	border-width: 0 10px;
+	border-color: $mossley-primary;
 }
 
 a {
@@ -61,11 +63,6 @@ a {
 	@include for-tablet-portrait-up {
 		font-size: 1.22222rem;
 	}
-}
-
-.background {
-	border-width: 0 10px;
-	border-color: $mossley-primary;
 }
 
 .header {

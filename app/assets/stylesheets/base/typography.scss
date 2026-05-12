@@ -1,23 +1,5 @@
-html {
-	font-size: 18px;
-	box-sizing: border-box;
-	font-variant-numeric: lining-nums;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-}
-
-*,
-*:before,
-*:after {
-	box-sizing: inherit;
-}
-
-body {
-	font-family: $sans-serif;
-	font-weight: $regular;
-	color: $base-text;
-	line-height: 1.5;
-}
+// TODO: add :not(.with-no-sass) as required so these can be overriden then properly cleaned up
+// note that this will increase the selector specificity so it's still not ideal
 
 // Large titles at the top of the page
 h1 {
@@ -37,10 +19,6 @@ h1.sans {
 }
 
 // Main page sections
-h2,
-.h2 {
-	@include h2;
-}
 
 .h2--alt {
 	text-transform: uppercase;
@@ -54,20 +32,6 @@ h2,
 		border-bottom: 4px solid $base-secondary;
 		border-bottom-color: var(--base-secondary);
 	}
-}
-
-h3,
-.h3 {
-	@include h3;
-}
-
-.h35 {
-	@include h35;
-}
-
-h4,
-.h4 {
-	@include h4;
 }
 
 .allcaps {
@@ -122,7 +86,7 @@ h2.serif {
 	}
 }
 
-a {
+a:not(.with-no-sass) {
 	text-decoration-color: $base-primary;
 	text-decoration-color: var(--base-primary);
 	text-underline-offset: 3px;

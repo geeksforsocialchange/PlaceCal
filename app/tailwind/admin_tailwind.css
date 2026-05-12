@@ -12,6 +12,9 @@
 }
 
 /* Source paths for content detection */
+/* TODO: these are likely redundant - tailwind already scans the entire codebase by default
+	 TODO: need to exclude public frontend from scanning and class generation. we can either do `@import "tailwindcss" source(none);` then `source ...` for each root, or add `source not ...` for each exclude root. see similar comments at the top of `public_tailwind.css`
+*/
 @source "../../app/datatables/**/*.rb";
 @source "../javascript/**/*.js";
 @source "../helpers/**/*.rb";
@@ -38,9 +41,9 @@
 
 /* Tom Select - base styles then custom overrides */
 @import "tom-select/dist/css/tom-select.default.css";
-@import "./_tom-select.css";
+@import "./admin/_tom-select.css";
 
 /* Admin CSS partials */
-@import "./_animations.css";
-@import "./_components.css";
-@import "./_markdown-preview.css";
+@import "./admin/_animations.css";
+@import "./admin/_components.css";
+@import "./admin/_markdown-preview.css";

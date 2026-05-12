@@ -1,6 +1,4 @@
 @import "globals";
-@import "temp_tailwind_compat";
-@import "variables/fonts";
 
 :root {
 	// Main site colour
@@ -43,7 +41,7 @@
 @import "components/footer";
 @import "components/four_col_grid_component";
 @import "components/full_width_action_component";
-@import "components/help_adding_events";
+@import "components/help_card";
 @import "components/hero_component";
 @import "components/hero_section_component";
 @import "components/home_footer_component";
@@ -60,7 +58,6 @@
 @import "components/resource_not_found";
 @import "components/steps_component";
 
-@import "components/navigation_component";
 @import "components/event_list_component";
 @import "components/event_component";
 @import "components/paginator_component";
