@@ -13,16 +13,22 @@
 
 	// Day chooser
 	&__buttons {
-		@include flexbox;
-		flex-wrap: wrap;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(6rem, 1fr));
+		gap: 0.25rem;
 
 		list-style-type: none;
 		margin: 0;
-		padding: 0 2.5rem 0.5rem 0;
+		padding: 0 2.5rem 0.5rem;
 
-		// Creates a context for the "next" arrow button
+		// Creates a context for the absolute back and forward arrows
 		position: relative;
 		font-weight: $bold;
+
+		@include for-tablet-portrait-up {
+			gap: 0.5rem;
+			grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+		}
 
 		a {
 			text-decoration: none;
@@ -34,15 +40,9 @@
 	}
 
 	li {
-		@include flex(1 0 auto);
 		@include border-highlight;
 
 		text-align: center;
-		margin-right: 0.25rem;
-
-		@include for-tablet-portrait-up {
-			margin: 0 0.25rem;
-		}
 
 		a {
 			padding: 0.3rem 1rem;
@@ -57,10 +57,11 @@
 	}
 
 	li.paginator__arrow {
-		@include flex(0 0 2.2222222rem);
-
-		padding: 0;
+		position: absolute;
+		top: 0;
+		width: 2.2222222rem;
 		height: 2.2222222rem;
+		padding: 0;
 		background-color: $base-primary;
 		background-color: var(--base-primary);
 		border-width: 0;
@@ -78,16 +79,16 @@
 			border-color: $base-text;
 		}
 
-		&--back a {
-			padding-right: 0.15rem;
+		&--back {
+			left: 0;
+
+			a {
+				padding-right: 0.15rem;
+			}
 		}
 
 		&--forwards {
-			width: 2.2222222rem;
-			position: absolute;
-			margin-right: 0;
 			right: 0;
-			top: 0;
 
 			a {
 				padding-left: 0.15rem;
