@@ -8,10 +8,28 @@ module Components::Admin::SvgIcons
   # @param css_class [String] Additional CSS classes
   # @param stroke_width [String] SVG stroke width (default: "2")
   def icon(name, size: '5', css_class: '', stroke_width: '2')
-    path_data = SvgIconsHelper::ICONS[name.to_sym]
-    unless path_data
+    entry = SvgIconsHelper::ICONS[name.to_sym]
+    unless entry
       span(class: 'text-error') { "[icon:#{name}]" }
       return
+    end
+
+    if entry.is_a?(Hash)
+      path_data = entry[:path]
+      fill = entry[:fill] || 'none'
+      stroke = entry[:stroke] || 'currentColor'
+      viewbox = entry[:viewbox] || '0 0 24 24'
+      stroke_linecap = entry[:stroke_linecap] || 'round'
+      stroke_linejoin = entry[:stroke_linejoin] || 'round'
+      stroke_width = entry[:stroke_width] || stroke_width
+      css_class = "#{css_class} #{entry[:css_class]}" if entry[:css_class].present?
+    else
+      path_data = entry
+      fill = 'none'
+      stroke = 'currentColor'
+      viewbox = '0 0 24 24'
+      stroke_linecap = 'round'
+      stroke_linejoin = 'round'
     end
 
     size_class = SvgIconsHelper::SIZE_CLASSES[size.to_s] || "w-#{size} h-#{size}"
@@ -19,13 +37,13 @@ module Components::Admin::SvgIcons
 
     svg(
       class: classes,
-      fill: 'none',
-      stroke: 'currentColor',
-      viewBox: '0 0 24 24'
+      fill: fill,
+      stroke: stroke,
+      viewBox: viewbox
     ) do |s|
       s.path(
-        stroke_linecap: 'round',
-        stroke_linejoin: 'round',
+        stroke_linecap: stroke_linecap,
+        stroke_linejoin: stroke_linejoin,
         stroke_width: stroke_width,
         d: path_data
       )
