@@ -6,9 +6,15 @@ export default class extends Controller {
 	static targets = ["button", "forward"];
 
 	connect() {
-		this.updateButtons();
 		this.resizeHandler = this.debounce(() => this.updateButtons(), 100);
 		window.addEventListener("resize", this.resizeHandler);
+
+		// Run updateButtons at several points because layout can shift
+		// after Stimulus connects: once now, once on the next frame, and
+		// once after web fonts settle (chip widths depend on the font).
+		this.updateButtons();
+		requestAnimationFrame(() => this.updateButtons());
+		document.fonts?.ready?.then(() => this.updateButtons());
 	}
 
 	disconnect() {
@@ -16,24 +22,22 @@ export default class extends Controller {
 	}
 
 	updateButtons() {
-		if (this.buttonTargets.length === 0 || !this.hasForwardTarget) return;
+		if (this.buttonTargets.length === 0) return;
 
 		// Show all buttons to measure layout
 		this.buttonTargets.forEach((btn) => (btn.style.display = ""));
 
-		// Detect wrapping: if the forward arrow is on a different line than the
-		// back arrow, some items have wrapped and we need to hide a few buttons.
-		const backArrow = this.element.querySelector(".paginator__arrow--back");
-		const baseTop = backArrow
-			? backArrow.offsetTop
-			: this.buttonTargets[0].offsetTop;
+		// Detect wrapping by comparing the first and last day chip. The
+		// back/forward arrows are absolutely positioned so their offsetTop
+		// is always 0 and can't be used here.
+		const firstButton = this.buttonTargets[0];
+		const lastButton = this.buttonTargets[this.buttonTargets.length - 1];
+		if (lastButton.offsetTop <= firstButton.offsetTop) return; // all fits
 
-		if (this.forwardTarget.offsetTop <= baseTop) return; // all fits
-
-		// Hide non-active buttons from the left until the forward arrow
-		// is back on the first line. This keeps the active tab visible.
+		// Hide non-active buttons from the left until the last chip is
+		// back on the first line. This keeps the active tab visible.
 		for (let i = 0; i < this.buttonTargets.length; i++) {
-			if (this.forwardTarget.offsetTop <= baseTop) break;
+			if (lastButton.offsetTop <= firstButton.offsetTop) break;
 			if (!this.buttonTargets[i].classList.contains("active")) {
 				this.buttonTargets[i].style.display = "none";
 			}
