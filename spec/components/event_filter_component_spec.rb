@@ -219,6 +219,64 @@ RSpec.describe Components::EventFilter, type: :component do
     end
   end
 
+  describe "neighbourhood filter" do
+    let(:district) { create(:neighbourhood, name: "Test District", unit: "district") }
+    let(:future_attrs) { base_attrs.merge(period: "future") }
+    let(:ward1) { create(:neighbourhood, name: "Hillcrest", unit: "ward", parent: district) }
+    let(:ward2) { create(:neighbourhood, name: "Valleyview", unit: "ward", parent: district) }
+    let(:site) do
+      s = create(:site)
+      create(:sites_neighbourhood, site: s, neighbourhood: district)
+      s
+    end
+    let(:address1) { create(:address, neighbourhood: ward1) }
+    let(:address2) { create(:address, neighbourhood: ward2) }
+    let(:partner1) do
+      p = create(:partner, address: address1)
+      p.service_areas << create(:service_area, neighbourhood: ward1)
+      p
+    end
+    let(:partner2) do
+      p = create(:partner, address: address2)
+      p.service_areas << create(:service_area, neighbourhood: ward2)
+      p
+    end
+
+    before do
+      create_list(:future_event, 3, organiser: partner1, address: address1)
+      create_list(:future_event, 2, organiser: partner2, address: address2)
+    end
+
+    it "shows neighbourhood filter when multiple neighbourhoods have events" do
+      render_inline(described_class.new(**future_attrs, site: site))
+
+      expect(page).to have_selector("button span.filters__link", text: "Neighbourhood")
+    end
+
+    it "shows selected neighbourhood name when a neighbourhood is selected" do
+      render_inline(described_class.new(**future_attrs, site: site, selected_neighbourhood: ward1.id.to_s))
+
+      expect(page).to have_selector("button span.filters__link", text: ward1.name)
+    end
+
+    it "does not show neighbourhood filter when only one neighbourhood has events" do
+      other_district = create(:neighbourhood, name: "Other District", unit: "district")
+      single_ward = create(:neighbourhood, name: "Only Ward", unit: "ward", parent: other_district)
+      single_address = create(:address, neighbourhood: single_ward)
+      single_partner = create(:partner, address: single_address)
+      single_partner.service_areas << create(:service_area, neighbourhood: single_ward)
+
+      single_site = create(:site)
+      create(:sites_neighbourhood, site: single_site, neighbourhood: other_district)
+
+      create_list(:future_event, 3, organiser: single_partner, address: single_address)
+
+      render_inline(described_class.new(**future_attrs, site: single_site))
+
+      expect(page).not_to have_selector("button span.filters__link", text: "Neighbourhood")
+    end
+  end
+
   describe "with different parameter values" do
     context "with week period" do
       let(:attrs) { base_attrs.merge(period: "week") }
