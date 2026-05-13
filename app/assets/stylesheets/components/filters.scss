@@ -73,6 +73,8 @@
 		padding: 0.25rem 0;
 		display: grid;
 		grid-template-columns: auto 1fr;
+		gap: 0.5rem;
+		align-items: center;
 	}
 
 	input {

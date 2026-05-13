@@ -68,11 +68,11 @@ class Components::Footer < Components::Base
   def render_site_contact_info
     if @site.site_admin.phone&.length&.positive?
       strong { 'T:' }
-      plain " #{@site.site_admin.phone}"
+      plain " #{@site.site_admin.phone}"
       br
     end
     strong { 'E:' }
-    plain ' '
+    plain ' '
     mail_to(@site.site_admin.email)
   end
 
