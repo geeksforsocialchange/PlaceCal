@@ -100,5 +100,65 @@ RSpec.describe Components::PartnerFilter, type: :component do
       # When a neighbourhood is selected, it shows the neighbourhood name instead of "Neighbourhood"
       expect(page).to have_selector("button span.filters__link", text: neighbourhood1.name)
     end
+
+    it "shows reset link when a filter is active" do
+      render_inline(described_class.new(
+                      site: site,
+                      selected_category: nil,
+                      selected_neighbourhood: neighbourhood1.id.to_s
+                    ))
+
+      expect(page).to have_link("Reset filters")
+    end
+
+    it "does not show reset link when no filters are active" do
+      render_inline(described_class.new(
+                      site: site,
+                      selected_category: nil,
+                      selected_neighbourhood: nil
+                    ))
+
+      expect(page).not_to have_link("Reset filters")
+    end
+  end
+
+  describe "cross-filtering" do
+    let(:neighbourhood1) { create(:neighbourhood) }
+    let(:neighbourhood2) { create(:neighbourhood) }
+    let(:site) { create(:site, neighbourhoods: [neighbourhood1, neighbourhood2]) }
+    let(:category1) { create(:category_tag) }
+    let(:category2) { create(:category_tag) }
+
+    let!(:partner_n1_c1) do
+      partner = create(:partner, address: create(:address, neighbourhood: neighbourhood1))
+      partner.categories << category1
+      partner
+    end
+
+    let!(:partner_n2_c2) do
+      partner = create(:partner, address: create(:address, neighbourhood: neighbourhood2))
+      partner.categories << category2
+      partner
+    end
+
+    it "shows only relevant neighbourhoods when a category is selected" do
+      render_inline(described_class.new(
+                      site: site,
+                      selected_category: category1.id.to_s,
+                      selected_neighbourhood: nil
+                    ))
+
+      expect(page).not_to have_selector("button span.filters__link", text: "Neighbourhood")
+    end
+
+    it "shows only relevant categories when a neighbourhood is selected" do
+      render_inline(described_class.new(
+                      site: site,
+                      selected_category: nil,
+                      selected_neighbourhood: neighbourhood1.id.to_s
+                    ))
+
+      expect(page).not_to have_selector("button span.filters__link", text: "Category")
+    end
   end
 end

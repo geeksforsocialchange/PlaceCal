@@ -18,62 +18,53 @@ export default class extends Controller {
 
 	submitCategory() {
 		this.updateLabels();
-		this.hideDropdown(this.categoryDropdownTarget);
+		this.toggleDropdownHidden(this.categoryDropdownTarget, true);
 		this.submitForm();
 	}
 
 	submitNeighbourhood() {
 		this.updateLabels();
-		this.hideDropdown(this.neighbourhoodDropdownTarget);
+		this.toggleDropdownHidden(this.neighbourhoodDropdownTarget, true);
 		this.submitForm();
 	}
 
 	resetCategory() {
-		this.selectedCategory.checked = false;
-		this.hideDropdown(this.categoryDropdownTarget);
+		if (this.selectedCategory) this.selectedCategory.checked = false;
+		this.toggleDropdownHidden(this.categoryDropdownTarget, true);
 		this.submitForm();
 	}
 
 	resetNeighbourhood() {
-		this.selectedNeighbourhood.checked = false;
-		this.hideDropdown(this.neighbourhoodDropdownTarget);
+		if (this.selectedNeighbourhood) this.selectedNeighbourhood.checked = false;
+		this.toggleDropdownHidden(this.neighbourhoodDropdownTarget, true);
 		this.submitForm();
 	}
 
 	toggleCategory() {
-		this.categoryDropdownTarget.classList.toggle("filters__dropdown--hidden");
-		// Close other dropdown
+		this.toggleDropdownHidden(this.categoryDropdownTarget);
 		if (this.hasNeighbourhoodDropdownTarget) {
-			this.neighbourhoodDropdownTarget.classList.add(
-				"filters__dropdown--hidden",
-			);
+			this.toggleDropdownHidden(this.neighbourhoodDropdownTarget, true);
 		}
 	}
 
 	toggleNeighbourhood() {
-		this.neighbourhoodDropdownTarget.classList.toggle(
-			"filters__dropdown--hidden",
-		);
-		// Close other dropdown
+		this.toggleDropdownHidden(this.neighbourhoodDropdownTarget);
 		if (this.hasCategoryDropdownTarget) {
-			this.categoryDropdownTarget.classList.add("filters__dropdown--hidden");
+			this.toggleDropdownHidden(this.categoryDropdownTarget, true);
 		}
 	}
 
-	hideDropdown(dropdown) {
-		if (dropdown) {
-			dropdown.classList.add("filters__dropdown--hidden");
-		}
+	toggleDropdownHidden(dropdown, hidden) {
+		if (!dropdown) return;
+		dropdown.classList.toggle("filters__dropdown--hidden", hidden);
 	}
 
 	updateLabels() {
-		// Find the associated label for each selected param and get the text contents
-		// If params are selected, they show up instead of "Category" and "Neighbourhood" text
-		if (this.hasCategoryTextTarget && this.selectedCategory) {
+		if (this.hasCategoryTextTarget && this.selectedCategory?.labels) {
 			this.categoryTextTarget.innerHTML =
 				this.selectedCategory.labels[0].textContent;
 		}
-		if (this.hasNeighbourhoodTextTarget && this.selectedNeighbourhood) {
+		if (this.hasNeighbourhoodTextTarget && this.selectedNeighbourhood?.labels) {
 			this.neighbourhoodTextTarget.innerHTML =
 				this.selectedNeighbourhood.labels[0].textContent;
 		}
