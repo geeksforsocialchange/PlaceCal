@@ -6,7 +6,15 @@
 	@include justify-content(flex-start);
 
 	font-size: $small-font-size;
-	margin: 1rem 0;
+	margin: 0.5rem 0 0;
+
+	@include for-tablet-portrait-up {
+		margin: 1rem 0 0;
+	}
+
+	~ hr {
+		margin-top: 0.25rem;
+	}
 
 	.btn {
 		border-bottom-color: var(--base-primary);
@@ -22,7 +30,7 @@
 	}
 
 	@include for-phone-only {
-		&__tagline {
+		&__element:has(.breadcrumb__tagline) {
 			display: none;
 		}
 	}
@@ -48,12 +56,17 @@
 		&--last {
 			display: flex;
 			flex-direction: row;
-			gap: 1rem;
-			justify-content: flex-end;
+			flex-wrap: wrap;
+			align-items: center;
+			gap: 0.5rem 1rem;
+			justify-content: flex-start;
 			margin-right: 0;
+			width: 100%;
 
-			@include flex(1 1 auto);
-			@include for-tablet-portrait-up {
+			@include for-desktop-up {
+				width: auto;
+				@include flex(1 1 auto);
+				justify-content: flex-end;
 				text-align: right;
 			}
 		}
@@ -62,6 +75,7 @@
 	&__filters {
 		display: flex;
 		flex-direction: row;
+		align-items: center;
 		gap: 1rem;
 		justify-content: flex-end;
 	}
