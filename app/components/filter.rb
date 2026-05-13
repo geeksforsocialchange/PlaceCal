@@ -49,7 +49,10 @@ class Components::Filter < Components::Base
         @name,
         item[:id],
         selected?(item[:id]),
-        data: { action: submit_action_value },
+        data: {
+          action: submit_action_value,
+          "#{@controller}-target": @name
+        },
         class: 'tag__button'
       )
       label_tag(

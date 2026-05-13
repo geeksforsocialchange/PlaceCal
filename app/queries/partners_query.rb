@@ -97,11 +97,11 @@ class PartnersQuery
   end
 
   def filter_by_tag(partners, tag_id)
-    partners.joins(:tags).where(tags: { id: tag_id })
+    partners.where(id: PartnerTag.where(tag_id: tag_id).select(:partner_id))
   end
 
   def filter_by_tag_slug(partners, tag_slug)
-    partners.joins(:tags).where(tags: { slug: tag_slug })
+    partners.where(id: PartnerTag.joins(:tag).where(tags: { slug: tag_slug }).select(:partner_id))
   end
 
   # ===================
