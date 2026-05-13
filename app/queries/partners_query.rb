@@ -34,24 +34,42 @@ class PartnersQuery
   # Used for filter dropdowns
   #
   # @return [Array<Hash>] array of { neighbourhood: Neighbourhood, count: Integer }
-  def neighbourhoods_with_counts
-    Neighbourhood
-      .joins(addresses: :partners)
-      .where(partners: { id: base_scope.select(:id) })
-      .group(:id, :name)
-      .order(:name)
-      .select('neighbourhoods.*, COUNT(DISTINCT partners.id) as partner_count')
-      .map { |n| { neighbourhood: n, count: n.partner_count } }
+  def neighbourhoods_with_counts(scope: nil)
+    partner_ids = (scope || base_scope).reorder(nil).select(:id)
+
+    pairs = ActiveRecord::Base.connection.select_all(<<~SQL) # rubocop:disable Rails/SquishedSQLHeredocs
+      SELECT neighbourhood_id, partner_id FROM (
+        SELECT a.neighbourhood_id, p.id AS partner_id
+        FROM partners p
+        INNER JOIN addresses a ON a.id = p.address_id
+        WHERE p.id IN (#{partner_ids.to_sql})
+          AND a.neighbourhood_id IS NOT NULL
+        UNION
+        SELECT sa.neighbourhood_id, sa.partner_id
+        FROM service_areas sa
+        WHERE sa.partner_id IN (#{partner_ids.to_sql})
+          AND sa.neighbourhood_id IS NOT NULL
+      ) AS combined
+    SQL
+
+    counts = pairs.group_by { |r| r['neighbourhood_id'] }
+                  .transform_values { |rows| rows.map { |r| r['partner_id'] }.uniq.length }
+
+    return [] if counts.empty?
+
+    Neighbourhood.where(id: counts.keys).order(:name).map do |n|
+      { neighbourhood: n, count: counts[n.id] }
+    end
   end
 
   # Returns categories/tags that have partners, with counts
   # Used for filter dropdowns
   #
   # @return [Array<Hash>] array of { category: Tag, count: Integer }
-  def categories_with_counts
+  def categories_with_counts(scope: nil)
     Tag
       .joins(:partner_tags)
-      .where(partner_tags: { partner_id: base_scope.select(:id) }, type: 'Category')
+      .where(partner_tags: { partner_id: (scope || base_scope).reorder(nil).select(:id) }, type: 'Category')
       .group(:id, :name)
       .order(:name)
       .select('tags.*, COUNT(partner_tags.partner_id) as partner_count')

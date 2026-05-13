@@ -73,7 +73,11 @@ class Components::PartnerFilter < Components::Base
   end
 
   def categories
-    @categories ||= @query.categories_with_counts
+    @categories ||= if @selected_neighbourhood.positive?
+                      @query.categories_with_counts(scope: @query.call(neighbourhood_id: @selected_neighbourhood))
+                    else
+                      @query.categories_with_counts
+                    end
   end
 
   def category_items
@@ -85,7 +89,11 @@ class Components::PartnerFilter < Components::Base
   end
 
   def neighbourhoods
-    @neighbourhoods ||= @query.neighbourhoods_with_counts
+    @neighbourhoods ||= if @selected_category.positive?
+                          @query.neighbourhoods_with_counts(scope: @query.call(tag_id: @selected_category))
+                        else
+                          @query.neighbourhoods_with_counts
+                        end
   end
 
   def neighbourhood_items
