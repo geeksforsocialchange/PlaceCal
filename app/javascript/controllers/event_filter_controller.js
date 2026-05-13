@@ -1,36 +1,45 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-	static targets = ["form", "neighbourhoodDropdown", "neighbourhoodText"];
+	static targets = [
+		"neighbourhood",
+		"neighbourhoodDropdown",
+		"neighbourhoodText",
+	];
 
 	toggleNeighbourhood() {
-		this.neighbourhoodDropdownTarget.classList.toggle(
-			"filters__dropdown--hidden",
-		);
+		this.toggleDropdownHidden(this.neighbourhoodDropdownTarget);
 	}
 
-	submitNeighbourhood(event) {
-		// Find the parent form and submit it
-		const form = event.target.closest("form");
-		if (form) {
-			form.requestSubmit();
+	submitNeighbourhood() {
+		this.updateLabel();
+		this.toggleDropdownHidden(this.neighbourhoodDropdownTarget, true);
+		const form = this.element.querySelector("form");
+		if (form) form.requestSubmit();
+	}
+
+	resetNeighbourhood() {
+		if (this.selectedNeighbourhood) this.selectedNeighbourhood.checked = false;
+		this.toggleDropdownHidden(this.neighbourhoodDropdownTarget, true);
+
+		const url = new URL(window.location.href);
+		url.searchParams.delete("neighbourhood");
+		Turbo.visit(url.toString(), { action: "advance" });
+	}
+
+	toggleDropdownHidden(dropdown, hidden) {
+		if (!dropdown) return;
+		dropdown.classList.toggle("filters__dropdown--hidden", hidden);
+	}
+
+	updateLabel() {
+		if (this.hasNeighbourhoodTextTarget && this.selectedNeighbourhood?.labels) {
+			this.neighbourhoodTextTarget.innerHTML =
+				this.selectedNeighbourhood.labels[0].textContent;
 		}
 	}
 
-	resetNeighbourhood(event) {
-		event.preventDefault();
-		// Find all neighbourhood radio buttons and uncheck them
-		const form = event.target.closest("form");
-		if (form) {
-			const radios = form.querySelectorAll('input[name="neighbourhood"]');
-			radios.forEach((radio) => (radio.checked = false));
-
-			// Remove the neighbourhood param by creating a new URL without it
-			const url = new URL(window.location.href);
-			url.searchParams.delete("neighbourhood");
-
-			// Navigate using Turbo
-			Turbo.visit(url.toString(), { action: "advance" });
-		}
+	get selectedNeighbourhood() {
+		return this.neighbourhoodTargets.find((r) => r.checked);
 	}
 }

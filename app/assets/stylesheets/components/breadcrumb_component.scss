@@ -9,7 +9,7 @@
 	margin: 0.5rem 0 0;
 
 	@include for-tablet-portrait-up {
-		margin: 1rem 0 0;
+		margin: 1rem 0;
 	}
 
 	~ hr {
@@ -48,8 +48,9 @@
 		}
 
 		svg {
-			width: 1rem;
-			height: 1rem;
+			width: 1em;
+			height: 1em;
+			flex-shrink: 0;
 			color: $base-primary;
 		}
 
