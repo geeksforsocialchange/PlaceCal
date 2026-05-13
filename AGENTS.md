@@ -7,7 +7,6 @@ This file configures AI coding assistants for PlaceCal. Review the context file 
 - **Never claim a fix worked until you've actually verified it** - Take a screenshot, look at it carefully, and compare before/after.
 - **When the user says something is wrong, believe them** - Trust the user over your assumptions.
 - **Debug properly** - If a fix doesn't work, investigate why rather than assuming it did.
-- **Do NOT use preview tools for verification** - The preview browser cannot resolve `lvh.me` subdomains, which this app requires for site-scoped routing. Use `curl` against the dev server instead, or ask the user to check in their browser.
 
 ## Development URLs
 
