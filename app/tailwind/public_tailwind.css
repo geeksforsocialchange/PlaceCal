@@ -171,7 +171,7 @@ https://tailwindcss.com/docs/theme#default-theme-variable-reference
 @layer base {
 	body {
 		/* app/assets/stylesheets/base/typography.scss */
-		@apply font-sans;
+		@apply font-sans font-regular;
 	}
 	/* app/assets/stylesheets/variables/typography.scss */
 	h1 {
