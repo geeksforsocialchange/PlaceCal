@@ -252,7 +252,7 @@ RSpec.describe CalendarDatatable do
     end
 
     context "has_events filter" do
-      before { create(:event, calendar: calendar1, summary: "Unique Event For Filters Test") }
+      before { create(:event, calendar: calendar1, organiser: partner1, summary: "Unique Event For Filters Test") }
 
       it "filters calendars with events" do
         datatable = create_datatable("filter" => { "has_events" => "yes" })
