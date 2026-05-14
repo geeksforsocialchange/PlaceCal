@@ -15,6 +15,7 @@ class Views::Partners::Show < Views::Base
   prop :paginator, _Nilable(_Boolean), reader: :private
   prop :date_period, _Nilable(String), reader: :private, default: nil
   prop :show_monthly, _Boolean, reader: :private, default: true
+  prop :containing_sites, _Nilable(_Interface(:each)), reader: :private, default: nil
 
   def view_template
     content_for(:title) { partner.name }
@@ -55,6 +56,7 @@ class Views::Partners::Show < Views::Base
         render_contact_and_address
       end
       div(class: 'gi gi__2-5') do
+        DirectoryPartnerSidebar(partner: partner, containing_sites: containing_sites) if containing_sites
         render_partner_image
         Map(points: map, site: site.slug, compact: true)
         render_opening_times

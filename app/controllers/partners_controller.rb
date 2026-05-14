@@ -2,6 +2,7 @@
 
 class PartnersController < ApplicationController
   include MapMarkers
+  include Pagy::Offset::Method
 
   before_action :set_partner, only: %i[show embed]
   before_action :set_day, only: %i[show embed]
@@ -14,22 +15,11 @@ class PartnersController < ApplicationController
   # GET /partners
   # GET /partners.json
   def index
-    @selected_category = params[:category] if params[:category].present? && Integer(params[:category], exception: false)
-    @selected_neighbourhood = params[:neighbourhood] if params[:neighbourhood].present? && Integer(params[:neighbourhood], exception: false)
-
-    query = PartnersQuery.new(site: current_site)
-    @partners = query.call(
-      neighbourhood_id: @selected_neighbourhood,
-      tag_id: @selected_category
-    )
-
-    @map = get_map_markers(@partners) if @partners.detect(&:address)
-
-    render Views::Partners::Index.new(
-      partners: @partners, site: @site,
-      map: @map, selected_category: @selected_category,
-      selected_neighbourhood: @selected_neighbourhood
-    )
+    if default_site?
+      render_directory_index
+    else
+      render_local_index
+    end
   end
 
   # GET /partners/1
@@ -69,6 +59,8 @@ class PartnersController < ApplicationController
     # Map
     @map = get_map_markers([@partner])
 
+    @containing_sites = Site.sites_that_contain_partner(@partner) if default_site?
+
     respond_to do |format|
       format.html do
         render Views::Partners::Show.new(
@@ -76,7 +68,8 @@ class PartnersController < ApplicationController
           map: @map, events: @events,
           period: @period, date_period: @date_period, sort: @sort,
           repeating: @repeating, no_event_message: @no_event_message,
-          paginator: @paginator, show_monthly: @show_monthly || false
+          paginator: @paginator, show_monthly: @show_monthly || false,
+          containing_sites: @containing_sites
         )
       end
       format.ics do
@@ -114,5 +107,49 @@ class PartnersController < ApplicationController
       else
         'All Partners'
       end
+  end
+
+  def render_directory_index
+    query = PartnersQuery.new(site: current_site)
+    partners = query.call(
+      query: params[:q],
+      tag_id: params[:category],
+      partnership_id: params[:partnership],
+      neighbourhood_id: params[:neighbourhood]
+    )
+    @pagy, @partners = pagy(partners, limit: 30)
+
+    render Views::Partners::DirectoryIndex.new(
+      partners: @partners,
+      pagy: @pagy,
+      site: @site,
+      query: params[:q],
+      total_count: Partner.visible.count,
+      categories: query.categories_with_counts.map { |c| { id: c[:category].id, name: c[:category].name, count: c[:count] } },
+      partnerships_list: query.partnerships_with_counts.map { |p| { id: p[:partnership].id, name: p[:partnership].name, count: p[:count] } },
+      neighbourhoods: query.neighbourhoods_with_counts.map { |n| { id: n[:neighbourhood].id, name: n[:neighbourhood].name, count: n[:count] } },
+      selected_category: params[:category],
+      selected_partnership: params[:partnership],
+      selected_neighbourhood: params[:neighbourhood]
+    )
+  end
+
+  def render_local_index
+    @selected_category = params[:category] if params[:category].present? && Integer(params[:category], exception: false)
+    @selected_neighbourhood = params[:neighbourhood] if params[:neighbourhood].present? && Integer(params[:neighbourhood], exception: false)
+
+    query = PartnersQuery.new(site: current_site)
+    @partners = query.call(
+      neighbourhood_id: @selected_neighbourhood,
+      tag_id: @selected_category
+    )
+
+    @map = get_map_markers(@partners) if @partners.detect(&:address)
+
+    render Views::Partners::Index.new(
+      partners: @partners, site: @site,
+      map: @map, selected_category: @selected_category,
+      selected_neighbourhood: @selected_neighbourhood
+    )
   end
 end

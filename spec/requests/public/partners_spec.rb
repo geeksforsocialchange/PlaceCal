@@ -316,12 +316,12 @@ RSpec.describe "Public Partners", type: :request do
     end
   end
 
-  describe "default site redirect" do
+  describe "default site directory" do
     let!(:default_site) { create_default_site }
 
-    it "redirects partners page on base domain" do
+    it "serves directory partners page on base domain" do
       get partners_url(host: "lvh.me")
-      expect(response).to be_redirect
+      expect(response).to be_successful
     end
   end
 end

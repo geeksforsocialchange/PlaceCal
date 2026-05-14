@@ -520,6 +520,10 @@ GEM
       racc (~> 1.4)
     orm_adapter (0.5.0)
     ostruct (0.6.3)
+    pagy (43.5.4)
+      json
+      uri
+      yaml
     paper_trail (17.0.0)
       activerecord (>= 7.1)
       request_store (~> 1.4)
@@ -815,6 +819,7 @@ GEM
     websocket-extensions (0.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
+    yaml (0.4.0)
     yard (0.9.43)
     zeitwerk (2.7.5)
 
@@ -879,6 +884,7 @@ DEPENDENCIES
   listen
   literal
   lookbook (>= 2.3.14)
+  pagy
   paper_trail
   pg
   phlex-rails (~> 2.3)
