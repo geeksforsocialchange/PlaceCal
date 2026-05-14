@@ -231,7 +231,7 @@ jobs:
         uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
+          username: ${{ github.repository_owner }}
           password: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
 
       - uses: ruby/setup-ruby@v1
@@ -250,7 +250,7 @@ jobs:
           kamal deploy -d ${{ steps.dest.outputs.destination }}
         env:
           # Kamal builds + pushes the Docker image to GHCR, then deploys to server
-          KAMAL_REGISTRY_USERNAME: ${{ github.actor }}
+          KAMAL_REGISTRY_USERNAME: ${{ github.repository_owner }}
           KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
           # Server host (destination files use ERB to read these)
           STAGING_HOST: ${{ steps.dest.outputs.destination == 'staging' && secrets.STAGING_HOST || '' }}
