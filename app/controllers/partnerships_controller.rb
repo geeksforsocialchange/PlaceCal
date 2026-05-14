@@ -9,7 +9,7 @@ class PartnershipsController < ApplicationController
                         .where.not(slug: 'default-site')
                         .order(partners_count: :desc)
 
-    render Views::Partnerships::Index.new(partnerships: @partnerships, site: @site)
+    render Views::Partnerships::Index.new(partnerships: @partnerships, site: @site, query: params[:q])
   end
 
   def show

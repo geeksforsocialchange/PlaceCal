@@ -12,7 +12,7 @@ class Views::Partnerships::Show < Views::Base
 
     Hero(@partnership.name, 'Partnership')
 
-    div(class: 'c') do
+    div(class: 'max-w-[1240px] mx-auto px-6') do
       render_description if @partnership.description.present?
       render_stats
       render_partners
@@ -25,12 +25,12 @@ class Views::Partnerships::Show < Views::Base
 
   def render_description
     div(class: 'py-6') do
-      p { @partnership.description }
+      p(class: 'text-lg leading-relaxed text-foreground') { @partnership.description }
     end
   end
 
   def render_stats
-    div(class: 'flex gap-4 flex-wrap py-4') do
+    div(class: 'flex gap-3 flex-wrap py-4') do
       stat_chip("#{partner_count} partners")
       stat_chip("#{event_count} upcoming events")
       stat_chip(@partnership.primary_neighbourhood.name) if @partnership.primary_neighbourhood
@@ -45,26 +45,20 @@ class Views::Partnerships::Show < Views::Base
 
   def render_partners
     div(class: 'py-6') do
-      h2 { 'Partners' }
-      if @partners.respond_to?(:each_pair)
-        @partners.each_value do |group|
-          Array(group).each { |partner| render_partner(partner) }
+      h2(class: 'font-serif text-2xl text-foreground mb-4') { 'Partners' }
+      div(class: 'flex flex-col') do
+        partner_list.each do |partner|
+          DirectoryPartnerCard(partner: partner, site: @partnership)
         end
-      else
-        @partners.each { |partner| render_partner(partner) }
       end
     end
-  end
-
-  def render_partner(partner)
-    PartnerPreview(partner: partner, site: @partnership)
   end
 
   def render_events
     return if flat_events.empty?
 
     div(class: 'py-6') do
-      h2 { 'Upcoming events' }
+      h2(class: 'font-serif text-2xl text-foreground mb-4') { 'Upcoming events' }
       flat_events.first(10).each do |event|
         DirectoryEventRow(event: event)
       end
@@ -74,23 +68,27 @@ class Views::Partnerships::Show < Views::Base
   def render_visit_link
     div(class: 'py-6') do
       a(href: "https://#{@partnership.slug}.placecal.org",
-        class: 'inline-flex items-center gap-2 bg-primary text-foreground font-bold rounded-full px-5 py-2.5 no-underline hover:bg-primary-light transition-colors') do
+        class: 'inline-flex items-center gap-2 bg-foreground text-background font-bold rounded-full px-5 py-2.5 no-underline hover:bg-tertiary transition-colors') do
         plain "Visit #{@partnership.slug}.placecal.org"
         span { safe('&rarr;') }
       end
     end
   end
 
+  def partner_list
+    @partner_list ||= if @partners.respond_to?(:each_pair)
+                        @partners.values.flatten
+                      else
+                        Array(@partners)
+                      end
+  end
+
   def partner_count
-    if @partners.respond_to?(:count)
-      @partners.respond_to?(:each_pair) ? @partners.values.flatten.count : @partners.count
-    else
-      0
-    end
+    partner_list.size
   end
 
   def event_count
-    flat_events.count
+    flat_events.size
   end
 
   def flat_events

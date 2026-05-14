@@ -12,37 +12,10 @@ class EventsController < ApplicationController
   # GET /events
   # GET /events.json
   def index
-    @repeating = params[:repeating] || 'on'
-    @sort = params[:sort] || 'time'
-    @selected_neighbourhood = params[:neighbourhood] if params[:neighbourhood].present? && Integer(params[:neighbourhood], exception: false)
-    @query = EventsQuery.new(site: current_site, day: @current_day)
-    @period = params[:period] || default_period
-
-    @events = @query.call(
-      period: @period,
-      repeating: @repeating,
-      sort: @sort,
-      neighbourhood_id: @selected_neighbourhood
-    )
-    @truncated = @query.truncated
-    @next_date = @query.next_event_after(@current_day)
-    @show_monthly = @query.show_monthly?
-    respond_to do |format|
-      format.html do
-        if params[:simple].present?
-          render Views::Events::IndexSimple.new(events: @events), layout: false
-        else
-          render Views::Events::Index.new(
-            events: @events, period: @period, sort: @sort, repeating: @repeating,
-            current_day: @current_day, site: @site,
-            selected_neighbourhood: @selected_neighbourhood,
-            next_date: @next_date, truncated: @truncated,
-            show_monthly: @show_monthly
-          )
-        end
-      end
-      format.text { render Views::Events::IndexText.new(events: @events), layout: false }
-      format.ics { render_ical }
+    if default_site? && request.format.html? && params[:simple].blank?
+      render_directory_index
+    else
+      render_local_index
     end
   end
 
@@ -89,6 +62,81 @@ class EventsController < ApplicationController
 
     week_count = @query.next_7_days_count
     week_count > 20 ? 'day' : 'week'
+  end
+
+  def render_directory_index
+    @period = params[:period] || 'week'
+    event_site = resolve_partnership_site || current_site
+    query = EventsQuery.new(site: event_site, day: @current_day)
+
+    @events = query.call(period: @period, sort: 'time')
+    @events = filter_events_by_query(@events, params[:q]) if params[:q].present?
+
+    partnerships = Site.where(is_published: true)
+                       .where.not(slug: 'default-site')
+                       .order(:name)
+                       .pluck(:slug, :name)
+                       .map { |slug, name| { slug: slug, name: name } }
+
+    render Views::Events::DirectoryIndex.new(
+      events: @events,
+      site: @site,
+      period: @period,
+      current_day: @current_day,
+      total_count: EventsQuery.new(site: current_site, day: @current_day).count_for_period('future'),
+      partnerships_list: partnerships,
+      selected_partnership: params[:partnership],
+      query: params[:q]
+    )
+  end
+
+  def render_local_index
+    @repeating = params[:repeating] || 'on'
+    @sort = params[:sort] || 'time'
+    @selected_neighbourhood = params[:neighbourhood] if params[:neighbourhood].present? && Integer(params[:neighbourhood], exception: false)
+    @query = EventsQuery.new(site: current_site, day: @current_day)
+    @period = params[:period] || default_period
+
+    @events = @query.call(
+      period: @period,
+      repeating: @repeating,
+      sort: @sort,
+      neighbourhood_id: @selected_neighbourhood
+    )
+    @truncated = @query.truncated
+    @next_date = @query.next_event_after(@current_day)
+    @show_monthly = @query.show_monthly?
+    respond_to do |format|
+      format.html do
+        if params[:simple].present?
+          render Views::Events::IndexSimple.new(events: @events), layout: false
+        else
+          render Views::Events::Index.new(
+            events: @events, period: @period, sort: @sort, repeating: @repeating,
+            current_day: @current_day, site: @site,
+            selected_neighbourhood: @selected_neighbourhood,
+            next_date: @next_date, truncated: @truncated,
+            show_monthly: @show_monthly
+          )
+        end
+      end
+      format.text { render Views::Events::IndexText.new(events: @events), layout: false }
+      format.ics { render_ical }
+    end
+  end
+
+  def resolve_partnership_site
+    return if params[:partnership].blank?
+
+    Site.find_by(slug: params[:partnership], is_published: true)
+  end
+
+  def filter_events_by_query(grouped_events, query)
+    q = query.downcase
+    grouped_events.each_with_object({}) do |(date, day_events), result|
+      filtered = day_events.select { |e| e.summary&.downcase&.include?(q) }
+      result[date] = filtered if filtered.any?
+    end
   end
 
   def render_ical
