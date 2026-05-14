@@ -21,12 +21,16 @@ class PartnersQuery
   # @param neighbourhood_id [Integer] filter by neighbourhood (address or service area)
   # @param tag_id [Integer] filter by tag/category
   # @param tag_slug [String] filter by tag slug (e.g. 'computers', 'wifi')
+  # @param partnership_id [Integer] filter by partnership (Site) tag
+  # @param query [String] keyword search on name/summary
   # @return [ActiveRecord::Relation<Partner>]
-  def call(neighbourhood_id: nil, tag_id: nil, tag_slug: nil)
+  def call(neighbourhood_id: nil, tag_id: nil, tag_slug: nil, partnership_id: nil, query: nil)
     partners = base_scope
     partners = filter_by_neighbourhood(partners, neighbourhood_id) if neighbourhood_id.present?
     partners = filter_by_tag(partners, tag_id) if tag_id.present?
     partners = filter_by_tag_slug(partners, tag_slug) if tag_slug.present?
+    partners = filter_by_partnership(partners, partnership_id) if partnership_id.present?
+    partners = filter_by_query(partners, query) if query.present?
     partners.includes(:address, :service_areas).order(:name)
   end
 
@@ -62,6 +66,20 @@ class PartnersQuery
     end
   end
 
+  # Returns partnerships that have partners, with counts
+  # Used for filter dropdowns on the directory site
+  #
+  # @return [Array<Hash>] array of { partnership: Partnership, count: Integer }
+  def partnerships_with_counts(scope: nil)
+    Tag
+      .joins(:partner_tags)
+      .where(partner_tags: { partner_id: (scope || base_scope).reorder(nil).select(:id) }, type: 'Partnership')
+      .group(:id, :name)
+      .order(:name)
+      .select('tags.*, COUNT(partner_tags.partner_id) as partner_count')
+      .map { |tag| { partnership: tag, count: tag.partner_count } }
+  end
+
   # Returns categories/tags that have partners, with counts
   # Used for filter dropdowns
   #
@@ -90,6 +108,7 @@ class PartnersQuery
   end
 
   def build_base_scope
+    return Partner.visible if @site&.directory_site?
     return Partner.none if site_neighbourhood_ids.empty?
 
     scope = Partner.visible
@@ -120,6 +139,14 @@ class PartnersQuery
 
   def filter_by_tag_slug(partners, tag_slug)
     partners.where(id: PartnerTag.joins(:tag).where(tags: { slug: tag_slug }).select(:partner_id))
+  end
+
+  def filter_by_partnership(partners, partnership_id)
+    partners.where(id: PartnerTag.where(tag_id: partnership_id).select(:partner_id))
+  end
+
+  def filter_by_query(partners, query)
+    partners.where('partners.name ILIKE :q OR partners.summary ILIKE :q', q: "%#{query}%")
   end
 
   # ===================

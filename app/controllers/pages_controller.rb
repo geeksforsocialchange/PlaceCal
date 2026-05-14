@@ -5,10 +5,14 @@ class PagesController < ApplicationController
   before_action :set_site
 
   def home
-    @neighbourhoods = Site.published.select do |site|
-      site.tags.none? { |tag| tag.type == 'Partnership' }
+    if default_site?
+      render_directory_home
+    else
+      @neighbourhoods = Site.published.select do |site|
+        site.tags.none? { |tag| tag.type == 'Partnership' }
+      end
+      render Views::Pages::Home.new(neighbourhoods: @neighbourhoods)
     end
-    render Views::Pages::Home.new(neighbourhoods: @neighbourhoods)
   end
 
   def find_placecal
@@ -64,5 +68,29 @@ class PagesController < ApplicationController
       # Admin subdomain or no site found - disallow all indexing
       render plain: "User-agent: *\nDisallow: /"
     end
+  end
+
+  private
+
+  def render_directory_home
+    @partnerships = Site.where(is_published: true)
+                        .where.not(slug: 'default-site')
+                        .order(partners_count: :desc)
+                        .limit(6)
+    @recent_partners = Partner.visible.order(created_at: :desc).limit(5)
+    @upcoming_events = EventsQuery.new(site: @site).call(period: 'upcoming')
+    @stats = {
+      partnerships: Site.where(is_published: true).where.not(slug: 'default-site').count,
+      partners: Partner.visible.count,
+      events: Event.future(Time.zone.today).count,
+      neighbourhoods: Neighbourhood.districts.count
+    }
+
+    render Views::Pages::DirectoryHome.new(
+      partnerships: @partnerships,
+      recent_partners: @recent_partners,
+      upcoming_events: @upcoming_events,
+      stats: @stats
+    )
   end
 end

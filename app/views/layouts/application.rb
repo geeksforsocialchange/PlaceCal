@@ -34,7 +34,7 @@ class Views::Layouts::Application < Phlex::HTML
         div(class: [
               'page',
               *(if site&.default_site?
-                  ['max-w-home bg-foreground border-none mx-auto']
+                  ['max-w-home bg-background border-none mx-auto']
                 else
                   [
                     'max-w-xl bg-background mx-auto',

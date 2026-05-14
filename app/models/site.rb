@@ -117,6 +117,8 @@ class Site < ApplicationRecord
     slug == 'default-site'
   end
 
+  alias directory_site? default_site?
+
   # @return [Boolean] true for any non-default site
   def local_site?
     !default_site?
@@ -175,7 +177,7 @@ class Site < ApplicationRecord
 
   # @return [String] Sprockets stylesheet path for this site's theme
   def stylesheet_link
-    return 'home' if default_site?
+    return nil if default_site?
 
     if theme == :custom
       "themes/custom/#{slug}"

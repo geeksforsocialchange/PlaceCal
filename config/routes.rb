@@ -88,6 +88,7 @@ Rails.application.routes.draw do
 
   # Partners
   resources :partners, only: %i[index show]
+  resources :partnerships, only: %i[index show]
   get '/partners/:id/events' => 'partners#show'
   get '/partners/:id/events/:year/:month/:day' => 'partners#show', constraints: ymd
   get '/places' => 'partners#index' # Removing separate Places view for now.

@@ -11,7 +11,7 @@ class Components::Navigation < Components::Base
              'header grid grid-cols-[1fr_auto] items-center',
              *(
               if @site&.default_site?
-                ['header__default mx-3 py-6 md:mx-6']
+                ['header__default mx-3 py-6 md:mx-6 bg-foreground']
               else
                 ['header__partner mx-4 pt-4', 'lg:py-4 lg:mx-12 lg:py-6']
               end
@@ -134,6 +134,14 @@ class Components::Navigation < Components::Base
         # FIXME: turbolinks was unset on the first navigation item. assuming that turbolinks means `preload on hover`, it does that on all nav links regardless of the setting
         @navigation.each do |link_text, link_path|
           li(class: li_css_class) { active_link_to(link_text, link_path, data: { turbolinks: false }, base_css_class: a_css_class, active_css_class: a_active_css_class) }
+        end
+        if @site&.default_site?
+          li(class: 'text-center max-md:py-3') do
+            a(href: 'https://join.placecal.org', class: 'inline-flex items-center gap-1 rounded-full bg-secondary px-4 py-1.5 text-sm font-bold text-foreground no-underline hover:brightness-110 transition-all') do
+              plain 'Join us'
+              span(class: 'text-lg leading-none') { safe('&rarr;') }
+            end
+          end
         end
       end
     end
