@@ -127,7 +127,7 @@ class Views::Events::DirectoryIndex < Views::Base
       if count.zero?
         plain "No events #{period_label}"
       else
-        plain "#{count} events #{period_label}"
+        plain "#{count} #{'event'.pluralize(count)} #{period_label}"
       end
     end
   end

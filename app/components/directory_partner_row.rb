@@ -40,7 +40,7 @@ class Components::DirectoryPartnerRow < Components::Base
 
     div(class: 'text-right') do
       span(class: 'inline-flex items-center bg-primary-light text-foreground text-[0.72rem] font-bold rounded-full px-2.5 py-0.5') do
-        plain "#{count} events"
+        plain "#{count} #{'event'.pluralize(count)}"
       end
     end
   end

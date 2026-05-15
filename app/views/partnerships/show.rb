@@ -31,8 +31,8 @@ class Views::Partnerships::Show < Views::Base
 
   def render_stats
     div(class: 'flex gap-3 flex-wrap py-4') do
-      stat_chip("#{partner_count} partners")
-      stat_chip("#{event_count} upcoming events")
+      stat_chip("#{partner_count} #{'partner'.pluralize(partner_count)}")
+      stat_chip("#{event_count} upcoming #{'event'.pluralize(event_count)}")
       stat_chip(@partnership.primary_neighbourhood.name) if @partnership.primary_neighbourhood
     end
   end

@@ -36,7 +36,7 @@ class Components::DirectoryPartnershipCard < Components::Base
           end
         end
         span(class: 'inline-flex items-center gap-1 bg-primary-light text-foreground text-[0.72rem] font-bold rounded-full px-2.5 py-0.5') do
-          plain "#{@partnership.partners_count} partners"
+          plain "#{@partnership.partners_count} #{'partner'.pluralize(@partnership.partners_count)}"
         end
       end
       p(class: 'text-[0.88rem] leading-relaxed text-tertiary line-clamp-3') { @partnership.description } if @partnership.description.present?
