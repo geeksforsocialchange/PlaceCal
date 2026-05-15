@@ -9,6 +9,7 @@ class Views::Partnerships::Show < Views::Base
 
   def view_template
     content_for(:title) { @partnership.name }
+    content_for(:description) { @partnership.description.presence || "#{@partnership.name} — a PlaceCal partnership bringing together community partners and events." }
 
     Hero(@partnership.name, 'Partnership')
 

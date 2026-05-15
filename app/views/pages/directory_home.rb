@@ -8,6 +8,8 @@ class Views::Pages::DirectoryHome < Views::Base
   prop :stats, Hash
 
   def view_template
+    content_for(:description) { 'Find community groups, venues and events near you. PlaceCal aggregates thousands of events from hundreds of local organisations across the UK.' }
+
     DirectoryHero(
       title: 'Find community groups, venues and events near you.',
       subtitle: 'PlaceCal aggregates thousands of events and activities from hundreds of local community organisations across the UK. This is the directory for all of it — search by place, by interest, or browse the map.',

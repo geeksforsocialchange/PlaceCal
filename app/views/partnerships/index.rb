@@ -8,6 +8,7 @@ class Views::Partnerships::Index < Views::Base
 
   def view_template
     content_for(:title) { 'Partnerships' }
+    content_for(:description) { "Explore #{partnership_list.size} community hubs running on PlaceCal. Each partnership brings together local partners and events in one place." }
 
     Hero('Partnerships', "#{partnership_list.size} community hubs running on PlaceCal")
 

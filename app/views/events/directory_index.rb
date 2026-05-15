@@ -15,6 +15,7 @@ class Views::Events::DirectoryIndex < Views::Base
 
   def view_template
     content_for(:title) { 'Events' }
+    content_for(:description) { "Discover #{@total_count} upcoming events and activities from community organisations across the UK on PlaceCal." }
 
     Hero('Events & Activities', kicker_text)
 

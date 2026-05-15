@@ -16,6 +16,7 @@ class Views::Partners::DirectoryIndex < Views::Base
 
   def view_template
     content_for(:title) { 'Partners' }
+    content_for(:description) { "Browse #{@total_count} community partners across the UK on PlaceCal. Search by name, category, partnership or neighbourhood." }
 
     Hero('Partners', kicker_text)
 
