@@ -82,12 +82,10 @@ class Components::Navigation < Components::Base
     end
   end
 
+  # TODO: Change to join.placecal.org once the join flow is live
   def render_join_button
     li(class: 'text-center max-md:py-3') do
-      a(href: 'https://join.placecal.org', class: 'inline-flex items-center gap-1 rounded-full bg-secondary px-4 py-1.5 text-sm font-bold text-foreground no-underline hover:brightness-110 transition-all') do
-        plain 'Join us'
-        span(class: 'text-lg leading-none') { safe('&rarr;') }
-      end
+      link_to('Join us', get_in_touch_path, class: 'inline-flex items-center rounded-full bg-secondary px-4 py-1.5 text-sm font-bold text-foreground no-underline hover:brightness-110 transition-all')
     end
   end
 
