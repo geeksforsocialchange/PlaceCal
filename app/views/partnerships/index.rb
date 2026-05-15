@@ -11,7 +11,7 @@ class Views::Partnerships::Index < Views::Base
 
     Hero('Partnerships', "#{partnership_list.size} community hubs running on PlaceCal")
 
-    div(class: 'max-w-[1240px] mx-auto px-6 py-6') do
+    div(class: 'container-public py-6') do
       render_search
       div(class: 'grid md:grid-cols-2 lg:grid-cols-3 gap-4') do
         filtered_partnerships.each do |partnership|

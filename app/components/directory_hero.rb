@@ -8,7 +8,7 @@ class Components::DirectoryHero < Components::Base
 
   def view_template
     section(class: 'bg-foreground text-background py-10 lg:py-14') do
-      div(class: 'max-w-[1240px] mx-auto px-6') do
+      div(class: 'container-public') do
         div(class: 'lg:grid lg:grid-cols-[1.1fr_1fr] lg:gap-10 lg:items-center') do
           render_content
           render_map_placeholder

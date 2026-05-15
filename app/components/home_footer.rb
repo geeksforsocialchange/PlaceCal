@@ -13,7 +13,7 @@ class Components::HomeFooter < Components::Base
   private
 
   def render_grid
-    div(class: 'max-w-[1240px] mx-auto px-6 grid grid-cols-1 md:grid-cols-[1.4fr_1fr_1fr_1fr] gap-8') do
+    div(class: 'container-public grid grid-cols-1 md:grid-cols-[1.4fr_1fr_1fr_1fr] gap-8') do
       render_brand_column
       render_link_column('Browse', [
                            ['Events', :events_path],
@@ -58,7 +58,7 @@ class Components::HomeFooter < Components::Base
   end
 
   def render_impressum
-    div(class: 'max-w-[1240px] mx-auto px-6 mt-6 pt-5 border-t-2 border-rules text-[0.78rem] text-tertiary font-serif flex justify-between flex-wrap gap-2',
+    div(class: 'container-public mt-6 pt-5 border-t-2 border-rules text-[0.78rem] text-tertiary font-serif flex justify-between flex-wrap gap-2',
         data_nosnippet: true) do
       span { "#{t('colophon.year', year: Time.zone.today.year)} #{t('colophon.copyright')}" }
       span do

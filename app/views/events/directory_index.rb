@@ -18,7 +18,7 @@ class Views::Events::DirectoryIndex < Views::Base
 
     Hero('Events & Activities', kicker_text)
 
-    div(class: 'max-w-[1240px] mx-auto px-6 py-6') do
+    div(class: 'container-public py-6') do
       render_filters
       render_period_tabs
       render_results_header

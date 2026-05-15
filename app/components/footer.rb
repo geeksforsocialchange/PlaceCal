@@ -7,7 +7,7 @@ class Components::Footer < Components::Base
 
   def view_template
     footer(class: 'footer') do
-      div(class: 'c') do
+      div(class: 'container-public') do
         div(class: footer_inner_class) { render_footer_content }
       end
     end

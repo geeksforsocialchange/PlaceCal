@@ -22,7 +22,7 @@ class Components::Event < Components::Base
   def render_page_layout
     Hero(summary, @site_tagline)
     a(class: 'p-name u-url', href: event_path(id), hidden: true) { summary }
-    div(class: 'c') { render_event_details }
+    div(class: 'container-public') { render_event_details }
   end
 
   def render_list_layout

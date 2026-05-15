@@ -16,7 +16,7 @@ class Components::Meta < Components::Base
     yield self if block_given?
 
     div(class: 'meta small') do
-      div(class: 'c') do
+      div(class: 'container-public') do
         raw(view_context.capture(&@link_content)) if @link_content
         if @permalink
           div(class: 'meta__permalink') do

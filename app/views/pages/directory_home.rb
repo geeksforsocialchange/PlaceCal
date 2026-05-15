@@ -30,7 +30,7 @@ class Views::Pages::DirectoryHome < Views::Base
 
   def render_partnerships_section
     section(class: 'py-10') do
-      div(class: 'max-w-[1240px] mx-auto px-6') do
+      div(class: 'container-public') do
         div(class: 'flex justify-between items-baseline mb-5 flex-wrap gap-2') do
           div do
             div(class: 'text-[0.72rem] font-extra-bold uppercase tracking-wide text-tertiary mb-1') { 'Partnerships' }
@@ -53,7 +53,7 @@ class Views::Pages::DirectoryHome < Views::Base
 
   def render_activity_section
     section(class: 'py-10 bg-home-background') do
-      div(class: 'max-w-[1240px] mx-auto px-6') do
+      div(class: 'container-public') do
         div(class: 'grid lg:grid-cols-2 gap-8') do
           render_recent_partners
           render_upcoming_events
@@ -102,7 +102,7 @@ class Views::Pages::DirectoryHome < Views::Base
 
   def render_cta_section
     section(class: 'py-10') do
-      div(class: 'max-w-[1240px] mx-auto px-6 grid md:grid-cols-2 gap-4') do
+      div(class: 'container-public grid md:grid-cols-2 gap-4') do
         render_cta_card(
           heading: 'What is PlaceCal?',
           body: 'PlaceCal is an online calendar which lists events and activities by and for members of local communities, curated around interests and locality.',

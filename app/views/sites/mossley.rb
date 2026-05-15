@@ -22,7 +22,7 @@ class Views::Sites::Mossley < Views::Base
     end
 
     section(class: 'region region__title--mossley') do
-      div(class: 'c c--narrowish') do
+      div(class: 'container-narrowish') do
         h1 { 'Marvellous Mossley celebrates our town and lets people know about all the community activity happening here.' }
       end
     end
@@ -30,7 +30,7 @@ class Views::Sites::Mossley < Views::Base
 
   def render_mission
     section(class: 'region region__mission') do
-      div(class: 'c c--narrow') do
+      div(class: 'container-narrow') do
         p { 'There are around 40 groups, mostly volunteer led, offering an amazing amount of activities at a variety of locations in our little town. Marvellous Mossley is a platform to bring all of this together in one place through this website and also the printed Mossley Missive.' }
         p { 'We coordinate an annual celebration event and the great Mossley Mammoth Hunt along with other initiatives such as the Marvellous Mossley Pebble Dash. The project relies on ongoing grant funding to continue.' }
         p do
@@ -50,7 +50,7 @@ class Views::Sites::Mossley < Views::Base
       div(class: 'title-strip') do
         h2(class: 'h2--alt') { 'About Us' }
       end
-      div(class: 'c c--narrow first-ele-h3') do
+      div(class: 'container-narrow first-ele-h3') do
         p { "If you're a local organisation and want to join our network, get in touch below." }
         p { 'We provide training and support to help you publish your events and promote your activities.' }
         raw safe(site.description_html.to_s)
@@ -61,7 +61,7 @@ class Views::Sites::Mossley < Views::Base
 
   def render_support
     section(class: 'region region__support') do
-      div(class: 'c') do
+      div(class: 'container-public') do
         div(class: 'g') do
           div(class: 'gi gi__1-3') do
             HelpCard(variant: :adding_events, site: site)

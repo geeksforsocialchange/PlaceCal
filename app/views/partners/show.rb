@@ -30,7 +30,7 @@ class Views::Partners::Show < Views::Base
     div do
       Hero(partner.name, site.tagline)
 
-      div(class: 'c c--lg-space-after') do
+      div(class: 'container-public mb-32') do
         Breadcrumb(
           trail: [['Partners', partners_path], [partner.name, partner_path(partner)]],
           site_name: site.name

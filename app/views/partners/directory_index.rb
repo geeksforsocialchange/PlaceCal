@@ -19,7 +19,7 @@ class Views::Partners::DirectoryIndex < Views::Base
 
     Hero('Partners', kicker_text)
 
-    div(class: 'max-w-[1240px] mx-auto px-6 py-6') do
+    div(class: 'container-public py-6') do
       DirectoryPartnerFilter(
         query: @query,
         categories: @categories,

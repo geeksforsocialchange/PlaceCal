@@ -12,7 +12,7 @@ class Views::Partnerships::Show < Views::Base
 
     Hero(@partnership.name, 'Partnership')
 
-    div(class: 'max-w-[1240px] mx-auto px-6') do
+    div(class: 'container-public') do
       render_description if @partnership.description.present?
       render_stats
       render_partners
