@@ -29,6 +29,6 @@ class Components::DirectoryPageHero < Components::Base
   end
 
   def render_kicker
-    p(class: 'text-[0.72rem] font-extra-bold uppercase tracking-wide text-secondary mb-1') { @kicker }
+    p(class: 'text-[0.72rem] font-extra-bold uppercase tracking-wide text-foreground/80 mb-1') { @kicker }
   end
 end
