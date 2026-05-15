@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# TODO(#3163): Move to app/directory/components/directory_hero.rb
-class Components::DirectoryHero < Components::Base
+class Components::Directory::Hero < Components::Directory::Base
   prop :title, String
   prop :subtitle, _Nilable(String), default: nil
   prop :search_path, _Nilable(String), default: nil

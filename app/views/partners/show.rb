@@ -56,7 +56,7 @@ class Views::Partners::Show < Views::Base
         render_contact_and_address
       end
       div(class: 'gi gi__2-5') do
-        DirectoryPartnerSidebar(partner: partner, containing_sites: containing_sites) if containing_sites
+        Directory::PartnerSidebar(partner: partner, containing_sites: containing_sites) if containing_sites
         render_partner_image
         Map(points: map, site: site.slug, compact: true)
         render_opening_times

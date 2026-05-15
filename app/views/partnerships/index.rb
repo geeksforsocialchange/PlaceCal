@@ -11,7 +11,7 @@ class Views::Partnerships::Index < Views::Base
     content_for(:title) { 'Partnerships' }
     content_for(:description) { "Explore #{partnership_list.size} partnerships serving #{@total_partners} partners on PlaceCal." }
 
-    DirectoryPageHero(
+    Directory::PageHero(
       title: 'Partnerships on PlaceCal',
       kicker: "#{partnership_list.size} partnerships · serving #{@total_partners} partners",
       subtitle: 'A partnership is a group of community organisations working together on a local PlaceCal site. Each has its own subdomain with a hyperlocal version of the calendar.',
@@ -22,7 +22,7 @@ class Views::Partnerships::Index < Views::Base
       render_search
       div(class: 'grid md:grid-cols-2 lg:grid-cols-3 gap-4') do
         filtered_partnerships.each do |partnership|
-          DirectoryPartnershipCard(partnership: partnership)
+          Directory::PartnershipCard(partnership: partnership)
         end
       end
       render_empty_state if filtered_partnerships.empty?

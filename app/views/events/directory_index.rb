@@ -17,7 +17,7 @@ class Views::Events::DirectoryIndex < Views::Base
     content_for(:title) { 'Events' }
     content_for(:description) { "Discover #{@total_count} upcoming events and activities from community organisations across the UK on PlaceCal." }
 
-    DirectoryPageHero(
+    Directory::PageHero(
       title: 'Events on PlaceCal',
       kicker: kicker_text,
       subtitle: 'A nationwide event feed is a lot. Narrow down by place, interest, or partnership to see what\'s coming up near you.',
@@ -154,7 +154,7 @@ class Views::Events::DirectoryIndex < Views::Base
         plain date.strftime('%A, %-d %B %Y')
       end
       day_events.each do |event|
-        DirectoryEventRow(event: event)
+        Directory::EventRow(event: event)
       end
     end
   end

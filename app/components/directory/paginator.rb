@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# TODO(#3163): Move to app/directory/components/directory_paginator.rb
-class Components::DirectoryPaginator < Components::Base
+class Components::Directory::Paginator < Components::Directory::Base
   prop :pagy, Pagy::Offset
 
   def view_template

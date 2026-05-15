@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# TODO(#3163): Move to app/directory/components/az_jump_bar.rb
-class Components::AzJumpBar < Components::Base
+class Components::Directory::AzJumpBar < Components::Directory::Base
   LETTERS = ('A'..'Z').to_a.freeze
 
   prop :active_letters, _Interface(:include?), default: -> { Set.new }

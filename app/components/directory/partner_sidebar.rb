@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# TODO(#3163): Move to app/directory/components/directory_partner_sidebar.rb
-class Components::DirectoryPartnerSidebar < Components::Base
+class Components::Directory::PartnerSidebar < Components::Directory::Base
   prop :partner, ::Partner
   prop :containing_sites, _Interface(:each), default: -> { [] }
 

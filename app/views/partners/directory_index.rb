@@ -18,7 +18,7 @@ class Views::Partners::DirectoryIndex < Views::Base
     content_for(:title) { 'Partners' }
     content_for(:description) { "Browse #{@total_count} community partners across the UK on PlaceCal. Search by name, category, partnership or neighbourhood." }
 
-    DirectoryPageHero(
+    Directory::PageHero(
       title: 'All partners on PlaceCal',
       kicker: kicker_text,
       subtitle: 'Every community group, venue, library and organisation publishing their events on PlaceCal, UK-wide.',
@@ -26,7 +26,7 @@ class Views::Partners::DirectoryIndex < Views::Base
     )
 
     div(class: 'container-public py-6') do
-      DirectoryPartnerFilter(
+      Directory::PartnerFilter(
         query: @query,
         categories: @categories,
         partnerships_list: @partnerships_list,
@@ -37,9 +37,9 @@ class Views::Partners::DirectoryIndex < Views::Base
       )
 
       render_results_header
-      AzJumpBar(active_letters: active_letters)
+      Directory::AzJumpBar(active_letters: active_letters)
       render_partner_list
-      DirectoryPaginator(pagy: @pagy)
+      Directory::Paginator(pagy: @pagy)
     end
   end
 
@@ -74,7 +74,7 @@ class Views::Partners::DirectoryIndex < Views::Base
         h3(id: "letter-#{letter}",
            class: 'font-serif text-xl text-foreground mt-6 mb-2 pt-2 border-t-2 border-rules') { letter }
       end
-      DirectoryPartnerCard(partner: partner, site: @site)
+      Directory::PartnerCard(partner: partner, site: @site)
     end
 
     return unless partner_list.none?

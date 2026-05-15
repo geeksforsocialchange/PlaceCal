@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# TODO(#3163): Move to app/directory/components/directory_partner_row.rb
-class Components::DirectoryPartnerRow < Components::Base
+class Components::Directory::PartnerRow < Components::Directory::Base
   prop :partner, ::Partner
 
   def view_template

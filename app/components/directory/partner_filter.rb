@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# TODO(#3163): Move to app/directory/components/directory_partner_filter.rb
-class Components::DirectoryPartnerFilter < Components::Base
+class Components::Directory::PartnerFilter < Components::Directory::Base
   include Phlex::Rails::Helpers::FormWith
 
   prop :query, _Nilable(String), default: nil

@@ -10,18 +10,18 @@ class Views::Pages::DirectoryHome < Views::Base
   def view_template
     content_for(:description) { 'Find community groups, venues and events near you. PlaceCal aggregates thousands of events from hundreds of local organisations across the UK.' }
 
-    DirectoryHero(
+    Directory::Hero(
       title: 'Find community groups, venues and events near you.',
       subtitle: 'PlaceCal aggregates thousands of events and activities from hundreds of local community organisations across the UK. This is the directory for all of it — search by place, by interest, or browse the map.',
       search_path: partners_path
     )
 
-    StatsStrip(stats: [
-                 { value: @stats[:partnerships], label: 'Partnerships' },
-                 { value: @stats[:partners], label: 'Partners' },
-                 { value: @stats[:events], label: 'Upcoming events' },
-                 { value: @stats[:neighbourhoods], label: 'Neighbourhoods' }
-               ])
+    Directory::StatsStrip(stats: [
+                            { value: @stats[:partnerships], label: 'Partnerships' },
+                            { value: @stats[:partners], label: 'Partners' },
+                            { value: @stats[:events], label: 'Upcoming events' },
+                            { value: @stats[:neighbourhoods], label: 'Neighbourhoods' }
+                          ])
 
     render_partnerships_section
     render_activity_section
@@ -46,7 +46,7 @@ class Views::Pages::DirectoryHome < Views::Base
         end
         div(class: 'grid md:grid-cols-2 lg:grid-cols-3 gap-4') do
           @partnerships.first(6).each do |partnership|
-            DirectoryPartnershipCard(partnership: partnership)
+            Directory::PartnershipCard(partnership: partnership)
           end
         end
       end
@@ -70,7 +70,7 @@ class Views::Pages::DirectoryHome < Views::Base
       h2(class: 'font-serif font-regular text-[1.8rem] text-foreground mb-4') { 'Recently joined PlaceCal' }
       div(class: 'flex flex-col gap-2') do
         @recent_partners.first(5).each do |partner|
-          DirectoryPartnerRow(partner: partner)
+          Directory::PartnerRow(partner: partner)
         end
       end
       div(class: 'mt-4') do
@@ -89,7 +89,7 @@ class Views::Pages::DirectoryHome < Views::Base
       h2(class: 'font-serif font-regular text-[1.8rem] text-foreground mb-4') { 'Happening around the UK' }
       div do
         flat_events.first(5).each do |event|
-          DirectoryEventRow(event: event)
+          Directory::EventRow(event: event)
         end
       end
       div(class: 'mt-4') do

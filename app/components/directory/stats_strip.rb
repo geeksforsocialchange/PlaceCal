@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-# TODO(#3163): Move to app/directory/components/stats_strip.rb
-class Components::StatsStrip < Components::Base
-  # stats: array of { value:, label: } hashes
+class Components::Directory::StatsStrip < Components::Directory::Base
   prop :stats, _Interface(:each)
 
   def view_template

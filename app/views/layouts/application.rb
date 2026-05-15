@@ -51,7 +51,7 @@ class Views::Layouts::Application < Phlex::HTML
             yield
           end
           if site&.default_site?
-            HomeFooter()
+            Directory::Footer()
           else
             Footer(site)
           end

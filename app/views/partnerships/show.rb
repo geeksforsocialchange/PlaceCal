@@ -72,7 +72,7 @@ class Views::Partnerships::Show < Views::Base
       h2(class: 'text-[0.72rem] font-extra-bold uppercase tracking-wide text-tertiary mb-4') { 'Partners in this partnership' }
       div(class: 'flex flex-col') do
         partner_list.each do |partner|
-          DirectoryPartnerCard(partner: partner, site: @partnership)
+          Directory::PartnerCard(partner: partner, site: @partnership)
         end
       end
     end
@@ -84,7 +84,7 @@ class Views::Partnerships::Show < Views::Base
     div(class: 'py-6') do
       h2(class: 'text-[0.72rem] font-extra-bold uppercase tracking-wide text-tertiary mb-4') { 'Upcoming events' }
       flat_events.first(10).each do |event|
-        DirectoryEventRow(event: event)
+        Directory::EventRow(event: event)
       end
     end
   end

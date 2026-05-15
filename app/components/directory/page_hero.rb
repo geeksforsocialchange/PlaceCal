@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# TODO(#3163): Move to app/directory/components/directory_page_hero.rb
-class Components::DirectoryPageHero < Components::Base
+class Components::Directory::PageHero < Components::Directory::Base
   prop :title, String
   prop :kicker, _Nilable(String), default: nil
   prop :subtitle, _Nilable(String), default: nil

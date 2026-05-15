@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# TODO(#3163): Move to app/directory/components/directory_partner_card.rb
-class Components::DirectoryPartnerCard < Components::Base
+class Components::Directory::PartnerCard < Components::Directory::Base
   prop :partner, ::Partner
   prop :site, ::Site
 

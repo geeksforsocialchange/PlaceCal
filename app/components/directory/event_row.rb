@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# TODO(#3163): Move to app/directory/components/directory_event_row.rb
-class Components::DirectoryEventRow < Components::Base
+class Components::Directory::EventRow < Components::Directory::Base
   prop :event, _Interface(:summary, :dtstart)
 
   def view_template
