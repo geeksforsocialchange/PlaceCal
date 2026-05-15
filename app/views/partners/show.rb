@@ -28,13 +28,23 @@ class Views::Partners::Show < Views::Base
     content_for(:json_ld) { safe(partner.to_json_ld(base_url: request.base_url).to_json) }
 
     div do
-      Hero(partner.name, site.tagline)
+      if site.default_site?
+        Directory::PageHero(
+          title: partner.name,
+          kicker: 'Partner',
+          breadcrumb_label: 'Partners'
+        )
+      else
+        Hero(partner.name, site.tagline)
+      end
 
       div(class: 'container-public mb-32') do
-        Breadcrumb(
-          trail: [['Partners', partners_path], [partner.name, partner_path(partner)]],
-          site_name: site.name
-        )
+        unless site.default_site?
+          Breadcrumb(
+            trail: [['Partners', partners_path], [partner.name, partner_path(partner)]],
+            site_name: site.name
+          )
+        end
 
         hr
         render_partner_details

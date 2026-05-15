@@ -11,7 +11,7 @@ class Components::Navigation < Components::Base
              'header grid grid-cols-[1fr_auto] items-center',
              *(
               if @site&.default_site?
-                ['header__default mx-3 py-6 md:mx-6 bg-background border-b border-rules']
+                ['header__default container-public py-6 bg-background border-b border-rules']
               else
                 ['header__partner mx-4 pt-4', 'lg:py-4 lg:mx-12 lg:py-6']
               end
@@ -85,7 +85,7 @@ class Components::Navigation < Components::Base
   # TODO: Change to join.placecal.org once the join flow is live
   def render_join_button
     li(class: 'text-center max-md:py-3') do
-      link_to('Join us', get_in_touch_path, class: 'inline-flex items-center rounded-full bg-secondary px-4 py-1.5 text-sm font-bold text-foreground no-underline hover:brightness-110 transition-all')
+      link_to('Join us', get_in_touch_path, class: 'inline-flex items-center rounded-full bg-secondary px-4 py-1.5 text-detail font-bold text-foreground no-underline hover:brightness-110 transition-all')
     end
   end
 
@@ -140,7 +140,7 @@ class Components::Navigation < Components::Base
             'md:flex-row md:gap-8 md:pt-3 md:pb-4 md:mt-6',
             'md:max-lg:[&:is(.is-hidden)]:py-0 md:max-lg:[&:is(.is-hidden)]:mt-4.5 md:max-lg:bg-home-background',
             'max-lg:[&:is(.is-hidden)]:h-0',
-            'lg:justify-end lg:mx-0 lg:mt-1.5 lg:py-0'
+            'lg:justify-end lg:items-baseline lg:mx-0 lg:mt-1.5 lg:py-0'
           ]
         else
           [

@@ -7,12 +7,12 @@ class Components::Directory::PageHero < Components::Directory::Base
   prop :breadcrumb_label, _Nilable(String), default: nil
 
   def view_template
-    section(class: 'pt-4 pb-8') do
+    section(class: 'bg-foreground pt-4 pb-8', style: 'color: var(--color-background)') do
       div(class: 'container-public') do
         render_breadcrumb if @breadcrumb_label
         render_kicker if @kicker
-        h1(class: 'font-serif font-regular text-hero leading-hero text-foreground') { @title }
-        p(class: 'text-tertiary text-base leading-relaxed max-w-[700px] mt-3') { @subtitle } if @subtitle
+        h1(class: 'font-serif font-regular text-hero leading-hero') { @title }
+        p(class: 'text-base leading-relaxed max-w-[700px] mt-3 opacity-80') { @subtitle } if @subtitle
       end
     end
   end
@@ -20,14 +20,14 @@ class Components::Directory::PageHero < Components::Directory::Base
   private
 
   def render_breadcrumb
-    nav(class: 'text-sm text-tertiary mb-3', aria_label: 'Breadcrumb') do
-      a(href: root_path, class: 'text-tertiary no-underline hover:underline') { 'Directory' }
-      span(class: 'mx-1.5') { safe('›') }
-      span { @breadcrumb_label }
+    nav(class: 'text-sm mb-3', style: 'color: var(--color-background)', aria_label: 'Breadcrumb') do
+      a(href: root_path, class: 'no-underline hover:underline', style: 'color: inherit') { 'Directory' }
+      span(class: 'mx-1.5 opacity-60') { safe('›') }
+      span(class: 'opacity-80') { @breadcrumb_label }
     end
   end
 
   def render_kicker
-    p(class: 'allcaps-label text-foreground/80 mb-1') { @kicker }
+    p(class: 'allcaps-label mb-1 opacity-80') { @kicker }
   end
 end

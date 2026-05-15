@@ -59,6 +59,6 @@ class Components::Directory::PartnerCard < Components::Directory::Base
   end
 
   def area_text
-    @partner.address&.neighbourhood&.name || @partner.address&.postcode
+    @partner.location_name
   end
 end

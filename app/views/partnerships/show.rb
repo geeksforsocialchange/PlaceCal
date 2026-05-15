@@ -21,14 +21,14 @@ class Views::Partnerships::Show < Views::Base
   private
 
   def render_hero
-    section(class: 'bg-foreground text-background') do
+    section(class: 'bg-foreground', style: 'color: var(--color-background)') do
       div(class: 'container-public py-8') do
         render_breadcrumb
-        p(class: 'allcaps-label text-background/60 mb-1') { 'Partnership' }
-        h1(class: 'font-serif font-regular text-hero leading-hero text-background mb-3') do
+        p(class: 'allcaps-label mb-1 opacity-60') { 'Partnership' }
+        h1(class: 'font-serif font-regular text-hero leading-hero mb-3') do
           plain @partnership.name
         end
-        p(class: 'text-background/80 text-base leading-relaxed max-w-[620px] mb-5') { @partnership.description } if @partnership.description.present?
+        p(class: 'text-base leading-relaxed max-w-[620px] mb-5 opacity-80') { @partnership.description } if @partnership.description.present?
         div(class: 'flex flex-wrap items-center gap-3') do
           render_visit_button
           render_stat_chips
@@ -38,12 +38,12 @@ class Views::Partnerships::Show < Views::Base
   end
 
   def render_breadcrumb
-    nav(class: 'text-sm text-background/70 mb-3', aria_label: 'Breadcrumb') do
-      a(href: root_path, class: 'text-background/70 no-underline hover:underline') { 'Directory' }
-      span(class: 'mx-1.5') { safe('›') }
-      a(href: partnerships_path, class: 'text-background/70 no-underline hover:underline') { 'Partnerships' }
-      span(class: 'mx-1.5') { safe('›') }
-      span(class: 'text-background/90') { @partnership.name }
+    nav(class: 'text-sm mb-3', style: 'color: var(--color-background)', aria_label: 'Breadcrumb') do
+      a(href: root_path, class: 'no-underline hover:underline opacity-70', style: 'color: inherit') { 'Directory' }
+      span(class: 'mx-1.5 opacity-60') { safe('›') }
+      a(href: partnerships_path, class: 'no-underline hover:underline opacity-70', style: 'color: inherit') { 'Partnerships' }
+      span(class: 'mx-1.5 opacity-60') { safe('›') }
+      span(class: 'opacity-90') { @partnership.name }
     end
   end
 
@@ -62,7 +62,7 @@ class Views::Partnerships::Show < Views::Base
   end
 
   def chip(text)
-    span(class: 'inline-flex items-center bg-foreground/80 text-background text-sm font-bold rounded-full px-3 py-1') do
+    span(class: 'inline-flex items-center text-sm font-bold rounded-full px-3 py-1', style: 'background: rgba(91,78,70,0.8); color: var(--color-background)') do
       plain text
     end
   end

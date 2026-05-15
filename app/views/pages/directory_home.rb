@@ -6,6 +6,7 @@ class Views::Pages::DirectoryHome < Views::Base
   prop :recent_partners, _Interface(:each)
   prop :upcoming_events, _Interface(:each)
   prop :stats, Hash
+  prop :partner_locations, _Interface(:each), default: -> { [] }
 
   def view_template
     content_for(:description) { 'Find community groups, venues and events near you. PlaceCal aggregates thousands of events from hundreds of local organisations across the UK.' }
@@ -13,7 +14,8 @@ class Views::Pages::DirectoryHome < Views::Base
     Directory::Hero(
       title: 'Find community groups, venues and events near you.',
       subtitle: 'PlaceCal aggregates thousands of events and activities from hundreds of local community organisations across the UK. This is the directory for all of it — search by place, by interest, or browse the map.',
-      search_path: partners_path
+      search_path: partners_path,
+      partner_locations: @partner_locations
     )
 
     Directory::StatsStrip(stats: [

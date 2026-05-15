@@ -15,12 +15,20 @@ class Views::Events::Show < Views::Base
     content_for(:description) { html_to_plaintext(event.description_html) }
     content_for(:json_ld) { safe(event.to_json_ld(base_url: request.base_url).to_json) }
 
-    Event(
-      display_context: :page,
-      event: event,
-      primary_neighbourhood: site.primary_neighbourhood,
-      site_tagline: site.tagline
-    )
+    if site.default_site?
+      Directory::PageHero(
+        title: event.summary,
+        kicker: 'Event',
+        breadcrumb_label: 'Events'
+      )
+    else
+      Event(
+        display_context: :page,
+        event: event,
+        primary_neighbourhood: site.primary_neighbourhood,
+        site_tagline: site.tagline
+      )
+    end
 
     render_event_details
     Map(points: map, site: site.slug, style: :multi)

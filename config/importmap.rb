@@ -23,6 +23,9 @@ pin 'leaflet', to: 'https://esm.sh/leaflet@1.9.4'
 pin 'maplibre-gl', to: 'https://esm.sh/maplibre-gl@4.7.1'
 pin '@maplibre/maplibre-gl-leaflet', to: 'https://esm.sh/@maplibre/maplibre-gl-leaflet@0.0.22'
 
+# Marker clustering for directory overview map
+pin 'leaflet.markercluster', to: 'https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/+esm'
+
 # Stimulus controllers - pinned from app/javascript/controllers
 pin_all_from 'app/javascript/controllers', under: 'controllers'
 

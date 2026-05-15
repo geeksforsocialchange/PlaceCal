@@ -110,12 +110,14 @@ class PartnersController < ApplicationController
   end
 
   def render_directory_index
+    @sort = params[:sort] || 'recent'
     query = PartnersQuery.new(site: current_site)
     partners = query.call(
       query: params[:q],
       tag_id: params[:category],
       partnership_id: params[:partnership],
-      neighbourhood_id: params[:neighbourhood]
+      neighbourhood_id: params[:neighbourhood],
+      sort: @sort
     )
     @pagy, @partners = pagy(partners, limit: 30)
 
@@ -124,6 +126,7 @@ class PartnersController < ApplicationController
       pagy: @pagy,
       site: @site,
       query: params[:q],
+      sort: @sort,
       total_count: Partner.visible.count,
       categories: query.categories_with_counts.map { |c| { id: c[:category].id, name: c[:category].name, count: c[:count] } },
       partnerships_list: query.partnerships_with_counts.map { |p| { id: p[:partnership].id, name: p[:partnership].name, count: p[:count] } },

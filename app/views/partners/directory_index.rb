@@ -13,6 +13,7 @@ class Views::Partners::DirectoryIndex < Views::Base
   prop :selected_partnership, _Nilable(String), default: nil
   prop :selected_neighbourhood, _Nilable(String), default: nil
   prop :total_count, Integer, default: 0
+  prop :sort, String, default: 'recent'
 
   def view_template
     content_for(:title) { 'Partners' }
@@ -37,7 +38,8 @@ class Views::Partners::DirectoryIndex < Views::Base
       )
 
       render_results_header
-      Directory::AzJumpBar(active_letters: active_letters)
+      render_sort_tabs
+      Directory::AzJumpBar(active_letters: active_letters) if @sort == 'name'
       render_partner_list
       Directory::Paginator(pagy: @pagy)
     end
@@ -64,17 +66,29 @@ class Views::Partners::DirectoryIndex < Views::Base
     end
   end
 
-  def render_partner_list
-    current_letter = nil
-    div(id: 'partner-list') {} # rubocop:disable Lint/EmptyBlock
-    partner_list.each do |partner|
-      letter = partner.name[0]&.upcase
-      if letter != current_letter && letter&.match?(/[A-Z]/)
-        current_letter = letter
-        h3(id: "letter-#{letter}",
-           class: 'font-serif text-xl text-foreground mt-6 mb-2 pt-2 border-t-2 border-rules') { letter }
+  def render_sort_tabs
+    nav(class: 'flex gap-1 flex-wrap py-2', aria_label: 'Sort order') do
+      [['Recently updated', 'recent'], ['A–Z', 'name']].each do |label, value|
+        sort_params = current_filter_params.merge('sort' => value)
+        if @sort == value
+          span(class: 'inline-flex items-center px-4 py-1.5 rounded-full text-sm font-bold bg-foreground text-background') { label }
+        else
+          a(href: "#{partners_path}?#{sort_params.to_query}",
+            class: 'inline-flex items-center px-4 py-1.5 rounded-full text-sm font-bold bg-home-background-3 text-foreground no-underline hover:bg-primary transition-colors') do
+            plain label
+          end
+        end
       end
-      Directory::PartnerCard(partner: partner, site: @site)
+    end
+  end
+
+  def render_partner_list
+    div(id: 'partner-list', class: 'grid lg:grid-cols-2 gap-x-4') do
+      if @sort == 'name'
+        render_alphabetical_list
+      else
+        partner_list.each { |partner| Directory::PartnerCard(partner: partner, site: @site) }
+      end
     end
 
     return unless partner_list.none?
@@ -98,7 +112,29 @@ class Views::Partners::DirectoryIndex < Views::Base
     end
   end
 
+  def render_alphabetical_list
+    current_letter = nil
+    partner_list.each do |partner|
+      letter = partner.name[0]&.upcase
+      if letter != current_letter && letter&.match?(/[A-Z]/)
+        current_letter = letter
+        h3(id: "letter-#{letter}",
+           class: 'lg:col-span-2 font-serif text-xl text-foreground mt-6 mb-2 pt-2 border-t-2 border-rules') { letter }
+      end
+      Directory::PartnerCard(partner: partner, site: @site)
+    end
+  end
+
   def any_filter_active?
     @query.present? || @selected_category.present? || @selected_partnership.present? || @selected_neighbourhood.present?
+  end
+
+  def current_filter_params
+    params = {}
+    params['q'] = @query if @query.present?
+    params['category'] = @selected_category if @selected_category.present?
+    params['partnership'] = @selected_partnership if @selected_partnership.present?
+    params['neighbourhood'] = @selected_neighbourhood if @selected_neighbourhood.present?
+    params
   end
 end

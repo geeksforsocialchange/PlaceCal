@@ -7,22 +7,27 @@ class Components::Directory::AzJumpBar < Components::Directory::Base
 
   def view_template
     nav(class: 'flex gap-0.5 flex-wrap py-3', aria_label: 'Jump to letter') do
-      a(href: '#partner-list',
-        class: 'w-7 h-7 flex items-center justify-center rounded text-2xs font-bold bg-foreground text-background no-underline hover:bg-primary transition-colors') do
-        plain 'All'
-      end
       LETTERS.each do |letter|
         if @active_letters.include?(letter)
-          a(href: "#letter-#{letter}",
-            class: 'w-7 h-7 flex items-center justify-center rounded text-xs font-bold bg-foreground text-background no-underline hover:bg-primary transition-colors') do
-            plain letter
-          end
+          a(href: "#letter-#{letter}", class: "#{letter_base} #{letter_active}") { plain letter }
         else
-          span(class: 'w-7 h-7 flex items-center justify-center rounded text-xs text-rules-dark') do
-            plain letter
-          end
+          a(href: "#letter-#{letter}", class: "#{letter_base} #{letter_inactive}") { plain letter }
         end
       end
     end
+  end
+
+  private
+
+  def letter_base
+    'w-7 h-7 flex items-center justify-center rounded-sm text-xs font-bold no-underline transition-colors'
+  end
+
+  def letter_active
+    'bg-home-background-3 text-foreground border border-rules hover:bg-primary'
+  end
+
+  def letter_inactive
+    'text-tertiary hover:bg-home-background-3'
   end
 end

@@ -24,14 +24,14 @@ class PartnersQuery
   # @param partnership_id [Integer] filter by partnership (Site) tag
   # @param query [String] keyword search on name/summary
   # @return [ActiveRecord::Relation<Partner>]
-  def call(neighbourhood_id: nil, tag_id: nil, tag_slug: nil, partnership_id: nil, query: nil)
+  def call(neighbourhood_id: nil, tag_id: nil, tag_slug: nil, partnership_id: nil, query: nil, sort: 'name') # rubocop:disable Metrics/ParameterLists
     partners = base_scope
     partners = filter_by_neighbourhood(partners, neighbourhood_id) if neighbourhood_id.present?
     partners = filter_by_tag(partners, tag_id) if tag_id.present?
     partners = filter_by_tag_slug(partners, tag_slug) if tag_slug.present?
     partners = filter_by_partnership(partners, partnership_id) if partnership_id.present?
     partners = filter_by_query(partners, query) if query.present?
-    partners.includes(:address, :service_areas).order(:name)
+    partners.includes({ address: :neighbourhood }, { service_areas: :neighbourhood }).order(sort_clause(sort))
   end
 
   # Returns neighbourhoods that have partners, with counts
@@ -147,6 +147,13 @@ class PartnersQuery
 
   def filter_by_query(partners, query)
     partners.where('partners.name ILIKE :q OR partners.summary ILIKE :q', q: "%#{query}%")
+  end
+
+  def sort_clause(sort)
+    case sort
+    when 'recent' then { updated_at: :desc }
+    else { name: :asc }
+    end
   end
 
   # ===================

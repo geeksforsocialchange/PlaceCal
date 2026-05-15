@@ -4,9 +4,10 @@ class Components::Directory::Hero < Components::Directory::Base
   prop :title, String
   prop :subtitle, _Nilable(String), default: nil
   prop :search_path, _Nilable(String), default: nil
+  prop :partner_locations, _Interface(:each), default: -> { [] }
 
   def view_template
-    section(class: 'bg-foreground text-background py-10 lg:py-14') do
+    section(class: 'bg-foreground py-10 lg:py-14', style: 'color: var(--color-background)') do
       div(class: 'container-public') do
         div(class: 'lg:grid lg:grid-cols-[1.1fr_1fr] lg:gap-10 lg:items-center') do
           render_content
@@ -20,8 +21,8 @@ class Components::Directory::Hero < Components::Directory::Base
 
   def render_content
     div(class: 'pb-6 lg:pb-10') do
-      h1(class: 'font-serif font-regular text-background text-hero leading-hero mb-3') { @title }
-      p(class: 'text-background/90 text-base leading-relaxed max-w-[620px] mb-6') { @subtitle } if @subtitle
+      h1(class: 'font-serif font-regular text-hero leading-hero mb-3') { @title }
+      p(class: 'text-base leading-relaxed max-w-[620px] mb-6 opacity-90') { @subtitle } if @subtitle
       render_search if @search_path
       render_jump_links
     end
@@ -39,7 +40,7 @@ class Components::Directory::Hero < Components::Directory::Base
         class: 'flex-1 border-0 bg-transparent py-2 text-foreground text-detail outline-none placeholder:text-tertiary'
       )
       button(type: 'submit',
-             class: 'bg-foreground text-background rounded-full px-5 py-2 text-detail font-bold border-0 cursor-pointer hover:bg-tertiary transition-colors') do
+             class: 'bg-primary text-foreground rounded-full px-5 py-2 text-detail font-bold border-0 cursor-pointer hover:bg-primary/80 transition-colors') do
         plain 'Search'
       end
     end
@@ -58,8 +59,19 @@ class Components::Directory::Hero < Components::Directory::Base
 
   def render_map_placeholder
     div(class: 'hidden lg:block self-stretch -mb-10 -mr-10') do
-      div(class: 'bg-primary/20 rounded-tl-card h-full min-h-[360px] flex items-center justify-center') do
-        p(class: 'text-foreground/40 text-sm font-bold') { 'Map coming soon' }
+      if @partner_locations.any?
+        div(
+          class: 'rounded-card h-full min-h-[360px] overflow-hidden',
+          data: {
+            controller: 'cluster-map',
+            cluster_map_markers_value: @partner_locations.to_json,
+            cluster_map_style_url_value: '/map-styles/pink.json'
+          }
+        )
+      else
+        div(class: 'bg-primary/20 rounded-tl-card h-full min-h-[360px] flex items-center justify-center') do
+          p(class: 'text-foreground/40 text-sm font-bold') { 'Map coming soon' }
+        end
       end
     end
   end
