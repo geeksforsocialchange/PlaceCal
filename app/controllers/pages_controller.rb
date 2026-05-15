@@ -77,7 +77,7 @@ class PagesController < ApplicationController
                         .where.not(slug: 'default-site')
                         .order(partners_count: :desc)
                         .limit(6)
-    @recent_partners = Partner.visible.order(created_at: :desc).limit(5)
+    @recent_partners = Partner.visible.includes(:categories, :address).order(created_at: :desc).limit(5)
     @upcoming_events = EventsQuery.new(site: @site).call(period: 'upcoming')
     @stats = {
       partnerships: Site.where(is_published: true).where.not(slug: 'default-site').count,

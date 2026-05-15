@@ -66,6 +66,7 @@ class Views::Partners::DirectoryIndex < Views::Base
 
   def render_partner_list
     current_letter = nil
+    div(id: 'partner-list') {} # rubocop:disable Lint/EmptyBlock
     partner_list.each do |partner|
       letter = partner.name[0]&.upcase
       if letter != current_letter && letter&.match?(/[A-Z]/)

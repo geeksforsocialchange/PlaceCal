@@ -11,46 +11,65 @@ class Views::Partnerships::Show < Views::Base
     content_for(:title) { @partnership.name }
     content_for(:description) { @partnership.description.presence || "#{@partnership.name} — a PlaceCal partnership bringing together community partners and events." }
 
-    DirectoryPageHero(
-      title: @partnership.name,
-      kicker: 'Partnership',
-      breadcrumb_label: @partnership.name
-    )
-
-    div(class: 'container-public') do
-      render_description if @partnership.description.present?
-      render_stats
+    render_hero
+    div(class: 'container-public py-6') do
       render_partners
       render_events
-      render_visit_link
     end
   end
 
   private
 
-  def render_description
-    div(class: 'py-6') do
-      p(class: 'text-lg leading-relaxed text-foreground') { @partnership.description }
+  def render_hero
+    section(class: 'bg-foreground text-background') do
+      div(class: 'container-public py-8') do
+        render_breadcrumb
+        p(class: 'text-[0.72rem] font-extra-bold uppercase tracking-wide text-background/60 mb-1') { 'Partnership' }
+        h1(class: 'font-serif font-regular text-[clamp(2rem,4vw,2.8rem)] leading-[1.05] text-background mb-3') do
+          plain @partnership.name
+        end
+        p(class: 'text-background/80 text-base leading-relaxed max-w-[620px] mb-5') { @partnership.description } if @partnership.description.present?
+        div(class: 'flex flex-wrap items-center gap-3') do
+          render_visit_button
+          render_stat_chips
+        end
+      end
     end
   end
 
-  def render_stats
-    div(class: 'flex gap-3 flex-wrap py-4') do
-      stat_chip("#{partner_count} #{'partner'.pluralize(partner_count)}")
-      stat_chip("#{event_count} upcoming #{'event'.pluralize(event_count)}")
-      stat_chip(@partnership.primary_neighbourhood.name) if @partnership.primary_neighbourhood
+  def render_breadcrumb
+    nav(class: 'text-sm text-background/70 mb-3', aria_label: 'Breadcrumb') do
+      a(href: root_path, class: 'text-background/70 no-underline hover:underline') { 'Directory' }
+      span(class: 'mx-1.5') { safe('›') }
+      a(href: partnerships_path, class: 'text-background/70 no-underline hover:underline') { 'Partnerships' }
+      span(class: 'mx-1.5') { safe('›') }
+      span(class: 'text-background/90') { @partnership.name }
     end
   end
 
-  def stat_chip(text)
-    span(class: 'inline-flex items-center bg-primary-light text-foreground text-sm font-bold rounded-full px-3 py-1') do
+  def render_visit_button
+    a(href: "https://#{@partnership.slug}.placecal.org",
+      class: 'inline-flex items-center gap-2 bg-primary text-foreground font-bold rounded-full px-5 py-2 no-underline hover:brightness-110 transition-all') do
+      safe('&#8599;')
+      plain "Visit #{@partnership.slug}.placecal.org"
+    end
+  end
+
+  def render_stat_chips
+    chip("#{partner_count} #{'partner'.pluralize(partner_count)}")
+    chip("#{event_count} #{'event'.pluralize(event_count)} this month")
+    chip(@partnership.primary_neighbourhood.name) if @partnership.primary_neighbourhood
+  end
+
+  def chip(text)
+    span(class: 'inline-flex items-center bg-foreground/80 text-background text-sm font-bold rounded-full px-3 py-1') do
       plain text
     end
   end
 
   def render_partners
-    div(class: 'py-6') do
-      h2(class: 'font-serif text-2xl text-foreground mb-4') { 'Partners' }
+    div(class: 'py-4') do
+      h2(class: 'text-[0.72rem] font-extra-bold uppercase tracking-wide text-tertiary mb-4') { 'Partners in this partnership' }
       div(class: 'flex flex-col') do
         partner_list.each do |partner|
           DirectoryPartnerCard(partner: partner, site: @partnership)
@@ -63,19 +82,9 @@ class Views::Partnerships::Show < Views::Base
     return if flat_events.empty?
 
     div(class: 'py-6') do
-      h2(class: 'font-serif text-2xl text-foreground mb-4') { 'Upcoming events' }
+      h2(class: 'text-[0.72rem] font-extra-bold uppercase tracking-wide text-tertiary mb-4') { 'Upcoming events' }
       flat_events.first(10).each do |event|
         DirectoryEventRow(event: event)
-      end
-    end
-  end
-
-  def render_visit_link
-    div(class: 'py-6') do
-      a(href: "https://#{@partnership.slug}.placecal.org",
-        class: 'inline-flex items-center gap-2 bg-foreground text-background font-bold rounded-full px-5 py-2.5 no-underline hover:bg-tertiary transition-colors') do
-        plain "Visit #{@partnership.slug}.placecal.org"
-        span { safe('&rarr;') }
       end
     end
   end

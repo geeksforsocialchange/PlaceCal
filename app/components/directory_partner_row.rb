@@ -29,7 +29,8 @@ class Components::DirectoryPartnerRow < Components::Base
     div do
       div(class: 'font-extra-bold text-base leading-tight mb-0.5') { @partner.name }
       div(class: 'text-[0.78rem] text-tertiary leading-snug') do
-        plain area_text
+        parts = [area_text, category_text].compact_blank
+        plain parts.join(' · ')
       end
     end
   end
@@ -50,6 +51,10 @@ class Components::DirectoryPartnerRow < Components::Base
   end
 
   def area_text
-    @partner.address&.neighbourhood&.name || @partner.address&.postcode || ''
+    @partner.address&.neighbourhood&.name || @partner.address&.postcode
+  end
+
+  def category_text
+    @partner.categories.first&.name
   end
 end

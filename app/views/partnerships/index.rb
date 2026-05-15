@@ -5,14 +5,16 @@ class Views::Partnerships::Index < Views::Base
   prop :partnerships, _Interface(:each)
   prop :site, _Nilable(::Site), default: nil
   prop :query, _Nilable(String), default: nil
+  prop :total_partners, Integer, default: 0
 
   def view_template
     content_for(:title) { 'Partnerships' }
-    content_for(:description) { "Explore #{partnership_list.size} community hubs running on PlaceCal. Each partnership brings together local partners and events in one place." }
+    content_for(:description) { "Explore #{partnership_list.size} partnerships serving #{@total_partners} partners on PlaceCal." }
 
     DirectoryPageHero(
-      title: 'Partnerships',
-      kicker: "#{partnership_list.size} community hubs running on PlaceCal",
+      title: 'Partnerships on PlaceCal',
+      kicker: "#{partnership_list.size} partnerships · serving #{@total_partners} partners",
+      subtitle: 'A partnership is a group of community organisations working together on a local PlaceCal site. Each has its own subdomain with a hyperlocal version of the calendar.',
       breadcrumb_label: 'Partnerships'
     )
 
