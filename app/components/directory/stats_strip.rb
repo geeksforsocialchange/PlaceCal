@@ -16,9 +16,9 @@ class Components::Directory::StatsStrip < Components::Directory::Base
   private
 
   def render_bead(value, label)
-    div(class: 'flex flex-col bg-home-background border-2 border-rules rounded-[1rem] py-3.5 px-4.5') do
-      span(class: 'font-serif text-[2rem] leading-none text-foreground') { number_with_delimiter(value) }
-      span(class: 'text-[0.7rem] font-extra-bold uppercase tracking-wide text-tertiary mt-1.5 truncate') { label }
+    div(class: 'flex flex-col bg-home-background border-2 border-rules rounded-card py-3.5 px-4.5') do
+      span(class: 'font-serif text-stat leading-none text-foreground') { number_with_delimiter(value) }
+      span(class: 'allcaps-label text-tertiary mt-1.5 truncate') { label }
     end
   end
 

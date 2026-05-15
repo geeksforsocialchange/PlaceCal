@@ -40,7 +40,7 @@ class Views::Events::DirectoryIndex < Views::Base
 
   def render_filters
     form(action: events_path, method: 'get',
-         class: 'bg-home-background-3 rounded-[1rem] p-4 mb-4') do
+         class: 'bg-home-background-3 rounded-card p-4 mb-4') do
       div(class: 'flex flex-wrap gap-3 items-end') do
         render_search_field
         render_partnership_select
@@ -52,7 +52,7 @@ class Views::Events::DirectoryIndex < Views::Base
 
   def render_search_field
     div(class: 'flex-1 min-w-[200px]') do
-      label(for: 'q', class: 'block text-[0.72rem] font-extra-bold uppercase tracking-wide text-tertiary mb-1') { 'Search' }
+      label(for: 'q', class: 'block allcaps-label text-tertiary mb-1') { 'Search' }
       input(
         type: 'text', name: 'q', id: 'q', value: @query,
         placeholder: 'Event name or keyword…',
@@ -65,7 +65,7 @@ class Views::Events::DirectoryIndex < Views::Base
     return if @partnerships_list.none?
 
     div(class: 'min-w-[180px]') do
-      label(for: 'partnership', class: 'block text-[0.72rem] font-extra-bold uppercase tracking-wide text-tertiary mb-1') { 'Partnership' }
+      label(for: 'partnership', class: 'block allcaps-label text-tertiary mb-1') { 'Partnership' }
       select(
         name: 'partnership', id: 'partnership',
         class: 'w-full border-2 border-rules rounded-full px-4 py-2 text-sm bg-background text-foreground outline-none focus:border-foreground transition-colors appearance-none cursor-pointer'
@@ -82,7 +82,7 @@ class Views::Events::DirectoryIndex < Views::Base
 
   def render_period_select
     div(class: 'min-w-[140px]') do
-      label(for: 'period', class: 'block text-[0.72rem] font-extra-bold uppercase tracking-wide text-tertiary mb-1') { 'Time range' }
+      label(for: 'period', class: 'block allcaps-label text-tertiary mb-1') { 'Time range' }
       select(
         name: 'period', id: 'period',
         class: 'w-full border-2 border-rules rounded-full px-4 py-2 text-sm bg-background text-foreground outline-none focus:border-foreground transition-colors appearance-none cursor-pointer'

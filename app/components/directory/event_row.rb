@@ -13,9 +13,9 @@ class Components::Directory::EventRow < Components::Directory::Base
   private
 
   def render_date_badge
-    div(class: 'font-serif text-center bg-home-background-3 rounded-[0.5rem] py-1.5 px-2') do
+    div(class: 'font-serif text-center bg-home-background-3 rounded-sm py-1.5 px-2') do
       div(class: 'text-2xl leading-none') { @event.dtstart.day.to_s }
-      div(class: 'text-[0.7rem] uppercase tracking-wide text-tertiary font-sans font-bold mt-0.5') do
+      div(class: 'text-2xs uppercase tracking-wide text-tertiary font-sans font-bold mt-0.5') do
         plain @event.dtstart.strftime('%b')
       end
     end
@@ -26,7 +26,7 @@ class Components::Directory::EventRow < Components::Directory::Base
       div(class: 'font-extra-bold text-base mb-0.5') do
         link_to(@event.summary, event_path(@event), class: 'no-underline text-foreground hover:underline')
       end
-      div(class: 'text-[0.82rem] text-tertiary flex flex-wrap gap-x-3 gap-y-1') do
+      div(class: 'text-xs text-tertiary flex flex-wrap gap-x-3 gap-y-1') do
         span { plain fmt_time }
         if @event.place || @event.organiser
           partner = @event.place || @event.organiser

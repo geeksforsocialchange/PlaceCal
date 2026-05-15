@@ -13,7 +13,7 @@ class Components::Directory::PartnerFilter < Components::Directory::Base
 
   def view_template
     form(action: partners_path, method: 'get',
-         class: 'bg-home-background-3 rounded-[1rem] p-4 mb-4') do
+         class: 'bg-home-background-3 rounded-card p-4 mb-4') do
       div(class: 'flex flex-wrap gap-3 items-end') do
         render_search_field
         render_select('category', 'Category', @categories, @selected_category)
@@ -28,7 +28,7 @@ class Components::Directory::PartnerFilter < Components::Directory::Base
 
   def render_search_field
     div(class: 'flex-1 min-w-[200px]') do
-      label(for: 'q', class: 'block text-[0.72rem] font-extra-bold uppercase tracking-wide text-tertiary mb-1') { 'Search' }
+      label(for: 'q', class: 'block allcaps-label text-tertiary mb-1') { 'Search' }
       input(
         type: 'text', name: 'q', id: 'q', value: @query,
         placeholder: 'Name or keyword…',
@@ -41,7 +41,7 @@ class Components::Directory::PartnerFilter < Components::Directory::Base
     return if items.none?
 
     div(class: 'min-w-[160px]') do
-      label(for: name, class: 'block text-[0.72rem] font-extra-bold uppercase tracking-wide text-tertiary mb-1') { label_text }
+      label(for: name, class: 'block allcaps-label text-tertiary mb-1') { label_text }
       select(
         name: name, id: name,
         class: 'w-full border-2 border-rules rounded-full px-4 py-2 text-sm bg-background text-foreground outline-none focus:border-foreground transition-colors appearance-none cursor-pointer'

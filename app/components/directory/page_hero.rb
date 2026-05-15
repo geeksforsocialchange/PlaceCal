@@ -11,7 +11,7 @@ class Components::Directory::PageHero < Components::Directory::Base
       div(class: 'container-public') do
         render_breadcrumb if @breadcrumb_label
         render_kicker if @kicker
-        h1(class: 'font-serif font-regular text-[clamp(2rem,4vw,2.8rem)] leading-[1.05] text-foreground') { @title }
+        h1(class: 'font-serif font-regular text-hero leading-hero text-foreground') { @title }
         p(class: 'text-tertiary text-base leading-relaxed max-w-[700px] mt-3') { @subtitle } if @subtitle
       end
     end
@@ -28,6 +28,6 @@ class Components::Directory::PageHero < Components::Directory::Base
   end
 
   def render_kicker
-    p(class: 'text-[0.72rem] font-extra-bold uppercase tracking-wide text-foreground/80 mb-1') { @kicker }
+    p(class: 'allcaps-label text-foreground/80 mb-1') { @kicker }
   end
 end

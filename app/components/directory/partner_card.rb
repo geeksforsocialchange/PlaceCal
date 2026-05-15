@@ -8,7 +8,7 @@ class Components::Directory::PartnerCard < Components::Directory::Base
     a(href: partner_path(@partner),
       class: [
         'grid grid-cols-[52px_1fr] gap-3 items-start',
-        'py-3 px-4 rounded-[1rem] border-2 border-transparent',
+        'py-3 px-4 rounded-card border-2 border-transparent',
         'no-underline text-foreground hover:border-rules transition-colors'
       ].join(' '),
       id: "partner-#{@partner.id}") do
@@ -35,8 +35,8 @@ class Components::Directory::PartnerCard < Components::Directory::Base
 
   def render_info
     div do
-      div(class: 'font-extra-bold text-[0.95rem] leading-tight mb-0.5') { @partner.name }
-      div(class: 'text-[0.78rem] text-tertiary leading-snug mb-1.5') { area_text } if area_text.present?
+      div(class: 'font-extra-bold text-detail leading-tight mb-0.5') { @partner.name }
+      div(class: 'text-xs text-tertiary leading-snug mb-1.5') { area_text } if area_text.present?
       render_chips
     end
   end
@@ -47,7 +47,7 @@ class Components::Directory::PartnerCard < Components::Directory::Base
 
     div(class: 'flex flex-wrap gap-1') do
       chips.each do |label|
-        span(class: 'inline-flex items-center bg-home-background-3 text-tertiary text-[0.68rem] font-bold rounded-full px-2 py-0.5') do
+        span(class: 'inline-flex items-center bg-home-background-3 text-tertiary text-2xs font-bold rounded-full px-2 py-0.5') do
           plain label
         end
       end

@@ -46,11 +46,11 @@ class Components::Directory::Footer < Components::Directory::Base
 
   def render_link_column(title, links)
     div do
-      h4(class: 'text-[0.72rem] font-extra-bold uppercase tracking-wide text-foreground mb-3') { title }
+      h4(class: 'allcaps-label text-foreground mb-3') { title }
       ul(class: 'list-none space-y-1') do
         links.each do |label, path_method|
           li do
-            link_to(label, send(path_method), class: 'font-serif text-[0.95rem] text-foreground no-underline hover:underline hover:decoration-primary')
+            link_to(label, send(path_method), class: 'font-serif text-detail text-foreground no-underline hover:underline hover:decoration-primary')
           end
         end
       end
@@ -58,7 +58,7 @@ class Components::Directory::Footer < Components::Directory::Base
   end
 
   def render_impressum
-    div(class: 'container-public mt-6 pt-5 border-t-2 border-rules text-[0.78rem] text-tertiary font-serif flex justify-between flex-wrap gap-2',
+    div(class: 'container-public mt-6 pt-5 border-t-2 border-rules text-xs text-tertiary font-serif flex justify-between flex-wrap gap-2',
         data_nosnippet: true) do
       span { "#{t('colophon.year', year: Time.zone.today.year)} #{t('colophon.copyright')}" }
       span do

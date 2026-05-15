@@ -20,7 +20,7 @@ class Components::Directory::Hero < Components::Directory::Base
 
   def render_content
     div(class: 'pb-6 lg:pb-10') do
-      h1(class: 'font-serif font-regular text-background text-[clamp(2rem,4vw,2.8rem)] leading-[1.05] mb-3') { @title }
+      h1(class: 'font-serif font-regular text-background text-hero leading-hero mb-3') { @title }
       p(class: 'text-background/90 text-base leading-relaxed max-w-[620px] mb-6') { @subtitle } if @subtitle
       render_search if @search_path
       render_jump_links
@@ -36,10 +36,10 @@ class Components::Directory::Hero < Components::Directory::Base
       input(
         type: 'text', name: 'q',
         placeholder: 'Search a town, partner, or organisation…',
-        class: 'flex-1 border-0 bg-transparent py-2 text-foreground text-[0.98rem] outline-none placeholder:text-tertiary'
+        class: 'flex-1 border-0 bg-transparent py-2 text-foreground text-detail outline-none placeholder:text-tertiary'
       )
       button(type: 'submit',
-             class: 'bg-foreground text-background rounded-full px-5 py-2 text-[0.92rem] font-bold border-0 cursor-pointer hover:bg-tertiary transition-colors') do
+             class: 'bg-foreground text-background rounded-full px-5 py-2 text-detail font-bold border-0 cursor-pointer hover:bg-tertiary transition-colors') do
         plain 'Search'
       end
     end
@@ -51,14 +51,14 @@ class Components::Directory::Hero < Components::Directory::Base
       %w[Manchester Tameside Salford London].each do |area|
         a(href: partners_path(q: area),
           style: 'color: var(--color-background); text-decoration: none;',
-          class: 'font-bold text-[0.92rem] hover:underline hover:decoration-primary') { area }
+          class: 'font-bold text-detail hover:underline hover:decoration-primary') { area }
       end
     end
   end
 
   def render_map_placeholder
     div(class: 'hidden lg:block self-stretch -mb-10 -mr-10') do
-      div(class: 'bg-primary/20 rounded-tl-[1rem] h-full min-h-[360px] flex items-center justify-center') do
+      div(class: 'bg-primary/20 rounded-tl-card h-full min-h-[360px] flex items-center justify-center') do
         p(class: 'text-foreground/40 text-sm font-bold') { 'Map coming soon' }
       end
     end

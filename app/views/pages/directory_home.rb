@@ -35,11 +35,11 @@ class Views::Pages::DirectoryHome < Views::Base
       div(class: 'container-public') do
         div(class: 'flex justify-between items-baseline mb-5 flex-wrap gap-2') do
           div do
-            div(class: 'text-[0.72rem] font-extra-bold uppercase tracking-wide text-tertiary mb-1') { 'Partnerships' }
-            h2(class: 'font-serif font-regular text-[1.8rem] text-foreground') { 'Community hubs running on PlaceCal' }
+            div(class: 'allcaps-label text-tertiary mb-1') { 'Partnerships' }
+            h2(class: 'font-serif font-regular text-section text-foreground') { 'Community hubs running on PlaceCal' }
           end
           a(href: partnerships_path,
-            class: 'inline-flex items-center gap-2 bg-home-background border-2 border-primary rounded-full px-5 py-2 text-[0.92rem] font-bold text-foreground no-underline hover:bg-primary transition-colors') do
+            class: 'inline-flex items-center gap-2 bg-home-background border-2 border-primary rounded-full px-5 py-2 text-detail font-bold text-foreground no-underline hover:bg-primary transition-colors') do
             plain 'See all partnerships'
             span { safe('&rarr;') }
           end
@@ -66,8 +66,8 @@ class Views::Pages::DirectoryHome < Views::Base
 
   def render_recent_partners
     div do
-      div(class: 'text-[0.72rem] font-extra-bold uppercase tracking-wide text-tertiary mb-1') { 'Activity' }
-      h2(class: 'font-serif font-regular text-[1.8rem] text-foreground mb-4') { 'Recently joined PlaceCal' }
+      div(class: 'allcaps-label text-tertiary mb-1') { 'Activity' }
+      h2(class: 'font-serif font-regular text-section text-foreground mb-4') { 'Recently joined PlaceCal' }
       div(class: 'flex flex-col gap-2') do
         @recent_partners.first(5).each do |partner|
           Directory::PartnerRow(partner: partner)
@@ -75,7 +75,7 @@ class Views::Pages::DirectoryHome < Views::Base
       end
       div(class: 'mt-4') do
         a(href: partners_path,
-          class: 'inline-flex items-center gap-2 bg-home-background border-2 border-primary rounded-full px-5 py-2 text-[0.92rem] font-bold text-foreground no-underline hover:bg-primary transition-colors') do
+          class: 'inline-flex items-center gap-2 bg-home-background border-2 border-primary rounded-full px-5 py-2 text-detail font-bold text-foreground no-underline hover:bg-primary transition-colors') do
           plain 'Browse all partners'
           span { safe('&rarr;') }
         end
@@ -85,8 +85,8 @@ class Views::Pages::DirectoryHome < Views::Base
 
   def render_upcoming_events
     div do
-      div(class: 'text-[0.72rem] font-extra-bold uppercase tracking-wide text-tertiary mb-1') { 'Tonight & this week' }
-      h2(class: 'font-serif font-regular text-[1.8rem] text-foreground mb-4') { 'Happening around the UK' }
+      div(class: 'allcaps-label text-tertiary mb-1') { 'Tonight & this week' }
+      h2(class: 'font-serif font-regular text-section text-foreground mb-4') { 'Happening around the UK' }
       div do
         flat_events.first(5).each do |event|
           Directory::EventRow(event: event)
@@ -94,7 +94,7 @@ class Views::Pages::DirectoryHome < Views::Base
       end
       div(class: 'mt-4') do
         a(href: events_path,
-          class: 'inline-flex items-center gap-2 bg-home-background border-2 border-primary rounded-full px-5 py-2 text-[0.92rem] font-bold text-foreground no-underline hover:bg-primary transition-colors') do
+          class: 'inline-flex items-center gap-2 bg-home-background border-2 border-primary rounded-full px-5 py-2 text-detail font-bold text-foreground no-underline hover:bg-primary transition-colors') do
           plain 'Filter events by place'
           span { safe('&rarr;') }
         end
@@ -124,14 +124,14 @@ class Views::Pages::DirectoryHome < Views::Base
   end
 
   def render_cta_card(heading:, body:, link_text:, link_path:, head_class:)
-    div(class: 'flex flex-col rounded-[1rem] overflow-hidden') do
+    div(class: 'flex flex-col rounded-card overflow-hidden') do
       div(class: "#{head_class} px-5 py-4") do
-        h3(class: 'font-serif font-regular text-[1.4rem] text-foreground') { heading }
+        h3(class: 'font-serif font-regular text-card text-foreground') { heading }
       end
       div(class: 'bg-home-background-3 px-5 py-4 flex-1') do
-        p(class: 'text-[0.88rem] leading-relaxed text-tertiary mb-4') { body }
+        p(class: 'text-detail leading-relaxed text-tertiary mb-4') { body }
         a(href: link_path,
-          class: 'inline-flex items-center gap-2 border-2 border-foreground rounded-full px-5 py-2 text-[0.92rem] font-bold text-foreground no-underline hover:bg-foreground hover:text-background transition-colors') do
+          class: 'inline-flex items-center gap-2 border-2 border-foreground rounded-full px-5 py-2 text-detail font-bold text-foreground no-underline hover:bg-foreground hover:text-background transition-colors') do
           plain link_text
         end
       end

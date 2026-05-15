@@ -5,7 +5,7 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
   prop :containing_sites, _Interface(:each), default: -> { [] }
 
   def view_template
-    div(class: 'bg-home-background-3 rounded-[1rem] p-5 mb-6') do
+    div(class: 'bg-home-background-3 rounded-card p-5 mb-6') do
       render_partnerships if Array(@containing_sites).any?
       render_categories if @partner.categories.any?
       render_neighbourhood
@@ -16,7 +16,7 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
 
   def render_partnerships
     div(class: 'mb-5') do
-      h4(class: 'text-[0.72rem] font-extra-bold uppercase tracking-wide text-tertiary mb-2') do
+      h4(class: 'allcaps-label text-tertiary mb-2') do
         plain "Part of #{Array(@containing_sites).size} #{'partnership'.pluralize(Array(@containing_sites).size)}"
       end
       div(class: 'flex flex-col gap-1.5') do
@@ -33,11 +33,11 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
 
   def render_categories
     div(class: 'mb-5') do
-      h4(class: 'text-[0.72rem] font-extra-bold uppercase tracking-wide text-tertiary mb-2') { 'Categories' }
+      h4(class: 'allcaps-label text-tertiary mb-2') { 'Categories' }
       div(class: 'flex flex-wrap gap-1.5') do
         @partner.categories.each do |cat|
           a(href: partners_path(category: cat.id),
-            class: 'inline-flex items-center bg-primary-light text-foreground text-[0.72rem] font-bold rounded-full px-2.5 py-0.5 no-underline hover:bg-primary transition-colors') do
+            class: 'inline-flex items-center bg-primary-light text-foreground text-2xs font-bold rounded-full px-2.5 py-0.5 no-underline hover:bg-primary transition-colors') do
             plain cat.name
           end
         end
@@ -49,7 +49,7 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
     return unless @partner.address&.neighbourhood
 
     div do
-      h4(class: 'text-[0.72rem] font-extra-bold uppercase tracking-wide text-tertiary mb-2') { 'Neighbourhood' }
+      h4(class: 'allcaps-label text-tertiary mb-2') { 'Neighbourhood' }
       neighbourhood = @partner.address.neighbourhood
       path = neighbourhood.path
       div(class: 'text-sm text-tertiary') do

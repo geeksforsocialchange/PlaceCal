@@ -99,18 +99,39 @@ https://tailwindcss.com/docs/theme#default-theme-variable-reference
 	--font-weight-regular: 500;
 	/* this one only from app/assets/stylesheets/components/navigation_component.scss */
 	--font-weight-semibold: 600;
+	/* allcaps kickers, tiny badges, micro labels */
+	--text-2xs: 0.72rem;
+	/* meta text, secondary info */
+	--text-xs: 0.78rem;
 	/* small */
 	--text-sm: 0.8rem;
+	/* button text, body-adjacent links */
+	--text-detail: 0.92rem;
 	/* base */
 	--text-base: 1rem;
+	/* card headings */
+	--text-card: 1.3rem;
 	/* h3.5 - not certain that this is used */
 	--text-lg: 1.222222222rem;
 	/* h3 */
 	--text-xl: 1.33333rem;
+	/* section headings on directory */
+	--text-section: 1.8rem;
 	/* h2 */
 	--text-2xl: 1.77778rem;
+	/* stat numbers */
+	--text-stat: 2rem;
 	/* h1 */
 	--text-3xl: 2.22222rem;
+	/* hero responsive title */
+	--text-hero: clamp(2rem, 4vw, 2.8rem);
+
+	/* Border radii */
+	--radius-card: 1rem;
+	--radius-sm: 0.5rem;
+
+	/* Line heights */
+	--leading-hero: 1.05;
 
 	/* Colours */
 
@@ -286,4 +307,12 @@ https://tailwindcss.com/docs/theme#default-theme-variable-reference
 	@media (width >= 900px) {
 		padding-inline: 3.33rem;
 	}
+}
+
+/* Allcaps label used for kickers, section labels, form labels, sidebar headings */
+@utility allcaps-label {
+	font-size: var(--text-2xs);
+	font-weight: 800;
+	text-transform: uppercase;
+	letter-spacing: var(--tracking-wide);
 }

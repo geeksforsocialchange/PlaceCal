@@ -24,8 +24,8 @@ class Views::Partnerships::Show < Views::Base
     section(class: 'bg-foreground text-background') do
       div(class: 'container-public py-8') do
         render_breadcrumb
-        p(class: 'text-[0.72rem] font-extra-bold uppercase tracking-wide text-background/60 mb-1') { 'Partnership' }
-        h1(class: 'font-serif font-regular text-[clamp(2rem,4vw,2.8rem)] leading-[1.05] text-background mb-3') do
+        p(class: 'allcaps-label text-background/60 mb-1') { 'Partnership' }
+        h1(class: 'font-serif font-regular text-hero leading-hero text-background mb-3') do
           plain @partnership.name
         end
         p(class: 'text-background/80 text-base leading-relaxed max-w-[620px] mb-5') { @partnership.description } if @partnership.description.present?
@@ -69,7 +69,7 @@ class Views::Partnerships::Show < Views::Base
 
   def render_partners
     div(class: 'py-4') do
-      h2(class: 'text-[0.72rem] font-extra-bold uppercase tracking-wide text-tertiary mb-4') { 'Partners in this partnership' }
+      h2(class: 'allcaps-label text-tertiary mb-4') { 'Partners in this partnership' }
       div(class: 'flex flex-col') do
         partner_list.each do |partner|
           Directory::PartnerCard(partner: partner, site: @partnership)
@@ -82,7 +82,7 @@ class Views::Partnerships::Show < Views::Base
     return if flat_events.empty?
 
     div(class: 'py-6') do
-      h2(class: 'text-[0.72rem] font-extra-bold uppercase tracking-wide text-tertiary mb-4') { 'Upcoming events' }
+      h2(class: 'allcaps-label text-tertiary mb-4') { 'Upcoming events' }
       flat_events.first(10).each do |event|
         Directory::EventRow(event: event)
       end

@@ -7,7 +7,7 @@ class Components::Directory::PartnerRow < Components::Directory::Base
     a(href: partner_path(@partner),
       class: [
         'grid grid-cols-[44px_1fr_auto] gap-3 items-center',
-        'py-2.5 px-3 rounded-[1rem] border-2 border-transparent',
+        'py-2.5 px-3 rounded-card border-2 border-transparent',
         'no-underline text-foreground hover:border-foreground transition-colors'
       ].join(' ')) do
       render_avatar
@@ -27,7 +27,7 @@ class Components::Directory::PartnerRow < Components::Directory::Base
   def render_info
     div do
       div(class: 'font-extra-bold text-base leading-tight mb-0.5') { @partner.name }
-      div(class: 'text-[0.78rem] text-tertiary leading-snug') do
+      div(class: 'text-xs text-tertiary leading-snug') do
         parts = [area_text, category_text].compact_blank
         plain parts.join(' · ')
       end
@@ -39,7 +39,7 @@ class Components::Directory::PartnerRow < Components::Directory::Base
     return unless count.positive?
 
     div(class: 'text-right') do
-      span(class: 'inline-flex items-center bg-primary-light text-foreground text-[0.72rem] font-bold rounded-full px-2.5 py-0.5') do
+      span(class: 'inline-flex items-center bg-primary-light text-foreground text-2xs font-bold rounded-full px-2.5 py-0.5') do
         plain "#{count} #{'event'.pluralize(count)}"
       end
     end
