@@ -18,7 +18,12 @@ class Views::Partners::DirectoryIndex < Views::Base
     content_for(:title) { 'Partners' }
     content_for(:description) { "Browse #{@total_count} community partners across the UK on PlaceCal. Search by name, category, partnership or neighbourhood." }
 
-    Hero('Partners', kicker_text)
+    DirectoryPageHero(
+      title: 'All partners on PlaceCal',
+      kicker: kicker_text,
+      subtitle: 'Every community group, venue, library and organisation publishing their events on PlaceCal, UK-wide.',
+      breadcrumb_label: 'Partners'
+    )
 
     div(class: 'container-public py-6') do
       DirectoryPartnerFilter(

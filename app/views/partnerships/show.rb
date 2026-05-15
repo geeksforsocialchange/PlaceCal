@@ -11,7 +11,11 @@ class Views::Partnerships::Show < Views::Base
     content_for(:title) { @partnership.name }
     content_for(:description) { @partnership.description.presence || "#{@partnership.name} — a PlaceCal partnership bringing together community partners and events." }
 
-    Hero(@partnership.name, 'Partnership')
+    DirectoryPageHero(
+      title: @partnership.name,
+      kicker: 'Partnership',
+      breadcrumb_label: @partnership.name
+    )
 
     div(class: 'container-public') do
       render_description if @partnership.description.present?

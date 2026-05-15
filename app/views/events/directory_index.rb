@@ -17,7 +17,12 @@ class Views::Events::DirectoryIndex < Views::Base
     content_for(:title) { 'Events' }
     content_for(:description) { "Discover #{@total_count} upcoming events and activities from community organisations across the UK on PlaceCal." }
 
-    Hero('Events & Activities', kicker_text)
+    DirectoryPageHero(
+      title: 'Events on PlaceCal',
+      kicker: kicker_text,
+      subtitle: 'A nationwide event feed is a lot. Narrow down by place, interest, or partnership to see what\'s coming up near you.',
+      breadcrumb_label: 'Events'
+    )
 
     div(class: 'container-public py-6') do
       render_filters

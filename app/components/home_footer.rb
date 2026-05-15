@@ -34,7 +34,7 @@ class Components::HomeFooter < Components::Base
 
   def render_brand_column
     div do
-      image_tag('home/icons/logo.svg', class: 'h-10 mb-4', alt: 'PlaceCal logo')
+      image_tag('home/icons/logo-dark.svg', class: 'h-10 mb-4', alt: 'PlaceCal logo')
       p(class: 'text-sm text-tertiary leading-relaxed') do
         plain 'PlaceCal is an online calendar which lists events and activities by and for members of local communities.'
       end

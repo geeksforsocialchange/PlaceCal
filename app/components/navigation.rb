@@ -11,7 +11,7 @@ class Components::Navigation < Components::Base
              'header grid grid-cols-[1fr_auto] items-center',
              *(
               if @site&.default_site?
-                ['header__default mx-3 py-6 md:mx-6 bg-foreground']
+                ['header__default mx-3 py-6 md:mx-6 bg-background border-b border-rules']
               else
                 ['header__partner mx-4 pt-4', 'lg:py-4 lg:mx-12 lg:py-6']
               end
@@ -45,7 +45,7 @@ class Components::Navigation < Components::Base
   def render_logo
     logo_url = @site&.logo&.url.presence
     if @site&.default_site?
-      raw(view_context.svg_image('home/icons/logo.svg', alt_text: 'PlaceCal'))
+      raw(view_context.svg_image('home/icons/logo-dark.svg', alt_text: 'PlaceCal'))
     elsif logo_url
       logo_path = Rails.public_path.join(logo_url.delete_prefix('/'))
       if /\.svg$/i.match?(logo_url) && File.exist?(logo_path)
@@ -72,10 +72,30 @@ class Components::Navigation < Components::Base
   end
 
   def render_menu
-    li_css_class = [
+    nav(class: menu_nav_classes, data: { mobile_menu_target: 'menu' }) do
+      ul(class: 'contents') do
+        @navigation.each do |link_text, link_path|
+          li(class: menu_li_classes) { active_link_to(link_text, link_path, data: { turbolinks: false }, base_css_class: menu_link_classes, active_css_class: menu_active_classes) }
+        end
+        render_join_button if @site&.default_site?
+      end
+    end
+  end
+
+  def render_join_button
+    li(class: 'text-center max-md:py-3') do
+      a(href: 'https://join.placecal.org', class: 'inline-flex items-center gap-1 rounded-full bg-secondary px-4 py-1.5 text-sm font-bold text-foreground no-underline hover:brightness-110 transition-all') do
+        plain 'Join us'
+        span(class: 'text-lg leading-none') { safe('&rarr;') }
+      end
+    end
+  end
+
+  def menu_li_classes
+    [
       'text-center',
       *(if @site&.default_site?
-          ['max-md:bg-tertiary max-md:py-3']
+          ['max-md:bg-home-background max-md:py-3']
         else
           [
             'py-4 duration-300 transition-none',
@@ -84,72 +104,62 @@ class Components::Navigation < Components::Base
           ]
         end)
     ]
-    # active_link_to is defined in app/helpers/application_helper.rb and wraps link_to, which is not a phlex component. so we must join to a string.
-    a_css_class = [
-      'with-reset with-no-sass text-background text-base',
+  end
+
+  def menu_link_classes
+    [
+      'with-reset with-no-sass text-base',
       'after:block after:mx-auto after:w-10',
       *(if @site&.default_site?
           [
-            'font-semibold',
-            'after:h-0.5 after:-mt-0.5 after:transition-colors after:duration-300',
-            'md:hover:after:bg-primary ',
-            'lg:after:mt-0.5 lg:hover:after:bg-tertiary'
+            'text-foreground font-bold',
+            'after:h-[3.5px] after:mt-0.5 after:transition-colors after:duration-300',
+            'hover:after:bg-foreground'
           ]
         else
           [
-            'font-extra-bold tracking-wide uppercase',
+            'text-background font-extra-bold tracking-wide uppercase',
             'max-md:text-xl',
             'md:after:h-1 md:hover:after:bg-primary',
             'lg:text-foreground'
           ]
         end)
     ].join(' ')
-    a_active_css_class = [
-      'md:after:bg-primary',
-      ('lg:after:bg-tertiary' if @site&.default_site?)
-    ].join(' ')
-    nav(class: [
-          'nav header__menu row-start-2 col-start-1 col-span-2 flex flex-col justify-evenly',
-          '-mx-6 h-auto overflow-clip transition-[display,height,margin-top,padding-block] duration-300',
-          'md:flex-row',
-          *(if @site&.default_site?
-              [
-                'pt-4 gap-0.5  lg:row-start-1 lg:col-start-2 lg:col-span-1',
-                'md:flex-row md:gap-8 md:pt-3 md:pb-4 md:mt-6',
-                'md:max-lg:[&:is(.is-hidden)]:py-0 md:max-lg:[&:is(.is-hidden)]:mt-4.5 md:max-lg:bg-tertiary',
-                'max-lg:[&:is(.is-hidden)]:h-0',
-                'lg:justify-end lg:mx-0 lg:mt-1.5 lg:py-0'
-              ]
-            else
-              [
-                'gap-1 mt-4',
-                'max-md:pb-1 max-md:bg-tertiary max-md:[&:is(.is-hidden)]:h-0 max-md:[&:is(.is-hidden)]:pb-0',
-                'md:-mx-6',
-                'md:max-lg:px-2 md:max-lg:bg-foreground',
-                'lg:row-start-1 lg:col-start-2 lg:col-span-1 lg:gap-8 lg:m-0'
-              ]
-            end)
-        ], data: { mobile_menu_target: 'menu' }) do
-      ul(class: 'contents') do
-        # FIXME: turbolinks was unset on the first navigation item. assuming that turbolinks means `preload on hover`, it does that on all nav links regardless of the setting
-        @navigation.each do |link_text, link_path|
-          li(class: li_css_class) { active_link_to(link_text, link_path, data: { turbolinks: false }, base_css_class: a_css_class, active_css_class: a_active_css_class) }
-        end
-        if @site&.default_site?
-          li(class: 'text-center max-md:py-3') do
-            a(href: 'https://join.placecal.org', class: 'inline-flex items-center gap-1 rounded-full bg-secondary px-4 py-1.5 text-sm font-bold text-foreground no-underline hover:brightness-110 transition-all') do
-              plain 'Join us'
-              span(class: 'text-lg leading-none') { safe('&rarr;') }
-            end
-          end
-        end
-      end
-    end
+  end
+
+  def menu_active_classes
+    (@site&.default_site? ? 'after:bg-foreground' : 'md:after:bg-primary')
+  end
+
+  def menu_nav_classes
+    [
+      'nav header__menu row-start-2 col-start-1 col-span-2 flex flex-col justify-evenly',
+      '-mx-6 h-auto overflow-clip transition-[display,height,margin-top,padding-block] duration-300',
+      'md:flex-row',
+      *(if @site&.default_site?
+          [
+            'pt-4 gap-0.5  lg:row-start-1 lg:col-start-2 lg:col-span-1',
+            'md:flex-row md:gap-8 md:pt-3 md:pb-4 md:mt-6',
+            'md:max-lg:[&:is(.is-hidden)]:py-0 md:max-lg:[&:is(.is-hidden)]:mt-4.5 md:max-lg:bg-home-background',
+            'max-lg:[&:is(.is-hidden)]:h-0',
+            'lg:justify-end lg:mx-0 lg:mt-1.5 lg:py-0'
+          ]
+        else
+          [
+            'gap-1 mt-4',
+            'max-md:pb-1 max-md:bg-tertiary max-md:[&:is(.is-hidden)]:h-0 max-md:[&:is(.is-hidden)]:pb-0',
+            'md:-mx-6',
+            'md:max-lg:px-2 md:max-lg:bg-foreground',
+            'lg:row-start-1 lg:col-start-2 lg:col-span-1 lg:gap-8 lg:m-0'
+          ]
+        end)
+    ]
   end
 
   def render_toggle
     button(type: 'button', class: [
-             'header__toggle row-start-1 col-start-2 flex gap-2 ms-auto me-1.5 items-center text-background',
+             'header__toggle row-start-1 col-start-2 flex gap-2 ms-auto me-1.5 items-center',
+             (@site&.default_site? ? 'text-foreground' : 'text-background'),
              'md:me-4',
              *(if @site&.default_site?
                  ['lg:hidden']

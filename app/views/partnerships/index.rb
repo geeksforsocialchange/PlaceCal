@@ -10,7 +10,11 @@ class Views::Partnerships::Index < Views::Base
     content_for(:title) { 'Partnerships' }
     content_for(:description) { "Explore #{partnership_list.size} community hubs running on PlaceCal. Each partnership brings together local partners and events in one place." }
 
-    Hero('Partnerships', "#{partnership_list.size} community hubs running on PlaceCal")
+    DirectoryPageHero(
+      title: 'Partnerships',
+      kicker: "#{partnership_list.size} community hubs running on PlaceCal",
+      breadcrumb_label: 'Partnerships'
+    )
 
     div(class: 'container-public py-6') do
       render_search
