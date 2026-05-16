@@ -7,12 +7,12 @@ class Components::Directory::PageHero < Components::Directory::Base
   prop :breadcrumb_label, _Nilable(String), default: nil
 
   def view_template
-    section(class: 'bg-foreground pt-3 pb-5', style: 'color: var(--color-background)') do
+    section(class: 'bg-foreground pt-4 pb-8', style: 'color: var(--color-background)') do
       div(class: 'container-public') do
         render_breadcrumb if @breadcrumb_label
         render_kicker if @kicker
         h1(class: 'font-serif font-regular text-hero leading-hero') { @title }
-        p(class: 'text-base leading-relaxed max-w-[700px] mt-3 opacity-80') { @subtitle } if @subtitle
+        p(class: 'text-base leading-relaxed max-w-[700px] mt-2 opacity-80') { @subtitle } if @subtitle
       end
     end
   end
@@ -20,7 +20,7 @@ class Components::Directory::PageHero < Components::Directory::Base
   private
 
   def render_breadcrumb
-    nav(class: 'text-sm mb-3', style: 'color: var(--color-background)', aria_label: 'Breadcrumb') do
+    nav(class: 'text-sm mb-2', style: 'color: var(--color-background)', aria_label: 'Breadcrumb') do
       a(href: root_path, class: 'no-underline hover:underline', style: 'color: inherit') { 'Directory' }
       span(class: 'mx-1.5 opacity-60') { safe('›') }
       span(class: 'opacity-80') { @breadcrumb_label }

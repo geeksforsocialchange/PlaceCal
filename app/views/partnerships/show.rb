@@ -13,8 +13,13 @@ class Views::Partnerships::Show < Views::Base
 
     render_hero
     div(class: 'container-public py-6') do
-      render_partners
-      render_events
+      div(class: 'lg:grid lg:grid-cols-[1fr_340px] lg:gap-8') do
+        div do
+          render_partners
+          render_events
+        end
+        render_sidebar
+      end
     end
   end
 
@@ -38,7 +43,7 @@ class Views::Partnerships::Show < Views::Base
   end
 
   def render_breadcrumb
-    nav(class: 'text-sm mb-3', style: 'color: var(--color-background)', aria_label: 'Breadcrumb') do
+    nav(class: 'text-sm mb-2', style: 'color: var(--color-background)', aria_label: 'Breadcrumb') do
       a(href: root_path, class: 'no-underline hover:underline opacity-70', style: 'color: inherit') { 'Directory' }
       span(class: 'mx-1.5 opacity-60') { safe('›') }
       a(href: partnerships_path, class: 'no-underline hover:underline opacity-70', style: 'color: inherit') { 'Partnerships' }
@@ -62,7 +67,7 @@ class Views::Partnerships::Show < Views::Base
   end
 
   def chip(text)
-    span(class: 'inline-flex items-center text-sm font-bold rounded-full px-3 py-1', style: 'background: rgba(91,78,70,0.8); color: var(--color-background)') do
+    span(class: 'inline-flex items-center text-sm font-bold rounded-full px-3 py-1', style: 'background: rgba(255,255,255,0.15); color: var(--color-background)') do
       plain text
     end
   end
@@ -70,10 +75,41 @@ class Views::Partnerships::Show < Views::Base
   def render_partners
     div(class: 'py-4') do
       h2(class: 'allcaps-label text-tertiary mb-4') { 'Partners in this partnership' }
-      div(class: 'flex flex-col') do
+      div(class: 'grid grid-cols-1 md:grid-cols-2 gap-2') do
         partner_list.each do |partner|
-          Directory::PartnerCard(partner: partner, site: @partnership)
+          render_partner_mini(partner)
         end
+      end
+    end
+  end
+
+  def render_partner_mini(partner)
+    a(href: partner_path(partner),
+      class: 'grid grid-cols-[44px_1fr] gap-3 items-start py-3 px-3 rounded-card border border-rules no-underline text-foreground hover:bg-home-background-3 transition-colors') do
+      render_partner_avatar(partner)
+      div do
+        div(class: 'flex items-start justify-between gap-2') do
+          span(class: 'font-extra-bold text-sm leading-tight') { partner.name }
+          event_count_for = partner_event_counts[partner.id] || 0
+          if event_count_for.positive?
+            span(class: 'inline-flex items-center bg-primary text-foreground text-2xs font-bold rounded-full px-2 py-0.5 whitespace-nowrap') do
+              plain "#{event_count_for} #{'event'.pluralize(event_count_for)}"
+            end
+          end
+        end
+        div(class: 'text-xs text-tertiary mt-0.5') { partner.location_name } if partner.location_name.present?
+        div(class: 'text-xs text-tertiary mt-0.5') { partner.categories.first(2).map(&:name).join(' · ') } if partner.categories.any?
+      end
+    end
+  end
+
+  def render_partner_avatar(partner)
+    if partner.image?
+      img(src: partner.image.standard.url, alt: partner.name, class: 'w-[44px] h-[44px] rounded-full object-cover')
+    else
+      initials = partner.name.split.first(2).map { |w| w[0] }.join.upcase
+      div(class: 'w-[44px] h-[44px] rounded-full bg-home-background-3 flex items-center justify-center font-serif text-lg text-tertiary') do
+        plain initials
       end
     end
   end
@@ -85,6 +121,56 @@ class Views::Partnerships::Show < Views::Base
       h2(class: 'allcaps-label text-tertiary mb-4') { 'Upcoming events' }
       flat_events.first(10).each do |event|
         Directory::EventRow(event: event)
+      end
+    end
+  end
+
+  def render_sidebar
+    div(class: 'hidden lg:flex lg:flex-col lg:gap-6') do
+      render_map_card
+      render_cta_card
+    end
+  end
+
+  def render_map_card
+    div(class: 'rounded-card overflow-hidden bg-home-background-3 min-h-[280px]') do
+      partner_locations = partner_list.filter_map do |p|
+        next unless p.address&.latitude
+
+        { lat: p.address.latitude, lon: p.address.longitude, name: p.name, url: partner_path(p) }
+      end
+
+      if partner_locations.any?
+        div(
+          class: 'h-[280px]',
+          data: {
+            controller: 'cluster-map',
+            cluster_map_markers_value: partner_locations.to_json,
+            cluster_map_style_url_value: '/map-styles/pink.json'
+          }
+        )
+      else
+        div(class: 'h-[280px] flex items-center justify-center') do
+          p(class: 'text-tertiary text-sm font-bold') { 'Map coming soon' }
+        end
+      end
+    end
+  end
+
+  def render_cta_card
+    div(class: 'rounded-card overflow-hidden') do
+      div(class: 'bg-secondary px-5 py-4') do
+        h3(class: 'font-serif text-xl text-foreground') { 'Get involved' }
+      end
+      div(class: 'bg-home-background-3 px-5 py-4') do
+        area_name = @partnership.primary_neighbourhood&.name
+        p(class: 'text-sm text-tertiary mb-4') do
+          plain "Running a community group#{" in #{area_name}" if area_name}? Join this partnership to list your events."
+        end
+        a(href: '/get-in-touch',
+          class: 'inline-flex items-center border-2 border-foreground text-foreground font-bold rounded-full px-4 py-1.5 text-sm no-underline hover:bg-foreground hover:text-background transition-colors') do
+          plain 'Contact coordinator'
+        end
       end
     end
   end
@@ -111,5 +197,16 @@ class Views::Partnerships::Show < Views::Base
                      else
                        Array(@upcoming_events)
                      end
+  end
+
+  def partner_event_counts
+    @partner_event_counts ||= begin
+      partner_ids = partner_list.map(&:id)
+      ::Event.future(Time.current)
+             .where(place_id: partner_ids)
+             .or(::Event.future(Time.current).where(organiser_id: partner_ids))
+             .group(:place_id)
+             .count
+    end
   end
 end
