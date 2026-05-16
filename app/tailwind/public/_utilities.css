@@ -4,12 +4,12 @@
 @utility container-public {
 	max-width: 1240px;
 	margin-inline: auto;
-	padding-inline: 1rem;
+	padding-inline: 0.75rem;
 	@media (width >= theme(--breakpoint-md)) {
-		padding-inline: 1.66667rem;
+		padding-inline: 1.25rem;
 	}
 	@media (width >= theme(--breakpoint-lg)) {
-		padding-inline: 3.33rem;
+		padding-inline: 2.5rem;
 	}
 }
 

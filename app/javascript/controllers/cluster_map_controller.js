@@ -19,6 +19,7 @@ export default class extends Controller {
 			scrollWheelZoom: false,
 			zoomControl: false,
 			maxZoom: 18,
+			zoomSnap: 0.1,
 		});
 
 		L.control.zoom({ position: "topright" }).addTo(this.map);
@@ -67,10 +68,10 @@ export default class extends Controller {
 		if (this.markersValue.length > 0) {
 			const bounds = cluster.getBounds();
 			if (bounds.isValid()) {
-				this.map.fitBounds(bounds, { padding: [20, 20] });
+				this.map.fitBounds(bounds, { padding: [20, 15] });
 			}
 		} else {
-			this.map.setView([53.5, -2.5], 6);
+			this.map.setView([54.0, -2.0], 6);
 		}
 
 		this.map.invalidateSize(true);

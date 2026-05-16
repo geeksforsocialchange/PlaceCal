@@ -7,7 +7,7 @@ class Components::Directory::PageHero < Components::Directory::Base
   prop :breadcrumb_label, _Nilable(String), default: nil
 
   def view_template
-    section(class: 'bg-foreground pt-4 pb-8', style: 'color: var(--color-background)') do
+    section(class: 'bg-foreground pt-3 pb-5', style: 'color: var(--color-background)') do
       div(class: 'container-public') do
         render_breadcrumb if @breadcrumb_label
         render_kicker if @kicker

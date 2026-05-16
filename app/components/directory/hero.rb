@@ -9,7 +9,7 @@ class Components::Directory::Hero < Components::Directory::Base
   def view_template
     section(class: 'bg-foreground py-10 lg:py-14', style: 'color: var(--color-background)') do
       div(class: 'container-public') do
-        div(class: 'lg:grid lg:grid-cols-[1.1fr_1fr] lg:gap-10 lg:items-center') do
+        div(class: 'lg:grid lg:grid-cols-[1fr_380px] lg:gap-8') do
           render_content
           render_map_placeholder
         end
@@ -58,10 +58,10 @@ class Components::Directory::Hero < Components::Directory::Base
   end
 
   def render_map_placeholder
-    div(class: 'hidden lg:block self-stretch -mb-10 -mr-10') do
+    div(class: 'hidden lg:block') do
       if @partner_locations.any?
         div(
-          class: 'rounded-card h-full min-h-[360px] overflow-hidden',
+          class: 'rounded-card overflow-hidden h-full',
           data: {
             controller: 'cluster-map',
             cluster_map_markers_value: @partner_locations.to_json,
