@@ -46,7 +46,6 @@ class Views::Partners::Show < Views::Base
           )
         end
 
-        hr
         render_partner_details
         render_managees
         hr

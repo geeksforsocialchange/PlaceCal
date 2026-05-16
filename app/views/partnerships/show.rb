@@ -171,10 +171,10 @@ class Views::Partnerships::Show < Views::Base
 
   def render_cta_card
     div(class: 'rounded-card overflow-hidden') do
-      div(class: 'bg-secondary px-5 py-4') do
-        h3(class: 'font-serif text-xl text-foreground') { 'Get involved' }
+      div(class: 'bg-secondary px-4 py-3') do
+        h3(class: 'font-serif text-lg text-foreground') { 'Get involved' }
       end
-      div(class: 'bg-home-background-3 px-5 py-4') do
+      div(class: 'bg-home-background-3 px-4 py-3') do
         area_name = @partnership.primary_neighbourhood&.name
         p(class: 'text-sm text-tertiary mb-4') do
           plain "Running a community group#{" in #{area_name}" if area_name}? Join this partnership to list your events."
