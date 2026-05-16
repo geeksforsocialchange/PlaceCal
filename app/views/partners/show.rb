@@ -27,36 +27,184 @@ class Views::Partners::Show < Views::Base
     content_for(:description) { partner.summary } if partner.summary
     content_for(:json_ld) { safe(partner.to_json_ld(base_url: request.base_url).to_json) }
 
-    div do
-      if site.default_site?
-        Directory::PageHero(
-          title: partner.name,
-          kicker: 'Partner',
-          breadcrumb_label: 'Partners'
-        )
-      else
-        Hero(partner.name, site.tagline)
-      end
-
-      div(class: 'container-public mb-32') do
-        unless site.default_site?
-          Breadcrumb(
-            trail: [['Partners', partners_path], [partner.name, partner_path(partner)]],
-            site_name: site.name
-          )
-        end
-
-        render_partner_details
-        render_managees
-        hr
-        render_events_section
-      end
+    if site.default_site?
+      render_directory_layout
+    else
+      render_local_layout
     end
 
     render_meta_section
   end
 
   private
+
+  # ── Directory layout (default site) ──
+
+  def render_directory_layout
+    Directory::PageHero(
+      title: partner.name,
+      kicker: partner.categories.first&.name || 'Partner',
+      breadcrumb_label: 'Partners'
+    )
+
+    div(class: 'container-public py-6') do
+      div(class: 'lg:grid lg:grid-cols-[1fr_340px] lg:gap-8') do
+        div do
+          render_directory_about
+          render_directory_events
+          render_directory_location
+        end
+        render_directory_sidebar
+      end
+    end
+  end
+
+  def render_directory_about
+    h3(class: 'udl udl--fw allcaps h4') { 'About' }
+    if partner.summary
+      div(class: 'p--big') do
+        content_tag(:p, partner.summary)
+      end
+    end
+    return if partner.description_html.blank?
+
+    div do
+      raw safe(partner.description_html.to_s)
+    end
+  end
+
+  def render_directory_events
+    flat = events.respond_to?(:values) ? events.values.flatten : Array(events)
+    div(class: 'py-4') do
+      h3(class: 'udl udl--fw allcaps h4') { 'Upcoming events' }
+      if flat.any?
+        flat.first(10).each do |event|
+          Directory::EventRow(event: event)
+        end
+      else
+        p(class: 'text-sm text-tertiary italic') { no_event_message || 'No upcoming events.' }
+      end
+    end
+  end
+
+  def render_directory_location
+    return unless partner.address || map
+
+    div(class: 'py-4') do
+      h3(class: 'udl udl--fw allcaps h4') { 'Location' }
+      Map(points: map, site: site.slug, compact: true) if map
+      if partner.address
+        div(class: 'text-sm text-tertiary mt-3') do
+          Address(address: partner.address)
+        end
+      end
+    end
+  end
+
+  def render_directory_sidebar
+    div(class: 'flex flex-col gap-6') do
+      render_sidebar_partnerships if containing_sites&.any?
+      render_sidebar_categories if partner.categories.any?
+      render_sidebar_neighbourhood if partner.address&.neighbourhood
+      render_sidebar_canonical_url
+    end
+  end
+
+  def render_sidebar_partnerships
+    count = Array(containing_sites).size
+    div(class: 'rounded-card overflow-hidden') do
+      div(class: 'bg-foreground px-4 py-3', style: 'color: var(--color-background)') do
+        p(class: 'allcaps-label mb-0.5 opacity-80') { 'Part of' }
+        p(class: 'font-serif text-lg') { "#{count} #{'partnership'.pluralize(count)}" }
+      end
+      div(class: 'bg-home-background-3 px-4 py-3') do
+        p(class: 'text-xs text-tertiary mb-3') do
+          plain "You can find #{partner.name} on these local PlaceCal sites:"
+        end
+        Array(containing_sites).each do |site_record|
+          a(href: "https://#{site_record.slug}.placecal.org",
+            class: 'flex items-center justify-between py-2 no-underline text-foreground hover:bg-background/50 transition-colors rounded px-1') do
+            div do
+              div(class: 'font-extra-bold text-sm') { site_record.name }
+              div(class: 'text-xs text-tertiary') do
+                plain site_record.primary_neighbourhood&.name if site_record.primary_neighbourhood
+              end
+            end
+            span(class: 'text-tertiary') { safe('&#8599;') }
+          end
+        end
+      end
+    end
+  end
+
+  def render_sidebar_categories
+    div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
+      h4(class: 'allcaps-label text-tertiary mb-2') { 'Categories' }
+      div(class: 'flex flex-wrap gap-1.5') do
+        partner.categories.each do |cat|
+          a(href: partners_path(category: cat.id),
+            class: 'inline-flex items-center bg-primary text-foreground text-2xs font-bold rounded-full px-2.5 py-0.5 no-underline hover:brightness-110 transition-colors') do
+            plain cat.name
+          end
+        end
+      end
+    end
+  end
+
+  def render_sidebar_neighbourhood
+    neighbourhood = partner.address.neighbourhood
+    path = neighbourhood.path
+
+    div(class: 'rounded-card overflow-hidden') do
+      div(class: 'bg-primary px-4 py-3') do
+        p(class: 'font-serif text-lg text-foreground') { 'In' }
+      end
+      div(class: 'bg-home-background-3 px-4 py-3') do
+        p(class: 'text-xs text-tertiary mb-2') { 'Neighbourhood hierarchy:' }
+        div(class: 'flex flex-wrap items-center gap-1 text-sm') do
+          path.each_with_index do |ancestor, i|
+            span(class: 'text-tertiary mx-0.5') { safe('&rsaquo;') } if i.positive?
+            if ancestor == neighbourhood
+              span(class: 'font-extra-bold text-foreground') { ancestor.name }
+            else
+              span(class: 'text-foreground') { ancestor.name }
+            end
+          end
+        end
+      end
+    end
+  end
+
+  def render_sidebar_canonical_url
+    div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
+      p(class: 'text-xs text-tertiary mb-2') { 'Canonical URL' }
+      p(class: 'font-mono text-sm text-foreground break-all') do
+        plain "placecal.org/partners/#{partner.slug}"
+      end
+      p(class: 'text-xs text-tertiary mt-2') do
+        plain 'Share this link — it redirects to the right local site for each visitor.'
+      end
+    end
+  end
+
+  # ── Local site layout ──
+
+  def render_local_layout
+    div do
+      Hero(partner.name, site.tagline)
+
+      div(class: 'container-public mb-32') do
+        Breadcrumb(
+          trail: [['Partners', partners_path], [partner.name, partner_path(partner)]],
+          site_name: site.name
+        )
+
+        render_partner_details
+        render_managees
+        render_events_section
+      end
+    end
+  end
 
   def render_partner_details
     div(class: 'g g--partner') do
@@ -65,7 +213,6 @@ class Views::Partners::Show < Views::Base
         render_contact_and_address
       end
       div(class: 'gi gi__2-5') do
-        Directory::PartnerSidebar(partner: partner, containing_sites: containing_sites) if containing_sites
         render_partner_image
         Map(points: map, site: site.slug, compact: true)
         render_opening_times
@@ -188,7 +335,6 @@ class Views::Partners::Show < Views::Base
   def render_events_paginator
     path = "partners/#{partner.slug}/events"
     today = Time.zone.today
-    # Use date_period for filter/URL context, period for active state
     filter_period = date_period || period
     div(class: 'paginator', id: 'paginator') do
       Timeline(
