@@ -37,6 +37,16 @@
 	}
 }
 
+/* Hero page title — shared across all brown hero sections */
+@utility hero-title {
+	font-family: var(--font-serif);
+	font-weight: var(--font-weight-regular);
+	font-size: var(--text-hero);
+	line-height: var(--leading-hero);
+	margin-top: calc(var(--spacing) * 3);
+	margin-bottom: calc(var(--spacing) * 3);
+}
+
 /* Allcaps label used for kickers, section labels, form labels, sidebar headings */
 @utility allcaps-label {
 	font-size: var(--text-2xs);

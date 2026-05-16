@@ -11,7 +11,7 @@ class Components::Directory::PageHero < Components::Directory::Base
       div(class: 'container-public') do
         render_breadcrumb if @breadcrumb_label
         render_kicker if @kicker
-        h1(class: 'font-serif font-regular text-hero leading-hero') { @title }
+        h1(class: 'hero-title') { @title }
         p(class: 'text-base leading-relaxed max-w-[700px] mt-2 opacity-80') { @subtitle } if @subtitle
       end
     end

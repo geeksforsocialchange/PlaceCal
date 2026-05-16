@@ -30,7 +30,7 @@ class Views::Partnerships::Show < Views::Base
       div(class: 'container-public py-8') do
         render_breadcrumb
         p(class: 'allcaps-label mb-1 opacity-60') { 'Partnership' }
-        h1(class: 'font-serif font-regular text-hero leading-hero mb-3') do
+        h1(class: 'hero-title') do
           plain @partnership.name
         end
         p(class: 'text-base leading-relaxed max-w-[620px] mb-5 opacity-80') { @partnership.description } if @partnership.description.present?

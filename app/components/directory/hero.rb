@@ -21,7 +21,7 @@ class Components::Directory::Hero < Components::Directory::Base
 
   def render_content
     div(class: 'pb-6 lg:pb-10') do
-      h1(class: 'font-serif font-regular text-hero leading-hero mb-3') { @title }
+      h1(class: 'hero-title') { @title }
       p(class: 'text-base leading-relaxed max-w-[620px] mb-6 opacity-90') { @subtitle } if @subtitle
       render_search if @search_path
       render_jump_links
