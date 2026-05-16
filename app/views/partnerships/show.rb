@@ -76,10 +76,11 @@ class Views::Partnerships::Show < Views::Base
     div(class: 'py-4') do
       h2(class: 'allcaps-label text-tertiary mb-4') { 'Partners in this partnership' }
       div(class: 'grid grid-cols-1 md:grid-cols-2 gap-2') do
-        partner_list.each do |partner|
+        displayed_partners.each do |partner|
           render_partner_mini(partner)
         end
       end
+      render_see_more_link("See all #{partner_count} partners", "https://#{@partnership.slug}.placecal.org/partners") if partner_count > 10
     end
   end
 
@@ -121,6 +122,17 @@ class Views::Partnerships::Show < Views::Base
       h2(class: 'allcaps-label text-tertiary mb-4') { 'Upcoming events' }
       flat_events.first(10).each do |event|
         Directory::EventRow(event: event)
+      end
+      render_see_more_link('See all events', "https://#{@partnership.slug}.placecal.org/events") if flat_events.size > 10
+    end
+  end
+
+  def render_see_more_link(text, href)
+    div(class: 'mt-4') do
+      a(href: href,
+        class: 'inline-flex items-center gap-1 text-sm font-bold text-foreground no-underline hover:underline') do
+        plain text
+        safe('&rarr;')
       end
     end
   end
@@ -181,6 +193,10 @@ class Views::Partnerships::Show < Views::Base
                       else
                         Array(@partners)
                       end
+  end
+
+  def displayed_partners
+    @displayed_partners ||= partner_list.sort_by { |p| p.updated_at || Time.zone.at(0) }.last(10).reverse
   end
 
   def partner_count
