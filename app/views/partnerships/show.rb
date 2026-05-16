@@ -29,11 +29,11 @@ class Views::Partnerships::Show < Views::Base
     section(class: 'bg-foreground', style: 'color: var(--color-background)') do
       div(class: 'container-public py-8') do
         render_breadcrumb
-        p(class: 'allcaps-label mb-1 opacity-60') { 'Partnership' }
+        div(class: 'allcaps-label mb-1 opacity-60') { 'Partnership' }
         h1(class: 'hero-title') do
           plain @partnership.name
         end
-        p(class: 'text-base leading-relaxed max-w-[620px] mb-5 opacity-80') { @partnership.description } if @partnership.description.present?
+        div(class: 'text-base leading-relaxed max-w-[620px] mb-5 opacity-80') { @partnership.description } if @partnership.description.present?
         div(class: 'flex flex-wrap items-center gap-3') do
           render_visit_button
           render_stat_chips
@@ -163,7 +163,7 @@ class Views::Partnerships::Show < Views::Base
         )
       else
         div(class: 'h-[280px] flex items-center justify-center') do
-          p(class: 'text-tertiary text-sm font-bold') { 'Map coming soon' }
+          div(class: 'text-tertiary text-sm font-bold') { 'Map coming soon' }
         end
       end
     end
@@ -172,11 +172,11 @@ class Views::Partnerships::Show < Views::Base
   def render_cta_card
     div(class: 'rounded-card overflow-hidden') do
       div(class: 'bg-secondary px-4 py-3') do
-        h3(class: 'font-serif text-lg text-foreground') { 'Get involved' }
+        div(class: 'font-serif text-lg text-foreground') { 'Get involved' }
       end
       div(class: 'bg-home-background-3 px-4 py-3') do
         area_name = @partnership.primary_neighbourhood&.name
-        p(class: 'text-sm text-tertiary mb-4') do
+        div(class: 'text-sm text-tertiary mb-4') do
           plain "Running a community group#{" in #{area_name}" if area_name}? Join this partnership to list your events."
         end
         a(href: '/get-in-touch',

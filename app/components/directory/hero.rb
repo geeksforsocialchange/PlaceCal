@@ -22,7 +22,7 @@ class Components::Directory::Hero < Components::Directory::Base
   def render_content
     div(class: 'pb-6 lg:pb-10') do
       h1(class: 'hero-title') { @title }
-      p(class: 'text-base leading-relaxed max-w-[620px] mb-6 opacity-90') { @subtitle } if @subtitle
+      div(class: 'text-base leading-relaxed max-w-[620px] mb-6 opacity-90') { @subtitle } if @subtitle
       render_search if @search_path
       render_jump_links
     end
@@ -70,7 +70,7 @@ class Components::Directory::Hero < Components::Directory::Base
         )
       else
         div(class: 'bg-primary/20 rounded-tl-card h-full min-h-[360px] flex items-center justify-center') do
-          p(class: 'text-foreground/40 text-sm font-bold') { 'Map coming soon' }
+          div(class: 'text-foreground/40 text-sm font-bold') { 'Map coming soon' }
         end
       end
     end

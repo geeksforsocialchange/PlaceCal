@@ -114,11 +114,11 @@ class Views::Partners::Show < Views::Base
     count = Array(containing_sites).size
     div(class: 'rounded-card overflow-hidden') do
       div(class: 'bg-foreground px-4 py-3', style: 'color: var(--color-background)') do
-        p(class: 'allcaps-label mb-0.5 opacity-80') { 'Part of' }
-        p(class: 'font-serif text-lg') { "#{count} #{'partnership'.pluralize(count)}" }
+        div(class: 'allcaps-label mb-0.5 opacity-80') { 'Part of' }
+        div(class: 'font-serif text-lg') { "#{count} #{'partnership'.pluralize(count)}" }
       end
       div(class: 'bg-home-background-3 px-4 py-3') do
-        p(class: 'text-xs text-tertiary mb-3') do
+        div(class: 'text-xs text-tertiary mb-3') do
           plain "You can find #{partner.name} on these local PlaceCal sites:"
         end
         Array(containing_sites).each do |site_record|
@@ -157,10 +157,10 @@ class Views::Partners::Show < Views::Base
 
     div(class: 'rounded-card overflow-hidden') do
       div(class: 'bg-primary px-4 py-3') do
-        p(class: 'font-serif text-lg text-foreground') { 'In' }
+        div(class: 'font-serif text-lg text-foreground') { 'In' }
       end
       div(class: 'bg-home-background-3 px-4 py-3') do
-        p(class: 'text-xs text-tertiary mb-2') { 'Neighbourhood hierarchy:' }
+        div(class: 'text-xs text-tertiary mb-2') { 'Neighbourhood hierarchy:' }
         div(class: 'flex flex-wrap items-center gap-1 text-sm') do
           path.each_with_index do |ancestor, i|
             span(class: 'text-tertiary mx-0.5') { safe('&rsaquo;') } if i.positive?
@@ -177,11 +177,11 @@ class Views::Partners::Show < Views::Base
 
   def render_sidebar_canonical_url
     div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
-      p(class: 'text-xs text-tertiary mb-2') { 'Canonical URL' }
-      p(class: 'font-mono text-sm text-foreground break-all') do
+      div(class: 'text-xs text-tertiary mb-2') { 'Canonical URL' }
+      div(class: 'font-mono text-sm text-foreground break-all') do
         plain "placecal.org/partners/#{partner.slug}"
       end
-      p(class: 'text-xs text-tertiary mt-2') do
+      div(class: 'text-xs text-tertiary mt-2') do
         plain 'Share this link — it redirects to the right local site for each visitor.'
       end
     end

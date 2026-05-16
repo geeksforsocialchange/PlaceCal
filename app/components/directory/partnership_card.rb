@@ -20,7 +20,7 @@ class Components::Directory::PartnershipCard < Components::Directory::Base
     div(class: 'bg-foreground text-background px-5 py-4 flex justify-between items-start') do
       div do
         div(class: 'text-2xs font-extra-bold uppercase tracking-wide text-background/80 mb-1') { 'Partnership' }
-        h3(class: 'font-serif font-regular text-card leading-tight text-background') { @partnership.name }
+        div(class: 'font-serif font-regular text-card leading-tight text-background') { @partnership.name }
       end
       span(class: 'text-background/70 text-lg') { safe('&rarr;') }
     end
@@ -38,7 +38,7 @@ class Components::Directory::PartnershipCard < Components::Directory::Base
           plain "#{@partnership.partners_count} #{'partner'.pluralize(@partnership.partners_count)}"
         end
       end
-      p(class: 'text-detail leading-relaxed text-tertiary line-clamp-3') { @partnership.description } if @partnership.description.present?
+      div(class: 'text-detail leading-relaxed text-tertiary line-clamp-3') { @partnership.description } if @partnership.description.present?
     end
   end
 end

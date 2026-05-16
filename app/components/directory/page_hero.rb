@@ -12,7 +12,7 @@ class Components::Directory::PageHero < Components::Directory::Base
         render_breadcrumb if @breadcrumb_label
         render_kicker if @kicker
         h1(class: 'hero-title') { @title }
-        p(class: 'text-base leading-relaxed max-w-[700px] mt-2 opacity-80') { @subtitle } if @subtitle
+        div(class: 'text-base leading-relaxed max-w-[700px] mt-2 opacity-80') { @subtitle } if @subtitle
       end
     end
   end
@@ -28,6 +28,6 @@ class Components::Directory::PageHero < Components::Directory::Base
   end
 
   def render_kicker
-    p(class: 'allcaps-label mb-1 opacity-80') { @kicker }
+    div(class: 'allcaps-label mb-1 opacity-80') { @kicker }
   end
 end
