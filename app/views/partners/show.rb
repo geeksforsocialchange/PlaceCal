@@ -31,9 +31,8 @@ class Views::Partners::Show < Views::Base
       render_directory_layout
     else
       render_local_layout
+      render_meta_section
     end
-
-    render_meta_section
   end
 
   private
@@ -60,7 +59,6 @@ class Views::Partners::Show < Views::Base
   end
 
   def render_directory_about
-    h3(class: 'udl udl--fw allcaps h4') { 'About' }
     if partner.summary
       div(class: 'p--big') do
         content_tag(:p, partner.summary)
@@ -75,14 +73,12 @@ class Views::Partners::Show < Views::Base
 
   def render_directory_events
     flat = events.respond_to?(:values) ? events.values.flatten : Array(events)
+    return unless flat.any?
+
     div(class: 'py-4') do
       h3(class: 'udl udl--fw allcaps h4') { 'Upcoming events' }
-      if flat.any?
-        flat.first(10).each do |event|
-          Directory::EventRow(event: event)
-        end
-      else
-        p(class: 'text-sm text-tertiary italic') { no_event_message || 'No upcoming events.' }
+      flat.first(10).each do |event|
+        Directory::EventRow(event: event, context_partner: partner)
       end
     end
   end
@@ -92,10 +88,12 @@ class Views::Partners::Show < Views::Base
 
     div(class: 'py-4') do
       h3(class: 'udl udl--fw allcaps h4') { 'Location' }
-      Map(points: map, site: site.slug, compact: true) if map
-      if partner.address
-        div(class: 'text-sm text-tertiary mt-3') do
-          Address(address: partner.address)
+      div(class: 'grid grid-cols-[1fr_auto] gap-4 items-start') do
+        Map(points: map, site: site.slug, compact: true) if map
+        if partner.address
+          div(class: 'text-base text-foreground') do
+            Address(address: partner.address)
+          end
         end
       end
     end
@@ -106,7 +104,7 @@ class Views::Partners::Show < Views::Base
       render_sidebar_partnerships if containing_sites&.any?
       render_sidebar_categories if partner.categories.any?
       render_sidebar_neighbourhood if partner.address&.neighbourhood
-      render_sidebar_canonical_url
+      render_sidebar_share
     end
   end
 
@@ -155,34 +153,33 @@ class Views::Partners::Show < Views::Base
     neighbourhood = partner.address.neighbourhood
     path = neighbourhood.path
 
-    div(class: 'rounded-card overflow-hidden') do
-      div(class: 'bg-primary px-4 py-3') do
-        div(class: 'font-serif text-lg text-foreground') { 'In' }
-      end
-      div(class: 'bg-home-background-3 px-4 py-3') do
-        div(class: 'text-xs text-tertiary mb-2') { 'Neighbourhood hierarchy:' }
-        div(class: 'flex flex-wrap items-center gap-1 text-sm') do
-          path.each_with_index do |ancestor, i|
-            span(class: 'text-tertiary mx-0.5') { safe('&rsaquo;') } if i.positive?
-            if ancestor == neighbourhood
-              span(class: 'font-extra-bold text-foreground') { ancestor.name }
-            else
-              span(class: 'text-foreground') { ancestor.name }
-            end
+    div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
+      h4(class: 'allcaps-label text-tertiary mb-2') { 'Neighbourhood' }
+      div(class: 'flex flex-wrap items-center gap-1 text-sm') do
+        path.each_with_index do |ancestor, i|
+          span(class: 'text-tertiary mx-0.5') { safe('&rsaquo;') } if i.positive?
+          if ancestor == neighbourhood
+            span(class: 'font-extra-bold text-foreground') { ancestor.name }
+          else
+            span(class: 'text-foreground') { ancestor.name }
           end
         end
       end
     end
   end
 
-  def render_sidebar_canonical_url
+  def render_sidebar_share
     div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
-      div(class: 'text-xs text-tertiary mb-2') { 'Canonical URL' }
-      div(class: 'font-mono text-sm text-foreground break-all') do
+      div(class: 'allcaps-label text-tertiary mb-3') { 'Share & subscribe' }
+
+      a(href: "https://placecal.org/partners/#{partner.slug}",
+        class: 'font-mono text-sm text-foreground break-all no-underline hover:underline hover:decoration-primary') do
         plain "placecal.org/partners/#{partner.slug}"
       end
-      div(class: 'text-xs text-tertiary mt-2') do
-        plain 'Share this link — it redirects to the right local site for each visitor.'
+      a(href: partner_url(partner, protocol: :webcal, format: :ics),
+        class: 'inline-flex items-center gap-1.5 mt-3 text-sm font-bold text-foreground no-underline hover:underline hover:decoration-primary') do
+        raw(safe('<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>'))
+        plain 'Subscribe via iCal'
       end
     end
   end
