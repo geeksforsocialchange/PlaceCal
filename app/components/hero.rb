@@ -11,7 +11,7 @@ class Components::Hero < Components::Base
 
   def view_template
     div(class: 'hero') do
-      div(class: 'c') do
+      div(class: 'container-public') do
         if @subtitle
           h4(class: 'allcaps') { @subtitle }
           div(role: 'presentation', class: 'hero__divider')

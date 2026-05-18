@@ -34,7 +34,7 @@ class Views::Layouts::Application < Phlex::HTML
         div(class: [
               'page',
               *(if site&.default_site?
-                  ['max-w-home bg-foreground border-none mx-auto']
+                  ['max-w-home bg-background border-none mx-auto']
                 else
                   [
                     'max-w-xl bg-background mx-auto',
@@ -51,7 +51,7 @@ class Views::Layouts::Application < Phlex::HTML
             yield
           end
           if site&.default_site?
-            HomeFooter()
+            Directory::Footer()
           else
             Footer(site)
           end
@@ -91,6 +91,7 @@ class Views::Layouts::Application < Phlex::HTML
     meta(name: 'twitter:site', content: '@PlaceCal')
     meta(name: 'twitter:creator', content: '@gfscstudio')
     meta(property: 'og:url', content: request.original_url)
+    link(rel: 'canonical', href: request.original_url)
     meta(name: 'robots', content: 'noarchive')
 
     script(type: 'application/ld+json') { raw safe(site.to_json_ld(base_url: request.base_url).to_json) } if site

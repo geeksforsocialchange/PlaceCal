@@ -25,7 +25,7 @@ class Views::Sites::Default < Views::Base
 
   def render_mission
     section(class: 'region region__mission') do
-      div(class: 'c c--narrow') do
+      div(class: 'container-narrow') do
         p do
           plain "We're working with "
           link_to 'local organisations', partners_path
@@ -41,7 +41,7 @@ class Views::Sites::Default < Views::Base
       div(class: 'title-strip') do
         h2(class: 'h2--alt') { 'About Us' }
       end
-      div(class: 'c c--narrow first-ele-h3-serif') do
+      div(class: 'container-narrow first-ele-h3-serif') do
         raw safe(site.description_html.to_s)
         Profile(user: site.site_admin) if site.site_admin.present?
       end
@@ -50,7 +50,7 @@ class Views::Sites::Default < Views::Base
 
   def render_support
     section(class: 'region region__support') do
-      div(class: 'c') do
+      div(class: 'container-public') do
         div(class: 'gr gr--3') do
           div { HelpCard(variant: :adding_events, site: site) }
           div { HelpCard(places: places_to_get_computer_access, variant: :computer_access) } if places_to_get_computer_access.present?

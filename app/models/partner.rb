@@ -11,6 +11,7 @@ class Partner < ApplicationRecord
   # ==== Constants ====
 
   MAX_CATEGORIES = 3
+  NEIGHBOURHOOD_UNIT_RANK = %w[ward district county region].freeze
 
   # ==== Attributes ====
   # Columns marked (nullable) have no NOT NULL constraint in the DB.
@@ -227,6 +228,16 @@ class Partner < ApplicationRecord
 
   def to_s
     name
+  end
+
+  def location_name
+    return address.neighbourhood.name if address&.neighbourhood
+    return address.postcode if address&.postcode.present?
+
+    best = service_area_neighbourhoods
+           .select { |n| NEIGHBOURHOOD_UNIT_RANK.include?(n.unit) }
+           .min_by { |n| NEIGHBOURHOOD_UNIT_RANK.index(n.unit) }
+    best&.name
   end
 
   # @return [Boolean] whether FriendlyId should generate a new slug

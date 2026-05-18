@@ -5,10 +5,14 @@ class PagesController < ApplicationController
   before_action :set_site
 
   def home
-    @neighbourhoods = Site.published.select do |site|
-      site.tags.none? { |tag| tag.type == 'Partnership' }
+    if default_site?
+      render_directory_home
+    else
+      @neighbourhoods = Site.published.select do |site|
+        site.tags.none? { |tag| tag.type == 'Partnership' }
+      end
+      render Views::Pages::Home.new(neighbourhoods: @neighbourhoods)
     end
-    render Views::Pages::Home.new(neighbourhoods: @neighbourhoods)
   end
 
   def find_placecal
@@ -64,5 +68,76 @@ class PagesController < ApplicationController
       # Admin subdomain or no site found - disallow all indexing
       render plain: "User-agent: *\nDisallow: /"
     end
+  end
+
+  NEIGHBOURHOOD_UNIT_RANK = %w[ward district county region].freeze
+
+  private
+
+  def render_directory_home
+    @partnerships = Site.where(is_published: true)
+                        .where.not(slug: 'default-site')
+                        .order(partners_count: :desc)
+                        .limit(6)
+    @recent_partners = Partner.visible.includes(:categories, :address).order(created_at: :desc).limit(5)
+    @upcoming_events = EventsQuery.new(site: @site).call(period: 'upcoming')
+    @stats = {
+      partnerships: Site.where(is_published: true).where.not(slug: 'default-site').count,
+      partners: Partner.visible.count,
+      events: Event.future(Time.zone.today).count,
+      neighbourhoods: Neighbourhood.districts.count
+    }
+
+    @partner_locations = build_partner_locations
+
+    render Views::Pages::DirectoryHome.new(
+      partnerships: @partnerships,
+      recent_partners: @recent_partners,
+      upcoming_events: @upcoming_events,
+      stats: @stats,
+      partner_locations: @partner_locations
+    )
+  end
+
+  def build_partner_locations
+    locations = Partner.visible.joins(:address)
+                       .where.not(addresses: { latitude: nil })
+                       .pluck(:name, :slug, 'addresses.latitude', 'addresses.longitude')
+                       .map { |name, slug, lat, lon| { lat: lat, lon: lon, name: name, url: partner_path(slug) } }
+
+    addressless = Partner.visible.where(address_id: nil).includes(service_areas: :neighbourhood)
+    return locations if addressless.none?
+
+    sa_nhood_ids = addressless.flat_map { |p| p.service_areas.map(&:neighbourhood_id) }.compact.uniq
+    centroid_cache = neighbourhood_centroids(sa_nhood_ids)
+
+    addressless.find_each do |p|
+      best = p.service_areas.filter_map(&:neighbourhood)
+              .select { |n| NEIGHBOURHOOD_UNIT_RANK.include?(n.unit) }
+              .min_by { |n| NEIGHBOURHOOD_UNIT_RANK.index(n.unit) }
+      next unless best
+
+      coords = centroid_cache[best.id]
+      next unless coords
+
+      locations << { lat: coords[0], lon: coords[1], name: p.name, url: partner_path(p.slug) }
+    end
+
+    locations
+  end
+
+  def neighbourhood_centroids(neighbourhood_ids)
+    cache = {}
+    Neighbourhood.where(id: neighbourhood_ids).find_each do |n|
+      addrs = Address.where(neighbourhood_id: n.id).where.not(latitude: nil)
+      unless addrs.exists?
+        desc_ids = n.descendant_ids
+        addrs = Address.where(neighbourhood_id: desc_ids).where.not(latitude: nil) if desc_ids.any?
+      end
+      next unless addrs.exists?
+
+      cache[n.id] = [addrs.average(:latitude).to_f, addrs.average(:longitude).to_f]
+    end
+    cache
   end
 end

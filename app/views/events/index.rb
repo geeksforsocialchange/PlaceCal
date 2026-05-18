@@ -19,7 +19,7 @@ class Views::Events::Index < Views::Base
 
     Hero('Events & activities', site.tagline)
 
-    div(class: 'c c--lg-space-after') do
+    div(class: 'container-public mb-32') do
       turbo_frame_tag 'events-browser', data: { turbo_action: 'advance' } do
         render_paginator
         hr

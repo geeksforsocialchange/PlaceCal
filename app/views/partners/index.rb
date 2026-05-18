@@ -14,7 +14,7 @@ class Views::Partners::Index < Views::Base
 
     Hero('Our Partners', site.tagline)
     turbo_frame_tag 'partner_previews' do
-      div(class: 'c c--lg-space-after') do
+      div(class: 'container-public mb-32') do
         Breadcrumb(trail: [['Partners', partners_path]], site_name: site.name) do
           PartnerFilter(
             site: site,

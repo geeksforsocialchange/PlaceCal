@@ -141,7 +141,11 @@ class EventsQuery
   # ===================
 
   def base_scope
-    @base_scope ||= @site ? events_for_site.includes(:place, :organiser) : Event.includes(:place, :organiser)
+    @base_scope ||= if @site.nil? || @site.directory_site?
+                      Event.includes(:place, :organiser)
+                    else
+                      events_for_site.includes(:place, :organiser)
+                    end
   end
 
   # Inline of Event.for_site - finds events belonging to partners in this site

@@ -11,7 +11,7 @@ class Views::News::Show < Views::Base
 
     div(vocab: 'http://schema.org/', typeof: 'Article') do
       Hero(article.title, site.tagline, 'name')
-      div(class: 'c c--lg-space-after') do
+      div(class: 'container-public mb-32') do
         Breadcrumb(
           trail: [['News', news_index_path], [article.title, news_path(article)]],
           site_name: site.name

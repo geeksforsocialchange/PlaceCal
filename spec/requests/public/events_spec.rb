@@ -206,18 +206,18 @@ RSpec.describe "Public Events", type: :request do
     end
   end
 
-  describe "default site redirect" do
+  describe "default site directory" do
     let!(:default_site) { create_default_site }
 
-    it "redirects events page on base domain" do
+    it "serves directory events page on base domain" do
       get events_url(host: "lvh.me")
-      expect(response).to be_redirect
+      expect(response).to be_successful
     end
 
-    it "redirects event page on base domain" do
+    it "serves event page on base domain" do
       event = create(:event, organiser: partner, dtstart: 1.day.from_now, address: address)
       get event_url(event, host: "lvh.me")
-      expect(response).to be_redirect
+      expect(response).to be_successful
     end
   end
 end

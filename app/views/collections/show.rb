@@ -16,7 +16,7 @@ class Views::Collections::Show < Views::Base
 
     Hero(collection.name, site.tagline)
 
-    div(class: 'c c--lg-space-after') do
+    div(class: 'container-public mb-32') do
       Breadcrumb(trail: [[collection.name, collection.named_route]], site_name: site.name)
 
       hr

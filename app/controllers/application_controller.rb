@@ -238,9 +238,9 @@ class ApplicationController < ActionController::Base
   def default_site_navigation
     [
       ['Home', root_path],
-      ['Our story', our_story_path],
-      ['Find your PlaceCal', find_placecal_path],
-      ['Get in touch', get_in_touch_path]
+      ['Partners', partners_path],
+      ['Partnerships', partnerships_path],
+      ['Events', events_path]
     ]
   end
 
