@@ -81,10 +81,10 @@ group :development do
   gem 'lookbook', '>= 2.3.14'    # Component preview UI (Storybook for Rails)
   gem 'rails-erd'                 # Entity-relationship diagrams
   gem 'rdoc'                      # Documentation generator
-  gem 'rubocop', '1.86.1', require: false
+  gem 'rubocop', '1.86.2', require: false
   gem 'rubocop-graphql', '1.6.0', require: false
   gem 'rubocop-performance', '1.26.1', require: false
-  gem 'rubocop-rails', '2.35.0', require: false
+  gem 'rubocop-rails', '2.35.1', require: false
   gem 'rubocop-rake', require: false
   gem 'rubocop-rspec', require: false
   gem 'ruby-lsp', require: false   # Ruby language server (IDE support)
