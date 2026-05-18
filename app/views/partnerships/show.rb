@@ -34,9 +34,11 @@ class Views::Partnerships::Show < Views::Base
           plain @partnership.name
         end
         div(class: 'text-base leading-relaxed max-w-[620px] mb-5 opacity-80') { @partnership.description } if @partnership.description.present?
-        render_visit_button
-        div(class: 'flex flex-wrap items-center justify-center gap-3 mt-4') do
-          render_stat_chips
+        div(class: 'flex flex-col items-center gap-4 mt-2') do
+          render_visit_button
+          div(class: 'flex flex-wrap items-center justify-center gap-3') do
+            render_stat_chips
+          end
         end
       end
     end
