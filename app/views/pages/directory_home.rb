@@ -130,7 +130,7 @@ class Views::Pages::DirectoryHome < Views::Base
   def render_cta_card(heading:, body:, link_text:, link_path:, head_class:)
     div(class: 'flex flex-col rounded-card overflow-hidden') do
       div(class: "#{head_class} px-5 py-4") do
-        h3(class: 'font-serif font-regular text-card text-foreground') { heading }
+        h3(class: 'font-serif font-regular text-card', style: 'color: #43392f') { heading }
       end
       div(class: 'bg-home-background-3 px-5 py-4 flex-1') do
         p(class: 'text-detail leading-relaxed text-tertiary mb-4') { body }

@@ -85,7 +85,7 @@ class Components::Navigation < Components::Base
   # TODO: Change to join.placecal.org once the join flow is live
   def render_join_button
     li(class: 'text-center max-md:py-3') do
-      link_to('Join us', get_in_touch_path, class: 'inline-flex items-center rounded-full bg-secondary px-4 py-1.5 text-detail font-bold text-foreground no-underline hover:brightness-110 transition-all')
+      link_to('Join us', get_in_touch_path, class: 'inline-flex items-center rounded-full bg-secondary px-4 py-1.5 text-detail font-bold no-underline hover:brightness-110 transition-all', style: 'color: #43392f')
     end
   end
 

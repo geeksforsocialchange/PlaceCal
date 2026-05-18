@@ -138,7 +138,7 @@ class Views::Events::DirectoryIndex < Views::Base
 
   def render_day_group(date, day_events)
     div(class: 'py-3') do
-      h3(class: 'font-serif text-lg text-foreground mb-2 pt-2 border-t-2 border-rules') do
+      h2(class: 'font-serif text-lg text-foreground mb-2 pt-2 border-t-2 border-rules') do
         plain date.strftime('%A, %-d %B %Y')
       end
       div(class: 'grid md:grid-cols-2 gap-x-6') do

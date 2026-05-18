@@ -24,13 +24,13 @@ class Views::Pages::TermsOfUse < Views::Base
   private
 
   def render_acceptance
-    h3 { 'Acceptance of Terms of Use Agreement' }
+    h2 { 'Acceptance of Terms of Use Agreement' }
     p { 'By using the PlaceCal website or by signing up for an account with PlaceCal (the "Service"), you agree to be bound by these Terms of Use and our Privacy Policy, which is incorporated by reference into this Agreement (the "Agreement"). If you do not accept and agree to be bound by all of the terms of this Agreement, please do not use the Service.' }
     p { 'If we update the "Agreement" for any reason, we will post the updated version on our website. We will also notify registered users via email. If you continue to use the Service after the changes become effective, then you agree to the revised Agreement.' }
   end
 
   def render_eligibility
-    h3 { 'Eligibility' }
+    h2 { 'Eligibility' }
     p { 'You are not authorized to create an account or use the Service unless all of the following are true:' }
     ul do
       li { 'you are at least 18 years of age, or the age of majority in your country' }
@@ -41,13 +41,13 @@ class Views::Pages::TermsOfUse < Views::Base
   end
 
   def render_safety
-    h3 { 'Safety' }
+    h2 { 'Safety' }
     p { 'PlaceCal is not responsible for the conduct of any member on or off of the Service. You agree to use caution in all interactions with other members, especially if you decide to communicate off the Service or meet in person, such as attending an event.' }
     p { raw(safe('<strong>You are solely responsible for your interactions with organisations and events. You understand that PlaceCal does not conduct background checks on users or otherwise inquire into the background of users. PlaceCal makes no representations or warranties as to the content or safety of events and organisations listed on its service.</strong>')) }
   end
 
   def render_community_rules
-    h3 { 'Community Rules' }
+    h2 { 'Community Rules' }
     p { raw(safe('<strong>PlaceCal is dedicated to providing an inclusive, kind, welcoming, and harassment-free experience for everyone using the platform or going to events listed on it. We do not tolerate harassment of partners or site users in any form.</strong>')) }
     p { 'These community rules apply both the PlaceCal platform and our adjacent platforms, including our Discord, emails and direct messages, both online and off. Anyone who violates the community rules may be sanctioned or expelled from these spaces at the discretion of the administrators.' }
     p { 'Prohibited topics for events on our platform, partner descriptions, and communication with the PlaceCal team include:' }
@@ -70,7 +70,7 @@ class Views::Pages::TermsOfUse < Views::Base
   end
 
   def render_warranty
-    h3 { 'Warranty Disclaimers; Limitation of Liability' }
+    h2 { 'Warranty Disclaimers; Limitation of Liability' }
     p do
       plain 'The services are provided "as is" and without warranty of any kind. To the maximum extent ' \
             'permitted by law, The Company disclaims all representations and warranties, express or implied, ' \
@@ -107,7 +107,7 @@ class Views::Pages::TermsOfUse < Views::Base
   end
 
   def render_entire_agreement
-    h3 { 'Entire Agreement' }
+    h2 { 'Entire Agreement' }
     p do
       plain 'This Agreement, which includes the '
       link_to 'Privacy Policy', privacy_url

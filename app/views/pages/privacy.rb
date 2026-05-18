@@ -39,7 +39,7 @@ class Views::Pages::Privacy < Views::Base
   end
 
   def render_contact_details
-    h3 { 'Our Contact Details' }
+    h2 { 'Our Contact Details' }
     p { "Name: #{t('colophon.copyright')}" }
     p { "Address: #{t('colophon.address')}" }
     p do
@@ -49,8 +49,8 @@ class Views::Pages::Privacy < Views::Base
   end
 
   def render_personal_information
-    h3 { 'Personal Information' }
-    h4 { 'The type of personal information we collect' }
+    h2 { 'Personal Information' }
+    h2 { 'The type of personal information we collect' }
     p { "We currently collect and process the following information from organisations who sign-up to use PlaceCal's services, and any individuals who represent them:" }
     ul do
       li { 'Personal identifiers, contacts and characteristics (for example, name and contact details)' }
@@ -61,13 +61,13 @@ class Views::Pages::Privacy < Views::Base
     end
     p { 'We do not collect personal information from users who are browsing a PlaceCal site without an account.' }
 
-    h4 { 'How we get the personal information and why we have it' }
+    h2 { 'How we get the personal information and why we have it' }
     p { 'Most of the personal information we process is provided to us directly by you for the purpose of creating and hosting events on the PlaceCal platform.' }
     p { 'We use the information that you have given us in order to share this information with those browsing the site and viewing organisations and their calendars.' }
     p { 'Under the UK General Data Protection Regulation (UK GDPR), the lawful basis we rely on for processing this information is your consent.' }
     p { 'You are able to remove your consent at any time. You can do this by contacting support@placecal.org' }
 
-    h4 { 'How we store your personal information' }
+    h2 { 'How we store your personal information' }
     p { 'Your information is securely stored on our server in London, UK.' }
     p do
       plain 'We keep personal identifiers, contacts and characteristics (as described in the "Type of information we collect" section above) for as long as this information is relevant – meaning as long as a partner, user or calendar this information is associated with is active. '
@@ -85,7 +85,7 @@ class Views::Pages::Privacy < Views::Base
   end
 
   def render_data_rights
-    h4 { 'Your data protection rights' }
+    h2 { 'Your data protection rights' }
     p { 'Under data protection law, you have rights including:' }
     p { raw(safe('<strong>Your right of access</strong> - You have the right to ask us for copies of your personal information.')) }
     p { raw(safe('<strong>Your right to rectification</strong> - You have the right to ask us to rectify personal information you think is inaccurate. You also have the right to ask us to complete information you think is incomplete.')) }
@@ -101,7 +101,7 @@ class Views::Pages::Privacy < Views::Base
   end
 
   def render_complaints
-    h4 { 'How to complain' }
+    h2 { 'How to complain' }
     p { 'If you have any concerns about our use of your personal information, you can make a complaint to us at support@placecal.org' }
     p { 'You can also complain to the ICO if you are unhappy with how we have used your data.' }
     p { "The ICO's address:" }
@@ -130,20 +130,20 @@ class Views::Pages::Privacy < Views::Base
   end
 
   def render_web_tracking
-    h3 { 'Web Tracking' }
-    h4 { 'Log Files' }
+    h2 { 'Web Tracking' }
+    h2 { 'Log Files' }
     p do
       plain "PlaceCal.org's hosting server follows a standard procedure of using log files. These files log visitors when they visit websites. All hosting companies do this as a part of hosting services' analytics. The information collected by log files include internet protocol (IP) addresses, browser type, Internet Service Provider (ISP), date and time stamp. These are not linked to any information that is personally identifiable."
     end
     p { 'PlaceCal uses an error logging service called [Appsignal](https://www.appsignal.com/). This service logs errors that may occur while you are browsing the site. These are not linked to any information that is personally identifiable. The purpose of these logs is to ensure the security and operation of the website is as expected and alert us when it is not.' }
 
-    h4 { 'Cookies, Web Beacons, Analytics Data and Third Party Privacy Policies' }
+    h2 { 'Cookies, Web Beacons, Analytics Data and Third Party Privacy Policies' }
     p { "PlaceCal doesn't store first party cookies." }
     p { "PlaceCal uses a third party service called Plausible which allows us to track site visits. You can consult Plausible's Privacy Policy here: " }
   end
 
   def render_consent
-    h3 { 'Consent' }
+    h2 { 'Consent' }
     p do
       plain 'By using our website, you hereby consent to our Privacy Policy and agree to its '
       link_to 'Terms and Conditions', terms_of_use_url

@@ -29,7 +29,7 @@ class Views::Partnerships::Show < Views::Base
     section(class: 'bg-foreground', style: 'color: var(--color-background)') do
       div(class: 'container-public py-8') do
         render_breadcrumb
-        div(class: 'allcaps-label mb-1 opacity-60') { 'Partnership' }
+        div(class: 'allcaps-label mb-1 opacity-70') { 'Partnership' }
         h1(class: 'hero-title') do
           plain @partnership.name
         end
@@ -177,7 +177,7 @@ class Views::Partnerships::Show < Views::Base
 
     div(class: 'rounded-card overflow-hidden') do
       div(class: 'bg-secondary px-4 py-3') do
-        div(class: 'font-serif text-lg text-foreground') { 'Get involved' }
+        div(class: 'font-serif text-lg', style: 'color: #43392f') { 'Get involved' }
       end
       div(class: 'bg-home-background-3 px-4 py-3') do
         area_name = @partnership.primary_neighbourhood&.name
