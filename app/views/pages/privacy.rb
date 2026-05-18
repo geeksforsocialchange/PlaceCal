@@ -4,21 +4,20 @@ class Views::Pages::Privacy < Views::Base
   def view_template
     content_for(:title) { 'Privacy Policy' }
 
-    article(class: 'home margin') do
-      Hero('PlaceCal Privacy Policy')
+    Directory::PageHero(
+      title: 'PlaceCal Privacy Policy',
+      breadcrumb_label: 'Privacy'
+    )
 
-      div(class: 'card card--plain') do
-        div(class: 'max_width') do
-          br
-          render_intro
-          render_contact_details
-          render_personal_information
-          render_data_rights
-          render_complaints
-          render_web_tracking
-          render_consent
-          br
-        end
+    div(class: 'container-public py-8') do
+      div(class: 'max-w-[800px] text-base leading-relaxed') do
+        render_intro
+        render_contact_details
+        render_personal_information
+        render_data_rights
+        render_complaints
+        render_web_tracking
+        render_consent
       end
     end
   end

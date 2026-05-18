@@ -5,6 +5,7 @@ class Components::Directory::Hero < Components::Directory::Base
   prop :subtitle, _Nilable(String), default: nil
   prop :search_path, _Nilable(String), default: nil
   prop :partner_locations, _Interface(:each), default: -> { [] }
+  prop :jump_sites, _Interface(:each), default: -> { [] }
 
   def view_template
     section(class: 'bg-foreground py-10 lg:py-14', style: 'color: var(--color-background)') do
@@ -22,7 +23,7 @@ class Components::Directory::Hero < Components::Directory::Base
   def render_content
     div(class: 'pb-6 lg:pb-10') do
       h1(class: 'hero-title') { @title }
-      div(class: 'text-base leading-relaxed max-w-[620px] mb-6 opacity-90') { @subtitle } if @subtitle
+      div(class: 'text-base leading-relaxed max-w-[620px] mb-6') { @subtitle } if @subtitle
       render_search if @search_path
       render_jump_links
     end
@@ -30,13 +31,13 @@ class Components::Directory::Hero < Components::Directory::Base
 
   def render_search
     form(action: @search_path, method: 'get',
-         class: 'flex items-center bg-white rounded-full p-1 pl-2 max-w-[540px] shadow-[0_0_0_2px_rgba(255,255,255,0.2)]') do
+         class: 'flex items-center bg-background rounded-full p-1 pl-2 max-w-[540px] shadow-[0_0_0_2px_rgba(255,255,255,0.2)]') do
       div(class: 'px-2 text-tertiary') do
         raw(safe('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>'))
       end
       input(
         type: 'text', name: 'q',
-        placeholder: 'Search a town, partner, or organisation…',
+        placeholder: 'Search partners…',
         class: 'flex-1 border-0 bg-transparent py-2 text-foreground text-detail outline-none placeholder:text-tertiary'
       )
       button(type: 'submit',
@@ -47,12 +48,14 @@ class Components::Directory::Hero < Components::Directory::Base
   end
 
   def render_jump_links
+    return if @jump_sites.none?
+
     div(class: 'flex items-center gap-6 mt-6 flex-wrap') do
-      span(class: 'text-background/85 text-sm') { 'Jump to:' }
-      %w[Manchester Tameside Salford London].each do |area|
-        a(href: partners_path(q: area),
-          style: 'color: var(--color-background); text-decoration: none;',
-          class: 'font-bold text-detail hover:underline hover:decoration-primary') { area }
+      span(class: 'text-sm') { 'Jump to:' }
+      @jump_sites.each do |site|
+        a(href: partnership_path(site.slug),
+          class: 'font-bold text-detail no-underline hover:underline hover:decoration-primary',
+          style: 'color: inherit') { site.name }
       end
     end
   end

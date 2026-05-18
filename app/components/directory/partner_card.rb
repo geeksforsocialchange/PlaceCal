@@ -24,7 +24,7 @@ class Components::Directory::PartnerCard < Components::Directory::Base
       img(
         src: @partner.image.standard.url,
         alt: @partner.name,
-        class: 'w-[52px] h-[52px] rounded-full object-cover'
+        class: 'w-[52px] h-[52px] rounded-card object-cover'
       )
     else
       div(class: 'w-[52px] h-[52px] rounded-full bg-home-background-3 flex items-center justify-center font-serif text-xl text-tertiary') do
@@ -59,6 +59,9 @@ class Components::Directory::PartnerCard < Components::Directory::Base
   end
 
   def area_text
-    @partner.location_name
+    neighbourhood = @partner.address&.neighbourhood
+    return @partner.location_name unless neighbourhood
+
+    neighbourhood.hierarchy_path.last(3).map(&:shortname).join(' › ')
   end
 end

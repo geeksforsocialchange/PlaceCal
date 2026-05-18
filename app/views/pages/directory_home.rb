@@ -7,6 +7,7 @@ class Views::Pages::DirectoryHome < Views::Base
   prop :upcoming_events, _Interface(:each)
   prop :stats, Hash
   prop :partner_locations, _Interface(:each), default: -> { [] }
+  prop :jump_sites, _Interface(:each), default: -> { [] }
 
   def view_template
     content_for(:description) { 'Find community groups, venues and events near you. PlaceCal aggregates thousands of events from hundreds of local organisations across the UK.' }
@@ -15,14 +16,15 @@ class Views::Pages::DirectoryHome < Views::Base
       title: 'Find community groups, venues and events near you.',
       subtitle: 'PlaceCal aggregates thousands of events and activities from hundreds of local community organisations across the UK. This is the directory for all of it — search by place, by interest, or browse the map.',
       search_path: partners_path,
-      partner_locations: @partner_locations
+      partner_locations: @partner_locations,
+      jump_sites: @jump_sites
     )
 
     Directory::StatsStrip(stats: [
-                            { value: @stats[:partnerships], label: 'Partnerships' },
-                            { value: @stats[:partners], label: 'Partners' },
-                            { value: @stats[:events], label: 'Upcoming events' },
-                            { value: @stats[:neighbourhoods], label: 'Neighbourhoods' }
+                            { value: @stats[:partnerships], label: 'Partnerships', icon: :partnership },
+                            { value: @stats[:partners], label: 'Partners', icon: :partner },
+                            { value: @stats[:events], label: 'Upcoming events', icon: :event },
+                            { value: @stats[:neighbourhoods], label: 'Neighbourhoods', icon: :neighbourhood }
                           ])
 
     render_partnerships_section

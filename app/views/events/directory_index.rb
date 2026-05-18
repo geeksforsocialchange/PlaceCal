@@ -12,6 +12,7 @@ class Views::Events::DirectoryIndex < Views::Base
   prop :partnerships_list, _Interface(:each), default: -> { [] }
   prop :selected_partnership, _Nilable(String), default: nil
   prop :query, _Nilable(String), default: nil
+  prop :pagy, _Nilable(Pagy::Offset), default: nil
 
   def view_template
     content_for(:title) { 'Events' }
@@ -29,6 +30,7 @@ class Views::Events::DirectoryIndex < Views::Base
       render_period_tabs
       render_results_header
       render_event_list
+      Directory::Paginator(pagy: @pagy) if @pagy
     end
   end
 
@@ -64,36 +66,22 @@ class Views::Events::DirectoryIndex < Views::Base
   def render_partnership_select
     return if @partnerships_list.none?
 
-    div(class: 'min-w-[180px]') do
-      label(for: 'partnership', class: 'block allcaps-label text-tertiary mb-1') { 'Partnership' }
-      select(
-        name: 'partnership', id: 'partnership',
-        class: 'w-full border-2 border-rules rounded-full px-4 py-2 text-sm bg-background text-foreground outline-none focus:border-foreground transition-colors appearance-none cursor-pointer'
-      ) do
-        option(value: '') { 'All partnerships' }
-        @partnerships_list.each do |item|
-          opts = { value: item[:slug] }
-          opts[:selected] = true if @selected_partnership == item[:slug]
-          option(**opts) { item[:name] }
-        end
-      end
-    end
+    Directory::CustomSelect(
+      name: 'partnership',
+      label_text: 'Partnership',
+      options: @partnerships_list.map { |item| { id: item[:slug], name: item[:name] } },
+      selected: @selected_partnership
+    )
   end
 
   def render_period_select
-    div(class: 'min-w-[140px]') do
-      label(for: 'period', class: 'block allcaps-label text-tertiary mb-1') { 'Time range' }
-      select(
-        name: 'period', id: 'period',
-        class: 'w-full border-2 border-rules rounded-full px-4 py-2 text-sm bg-background text-foreground outline-none focus:border-foreground transition-colors appearance-none cursor-pointer'
-      ) do
-        PERIOD_OPTIONS.each do |label, value|
-          opts = { value: value }
-          opts[:selected] = true if @period == value
-          option(**opts) { label }
-        end
-      end
-    end
+    Directory::CustomSelect(
+      name: 'period',
+      label_text: 'Time range',
+      options: PERIOD_OPTIONS.map { |label, value| { id: value, name: label } },
+      selected: @period,
+      include_blank: false
+    )
   end
 
   def render_buttons
@@ -153,8 +141,10 @@ class Views::Events::DirectoryIndex < Views::Base
       h3(class: 'font-serif text-lg text-foreground mb-2 pt-2 border-t-2 border-rules') do
         plain date.strftime('%A, %-d %B %Y')
       end
-      day_events.each do |event|
-        Directory::EventRow(event: event)
+      div(class: 'grid md:grid-cols-2 gap-x-6') do
+        day_events.each do |event|
+          Directory::EventRow(event: event)
+        end
       end
     end
   end

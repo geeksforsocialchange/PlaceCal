@@ -7,7 +7,7 @@ class Components::Directory::StatsStrip < Components::Directory::Base
     section(class: 'py-4 bg-home-background') do
       div(class: 'container-public grid grid-cols-2 lg:grid-cols-4 gap-4') do
         @stats.each do |stat|
-          render_bead(stat[:value], stat[:label])
+          render_bead(stat[:value], stat[:label], stat[:icon])
         end
       end
     end
@@ -15,7 +15,7 @@ class Components::Directory::StatsStrip < Components::Directory::Base
 
   private
 
-  def render_bead(value, label)
+  def render_bead(value, label, _icon_name = nil)
     div(class: 'flex flex-col bg-home-background border-2 border-rules rounded-card py-3.5 px-4.5') do
       span(class: 'font-serif text-stat leading-none text-foreground') { number_with_delimiter(value) }
       span(class: 'allcaps-label text-tertiary mt-1.5 truncate') { label }

@@ -89,14 +89,28 @@ class PagesController < ApplicationController
     }
 
     @partner_locations = build_partner_locations
+    @jump_sites = build_jump_sites
 
     render Views::Pages::DirectoryHome.new(
       partnerships: @partnerships,
       recent_partners: @recent_partners,
       upcoming_events: @upcoming_events,
       stats: @stats,
-      partner_locations: @partner_locations
+      partner_locations: @partner_locations,
+      jump_sites: @jump_sites
     )
+  end
+
+  def build_jump_sites
+    partnership_ids = Tag.where(type: 'Partnership').joins(:sites).select('sites.id')
+    sites = Site.where(is_published: true)
+                .where.not(slug: 'default-site')
+                .where.not(id: partnership_ids)
+                .order(partners_count: :desc)
+                .limit(3)
+    return sites if sites.any?
+
+    Site.where(slug: %w[manchester london norwich], is_published: true)
   end
 
   def build_partner_locations

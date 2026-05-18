@@ -4,20 +4,19 @@ class Views::Pages::TermsOfUse < Views::Base
   def view_template
     content_for(:title) { 'Terms of Use' }
 
-    article(class: 'home margin') do
-      Hero('PlaceCal Terms of Use')
+    Directory::PageHero(
+      title: 'PlaceCal Terms of Use',
+      breadcrumb_label: 'Terms'
+    )
 
-      div(class: 'card card--plain') do
-        div(class: 'max_width') do
-          br
-          render_acceptance
-          render_eligibility
-          render_safety
-          render_community_rules
-          render_warranty
-          render_entire_agreement
-          br
-        end
+    div(class: 'container-public py-8') do
+      div(class: 'max-w-[800px] text-base leading-relaxed') do
+        render_acceptance
+        render_eligibility
+        render_safety
+        render_community_rules
+        render_warranty
+        render_entire_agreement
       end
     end
   end

@@ -130,11 +130,23 @@ class PartnersController < ApplicationController
       total_count: Partner.visible.count,
       categories: query.categories_with_counts.map { |c| { id: c[:category].id, name: c[:category].name, count: c[:count] } },
       partnerships_list: query.partnerships_with_counts.map { |p| { id: p[:partnership].id, name: p[:partnership].name, count: p[:count] } },
-      neighbourhoods: query.neighbourhoods_with_counts.map { |n| { id: n[:neighbourhood].id, name: n[:neighbourhood].name, count: n[:count] } },
+      neighbourhoods: group_neighbourhoods_by_district(query.neighbourhoods_with_counts),
       selected_category: params[:category],
       selected_partnership: params[:partnership],
       selected_neighbourhood: params[:neighbourhood]
     )
+  end
+
+  def group_neighbourhoods_by_district(neighbourhoods_with_counts)
+    grouped = neighbourhoods_with_counts
+              .group_by { |n| n[:neighbourhood].district&.shortname || n[:neighbourhood].shortname }
+              .map do |district_name, items|
+                {
+                  group: district_name,
+                  items: items.map { |n| { id: n[:neighbourhood].id, name: n[:neighbourhood].shortname, count: n[:count] } }
+                }
+              end
+    grouped.sort_by { |g| g[:group] }
   end
 
   def render_local_index

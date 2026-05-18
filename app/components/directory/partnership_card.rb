@@ -31,10 +31,12 @@ class Components::Directory::PartnershipCard < Components::Directory::Base
       div(class: 'flex flex-wrap gap-1.5 mb-2') do
         if @partnership.primary_neighbourhood
           span(class: 'inline-flex items-center gap-1 bg-rules-dark text-foreground text-2xs font-bold rounded-full px-2.5 py-0.5') do
+            raw(view_context.icon(:neighbourhood, size: nil, css_class: 'w-3 h-3'))
             plain @partnership.primary_neighbourhood.name
           end
         end
         span(class: 'inline-flex items-center gap-1 bg-primary-light text-foreground text-2xs font-bold rounded-full px-2.5 py-0.5') do
+          raw(view_context.icon(:partner, size: nil, css_class: 'w-3 h-3'))
           plain "#{@partnership.partners_count} #{'partner'.pluralize(@partnership.partners_count)}"
         end
       end

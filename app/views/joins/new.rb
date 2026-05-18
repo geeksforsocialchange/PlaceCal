@@ -8,20 +8,22 @@ class Views::Joins::New < Views::Base
   prop :join, Join, reader: :private
 
   def view_template
-    article(class: 'home') do
-      div(class: 'margin') do
-        div(class: 'card card--alt card--split center') do
-          render_header
-          div(class: 'card__body') do
-            render_flash_messages
-            render_form
-          end
-          p(class: 'regular-links') do
-            plain 'Email us at '
-            br(class: 'mobile-only')
-            mail_to 'info@placecal.org'
-          end
-          br(class: 'half')
+    content_for(:title) { 'Get in touch' }
+
+    Directory::PageHero(
+      title: 'Get in touch',
+      kicker: 'Join PlaceCal',
+      subtitle: 'Want to run PlaceCal in your community, group, or area? Contact us to discuss how you can join our not-for-profit social enterprise.',
+      breadcrumb_label: 'Get in touch'
+    )
+
+    div(class: 'container-public py-8') do
+      div(class: 'max-w-[740px] mx-auto') do
+        render_flash_messages
+        render_form
+        p(class: 'text-sm text-tertiary mt-6') do
+          plain 'Email us at '
+          mail_to 'info@placecal.org', class: 'text-foreground underline hover:decoration-primary'
         end
       end
     end
@@ -29,67 +31,53 @@ class Views::Joins::New < Views::Base
 
   private
 
-  def render_header
-    div(class: 'card__title') do
-      h1(class: 'section') { 'Get in touch' }
-      p(class: 'alt-title-small') { 'Want to run PlaceCal in your community, group, or area?' }
-      p do
-        plain 'Contact us to discuss how you can'
-        br(class: 'tablet-up')
-        plain ' join our not-for-profit social enterprise.'
-      end
-    end
-  end
-
   def render_flash_messages
     return unless view_context.flash.any?
 
-    div(class: 'flashes') do
-      view_context.flash.each do |key, value|
-        div(class: "alert alert-#{key}") { value }
+    div(class: 'mb-4') do
+      view_context.flash.each do |_key, value|
+        div(class: 'rounded-card px-4 py-3 text-sm font-bold bg-primary text-foreground') { value }
       end
     end
   end
 
   def render_form
-    simple_form_for join, url: get_in_touch_path, html: { class: 'form' } do |f|
+    simple_form_for join, url: get_in_touch_path, html: { class: 'space-y-4' } do |f|
       invisible_captcha
-      div(class: 'form__person form__mid-width') do
-        div(class: 'form__field') { raw f.input(:name, label: 'Name:') }
-        div(class: 'form__field') { raw f.input(:email, as: :email, label: 'Email address:') }
-        div(class: 'form__field') { raw f.input(:job_title, label: 'Job title:') }
-        div(class: 'form__field') { raw f.input(:phone, as: :tel, label: 'Phone number:') }
-        div(class: 'form__field') { raw f.input(:job_org, label: 'Organisation name:') }
-        div(class: 'form__field') { raw f.input(:area, label: 'The area it covers is:') }
+      div(class: 'grid md:grid-cols-2 gap-4') do
+        raw f.input(:name, label: 'Name', input_html: { class: input_class })
+        raw f.input(:email, as: :email, label: 'Email address', input_html: { class: input_class })
+        raw f.input(:job_title, label: 'Job title', input_html: { class: input_class })
+        raw f.input(:phone, as: :tel, label: 'Phone number', input_html: { class: input_class })
+        raw f.input(:job_org, label: 'Organisation name', input_html: { class: input_class })
+        raw f.input(:area, label: 'The area it covers', input_html: { class: input_class })
       end
 
-      div(class: 'form__contact form__small-width') do
-        div(class: 'form__contact-child') do
-          p { strong { "I'd like:" } }
-        end
-        div(class: 'form__contact-child') do
+      div(class: 'bg-home-background-3 rounded-card p-4') do
+        p(class: 'font-bold text-sm text-foreground mb-3') { "I'd like:" }
+        div(class: 'flex flex-wrap gap-4') do
           render_checkbox(f, :ringback, 'A ring back')
           render_checkbox(f, :more_info, 'More information')
         end
       end
 
-      div(class: 'form__info form__full-width') do
-        raw f.input(:why, as: :text, label: 'Why I want PlaceCal:',
-                          placeholder: "Enter information about why you'd like to join PlaceCal here")
-      end
+      raw f.input(:why, as: :text, label: 'Why I want PlaceCal',
+                        placeholder: "Enter information about why you'd like to join PlaceCal here",
+                        input_html: { class: "#{input_class} min-h-[120px]", rows: 5 })
 
-      raw f.submit('Submit', class: 'btn form__submit')
+      raw f.submit('Submit',
+                   class: 'bg-foreground text-background rounded-full px-6 py-3 text-sm font-bold border-0 cursor-pointer hover:bg-tertiary transition-colors')
     end
   end
 
   def render_checkbox(form, field, label_text)
-    div(class: 'form__checkbox') do
-      raw form.check_box(field)
-      label(for: "join_#{field}") do
-        plain label_text
-        icon(:form_checkbox, size: nil)
-        icon(:form_checkbox_check, size: nil, css_class: 'checked')
-      end
+    div(class: 'flex items-center gap-2') do
+      raw form.check_box(field, class: 'w-4 h-4 accent-primary')
+      label(for: "join_#{field}", class: 'text-sm text-foreground cursor-pointer') { label_text }
     end
+  end
+
+  def input_class
+    'w-full border-2 border-rules rounded-card px-4 py-2 text-sm bg-background text-foreground outline-none focus:border-foreground transition-colors'
   end
 end

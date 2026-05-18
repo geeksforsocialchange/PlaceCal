@@ -14,7 +14,7 @@ class PartnershipsController < ApplicationController
   end
 
   def show
-    @partnership = Site.friendly.find(params[:id])
+    @partnership = Site.includes(:site_admin, :primary_neighbourhood).friendly.find(params[:id])
     @partners = PartnersQuery.new(site: @partnership).call
     @upcoming_events = EventsQuery.new(site: @partnership).call(period: 'upcoming')
 

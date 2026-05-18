@@ -11,7 +11,7 @@ class Components::Directory::AzJumpBar < Components::Directory::Base
         if @active_letters.include?(letter)
           a(href: "#letter-#{letter}", class: "#{letter_base} #{letter_active}") { plain letter }
         else
-          a(href: "#letter-#{letter}", class: "#{letter_base} #{letter_inactive}") { plain letter }
+          span(class: "#{letter_base} #{letter_inactive}") { plain letter }
         end
       end
     end
