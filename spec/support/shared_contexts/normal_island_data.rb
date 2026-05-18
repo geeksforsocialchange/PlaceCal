@@ -28,13 +28,13 @@ RSpec.shared_context "normal island data" do # rubocop:disable RSpec/MultipleMem
   let!(:harbourside_arts) { create(:harbourside_arts_centre) }
 
   # Calendars
-  let!(:riverside_calendar) { create(:calendar, partner: riverside_hub) }
-  let!(:library_calendar) { create(:calendar, partner: oldtown_library) }
+  let!(:riverside_calendar) { create(:calendar, organiser: riverside_hub) }
+  let!(:library_calendar) { create(:calendar, organiser: oldtown_library) }
 
   # Events (multiple so index pages have content)
-  let!(:event_one) { create(:event, partner: riverside_hub, calendar: riverside_calendar, summary: "Community Coffee Morning") }
-  let!(:event_two) { create(:event, partner: riverside_hub, calendar: riverside_calendar, summary: "Riverside Yoga Class") }
-  let!(:event_three) { create(:event, partner: oldtown_library, calendar: library_calendar, summary: "Book Club Meeting") }
+  let!(:event_one) { create(:event, organiser: riverside_hub, calendar: riverside_calendar, summary: "Community Coffee Morning") }
+  let!(:event_two) { create(:event, organiser: riverside_hub, calendar: riverside_calendar, summary: "Riverside Yoga Class") }
+  let!(:event_three) { create(:event, organiser: oldtown_library, calendar: library_calendar, summary: "Book Club Meeting") }
 
   # Link partner to themed site's neighbourhood
   before do

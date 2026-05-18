@@ -3,8 +3,14 @@
 @import "./public/fonts.css";
 
 /* https://tailwindcss.com/docs/detecting-classes-in-source-files#ignoring-specific-paths
-   TODO: verify and maybe rework as `@import "tailwindcss" source(none);` then @source explicit roots only
-   TODO: also exclude non-admin from admin_tailwind.css
+   Each section (admin/sites/homepage/join) is a subdir of app/views/ +
+   app/components/ + app/controllers/. Admin subdirs are excluded here.
+   TODO: once flat components in app/components/ + the remaining public
+   views in app/views/ (events, news, partners, collections, devise, ...)
+   have been categorized into sites/homepage/join/shared subdirs, switch
+   this to a positive `source(none)` + explicit roots — something like:
+     @source "../../app/views/{sites,homepage,join,shared}/**/*.{rb,erb}";
+     @source "../../app/components/{sites,homepage,join,shared}/**/*.rb";
 */
 @source not "../../app/assets";
 @source not "../../app/datatables";

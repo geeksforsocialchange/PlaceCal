@@ -22,7 +22,7 @@ class PagesController < ApplicationController
     @partnerships = Site.published.select do |site|
       site.tags.any? { |tag| tag.type == 'Partnership' }
     end
-    render Views::Pages::FindPlacecal.new(neighbourhoods: @neighbourhoods, partnerships: @partnerships)
+    render Views::Homepage::FindPlacecal.new(neighbourhoods: @neighbourhoods, partnerships: @partnerships)
   end
 
   def terms_of_use
@@ -34,31 +34,31 @@ class PagesController < ApplicationController
   end
 
   def our_story
-    render Views::Pages::OurStory.new
+    render Views::Homepage::OurStory.new
   end
 
   def community_groups
-    render Views::Pages::CommunityGroups.new
+    render Views::Homepage::CommunityGroups.new
   end
 
   def vcses
-    render Views::Pages::Vcses.new
+    render Views::Homepage::Vcses.new
   end
 
   def housing_providers
-    render Views::Pages::HousingProviders.new
+    render Views::Homepage::HousingProviders.new
   end
 
   def metropolitan_areas
-    render Views::Pages::MetropolitanAreas.new
+    render Views::Homepage::MetropolitanAreas.new
   end
 
   def social_prescribers
-    render Views::Pages::SocialPrescribers.new
+    render Views::Homepage::SocialPrescribers.new
   end
 
   def culture_tourism
-    render Views::Pages::CultureTourism.new
+    render Views::Homepage::CultureTourism.new
   end
 
   def robots

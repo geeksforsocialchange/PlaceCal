@@ -11,9 +11,16 @@
 		corporate;
 }
 
-/* Source paths for content detection */
-/* TODO: these are likely redundant - tailwind already scans the entire codebase by default
-	 TODO: need to exclude public frontend from scanning and class generation. we can either do `@import "tailwindcss" source(none);` then `source ...` for each root, or add `source not ...` for each exclude root. see similar comments at the top of `public_tailwind.css`
+/* Source paths for content detection.
+   TODO: convert to `@import "tailwindcss" source(none);` then positive
+   includes only, once the public side has been categorized — at that
+   point this can become:
+     @source "../views/admin/**/*.{rb,erb}";
+     @source "../components/admin/**/*.rb";
+     @source "../views/layouts/admin/**/*.rb";
+     @source "../../app/datatables/**/*.rb";
+     @source "../javascript/**/*.js";
+     @source "../helpers/**/*.rb";
 */
 @source "../../app/datatables/**/*.rb";
 @source "../javascript/**/*.js";
