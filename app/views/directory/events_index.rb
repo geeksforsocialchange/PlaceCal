@@ -52,7 +52,7 @@ class Views::Directory::EventsIndex < Views::Base
   end
 
   def render_search_field
-    div(class: 'flex-1 min-w-[200px]') do
+    div(class: 'flex-1 min-w-50') do
       label(for: 'q', class: 'block allcaps-label text-tertiary mb-1') { 'Search' }
       input(
         type: 'text', name: 'q', id: 'q', value: @query,

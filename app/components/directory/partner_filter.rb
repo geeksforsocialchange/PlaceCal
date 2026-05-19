@@ -27,7 +27,7 @@ class Components::Directory::PartnerFilter < Components::Directory::Base
   private
 
   def render_search_field
-    div(class: 'flex-1 min-w-[140px]') do
+    div(class: 'flex-1 min-w-35') do
       label(for: 'q', class: 'block allcaps-label text-tertiary mb-1') { 'Search' }
       input(
         type: 'text', name: 'q', id: 'q', value: @query,

@@ -10,7 +10,7 @@ class Views::Directory::Privacy < Views::Base
     )
 
     div(class: 'container-public py-8') do
-      div(class: 'max-w-[800px] text-base leading-relaxed') do
+      div(class: 'max-w-(--width-prose-lg) text-base leading-relaxed') do
         render_intro
         render_contact_details
         render_personal_information

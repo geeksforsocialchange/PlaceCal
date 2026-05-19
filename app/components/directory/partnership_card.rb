@@ -7,7 +7,7 @@ class Components::Directory::PartnershipCard < Components::Directory::Base
     a(href: partnership_path(@partnership),
       class: [
         'flex flex-col rounded-card overflow-hidden no-underline',
-        'text-foreground hover:shadow-lg transition-shadow min-h-[200px]'
+        'text-foreground hover:shadow-lg transition-shadow min-h-50'
       ].join(' ')) do
       render_head
       render_body

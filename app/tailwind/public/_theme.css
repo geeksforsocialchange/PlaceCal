@@ -101,6 +101,25 @@ https://tailwindcss.com/docs/theme#default-theme-variable-reference
 	/* hero responsive title */
 	--text-hero: clamp(2rem, 4vw, 2.8rem);
 
+	/* Avatar sizes */
+	--size-avatar-sm: 44px;
+	--size-avatar-md: 52px;
+
+	/* Content measure (max-widths for readability) */
+	--width-search: 440px;
+	--width-search-hero: 540px;
+	--width-prose: 620px;
+	--width-prose-md: 700px;
+	--width-prose-lg: 800px;
+
+	/* Layout widths */
+	--width-sidebar: 340px;
+	--width-sidebar-lg: 380px;
+
+	/* Map heights */
+	--height-map: 280px;
+	--height-map-lg: 360px;
+
 	/* Border radii */
 	--radius-card: 1rem;
 	--radius-sm: 0.5rem;

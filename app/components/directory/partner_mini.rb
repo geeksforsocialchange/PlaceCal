@@ -6,7 +6,7 @@ class Components::Directory::PartnerMini < Components::Directory::Base
 
   def view_template
     a(href: partner_path(@partner),
-      class: 'grid grid-cols-[44px_1fr] gap-3 items-start py-3 px-3 rounded-card border border-rules no-underline text-foreground hover:bg-home-background-3 transition-colors') do
+      class: 'grid grid-cols-[var(--size-avatar-sm)_1fr] gap-3 items-start py-3 px-3 rounded-card border border-rules no-underline text-foreground hover:bg-home-background-3 transition-colors') do
       render_avatar
       div do
         div(class: 'flex items-start justify-between gap-2') do
@@ -23,10 +23,10 @@ class Components::Directory::PartnerMini < Components::Directory::Base
 
   def render_avatar
     if @partner.image?
-      img(src: @partner.image.standard.url, alt: @partner.name, class: 'w-[44px] h-[44px] rounded-card object-cover')
+      img(src: @partner.image.standard.url, alt: @partner.name, class: 'w-(--size-avatar-sm) h-(--size-avatar-sm) rounded-card object-cover')
     else
       initials = @partner.name.split.first(2).map { |w| w[0] }.join.upcase
-      div(class: 'w-[44px] h-[44px] rounded-full bg-home-background-3 flex items-center justify-center font-serif text-lg text-tertiary') do
+      div(class: 'w-(--size-avatar-sm) h-(--size-avatar-sm) rounded-full bg-home-background-3 flex items-center justify-center font-serif text-lg text-tertiary') do
         plain initials
       end
     end

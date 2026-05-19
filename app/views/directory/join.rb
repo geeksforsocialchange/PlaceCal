@@ -18,7 +18,7 @@ class Views::Directory::Join < Views::Base
     )
 
     div(class: 'container-public py-8') do
-      div(class: 'max-w-[740px] mx-auto') do
+      div(class: 'max-w-(--width-prose-lg) mx-auto') do
         render_flash_messages
         render_form
         p(class: 'text-sm text-tertiary mt-6') do
@@ -63,7 +63,7 @@ class Views::Directory::Join < Views::Base
 
       raw f.input(:why, as: :text, label: 'Why I want PlaceCal',
                         placeholder: "Enter information about why you'd like to join PlaceCal here",
-                        input_html: { class: "#{input_class} min-h-[120px]", rows: 5 })
+                        input_html: { class: "#{input_class} min-h-30", rows: 5 })
 
       raw f.submit('Submit',
                    class: 'bg-foreground text-background rounded-full px-6 py-3 text-sm font-bold border-0 cursor-pointer hover:bg-tertiary transition-colors')

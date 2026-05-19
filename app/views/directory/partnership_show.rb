@@ -16,7 +16,7 @@ class Views::Directory::PartnershipShow < Views::Base
 
     render_hero
     div(class: 'container-public py-6') do
-      div(class: 'lg:grid lg:grid-cols-[1fr_340px] lg:gap-8') do
+      div(class: 'lg:grid lg:grid-cols-[1fr_var(--width-sidebar)] lg:gap-8') do
         div do
           render_partners
           render_events
@@ -36,7 +36,7 @@ class Views::Directory::PartnershipShow < Views::Base
         h1(class: 'hero-title') do
           plain @partnership.name
         end
-        div(class: 'text-base leading-relaxed max-w-[620px] mb-5 opacity-80') { @partnership.description } if @partnership.description.present?
+        div(class: 'text-base leading-relaxed max-w-(--width-prose) mb-5 opacity-80') { @partnership.description } if @partnership.description.present?
         div(class: 'flex flex-col items-start gap-4 mt-2') do
           render_visit_button
           div(class: 'flex flex-wrap items-center gap-3') do
@@ -119,7 +119,7 @@ class Views::Directory::PartnershipShow < Views::Base
   end
 
   def render_map_card
-    div(class: 'rounded-card overflow-hidden bg-home-background-3 min-h-[280px]') do
+    div(class: 'rounded-card overflow-hidden bg-home-background-3 min-h-(--height-map)') do
       partner_locations = partner_list.filter_map do |p|
         next unless p.address&.latitude
 
@@ -128,7 +128,7 @@ class Views::Directory::PartnershipShow < Views::Base
 
       if partner_locations.any?
         div(
-          class: 'h-[280px]',
+          class: 'h-(--height-map)',
           data: {
             controller: 'cluster-map',
             cluster_map_markers_value: partner_locations.to_json,
@@ -136,7 +136,7 @@ class Views::Directory::PartnershipShow < Views::Base
           }
         )
       else
-        div(class: 'h-[280px] flex items-center justify-center') do
+        div(class: 'h-(--height-map) flex items-center justify-center') do
           div(class: 'text-tertiary text-sm font-bold') { 'Map coming soon' }
         end
       end

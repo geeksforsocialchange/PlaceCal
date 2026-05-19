@@ -7,7 +7,7 @@ class Components::Directory::PartnerCard < Components::Directory::Base
   def view_template
     a(href: partner_path(@partner),
       class: [
-        'grid grid-cols-[52px_1fr] gap-3 items-start',
+        'grid grid-cols-[var(--size-avatar-md)_1fr] gap-3 items-start',
         'py-3 px-4 rounded-card border-2 border-transparent',
         'no-underline text-foreground hover:border-rules transition-colors'
       ].join(' '),
@@ -24,10 +24,10 @@ class Components::Directory::PartnerCard < Components::Directory::Base
       img(
         src: @partner.image.standard.url,
         alt: @partner.name,
-        class: 'w-[52px] h-[52px] rounded-card object-cover'
+        class: 'w-(--size-avatar-md) h-(--size-avatar-md) rounded-card object-cover'
       )
     else
-      div(class: 'w-[52px] h-[52px] rounded-full bg-home-background-3 flex items-center justify-center font-serif text-xl text-tertiary') do
+      div(class: 'w-(--size-avatar-md) h-(--size-avatar-md) rounded-full bg-home-background-3 flex items-center justify-center font-serif text-xl text-tertiary') do
         plain initials
       end
     end
