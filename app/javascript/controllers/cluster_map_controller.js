@@ -54,7 +54,10 @@ export default class extends Controller {
 
 		for (const m of this.markersValue) {
 			if (!m.lat || !m.lon) continue;
-			const marker = L.marker([m.lat, m.lon], { icon, title: m.name || "Partner location" });
+			const marker = L.marker([m.lat, m.lon], {
+				icon,
+				title: m.name || "Partner location",
+			});
 			if (m.name) {
 				marker.bindPopup(m.url ? `<a href="${m.url}">${m.name}</a>` : m.name, {
 					closeButton: false,
