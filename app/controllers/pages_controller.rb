@@ -84,7 +84,7 @@ class PagesController < ApplicationController
     @stats = {
       partnerships: Site.where(is_published: true).where.not(slug: 'default-site').count,
       partners: Partner.visible.count,
-      events: Event.future(Time.zone.today).count,
+      events: Event.where(dtstart: Time.zone.today..30.days.from_now).count,
       neighbourhoods: Neighbourhood.districts.count
     }
 

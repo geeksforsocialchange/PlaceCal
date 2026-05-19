@@ -132,7 +132,8 @@ class Views::Directory::PartnershipShow < Views::Base
   def render_see_all_button(text, href)
     div(class: 'mt-6') do
       a(href: href,
-        class: 'inline-flex items-center gap-2 bg-foreground text-background font-bold rounded-full px-6 py-3 text-sm no-underline hover:bg-tertiary transition-colors') do
+        class: 'inline-flex items-center gap-2 bg-foreground font-bold rounded-full px-6 py-3 text-sm no-underline hover:bg-tertiary transition-colors',
+        style: 'color: var(--color-background)') do
         plain text
         raw(view_context.icon(:external_link, size: nil, css_class: 'w-4 h-4'))
       end

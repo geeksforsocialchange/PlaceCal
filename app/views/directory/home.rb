@@ -22,7 +22,7 @@ class Views::Directory::Home < Views::Base
     Directory::StatsStrip(stats: [
                             { value: @stats[:partnerships], label: 'Partnerships', icon: :partnership },
                             { value: @stats[:partners], label: 'Partners', icon: :partner },
-                            { value: @stats[:events], label: 'Upcoming events', icon: :event },
+                            { value: @stats[:events], label: 'Events this month', icon: :event },
                             { value: @stats[:neighbourhoods], label: 'Neighbourhoods', icon: :neighbourhood }
                           ])
 

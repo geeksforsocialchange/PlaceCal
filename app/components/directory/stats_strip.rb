@@ -18,7 +18,7 @@ class Components::Directory::StatsStrip < Components::Directory::Base
   def render_bead(value, label, _icon_name = nil)
     div(class: 'flex flex-col bg-home-background border-2 border-rules rounded-card py-3.5 px-4.5') do
       span(class: 'font-serif text-stat leading-none text-foreground') { number_with_delimiter(value) }
-      span(class: 'allcaps-label text-tertiary mt-1.5 truncate') { label }
+      span(class: 'allcaps-label text-tertiary mt-1.5') { label }
     end
   end
 
