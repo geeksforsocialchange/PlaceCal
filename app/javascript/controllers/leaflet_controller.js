@@ -1,6 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 import "leaflet";
 import "@maplibre/maplibre-gl-leaflet";
+import { ensureMaplibreCss } from "controllers/mixins/map_css";
 
 // Connects to data-controller="leaflet"
 // Its important to use single quotes in the template when declaring the args values
@@ -11,6 +12,7 @@ export default class extends Controller {
 	// {center, iconUrl, markers, shadowUrl, styleClass, styleUrl, zoom}
 
 	connect() {
+		ensureMaplibreCss();
 		this.element.classList.add("map");
 		if (this.argsValue.styleClass?.length)
 			this.element.classList.add(...this.argsValue.styleClass);

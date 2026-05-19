@@ -3,12 +3,12 @@
 
 import "@hotwired/turbo-rails";
 import { Application } from "@hotwired/stimulus";
-import { eagerLoadControllersFrom } from "@hotwired/stimulus-loading";
+import { lazyLoadControllersFrom } from "@hotwired/stimulus-loading";
 
 // Start Stimulus
 const application = Application.start();
 application.debug = false;
 window.Stimulus = application;
 
-// Eager load all controllers from the importmap
-eagerLoadControllersFrom("controllers", application);
+// Lazy load controllers — only fetched when data-controller appears in the DOM
+lazyLoadControllersFrom("controllers", application);
