@@ -34,7 +34,7 @@ class Components::Directory::Footer < Components::Directory::Base
 
   def render_brand_column
     div do
-      image_tag('home/icons/logo-dark.svg', class: 'h-10 mb-4', alt: 'PlaceCal logo')
+      image_tag('home/icons/logo-dark.svg', class: 'h-10 mb-4', alt: 'PlaceCal logo', width: 127, height: 40)
       div(class: 'font-serif text-base text-tertiary leading-relaxed') do
         plain 'An open, community-run directory of local events and services near you.'
       end

@@ -27,7 +27,8 @@ pin '@maplibre/maplibre-gl-leaflet', to: 'https://esm.sh/@maplibre/maplibre-gl-l
 pin 'leaflet.markercluster', to: 'https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/+esm'
 
 # Stimulus controllers - pinned from app/javascript/controllers
-pin_all_from 'app/javascript/controllers', under: 'controllers'
+# preload: false ensures lazy-loaded controllers are only fetched when needed
+pin_all_from 'app/javascript/controllers', under: 'controllers', preload: false
 
 # Controller mixins - shared utilities for controllers
-pin_all_from 'app/javascript/controllers/mixins', under: 'controllers/mixins'
+pin_all_from 'app/javascript/controllers/mixins', under: 'controllers/mixins', preload: false

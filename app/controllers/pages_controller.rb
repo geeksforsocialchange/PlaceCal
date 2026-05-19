@@ -71,25 +71,41 @@ class PagesController < ApplicationController
   end
 
   NEIGHBOURHOOD_UNIT_RANK = %w[ward district county region].freeze
+  DIRECTORY_CACHE_TTL = 1.day
 
   private
 
   def render_directory_home
-    @partnerships = Site.where(is_published: true)
-                        .where.not(slug: 'default-site')
-                        .order(partners_count: :desc)
-                        .limit(6)
-    @recent_partners = Partner.visible.includes(:categories, :address).order(created_at: :desc).limit(5)
-    @upcoming_events = EventsQuery.new(site: @site).call(period: 'upcoming')
-    @stats = {
-      partnerships: Site.where(is_published: true).where.not(slug: 'default-site').count,
-      partners: Partner.visible.count,
-      events: Event.where(dtstart: Time.zone.today..30.days.from_now).count,
-      neighbourhoods: Neighbourhood.districts.count
-    }
+    @stats = Rails.cache.fetch('directory/stats', expires_in: DIRECTORY_CACHE_TTL) do
+      {
+        partnerships: Site.where(is_published: true).where.not(slug: 'default-site').count,
+        partners: Partner.visible.count,
+        events: Event.where(dtstart: Time.zone.today..30.days.from_now).count,
+        neighbourhoods: Neighbourhood.districts.count
+      }
+    end
 
-    @partner_locations = build_partner_locations
-    @jump_sites = build_jump_sites
+    @partner_locations = Rails.cache.fetch('directory/partner_locations', expires_in: DIRECTORY_CACHE_TTL) do
+      build_partner_locations
+    end
+
+    @jump_sites = Rails.cache.fetch('directory/jump_sites', expires_in: DIRECTORY_CACHE_TTL) do
+      build_jump_sites.to_a
+    end
+
+    @partnerships = Rails.cache.fetch('directory/partnerships', expires_in: DIRECTORY_CACHE_TTL) do
+      Site.where(is_published: true)
+          .where.not(slug: 'default-site')
+          .order(partners_count: :desc)
+          .limit(6)
+          .to_a
+    end
+
+    @recent_partners = Rails.cache.fetch('directory/recent_partners', expires_in: DIRECTORY_CACHE_TTL) do
+      Partner.visible.includes(:categories, :address).order(created_at: :desc).limit(5).to_a
+    end
+
+    @upcoming_events = EventsQuery.new(site: @site).call(period: 'upcoming')
 
     render Views::Directory::Home.new(
       partnerships: @partnerships,
