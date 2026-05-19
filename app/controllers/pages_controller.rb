@@ -26,11 +26,11 @@ class PagesController < ApplicationController
   end
 
   def terms_of_use
-    render Views::Pages::TermsOfUse.new
+    render Views::Directory::TermsOfUse.new
   end
 
   def privacy
-    render Views::Pages::Privacy.new
+    render Views::Directory::Privacy.new
   end
 
   def our_story
@@ -91,7 +91,7 @@ class PagesController < ApplicationController
     @partner_locations = build_partner_locations
     @jump_sites = build_jump_sites
 
-    render Views::Pages::DirectoryHome.new(
+    render Views::Directory::Home.new(
       partnerships: @partnerships,
       recent_partners: @recent_partners,
       upcoming_events: @upcoming_events,

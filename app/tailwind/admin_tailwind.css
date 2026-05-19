@@ -12,15 +12,7 @@
 }
 
 /* Source paths for content detection.
-   TODO: convert to `@import "tailwindcss" source(none);` then positive
-   includes only, once the public side has been categorized — at that
-   point this can become:
-     @source "../views/admin/**/*.{rb,erb}";
-     @source "../components/admin/**/*.rb";
-     @source "../views/layouts/admin/**/*.rb";
-     @source "../../app/datatables/**/*.rb";
-     @source "../javascript/**/*.js";
-     @source "../helpers/**/*.rb";
+   TODO(#3163): convert to source(none) then positive admin-only includes.
 */
 @source "../../app/datatables/**/*.rb";
 @source "../javascript/**/*.js";

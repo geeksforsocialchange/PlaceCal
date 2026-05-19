@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Views::Pages::TermsOfUse < Views::Base
+class Views::Directory::TermsOfUse < Views::Base
   def view_template
     content_for(:title) { 'Terms of Use' }
 

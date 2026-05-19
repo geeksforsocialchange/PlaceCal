@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Views::Joins::New < Views::Base
+class Views::Directory::Join < Views::Base
   register_output_helper :simple_form_for
   register_output_helper :invisible_captcha
   register_output_helper :icon

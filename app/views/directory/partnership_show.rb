@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# TODO(#3163): Move to app/directory/views/partnerships/show.rb
-class Views::Partnerships::Show < Views::Base
+class Views::Directory::PartnershipShow < Views::Base
   prop :partnership, ::Site
   prop :partners, _Interface(:each)
   prop :upcoming_events, _Interface(:each)

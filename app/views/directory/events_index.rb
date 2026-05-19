@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# TODO(#3163): Move to app/directory/views/events/index.rb
-class Views::Events::DirectoryIndex < Views::Base
+class Views::Directory::EventsIndex < Views::Base
   PERIOD_OPTIONS = [['This week', 'week'], ['Today', 'day'], ['This month', 'month'], ['All upcoming', 'future']].freeze
 
   prop :events, Hash

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# TODO(#3163): Move to app/directory/views/partnerships/index.rb
-class Views::Partnerships::Index < Views::Base
+class Views::Directory::PartnershipsIndex < Views::Base
   prop :partnerships, _Interface(:each)
   prop :site, _Nilable(::Site), default: nil
   prop :query, _Nilable(String), default: nil

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Views::Pages::Privacy < Views::Base
+class Views::Directory::Privacy < Views::Base
   def view_template
     content_for(:title) { 'Privacy Policy' }
 

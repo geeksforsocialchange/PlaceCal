@@ -121,7 +121,7 @@ class PartnersController < ApplicationController
     )
     @pagy, @partners = pagy(partners, limit: 30)
 
-    render Views::Partners::DirectoryIndex.new(
+    render Views::Directory::PartnersIndex.new(
       partners: @partners,
       pagy: @pagy,
       site: @site,

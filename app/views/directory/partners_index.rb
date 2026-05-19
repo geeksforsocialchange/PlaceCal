@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# TODO(#3163): Move to app/directory/views/partners/index.rb
-class Views::Partners::DirectoryIndex < Views::Base
+class Views::Directory::PartnersIndex < Views::Base
   prop :partners, _Interface(:each)
   prop :pagy, Pagy::Offset
   prop :site, ::Site
