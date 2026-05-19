@@ -42,10 +42,10 @@ Rails.application.routes.draw do
         delete :clear_address
       end
     end
-    resources :tags
     resources :partnerships
     resources :sites
     resources :supporters
+    resources :tags
     resources :users, except: [:show] do
       collection do
         get :lookup_email
@@ -54,9 +54,10 @@ Rails.application.routes.draw do
         patch :update_profile
       end
     end
-    get 'profile', to: 'users#profile', as: :profile
-    get 'jobs', to: 'jobs#index', as: :jobs
+
     get 'icons', to: 'pages#icons', as: :icons
+    get 'jobs', to: 'jobs#index', as: :jobs
+    get 'profile', to: 'users#profile', as: :profile
 
     root 'pages#home'
   end
