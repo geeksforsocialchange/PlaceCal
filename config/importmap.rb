@@ -16,15 +16,15 @@ pin '@hotwired/turbo', to: 'https://cdn.jsdelivr.net/npm/@hotwired/turbo@8.0.12/
 
 # External dependencies
 # jsdelivr bundles ESM with sub-dependencies inline (more reliable than esm.sh)
-pin 'tom-select', to: 'https://cdn.jsdelivr.net/npm/tom-select@2.4.3/+esm'
-pin 'leaflet', to: 'https://esm.sh/leaflet@1.9.4'
+pin 'tom-select', to: 'https://cdn.jsdelivr.net/npm/tom-select@2.4.3/+esm', preload: false
+pin 'leaflet', to: 'https://esm.sh/leaflet@1.9.4', preload: false
 
 # MapLibre GL for vector tile rendering with custom styles
-pin 'maplibre-gl', to: 'https://esm.sh/maplibre-gl@4.7.1'
-pin '@maplibre/maplibre-gl-leaflet', to: 'https://esm.sh/@maplibre/maplibre-gl-leaflet@0.0.22'
+pin 'maplibre-gl', to: 'https://esm.sh/maplibre-gl@4.7.1', preload: false
+pin '@maplibre/maplibre-gl-leaflet', to: 'https://esm.sh/@maplibre/maplibre-gl-leaflet@0.0.22', preload: false
 
 # Marker clustering for directory overview map
-pin 'leaflet.markercluster', to: 'https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/+esm'
+pin 'leaflet.markercluster', to: 'https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/+esm', preload: false
 
 # Stimulus controllers - pinned from app/javascript/controllers
 # preload: false ensures lazy-loaded controllers are only fetched when needed
