@@ -111,6 +111,11 @@ Rails.application.routes.draw do
   get 'winter2018', to: 'collections#show', id: 2
 
   get '/robots.txt' => 'pages#robots'
+  get '/sitemap.xml' => 'sitemaps#index', defaults: { format: :xml }
+  get '/sitemap/partners.xml' => 'sitemaps#partners', defaults: { format: :xml }
+  get '/sitemap/events.xml' => 'sitemaps#events', defaults: { format: :xml }
+  get '/sitemap/partnerships.xml' => 'sitemaps#partnerships', defaults: { format: :xml }
+  get '/sitemap/pages.xml' => 'sitemaps#pages', defaults: { format: :xml }
 
   get '/api/v1/graphql', to: 'graphql#execute'
   post '/api/v1/graphql', to: 'graphql#execute'
