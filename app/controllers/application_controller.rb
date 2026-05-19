@@ -33,7 +33,7 @@ class ApplicationController < ActionController::Base
   end
 
   def resource_not_found
-    render Views::Pages::ResourceNotFound.new, status: :not_found
+    render Views::Homepage::ResourceNotFound.new, status: :not_found
   end
 
   def not_acceptable

@@ -3,8 +3,8 @@
 @import "./public/fonts.css";
 
 /* https://tailwindcss.com/docs/detecting-classes-in-source-files#ignoring-specific-paths
-   TODO: verify and maybe rework as `@import "tailwindcss" source(none);` then @source explicit roots only
-   TODO: also exclude non-admin from admin_tailwind.css
+   Each section (admin/sites/homepage/join) is a subdir of app/views/ +
+   app/components/ + app/controllers/. Admin subdirs are excluded here.
 */
 @source not "../../app/assets";
 @source not "../../app/datatables";
@@ -25,6 +25,7 @@
 
 @import "./public/_theme.css";
 @import "./public/_utilities.css";
+@import "./public/_components.css";
 
 /* base overrides for things which aren't yet componentised */
 @layer base {

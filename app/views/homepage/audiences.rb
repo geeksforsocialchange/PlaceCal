@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Views::Pages::Audiences
+module Views::Homepage::Audiences
   AUDIENCE_DATA = [
     { key: :community_groups, title: 'Community groups',
       body: 'Convert your local knowledge into a great community information website.',

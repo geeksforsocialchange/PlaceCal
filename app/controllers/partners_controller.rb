@@ -119,22 +119,45 @@ class PartnersController < ApplicationController
       neighbourhood_id: params[:neighbourhood],
       sort: @sort
     )
-    @pagy, @partners = pagy(partners, limit: 30)
+    paginate_with_az_filter(partners)
 
-    render Views::Partners::DirectoryIndex.new(
-      partners: @partners,
-      pagy: @pagy,
-      site: @site,
-      query: params[:q],
-      sort: @sort,
+    render Views::Directory::PartnersIndex.new(
+      partners: @partners, pagy: @pagy, site: @site, query: params[:q], sort: @sort,
+      az_letters: @az_letters, selected_letter: @selected_letter,
       total_count: Partner.visible.count,
+      partnership_count: Site.where(is_published: true).where.not(slug: 'default-site').count,
       categories: query.categories_with_counts.map { |c| { id: c[:category].id, name: c[:category].name, count: c[:count] } },
       partnerships_list: query.partnerships_with_counts.map { |p| { id: p[:partnership].id, name: p[:partnership].name, count: p[:count] } },
-      neighbourhoods: query.neighbourhoods_with_counts.map { |n| { id: n[:neighbourhood].id, name: n[:neighbourhood].name, count: n[:count] } },
+      neighbourhoods: group_neighbourhoods_by_district(query.neighbourhoods_with_counts),
       selected_category: params[:category],
       selected_partnership: params[:partnership],
       selected_neighbourhood: params[:neighbourhood]
     )
+  end
+
+  def paginate_with_az_filter(partners)
+    if @sort == 'name'
+      @az_letters = partners.pluck(Arel.sql('UPPER(LEFT(partners.name, 1))')).uniq.select { |l| l&.match?(/[A-Z]/) }.to_set
+      @selected_letter = params[:letter]&.upcase if params[:letter].present? && params[:letter].match?(/\A[a-zA-Z]\z/)
+      filtered = @selected_letter ? partners.where('partners.name LIKE ?', "#{@selected_letter}%") : partners
+      @pagy, @partners = pagy(filtered, limit: 30)
+    else
+      @az_letters = Set.new
+      @selected_letter = nil
+      @pagy, @partners = pagy(partners, limit: 30)
+    end
+  end
+
+  def group_neighbourhoods_by_district(neighbourhoods_with_counts)
+    grouped = neighbourhoods_with_counts
+              .group_by { |n| n[:neighbourhood].district&.shortname || n[:neighbourhood].shortname }
+              .map do |district_name, items|
+                {
+                  group: district_name,
+                  items: items.map { |n| { id: n[:neighbourhood].id, name: n[:neighbourhood].shortname, count: n[:count] } }
+                }
+              end
+    grouped.sort_by { |g| g[:group] }
   end
 
   def render_local_index

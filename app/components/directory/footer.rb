@@ -46,7 +46,7 @@ class Components::Directory::Footer < Components::Directory::Base
 
   def render_link_column(title, links)
     div do
-      h4(class: 'allcaps-label text-foreground mb-3') { title }
+      h2(class: 'allcaps-label text-foreground mb-3') { title }
       ul(class: 'list-none space-y-1') do
         links.each do |label, path_method|
           li do
@@ -65,7 +65,7 @@ class Components::Directory::Footer < Components::Directory::Base
         build = ENV['GIT_REV'] ? ENV['GIT_REV'][0, 7] : 'main'
         plain 'Build: '
         link_to(build, "https://github.com/geeksforsocialchange/PlaceCal/commit/#{build}",
-                class: 'text-tertiary no-underline hover:underline')
+                class: 'text-tertiary underline hover:decoration-primary')
       end
     end
   end

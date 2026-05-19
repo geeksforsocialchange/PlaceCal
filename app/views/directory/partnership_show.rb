@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
-# TODO(#3163): Move to app/directory/views/partnerships/show.rb
-class Views::Partnerships::Show < Views::Base
+class Views::Directory::PartnershipShow < Views::Base
+  include Views::Directory::Concerns::FlattensEvents
+
   prop :partnership, ::Site
   prop :partners, _Interface(:each)
   prop :upcoming_events, _Interface(:each)
+  prop :partner_event_counts, Hash, default: -> { {} }
+  prop :event_count, Integer, default: 0
   prop :site, _Nilable(::Site), default: nil
 
   def view_template
@@ -13,7 +16,7 @@ class Views::Partnerships::Show < Views::Base
 
     render_hero
     div(class: 'container-public py-6') do
-      div(class: 'lg:grid lg:grid-cols-[1fr_340px] lg:gap-8') do
+      div(class: 'lg:grid lg:grid-cols-[1fr_var(--width-sidebar)] lg:gap-8') do
         div do
           render_partners
           render_events
@@ -29,14 +32,16 @@ class Views::Partnerships::Show < Views::Base
     section(class: 'bg-foreground', style: 'color: var(--color-background)') do
       div(class: 'container-public py-8') do
         render_breadcrumb
-        div(class: 'allcaps-label mb-1 opacity-60') { 'Partnership' }
+        div(class: 'allcaps-label mb-1 opacity-70') { 'Partnership' }
         h1(class: 'hero-title') do
           plain @partnership.name
         end
-        div(class: 'text-base leading-relaxed max-w-[620px] mb-5 opacity-80') { @partnership.description } if @partnership.description.present?
-        div(class: 'flex flex-wrap items-center gap-3') do
+        div(class: 'text-base leading-relaxed max-w-(--width-prose) mb-5 opacity-80') { @partnership.description } if @partnership.description.present?
+        div(class: 'flex flex-col items-start gap-4 mt-2') do
           render_visit_button
-          render_stat_chips
+          div(class: 'flex flex-wrap items-center gap-3') do
+            render_stat_chips
+          end
         end
       end
     end
@@ -55,19 +60,20 @@ class Views::Partnerships::Show < Views::Base
   def render_visit_button
     a(href: "https://#{@partnership.slug}.placecal.org",
       class: 'inline-flex items-center gap-2 bg-primary text-foreground font-bold rounded-full px-5 py-2 no-underline hover:brightness-110 transition-all') do
-      safe('&#8599;')
+      raw(view_context.icon(:external_link, size: nil, css_class: 'w-4 h-4'))
       plain "Visit #{@partnership.slug}.placecal.org"
     end
   end
 
   def render_stat_chips
-    chip("#{partner_count} #{'partner'.pluralize(partner_count)}")
-    chip("#{event_count} #{'event'.pluralize(event_count)} this month")
-    chip(@partnership.primary_neighbourhood.name) if @partnership.primary_neighbourhood
+    chip("#{partner_count} #{'partner'.pluralize(partner_count)}", icon_name: :partner)
+    chip("#{@event_count} #{'event'.pluralize(@event_count)} this month", icon_name: :event)
+    chip(@partnership.primary_neighbourhood.name, icon_name: :neighbourhood) if @partnership.primary_neighbourhood
   end
 
-  def chip(text)
-    span(class: 'inline-flex items-center text-sm font-bold rounded-full px-3 py-1', style: 'background: rgba(255,255,255,0.15); color: var(--color-background)') do
+  def chip(text, icon_name: nil)
+    span(class: 'inline-flex items-center gap-1.5 text-sm font-bold rounded-full px-3 py-1', style: 'background: rgba(255,255,255,0.15); color: var(--color-background)') do
+      raw(view_context.icon(icon_name, size: nil, css_class: 'w-4 h-4')) if icon_name
       plain text
     end
   end
@@ -77,41 +83,10 @@ class Views::Partnerships::Show < Views::Base
       h2(class: 'allcaps-label text-tertiary mb-4') { 'Partners in this partnership' }
       div(class: 'grid grid-cols-1 md:grid-cols-2 gap-2') do
         displayed_partners.each do |partner|
-          render_partner_mini(partner)
+          Directory::PartnerMini(partner: partner, event_count: @partner_event_counts[partner.id] || 0)
         end
       end
-      render_see_more_link("See all #{partner_count} partners", "https://#{@partnership.slug}.placecal.org/partners") if partner_count > 10
-    end
-  end
-
-  def render_partner_mini(partner)
-    a(href: partner_path(partner),
-      class: 'grid grid-cols-[44px_1fr] gap-3 items-start py-3 px-3 rounded-card border border-rules no-underline text-foreground hover:bg-home-background-3 transition-colors') do
-      render_partner_avatar(partner)
-      div do
-        div(class: 'flex items-start justify-between gap-2') do
-          span(class: 'font-extra-bold text-sm leading-tight') { partner.name }
-          event_count_for = partner_event_counts[partner.id] || 0
-          if event_count_for.positive?
-            span(class: 'inline-flex items-center bg-primary text-foreground text-2xs font-bold rounded-full px-2 py-0.5 whitespace-nowrap') do
-              plain "#{event_count_for} #{'event'.pluralize(event_count_for)}"
-            end
-          end
-        end
-        div(class: 'text-xs text-tertiary mt-0.5') { partner.location_name } if partner.location_name.present?
-        div(class: 'text-xs text-tertiary mt-0.5') { partner.categories.first(2).map(&:name).join(' · ') } if partner.categories.any?
-      end
-    end
-  end
-
-  def render_partner_avatar(partner)
-    if partner.image?
-      img(src: partner.image.standard.url, alt: partner.name, class: 'w-[44px] h-[44px] rounded-full object-cover')
-    else
-      initials = partner.name.split.first(2).map { |w| w[0] }.join.upcase
-      div(class: 'w-[44px] h-[44px] rounded-full bg-home-background-3 flex items-center justify-center font-serif text-lg text-tertiary') do
-        plain initials
-      end
+      render_see_all_button("See all #{partner_count} partners", "https://#{@partnership.slug}.placecal.org/partners")
     end
   end
 
@@ -123,16 +98,15 @@ class Views::Partnerships::Show < Views::Base
       flat_events.first(10).each do |event|
         Directory::EventRow(event: event)
       end
-      render_see_more_link('See all events', "https://#{@partnership.slug}.placecal.org/events") if flat_events.size > 10
+      render_see_all_button('See all events', "https://#{@partnership.slug}.placecal.org/events")
     end
   end
 
-  def render_see_more_link(text, href)
-    div(class: 'mt-4') do
-      a(href: href,
-        class: 'inline-flex items-center gap-1 text-sm font-bold text-foreground no-underline hover:underline') do
+  def render_see_all_button(text, href)
+    div(class: 'mt-6') do
+      a(href: href, class: 'btn-dark transition-colors') do
         plain text
-        safe('&rarr;')
+        raw(view_context.icon(:external_link, size: nil, css_class: 'w-4 h-4'))
       end
     end
   end
@@ -145,7 +119,7 @@ class Views::Partnerships::Show < Views::Base
   end
 
   def render_map_card
-    div(class: 'rounded-card overflow-hidden bg-home-background-3 min-h-[280px]') do
+    div(class: 'rounded-card overflow-hidden bg-home-background-3 min-h-(--height-map)') do
       partner_locations = partner_list.filter_map do |p|
         next unless p.address&.latitude
 
@@ -154,7 +128,7 @@ class Views::Partnerships::Show < Views::Base
 
       if partner_locations.any?
         div(
-          class: 'h-[280px]',
+          class: 'h-(--height-map)',
           data: {
             controller: 'cluster-map',
             cluster_map_markers_value: partner_locations.to_json,
@@ -162,7 +136,7 @@ class Views::Partnerships::Show < Views::Base
           }
         )
       else
-        div(class: 'h-[280px] flex items-center justify-center') do
+        div(class: 'h-(--height-map) flex items-center justify-center') do
           div(class: 'text-tertiary text-sm font-bold') { 'Map coming soon' }
         end
       end
@@ -170,17 +144,29 @@ class Views::Partnerships::Show < Views::Base
   end
 
   def render_cta_card
+    coordinator = @partnership.site_admin
+
     div(class: 'rounded-card overflow-hidden') do
       div(class: 'bg-secondary px-4 py-3') do
-        div(class: 'font-serif text-lg text-foreground') { 'Get involved' }
+        div(class: 'font-serif text-lg', style: 'color: #43392f') { 'Get involved' }
       end
       div(class: 'bg-home-background-3 px-4 py-3') do
         area_name = @partnership.primary_neighbourhood&.name
         div(class: 'text-sm text-tertiary mb-4') do
           plain "Running a community group#{" in #{area_name}" if area_name}? Join this partnership to list your events."
         end
+        if coordinator
+          div(class: 'mb-4') do
+            div(class: 'font-bold text-sm text-foreground') { coordinator.full_name } if coordinator.full_name.present?
+            if coordinator.email.present?
+              a(href: "mailto:#{coordinator.email}", class: 'text-sm text-foreground underline hover:decoration-primary') do
+                plain coordinator.email
+              end
+            end
+          end
+        end
         a(href: '/get-in-touch',
-          class: 'inline-flex items-center border-2 border-foreground text-foreground font-bold rounded-full px-4 py-1.5 text-sm no-underline hover:bg-foreground hover:text-background transition-colors') do
+          class: 'btn-dark-outline transition-colors') do
           plain 'Contact coordinator'
         end
       end
@@ -201,28 +187,5 @@ class Views::Partnerships::Show < Views::Base
 
   def partner_count
     partner_list.size
-  end
-
-  def event_count
-    flat_events.size
-  end
-
-  def flat_events
-    @flat_events ||= if @upcoming_events.respond_to?(:each_pair)
-                       @upcoming_events.values.flatten
-                     else
-                       Array(@upcoming_events)
-                     end
-  end
-
-  def partner_event_counts
-    @partner_event_counts ||= begin
-      partner_ids = partner_list.map(&:id)
-      ::Event.future(Time.current)
-             .where(place_id: partner_ids)
-             .or(::Event.future(Time.current).where(organiser_id: partner_ids))
-             .group(:place_id)
-             .count
-    end
   end
 end

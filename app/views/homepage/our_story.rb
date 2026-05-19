@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-class Views::Pages::OurStory < Views::Base
-  include Views::Pages::Audiences
+class Views::Homepage::OurStory < Views::Base
+  include Views::Homepage::Audiences
 
   def view_template
     article(class: 'home margin') do

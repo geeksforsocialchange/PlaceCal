@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Views::Pages::FindPlacecal < Views::Base
+class Views::Homepage::FindPlacecal < Views::Base
   prop :neighbourhoods, _Interface(:each), reader: :private
   prop :partnerships, _Interface(:each), reader: :private
 

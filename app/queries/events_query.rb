@@ -66,6 +66,18 @@ class EventsQuery
     base_scope
   end
 
+  # Returns a flat, sorted relation suitable for pagination (no grouping)
+  #
+  # @param period [String] 'day', 'week', 'month', or 'future'
+  # @return [ActiveRecord::Relation<Event>]
+  def flat_call(period:)
+    events = build_filtered_scope(
+      organiser: nil, place: nil,
+      organiser_or_place: nil, neighbourhood_id: nil, repeating: 'on'
+    )
+    apply_period(events, period).distinct.sort_by_time
+  end
+
   # Returns events as a flat relation for iCal feeds (no grouping)
   def for_ical
     base_scope.ical_feed

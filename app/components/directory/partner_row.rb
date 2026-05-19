@@ -2,6 +2,7 @@
 
 class Components::Directory::PartnerRow < Components::Directory::Base
   prop :partner, ::Partner
+  prop :event_count, Integer, default: 0
 
   def view_template
     a(href: partner_path(@partner),
@@ -35,12 +36,11 @@ class Components::Directory::PartnerRow < Components::Directory::Base
   end
 
   def render_events_badge
-    count = @partner.events.upcoming.count
-    return unless count.positive?
+    return unless @event_count.positive?
 
     div(class: 'text-right') do
       span(class: 'inline-flex items-center bg-primary-light text-foreground text-2xs font-bold rounded-full px-2.5 py-0.5') do
-        plain "#{count} #{'event'.pluralize(count)}"
+        plain "#{@event_count} #{'event'.pluralize(@event_count)}"
       end
     end
   end

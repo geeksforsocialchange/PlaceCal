@@ -76,7 +76,7 @@ class Views::Partners::Show < Views::Base
     return unless flat.any?
 
     div(class: 'py-4') do
-      h3(class: 'udl udl--fw allcaps h4') { 'Upcoming events' }
+      h2(class: 'udl udl--fw allcaps h4') { 'Upcoming events' }
       flat.first(10).each do |event|
         Directory::EventRow(event: event, context_partner: partner)
       end
@@ -87,7 +87,7 @@ class Views::Partners::Show < Views::Base
     return unless partner.address || map
 
     div(class: 'py-4') do
-      h3(class: 'udl udl--fw allcaps h4') { 'Location' }
+      h2(class: 'udl udl--fw allcaps h4') { 'Location' }
       div(class: 'grid grid-cols-[1fr_auto] gap-4 items-start') do
         Map(points: map, site: site.slug, compact: true) if map
         if partner.address
@@ -137,7 +137,7 @@ class Views::Partners::Show < Views::Base
 
   def render_sidebar_categories
     div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
-      h4(class: 'allcaps-label text-tertiary mb-2') { 'Categories' }
+      h3(class: 'allcaps-label text-tertiary mb-2') { 'Categories' }
       div(class: 'flex flex-wrap gap-1.5') do
         partner.categories.each do |cat|
           a(href: partners_path(category: cat.id),
@@ -154,7 +154,7 @@ class Views::Partners::Show < Views::Base
     path = neighbourhood.path
 
     div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
-      h4(class: 'allcaps-label text-tertiary mb-2') { 'Neighbourhood' }
+      h3(class: 'allcaps-label text-tertiary mb-2') { 'Neighbourhood' }
       div(class: 'flex flex-wrap items-center gap-1 text-sm') do
         path.each_with_index do |ancestor, i|
           span(class: 'text-tertiary mx-0.5') { safe('&rsaquo;') } if i.positive?
@@ -291,11 +291,11 @@ class Views::Partners::Show < Views::Base
           raw safe(place.summary_html.to_s) if place.summary_html.present?
         end
         div(class: 'gi gi__1-2') do
-          h3(class: 'udl udl--fw allcaps h4') { 'Address' }
+          h2(class: 'udl udl--fw allcaps h4') { 'Address' }
           div(class: 'small') do
             Address(address: place.address)
           end
-          h3(class: 'udl udl--fw allcaps h4') { 'Contact' }
+          h2(class: 'udl udl--fw allcaps h4') { 'Contact' }
           div(class: 'small') do
             ContactDetails(
               partner: partner,

@@ -1,1 +1,2 @@
+eval "$(rbenv init - --no-rehash)" 2>/dev/null
 npx lint-staged

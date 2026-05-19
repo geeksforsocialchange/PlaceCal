@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-class Views::Pages::Vcses < Views::Base
-  include Views::Pages::Audiences
+class Views::Homepage::Vcses < Views::Base
+  include Views::Homepage::Audiences
 
   def view_template
     render_audiences(exclude: :vcses)

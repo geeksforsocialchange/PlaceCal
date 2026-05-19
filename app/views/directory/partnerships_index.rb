@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# TODO(#3163): Move to app/directory/views/partnerships/index.rb
-class Views::Partnerships::Index < Views::Base
+class Views::Directory::PartnershipsIndex < Views::Base
   prop :partnerships, _Interface(:each)
   prop :site, _Nilable(::Site), default: nil
   prop :query, _Nilable(String), default: nil
@@ -34,7 +33,7 @@ class Views::Partnerships::Index < Views::Base
   def render_search
     form(action: partnerships_path, method: 'get',
          class: 'mb-6') do
-      div(class: 'flex items-center bg-home-background-3 rounded-full p-1 pl-2 max-w-[440px]') do
+      div(class: 'flex items-center bg-home-background-3 rounded-full p-1 pl-2 max-w-(--width-search)') do
         div(class: 'px-2 text-tertiary') do
           raw(safe('<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>'))
         end

@@ -14,11 +14,11 @@ class Components::Directory::PartnerFilter < Components::Directory::Base
   def view_template
     form(action: partners_path, method: 'get',
          class: 'bg-home-background-3 rounded-card p-4 mb-4') do
-      div(class: 'flex flex-wrap gap-3 items-end') do
+      div(class: 'flex flex-wrap lg:flex-nowrap gap-3 items-end') do
         render_search_field
-        render_select('category', 'Category', @categories, @selected_category)
-        render_select('partnership', 'Partnership', @partnerships_list, @selected_partnership)
-        render_select('neighbourhood', 'Neighbourhood', @neighbourhoods, @selected_neighbourhood)
+        Directory::CustomSelect(name: 'category', label_text: 'Category', options: @categories, selected: @selected_category) if @categories.any?
+        Directory::CustomSelect(name: 'partnership', label_text: 'Partnership', options: @partnerships_list, selected: @selected_partnership) if @partnerships_list.any?
+        Directory::CustomSelect(name: 'neighbourhood', label_text: 'Neighbourhood', options: @neighbourhoods, selected: @selected_neighbourhood) if @neighbourhoods.any?
         render_buttons
       end
     end
@@ -27,32 +27,13 @@ class Components::Directory::PartnerFilter < Components::Directory::Base
   private
 
   def render_search_field
-    div(class: 'flex-1 min-w-[200px]') do
+    div(class: 'flex-1 min-w-35') do
       label(for: 'q', class: 'block allcaps-label text-tertiary mb-1') { 'Search' }
       input(
         type: 'text', name: 'q', id: 'q', value: @query,
         placeholder: 'Name or keyword…',
         class: 'w-full border-2 border-rules rounded-full px-4 py-2 text-sm bg-background text-foreground outline-none focus:border-foreground transition-colors'
       )
-    end
-  end
-
-  def render_select(name, label_text, items, selected)
-    return if items.none?
-
-    div(class: 'min-w-[160px]') do
-      label(for: name, class: 'block allcaps-label text-tertiary mb-1') { label_text }
-      select(
-        name: name, id: name,
-        class: 'w-full border-2 border-rules rounded-full px-4 py-2 text-sm bg-background text-foreground outline-none focus:border-foreground transition-colors appearance-none cursor-pointer'
-      ) do
-        option(value: '') { "All #{label_text.downcase.pluralize}" }
-        items.each do |item|
-          opts = { value: item[:id].to_s }
-          opts[:selected] = true if selected.to_s == item[:id].to_s
-          option(**opts) { "#{item[:name]} (#{item[:count]})" }
-        end
-      end
     end
   end
 

@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
-# TODO(#3163): Move to app/directory/views/partners/index.rb
-class Views::Partners::DirectoryIndex < Views::Base
+class Views::Directory::PartnersIndex < Views::Base
   prop :partners, _Interface(:each)
-  prop :pagy, Pagy::Offset
+  prop :pagy, _Nilable(Pagy::Offset), default: nil
   prop :site, ::Site
   prop :query, _Nilable(String), default: nil
   prop :categories, _Interface(:each), default: -> { [] }
@@ -13,7 +12,10 @@ class Views::Partners::DirectoryIndex < Views::Base
   prop :selected_partnership, _Nilable(String), default: nil
   prop :selected_neighbourhood, _Nilable(String), default: nil
   prop :total_count, Integer, default: 0
+  prop :partnership_count, Integer, default: 0
   prop :sort, String, default: 'recent'
+  prop :az_letters, _Interface(:include?), default: -> { Set.new }
+  prop :selected_letter, _Nilable(String), default: nil
 
   def view_template
     content_for(:title) { 'Partners' }
@@ -39,21 +41,20 @@ class Views::Partners::DirectoryIndex < Views::Base
 
       render_results_header
       render_sort_tabs
-      Directory::AzJumpBar(active_letters: active_letters) if @sort == 'name'
+      Directory::AzJumpBar(active_letters: @az_letters, selected_letter: @selected_letter, filter_params: current_filter_params) if @sort == 'name'
       render_partner_list
-      Directory::Paginator(pagy: @pagy)
+      Directory::Paginator(pagy: @pagy) if @pagy
     end
   end
 
   private
 
   def kicker_text
-    partnership_count = Site.where(is_published: true).where.not(slug: 'default-site').count
-    "#{@total_count} partners across #{partnership_count} partnerships"
+    "#{@total_count} partners across #{@partnership_count} partnerships"
   end
 
   def render_results_header
-    filtered_count = @pagy.count
+    filtered_count = @pagy ? @pagy.count : partner_list.size
     div(class: 'flex justify-between items-baseline flex-wrap gap-2 py-3') do
       div(class: 'text-sm text-tertiary') do
         if any_filter_active?
@@ -61,7 +62,7 @@ class Views::Partners::DirectoryIndex < Views::Base
         else
           plain "#{@total_count} partners"
         end
-        plain " — page #{@pagy.page} of #{@pagy.pages}" if @pagy.pages > 1
+        plain " — page #{@pagy.page} of #{@pagy.pages}" if @pagy&.pages && @pagy.pages > 1
       end
     end
   end
@@ -105,28 +106,21 @@ class Views::Partners::DirectoryIndex < Views::Base
     @partner_list ||= Array(@partners)
   end
 
-  def active_letters
-    @active_letters ||= partner_list.each_with_object(Set.new) do |partner, set|
-      letter = partner.name[0]&.upcase
-      set << letter if letter&.match?(/[A-Z]/)
-    end
-  end
-
   def render_alphabetical_list
     current_letter = nil
     partner_list.each do |partner|
       letter = partner.name[0]&.upcase
       if letter != current_letter && letter&.match?(/[A-Z]/)
         current_letter = letter
-        h3(id: "letter-#{letter}",
-           class: 'lg:col-span-2 font-serif text-xl text-foreground mt-6 mb-2 pt-2 border-t-2 border-rules') { letter }
+        h2(id: "letter-#{letter}",
+           class: 'lg:col-span-2 font-serif text-xl text-foreground mt-6 mb-2 pt-2 border-t-2 border-rules scroll-mt-4') { letter }
       end
       Directory::PartnerCard(partner: partner, site: @site)
     end
   end
 
   def any_filter_active?
-    @query.present? || @selected_category.present? || @selected_partnership.present? || @selected_neighbourhood.present?
+    @query.present? || @selected_category.present? || @selected_partnership.present? || @selected_neighbourhood.present? || @selected_letter.present?
   end
 
   def current_filter_params

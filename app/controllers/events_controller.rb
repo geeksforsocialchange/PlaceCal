@@ -3,6 +3,7 @@
 # app/controllers/events_controller.rb
 class EventsController < ApplicationController
   include MapMarkers
+  include Pagy::Offset::Method
 
   before_action :set_event, only: %i[show]
   before_action :set_day, only: :index
@@ -69,8 +70,11 @@ class EventsController < ApplicationController
     event_site = resolve_partnership_site || current_site
     query = EventsQuery.new(site: event_site, day: @current_day)
 
-    @events = query.call(period: @period, sort: 'time')
-    @events = filter_events_by_query(@events, params[:q]) if params[:q].present?
+    flat_events = query.flat_call(period: @period)
+    flat_events = flat_events.where('events.summary ILIKE ?', "%#{params[:q]}%") if params[:q].present?
+
+    @pagy, paginated = pagy(flat_events, limit: 40)
+    @events = paginated.group_by { |e| e.dtstart.to_date }
 
     partnerships = Site.where(is_published: true)
                        .where.not(slug: 'default-site')
@@ -78,7 +82,7 @@ class EventsController < ApplicationController
                        .pluck(:slug, :name)
                        .map { |slug, name| { slug: slug, name: name } }
 
-    render Views::Events::DirectoryIndex.new(
+    render Views::Directory::EventsIndex.new(
       events: @events,
       site: @site,
       period: @period,
@@ -86,7 +90,8 @@ class EventsController < ApplicationController
       total_count: EventsQuery.new(site: current_site, day: @current_day).count_for_period('future'),
       partnerships_list: partnerships,
       selected_partnership: params[:partnership],
-      query: params[:q]
+      query: params[:q],
+      pagy: @pagy
     )
   end
 
@@ -129,14 +134,6 @@ class EventsController < ApplicationController
     return if params[:partnership].blank?
 
     Site.find_by(slug: params[:partnership], is_published: true)
-  end
-
-  def filter_events_by_query(grouped_events, query)
-    q = query.downcase
-    grouped_events.each_with_object({}) do |(date, day_events), result|
-      filtered = day_events.select { |e| e.summary&.downcase&.include?(q) }
-      result[date] = filtered if filtered.any?
-    end
   end
 
   def render_ical

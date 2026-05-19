@@ -11,7 +11,7 @@ class PagesController < ApplicationController
       @neighbourhoods = Site.published.select do |site|
         site.tags.none? { |tag| tag.type == 'Partnership' }
       end
-      render Views::Pages::Home.new(neighbourhoods: @neighbourhoods)
+      render Views::Homepage::Home.new(neighbourhoods: @neighbourhoods)
     end
   end
 
@@ -22,43 +22,43 @@ class PagesController < ApplicationController
     @partnerships = Site.published.select do |site|
       site.tags.any? { |tag| tag.type == 'Partnership' }
     end
-    render Views::Pages::FindPlacecal.new(neighbourhoods: @neighbourhoods, partnerships: @partnerships)
+    render Views::Homepage::FindPlacecal.new(neighbourhoods: @neighbourhoods, partnerships: @partnerships)
   end
 
   def terms_of_use
-    render Views::Pages::TermsOfUse.new
+    render Views::Directory::TermsOfUse.new
   end
 
   def privacy
-    render Views::Pages::Privacy.new
+    render Views::Directory::Privacy.new
   end
 
   def our_story
-    render Views::Pages::OurStory.new
+    render Views::Homepage::OurStory.new
   end
 
   def community_groups
-    render Views::Pages::CommunityGroups.new
+    render Views::Homepage::CommunityGroups.new
   end
 
   def vcses
-    render Views::Pages::Vcses.new
+    render Views::Homepage::Vcses.new
   end
 
   def housing_providers
-    render Views::Pages::HousingProviders.new
+    render Views::Homepage::HousingProviders.new
   end
 
   def metropolitan_areas
-    render Views::Pages::MetropolitanAreas.new
+    render Views::Homepage::MetropolitanAreas.new
   end
 
   def social_prescribers
-    render Views::Pages::SocialPrescribers.new
+    render Views::Homepage::SocialPrescribers.new
   end
 
   def culture_tourism
-    render Views::Pages::CultureTourism.new
+    render Views::Homepage::CultureTourism.new
   end
 
   def robots
@@ -84,19 +84,33 @@ class PagesController < ApplicationController
     @stats = {
       partnerships: Site.where(is_published: true).where.not(slug: 'default-site').count,
       partners: Partner.visible.count,
-      events: Event.future(Time.zone.today).count,
+      events: Event.where(dtstart: Time.zone.today..30.days.from_now).count,
       neighbourhoods: Neighbourhood.districts.count
     }
 
     @partner_locations = build_partner_locations
+    @jump_sites = build_jump_sites
 
-    render Views::Pages::DirectoryHome.new(
+    render Views::Directory::Home.new(
       partnerships: @partnerships,
       recent_partners: @recent_partners,
       upcoming_events: @upcoming_events,
       stats: @stats,
-      partner_locations: @partner_locations
+      partner_locations: @partner_locations,
+      jump_sites: @jump_sites
     )
+  end
+
+  def build_jump_sites
+    partnership_ids = Tag.where(type: 'Partnership').joins(:sites).select('sites.id')
+    sites = Site.where(is_published: true)
+                .where.not(slug: 'default-site')
+                .where.not(id: partnership_ids)
+                .order(partners_count: :desc)
+                .limit(3)
+    return sites if sites.any?
+
+    Site.where(slug: %w[manchester london norwich], is_published: true)
   end
 
   def build_partner_locations

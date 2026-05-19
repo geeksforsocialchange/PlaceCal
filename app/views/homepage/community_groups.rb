@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-class Views::Pages::CommunityGroups < Views::Base
-  include Views::Pages::Audiences
+class Views::Homepage::CommunityGroups < Views::Base
+  include Views::Homepage::Audiences
 
   def view_template
     article(class: 'home') do
