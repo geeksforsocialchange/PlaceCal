@@ -11,7 +11,7 @@ class PagesController < ApplicationController
       @neighbourhoods = Site.published.select do |site|
         site.tags.none? { |tag| tag.type == 'Partnership' }
       end
-      render Views::Pages::Home.new(neighbourhoods: @neighbourhoods)
+      render Views::Homepage::Home.new(neighbourhoods: @neighbourhoods)
     end
   end
 
