@@ -78,7 +78,7 @@ class Views::Layouts::Application < Phlex::HTML
     link(rel: 'apple-touch-icon', href: image_url('apple-touch-icon.png'))
     meta(name: 'viewport', content: 'width=device-width, initial-scale=1')
 
-    meta(property: 'description', content: description_text)
+    meta(name: 'description', content: description_text)
     meta(property: 'og:description', content: description_text)
 
     if content_for?(:image)
