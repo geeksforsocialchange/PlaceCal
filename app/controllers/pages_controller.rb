@@ -71,11 +71,12 @@ class PagesController < ApplicationController
   end
 
   NEIGHBOURHOOD_UNIT_RANK = %w[ward district county region].freeze
+  DIRECTORY_CACHE_TTL = 1.day
 
   private
 
   def render_directory_home
-    @stats = Rails.cache.fetch('directory/stats', expires_in: 5.minutes) do
+    @stats = Rails.cache.fetch('directory/stats', expires_in: DIRECTORY_CACHE_TTL) do
       {
         partnerships: Site.where(is_published: true).where.not(slug: 'default-site').count,
         partners: Partner.visible.count,
@@ -84,15 +85,15 @@ class PagesController < ApplicationController
       }
     end
 
-    @partner_locations = Rails.cache.fetch('directory/partner_locations', expires_in: 10.minutes) do
+    @partner_locations = Rails.cache.fetch('directory/partner_locations', expires_in: DIRECTORY_CACHE_TTL) do
       build_partner_locations
     end
 
-    @jump_sites = Rails.cache.fetch('directory/jump_sites', expires_in: 10.minutes) do
+    @jump_sites = Rails.cache.fetch('directory/jump_sites', expires_in: DIRECTORY_CACHE_TTL) do
       build_jump_sites.to_a
     end
 
-    @partnerships = Rails.cache.fetch('directory/partnerships', expires_in: 5.minutes) do
+    @partnerships = Rails.cache.fetch('directory/partnerships', expires_in: DIRECTORY_CACHE_TTL) do
       Site.where(is_published: true)
           .where.not(slug: 'default-site')
           .order(partners_count: :desc)
@@ -100,7 +101,7 @@ class PagesController < ApplicationController
           .to_a
     end
 
-    @recent_partners = Rails.cache.fetch('directory/recent_partners', expires_in: 5.minutes) do
+    @recent_partners = Rails.cache.fetch('directory/recent_partners', expires_in: DIRECTORY_CACHE_TTL) do
       Partner.visible.includes(:categories, :address).order(created_at: :desc).limit(5).to_a
     end
 
