@@ -86,11 +86,8 @@ class SitemapsController < ApplicationController
     urls << url_entry(BASE)
     urls << url_entry("#{BASE}/partners")
     urls << url_entry("#{BASE}/events")
-    urls << url_entry("#{BASE}/find-placecal")
 
-    %w[privacy our-story terms-of-use get-in-touch
-       community-groups metropolitan-areas vcses
-       housing-providers social-prescribers culture-tourism].each do |page|
+    %w[privacy terms-of-use get-in-touch].each do |page|
       urls << url_entry("#{BASE}/#{page}")
     end
 

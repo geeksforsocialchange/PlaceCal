@@ -72,7 +72,7 @@ RSpec.describe "Public Sitemaps", type: :request do
         expect(response.body).to include("https://placecal.org/partners")
         expect(response.body).to include("https://placecal.org/events")
         expect(response.body).to include("https://placecal.org/privacy")
-        expect(response.body).to include("https://placecal.org/find-placecal")
+        expect(response.body).not_to include("find-placecal")
       end
     end
   end
