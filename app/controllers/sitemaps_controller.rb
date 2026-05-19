@@ -5,6 +5,9 @@ class SitemapsController < ApplicationController
   MAX_URLS_PER_SITEMAP = 50_000
   BASE = 'https://placecal.org'
 
+  skip_before_action :set_supporters
+  skip_before_action :set_navigation
+
   before_action :set_site
   before_action :require_default_site
 
@@ -58,6 +61,7 @@ class SitemapsController < ApplicationController
 
   def build_events
     urls = Event.where(dtstart: 3.months.ago..)
+                .order(dtstart: :desc)
                 .limit(MAX_URLS_PER_SITEMAP)
                 .pluck(:id, :updated_at)
                 .map { |id, updated_at| url_entry("#{BASE}/events/#{id}", updated_at) }
@@ -92,11 +96,6 @@ class SitemapsController < ApplicationController
 
     Article.published.pluck(:slug, :updated_at).each do |slug, updated_at|
       urls << url_entry("#{BASE}/news/#{slug}", updated_at)
-    end
-
-    Collection.pluck(:id, :route, :updated_at).each do |id, route, updated_at|
-      path = route.presence || "collections/#{id}"
-      urls << url_entry("#{BASE}/#{path}", updated_at)
     end
 
     wrap_urlset(urls)
