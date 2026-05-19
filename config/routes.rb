@@ -54,9 +54,9 @@ Rails.application.routes.draw do
         patch :update_profile
       end
     end
-    get 'profile' => 'users#profile', as: :profile
-    get 'jobs' => 'jobs#index', as: :jobs
-    get 'icons' => 'pages#icons', as: :icons
+    get 'profile', to: 'users#profile', as: :profile
+    get 'jobs', to: 'jobs#index', as: :jobs
+    get 'icons', to: 'pages#icons', as: :icons
 
     root 'pages#home'
   end
@@ -67,7 +67,7 @@ Rails.application.routes.draw do
 
   # Local site homepages must match before the default root
   constraints(Sites::Local) do
-    get '/' => 'sites#index'
+    get '/', to: 'sites#index'
   end
 
   root 'pages#home'
@@ -78,15 +78,15 @@ Rails.application.routes.draw do
 
   # Events
   resources :events, only: %i[index show]
-  get '/events/:year/:month/:day' => 'events#index', constraints: ymd, as: :events_by_date
+  get '/events/:year/:month/:day', to: 'events#index', constraints: ymd, as: :events_by_date
 
   # Partners
   resources :partners, only: %i[index show]
   resources :partnerships, only: %i[index show]
-  get '/partners/:id/events' => 'partners#show'
-  get '/partners/:id/events/:year/:month/:day' => 'partners#show', constraints: ymd
-  get '/places' => 'partners#index'
-  get '/partners/:id/embed' => 'places#embed'
+  get '/partners/:id/events', to: 'partners#show'
+  get '/partners/:id/events/:year/:month/:day', to: 'partners#show', constraints: ymd
+  get '/places', to: 'partners#index'
+  get '/partners/:id/embed', to: 'places#embed'
 
   # News
   resources :news, only: %i[index show]
@@ -102,10 +102,10 @@ Rails.application.routes.draw do
   # ============================================================
 
   # Legacy routes from when some Partners were Places
-  get '/places/:id' => 'partners#show'
-  get '/places/:id/events' => 'partners#show'
-  get '/places/:id/events/:year/:month/:day' => 'partners#show', constraints: ymd
-  get '/places/:id/embed' => 'places#embed'
+  get '/places/:id', to: 'partners#show'
+  get '/places/:id/events', to: 'partners#show'
+  get '/places/:id/events/:year/:month/:day', to: 'partners#show', constraints: ymd
+  get '/places/:id/embed', to: 'places#embed'
 
   # Deprecated: moving to join.placecal.org
   get 'find-placecal', to: 'pages#find_placecal'
@@ -125,12 +125,12 @@ Rails.application.routes.draw do
   # ============================================================
   # Technical (SEO, API, dev tools)
   # ============================================================
-  get '/robots.txt' => 'pages#robots'
-  get '/sitemap.xml' => 'sitemaps#index', defaults: { format: :xml }
-  get '/sitemap/partners.xml' => 'sitemaps#partners', defaults: { format: :xml }
-  get '/sitemap/events.xml' => 'sitemaps#events', defaults: { format: :xml }
-  get '/sitemap/partnerships.xml' => 'sitemaps#partnerships', defaults: { format: :xml }
-  get '/sitemap/pages.xml' => 'sitemaps#pages', defaults: { format: :xml }
+  get '/robots.txt', to: 'pages#robots'
+  get '/sitemap.xml', to: 'sitemaps#index', defaults: { format: :xml }
+  get '/sitemap/partners.xml', to: 'sitemaps#partners', defaults: { format: :xml }
+  get '/sitemap/events.xml', to: 'sitemaps#events', defaults: { format: :xml }
+  get '/sitemap/partnerships.xml', to: 'sitemaps#partnerships', defaults: { format: :xml }
+  get '/sitemap/pages.xml', to: 'sitemaps#pages', defaults: { format: :xml }
 
   get '/api/v1/graphql', to: 'graphql#execute'
   post '/api/v1/graphql', to: 'graphql#execute'
