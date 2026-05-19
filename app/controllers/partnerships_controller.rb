@@ -18,10 +18,23 @@ class PartnershipsController < ApplicationController
     @partners = PartnersQuery.new(site: @partnership).call
     @upcoming_events = EventsQuery.new(site: @partnership).call(period: 'upcoming')
 
+    partner_ids = Array(@partners.respond_to?(:each_pair) ? @partners.values.flatten : @partners).map(&:id)
+    @partner_event_counts = Event.future(Time.current)
+                                 .where(place_id: partner_ids)
+                                 .or(Event.future(Time.current).where(organiser_id: partner_ids))
+                                 .group(:place_id)
+                                 .count
+
+    @event_count = EventsQuery.new(site: @partnership).scope
+                              .where(dtstart: Time.zone.today..30.days.from_now)
+                              .count
+
     render Views::Directory::PartnershipShow.new(
       partnership: @partnership,
       partners: @partners,
       upcoming_events: @upcoming_events,
+      partner_event_counts: @partner_event_counts,
+      event_count: @event_count,
       site: @site
     )
   end

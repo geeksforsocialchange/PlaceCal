@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Views::Directory::Home < Views::Base
+  include Views::Directory::Concerns::FlattensEvents
+
   prop :partnerships, _Interface(:each)
   prop :recent_partners, _Interface(:each)
   prop :upcoming_events, _Interface(:each)
@@ -42,7 +44,7 @@ class Views::Directory::Home < Views::Base
             h2(class: 'font-serif font-regular text-section text-foreground') { 'Community hubs running on PlaceCal' }
           end
           a(href: partnerships_path,
-            class: 'inline-flex items-center gap-2 bg-home-background border-2 border-primary rounded-full px-5 py-2 text-detail font-bold text-foreground no-underline hover:bg-primary transition-colors') do
+            class: 'btn-primary-outline transition-colors') do
             plain 'See all partnerships'
             span { safe('&rarr;') }
           end
@@ -72,8 +74,10 @@ class Views::Directory::Home < Views::Base
       div(class: 'allcaps-label text-tertiary mb-1') { 'Activity' }
       h2(class: 'font-serif font-regular text-section text-foreground mb-4') { 'Recently joined PlaceCal' }
       div(class: 'flex flex-col gap-2') do
-        @recent_partners.first(5).each do |partner|
-          Directory::PartnerRow(partner: partner)
+        partners = @recent_partners.first(5)
+        counts = partner_event_counts(partners)
+        partners.each do |partner|
+          Directory::PartnerRow(partner: partner, event_count: counts[partner.id] || 0)
         end
       end
       div(class: 'mt-4') do
@@ -134,18 +138,19 @@ class Views::Directory::Home < Views::Base
       div(class: 'bg-home-background-3 px-5 py-4 flex-1') do
         p(class: 'text-detail leading-relaxed text-tertiary mb-4') { body }
         a(href: link_path,
-          class: 'inline-flex items-center gap-2 border-2 border-foreground rounded-full px-5 py-2 text-detail font-bold text-foreground no-underline hover:bg-foreground hover:text-background transition-colors') do
+          class: 'btn-dark-outline transition-colors') do
           plain link_text
         end
       end
     end
   end
 
-  def flat_events
-    @flat_events ||= if @upcoming_events.respond_to?(:each_pair)
-                       @upcoming_events.values.flatten
-                     else
-                       Array(@upcoming_events)
-                     end
+  def partner_event_counts(partners)
+    ids = partners.map(&:id)
+    ::Event.future(Time.zone.today)
+           .where(place_id: ids)
+           .or(::Event.future(Time.zone.today).where(organiser_id: ids))
+           .group(:place_id)
+           .count
   end
 end

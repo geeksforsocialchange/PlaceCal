@@ -323,5 +323,32 @@ RSpec.describe "Public Partners", type: :request do
       get partners_url(host: "lvh.me")
       expect(response).to be_successful
     end
+
+    context "with A-Z sort" do
+      let!(:az_partners) do
+        %w[Alpha Bravo Charlie].map do |name|
+          create(:partner, name: name, address: create(:address, neighbourhood: ward))
+        end
+      end
+
+      it "returns all partners without pagination" do
+        get partners_url(host: "lvh.me", params: { sort: "name" })
+        expect(response).to be_successful
+        expect(response.body).to include("Alpha")
+        expect(response.body).to include("Charlie")
+      end
+
+      it "filters by letter" do
+        get partners_url(host: "lvh.me", params: { sort: "name", letter: "A" })
+        expect(response).to be_successful
+        expect(response.body).to include("Alpha")
+        expect(response.body).not_to include("Bravo")
+      end
+
+      it "shows filter count when letter selected" do
+        get partners_url(host: "lvh.me", params: { sort: "name", letter: "C" })
+        expect(response.body).to include("Showing")
+      end
+    end
   end
 end

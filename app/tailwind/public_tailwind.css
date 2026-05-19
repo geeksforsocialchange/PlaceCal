@@ -25,6 +25,7 @@
 
 @import "./public/_theme.css";
 @import "./public/_utilities.css";
+@import "./public/_components.css";
 
 /* base overrides for things which aren't yet componentised */
 @layer base {

@@ -1,9 +1,13 @@
 # frozen_string_literal: true
 
 class Views::Directory::PartnershipShow < Views::Base
+  include Views::Directory::Concerns::FlattensEvents
+
   prop :partnership, ::Site
   prop :partners, _Interface(:each)
   prop :upcoming_events, _Interface(:each)
+  prop :partner_event_counts, Hash, default: -> { {} }
+  prop :event_count, Integer, default: 0
   prop :site, _Nilable(::Site), default: nil
 
   def view_template
@@ -33,9 +37,9 @@ class Views::Directory::PartnershipShow < Views::Base
           plain @partnership.name
         end
         div(class: 'text-base leading-relaxed max-w-[620px] mb-5 opacity-80') { @partnership.description } if @partnership.description.present?
-        div(class: 'flex flex-col items-center gap-4 mt-2') do
+        div(class: 'flex flex-col items-start gap-4 mt-2') do
           render_visit_button
-          div(class: 'flex flex-wrap items-center justify-center gap-3') do
+          div(class: 'flex flex-wrap items-center gap-3') do
             render_stat_chips
           end
         end
@@ -63,7 +67,7 @@ class Views::Directory::PartnershipShow < Views::Base
 
   def render_stat_chips
     chip("#{partner_count} #{'partner'.pluralize(partner_count)}", icon_name: :partner)
-    chip("#{event_count} #{'event'.pluralize(event_count)} this month", icon_name: :event)
+    chip("#{@event_count} #{'event'.pluralize(@event_count)} this month", icon_name: :event)
     chip(@partnership.primary_neighbourhood.name, icon_name: :neighbourhood) if @partnership.primary_neighbourhood
   end
 
@@ -79,41 +83,10 @@ class Views::Directory::PartnershipShow < Views::Base
       h2(class: 'allcaps-label text-tertiary mb-4') { 'Partners in this partnership' }
       div(class: 'grid grid-cols-1 md:grid-cols-2 gap-2') do
         displayed_partners.each do |partner|
-          render_partner_mini(partner)
+          Directory::PartnerMini(partner: partner, event_count: @partner_event_counts[partner.id] || 0)
         end
       end
       render_see_all_button("See all #{partner_count} partners", "https://#{@partnership.slug}.placecal.org/partners")
-    end
-  end
-
-  def render_partner_mini(partner)
-    a(href: partner_path(partner),
-      class: 'grid grid-cols-[44px_1fr] gap-3 items-start py-3 px-3 rounded-card border border-rules no-underline text-foreground hover:bg-home-background-3 transition-colors') do
-      render_partner_avatar(partner)
-      div do
-        div(class: 'flex items-start justify-between gap-2') do
-          span(class: 'font-extra-bold text-sm leading-tight') { partner.name }
-          event_count_for = partner_event_counts[partner.id] || 0
-          if event_count_for.positive?
-            span(class: 'inline-flex items-center bg-primary text-foreground text-2xs font-bold rounded-full px-2 py-0.5 whitespace-nowrap') do
-              plain "#{event_count_for} #{'event'.pluralize(event_count_for)}"
-            end
-          end
-        end
-        div(class: 'text-xs text-tertiary mt-0.5') { partner.location_name } if partner.location_name.present?
-        div(class: 'text-xs text-tertiary mt-0.5') { partner.categories.first(2).map(&:name).join(' · ') } if partner.categories.any?
-      end
-    end
-  end
-
-  def render_partner_avatar(partner)
-    if partner.image?
-      img(src: partner.image.standard.url, alt: partner.name, class: 'w-[44px] h-[44px] rounded-card object-cover')
-    else
-      initials = partner.name.split.first(2).map { |w| w[0] }.join.upcase
-      div(class: 'w-[44px] h-[44px] rounded-full bg-home-background-3 flex items-center justify-center font-serif text-lg text-tertiary') do
-        plain initials
-      end
     end
   end
 
@@ -131,9 +104,7 @@ class Views::Directory::PartnershipShow < Views::Base
 
   def render_see_all_button(text, href)
     div(class: 'mt-6') do
-      a(href: href,
-        class: 'inline-flex items-center gap-2 bg-foreground font-bold rounded-full px-6 py-3 text-sm no-underline hover:bg-tertiary transition-colors',
-        style: 'color: var(--color-background)') do
+      a(href: href, class: 'btn-dark transition-colors') do
         plain text
         raw(view_context.icon(:external_link, size: nil, css_class: 'w-4 h-4'))
       end
@@ -195,7 +166,7 @@ class Views::Directory::PartnershipShow < Views::Base
           end
         end
         a(href: '/get-in-touch',
-          class: 'inline-flex items-center border-2 border-foreground text-foreground font-bold rounded-full px-4 py-1.5 text-sm no-underline hover:bg-foreground hover:text-background transition-colors') do
+          class: 'btn-dark-outline transition-colors') do
           plain 'Contact coordinator'
         end
       end
@@ -216,28 +187,5 @@ class Views::Directory::PartnershipShow < Views::Base
 
   def partner_count
     partner_list.size
-  end
-
-  def event_count
-    flat_events.size
-  end
-
-  def flat_events
-    @flat_events ||= if @upcoming_events.respond_to?(:each_pair)
-                       @upcoming_events.values.flatten
-                     else
-                       Array(@upcoming_events)
-                     end
-  end
-
-  def partner_event_counts
-    @partner_event_counts ||= begin
-      partner_ids = partner_list.map(&:id)
-      ::Event.future(Time.current)
-             .where(place_id: partner_ids)
-             .or(::Event.future(Time.current).where(organiser_id: partner_ids))
-             .group(:place_id)
-             .count
-    end
   end
 end

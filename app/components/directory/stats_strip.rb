@@ -17,12 +17,10 @@ class Components::Directory::StatsStrip < Components::Directory::Base
 
   def render_bead(value, label, _icon_name = nil)
     div(class: 'flex flex-col bg-home-background border-2 border-rules rounded-card py-3.5 px-4.5') do
-      span(class: 'font-serif text-stat leading-none text-foreground') { number_with_delimiter(value) }
+      span(class: 'font-serif text-stat leading-none text-foreground') do
+        plain ActiveSupport::NumberHelper.number_to_delimited(value)
+      end
       span(class: 'allcaps-label text-tertiary mt-1.5') { label }
     end
-  end
-
-  def number_with_delimiter(number)
-    number.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse
   end
 end

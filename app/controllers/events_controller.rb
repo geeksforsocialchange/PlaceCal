@@ -136,14 +136,6 @@ class EventsController < ApplicationController
     Site.find_by(slug: params[:partnership], is_published: true)
   end
 
-  def filter_events_by_query(grouped_events, query)
-    q = query.downcase
-    grouped_events.each_with_object({}) do |(date, day_events), result|
-      filtered = day_events.select { |e| e.summary&.downcase&.include?(q) }
-      result[date] = filtered if filtered.any?
-    end
-  end
-
   def render_ical
     track_ical_download
     query = EventsQuery.new(site: @site)
