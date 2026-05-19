@@ -2,10 +2,11 @@
 
 # config/routes.rb
 Rails.application.routes.draw do
-  # Health check for Kamal proxy
+  # ============================================================
+  # Infrastructure
+  # ============================================================
   get 'up', to: proc { [200, {}, ['OK']] }
 
-  # User login stuff
   devise_for :users,
              controllers: {
                invitations: 'users/invitations',
@@ -13,21 +14,9 @@ Rails.application.routes.draw do
                passwords: 'users/passwords'
              }
 
-  # Static pages
-  get 'get-in-touch', to: 'joins#new'
-  post 'get-in-touch', to: 'joins#create'
-  get 'privacy', to: 'pages#privacy'
-  get 'find-placecal', to: 'pages#find_placecal'
-  get 'our-story', to: 'pages#our_story'
-  get 'terms-of-use', to: 'pages#terms_of_use'
-
-  get 'community-groups', to: 'pages#community_groups'
-  get 'metropolitan-areas', to: 'pages#metropolitan_areas'
-  get 'vcses', to: 'pages#vcses'
-  get 'housing-providers', to: 'pages#housing_providers'
-  get 'social-prescribers', to: 'pages#social_prescribers'
-  get 'culture-tourism', to: 'pages#culture_tourism'
-
+  # ============================================================
+  # Admin (admin.lvh.me / admin.placecal.org)
+  # ============================================================
   scope module: :admin, as: :admin, constraints: { subdomain: 'admin' } do
     resources :articles, except: [:show]
     resources :calendars do
@@ -53,10 +42,10 @@ Rails.application.routes.draw do
         delete :clear_address
       end
     end
-    resources :tags
     resources :partnerships
     resources :sites
     resources :supporters
+    resources :tags
     resources :users, except: [:show] do
       collection do
         get :lookup_email
@@ -65,15 +54,21 @@ Rails.application.routes.draw do
         patch :update_profile
       end
     end
-    get 'profile' => 'users#profile', as: :profile
-    get 'jobs' => 'jobs#index', as: :jobs
-    get 'icons' => 'pages#icons', as: :icons
+
+    get 'icons', to: 'pages#icons', as: :icons
+    get 'jobs', to: 'jobs#index', as: :jobs
+    get 'profile', to: 'users#profile', as: :profile
 
     root 'pages#home'
   end
 
+  # ============================================================
+  # Public site
+  # ============================================================
+
+  # Local site homepages must match before the default root
   constraints(Sites::Local) do
-    get '/' => 'sites#index'
+    get '/', to: 'sites#index'
   end
 
   root 'pages#home'
@@ -84,33 +79,59 @@ Rails.application.routes.draw do
 
   # Events
   resources :events, only: %i[index show]
-  get '/events/:year/:month/:day' => 'events#index', constraints: ymd, as: :events_by_date
+  get '/events/:year/:month/:day', to: 'events#index', constraints: ymd, as: :events_by_date
 
   # Partners
   resources :partners, only: %i[index show]
   resources :partnerships, only: %i[index show]
-  get '/partners/:id/events' => 'partners#show'
-  get '/partners/:id/events/:year/:month/:day' => 'partners#show', constraints: ymd
-  get '/places' => 'partners#index' # Removing separate Places view for now.
-  get '/partners/:id/embed' => 'places#embed'
+  get '/partners/:id/events', to: 'partners#show'
+  get '/partners/:id/events/:year/:month/:day', to: 'partners#show', constraints: ymd
+  get '/places', to: 'partners#index'
+  get '/partners/:id/embed', to: 'places#embed'
 
-  # news
+  # News
   resources :news, only: %i[index show]
 
-  # Legacy routes from when some Partners were Places. Don't let Google down...
-  get '/places/:id' => 'partners#show'
-  get '/places/:id/events' => 'partners#show'
-  get '/places/:id/events/:year/:month/:day' => 'partners#show', constraints: ymd
-  get '/places/:id/embed' => 'places#embed'
+  # Static pages (also listed in SitemapsController#build_pages — update both)
+  get 'get-in-touch', to: 'joins#new'
+  post 'get-in-touch', to: 'joins#create'
+  get 'privacy', to: 'pages#privacy'
+  get 'terms-of-use', to: 'pages#terms_of_use'
 
-  # Collections
+  # ============================================================
+  # Legacy & deprecated
+  # ============================================================
+
+  # Legacy routes from when some Partners were Places
+  get '/places/:id', to: 'partners#show'
+  get '/places/:id/events', to: 'partners#show'
+  get '/places/:id/events/:year/:month/:day', to: 'partners#show', constraints: ymd
+  get '/places/:id/embed', to: 'places#embed'
+
+  # Deprecated: moving to join.placecal.org
+  get 'find-placecal', to: 'pages#find_placecal'
+  get 'our-story', to: 'pages#our_story'
+  get 'community-groups', to: 'pages#community_groups'
+  get 'metropolitan-areas', to: 'pages#metropolitan_areas'
+  get 'vcses', to: 'pages#vcses'
+  get 'housing-providers', to: 'pages#housing_providers'
+  get 'social-prescribers', to: 'pages#social_prescribers'
+  get 'culture-tourism', to: 'pages#culture_tourism'
+
+  # Deprecated: collections
   resources :collections, only: %i[show]
-
-  # Named routes
   get 'winter2017', to: 'collections#show', id: 1
   get 'winter2018', to: 'collections#show', id: 2
 
-  get '/robots.txt' => 'pages#robots'
+  # ============================================================
+  # Technical (SEO, API, dev tools)
+  # ============================================================
+  get '/robots.txt', to: 'pages#robots'
+  get '/sitemap.xml', to: 'sitemaps#index', defaults: { format: :xml }
+  get '/sitemap/partners.xml', to: 'sitemaps#partners', defaults: { format: :xml }
+  get '/sitemap/events.xml', to: 'sitemaps#events', defaults: { format: :xml }
+  get '/sitemap/partnerships.xml', to: 'sitemaps#partnerships', defaults: { format: :xml }
+  get '/sitemap/pages.xml', to: 'sitemaps#pages', defaults: { format: :xml }
 
   get '/api/v1/graphql', to: 'graphql#execute'
   post '/api/v1/graphql', to: 'graphql#execute'
