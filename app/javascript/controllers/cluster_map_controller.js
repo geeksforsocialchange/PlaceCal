@@ -1,14 +1,17 @@
 import { Controller } from "@hotwired/stimulus";
-import "leaflet";
-import "@maplibre/maplibre-gl-leaflet";
-import "leaflet.markercluster";
-import { ensureMaplibreCss } from "controllers/mixins/map_css";
 
 export default class extends Controller {
 	static values = { markers: Array, styleUrl: String };
 
-	connect() {
-		ensureMaplibreCss();
+	async connect() {
+		await Promise.all([
+			import("leaflet"),
+			import("@maplibre/maplibre-gl-leaflet"),
+			import("leaflet.markercluster"),
+			import("controllers/mixins/map_css").then((m) => m.ensureMaplibreCss()),
+		]);
+		if (!this.element.isConnected) return;
+
 		this.createMap();
 	}
 

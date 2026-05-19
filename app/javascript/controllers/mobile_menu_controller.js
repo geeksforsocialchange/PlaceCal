@@ -5,11 +5,6 @@ import { Controller } from "@hotwired/stimulus";
 export default class extends Controller {
 	static targets = ["menu"];
 
-	connect() {
-		// Start with menu hidden on mobile
-		this.menuTarget.classList.add("is-hidden");
-	}
-
 	toggle() {
 		this.menuTarget.classList.toggle("is-hidden");
 	}

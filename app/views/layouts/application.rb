@@ -22,6 +22,8 @@ class Views::Layouts::Application < Phlex::HTML
         stylesheet_link_tag 'print', media: 'print', 'data-turbo-track': 'reload'
         preload_font('rawline/rawline-500.woff2')
         preload_font('rawline/rawline-700.woff2')
+        preload_font('rawline/rawline-800.woff2')
+        preload_font('trocchi/Trocchi-Regular.woff2')
         render_meta
         javascript_include_tag 'es-module-shims', async: true
         javascript_importmap_tags

@@ -12,6 +12,7 @@ class Components::Map < Components::Base
     return if @points.blank?
 
     div(
+      class: @compact ? 'min-h-[330px]' : 'min-h-[500px]',
       data_controller: 'leaflet',
       data_leaflet_args_value: args_for_map(@points, @site, @style, @compact)
     )
