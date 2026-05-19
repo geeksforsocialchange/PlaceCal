@@ -13,14 +13,15 @@ Rails.application.routes.draw do
                passwords: 'users/passwords'
              }
 
-  # Static pages
+  # Static pages (also listed in SitemapsController#build_pages — update both)
   get 'get-in-touch', to: 'joins#new'
   post 'get-in-touch', to: 'joins#create'
   get 'privacy', to: 'pages#privacy'
-  get 'find-placecal', to: 'pages#find_placecal'
-  get 'our-story', to: 'pages#our_story'
   get 'terms-of-use', to: 'pages#terms_of_use'
 
+  # Deprecated: moving to join.placecal.org
+  get 'find-placecal', to: 'pages#find_placecal'
+  get 'our-story', to: 'pages#our_story'
   get 'community-groups', to: 'pages#community_groups'
   get 'metropolitan-areas', to: 'pages#metropolitan_areas'
   get 'vcses', to: 'pages#vcses'
@@ -94,22 +95,21 @@ Rails.application.routes.draw do
   get '/places' => 'partners#index' # Removing separate Places view for now.
   get '/partners/:id/embed' => 'places#embed'
 
-  # news
+  # News
   resources :news, only: %i[index show]
 
-  # Legacy routes from when some Partners were Places. Don't let Google down...
+  # Legacy routes from when some Partners were Places
   get '/places/:id' => 'partners#show'
   get '/places/:id/events' => 'partners#show'
   get '/places/:id/events/:year/:month/:day' => 'partners#show', constraints: ymd
   get '/places/:id/embed' => 'places#embed'
 
-  # Collections
+  # Collections (deprecated)
   resources :collections, only: %i[show]
-
-  # Named routes
   get 'winter2017', to: 'collections#show', id: 1
   get 'winter2018', to: 'collections#show', id: 2
 
+  # SEO
   get '/robots.txt' => 'pages#robots'
   get '/sitemap.xml' => 'sitemaps#index', defaults: { format: :xml }
   get '/sitemap/partners.xml' => 'sitemaps#partners', defaults: { format: :xml }
@@ -117,6 +117,7 @@ Rails.application.routes.draw do
   get '/sitemap/partnerships.xml' => 'sitemaps#partnerships', defaults: { format: :xml }
   get '/sitemap/pages.xml' => 'sitemaps#pages', defaults: { format: :xml }
 
+  # API
   get '/api/v1/graphql', to: 'graphql#execute'
   post '/api/v1/graphql', to: 'graphql#execute'
 
