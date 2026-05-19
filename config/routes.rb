@@ -2,10 +2,11 @@
 
 # config/routes.rb
 Rails.application.routes.draw do
-  # Health check for Kamal proxy
+  # ============================================================
+  # Infrastructure
+  # ============================================================
   get 'up', to: proc { [200, {}, ['OK']] }
 
-  # User login stuff
   devise_for :users,
              controllers: {
                invitations: 'users/invitations',
@@ -13,22 +14,9 @@ Rails.application.routes.draw do
                passwords: 'users/passwords'
              }
 
-  # Static pages (also listed in SitemapsController#build_pages — update both)
-  get 'get-in-touch', to: 'joins#new'
-  post 'get-in-touch', to: 'joins#create'
-  get 'privacy', to: 'pages#privacy'
-  get 'terms-of-use', to: 'pages#terms_of_use'
-
-  # Deprecated: moving to join.placecal.org
-  get 'find-placecal', to: 'pages#find_placecal'
-  get 'our-story', to: 'pages#our_story'
-  get 'community-groups', to: 'pages#community_groups'
-  get 'metropolitan-areas', to: 'pages#metropolitan_areas'
-  get 'vcses', to: 'pages#vcses'
-  get 'housing-providers', to: 'pages#housing_providers'
-  get 'social-prescribers', to: 'pages#social_prescribers'
-  get 'culture-tourism', to: 'pages#culture_tourism'
-
+  # ============================================================
+  # Admin (admin.lvh.me / admin.placecal.org)
+  # ============================================================
   scope module: :admin, as: :admin, constraints: { subdomain: 'admin' } do
     resources :articles, except: [:show]
     resources :calendars do
@@ -73,6 +61,11 @@ Rails.application.routes.draw do
     root 'pages#home'
   end
 
+  # ============================================================
+  # Public site
+  # ============================================================
+
+  # Local site homepages must match before the default root
   constraints(Sites::Local) do
     get '/' => 'sites#index'
   end
@@ -92,11 +85,21 @@ Rails.application.routes.draw do
   resources :partnerships, only: %i[index show]
   get '/partners/:id/events' => 'partners#show'
   get '/partners/:id/events/:year/:month/:day' => 'partners#show', constraints: ymd
-  get '/places' => 'partners#index' # Removing separate Places view for now.
+  get '/places' => 'partners#index'
   get '/partners/:id/embed' => 'places#embed'
 
   # News
   resources :news, only: %i[index show]
+
+  # Static pages (also listed in SitemapsController#build_pages — update both)
+  get 'get-in-touch', to: 'joins#new'
+  post 'get-in-touch', to: 'joins#create'
+  get 'privacy', to: 'pages#privacy'
+  get 'terms-of-use', to: 'pages#terms_of_use'
+
+  # ============================================================
+  # Legacy & deprecated
+  # ============================================================
 
   # Legacy routes from when some Partners were Places
   get '/places/:id' => 'partners#show'
@@ -104,12 +107,24 @@ Rails.application.routes.draw do
   get '/places/:id/events/:year/:month/:day' => 'partners#show', constraints: ymd
   get '/places/:id/embed' => 'places#embed'
 
-  # Collections (deprecated)
+  # Deprecated: moving to join.placecal.org
+  get 'find-placecal', to: 'pages#find_placecal'
+  get 'our-story', to: 'pages#our_story'
+  get 'community-groups', to: 'pages#community_groups'
+  get 'metropolitan-areas', to: 'pages#metropolitan_areas'
+  get 'vcses', to: 'pages#vcses'
+  get 'housing-providers', to: 'pages#housing_providers'
+  get 'social-prescribers', to: 'pages#social_prescribers'
+  get 'culture-tourism', to: 'pages#culture_tourism'
+
+  # Deprecated: collections
   resources :collections, only: %i[show]
   get 'winter2017', to: 'collections#show', id: 1
   get 'winter2018', to: 'collections#show', id: 2
 
-  # SEO
+  # ============================================================
+  # Technical (SEO, API, dev tools)
+  # ============================================================
   get '/robots.txt' => 'pages#robots'
   get '/sitemap.xml' => 'sitemaps#index', defaults: { format: :xml }
   get '/sitemap/partners.xml' => 'sitemaps#partners', defaults: { format: :xml }
@@ -117,7 +132,6 @@ Rails.application.routes.draw do
   get '/sitemap/partnerships.xml' => 'sitemaps#partnerships', defaults: { format: :xml }
   get '/sitemap/pages.xml' => 'sitemaps#pages', defaults: { format: :xml }
 
-  # API
   get '/api/v1/graphql', to: 'graphql#execute'
   post '/api/v1/graphql', to: 'graphql#execute'
 
