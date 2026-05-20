@@ -4,12 +4,13 @@ export default class extends Controller {
 	static values = { markers: Array, styleUrl: String };
 
 	async connect() {
-		await Promise.all([
+		const [leafletMod] = await Promise.all([
 			import("leaflet"),
 			import("@maplibre/maplibre-gl-leaflet"),
-			import("leaflet.markercluster"),
 			import("controllers/mixins/map_css").then((m) => m.ensureMaplibreCss()),
 		]);
+		window.L = leafletMod.default || leafletMod;
+		await import("leaflet.markercluster");
 		if (!this.element.isConnected) return;
 
 		this.createMap();
