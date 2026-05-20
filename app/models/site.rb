@@ -201,7 +201,7 @@ class Site < ApplicationRecord
     config = File.read(Rails.root.join("config/robots/#{self.class.robots_config_filename}"))
 
     if is_published?
-      config
+      "#{config}\nSitemap: https://placecal.org/sitemap.xml\n"
     else
       <<~TXT
         #{config}
