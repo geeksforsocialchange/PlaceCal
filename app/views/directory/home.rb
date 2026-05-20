@@ -7,6 +7,7 @@ class Views::Directory::Home < Views::Base
   prop :recent_partners, _Interface(:each)
   prop :upcoming_events, _Interface(:each)
   prop :stats, Hash
+  prop :partner_event_counts, Hash, default: -> { {} }
   prop :partner_locations, _Interface(:each), default: -> { [] }
   prop :jump_sites, _Interface(:each), default: -> { [] }
 
@@ -75,9 +76,8 @@ class Views::Directory::Home < Views::Base
       h2(class: 'font-serif font-regular text-section text-foreground mb-4') { 'Recently joined PlaceCal' }
       div(class: 'flex flex-col gap-2') do
         partners = @recent_partners.first(5)
-        counts = partner_event_counts(partners)
         partners.each do |partner|
-          Directory::PartnerRow(partner: partner, event_count: counts[partner.id] || 0)
+          Directory::PartnerRow(partner: partner, event_count: @partner_event_counts[partner.id] || 0)
         end
       end
       div(class: 'mt-4') do
@@ -143,14 +143,5 @@ class Views::Directory::Home < Views::Base
         end
       end
     end
-  end
-
-  def partner_event_counts(partners)
-    ids = partners.map(&:id)
-    ::Event.future(Time.zone.today)
-           .where(place_id: ids)
-           .or(::Event.future(Time.zone.today).where(organiser_id: ids))
-           .group(:place_id)
-           .count
   end
 end

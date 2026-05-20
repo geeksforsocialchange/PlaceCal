@@ -21,13 +21,13 @@ class Views::Layouts::Application < Phlex::HTML
         stylesheet_link_tag site.stylesheet_link, media: 'all', 'data-turbo-track': 'reload' if site&.stylesheet_link
         stylesheet_link_tag 'print', media: 'print', 'data-turbo-track': 'reload'
         preload_font('rawline/rawline-500.woff2')
-        preload_font('rawline/rawline-600.woff2')
         preload_font('rawline/rawline-700.woff2')
         preload_font('rawline/rawline-800.woff2')
+        preload_font('trocchi/Trocchi-Regular.woff2')
         render_meta
-        script(defer: true, 'data-domain': 'placecal.org', src: 'https://plausible.io/js/plausible.js') if Rails.env.production?
         javascript_include_tag 'es-module-shims', async: true
         javascript_importmap_tags
+        script(defer: true, 'data-domain': 'placecal.org', src: 'https://plausible.io/js/plausible.js') if Rails.env.production?
         meta(name: 'turbo-refresh-method', content: 'morph')
       end
 

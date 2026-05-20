@@ -131,7 +131,7 @@ class Components::Navigation < Components::Base
 
   def menu_nav_classes
     [
-      'nav header__menu row-start-2 col-start-1 col-span-2 flex flex-col justify-evenly',
+      'nav header__menu row-start-2 col-start-1 col-span-2 flex flex-col justify-evenly is-hidden',
       '-mx-6 h-auto overflow-clip transition-[display,height,margin-top,padding-block] duration-300',
       'md:flex-row',
       *(if @site&.default_site?

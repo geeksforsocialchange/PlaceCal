@@ -105,12 +105,24 @@ class PagesController < ApplicationController
       Partner.visible.includes(:categories, :address).order(created_at: :desc).limit(5).to_a
     end
 
-    @upcoming_events = EventsQuery.new(site: @site).call(period: 'upcoming')
+    @upcoming_events = Rails.cache.fetch('directory/upcoming_events', expires_in: DIRECTORY_CACHE_TTL) do
+      EventsQuery.new(site: @site).call(period: 'upcoming')
+    end
+
+    @partner_event_counts = Rails.cache.fetch('directory/partner_event_counts', expires_in: DIRECTORY_CACHE_TTL) do
+      ids = @recent_partners.map(&:id)
+      Event.future(Time.zone.today)
+           .where(place_id: ids)
+           .or(Event.future(Time.zone.today).where(organiser_id: ids))
+           .group(:place_id)
+           .count
+    end
 
     render Views::Directory::Home.new(
       partnerships: @partnerships,
       recent_partners: @recent_partners,
       upcoming_events: @upcoming_events,
+      partner_event_counts: @partner_event_counts,
       stats: @stats,
       partner_locations: @partner_locations,
       jump_sites: @jump_sites

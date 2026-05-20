@@ -1,17 +1,16 @@
 import { Controller } from "@hotwired/stimulus";
-import "leaflet";
-import "@maplibre/maplibre-gl-leaflet";
-import { ensureMaplibreCss } from "controllers/mixins/map_css";
 
-// Connects to data-controller="leaflet"
-// Its important to use single quotes in the template when declaring the args values
-// data-leaflet-args-value='<%= args_for_map(points, site, local_assigns[:style], local_assigns[:compact]) %>'
-// If not you will get strange unicode values which will break parsing
 export default class extends Controller {
 	static values = { args: Object };
-	// {center, iconUrl, markers, shadowUrl, styleClass, styleUrl, zoom}
 
-	connect() {
+	async connect() {
+		const [, , { ensureMaplibreCss }] = await Promise.all([
+			import("leaflet"),
+			import("@maplibre/maplibre-gl-leaflet"),
+			import("controllers/mixins/map_css"),
+		]);
+		if (!this.element.isConnected) return;
+
 		ensureMaplibreCss();
 		this.element.classList.add("map");
 		if (this.argsValue.styleClass?.length)
@@ -23,14 +22,13 @@ export default class extends Controller {
 		this.element.classList.remove("map");
 		if (this.argsValue.styleClass?.length)
 			this.element.classList.remove(...this.argsValue.styleClass);
-		this.map.remove();
+		this.map?.remove();
 	}
 
 	createMap() {
 		this.map = L.map(this.element);
 		this.map.scrollWheelZoom.disable();
 
-		// Use MapLibre GL for vector tile rendering with custom themed styles
 		L.maplibreGL({
 			style: this.argsValue.styleUrl,
 			attribution:
@@ -65,21 +63,17 @@ export default class extends Controller {
 
 		const markerGroup = L.featureGroup(markers);
 		if (markers.length === 1) {
-			// Single marker: use setView to keep zoom level
 			this.map.setView(this.argsValue.center, this.argsValue.zoom);
 		} else {
-			// Multiple markers: fit bounds to show all markers
 			const bounds = markerGroup.getBounds();
 			if (
 				bounds.getNorth() === bounds.getSouth() &&
 				bounds.getEast() === bounds.getWest()
 			) {
-				// All markers at same position: fitBounds would fail on zero-area box
 				this.map.setView(bounds.getCenter(), this.argsValue.zoom);
 			} else {
-				// Extend bounds slightly south to account for marker icon height
 				const south = bounds.getSouth();
-				const offset = (bounds.getNorth() - south) * 0.08; // 8% extra at bottom
+				const offset = (bounds.getNorth() - south) * 0.08;
 				bounds.extend([south - offset, bounds.getWest()]);
 				this.map.fitBounds(bounds);
 			}

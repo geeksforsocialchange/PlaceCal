@@ -12,7 +12,7 @@
 	src: url("rawline/rawline-100.woff2") format("woff2");
 	font-weight: 100;
 	font-style: normal;
-	font-display: swap;
+	font-display: optional;
 }
 
 @font-face {
@@ -20,7 +20,7 @@
 	src: url("rawline/rawline-100i.woff2") format("woff2");
 	font-weight: 100;
 	font-style: italic;
-	font-display: swap;
+	font-display: optional;
 }
 
 @font-face {
@@ -28,7 +28,7 @@
 	src: url("rawline/rawline-200.woff2") format("woff2");
 	font-weight: 200;
 	font-style: normal;
-	font-display: swap;
+	font-display: optional;
 }
 
 @font-face {
@@ -36,7 +36,7 @@
 	src: url("rawline/rawline-200i.woff2") format("woff2");
 	font-weight: 200;
 	font-style: italic;
-	font-display: swap;
+	font-display: optional;
 }
 
 @font-face {
@@ -44,7 +44,7 @@
 	src: url("rawline/rawline-300.woff2") format("woff2");
 	font-weight: 300;
 	font-style: normal;
-	font-display: swap;
+	font-display: optional;
 }
 
 @font-face {
@@ -52,7 +52,7 @@
 	src: url("rawline/rawline-300i.woff2") format("woff2");
 	font-weight: 300;
 	font-style: italic;
-	font-display: swap;
+	font-display: optional;
 }
 
 @font-face {
@@ -60,7 +60,7 @@
 	src: url("rawline/rawline-400.woff2") format("woff2");
 	font-weight: 400;
 	font-style: normal;
-	font-display: swap;
+	font-display: optional;
 }
 
 @font-face {
@@ -68,7 +68,7 @@
 	src: url("rawline/rawline-400i.woff2") format("woff2");
 	font-weight: 400;
 	font-style: italic;
-	font-display: swap;
+	font-display: optional;
 }
 
 @font-face {
@@ -84,7 +84,7 @@
 	src: url("rawline/rawline-500i.woff2") format("woff2");
 	font-weight: 500;
 	font-style: italic;
-	font-display: swap;
+	font-display: optional;
 }
 
 @font-face {
@@ -92,7 +92,7 @@
 	src: url("rawline/rawline-600.woff2") format("woff2");
 	font-weight: 600;
 	font-style: normal;
-	font-display: swap;
+	font-display: optional;
 }
 
 @font-face {
@@ -100,7 +100,7 @@
 	src: url("rawline/rawline-600i.woff2") format("woff2");
 	font-weight: 600;
 	font-style: italic;
-	font-display: swap;
+	font-display: optional;
 }
 
 @font-face {
@@ -116,7 +116,7 @@
 	src: url("rawline/rawline-700i.woff2") format("woff2");
 	font-weight: 700;
 	font-style: italic;
-	font-display: swap;
+	font-display: optional;
 }
 
 @font-face {
@@ -132,7 +132,7 @@
 	src: url("rawline/rawline-800i.woff2") format("woff2");
 	font-weight: 800;
 	font-style: italic;
-	font-display: swap;
+	font-display: optional;
 }
 
 @font-face {
@@ -140,7 +140,7 @@
 	src: url("rawline/rawline-900.woff2") format("woff2");
 	font-weight: 900;
 	font-style: normal;
-	font-display: swap;
+	font-display: optional;
 }
 
 @font-face {
@@ -148,7 +148,7 @@
 	src: url("rawline/rawline-900i.woff2") format("woff2");
 	font-weight: 900;
 	font-style: italic;
-	font-display: swap;
+	font-display: optional;
 }
 
 /* Trocchi
