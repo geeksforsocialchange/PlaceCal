@@ -36,4 +36,33 @@ RSpec.describe Components::ContactDetails, type: :phlex do
 
     expect(page).to have_text("No contact information - let us know!")
   end
+
+  context "tailwind variant" do
+    it "renders contact details in card layout" do
+      render_inline(described_class.new(partner: contact_partner,
+                                        email: contact_email,
+                                        phone: contact_phone,
+                                        url: contact_url,
+                                        variant: :tailwind))
+
+      expect(page).to have_text("Get in touch")
+      expect(page).to have_text(contact_phone)
+      expect(page).to have_text(contact_email)
+      expect(page).to have_text(contact_url)
+      expect(page).to have_text("Facebook")
+      expect(page).to have_text("@rchtwit")
+      expect(page).to have_text("@rchinsta")
+    end
+
+    it "renders nothing when no contact info" do
+      render_inline(described_class.new(partner: fallback_partner,
+                                        email: fallback_email,
+                                        phone: fallback_phone,
+                                        url: fallback_url,
+                                        variant: :tailwind))
+
+      expect(page).not_to have_text("Get in touch")
+      expect(page).not_to have_text("No contact information")
+    end
+  end
 end
