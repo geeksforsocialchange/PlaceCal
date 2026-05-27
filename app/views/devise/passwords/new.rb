@@ -12,7 +12,7 @@ class Views::Devise::Passwords::New < Views::Devise::Base
 
     div(class: 'container-public py-8') do
       div(class: 'max-w-(--width-prose) mx-auto') do
-        p(class: 'text-sm text-tertiary mb-6') do
+        p(class: 'mb-6') do
           plain 'Enter the email address associated with your PlaceCal account and we will send you an email with password reset instructions.'
         end
 
