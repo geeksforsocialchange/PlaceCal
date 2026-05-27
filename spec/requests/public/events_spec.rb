@@ -171,6 +171,18 @@ RSpec.describe "Public Events", type: :request do
       expect(response.body).to match(%r{<h3[^>]*>Contact information</h3>})
     end
 
+    it "shows event address with consistent heading level" do
+      get event_url(event, host: "#{site.slug}.lvh.me")
+      expect(response.body).to include("Event address")
+      expect(response.body).to match(%r{<h3[^>]*>Event address</h3>})
+    end
+
+    it "shows event organiser with consistent heading level" do
+      get event_url(event, host: "#{site.slug}.lvh.me")
+      expect(response.body).to include("Event organiser")
+      expect(response.body).to match(%r{<h3[^>]*>Event organiser</h3>})
+    end
+
     it "includes Event JSON-LD structured data" do
       get event_url(event, host: "#{site.slug}.lvh.me")
       json_ld_blocks = response.body.scan(%r{<script type="application/ld\+json">(.+?)</script>}m)
