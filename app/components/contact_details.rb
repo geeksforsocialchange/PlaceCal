@@ -7,7 +7,7 @@ class Components::ContactDetails < Components::Base
   prop :email, _Nilable(String), default: nil
   prop :phone, _Nilable(String), default: nil
   prop :url, _Nilable(String), default: nil
-  prop :directory, _Boolean, default: false
+  prop :variant, _Union(:scss, :tailwind), default: :scss
 
   def after_initialize
     @phone ||= @partner.public_phone
@@ -16,34 +16,33 @@ class Components::ContactDetails < Components::Base
   end
 
   def view_template
-    if @directory
-      render_directory
-    else
-      render_local
+    case @variant
+    when :tailwind then render_tailwind
+    when :scss then render_scss
     end
   end
 
   private
 
-  # ── Directory layout (Tailwind) ──
+  # ── Tailwind variant (directory — will become the only path) ──
 
-  def render_directory
+  def render_tailwind
     return unless contact?
 
     div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
       h3(class: 'allcaps-label text-tertiary mb-3') { 'Get in touch' }
       div(class: 'flex flex-col gap-2') do
-        directory_row(:contact_phone, @phone, "tel:#{@phone}") if @phone.present?
-        directory_row(:contact_email, @email, "mailto:#{@email}") if @email.present?
-        directory_row(:contact_website, strip_url(@url), @url) if @url.present?
-        directory_row(:contact_facebook, 'Facebook', "https://facebook.com/#{@partner.facebook_link}") if @partner.facebook_link.present?
-        directory_row(:contact_twitter, "@#{@partner.twitter_handle}", "https://twitter.com/#{@partner.twitter_handle}") if @partner.twitter_handle.present?
-        directory_row(:contact_instagram, "@#{@partner.instagram_handle}", "https://www.instagram.com/#{@partner.instagram_handle}/") if @partner.instagram_handle.present?
+        tailwind_row(:contact_phone, @phone, "tel:#{@phone}") if @phone.present?
+        tailwind_row(:contact_email, @email, "mailto:#{@email}") if @email.present?
+        tailwind_row(:contact_website, strip_url(@url), @url) if @url.present?
+        tailwind_row(:contact_facebook, 'Facebook', "https://facebook.com/#{@partner.facebook_link}") if @partner.facebook_link.present?
+        tailwind_row(:contact_twitter, "@#{@partner.twitter_handle}", "https://twitter.com/#{@partner.twitter_handle}") if @partner.twitter_handle.present?
+        tailwind_row(:contact_instagram, "@#{@partner.instagram_handle}", "https://www.instagram.com/#{@partner.instagram_handle}/") if @partner.instagram_handle.present?
       end
     end
   end
 
-  def directory_row(icon_name, label, href)
+  def tailwind_row(icon_name, label, href)
     a(href: href, target: '_blank', rel: 'noopener',
       class: 'flex items-center gap-2.5 text-sm text-foreground no-underline hover:underline hover:decoration-primary') do
       raw(view_context.icon(icon_name, size: '4'))
@@ -51,9 +50,9 @@ class Components::ContactDetails < Components::Base
     end
   end
 
-  # ── Local site layout (SCSS) ──
+  # ── SCSS variant (local sites — to be removed after Tailwind migration) ──
 
-  def render_local
+  def render_scss
     p(class: 'contact_details') do
       render_phone
       render_email

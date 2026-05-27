@@ -8,7 +8,7 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
     div(class: 'flex flex-col gap-4') do
       render_image if @partner.read_attribute(:image).present?
       render_partnerships if Array(@containing_sites).any?
-      render ContactDetails.new(partner: @partner, directory: true)
+      render ContactDetails.new(partner: @partner, variant: :tailwind)
       render_opening_times if @partner.human_readable_opening_times.any?
       render_categories if @partner.categories.any?
       render_neighbourhood if @partner.address&.neighbourhood
