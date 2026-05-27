@@ -78,8 +78,23 @@ class Views::Partners::Show < Views::Base
 
     div(class: 'py-4') do
       h2(class: 'udl udl--fw allcaps h4') { 'Upcoming events' }
-      flat.first(10).each do |event|
+      displayed = flat.first(10)
+      remaining = flat.drop(10)
+      displayed.each do |event|
         Directory::EventRow(event: event, context_partner: partner)
+      end
+      if remaining.any?
+        details(class: 'group') do
+          summary(class: 'list-none pt-3 border-t border-rules cursor-pointer [&::-webkit-details-marker]:hidden') do
+            span(class: 'inline-flex items-center gap-1.5 text-sm font-bold text-foreground group-open:hidden') do
+              plain "Show #{remaining.size} more events"
+              span(class: 'text-tertiary') { safe('&#9660;') }
+            end
+          end
+          remaining.each do |event|
+            Directory::EventRow(event: event, context_partner: partner)
+          end
+        end
       end
     end
   end
@@ -102,11 +117,11 @@ class Views::Partners::Show < Views::Base
   end
 
   def render_directory_sidebar
-    div(class: 'flex flex-col gap-6') do
-      render_sidebar_image if partner.image?
+    div(class: 'flex flex-col gap-4') do
+      render_sidebar_image if partner.read_attribute(:image).present?
+      render_sidebar_partnerships if containing_sites&.any?
       render_sidebar_contact if directory_contact?
       render_sidebar_opening_times if partner.human_readable_opening_times.any?
-      render_sidebar_partnerships if containing_sites&.any?
       render_sidebar_categories if partner.categories.any?
       render_sidebar_neighbourhood if partner.address&.neighbourhood
       render_sidebar_share
@@ -177,14 +192,18 @@ class Views::Partners::Show < Views::Base
     div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
       div(class: 'allcaps-label text-tertiary mb-3') { 'Share & subscribe' }
 
-      a(href: "https://placecal.org/partners/#{partner.slug}",
-        class: 'font-mono text-sm text-foreground break-all no-underline hover:underline hover:decoration-primary') do
-        plain "placecal.org/partners/#{partner.slug}"
+      div do
+        a(href: "https://placecal.org/partners/#{partner.slug}",
+          class: 'font-mono text-sm text-foreground break-all no-underline hover:underline hover:decoration-primary') do
+          plain "placecal.org/partners/#{partner.slug}"
+        end
       end
-      a(href: partner_url(partner, protocol: :webcal, format: :ics),
-        class: 'inline-flex items-center gap-1.5 mt-3 text-sm font-bold text-foreground no-underline hover:underline hover:decoration-primary') do
-        raw(safe('<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>'))
-        plain 'Subscribe via iCal'
+      div(class: 'mt-3') do
+        a(href: partner_url(partner, protocol: :webcal, format: :ics),
+          class: 'inline-flex items-center gap-1.5 text-sm font-bold text-foreground no-underline hover:underline hover:decoration-primary') do
+          raw(safe('<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>'))
+          plain 'Subscribe via iCal'
+        end
       end
     end
   end
