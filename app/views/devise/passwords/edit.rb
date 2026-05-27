@@ -2,41 +2,46 @@
 
 class Views::Devise::Passwords::Edit < Views::Devise::Base
   def view_template
-    article(class: 'home margin') do
-      div(class: 'card card--plainer') do
-        h1(class: 'center fc-primary') { 'Change your password' }
+    content_for(:title) { 'Change your password' }
 
-        div(class: 'centre form--login') do
-          form_for(resource, as: resource_name,
-                             url: password_path(resource_name),
-                             html: { method: :put, class: 'form', data: { turbo: 'false' } }) do |form|
-            render_error_messages
+    Directory::PageHero(
+      title: 'Change your password',
+      kicker: 'Account',
+      breadcrumb_label: 'Reset password'
+    )
 
-            raw form.hidden_field(:reset_password_token)
+    div(class: 'container-public py-8') do
+      div(class: 'max-w-(--width-prose) mx-auto') do
+        form_for(resource, as: resource_name,
+                           url: password_path(resource_name),
+                           html: { method: :put, class: 'space-y-4', data: { turbo: 'false' } }) do |form|
+          render_error_messages
 
-            div(class: 'form__field') do
-              raw form.label(:password, 'New password')
-              min_length = resource.class.password_length.min
-              if min_length
-                whitespace
-                em { "(#{min_length} characters minimum)" }
-                br
-              end
-              raw form.password_field(:password, autofocus: true, autocomplete: 'off')
+          raw form.hidden_field(:reset_password_token)
+
+          div do
+            label(for: 'user_password', class: 'allcaps-label text-tertiary mb-1 block') do
+              plain 'New password'
             end
-
-            div(class: 'form__field') do
-              raw form.label(:password_confirmation, 'Confirm new password')
-              raw form.password_field(:password_confirmation, autocomplete: 'off')
-            end
-            br
-
-            div(class: 'actions') do
-              raw form.submit('Change my password', class: 'btn btn--big btn--home-3')
-            end
+            min_length = resource.class.password_length.min
+            p(class: 'text-xs text-tertiary mb-1') { "(#{min_length} characters minimum)" } if min_length
+            raw form.password_field(:password, autofocus: true, autocomplete: 'off', class: input_class)
           end
 
-          br
+          div do
+            label(for: 'user_password_confirmation', class: 'allcaps-label text-tertiary mb-1 block') do
+              plain 'Confirm new password'
+            end
+            raw form.password_field(:password_confirmation, autocomplete: 'off', class: input_class)
+          end
+
+          div do
+            raw form.submit('Change my password', class: submit_class)
+          end
+        end
+
+        div(class: 'mt-6') do
+          render_shared_links
         end
       end
     end
