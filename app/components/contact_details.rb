@@ -7,6 +7,7 @@ class Components::ContactDetails < Components::Base
   prop :email, _Nilable(String), default: nil
   prop :phone, _Nilable(String), default: nil
   prop :url, _Nilable(String), default: nil
+  prop :directory, _Boolean, default: false
 
   def after_initialize
     @phone ||= @partner.public_phone
@@ -15,6 +16,44 @@ class Components::ContactDetails < Components::Base
   end
 
   def view_template
+    if @directory
+      render_directory
+    else
+      render_local
+    end
+  end
+
+  private
+
+  # ── Directory layout (Tailwind) ──
+
+  def render_directory
+    return unless contact?
+
+    div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
+      h3(class: 'allcaps-label text-tertiary mb-3') { 'Get in touch' }
+      div(class: 'flex flex-col gap-2') do
+        directory_row(:contact_phone, @phone, "tel:#{@phone}") if @phone.present?
+        directory_row(:contact_email, @email, "mailto:#{@email}") if @email.present?
+        directory_row(:contact_website, strip_url(@url), @url) if @url.present?
+        directory_row(:contact_facebook, 'Facebook', "https://facebook.com/#{@partner.facebook_link}") if @partner.facebook_link.present?
+        directory_row(:contact_twitter, "@#{@partner.twitter_handle}", "https://twitter.com/#{@partner.twitter_handle}") if @partner.twitter_handle.present?
+        directory_row(:contact_instagram, "@#{@partner.instagram_handle}", "https://www.instagram.com/#{@partner.instagram_handle}/") if @partner.instagram_handle.present?
+      end
+    end
+  end
+
+  def directory_row(icon_name, label, href)
+    a(href: href, target: '_blank', rel: 'noopener',
+      class: 'flex items-center gap-2.5 text-sm text-foreground no-underline hover:underline hover:decoration-primary') do
+      raw(view_context.icon(icon_name, size: '4'))
+      span(class: 'truncate') { label }
+    end
+  end
+
+  # ── Local site layout (SCSS) ──
+
+  def render_local
     p(class: 'contact_details') do
       render_phone
       render_email
@@ -25,8 +64,6 @@ class Components::ContactDetails < Components::Base
       plain 'No contact information - let us know!' unless contact?
     end
   end
-
-  private
 
   def render_phone
     return if @phone.blank?
@@ -75,13 +112,11 @@ class Components::ContactDetails < Components::Base
   end
 
   def contact?
-    @phone.present? || @email.present? || @url.present? || @partner.facebook_link.present? || @partner.twitter_handle.present? || @partner.instagram_handle.present?
+    @phone.present? || @email.present? || @url.present? ||
+      @partner.facebook_link.present? || @partner.twitter_handle.present? || @partner.instagram_handle.present?
   end
 
   def strip_url(target_url)
-    target_url.gsub('http://', '')
-              .gsub('https://', '')
-              .gsub('www.', '')
-              .gsub(%r{/$}, '')
+    target_url.gsub('http://', '').gsub('https://', '').gsub('www.', '').gsub(%r{/$}, '')
   end
 end
