@@ -60,16 +60,7 @@ class Views::Partners::Show < Views::Base
   end
 
   def render_directory_about
-    if partner.summary
-      div(class: 'p--big') do
-        content_tag(:p, partner.summary)
-      end
-    end
-    return if partner.description_html.blank?
-
-    div do
-      raw safe(partner.description_html.to_s)
-    end
+    render_partner_description
   end
 
   def render_directory_events
@@ -120,11 +111,30 @@ class Views::Partners::Show < Views::Base
     return if partner.accessibility_info_html.blank?
 
     div(class: 'py-4') do
-      details(id: 'accessibility-info') do
-        summary(class: 'cursor-pointer font-extra-bold text-foreground') { 'Accessibility information' }
-        div(class: 'mt-2 text-sm text-foreground') do
-          raw safe(partner.accessibility_info_html.to_s)
-        end
+      render_accessibility_details(summary_class: 'cursor-pointer font-extra-bold text-foreground')
+    end
+  end
+
+  # ── Shared ──
+
+  def render_partner_description
+    if partner.summary
+      div(class: 'p--big') do
+        content_tag(:p, partner.summary)
+      end
+    end
+    return if partner.description_html.blank?
+
+    div do
+      raw safe(partner.description_html.to_s)
+    end
+  end
+
+  def render_accessibility_details(summary_class: nil)
+    details(id: 'accessibility-info') do
+      summary(class: summary_class) { 'Accessibility information' }
+      div(class: 'mt-2 text-sm text-foreground') do
+        raw safe(partner.accessibility_info_html.to_s)
       end
     end
   end
@@ -162,19 +172,6 @@ class Views::Partners::Show < Views::Base
     end
   end
 
-  def render_partner_description
-    return unless partner.summary
-
-    div(class: 'p--big') do
-      content_tag(:p, partner.summary)
-    end
-    return if partner.description_html.blank?
-
-    div do
-      raw safe(partner.description_html.to_s)
-    end
-  end
-
   def render_contact_and_address
     h3(class: 'udl udl--fw allcaps h4') { 'Get in touch' }
     ContactDetails(partner: partner)
@@ -184,12 +181,7 @@ class Views::Partners::Show < Views::Base
 
     Address(address: partner.address)
 
-    if partner.accessibility_info_html.present?
-      details(id: 'accessibility-info') do
-        summary { 'Accessibility information' }
-        raw safe(partner.accessibility_info_html.to_s)
-      end
-    end
+    render_accessibility_details if partner.accessibility_info_html.present?
 
     return unless partner.managees.any?
 
