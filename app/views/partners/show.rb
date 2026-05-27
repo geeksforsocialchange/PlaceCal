@@ -52,6 +52,7 @@ class Views::Partners::Show < Views::Base
           render_directory_about
           render_directory_events
           render_directory_location
+          render_directory_accessibility
         end
         render_directory_sidebar
       end
@@ -84,10 +85,11 @@ class Views::Partners::Show < Views::Base
   end
 
   def render_directory_location
-    return unless partner.address || map
+    return unless partner.address || map || partner.has_service_areas?
 
     div(class: 'py-4') do
       h2(class: 'udl udl--fw allcaps h4') { 'Location' }
+      p(class: 'text-sm text-tertiary mb-3') { "Serves #{partner_service_area_text(partner)}." } if partner.has_service_areas?
       div(class: 'grid grid-cols-[1fr_auto] gap-4 items-start') do
         Map(points: map, site: site.slug, compact: true) if map
         if partner.address
@@ -101,6 +103,9 @@ class Views::Partners::Show < Views::Base
 
   def render_directory_sidebar
     div(class: 'flex flex-col gap-6') do
+      render_sidebar_image if partner.image?
+      render_sidebar_contact if directory_contact?
+      render_sidebar_opening_times if partner.human_readable_opening_times.any?
       render_sidebar_partnerships if containing_sites&.any?
       render_sidebar_categories if partner.categories.any?
       render_sidebar_neighbourhood if partner.address&.neighbourhood
@@ -182,6 +187,73 @@ class Views::Partners::Show < Views::Base
         plain 'Subscribe via iCal'
       end
     end
+  end
+
+  def render_sidebar_image
+    div(class: 'rounded-card overflow-hidden') do
+      img(
+        src: partner.image.standard.url,
+        srcset: "#{partner.image.standard.url} 1x, #{partner.image.retina.url} 2x",
+        alt: partner.name,
+        class: 'w-full object-cover'
+      )
+    end
+  end
+
+  def render_sidebar_contact
+    div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
+      h3(class: 'allcaps-label text-tertiary mb-3') { 'Get in touch' }
+      div(class: 'flex flex-col gap-2') do
+        render_contact_row(:contact_phone, partner.public_phone, "tel:#{partner.public_phone}") if partner.public_phone.present?
+        render_contact_row(:contact_email, partner.public_email, "mailto:#{partner.public_email}") if partner.public_email.present?
+        render_contact_row(:contact_website, strip_url(partner.url), partner.url) if partner.url.present?
+        render_contact_row(:contact_facebook, 'Facebook', "https://facebook.com/#{partner.facebook_link}") if partner.facebook_link.present?
+        render_contact_row(:contact_twitter, "@#{partner.twitter_handle}", "https://twitter.com/#{partner.twitter_handle}") if partner.twitter_handle.present?
+        render_contact_row(:contact_instagram, "@#{partner.instagram_handle}", "https://www.instagram.com/#{partner.instagram_handle}/") if partner.instagram_handle.present?
+      end
+    end
+  end
+
+  def render_contact_row(icon_name, label, href)
+    a(href: href, target: '_blank', rel: 'noopener',
+      class: 'flex items-center gap-2.5 text-sm text-foreground no-underline hover:underline hover:decoration-primary') do
+      raw(view_context.icon(icon_name, size: '4'))
+      span(class: 'truncate') { label }
+    end
+  end
+
+  def render_sidebar_opening_times
+    times = partner.human_readable_opening_times
+    return unless times.any?
+
+    div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
+      h3(class: 'allcaps-label text-tertiary mb-3') { 'Opening times' }
+      ul(class: 'text-sm text-foreground space-y-1 list-none pl-0') do
+        times.each { |slot| li { slot } }
+      end
+    end
+  end
+
+  def render_directory_accessibility
+    return if partner.accessibility_info_html.blank?
+
+    div(class: 'py-4') do
+      details(id: 'accessibility-info') do
+        summary(class: 'cursor-pointer font-extra-bold text-foreground') { 'Accessibility information' }
+        div(class: 'mt-2 text-sm text-foreground') do
+          raw safe(partner.accessibility_info_html.to_s)
+        end
+      end
+    end
+  end
+
+  def directory_contact?
+    partner.public_phone.present? || partner.public_email.present? || partner.url.present? ||
+      partner.facebook_link.present? || partner.twitter_handle.present? || partner.instagram_handle.present?
+  end
+
+  def strip_url(target_url)
+    target_url.gsub('http://', '').gsub('https://', '').gsub('www.', '').gsub(%r{/$}, '')
   end
 
   # ── Local site layout ──

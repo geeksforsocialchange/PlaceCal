@@ -37,6 +37,7 @@ class Components::Directory::PartnerCard < Components::Directory::Base
     div do
       div(class: 'font-extra-bold text-detail leading-tight mb-0.5') { @partner.name }
       div(class: 'text-xs text-tertiary leading-snug mb-1.5') { area_text } if area_text.present?
+      div(class: 'text-xs text-tertiary leading-snug mb-1.5 line-clamp-2') { @partner.summary.truncate(120) } if @partner.summary.present?
       render_chips
     end
   end
