@@ -56,6 +56,6 @@ class Views::Devise::Base < Views::Base
   end
 
   def submit_class
-    'bg-foreground text-background rounded-full px-6 py-3 text-sm font-bold border-0 cursor-pointer hover:bg-tertiary transition-colors'
+    'bg-foreground text-background rounded-card px-6 py-3 text-sm font-bold border-0 cursor-pointer hover:bg-tertiary transition-colors'
   end
 end
