@@ -66,10 +66,26 @@ class Views::Events::Show < Views::Base
 
   def render_directory_details
     div(class: 'grid md:grid-cols-3 gap-6 py-4') do
-      render_contact_info
-      render_event_address
-      render_event_organiser
-      render_event_venue if show_venue?
+      if event.organiser
+        div do
+          h3(class: 'allcaps-label text-tertiary mb-2') { 'Contact information' }
+          ContactDetails(partner: event.organiser)
+        end
+      end
+      div do
+        h3(class: 'allcaps-label text-tertiary mb-2') { 'Event address' }
+        Address(address: event.address, raw_location: event.raw_location_from_source)
+      end
+      div do
+        h3(class: 'allcaps-label text-tertiary mb-2') { 'Event organiser' }
+        span { link_to event.organiser, event.organiser }
+      end
+      if show_venue?
+        div do
+          h3(class: 'allcaps-label text-tertiary mb-2') { 'Venue' }
+          span { link_to event.place, event.place }
+        end
+      end
     end
   end
 
@@ -155,8 +171,6 @@ class Views::Events::Show < Views::Base
       end
     end
   end
-
-  # ── Shared helpers ──
 
   def render_contact_info
     div(class: 'gi gi__1-3') do
