@@ -6,7 +6,7 @@ class Components::Directory::PartnerCard < Components::Directory::Base
 
   def view_template
     a(href: partner_path(@partner),
-      class: 'block py-3 no-underline text-foreground group',
+      class: 'group block py-3 pb-5 no-underline text-foreground hover:bg-home-background-3 transition-colors rounded-lg px-2 -mx-2',
       id: "partner-#{@partner.id}") do
       render_info
     end
@@ -16,7 +16,7 @@ class Components::Directory::PartnerCard < Components::Directory::Base
 
   def render_info
     div do
-      div(class: 'font-bold text-xl leading-tight border-b-[3px] border-rules pb-1.5 mb-1.5 group-hover:underline group-hover:decoration-primary') { @partner.name }
+      div(class: 'font-bold text-xl leading-tight border-b-[3px] border-rules group-hover:border-tertiary/20 pb-1.5 mb-1.5') { @partner.name }
       div(class: 'text-sm text-tertiary font-bold mb-0.5') { area_text } if area_text.present?
       div(class: 'text-foreground leading-snug mt-1 line-clamp-2') { @partner.summary.truncate(120) } if @partner.summary.present?
       render_chips
@@ -37,9 +37,10 @@ class Components::Directory::PartnerCard < Components::Directory::Base
   end
 
   def area_text
-    neighbourhood = @partner.address&.neighbourhood
-    return @partner.location_name unless neighbourhood
+    hood = @partner.address&.neighbourhood
+    hood ||= @partner.service_area_neighbourhoods.first if @partner.has_service_areas?
+    return unless hood
 
-    neighbourhood.hierarchy_path.last(3).map(&:shortname).join(' › ')
+    hood.hierarchy_path.last(3).map(&:shortname).join(' › ')
   end
 end
