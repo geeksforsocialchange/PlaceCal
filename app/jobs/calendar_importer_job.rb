@@ -13,6 +13,20 @@ class CalendarImporterJob < ApplicationJob
     report_bad_source_error exception.message
   end
 
+  # Network timeouts and TLS failures are expected when scraping third-party
+  # feeds that are slow or temporarily down. Treat them as an unreachable
+  # source instead of letting them surface as unhandled exceptions (see issue
+  # #3100). Most HTTP fetches funnel through Parsers::Base.read_http_source,
+  # which already maps these to InaccessibleFeed; this backstop covers parsers
+  # that make HTTP requests by other means (e.g. API and POST-based parsers).
+  rescue_from Net::ReadTimeout, Net::OpenTimeout, OpenSSL::SSL::SSLError do |exception|
+    Rails.logger.warn(
+      "Calendar source unreachable for calendar #{@calendar_id}: " \
+      "#{exception.class} (#{exception.message})"
+    )
+    report_bad_source_error I18n.t('admin.calendars.wizard.source.unreachable')
+  end
+
   rescue_from InvalidResponse do |exception|
     report_error exception, 'Calendar URL returned un-parsable data'
   end
