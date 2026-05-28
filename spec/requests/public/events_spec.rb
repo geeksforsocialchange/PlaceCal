@@ -77,6 +77,35 @@ RSpec.describe "Public Events", type: :request do
     end
   end
 
+  describe "GET /events/:year/:month/:day" do
+    let!(:event) do
+      create(:event,
+             organiser: partner,
+             summary: "Dated Event",
+             dtstart: Time.current.beginning_of_day + 10.hours,
+             address: address)
+    end
+
+    # Request the .text format so the route is exercised through set_day
+    # without depending on the compiled stylesheet asset pipeline.
+    it "returns successful response for a valid date" do
+      # Timecop freezes time to 2022-11-08
+      get events_by_date_url(host: "#{site.slug}.lvh.me", year: 2022, month: 11, day: 8, format: :text)
+      expect(response).to be_successful
+      expect(response.body).to include("Dated Event")
+    end
+
+    it "falls back to today instead of erroring for an invalid month" do
+      get events_by_date_url(host: "#{site.slug}.lvh.me", year: 2022, month: 13, day: 8, format: :text)
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "falls back to today instead of erroring for an invalid day" do
+      get events_by_date_url(host: "#{site.slug}.lvh.me", year: 2022, month: 11, day: 32, format: :text)
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
   describe "GET /events with partner tag filtering" do
     let(:tag) { create(:tag, type: "Facility", name: "Test Facility", slug: "test-facility") }
     let(:tag_site) { create(:site, slug: "tag-site", is_published: true) }

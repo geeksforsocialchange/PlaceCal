@@ -49,15 +49,20 @@ class ApplicationController < ActionController::Base
     redirect_to new_user_session_path
   end
 
-  # Set the day either using the URL or by today's date
+  # Set the day either using the URL or by today's date.
+  # Falls back to today if the URL params don't form a valid date
+  # (e.g. month=13, day=32 from crawlers hitting random URLs).
   def set_day
     @today = Date.today
-    day = params[:day] || 1
     @current_day =
-      if params[:year] && params[:month] && day
-        Date.new(params[:year].to_i,
-                 params[:month].to_i,
-                 params[:day].to_i)
+      if params[:year] && params[:month] && params[:day]
+        begin
+          Date.new(params[:year].to_i,
+                   params[:month].to_i,
+                   params[:day].to_i)
+        rescue ArgumentError
+          @today
+        end
       else
         @today
       end
