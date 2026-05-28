@@ -7,7 +7,7 @@ class Views::Directory::Partners::Show < Views::Partners::Show
     Directory::PageHero(
       title: partner.name,
       kicker: partner_location_kicker,
-      breadcrumb_label: 'Partners',
+      breadcrumb_label: Partner.model_name.human(count: 2),
       breadcrumb_path: partners_path
     )
 
@@ -35,7 +35,7 @@ class Views::Directory::Partners::Show < Views::Partners::Show
     return unless flat.any?
 
     div(class: 'py-4') do
-      h2(class: 'udl udl--fw allcaps text-xl') { 'Upcoming events' }
+      h2(class: 'udl udl--fw allcaps text-xl') { t('directory.partners.show.upcoming_events') }
       flat.first(10).each do |event|
         Directory::EventRow(event: event, context_partner: partner)
       end
@@ -51,7 +51,7 @@ class Views::Directory::Partners::Show < Views::Partners::Show
     details(class: 'group') do
       summary(class: 'list-none pt-3 border-t border-rules cursor-pointer [&::-webkit-details-marker]:hidden') do
         span(class: 'inline-flex items-center gap-1.5 text-sm font-bold text-foreground group-open:hidden') do
-          plain "Show #{[10, remaining.size].min} more events"
+          plain t('directory.partners.show.show_more_events', count: [10, remaining.size].min)
           span(class: 'text-tertiary') { safe('&#9660;') }
         end
       end
@@ -66,8 +66,8 @@ class Views::Directory::Partners::Show < Views::Partners::Show
     return unless partner.address || map || partner.has_service_areas?
 
     div(class: 'py-4') do
-      h2(class: 'udl udl--fw allcaps text-xl') { 'Location' }
-      p(class: 'mb-3') { "Serves #{partner_service_area_text(partner)}." } if partner.has_service_areas?
+      h2(class: 'udl udl--fw allcaps text-xl') { t('directory.partners.show.location') }
+      p(class: 'mb-3') { t('directory.partners.show.serves', area: partner_service_area_text(partner)) } if partner.has_service_areas?
       div(class: 'grid grid-cols-[1fr_auto] gap-4 items-start') do
         Map(points: map, site: site.slug, compact: true) if map
         Address(address: partner.address) if partner.address
@@ -79,7 +79,7 @@ class Views::Directory::Partners::Show < Views::Partners::Show
     return if partner.accessibility_info_html.blank?
 
     div(class: 'py-4') do
-      h2(class: 'udl udl--fw allcaps text-xl') { 'Accessibility information' }
+      h2(class: 'udl udl--fw allcaps text-xl') { t('directory.partners.show.accessibility_info') }
       div do
         raw safe(partner.accessibility_info_html.to_s)
       end
@@ -92,7 +92,7 @@ class Views::Directory::Partners::Show < Views::Partners::Show
            elsif partner.service_area_neighbourhoods.any?
              partner.service_area_neighbourhoods.first.path
            end
-    return 'Partner' unless path&.any?
+    return t('directory.partners.show.kicker_fallback') unless path&.any?
 
     path.last(3).map(&:name).join(' › ')
   end

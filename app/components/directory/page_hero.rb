@@ -22,7 +22,7 @@ class Components::Directory::PageHero < Components::Directory::Base
 
   def render_breadcrumb
     nav(class: 'text-sm mb-2', style: 'color: var(--color-background)', aria_label: 'Breadcrumb') do
-      a(href: root_path, class: 'no-underline hover:underline', style: 'color: inherit') { 'Directory' }
+      a(href: root_path, class: 'no-underline hover:underline', style: 'color: inherit') { t('directory.breadcrumbs.root') }
       span(class: 'mx-1.5 opacity-60') { safe('›') }
       if @breadcrumb_path
         a(href: @breadcrumb_path, class: 'no-underline hover:underline opacity-80', style: 'color: inherit') { @breadcrumb_label }

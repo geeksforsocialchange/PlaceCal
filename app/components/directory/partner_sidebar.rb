@@ -33,12 +33,12 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
     count = Array(@containing_sites).size
     div(class: 'rounded-card overflow-hidden') do
       div(class: 'bg-foreground px-4 py-3', style: 'color: var(--color-background)') do
-        div(class: 'allcaps-label mb-0.5 opacity-80') { 'Part of' }
-        div(class: 'font-serif text-lg') { "#{count} #{'partnership'.pluralize(count)}" }
+        div(class: 'allcaps-label mb-0.5 opacity-80') { t('directory.sidebar.part_of') }
+        div(class: 'font-serif text-lg') { t('directory.sidebar.partnerships', count: count) }
       end
       div(class: 'bg-home-background-3 px-4 py-3') do
         div(class: 'text-xs text-tertiary mb-3') do
-          plain "You can find #{@partner.name} on these local PlaceCal sites:"
+          plain t('directory.sidebar.partnerships_description', name: @partner.name)
         end
         Array(@containing_sites).each do |site_record|
           a(href: "https://#{site_record.slug}.placecal.org",
@@ -59,7 +59,7 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
   def render_opening_times
     times = @partner.human_readable_opening_times
     div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
-      sidebar_heading('Opening times')
+      sidebar_heading(t('directory.sidebar.opening_times'))
       ul(class: 'text-sm text-foreground space-y-1 list-none pl-0') do
         times.each { |slot| li { slot } }
       end
@@ -68,7 +68,7 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
 
   def render_categories
     div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
-      sidebar_heading('Categories')
+      sidebar_heading(t('directory.sidebar.categories'))
       div(class: 'flex flex-wrap gap-1.5 mt-1') do
         @partner.categories.each do |cat|
           a(href: partners_path(category: cat.id),
@@ -85,7 +85,7 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
     path = neighbourhood.path
 
     div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
-      sidebar_heading('Neighbourhood')
+      sidebar_heading(t('directory.sidebar.neighbourhood'))
       div(class: 'flex flex-wrap items-center gap-1 text-sm') do
         path.each_with_index do |ancestor, i|
           span(class: 'text-tertiary mx-0.5') { safe('&rsaquo;') } if i.positive?
@@ -101,7 +101,7 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
 
   def render_share
     div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
-      sidebar_heading('Share & subscribe')
+      sidebar_heading(t('directory.sidebar.share_subscribe'))
 
       div do
         a(href: "https://placecal.org/partners/#{@partner.slug}",
@@ -113,7 +113,7 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
         a(href: partner_url(@partner, protocol: :webcal, format: :ics),
           class: 'inline-flex items-center gap-1.5 text-sm font-bold text-foreground no-underline hover:underline hover:decoration-primary') do
           raw(view_context.icon(:calendar, size: '3.5'))
-          plain 'Subscribe via iCal'
+          plain t('directory.sidebar.subscribe_ical')
         end
       end
     end

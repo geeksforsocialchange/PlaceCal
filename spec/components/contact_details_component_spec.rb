@@ -34,7 +34,7 @@ RSpec.describe Components::ContactDetails, type: :phlex do
                                       phone: fallback_phone,
                                       url: fallback_url))
 
-    expect(page).to have_text("No contact information - let us know!")
+    expect(page).to have_text("No contact information")
   end
 
   context "tailwind variant" do

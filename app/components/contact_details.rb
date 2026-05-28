@@ -30,12 +30,12 @@ class Components::ContactDetails < Components::Base
     return unless contact?
 
     div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
-      sidebar_heading('Get in touch')
+      sidebar_heading(t('directory.contact.get_in_touch'))
       div(class: 'flex flex-col gap-2') do
         tailwind_row(:contact_phone, @phone, "tel:#{@phone}") if @phone.present?
         tailwind_row(:contact_email, @email, "mailto:#{@email}") if @email.present?
         tailwind_row(:contact_website, strip_url(@url), @url) if @url.present?
-        tailwind_row(:contact_facebook, 'Facebook', "https://facebook.com/#{@partner.facebook_link}") if @partner.facebook_link.present?
+        tailwind_row(:contact_facebook, t('directory.contact.facebook'), "https://facebook.com/#{@partner.facebook_link}") if @partner.facebook_link.present?
         tailwind_row(:contact_twitter, "@#{@partner.twitter_handle}", "https://twitter.com/#{@partner.twitter_handle}") if @partner.twitter_handle.present?
         tailwind_row(:contact_instagram, "@#{@partner.instagram_handle}", "https://www.instagram.com/#{@partner.instagram_handle}/") if @partner.instagram_handle.present?
       end
@@ -60,7 +60,7 @@ class Components::ContactDetails < Components::Base
       render_facebook
       render_twitter
       render_instagram
-      plain 'No contact information - let us know!' unless contact?
+      plain t('directory.contact.no_contact') unless contact?
     end
   end
 
