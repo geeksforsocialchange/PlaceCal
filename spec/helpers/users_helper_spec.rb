@@ -76,6 +76,24 @@ RSpec.describe UsersHelper, type: :helper do
     end
   end
 
+  describe "#options_for_user_neighbourhoods" do
+    let!(:ward) { create(:riverside_ward, name: "Riverside Ward", name_abbr: "Rvrsde") }
+    let(:for_user) { create(:user) }
+
+    before do
+      allow(helper).to receive(:policy_scope) do |_scope|
+        Pundit.policy_scope!(root, Neighbourhood)
+      end
+    end
+
+    it "labels options with the full neighbourhood name, not the abbreviation" do
+      labels = helper.options_for_user_neighbourhoods(for_user).map(&:first)
+
+      expect(labels).to include(a_string_including("Riverside Ward"))
+      expect(labels).not_to include(a_string_including("Rvrsde"))
+    end
+  end
+
   describe "#permitted_options_for_partners" do
     context "as neighbourhood admin" do
       before do

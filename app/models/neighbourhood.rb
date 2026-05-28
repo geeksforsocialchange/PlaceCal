@@ -162,6 +162,18 @@ class Neighbourhood < ApplicationRecord
     "#{shortname} (#{unit&.titleize})"
   end
 
+  # As {#contextual_name} but always uses the full {#fullname} rather than the
+  # abbreviation. Used by the admin neighbourhood pickers so editors see the
+  # full ward name (see issue #2393). Public-facing views keep abbreviations.
+  # @return [String] full name with parent and unit, e.g. "Hulme, Manchester (Ward)"
+  def contextual_fullname
+    # "Wardname, Countryname (Region)"
+    return "#{fullname}, #{parent_name} (#{unit.titleize})" if parent_name
+
+    # "Wardname (Region)"
+    "#{fullname} (#{unit&.titleize})"
+  end
+
   # @return [String] full name, falling back to abbreviation or "[not set]"
   def fullname
     if name.present?
