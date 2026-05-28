@@ -35,7 +35,7 @@ class Views::Directory::Partners::Show < Views::Partners::Show
     return unless flat.any?
 
     div(class: 'py-4') do
-      h2(class: 'udl udl--fw allcaps h4') { 'Upcoming events' }
+      h2(class: 'udl udl--fw allcaps text-xl') { 'Upcoming events' }
       displayed = flat.first(10)
       remaining = flat.drop(10)
       displayed.each do |event|
@@ -61,7 +61,7 @@ class Views::Directory::Partners::Show < Views::Partners::Show
     return unless partner.address || map || partner.has_service_areas?
 
     div(class: 'py-4') do
-      h2(class: 'udl udl--fw allcaps h4') { 'Location' }
+      h2(class: 'udl udl--fw allcaps text-xl') { 'Location' }
       p(class: 'text-sm text-tertiary mb-3') { "Serves #{partner_service_area_text(partner)}." } if partner.has_service_areas?
       div(class: 'grid grid-cols-[1fr_auto] gap-4 items-start') do
         Map(points: map, site: site.slug, compact: true) if map
