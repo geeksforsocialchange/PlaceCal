@@ -6,38 +6,19 @@ class Components::Directory::PartnerCard < Components::Directory::Base
 
   def view_template
     a(href: partner_path(@partner),
-      class: [
-        'grid grid-cols-[var(--size-avatar-md)_1fr] gap-3 items-start',
-        'py-3 px-4 rounded-card border-2 border-transparent',
-        'no-underline text-foreground hover:border-rules transition-colors'
-      ].join(' '),
+      class: 'block py-3 no-underline text-foreground hover:bg-home-background-3 transition-colors rounded-lg px-2 -mx-2',
       id: "partner-#{@partner.id}") do
-      render_avatar
       render_info
     end
   end
 
   private
 
-  def render_avatar
-    if @partner.image?
-      img(
-        src: @partner.image.standard.url,
-        alt: @partner.name,
-        class: 'w-(--size-avatar-md) h-(--size-avatar-md) rounded-card object-cover'
-      )
-    else
-      div(class: 'w-(--size-avatar-md) h-(--size-avatar-md) rounded-full bg-home-background-3 flex items-center justify-center font-serif text-xl text-tertiary') do
-        plain initials
-      end
-    end
-  end
-
   def render_info
     div do
-      div(class: 'font-extra-bold text-detail leading-tight mb-0.5') { @partner.name }
-      div(class: 'text-xs text-tertiary leading-snug mb-1.5') { area_text } if area_text.present?
-      div(class: 'text-xs text-tertiary leading-snug mb-1.5 line-clamp-2') { @partner.summary.truncate(120) } if @partner.summary.present?
+      div(class: 'font-extra-bold text-base leading-tight') { @partner.name }
+      div(class: 'text-sm text-tertiary font-bold mt-0.5') { area_text } if area_text.present?
+      div(class: 'text-sm text-tertiary leading-snug mt-1 line-clamp-2') { @partner.summary.truncate(120) } if @partner.summary.present?
       render_chips
     end
   end
@@ -53,10 +34,6 @@ class Components::Directory::PartnerCard < Components::Directory::Base
         end
       end
     end
-  end
-
-  def initials
-    @partner.name.split.first(2).map { |w| w[0] }.join.upcase
   end
 
   def area_text

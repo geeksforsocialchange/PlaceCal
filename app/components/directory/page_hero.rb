@@ -13,7 +13,7 @@ class Components::Directory::PageHero < Components::Directory::Base
         render_breadcrumb if @breadcrumb_label
         render_kicker if @kicker
         h1(class: 'hero-title') { @title }
-        div(class: 'text-base leading-relaxed max-w-(--width-prose-md) mt-2 opacity-80') { @subtitle } if @subtitle
+        div(class: 'text-base leading-relaxed max-w-(--width-prose-md) mt-1 m1 opacity-80') { @subtitle } if @subtitle
       end
     end
   end
