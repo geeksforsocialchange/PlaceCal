@@ -46,4 +46,36 @@ namespace :addresses do
 
     puts "Done: #{updated} updated, #{failed} failed, #{skipped} skipped (of #{total} total)"
   end
+
+  desc 'Backfill the city field on addresses missing one from postcodes.io'
+  task backfill_city: :environment do
+    # postcodes.io has no hard published rate limit but asks for reasonable use.
+    # Pause briefly between requests to stay polite when backfilling in bulk.
+    sleep_seconds = Float(ENV.fetch('POSTCODES_IO_SLEEP', '0.1'))
+
+    scope = Address.needs_city_backfill
+    total = scope.count
+    puts "Found #{total} addresses needing a city backfill"
+
+    updated = 0
+    not_found = 0
+    blank = 0
+
+    scope.find_each do |address|
+      case address.backfill_city!
+      when :updated
+        updated += 1
+      when :not_found
+        puts "  SKIP #{address.id} (#{address.postcode}) - postcode not found"
+        not_found += 1
+      when :blank
+        puts "  SKIP #{address.id} (#{address.postcode}) - no admin_district in response"
+        blank += 1
+      end
+
+      sleep sleep_seconds if sleep_seconds.positive?
+    end
+
+    puts "Done: #{updated} updated, #{not_found} not found, #{blank} no district (of #{total} total)"
+  end
 end

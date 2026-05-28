@@ -132,6 +132,100 @@ RSpec.describe Address, type: :model do
     end
   end
 
+  describe ".needs_city_backfill scope" do
+    let!(:needs_backfill) { create(:address, city: nil, postcode: "ZZMB 1RS") }
+    let!(:has_city)       { create(:address, city: "Millbrook", postcode: "ZZMB 1RS") }
+    # Legacy rows may have a blank postcode; build one bypassing the presence
+    # validation by clearing the column directly.
+    let!(:no_postcode) do
+      create(:address, city: nil, postcode: "ZZMB 1RS").tap do |a|
+        a.update_column(:postcode, "") # rubocop:disable Rails/SkipsModelValidations
+      end
+    end
+
+    it "includes only NULL-city addresses that have a postcode" do
+      result = described_class.needs_city_backfill
+      expect(result).to include(needs_backfill)
+      expect(result).not_to include(has_city)
+      expect(result).not_to include(no_postcode)
+    end
+  end
+
+  describe "#backfill_city!" do
+    # Drive the real postcodes.io HTTP path with WebMock so we never hit the
+    # live API. In the test environment Geocoder normally uses the local
+    # NormalIsland lookup, so we point it at the raw postcodes.io lookup here
+    # to exercise (and stub) the actual HTTP request the rake task relies on.
+    around do |example|
+      original = Geocoder.config.lookup
+      Geocoder.configure(lookup: :postcodes_io)
+      example.run
+    ensure
+      Geocoder.configure(lookup: original)
+    end
+
+    # Stub a successful postcodes.io lookup. Passing admin_district: nil returns
+    # a present-but-empty result (no admin_district key) to exercise the :blank
+    # path; the :not_found path is tested separately with a 404 response.
+    def stub_postcode(postcode, admin_district:)
+      result = admin_district.nil? ? {} : { "admin_district" => admin_district }
+      body = { "status" => 200, "result" => result }.to_json
+      stub_request(:get, "https://api.postcodes.io/postcodes/#{postcode.delete(' ')}")
+        .to_return(status: 200, body: body, headers: { "Content-Type" => "application/json" })
+    end
+
+    it "sets city from the postcodes.io admin_district and persists it" do
+      stub_postcode("N1 9GU", admin_district: "Islington")
+      address = create(:address, city: nil, postcode: "N1 9GU")
+
+      expect(address.backfill_city!).to eq(:updated)
+      expect(address.city).to eq("Islington")
+      expect(address.reload.city).to eq("Islington")
+    end
+
+    it "does not re-trigger geocoding/validation when saving" do
+      stub_postcode("N2 9GU", admin_district: "Barnet")
+      address = create(:address, city: nil, postcode: "N2 9GU")
+
+      # Bypassing validations means an unmapped neighbourhood would not block us
+      expect { address.backfill_city! }.not_to raise_error
+      expect(address.reload.city).to eq("Barnet")
+    end
+
+    it "skips addresses that already have a city" do
+      address = create(:address, city: "Existing City", postcode: "N3 9GU")
+
+      expect(address.backfill_city!).to eq(:skipped)
+      expect(address.city).to eq("Existing City")
+      expect(a_request(:get, /api\.postcodes\.io/)).not_to have_been_made
+    end
+
+    it "returns :no_postcode when no postcode is present" do
+      address = build(:address, city: nil, postcode: "")
+
+      expect(address.backfill_city!).to eq(:no_postcode)
+      expect(a_request(:get, /api\.postcodes\.io/)).not_to have_been_made
+    end
+
+    it "returns :not_found and leaves city nil when the lookup finds nothing" do
+      body = { "status" => 404, "error" => "Postcode not found" }.to_json
+      stub_request(:get, "https://api.postcodes.io/postcodes/N49GU")
+        .to_return(status: 404, body: body, headers: { "Content-Type" => "application/json" })
+      address = create(:address, city: nil, postcode: "N4 9GU")
+
+      expect(address.backfill_city!).to eq(:not_found)
+      expect(address.reload.city).to be_nil
+    end
+
+    it "returns :blank and leaves city nil when admin_district is missing" do
+      stub_postcode("N5 9GU", admin_district: nil)
+      address = create(:address, city: nil, postcode: "N5 9GU")
+
+      expect(address.backfill_city!).to eq(:blank)
+      expect(address.reload.city).to be_nil
+    end
+  end
+
   describe "#missing_values?" do
     it "returns true when all fields are blank" do
       address = described_class.new

@@ -36,6 +36,12 @@ class Address < ApplicationRecord
     where(street_address: street).or(where(postcode: postcode))
   }
 
+  # Addresses missing a city that have a postcode we can look up. Used by the
+  # addresses:backfill_city rake task (see #3123).
+  scope :needs_city_backfill, lambda {
+    where(city: nil).where.not(postcode: [nil, ''])
+  }
+
   # ==== Callbacks ====
   after_commit :invalidate_neighbourhood_partners_count!, if: :neighbourhood_id_previously_changed?
 
@@ -117,6 +123,31 @@ class Address < ApplicationRecord
     all_address_lines.join(', ')
   end
 
+  # Backfill a missing city from postcodes.io for an existing address (#3123).
+  #
+  # New addresses get city populated during geocoding (see #geocode_with_ward),
+  # but pre-existing rows have a NULL city. This looks up the postcode via the
+  # same Geocoder path and writes admin_district to city, bypassing validations
+  # (and re-geocoding) so it is safe to run in bulk from a rake task.
+  #
+  # @return [Symbol] :updated when city was set, :skipped when city already
+  #   present, :no_postcode when no postcode to look up, :not_found when the
+  #   postcode lookup returned nothing, :blank when the lookup had no
+  #   admin_district value.
+  def backfill_city!
+    return :skipped if city.present?
+    return :no_postcode if postcode.blank?
+
+    res = Geocoder.search(postcode).first&.data
+    return :not_found if res.nil?
+
+    district = res['admin_district']
+    return :blank if district.blank?
+
+    update_columns(city: district) # rubocop:disable Rails/SkipsModelValidations
+    :updated
+  end
+
   private
 
   # ==== Private methods ====
@@ -152,7 +183,8 @@ class Address < ApplicationRecord
     self.longitude = res['longitude']
     self.latitude = res['latitude']
 
-    # TODO: backfill city for existing addresses. See #3123
+    # Existing addresses are backfilled via the addresses:backfill_city rake
+    # task (see #backfill_city! and #3123).
     self.city = res['admin_district'] if city.blank?
   end
 end
