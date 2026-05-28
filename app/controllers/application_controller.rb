@@ -192,8 +192,21 @@ class ApplicationController < ActionController::Base
     @calendar = Calendar.find(params[:id])
   end
 
+  # Assigns @site for site-scoped public controllers (events, partners, etc.).
+  #
+  # current_site is deliberately nil on the admin subdomain (it provides a
+  # global, site-less view). Public resource pages such as /events/:id are not
+  # behind a subdomain constraint, so crawlers can reach them on the admin
+  # subdomain where current_site is nil — which previously blew up the
+  # Site-typed Phlex view props (issue #2567). Fall back to the default site so
+  # those pages render the directory view instead of raising. When current_site
+  # has already issued a redirect (e.g. an unknown subdomain) we leave @site nil
+  # and let that redirect halt the request.
   def set_site
     @site = current_site
+    return if @site || response.redirect?
+
+    @site = Site.find_by(slug: 'default-site') || Site.new
   end
 
   def redirect_from_default_site

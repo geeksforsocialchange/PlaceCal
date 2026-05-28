@@ -233,4 +233,27 @@ RSpec.describe "Public Events", type: :request do
       expect(response).to be_successful
     end
   end
+
+  # Regression test for #2567: current_site is deliberately nil on the admin
+  # subdomain (it has no Site of its own). Public event pages are not behind a
+  # subdomain constraint, so crawlers reach them at admin.placecal.org where the
+  # nil site previously raised Literal::TypeError on the Site-typed view props.
+  # set_site now falls back to the default site so these pages render instead.
+  describe "admin subdomain (no current_site)" do
+    let!(:default_site) { create_default_site }
+    let!(:event) do
+      create(:event, organiser: partner, summary: "Admin Event",
+                     dtstart: 1.day.from_now, address: address)
+    end
+
+    it "renders the event index without raising" do
+      get events_url(host: "admin.lvh.me")
+      expect(response).to be_successful
+    end
+
+    it "renders an event show page without raising" do
+      get event_url(event, host: "admin.lvh.me")
+      expect(response).to be_successful
+    end
+  end
 end
