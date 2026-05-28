@@ -101,6 +101,27 @@ RSpec.describe "Public Pages", type: :request do
       get "/find-placecal", headers: { "Host" => "lvh.me" }
       expect(response).to be_successful
     end
+
+    context "on a non-default site" do
+      it "redirects to the site root instead of rendering the homepage page" do
+        get "/find-placecal", headers: { "Host" => "#{site.slug}.lvh.me" }
+        expect(response).to redirect_to(root_path)
+      end
+    end
+  end
+
+  describe "homepage-only pages on a non-default site" do
+    # These pages belong only to the main placecal.org homepage and must not be
+    # reachable on a sub-site subdomain (see #2463).
+    %w[
+      /find-placecal /our-story /community-groups /metropolitan-areas
+      /vcses /housing-providers /social-prescribers /culture-tourism
+    ].each do |path|
+      it "redirects #{path} to the site root" do
+        get path, headers: { "Host" => "#{site.slug}.lvh.me" }
+        expect(response).to redirect_to(root_path)
+      end
+    end
   end
 
   describe "GET /community-groups" do

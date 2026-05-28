@@ -1,8 +1,16 @@
 # frozen_string_literal: true
 
 class PagesController < ApplicationController
+  # Actions that belong only to the main placecal.org homepage. They must not be
+  # reachable on a sub-site subdomain, where they don't belong (see #2463).
+  HOMEPAGE_ONLY_ACTIONS = %i[
+    find_placecal our_story community_groups metropolitan_areas
+    vcses housing_providers social_prescribers culture_tourism
+  ].freeze
+
   before_action :set_primary_neighbourhood, only: [:site]
   before_action :set_site
+  before_action :require_default_site, only: HOMEPAGE_ONLY_ACTIONS
 
   def home
     if default_site?
@@ -74,6 +82,17 @@ class PagesController < ApplicationController
   DIRECTORY_CACHE_TTL = 1.day
 
   private
+
+  # Homepage-only actions are not valid on sub-sites. When such an action is
+  # requested on a real, non-default site, redirect to that site's root rather
+  # than letting the page render where it doesn't belong (see #2463).
+  # (SitemapsController#require_default_site does the same for its routes but
+  # returns 404; here we redirect because these pages have a sub-site equivalent.)
+  def require_default_site
+    return if current_site.nil? || default_site?
+
+    redirect_to root_path # site root on the current (sub-site) host
+  end
 
   def render_directory_home
     @stats = Rails.cache.fetch('directory/stats', expires_in: DIRECTORY_CACHE_TTL) do
