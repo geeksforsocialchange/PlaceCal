@@ -17,6 +17,10 @@ The admin interface uses a subdomain. Access it at:
 
 Note: `lvh.me` resolves to localhost but allows subdomain routing to work.
 
+## Visual Verification
+
+Claude Code's preview tools (`preview_screenshot`, `preview_snapshot`, etc.) do NOT work with `lvh.me` URLs. Use the **Chrome integration** (Claude in Chrome MCP tools) for visual verification instead — navigate to `lvh.me:3000` in a real browser tab.
+
 ## Development Server
 
 You can restart the dev server whenever needed without prompting. Use:

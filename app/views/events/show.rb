@@ -8,6 +8,7 @@ class Views::Events::Show < Views::Base
   prop :event, ::Event, reader: :private
   prop :site, Site, reader: :private
   prop :map, _Nilable(Array), reader: :private
+  prop :containing_sites, _Nilable(_Interface(:each)), reader: :private, default: nil
 
   def view_template
     content_for(:title) { event.og_title }
@@ -16,12 +17,7 @@ class Views::Events::Show < Views::Base
     content_for(:json_ld) { safe(event.to_json_ld(base_url: request.base_url).to_json) }
 
     if site.default_site?
-      Directory::PageHero(
-        title: event.summary,
-        kicker: 'Event',
-        breadcrumb_label: 'Events',
-        breadcrumb_path: events_path
-      )
+      render_directory_layout
     else
       Event(
         display_context: :page,
@@ -29,14 +25,134 @@ class Views::Events::Show < Views::Base
         primary_neighbourhood: site.primary_neighbourhood,
         site_tagline: site.tagline
       )
+      render_event_details
+      Map(points: map, site: site.slug, style: :multi)
+      render_event_meta
     end
-
-    render_event_details
-    Map(points: map, site: site.slug, style: :multi)
-    render_event_meta
   end
 
   private
+
+  # ── Directory layout (default site) ──
+
+  def render_directory_layout
+    Directory::PageHero(
+      title: event.summary,
+      kicker: 'Event',
+      breadcrumb_label: 'Events'
+    )
+
+    div(class: 'container-public py-6') do
+      div(class: 'lg:grid lg:grid-cols-[1fr_340px] lg:gap-8') do
+        div do
+          render_directory_body
+          render_directory_details
+          render_directory_location
+        end
+        render_directory_sidebar
+      end
+    end
+  end
+
+  def render_directory_body
+    return if event.description_html.blank?
+
+    div(class: 'mb-6') do
+      raw safe(event.description_html.to_s)
+      event_link(event)
+      online_link
+    end
+  end
+
+  def render_directory_details
+    div(class: 'grid md:grid-cols-3 gap-6 py-4') do
+      if event.organiser
+        div do
+          h3(class: 'allcaps-label text-tertiary mb-2') { 'Contact information' }
+          ContactDetails(partner: event.organiser)
+        end
+      end
+      div do
+        h3(class: 'allcaps-label text-tertiary mb-2') { 'Event address' }
+        Address(address: event.address, raw_location: event.raw_location_from_source)
+      end
+      div do
+        h3(class: 'allcaps-label text-tertiary mb-2') { 'Event organiser' }
+        span { link_to event.organiser, event.organiser }
+      end
+      if show_venue?
+        div do
+          h3(class: 'allcaps-label text-tertiary mb-2') { 'Venue' }
+          span { link_to event.place, event.place }
+        end
+      end
+    end
+  end
+
+  def render_directory_location
+    return unless map
+
+    div(class: 'py-4') do
+      Map(points: map, site: site.slug, style: :multi)
+    end
+  end
+
+  def render_directory_sidebar
+    div(class: 'flex flex-col gap-6') do
+      render_sidebar_partnerships if containing_sites&.any?
+      render_sidebar_organiser if event.organiser
+      render_sidebar_share
+    end
+  end
+
+  def render_sidebar_partnerships
+    count = Array(containing_sites).size
+    div(class: 'rounded-card overflow-hidden') do
+      div(class: 'bg-foreground px-4 py-3', style: 'color: var(--color-background)') do
+        div(class: 'allcaps-label mb-0.5 opacity-80') { 'Part of' }
+        div(class: 'font-serif text-lg') { "#{count} #{'partnership'.pluralize(count)}" }
+      end
+      div(class: 'bg-home-background-3 px-4 py-3') do
+        div(class: 'text-xs text-tertiary mb-3') do
+          plain 'This event appears on these local PlaceCal sites:'
+        end
+        Array(containing_sites).each do |site_record|
+          a(href: "https://#{site_record.slug}.placecal.org",
+            class: 'flex items-center justify-between py-2 no-underline text-foreground hover:bg-background/50 transition-colors rounded px-1') do
+            div do
+              div(class: 'font-extra-bold text-sm') { site_record.name }
+              div(class: 'text-xs text-tertiary') do
+                plain site_record.primary_neighbourhood&.name if site_record.primary_neighbourhood
+              end
+            end
+            span(class: 'text-tertiary') { safe('&#8599;') }
+          end
+        end
+      end
+    end
+  end
+
+  def render_sidebar_organiser
+    div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
+      h3(class: 'allcaps-label text-tertiary mb-2') { 'Organised by' }
+      a(href: partner_path(event.organiser),
+        class: 'font-extra-bold text-sm text-foreground no-underline hover:underline hover:decoration-primary') do
+        plain event.organiser.name
+      end
+    end
+  end
+
+  def render_sidebar_share
+    div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
+      div(class: 'allcaps-label text-tertiary mb-3') { 'Share' }
+      a(href: "https://placecal.org/events/#{event.id}",
+        class: 'font-mono text-sm text-foreground break-all no-underline hover:underline hover:decoration-primary') do
+        plain "placecal.org/events/#{event.id}"
+      end
+    end
+  end
+
+  # ── Local site layout ──
 
   def render_event_details
     div(class: 'container-narrowish mb-12 event__fullinfo e-content') do
