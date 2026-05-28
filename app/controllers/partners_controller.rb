@@ -63,7 +63,7 @@ class PartnersController < ApplicationController
 
     respond_to do |format|
       format.html do
-        view_class = default_site? ? Views::Directory::PartnerShow : Views::Partners::Show
+        view_class = default_site? ? Views::Directory::Partners::Show : Views::Partners::Show
         render view_class.new(
           partner: @partner, site: @site, current_day: @current_day,
           map: @map, events: @events,
