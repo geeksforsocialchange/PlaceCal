@@ -37,11 +37,11 @@ class Views::Directory::Home < Views::Base
   private
 
   def render_partnerships_section
-    section(class: 'py-10') do
+    section(class: 'py-5') do
       div(class: 'container-public') do
-        div(class: 'flex justify-between items-baseline mb-5 flex-wrap gap-2') do
+        div(class: 'flex justify-between items-baseline flex-wrap gap-2') do
           div do
-            div(class: 'allcaps-label text-tertiary mb-1') { 'Partnerships' }
+            div(class: 'allcaps-label text-tertiary') { 'Partnerships' }
             h2(class: 'font-serif font-regular text-section text-foreground') { 'Community hubs running on PlaceCal' }
           end
           a(href: partnerships_path,
@@ -72,7 +72,7 @@ class Views::Directory::Home < Views::Base
 
   def render_recent_partners
     div do
-      div(class: 'allcaps-label text-tertiary mb-1') { 'Activity' }
+      div(class: 'allcaps-label text-tertiary') { 'Activity' }
       h2(class: 'font-serif font-regular text-section text-foreground mb-4') { 'Recently joined PlaceCal' }
       div(class: 'flex flex-col gap-2') do
         partners = @recent_partners.first(5)
@@ -92,7 +92,7 @@ class Views::Directory::Home < Views::Base
 
   def render_upcoming_events
     div do
-      div(class: 'allcaps-label text-tertiary mb-1') { 'Tonight & this week' }
+      div(class: 'allcaps-label text-tertiary') { 'Tonight & this week' }
       h2(class: 'font-serif font-regular text-section text-foreground mb-4') { 'Happening around the UK' }
       div do
         flat_events.first(5).each do |event|
@@ -132,7 +132,7 @@ class Views::Directory::Home < Views::Base
 
   def render_cta_card(heading:, body:, link_text:, link_path:, head_class:)
     div(class: 'flex flex-col rounded-card overflow-hidden') do
-      div(class: "#{head_class} px-5 py-4") do
+      div(class: "#{head_class} px-5") do
         h3(class: 'font-serif font-regular text-card', style: 'color: #43392f') { heading }
       end
       div(class: 'bg-home-background-3 px-5 py-4 flex-1') do

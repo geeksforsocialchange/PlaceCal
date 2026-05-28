@@ -30,7 +30,7 @@ class Components::ContactDetails < Components::Base
     return unless contact?
 
     div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
-      h3(class: 'allcaps-label text-tertiary mb-3') { 'Get in touch' }
+      sidebar_heading('Get in touch')
       div(class: 'flex flex-col gap-2') do
         tailwind_row(:contact_phone, @phone, "tel:#{@phone}") if @phone.present?
         tailwind_row(:contact_email, @email, "mailto:#{@email}") if @email.present?

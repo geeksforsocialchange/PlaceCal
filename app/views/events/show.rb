@@ -58,7 +58,7 @@ class Views::Events::Show < Views::Base
   def render_contact_info
     div(class: 'gi gi__1-3') do
       if event.organiser
-        h2(class: 'h4 udl') { 'Contact information' }
+        h3(class: 'h4 udl') { 'Contact information' }
         div(class: 'small') do
           ContactDetails(partner: event.organiser)
         end

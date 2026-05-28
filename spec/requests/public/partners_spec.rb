@@ -439,6 +439,14 @@ RSpec.describe "Public Partners", type: :request do
         get partner_url(partner, host: "lvh.me")
         expect(response.body).to include("Neighbourhood")
       end
+
+      it "shows last 3 levels of neighbourhood hierarchy in kicker" do
+        get partner_url(partner, host: "lvh.me")
+        path = partner.address.neighbourhood.path.last(3).map(&:name)
+        path.each do |ancestor|
+          expect(response.body).to include(ancestor)
+        end
+      end
     end
 
     context "with service areas" do
@@ -448,6 +456,41 @@ RSpec.describe "Public Partners", type: :request do
         get partner_url(partner, host: "lvh.me")
         expect(response).to be_successful
         expect(response.body).to include("Serves")
+      end
+
+      it "shows last 3 levels of service area hierarchy in kicker" do
+        get partner_url(partner, host: "lvh.me")
+        path = partner.service_area_neighbourhoods.first.path.last(3).map(&:name)
+        path.each do |ancestor|
+          expect(response.body).to include(ancestor)
+        end
+      end
+    end
+
+    context "with opening times" do
+      let(:opening_times_json) do
+        [
+          { dayOfWeek: "https://schema.org/Monday", opens: "09:00", closes: "17:00" },
+          { dayOfWeek: "https://schema.org/Wednesday", opens: "10:00", closes: "20:00" }
+        ].to_json
+      end
+      let(:partner) { create(:partner, opening_times: opening_times_json) }
+
+      it "shows opening times card" do
+        get partner_url(partner, host: "lvh.me")
+        expect(response).to be_successful
+        expect(response.body).to include("Opening times")
+        expect(response.body).to include("Monday")
+        expect(response.body).to include("Wednesday")
+      end
+    end
+
+    context "without opening times" do
+      let(:partner) { create(:partner, opening_times: "[]") }
+
+      it "hides opening times card" do
+        get partner_url(partner, host: "lvh.me")
+        expect(response.body).not_to include("Opening times")
       end
     end
 

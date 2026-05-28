@@ -43,7 +43,7 @@
 	font-weight: var(--font-weight-regular);
 	font-size: var(--text-hero);
 	line-height: var(--leading-hero);
-	margin-top: calc(var(--spacing) * 3);
+	margin-top: 0;
 	margin-bottom: calc(var(--spacing) * 3);
 }
 

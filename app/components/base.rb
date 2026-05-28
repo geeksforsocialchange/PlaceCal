@@ -33,6 +33,10 @@ class Components::Base < Phlex::HTML
     I18n.t(key, **)
   end
 
+  def sidebar_heading(text)
+    h3(class: 'allcaps-label text-tertiary mt-1 mb-2') { text }
+  end
+
   if Rails.env.development?
     def before_template
       comment { self.class.name.to_s }

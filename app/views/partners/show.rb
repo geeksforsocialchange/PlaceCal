@@ -42,7 +42,7 @@ class Views::Partners::Show < Views::Base
   def render_directory_layout
     Directory::PageHero(
       title: partner.name,
-      kicker: partner.categories.first&.name || 'Partner',
+      kicker: partner_location_kicker,
       breadcrumb_label: 'Partners'
     )
 
@@ -113,6 +113,17 @@ class Views::Partners::Show < Views::Base
     div(class: 'py-4') do
       render_accessibility_details(summary_class: 'cursor-pointer font-extra-bold text-foreground')
     end
+  end
+
+  def partner_location_kicker
+    path = if partner.address&.neighbourhood
+             partner.address.neighbourhood.path
+           elsif partner.service_area_neighbourhoods.any?
+             partner.service_area_neighbourhoods.first.path
+           end
+    return 'Partner' unless path&.any?
+
+    path.last(3).map(&:name).join(' › ')
   end
 
   # ── Shared ──
