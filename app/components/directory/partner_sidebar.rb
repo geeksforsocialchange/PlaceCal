@@ -24,7 +24,7 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
         src: @partner.image.standard.url,
         srcset: "#{@partner.image.standard.url} 1x, #{@partner.image.retina.url} 2x",
         alt: @partner.name,
-        class: 'w-full object-cover'
+        class: 'block w-full'
       )
     end
   end
