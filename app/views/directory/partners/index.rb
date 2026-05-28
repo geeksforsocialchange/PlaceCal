@@ -113,7 +113,7 @@ class Views::Directory::Partners::Index < Views::Base
       if letter != current_letter && letter&.match?(/[A-Z]/)
         current_letter = letter
         h2(id: "letter-#{letter}",
-           class: 'column-span-all font-serif text-2xl text-foreground mt-8 mb-3 pt-3 border-t-2 border-rules scroll-mt-4 break-inside-avoid') { letter }
+           class: '[column-span:all] font-serif text-2xl text-foreground mt-8 mb-3 pt-3 border-t-2 border-rules scroll-mt-4') { letter }
       end
       Directory::PartnerCard(partner: partner, site: @site)
     end

@@ -37,10 +37,10 @@ class Components::Directory::PartnerCard < Components::Directory::Base
   end
 
   def area_text
+    return @area_text if defined?(@area_text)
+
     hood = @partner.address&.neighbourhood
     hood ||= @partner.service_area_neighbourhoods.first if @partner.has_service_areas?
-    return unless hood
-
-    hood.hierarchy_path.last(3).map(&:shortname).join(' › ')
+    @area_text = hood && hood.hierarchy_path.last(3).map(&:shortname).join(' › ')
   end
 end

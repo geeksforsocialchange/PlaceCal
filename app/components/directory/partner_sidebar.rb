@@ -9,7 +9,7 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
       render_image if @partner.read_attribute(:image).present?
       render_partnerships if Array(@containing_sites).any?
       render ContactDetails.new(partner: @partner, variant: :tailwind)
-      render_opening_times if @partner.human_readable_opening_times.any?
+      render_opening_times if opening_times.any?
       render_categories if @partner.categories.any?
       render_neighbourhood if @partner.address&.neighbourhood
       render_share
@@ -56,12 +56,15 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
     end
   end
 
+  def opening_times
+    @opening_times ||= @partner.human_readable_opening_times
+  end
+
   def render_opening_times
-    times = @partner.human_readable_opening_times
     div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
       sidebar_heading(t('directory.sidebar.opening_times'))
       ul(class: 'text-sm text-foreground space-y-1 list-none pl-0') do
-        times.each { |slot| li { slot } }
+        opening_times.each { |slot| li { slot } }
       end
     end
   end

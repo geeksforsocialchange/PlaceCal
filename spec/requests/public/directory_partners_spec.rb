@@ -175,7 +175,14 @@ RSpec.describe "Directory Partners", type: :request do
 
       it "shows overflow prompt for events beyond first 10" do
         get partner_url(partner, host: "lvh.me")
-        expect(response.body).to include(I18n.t("directory.partners.show.show_more_events", count: 2))
+        expect(response.body).to include("Show 2 more events")
+      end
+
+      it "pluralizes correctly for single remaining event" do
+        Event.last.destroy!
+        get partner_url(partner, host: "lvh.me")
+        expect(response.body).to include("Show 1 more event")
+        expect(response.body).not_to include("Show 1 more events")
       end
     end
 
