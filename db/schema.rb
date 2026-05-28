@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_09_172023) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_28_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -221,7 +221,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_09_172023) do
     t.string "calendar_email"
     t.string "calendar_name"
     t.string "calendar_phone"
-    t.boolean "can_be_assigned_events", default: false, null: false
+    t.boolean "can_be_assigned_events", default: true, null: false
     t.datetime "created_at", precision: nil, null: false
     t.text "description"
     t.string "description_html"
