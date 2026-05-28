@@ -174,10 +174,9 @@ class Views::Layouts::Admin::Application < Phlex::HTML
       icon(:code, size: '3')
       plain "#{t('admin.leftbar.build')}: "
       code(class: 'font-mono') do
-        git_rev = ENV.fetch('GIT_REV', nil)
         link_to(
-          git_rev ? git_rev[0, 7] : 'dev',
-          "https://github.com/geeksforsocialchange/PlaceCal/commit/#{git_rev}",
+          AppVersion.label(fallback: 'dev'),
+          AppVersion.url,
           class: 'text-placecal-teal-dark underline hover:no-underline'
         )
       end
