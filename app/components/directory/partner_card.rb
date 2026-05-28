@@ -6,7 +6,7 @@ class Components::Directory::PartnerCard < Components::Directory::Base
 
   def view_template
     a(href: partner_path(@partner),
-      class: 'group block py-3 pb-5 no-underline text-foreground hover:bg-home-background-3 transition-colors rounded-lg px-2 -mx-2',
+      class: 'group block py-3 pb-7 no-underline text-foreground hover:bg-home-background-3 transition-colors rounded-lg px-2 -mx-2 break-inside-avoid',
       id: "partner-#{@partner.id}") do
       render_info
     end
