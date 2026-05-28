@@ -6,7 +6,7 @@ class Components::Directory::PartnerCard < Components::Directory::Base
 
   def view_template
     a(href: partner_path(@partner),
-      class: 'block py-3 no-underline text-foreground hover:bg-home-background-3 transition-colors rounded-lg px-2 -mx-2',
+      class: 'block py-3 no-underline text-foreground hover:bg-home-background-3 transition-colors rounded-lg px-2 -mx-2 border-b border-rules',
       id: "partner-#{@partner.id}") do
       render_info
     end
@@ -27,7 +27,7 @@ class Components::Directory::PartnerCard < Components::Directory::Base
     chips = @partner.categories.first(2).map(&:name)
     return if chips.empty?
 
-    div(class: 'flex flex-wrap gap-1') do
+    div(class: 'flex flex-wrap gap-1 mt-1.5') do
       chips.each do |label|
         span(class: 'inline-flex items-center bg-home-background-3 text-tertiary text-2xs font-bold rounded-full px-2 py-0.5') do
           plain label
