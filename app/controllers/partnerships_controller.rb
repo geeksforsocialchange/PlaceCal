@@ -10,7 +10,7 @@ class PartnershipsController < ApplicationController
                         .order(partners_count: :desc)
     @total_partners = Partner.visible.count
 
-    render Views::Directory::PartnershipsIndex.new(partnerships: @partnerships, site: @site, query: params[:q], total_partners: @total_partners)
+    render Views::Directory::Partnerships::Index.new(partnerships: @partnerships, site: @site, query: params[:q], total_partners: @total_partners)
   end
 
   def show
@@ -29,7 +29,7 @@ class PartnershipsController < ApplicationController
                               .where(dtstart: Time.zone.today..30.days.from_now)
                               .count
 
-    render Views::Directory::PartnershipShow.new(
+    render Views::Directory::Partnerships::Show.new(
       partnership: @partnership,
       partners: @partners,
       upcoming_events: @upcoming_events,

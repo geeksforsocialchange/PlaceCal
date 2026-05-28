@@ -122,7 +122,7 @@ class PartnersController < ApplicationController
     )
     paginate_with_az_filter(partners)
 
-    render Views::Directory::PartnersIndex.new(
+    render Views::Directory::Partners::Index.new(
       partners: @partners, pagy: @pagy, site: @site, query: params[:q], sort: @sort,
       az_letters: @az_letters, selected_letter: @selected_letter,
       total_count: Partner.visible.count,

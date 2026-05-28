@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Views::Directory::EventsIndex < Views::Base
+class Views::Directory::Events::Index < Views::Base
   PERIOD_OPTIONS = [['This week', 'week'], ['Today', 'day'], ['This month', 'month'], ['All upcoming', 'future']].freeze
 
   prop :events, Hash

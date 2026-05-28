@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Views::Directory::PartnersIndex < Views::Base
+class Views::Directory::Partners::Index < Views::Base
   prop :partners, _Interface(:each)
   prop :pagy, _Nilable(Pagy::Offset), default: nil
   prop :site, ::Site
