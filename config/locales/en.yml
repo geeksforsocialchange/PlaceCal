@@ -226,3 +226,6 @@ en:
           attributes:
             tag_ids:
               blank: "Select at least one Tag"
+            opening_times:
+              end_before_start: "has a closing time that is not after its opening time"
+              overlapping: "has overlapping times on the same day"
