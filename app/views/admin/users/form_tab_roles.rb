@@ -74,7 +74,7 @@ class Views::Admin::Users::FormTabRoles < Views::Admin::Base
     FormCard(
       icon: :site,
       title: Site.model_name.human(count: 2),
-      description: t('admin.users.fields.sites_hint', default: 'Sites where this user is assigned as admin')
+      description: t('admin.users.fields.sites_hint')
     ) do
       sites = user.sites.order(:name)
       if sites.any?
