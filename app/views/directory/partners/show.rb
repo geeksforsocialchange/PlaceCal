@@ -12,7 +12,7 @@ class Views::Directory::Partners::Show < Views::Partners::Show
     )
 
     div(class: 'container-public py-6') do
-      div(class: 'lg:grid lg:grid-cols-[1fr_340px] lg:gap-8') do
+      div(class: 'lg:grid lg:grid-cols-[1fr_var(--width-sidebar)] lg:gap-8') do
         div do
           render_directory_about
           render_directory_events
@@ -36,24 +36,29 @@ class Views::Directory::Partners::Show < Views::Partners::Show
 
     div(class: 'py-4') do
       h2(class: 'udl udl--fw allcaps text-xl') { 'Upcoming events' }
-      displayed = flat.first(10)
-      remaining = flat.drop(10)
-      displayed.each do |event|
+      flat.first(10).each do |event|
         Directory::EventRow(event: event, context_partner: partner)
       end
-      if remaining.any?
-        details(class: 'group') do
-          summary(class: 'list-none pt-3 border-t border-rules cursor-pointer [&::-webkit-details-marker]:hidden') do
-            span(class: 'inline-flex items-center gap-1.5 text-sm font-bold text-foreground group-open:hidden') do
-              plain "Show #{remaining.size} more events"
-              span(class: 'text-tertiary') { safe('&#9660;') }
-            end
-          end
-          remaining.each do |event|
-            Directory::EventRow(event: event, context_partner: partner)
-          end
+      render_event_overflow(flat.drop(10))
+    end
+  end
+
+  def render_event_overflow(remaining)
+    return if remaining.empty?
+
+    batch = remaining.first(10)
+    rest = remaining.drop(10)
+    details(class: 'group') do
+      summary(class: 'list-none pt-3 border-t border-rules cursor-pointer [&::-webkit-details-marker]:hidden') do
+        span(class: 'inline-flex items-center gap-1.5 text-sm font-bold text-foreground group-open:hidden') do
+          plain "Show #{[10, remaining.size].min} more events"
+          span(class: 'text-tertiary') { safe('&#9660;') }
         end
       end
+      batch.each do |event|
+        Directory::EventRow(event: event, context_partner: partner)
+      end
+      render_event_overflow(rest)
     end
   end
 
@@ -62,14 +67,10 @@ class Views::Directory::Partners::Show < Views::Partners::Show
 
     div(class: 'py-4') do
       h2(class: 'udl udl--fw allcaps text-xl') { 'Location' }
-      p(class: 'text-sm text-tertiary mb-3') { "Serves #{partner_service_area_text(partner)}." } if partner.has_service_areas?
+      p(class: 'mb-3') { "Serves #{partner_service_area_text(partner)}." } if partner.has_service_areas?
       div(class: 'grid grid-cols-[1fr_auto] gap-4 items-start') do
         Map(points: map, site: site.slug, compact: true) if map
-        if partner.address
-          div(class: 'text-base text-foreground') do
-            Address(address: partner.address)
-          end
-        end
+        Address(address: partner.address) if partner.address
       end
     end
   end
@@ -78,7 +79,10 @@ class Views::Directory::Partners::Show < Views::Partners::Show
     return if partner.accessibility_info_html.blank?
 
     div(class: 'py-4') do
-      render_accessibility_details(summary_class: 'cursor-pointer font-extra-bold text-foreground')
+      h2(class: 'udl udl--fw allcaps text-xl') { 'Accessibility information' }
+      div do
+        raw safe(partner.accessibility_info_html.to_s)
+      end
     end
   end
 

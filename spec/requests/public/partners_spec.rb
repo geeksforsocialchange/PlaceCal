@@ -497,9 +497,8 @@ RSpec.describe "Public Partners", type: :request do
     context "with accessibility info" do
       let(:partner) { create(:partner, accessibility_info: "Wheelchair ramp at main entrance") }
 
-      it "shows collapsible accessibility section" do
+      it "shows accessibility section" do
         get partner_url(partner, host: "lvh.me")
-        expect(response.body).to include("accessibility-info")
         expect(response.body).to include("Accessibility information")
         expect(response.body).to include("Wheelchair ramp at main entrance")
       end
