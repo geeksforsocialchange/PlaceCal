@@ -291,6 +291,34 @@ RSpec.describe "Admin::Partners", type: :request do
       end
     end
 
+    context "custom slug with a validation failure (#2358)" do
+      let(:user) { create(:root_user) }
+      let!(:other_partner) { create(:partner, slug: "taken-slug") }
+      let(:partner) { create(:riverside_partner) }
+
+      before { sign_in user }
+
+      it "re-renders the form with the slug the user entered, not the original" do
+        original_slug = partner.slug
+
+        partner_params = {
+          name: partner.name,
+          slug: "taken-slug", # already used => slug validation fails
+          address_attributes: {
+            street_address: partner.address.street_address,
+            postcode: partner.address.postcode
+          }
+        }
+
+        put admin_partner_url(partner, host: admin_host), params: { partner: partner_params }
+
+        expect(response).not_to be_redirect
+        expect(response.body).to include('value="taken-slug"')
+        expect(response.body).not_to include("value=\"#{original_slug}\"")
+        expect(partner.reload.slug).to eq(original_slug)
+      end
+    end
+
     context "neighbourhood admin address restriction" do
       let(:ward) { create(:riverside_ward) }
       let(:user) { create(:neighbourhood_admin, neighbourhood: ward) }
