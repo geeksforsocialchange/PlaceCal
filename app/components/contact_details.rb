@@ -35,7 +35,7 @@ class Components::ContactDetails < Components::Base
         tailwind_row(:contact_phone, @phone, "tel:#{@phone}") if @phone.present?
         tailwind_row(:contact_email, @email, "mailto:#{@email}") if @email.present?
         tailwind_row(:contact_website, strip_url(@url), @url) if @url.present?
-        tailwind_row(:contact_facebook, t('directory.contact.facebook'), "https://facebook.com/#{@partner.facebook_link}") if @partner.facebook_link.present?
+        tailwind_row(:contact_facebook, 'Facebook', "https://facebook.com/#{@partner.facebook_link}") if @partner.facebook_link.present?
         tailwind_row(:contact_twitter, "@#{@partner.twitter_handle}", "https://twitter.com/#{@partner.twitter_handle}") if @partner.twitter_handle.present?
         tailwind_row(:contact_instagram, "@#{@partner.instagram_handle}", "https://www.instagram.com/#{@partner.instagram_handle}/") if @partner.instagram_handle.present?
       end

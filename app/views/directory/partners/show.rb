@@ -92,7 +92,7 @@ class Views::Directory::Partners::Show < Views::Partners::Show
            elsif partner.service_area_neighbourhoods.any?
              partner.service_area_neighbourhoods.first.path
            end
-    return t('directory.partners.show.kicker_fallback') unless path&.any?
+    return Partner.model_name.human unless path&.any?
 
     path.last(3).map(&:name).join(' › ')
   end

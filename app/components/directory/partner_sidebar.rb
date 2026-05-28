@@ -85,7 +85,7 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
     path = neighbourhood.path
 
     div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
-      sidebar_heading(t('directory.sidebar.neighbourhood'))
+      sidebar_heading(Neighbourhood.model_name.human)
       div(class: 'flex flex-wrap items-center gap-1 text-sm') do
         path.each_with_index do |ancestor, i|
           span(class: 'text-tertiary mx-0.5') { safe('&rsaquo;') } if i.positive?

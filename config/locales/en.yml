@@ -30,7 +30,6 @@ en:
         upcoming_events: "Upcoming events"
         location: "Location"
         accessibility_info: "Accessibility info"
-        kicker_fallback: "Partner"
         show_more_events: "Show %{count} more events"
         serves: "Serves %{area}."
     sidebar:
@@ -41,12 +40,10 @@ en:
       partnerships_description: "You can find %{name} on these local PlaceCal sites:"
       opening_times: "Opening times"
       categories: "Categories"
-      neighbourhood: "Neighbourhood"
       share_subscribe: "Share & subscribe"
       subscribe_ical: "Subscribe via iCal"
     contact:
       get_in_touch: "Get in touch"
-      facebook: "Facebook"
       no_contact: "No contact information — let us know!"
 
   # ===========================================================================
