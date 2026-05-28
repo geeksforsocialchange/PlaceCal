@@ -63,7 +63,8 @@ class PartnersController < ApplicationController
 
     respond_to do |format|
       format.html do
-        render Views::Partners::Show.new(
+        view_class = default_site? ? Views::Directory::PartnerShow : Views::Partners::Show
+        render view_class.new(
           partner: @partner, site: @site, current_day: @current_day,
           map: @map, events: @events,
           period: @period, date_period: @date_period, sort: @sort,

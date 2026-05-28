@@ -5,6 +5,7 @@ class Components::Directory::PageHero < Components::Directory::Base
   prop :kicker, _Nilable(String), default: nil
   prop :subtitle, _Nilable(String), default: nil
   prop :breadcrumb_label, _Nilable(String), default: nil
+  prop :breadcrumb_path, _Nilable(String), default: nil
 
   def view_template
     section(class: 'bg-foreground pt-6 pb-5', style: 'color: var(--color-background)') do
@@ -23,7 +24,11 @@ class Components::Directory::PageHero < Components::Directory::Base
     nav(class: 'text-sm mb-2', style: 'color: var(--color-background)', aria_label: 'Breadcrumb') do
       a(href: root_path, class: 'no-underline hover:underline', style: 'color: inherit') { 'Directory' }
       span(class: 'mx-1.5 opacity-60') { safe('›') }
-      span(class: 'opacity-80') { @breadcrumb_label }
+      if @breadcrumb_path
+        a(href: @breadcrumb_path, class: 'no-underline hover:underline opacity-80', style: 'color: inherit') { @breadcrumb_label }
+      else
+        span(class: 'opacity-80') { @breadcrumb_label }
+      end
     end
   end
 

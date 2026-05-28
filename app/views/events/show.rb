@@ -19,7 +19,8 @@ class Views::Events::Show < Views::Base
       Directory::PageHero(
         title: event.summary,
         kicker: 'Event',
-        breadcrumb_label: 'Events'
+        breadcrumb_label: 'Events',
+        breadcrumb_path: events_path
       )
     else
       Event(
