@@ -42,6 +42,12 @@ RSpec.describe "Admin::Sites", type: :request do
         expect(response).to be_successful
         expect(response.body).to include("<title>New Site | PlaceCal Admin</title>")
       end
+
+      it "tells the user the slug auto-generates from the name when left blank" do
+        get new_admin_site_url(host: admin_host)
+        expect(response).to be_successful
+        expect(response.body).to include("Leave blank to auto-generate from name")
+      end
     end
   end
 
@@ -132,6 +138,24 @@ RSpec.describe "Admin::Sites", type: :request do
   end
 
   describe "POST /admin/sites" do
+    context "with a blank slug" do
+      before { sign_in root_user }
+
+      it "auto-generates the slug from the name" do
+        new_site_params = {
+          name: "My Brand New Site",
+          url: "https://brand-new.placecal.org",
+          slug: ""
+        }
+
+        expect do
+          post admin_sites_url(host: admin_host), params: { site: new_site_params }
+        end.to change(Site, :count).by(1)
+
+        expect(Site.last.slug).to eq("my-brand-new-site")
+      end
+    end
+
     context "with bad image uploads" do
       before { sign_in root_user }
 
