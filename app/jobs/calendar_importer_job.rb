@@ -19,7 +19,11 @@ class CalendarImporterJob < ApplicationJob
   # #3100). Most HTTP fetches funnel through Parsers::Base.read_http_source,
   # which already maps these to InaccessibleFeed; this backstop covers parsers
   # that make HTTP requests by other means (e.g. API and POST-based parsers).
-  rescue_from Net::ReadTimeout, Net::OpenTimeout, OpenSSL::SSL::SSLError do |exception|
+  # RestClient::Exceptions::Timeout (the parent of RestClient's Read/OpenTimeout)
+  # covers the Eventbrite parser, which fetches via RestClient/EventbriteSDK —
+  # its timeout errors are not subclasses of Net::ReadTimeout/Net::OpenTimeout.
+  rescue_from Net::ReadTimeout, Net::OpenTimeout, OpenSSL::SSL::SSLError,
+              RestClient::Exceptions::Timeout do |exception|
     Rails.logger.warn(
       "Calendar source unreachable for calendar #{@calendar_id}: " \
       "#{exception.class} (#{exception.message})"

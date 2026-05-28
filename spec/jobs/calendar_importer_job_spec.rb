@@ -87,6 +87,32 @@ RSpec.describe CalendarImporterJob do
           .to eq(I18n.t("admin.calendars.wizard.source.unreachable"))
       end
     end
+
+    context "when the Eventbrite parser's RestClient fetch times out" do
+      # Eventbrite imports via RestClient (EventbriteSDK), not read_http_source,
+      # so its timeouts are RestClient::Exceptions::ReadTimeout — not Net:: errors
+      # — and propagate through the importer task to this job-level backstop (#3100).
+      let(:calendar) do
+        create(:eventbrite_calendar, importer_mode: "eventbrite")
+          .tap { |c| c.update!(calendar_state: "in_queue") }
+      end
+
+      before do
+        # The Eventbrite source page is reachable (validate_feed! passes)...
+        stub_request(:get, calendar.source).to_return(status: 200, body: "ok")
+        # ...but the Eventbrite API fetch (RestClient via EventbriteSDK) times out.
+        allow(EventbriteSDK::Organizer).to receive(:retrieve)
+          .and_raise(RestClient::Exceptions::ReadTimeout)
+      end
+
+      it "does not raise and marks the source unreachable" do
+        expect { perform_import }.not_to raise_error
+
+        expect(calendar.reload.calendar_state).to eq("bad_source")
+        expect(calendar.critical_error)
+          .to eq(I18n.t("admin.calendars.wizard.source.unreachable"))
+      end
+    end
   end
 
   describe "non-network errors" do
