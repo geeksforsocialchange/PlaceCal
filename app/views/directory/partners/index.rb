@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Views::Directory::PartnersIndex < Views::Base
+class Views::Directory::Partners::Index < Views::Base
   prop :partners, _Interface(:each)
   prop :pagy, _Nilable(Pagy::Offset), default: nil
   prop :site, ::Site
@@ -84,7 +84,7 @@ class Views::Directory::PartnersIndex < Views::Base
   end
 
   def render_partner_list
-    div(id: 'partner-list', class: 'grid lg:grid-cols-2 gap-x-4') do
+    div(id: 'partner-list', class: 'lg:columns-2 gap-x-4') do
       if @sort == 'name'
         render_alphabetical_list
       else
@@ -113,7 +113,7 @@ class Views::Directory::PartnersIndex < Views::Base
       if letter != current_letter && letter&.match?(/[A-Z]/)
         current_letter = letter
         h2(id: "letter-#{letter}",
-           class: 'lg:col-span-2 font-serif text-xl text-foreground mt-6 mb-2 pt-2 border-t-2 border-rules scroll-mt-4') { letter }
+           class: '[column-span:all] font-serif text-2xl text-foreground mt-8 mb-3 pt-3 border-t-2 border-rules scroll-mt-4') { letter }
       end
       Directory::PartnerCard(partner: partner, site: @site)
     end

@@ -19,6 +19,36 @@ en:
     email: "support@placecal.org"
 
   # ===========================================================================
+  # DIRECTORY (public placecal.org)
+  # ===========================================================================
+
+  directory:
+    breadcrumbs:
+      root: "Directory"
+    partners:
+      show:
+        upcoming_events: "Upcoming events"
+        location: "Location"
+        accessibility_info: "Accessibility info"
+        show_more_events:
+          one: "Show 1 more event"
+          other: "Show %{count} more events"
+        serves: "Serves %{area}."
+    sidebar:
+      part_of: "Part of"
+      partnerships:
+        one: "%{count} partnership"
+        other: "%{count} partnerships"
+      partnerships_description: "You can find %{name} on these local PlaceCal sites:"
+      opening_times: "Opening times"
+      categories: "Categories"
+      share_subscribe: "Share & subscribe"
+      subscribe_ical: "Subscribe via iCal"
+    contact:
+      get_in_touch: "Get in touch"
+      no_contact: "No contact information — let us know!"
+
+  # ===========================================================================
   # DATE & TIME FORMATS
   # ===========================================================================
 

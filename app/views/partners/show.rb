@@ -18,6 +18,14 @@ class Views::Partners::Show < Views::Base
   prop :containing_sites, _Nilable(_Interface(:each)), reader: :private, default: nil
 
   def view_template
+    set_content_for_tags
+    render_local_layout
+    render_meta_section
+  end
+
+  private
+
+  def set_content_for_tags
     content_for(:title) { partner.name }
     if partner.image.present?
       content_for(:image) { partner.image }
@@ -26,39 +34,9 @@ class Views::Partners::Show < Views::Base
     end
     content_for(:description) { partner.summary } if partner.summary
     content_for(:json_ld) { safe(partner.to_json_ld(base_url: request.base_url).to_json) }
-
-    if site.default_site?
-      render_directory_layout
-    else
-      render_local_layout
-      render_meta_section
-    end
   end
 
-  private
-
-  # ── Directory layout (default site) ──
-
-  def render_directory_layout
-    Directory::PageHero(
-      title: partner.name,
-      kicker: partner.categories.first&.name || 'Partner',
-      breadcrumb_label: 'Partners'
-    )
-
-    div(class: 'container-public py-6') do
-      div(class: 'lg:grid lg:grid-cols-[1fr_340px] lg:gap-8') do
-        div do
-          render_directory_about
-          render_directory_events
-          render_directory_location
-        end
-        render_directory_sidebar
-      end
-    end
-  end
-
-  def render_directory_about
+  def render_partner_description
     if partner.summary
       div(class: 'p--big') do
         content_tag(:p, partner.summary)
@@ -71,115 +49,11 @@ class Views::Partners::Show < Views::Base
     end
   end
 
-  def render_directory_events
-    flat = events.respond_to?(:values) ? events.values.flatten : Array(events)
-    return unless flat.any?
-
-    div(class: 'py-4') do
-      h2(class: 'udl udl--fw allcaps h4') { 'Upcoming events' }
-      flat.first(10).each do |event|
-        Directory::EventRow(event: event, context_partner: partner)
-      end
-    end
-  end
-
-  def render_directory_location
-    return unless partner.address || map
-
-    div(class: 'py-4') do
-      h2(class: 'udl udl--fw allcaps h4') { 'Location' }
-      div(class: 'grid grid-cols-[1fr_auto] gap-4 items-start') do
-        Map(points: map, site: site.slug, compact: true) if map
-        if partner.address
-          div(class: 'text-base text-foreground') do
-            Address(address: partner.address)
-          end
-        end
-      end
-    end
-  end
-
-  def render_directory_sidebar
-    div(class: 'flex flex-col gap-6') do
-      render_sidebar_partnerships if containing_sites&.any?
-      render_sidebar_categories if partner.categories.any?
-      render_sidebar_neighbourhood if partner.address&.neighbourhood
-      render_sidebar_share
-    end
-  end
-
-  def render_sidebar_partnerships
-    count = Array(containing_sites).size
-    div(class: 'rounded-card overflow-hidden') do
-      div(class: 'bg-foreground px-4 py-3', style: 'color: var(--color-background)') do
-        div(class: 'allcaps-label mb-0.5 opacity-80') { 'Part of' }
-        div(class: 'font-serif text-lg') { "#{count} #{'partnership'.pluralize(count)}" }
-      end
-      div(class: 'bg-home-background-3 px-4 py-3') do
-        div(class: 'text-xs text-tertiary mb-3') do
-          plain "You can find #{partner.name} on these local PlaceCal sites:"
-        end
-        Array(containing_sites).each do |site_record|
-          a(href: "https://#{site_record.slug}.placecal.org",
-            class: 'flex items-center justify-between py-2 no-underline text-foreground hover:bg-background/50 transition-colors rounded px-1') do
-            div do
-              div(class: 'font-extra-bold text-sm') { site_record.name }
-              div(class: 'text-xs text-tertiary') do
-                plain site_record.primary_neighbourhood&.name if site_record.primary_neighbourhood
-              end
-            end
-            span(class: 'text-tertiary') { safe('&#8599;') }
-          end
-        end
-      end
-    end
-  end
-
-  def render_sidebar_categories
-    div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
-      h3(class: 'allcaps-label text-tertiary mb-2') { 'Categories' }
-      div(class: 'flex flex-wrap gap-1.5') do
-        partner.categories.each do |cat|
-          a(href: partners_path(category: cat.id),
-            class: 'inline-flex items-center bg-primary text-foreground text-2xs font-bold rounded-full px-2.5 py-0.5 no-underline hover:brightness-110 transition-colors') do
-            plain cat.name
-          end
-        end
-      end
-    end
-  end
-
-  def render_sidebar_neighbourhood
-    neighbourhood = partner.address.neighbourhood
-    path = neighbourhood.path
-
-    div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
-      h3(class: 'allcaps-label text-tertiary mb-2') { 'Neighbourhood' }
-      div(class: 'flex flex-wrap items-center gap-1 text-sm') do
-        path.each_with_index do |ancestor, i|
-          span(class: 'text-tertiary mx-0.5') { safe('&rsaquo;') } if i.positive?
-          if ancestor == neighbourhood
-            span(class: 'font-extra-bold text-foreground') { ancestor.name }
-          else
-            span(class: 'text-foreground') { ancestor.name }
-          end
-        end
-      end
-    end
-  end
-
-  def render_sidebar_share
-    div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
-      div(class: 'allcaps-label text-tertiary mb-3') { 'Share & subscribe' }
-
-      a(href: "https://placecal.org/partners/#{partner.slug}",
-        class: 'font-mono text-sm text-foreground break-all no-underline hover:underline hover:decoration-primary') do
-        plain "placecal.org/partners/#{partner.slug}"
-      end
-      a(href: partner_url(partner, protocol: :webcal, format: :ics),
-        class: 'inline-flex items-center gap-1.5 mt-3 text-sm font-bold text-foreground no-underline hover:underline hover:decoration-primary') do
-        raw(safe('<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>'))
-        plain 'Subscribe via iCal'
+  def render_accessibility_details(summary_class: nil)
+    details(id: 'accessibility-info') do
+      summary(class: summary_class) { 'Accessibility information' }
+      div(class: 'mt-2 text-sm text-foreground') do
+        raw safe(partner.accessibility_info_html.to_s)
       end
     end
   end
@@ -217,19 +91,6 @@ class Views::Partners::Show < Views::Base
     end
   end
 
-  def render_partner_description
-    return unless partner.summary
-
-    div(class: 'p--big') do
-      content_tag(:p, partner.summary)
-    end
-    return if partner.description_html.blank?
-
-    div do
-      raw safe(partner.description_html.to_s)
-    end
-  end
-
   def render_contact_and_address
     h3(class: 'udl udl--fw allcaps h4') { 'Get in touch' }
     ContactDetails(partner: partner)
@@ -239,12 +100,7 @@ class Views::Partners::Show < Views::Base
 
     Address(address: partner.address)
 
-    if partner.accessibility_info_html.present?
-      details(id: 'accessibility-info') do
-        summary { 'Accessibility information' }
-        raw safe(partner.accessibility_info_html.to_s)
-      end
-    end
+    render_accessibility_details if partner.accessibility_info_html.present?
 
     return unless partner.managees.any?
 

@@ -6,37 +6,19 @@ class Components::Directory::PartnerCard < Components::Directory::Base
 
   def view_template
     a(href: partner_path(@partner),
-      class: [
-        'grid grid-cols-[var(--size-avatar-md)_1fr] gap-3 items-start',
-        'py-3 px-4 rounded-card border-2 border-transparent',
-        'no-underline text-foreground hover:border-rules transition-colors'
-      ].join(' '),
+      class: 'group block py-3 pb-7 no-underline text-foreground hover:bg-home-background-3 transition-colors rounded-lg px-2 -mx-2 break-inside-avoid',
       id: "partner-#{@partner.id}") do
-      render_avatar
       render_info
     end
   end
 
   private
 
-  def render_avatar
-    if @partner.image?
-      img(
-        src: @partner.image.standard.url,
-        alt: @partner.name,
-        class: 'w-(--size-avatar-md) h-(--size-avatar-md) rounded-card object-cover'
-      )
-    else
-      div(class: 'w-(--size-avatar-md) h-(--size-avatar-md) rounded-full bg-home-background-3 flex items-center justify-center font-serif text-xl text-tertiary') do
-        plain initials
-      end
-    end
-  end
-
   def render_info
     div do
-      div(class: 'font-extra-bold text-detail leading-tight mb-0.5') { @partner.name }
-      div(class: 'text-xs text-tertiary leading-snug mb-1.5') { area_text } if area_text.present?
+      div(class: 'font-bold text-xl leading-tight border-b-[3px] border-rules group-hover:border-tertiary/20 pb-1.5 mb-1.5') { @partner.name }
+      div(class: 'text-sm text-tertiary font-bold mb-0.5') { area_text } if area_text.present?
+      div(class: 'text-foreground leading-snug mt-1 line-clamp-2') { @partner.summary.truncate(120) } if @partner.summary.present?
       render_chips
     end
   end
@@ -45,7 +27,7 @@ class Components::Directory::PartnerCard < Components::Directory::Base
     chips = @partner.categories.first(2).map(&:name)
     return if chips.empty?
 
-    div(class: 'flex flex-wrap gap-1') do
+    div(class: 'flex flex-wrap gap-1 mt-2.5') do
       chips.each do |label|
         span(class: 'inline-flex items-center bg-home-background-3 text-tertiary text-2xs font-bold rounded-full px-2 py-0.5') do
           plain label
@@ -54,14 +36,11 @@ class Components::Directory::PartnerCard < Components::Directory::Base
     end
   end
 
-  def initials
-    @partner.name.split.first(2).map { |w| w[0] }.join.upcase
-  end
-
   def area_text
-    neighbourhood = @partner.address&.neighbourhood
-    return @partner.location_name unless neighbourhood
+    return @area_text if defined?(@area_text)
 
-    neighbourhood.hierarchy_path.last(3).map(&:shortname).join(' › ')
+    hood = @partner.address&.neighbourhood
+    hood ||= @partner.service_area_neighbourhoods.first if @partner.has_service_areas?
+    @area_text = hood && hood.hierarchy_path.last(3).map(&:shortname).join(' › ')
   end
 end

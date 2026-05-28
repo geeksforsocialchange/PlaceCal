@@ -31,7 +31,7 @@ class PartnersQuery
     partners = filter_by_tag_slug(partners, tag_slug) if tag_slug.present?
     partners = filter_by_partnership(partners, partnership_id) if partnership_id.present?
     partners = filter_by_query(partners, query) if query.present?
-    partners.includes({ address: :neighbourhood }, { service_areas: :neighbourhood }).order(sort_clause(sort))
+    partners.includes({ address: :neighbourhood }, { service_areas: :neighbourhood }, :categories).order(sort_clause(sort))
   end
 
   # Returns neighbourhoods that have partners, with counts

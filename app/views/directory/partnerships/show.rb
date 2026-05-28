@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Views::Directory::PartnershipShow < Views::Base
+class Views::Directory::Partnerships::Show < Views::Base
   include Views::Directory::Concerns::FlattensEvents
 
   prop :partnership, ::Site

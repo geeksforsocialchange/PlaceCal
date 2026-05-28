@@ -350,5 +350,268 @@ RSpec.describe "Public Partners", type: :request do
         expect(response.body).to include("Showing")
       end
     end
+
+    describe "directory partner listing cards" do
+      let!(:partner_with_summary) do
+        create(:partner, name: "Summary Partner", summary: "A great community organisation")
+      end
+      let!(:partner_without_summary) do
+        create(:partner, name: "Bare Partner", summary: nil, description: nil)
+      end
+
+      it "shows summary snippet on partner cards" do
+        get partners_url(host: "lvh.me")
+        expect(response.body).to include("A great community organisation")
+      end
+
+      it "renders cards without summary gracefully" do
+        get partners_url(host: "lvh.me")
+        expect(response).to be_successful
+        expect(response.body).to include("Bare Partner")
+      end
+    end
+  end
+
+  describe "directory partner show page" do
+    let!(:default_site) { create_default_site }
+
+    context "with full contact details" do
+      let(:partner) { create(:riverside_partner) }
+
+      it "shows contact card with all fields" do
+        get partner_url(partner, host: "lvh.me")
+        expect(response).to be_successful
+        expect(response.body).to include("Get in touch")
+        expect(response.body).to include(partner.public_email)
+        expect(response.body).to include(partner.public_phone)
+      end
+
+      it "shows social media links" do
+        get partner_url(partner, host: "lvh.me")
+        expect(response.body).to include("@#{partner.twitter_handle}")
+        expect(response.body).to include("@#{partner.instagram_handle}")
+        expect(response.body).to include("Facebook")
+      end
+    end
+
+    context "with no contact details" do
+      let(:partner) do
+        create(:partner,
+               public_email: nil, public_phone: nil, url: nil,
+               twitter_handle: nil, instagram_handle: nil, facebook_link: nil)
+      end
+
+      it "hides contact card" do
+        get partner_url(partner, host: "lvh.me")
+        expect(response).to be_successful
+        expect(response.body).not_to include('data-icon-name="contact_phone"')
+        expect(response.body).not_to include('data-icon-name="contact_email"')
+        expect(response.body).not_to include('data-icon-name="contact_website"')
+      end
+    end
+
+    context "with categories" do
+      let(:partner) { create(:partner) }
+      let(:category) { create(:category_tag, name: "Youth Services") }
+
+      before { partner.categories << category }
+
+      it "shows categories card" do
+        get partner_url(partner, host: "lvh.me")
+        expect(response.body).to include("Categories")
+        expect(response.body).to include("Youth Services")
+      end
+    end
+
+    context "without categories" do
+      let(:partner) { create(:partner) }
+
+      it "hides categories card" do
+        get partner_url(partner, host: "lvh.me")
+        expect(response.body).not_to include("Categories")
+      end
+    end
+
+    context "with neighbourhood" do
+      let(:partner) { create(:riverside_partner) }
+
+      it "shows neighbourhood breadcrumb" do
+        get partner_url(partner, host: "lvh.me")
+        expect(response.body).to include("Neighbourhood")
+      end
+
+      it "shows last 3 levels of neighbourhood hierarchy in kicker" do
+        get partner_url(partner, host: "lvh.me")
+        path = partner.address.neighbourhood.path.last(3).map(&:name)
+        path.each do |ancestor|
+          expect(response.body).to include(ancestor)
+        end
+      end
+    end
+
+    context "with service areas" do
+      let(:partner) { create(:ashton_service_area_partner) }
+
+      it "shows service area text in location section" do
+        get partner_url(partner, host: "lvh.me")
+        expect(response).to be_successful
+        expect(response.body).to include("Serves")
+      end
+
+      it "shows last 3 levels of service area hierarchy in kicker" do
+        get partner_url(partner, host: "lvh.me")
+        path = partner.service_area_neighbourhoods.first.path.last(3).map(&:name)
+        path.each do |ancestor|
+          expect(response.body).to include(ancestor)
+        end
+      end
+    end
+
+    context "with opening times" do
+      let(:opening_times_json) do
+        [
+          { dayOfWeek: "https://schema.org/Monday", opens: "09:00", closes: "17:00" },
+          { dayOfWeek: "https://schema.org/Wednesday", opens: "10:00", closes: "20:00" }
+        ].to_json
+      end
+      let(:partner) { create(:partner, opening_times: opening_times_json) }
+
+      it "shows opening times card" do
+        get partner_url(partner, host: "lvh.me")
+        expect(response).to be_successful
+        expect(response.body).to include("Opening times")
+        expect(response.body).to include("Monday")
+        expect(response.body).to include("Wednesday")
+      end
+    end
+
+    context "without opening times" do
+      let(:partner) { create(:partner, opening_times: "[]") }
+
+      it "hides opening times card" do
+        get partner_url(partner, host: "lvh.me")
+        expect(response.body).not_to include("Opening times")
+      end
+    end
+
+    context "with accessibility info" do
+      let(:partner) { create(:partner, accessibility_info: "Wheelchair ramp at main entrance") }
+
+      it "shows accessibility section" do
+        get partner_url(partner, host: "lvh.me")
+        expect(response.body).to include("Accessibility info")
+        expect(response.body).to include("Wheelchair ramp at main entrance")
+      end
+    end
+
+    context "without accessibility info" do
+      let(:partner) { create(:partner) }
+
+      it "hides accessibility section" do
+        get partner_url(partner, host: "lvh.me")
+        expect(response.body).not_to include("accessibility-info")
+      end
+    end
+
+    context "with no events and no calendar" do
+      let(:partner) { create(:partner) }
+
+      it "hides events section entirely" do
+        get partner_url(partner, host: "lvh.me")
+        expect(response.body).not_to include("Upcoming events")
+      end
+    end
+
+    context "with few events (under overflow threshold)" do
+      let(:partner) { create(:riverside_partner) }
+      let(:calendar) { create(:calendar, organiser: partner) }
+
+      before do
+        5.times do |i|
+          create(:event,
+                 organiser: partner,
+                 calendar: calendar,
+                 dtstart: (i + 1).days.from_now.at_beginning_of_hour,
+                 dtend: (i + 1).days.from_now.at_beginning_of_hour + 1.hour)
+        end
+      end
+
+      it "shows all events without overflow toggle" do
+        get partner_url(partner, host: "lvh.me")
+        expect(response.body).to include("Upcoming events")
+        expect(response.body).not_to include("more events")
+      end
+    end
+
+    context "with many events (over overflow threshold)" do
+      let(:partner) { create(:riverside_partner) }
+      let(:calendar) { create(:calendar, organiser: partner) }
+
+      before do
+        15.times do |i|
+          create(:event,
+                 organiser: partner,
+                 calendar: calendar,
+                 dtstart: (i + 1).days.from_now.at_beginning_of_hour,
+                 dtend: (i + 1).days.from_now.at_beginning_of_hour + 1.hour)
+        end
+      end
+
+      it "shows overflow toggle with remaining count" do
+        get partner_url(partner, host: "lvh.me")
+        expect(response.body).to include("Upcoming events")
+        expect(response.body).to include("Show 5 more events")
+      end
+    end
+
+    context "share and subscribe card" do
+      let(:partner) { create(:partner, name: "Test Org") }
+
+      it "always shows share card with URL and iCal link" do
+        get partner_url(partner, host: "lvh.me")
+        expect(response.body).to include("Share &amp; subscribe")
+        expect(response.body).to include("placecal.org/partners/#{partner.slug}")
+        expect(response.body).to include("Subscribe via iCal")
+      end
+    end
+
+    context "with containing sites (partnerships)" do
+      let(:partner) { create(:riverside_partner) }
+      let(:partnership_site) { create(:site, slug: "test-partnership", name: "Test Partnership") }
+
+      before do
+        partnership_site.neighbourhoods << partner.address.neighbourhood
+      end
+
+      it "shows partnerships card" do
+        get partner_url(partner, host: "lvh.me")
+        expect(response.body).to include("Part of")
+        expect(response.body).to include("partnership")
+        expect(response.body).to include("Test Partnership")
+      end
+    end
+
+    context "minimal partner (address only)" do
+      let(:partner) do
+        create(:partner, summary: nil, description: nil,
+                         public_email: nil, public_phone: nil, url: nil,
+                         twitter_handle: nil, instagram_handle: nil, facebook_link: nil)
+      end
+
+      it "renders without errors" do
+        get partner_url(partner, host: "lvh.me")
+        expect(response).to be_successful
+        expect(response.body).to include(partner.name)
+      end
+
+      it "shows only location and share cards" do
+        get partner_url(partner, host: "lvh.me")
+        expect(response.body).not_to include('data-icon-name="contact_phone"')
+        expect(response.body).not_to include('data-icon-name="contact_email"')
+        expect(response.body).not_to include("Upcoming events")
+        expect(response.body).not_to include("Categories")
+        expect(response.body).to include("Share &amp; subscribe")
+      end
+    end
   end
 end

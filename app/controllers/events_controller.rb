@@ -83,7 +83,7 @@ class EventsController < ApplicationController
                        .pluck(:slug, :name)
                        .map { |slug, name| { slug: slug, name: name } }
 
-    render Views::Directory::EventsIndex.new(
+    render Views::Directory::Events::Index.new(
       events: @events,
       site: @site,
       period: @period,

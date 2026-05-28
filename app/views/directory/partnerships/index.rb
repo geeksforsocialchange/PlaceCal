@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Views::Directory::PartnershipsIndex < Views::Base
+class Views::Directory::Partnerships::Index < Views::Base
   prop :partnerships, _Interface(:each)
   prop :site, _Nilable(::Site), default: nil
   prop :query, _Nilable(String), default: nil

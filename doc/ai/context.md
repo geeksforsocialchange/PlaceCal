@@ -23,6 +23,46 @@ When working on this project:
 - Extract complex business logic to service objects (e.g., `app/queries/`)
 - Ensure proper database indexing for foreign keys and queries
 
+## CRITICAL: Internationalization (i18n)
+
+**NEVER hardcode user-facing strings in views, components, controllers, or JavaScript.** Always use locale keys.
+
+### In Ruby (views, components, controllers)
+
+Use `t('key')` for all display text:
+
+```ruby
+# Good
+h2 { t('directory.partners.show.upcoming_events') }
+sidebar_heading(t('directory.sidebar.opening_times'))
+
+# Bad
+h2 { 'Upcoming events' }
+sidebar_heading('Opening times')
+```
+
+Use `Model.model_name.human(count:)` for model names and `attr_label(:model, :attribute)` for field labels.
+
+### In JavaScript (Stimulus controllers)
+
+Pass localized strings via data attributes from Rails — never hardcode in JS.
+
+### Locale file structure
+
+- `config/locales/en.yml` — ActiveRecord models/attributes, site metadata, public/directory UI strings
+- `config/locales/admin.en.yml` — Admin interface strings
+
+### Specialist prompt files
+
+Detailed per-domain rules live in `doc/ai/prompts/`. These are loaded automatically in swarm mode but should be consulted when working in a specific area:
+
+- `views.md` — Phlex components, i18n patterns, accessibility
+- `controllers.md` — Strong params, response handling, i18n
+- `tests.md` — RSpec patterns, factory usage, no `sleep` in tests
+- `stimulus.md` — JS controllers, data attributes for i18n
+- `models.md` — AR patterns, migrations, validations
+- `graphql.md` — Schema design, resolvers, authorization
+
 ## Asset Pipeline
 
 ### JavaScript (importmap-rails)
