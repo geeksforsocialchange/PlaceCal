@@ -6,7 +6,7 @@ class Components::Directory::PartnerCard < Components::Directory::Base
 
   def view_template
     a(href: partner_path(@partner),
-      class: 'block py-3 no-underline text-foreground hover:bg-home-background-3 transition-colors rounded-lg px-2 -mx-2 border-b border-rules',
+      class: 'block py-3 no-underline text-foreground hover:bg-home-background-3 transition-colors rounded-lg px-2 -mx-2',
       id: "partner-#{@partner.id}") do
       render_info
     end
@@ -16,8 +16,10 @@ class Components::Directory::PartnerCard < Components::Directory::Base
 
   def render_info
     div do
-      div(class: 'font-extra-bold text-base leading-tight') { @partner.name }
-      div(class: 'text-sm text-tertiary font-bold mt-0.5') { area_text } if area_text.present?
+      div(class: 'border-b-2 border-rules pb-1.5 mb-1.5') do
+        div(class: 'font-extra-bold text-base leading-tight') { @partner.name }
+        div(class: 'text-sm text-tertiary font-bold mt-0.5') { area_text } if area_text.present?
+      end
       div(class: 'text-sm text-tertiary leading-snug mt-1 line-clamp-2') { @partner.summary.truncate(120) } if @partner.summary.present?
       render_chips
     end
