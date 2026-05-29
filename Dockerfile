@@ -73,6 +73,13 @@ RUN rm -rf node_modules
 # ---------- Runtime stage ----------
 FROM base
 
+# Application version for display in the UI (admin sidebar + site footers).
+# Computed on the host from `git describe --tags --always` and passed in by
+# the deploy tooling (see config/deploy.yml `builder.args`). The `.git` dir is
+# excluded from the build context (.dockerignore), so it cannot be derived here.
+ARG APP_VERSION
+ENV APP_VERSION=$APP_VERSION
+
 # Copy built artifacts
 COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
 COPY --from=build /rails /rails

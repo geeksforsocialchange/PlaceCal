@@ -128,10 +128,9 @@ class Components::Footer < Components::Base
         plain t('colophon.address')
       end
       p do
-        build = ENV['GIT_REV'] ? ENV['GIT_REV'][0, 7] : 'main'
         plain 'Build: '
         tag.tt do
-          link_to(build, "https://github.com/geeksforsocialchange/PlaceCal/commit/#{build}")
+          link_to(AppVersion.label(fallback: 'main'), AppVersion.url)
         end
       end
     end
