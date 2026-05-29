@@ -53,7 +53,8 @@ namespace :addresses do
     # Pause briefly between requests to stay polite when backfilling in bulk.
     sleep_seconds = Float(ENV.fetch('POSTCODES_IO_SLEEP', '0.1'))
 
-    scope = Address.needs_city_backfill
+    # Existing rows missing a city that still have a postcode we can look up.
+    scope = Address.where(city: nil).where.not(postcode: [nil, ''])
     total = scope.count
     puts "Found #{total} addresses needing a city backfill"
 
@@ -62,15 +63,18 @@ namespace :addresses do
     blank = 0
 
     scope.find_each do |address|
-      case address.backfill_city!
-      when :updated
-        updated += 1
-      when :not_found
+      res = Geocoder.search(address.postcode).first&.data
+      district = res && res['admin_district']
+
+      if res.nil?
         puts "  SKIP #{address.id} (#{address.postcode}) - postcode not found"
         not_found += 1
-      when :blank
+      elsif district.blank?
         puts "  SKIP #{address.id} (#{address.postcode}) - no admin_district in response"
         blank += 1
+      else
+        address.update_columns(city: district) # rubocop:disable Rails/SkipsModelValidations
+        updated += 1
       end
 
       sleep sleep_seconds if sleep_seconds.positive?
