@@ -43,9 +43,6 @@ env:
   clear:
     RAILS_SERVE_STATIC_FILES: true
     RAILS_LOG_TO_STDOUT: true
-    # Friendly app version shown in the UI. Mirrors the build arg below so the
-    # value baked into the image is also present in the running container.
-    APP_VERSION: <%= `git describe --tags --always 2>/dev/null`.strip %>
   secret:
     - RAILS_ENV
     - RAILS_MASTER_KEY
@@ -84,9 +81,10 @@ builder:
   arch: amd64
   args:
     RUBY_VERSION: <%= File.read('.ruby-version').strip %>
-    # Friendly version from the latest git tag, computed on the host (the .git
-    # dir is excluded from the Docker build context). Falls back to the short
-    # commit SHA when no tags are reachable.
+    # Friendly version from the latest git tag (e.g. v0.27.3), computed on the
+    # host because the .git dir is excluded from the Docker build context.
+    # Baked into the image as ENV APP_VERSION by the Dockerfile, so it reaches
+    # runtime without a separate env var. Falls back to the short commit SHA.
     APP_VERSION: <%= `git describe --tags --always 2>/dev/null`.strip %>
 
 # Database migrations run via bin/docker-entrypoint (db:prepare)

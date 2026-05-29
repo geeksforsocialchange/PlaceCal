@@ -5,8 +5,8 @@ require "rails_helper"
 RSpec.describe AppVersion do
   describe ".label" do
     it "returns APP_VERSION when set" do
-      stub_const("ENV", ENV.to_hash.merge("APP_VERSION" => "v0.9.1", "GIT_REV" => "abcdef1234567"))
-      expect(described_class.label).to eq("v0.9.1")
+      stub_const("ENV", ENV.to_hash.merge("APP_VERSION" => "v0.27.3", "GIT_REV" => "abcdef1234567"))
+      expect(described_class.label).to eq("v0.27.3")
     end
 
     it "falls back to the short GIT_REV when APP_VERSION is unset" do
@@ -33,9 +33,9 @@ RSpec.describe AppVersion do
 
   describe ".url" do
     it "links to the release tag page when APP_VERSION is an exact tag" do
-      stub_const("ENV", ENV.to_hash.merge("APP_VERSION" => "v0.9.1"))
+      stub_const("ENV", ENV.to_hash.merge("APP_VERSION" => "v0.27.3"))
       expect(described_class.url)
-        .to eq("https://github.com/geeksforsocialchange/PlaceCal/releases/tag/v0.9.1")
+        .to eq("https://github.com/geeksforsocialchange/PlaceCal/releases/tag/v0.27.3")
     end
 
     it "strips the git-describe suffix when building the release tag link" do
