@@ -175,15 +175,18 @@ class Site < ApplicationRecord
     refresh_events_count!
   end
 
-  # @return [String] Sprockets stylesheet path for this site's theme
+  # @return [String, nil] asset pipeline stylesheet path for this site's theme,
+  #   or nil when no stylesheet should be linked. For the :custom theme the
+  #   per-site asset (themes/custom/<slug>.css) may not exist in the pipeline;
+  #   in that case we return nil so the page renders with the default styling
+  #   instead of raising Propshaft::MissingAssetError (see issue #2936).
   def stylesheet_link
     return nil if default_site?
 
-    if theme == :custom
-      "themes/custom/#{slug}"
-    else
-      "themes/#{theme}"
-    end
+    return "themes/#{theme}" unless theme == :custom
+
+    custom_path = "themes/custom/#{slug}"
+    custom_path if asset_present?("#{custom_path}.css")
   end
 
   # @return [String, false] Open Graph image URL, or false
@@ -209,6 +212,17 @@ class Site < ApplicationRecord
         Disallow: /
       TXT
     end
+  end
+
+  private
+
+  # @param logical_path [String] asset logical path, e.g. "themes/custom/foo.css"
+  # @return [Boolean] whether the asset resolves in the pipeline. Uses the same
+  #   resolver that stylesheet_link_tag relies on (Propshaft::Helper#compute_asset_path),
+  #   so the guard matches link behaviour in both development (dynamic) and
+  #   production (static manifest) modes.
+  def asset_present?(logical_path)
+    Rails.application.assets&.resolver&.resolve(logical_path).present?
   end
 
   # ==== Class methods ====
