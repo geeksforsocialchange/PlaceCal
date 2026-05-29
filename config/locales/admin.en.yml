@@ -310,6 +310,7 @@ en:
           forbidden: "This URL returned a 403 (forbidden). The site may be blocking automated access. Please check the URL is correct and that the feed is publicly accessible."
           not_found: "This URL returned a 404 (not found). Please check the URL is correct and that the feed or page has not been removed or set to private."
           unreadable: "The source URL could not be read (code=%{code})"
+          unreachable: "The source could not be reached (it timed out or refused a secure connection). It may be temporarily down — please check the URL and try again later."
         organiser:
           title: "Organiser"
           description: "Which partner organises these events, and what should we call this calendar?"

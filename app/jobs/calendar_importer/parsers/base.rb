@@ -115,6 +115,12 @@ module CalendarImporter::Parsers
       raise InaccessibleFeed, "The source URL could not be resolved (#{e})"
     rescue SocketError => e
       raise InaccessibleFeed, "There was a socket error (#{e})"
+    rescue Net::ReadTimeout, Net::OpenTimeout, OpenSSL::SSL::SSLError => e
+      # Slow/unreachable feeds and TLS negotiation failures are expected when
+      # scraping third-party sources. Treat them as an unreachable source rather
+      # than letting them bubble up as unhandled exceptions (see issue #3100).
+      Rails.logger.warn("Calendar source unreachable for #{url}: #{e.class} (#{e.message})")
+      raise InaccessibleFeed, I18n.t('admin.calendars.wizard.source.unreachable')
     end
 
     def self.parse_ld_json(url)
