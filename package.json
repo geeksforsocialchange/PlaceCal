@@ -3,16 +3,16 @@
 	"version": "3.0.0",
 	"private": true,
 	"dependencies": {
-		"@hotwired/turbo-rails": "8",
-		"@tailwindcss/cli": "^4.1.18"
+		"@hotwired/turbo-rails": "8.0.23",
+		"@tailwindcss/cli": "4.3.0"
 	},
 	"devDependencies": {
-		"daisyui": "^5.5.19",
-		"husky": "9",
-		"leaflet": "^1.9.4",
-		"lint-staged": "17",
-		"prettier": "3",
-		"tom-select": "^2.4.3"
+		"daisyui": "5.5.20",
+		"husky": "9.1.7",
+		"leaflet": "1.9.4",
+		"lint-staged": "17.0.5",
+		"prettier": "3.8.3",
+		"tom-select": "2.6.1"
 	},
 	"scripts": {
 		"build": "yarn css-admin && yarn css-public",
