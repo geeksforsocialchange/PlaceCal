@@ -214,6 +214,14 @@ class Site < ApplicationRecord
   # ==== Class methods ====
 
   class << self
+    # The default "directory" site (placecal.org) that aggregates every partner
+    # and event. Used as the fallback for requests that resolve to no site of
+    # their own (e.g. the admin subdomain reaching a public resource page).
+    # @return [Site, nil]
+    def directory
+      find_by(slug: 'default-site')
+    end
+
     # Selects the robots.txt template based on ALLOW_AI_SEARCH_BOTS env var.
     # In production, defaults to allowing search-AI bots (permissive template).
     # Set ALLOW_AI_SEARCH_BOTS=false to block all AI bots (strict template).
