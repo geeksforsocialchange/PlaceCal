@@ -354,7 +354,7 @@ GEM
       rake (~> 13.3)
     graphiql-rails (1.10.5)
       railties
-    graphql (2.6.2)
+    graphql (2.6.3)
       base64
       fiber-storage
       logger
@@ -405,7 +405,7 @@ GEM
       prism (>= 1.3.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
-    json (2.19.5)
+    json (2.19.7)
     json-canonicalization (1.0.0)
     json-ld (3.3.2)
       htmlentities (~> 4.3)
@@ -476,7 +476,7 @@ GEM
     minitest (6.0.6)
       drb (~> 2.0)
       prism (~> 1.5)
-    msgpack (1.8.0)
+    msgpack (1.8.1)
     multi_json (1.21.1)
     multi_test (1.1.0)
     multi_xml (0.9.1)
@@ -557,7 +557,7 @@ GEM
       date
       stringio
     public_suffix (7.0.5)
-    puma (8.0.1)
+    puma (8.0.2)
       nio4r (~> 2.0)
     pundit (2.5.2)
       activesupport (>= 3.0.0)
@@ -656,7 +656,8 @@ GEM
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
     rexml (3.4.4)
-    rouge (4.7.0)
+    rouge (5.0.0)
+      strscan (~> 3.1)
     rspec-core (3.13.6)
       rspec-support (~> 3.13.0)
     rspec-expectations (3.13.5)
@@ -762,7 +763,7 @@ GEM
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.13.2)
     simplecov_json_formatter (0.1.4)
-    spring (4.5.0)
+    spring (4.6.0)
     sshkit (1.25.0)
       base64
       logger
@@ -777,6 +778,7 @@ GEM
       prism
       require-hooks (~> 0.2)
     stringio (3.2.0)
+    strscan (3.1.8)
     sys-uname (1.5.1)
       ffi (~> 1.1)
       memoist3 (~> 1.0.0)
