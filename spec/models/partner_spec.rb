@@ -18,6 +18,12 @@ RSpec.describe Partner, type: :model do
     it { is_expected.to have_many(:articles).through(:article_partners) }
   end
 
+  describe "defaults" do
+    it "enables event matching by default" do
+      expect(described_class.new.can_be_assigned_events).to be true
+    end
+  end
+
   describe "validations" do
     # shoulda-matchers needs an existing record for uniqueness validation
     subject { create(:partner) }
