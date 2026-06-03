@@ -76,6 +76,42 @@ RSpec.describe PartnersQuery do
       end
     end
 
+    context "with an area-level neighbourhood filter" do
+      let(:district) { create(:millbrook_district) }
+      let(:ward) { create(:riverside_ward, parent: district) }
+      let!(:partner_in_ward) do
+        address = create(:address, neighbourhood: ward)
+        create(:partner, address: address)
+      end
+
+      before { site.neighbourhoods << district }
+
+      it "includes partners in descendant neighbourhoods" do
+        results = described_class.new(site: site).call(neighbourhood_id: district.id)
+
+        expect(results).to include(partner_in_ward)
+      end
+    end
+
+    context "with an unknown or invalid neighbourhood filter" do
+      before do
+        address = create(:address, neighbourhood: neighbourhood)
+        create(:partner, address: address)
+      end
+
+      it "returns no partners for a non-existent neighbourhood id" do
+        results = described_class.new(site: site).call(neighbourhood_id: 0)
+
+        expect(results).to be_empty
+      end
+
+      it "does not raise for a non-integer neighbourhood id" do
+        expect do
+          described_class.new(site: site).call(neighbourhood_id: "not-a-number").to_a
+        end.not_to raise_error
+      end
+    end
+
     context "with tag filter" do
       let!(:category) { create(:category) }
       let!(:partner_with_tag) do
@@ -152,6 +188,31 @@ RSpec.describe PartnersQuery do
 
         other_result = results.find { |r| r[:neighbourhood].id == other_neighbourhood.id }
         expect(other_result[:count]).to eq(2)
+      end
+    end
+
+    context "with partners in descendant neighbourhoods" do
+      let(:district) { create(:millbrook_district) }
+      let(:ward) { create(:riverside_ward, parent: district) }
+
+      before do
+        site.neighbourhoods << district
+        create(:partner, address: create(:address, neighbourhood: district))
+        create(:partner, address: create(:address, neighbourhood: ward))
+      end
+
+      it "rolls descendant partners up into the area-level count" do
+        results = described_class.new(site: site).neighbourhoods_with_counts
+
+        district_result = results.find { |r| r[:neighbourhood].id == district.id }
+        expect(district_result[:count]).to eq(2)
+      end
+
+      it "still counts the descendant neighbourhood on its own" do
+        results = described_class.new(site: site).neighbourhoods_with_counts
+
+        ward_result = results.find { |r| r[:neighbourhood].id == ward.id }
+        expect(ward_result[:count]).to eq(1)
       end
     end
 
