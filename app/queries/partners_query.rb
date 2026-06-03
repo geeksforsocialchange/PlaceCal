@@ -56,14 +56,25 @@ class PartnersQuery
       ) AS combined
     SQL
 
-    counts = pairs.group_by { |r| r['neighbourhood_id'] }
-                  .transform_values { |rows| rows.map { |r| r['partner_id'] }.uniq.length }
+    return [] if pairs.empty?
 
-    return [] if counts.empty?
+    direct_ids = pairs.map { |r| r['neighbourhood_id'] }.uniq
+    neighbourhoods = Neighbourhood.where(id: direct_ids).order(:name).to_a
 
-    Neighbourhood.where(id: counts.keys).order(:name).map do |n|
-      { neighbourhood: n, count: counts[n.id] }
+    # Roll each partner up to its neighbourhood and all listed ancestors, so an
+    # area-level neighbourhood's count matches what filtering by it returns (its
+    # whole subtree) and the dropdown stays consistent with the results.
+    listed = neighbourhoods.index_by(&:id)
+    partner_sets = Hash.new { |hash, key| hash[key] = Set.new }
+    pairs.each do |row|
+      node = listed[row['neighbourhood_id']]
+      next unless node
+
+      credited = [node.id] + node.ancestor_ids.select { |id| listed.key?(id) }
+      credited.each { |id| partner_sets[id] << row['partner_id'] }
     end
+
+    neighbourhoods.map { |n| { neighbourhood: n, count: partner_sets[n.id].size } }
   end
 
   # Returns partnerships that have partners, with counts
@@ -123,14 +134,29 @@ class PartnersQuery
   # Filtering
   # ===================
 
-  # Filter by neighbourhood (partner's address OR service area)
+  # Filter by neighbourhood (partner's address OR service area).
+  #
+  # Matches the neighbourhood and all of its descendants, so an area-level
+  # neighbourhood (e.g. "Manchester" the district) includes partners living
+  # in its wards, not just those assigned to the area node itself.
   def filter_by_neighbourhood(partners, neighbourhood_id)
+    ids = neighbourhood_subtree_ids(neighbourhood_id)
+    return partners.none if ids.empty?
+
     partners
       .left_joins(:address, :service_areas)
       .where(
-        'addresses.neighbourhood_id = :id OR service_areas.neighbourhood_id = :id',
-        id: neighbourhood_id
+        'addresses.neighbourhood_id IN (:ids) OR service_areas.neighbourhood_id IN (:ids)',
+        ids: ids
       )
+      .distinct
+  end
+
+  # @return [Array<Integer>] the neighbourhood id plus all descendant ids, or
+  #   [] when the id is blank/unknown — so an invalid filter matches nothing
+  #   rather than raising on a non-integer value passed to an integer column.
+  def neighbourhood_subtree_ids(neighbourhood_id)
+    Neighbourhood.find_by(id: neighbourhood_id)&.subtree_ids || []
   end
 
   def filter_by_tag(partners, tag_id)

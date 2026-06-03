@@ -73,6 +73,16 @@ class PagesController < ApplicationController
   NEIGHBOURHOOD_UNIT_RANK = %w[ward district county region].freeze
   DIRECTORY_CACHE_TTL = 1.day
 
+  # ONS GSS codes for the places featured as homepage "jump" links, in display
+  # order. Pinned by code (stable across environments) rather than by id.
+  JUMP_NEIGHBOURHOOD_CODES = %w[
+    E08000003
+    E12000007
+    E07000148
+    E08000035
+    E08000021
+  ].freeze
+
   private
 
   def render_directory_home
@@ -89,8 +99,8 @@ class PagesController < ApplicationController
       build_partner_locations
     end
 
-    @jump_sites = Rails.cache.fetch('directory/jump_sites', expires_in: DIRECTORY_CACHE_TTL) do
-      build_jump_sites.to_a
+    @jump_neighbourhoods = Rails.cache.fetch('directory/jump_neighbourhoods', expires_in: DIRECTORY_CACHE_TTL) do
+      build_jump_neighbourhoods.to_a
     end
 
     @partnerships = Rails.cache.fetch('directory/partnerships', expires_in: DIRECTORY_CACHE_TTL) do
@@ -125,20 +135,15 @@ class PagesController < ApplicationController
       partner_event_counts: @partner_event_counts,
       stats: @stats,
       partner_locations: @partner_locations,
-      jump_sites: @jump_sites
+      jump_neighbourhoods: @jump_neighbourhoods
     )
   end
 
-  def build_jump_sites
-    partnership_ids = Tag.where(type: 'Partnership').joins(:sites).select('sites.id')
-    sites = Site.where(is_published: true)
-                .where.not(slug: 'default-site')
-                .where.not(id: partnership_ids)
-                .order(partners_count: :desc)
-                .limit(3)
-    return sites if sites.any?
-
-    Site.where(slug: %w[manchester london norwich], is_published: true)
+  def build_jump_neighbourhoods
+    found = Neighbourhood.latest_release
+                         .where(unit_code_value: JUMP_NEIGHBOURHOOD_CODES)
+                         .index_by(&:unit_code_value)
+    JUMP_NEIGHBOURHOOD_CODES.filter_map { |code| found[code] }
   end
 
   def build_partner_locations
