@@ -59,6 +59,14 @@ RSpec.describe "Directory Partners", type: :request do
         letter = partner.name[0].upcase
         expect(response.body).to include("letter-#{letter}")
       end
+
+      # Regression for #3226: the neighbourhood filter adds DISTINCT, and the
+      # A-Z letter pluck must not carry the name ORDER BY into the DISTINCT
+      # select or Postgres raises PG::InvalidColumnReference.
+      it "succeeds when combined with a neighbourhood filter" do
+        get partners_url(host: "lvh.me", params: { sort: "name", neighbourhood: ward.id })
+        expect(response).to be_successful
+      end
     end
 
     context "with service-area-only partner" do

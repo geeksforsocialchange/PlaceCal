@@ -138,7 +138,10 @@ class PartnersController < ApplicationController
 
   def paginate_with_az_filter(partners)
     if @sort == 'name'
-      @az_letters = partners.pluck(Arel.sql('UPPER(LEFT(partners.name, 1))')).uniq.select { |l| l&.match?(/[A-Z]/) }.to_set
+      # reorder(nil) drops the name ORDER BY: with a DISTINCT relation (added by
+      # the neighbourhood filter) Postgres rejects ordering by a column that's
+      # not in the restricted DISTINCT select list. See issue #3226.
+      @az_letters = partners.reorder(nil).pluck(Arel.sql('UPPER(LEFT(partners.name, 1))')).uniq.select { |l| l&.match?(/[A-Z]/) }.to_set
       @selected_letter = params[:letter]&.upcase if params[:letter].present? && params[:letter].match?(/\A[a-zA-Z]\z/)
       filtered = @selected_letter ? partners.where('partners.name LIKE ?', "#{@selected_letter}%") : partners
       @pagy, @partners = pagy(filtered, limit: 30)
