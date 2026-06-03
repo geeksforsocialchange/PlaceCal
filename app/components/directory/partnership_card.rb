@@ -6,7 +6,7 @@ class Components::Directory::PartnershipCard < Components::Directory::Base
   def view_template
     a(href: partnership_path(@partnership),
       class: [
-        'flex flex-col rounded-card overflow-hidden no-underline break-inside-avoid',
+        'flex flex-col rounded-card overflow-hidden no-underline break-inside-avoid mb-4',
         'text-foreground hover:shadow-lg transition-shadow min-h-50'
       ].join(' ')) do
       render_head

@@ -37,7 +37,7 @@ en:
     partnerships:
       index:
         hero_title: "Partnerships on PlaceCal"
-        hero_subtitle: "A partnership is a group of community organisations working together on a local PlaceCal site. Each has its own subdomain with a hyperlocal version of the calendar."
+        hero_subtitle: "Discover local partnerships across the UK bringing communities together through PlaceCal. Each partnership runs its own calendar site, connecting the groups, events and services in their area."
         hero_kicker: "%{count} partnerships serving %{partners} partners"
         search_placeholder: "Search partnerships…"
         search_button: "Search"

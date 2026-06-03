@@ -19,7 +19,8 @@ class Views::Directory::Partnerships::Show < Views::Base
       kicker: t('directory.partnerships.show.kicker'),
       subtitle: @partnership.description.presence,
       breadcrumb_label: Partnership.model_name.human(count: 2),
-      breadcrumb_path: partnerships_path
+      breadcrumb_path: partnerships_path,
+      background_image_url: hero_image_url
     ) do
       div(class: 'flex flex-col items-start gap-4 mt-4') do
         render_visit_button
@@ -43,11 +44,12 @@ class Views::Directory::Partnerships::Show < Views::Base
   private
 
   def render_visit_button
-    url = "#{@partnership.slug}.placecal.org"
-    a(href: "https://#{url}",
+    href = @partnership.url.presence || "https://#{@partnership.slug}.placecal.org"
+    display_url = href.sub(%r{\Ahttps?://}, '').chomp('/')
+    a(href: href,
       class: 'inline-flex items-center gap-2 bg-primary text-foreground font-bold rounded-full px-5 py-2 no-underline hover:brightness-110 transition-all') do
       raw(view_context.icon(:external_link, size: nil, css_class: 'w-4 h-4'))
-      plain t('directory.partnerships.show.visit', url: url)
+      plain t('directory.partnerships.show.visit', url: display_url)
     end
   end
 
@@ -65,14 +67,14 @@ class Views::Directory::Partnerships::Show < Views::Base
   end
 
   def render_partners
-    div(class: 'py-4') do
+    div(class: 'pt-4 pb-8') do
       h2(class: 'allcaps-label text-tertiary mb-4') { t('directory.partnerships.show.partners_heading') }
       div(class: 'grid grid-cols-1 md:grid-cols-2 gap-2') do
         displayed_partners.each do |partner|
           Directory::PartnerMini(partner: partner, event_count: @partner_event_counts[partner.id] || 0)
         end
       end
-      render_see_all_button(t('directory.partnerships.show.see_all_partners', count: partner_count), "https://#{@partnership.slug}.placecal.org/partners")
+      render_see_all_button(t('directory.partnerships.show.see_all_partners', count: partner_count), "#{partnership_base_url}/partners")
     end
   end
 
@@ -121,6 +123,10 @@ class Views::Directory::Partnerships::Show < Views::Base
       render_map_card
       render_cta_card
     end
+  end
+
+  def hero_image_url
+    @partnership.hero_image.standard.url if @partnership.read_attribute(:hero_image).present?
   end
 
   def render_map_card
@@ -177,6 +183,10 @@ class Views::Directory::Partnerships::Show < Views::Base
         end
       end
     end
+  end
+
+  def partnership_base_url
+    @partnership_base_url ||= @partnership.url.presence || "https://#{@partnership.slug}.placecal.org"
   end
 
   def partner_list
