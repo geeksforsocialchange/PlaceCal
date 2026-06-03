@@ -24,7 +24,7 @@ class Views::Directory::Partnerships::Show < Views::Base
     ) do
       div(class: 'flex flex-col items-start gap-4 mt-4') do
         render_visit_button
-        div(class: 'flex flex-wrap items-center gap-3') do
+        div(class: 'flex flex-wrap items-center gap-3 mb-2') do
           render_stat_chips
         end
       end
@@ -130,7 +130,7 @@ class Views::Directory::Partnerships::Show < Views::Base
   end
 
   def render_map_card
-    div(class: 'rounded-card overflow-hidden bg-home-background-3 min-h-(--height-map)') do
+    div(class: 'rounded-card overflow-hidden bg-home-background-3') do
       partner_locations = partner_list.filter_map do |p|
         next unless p.address&.latitude
 
@@ -139,7 +139,7 @@ class Views::Directory::Partnerships::Show < Views::Base
 
       if partner_locations.any?
         div(
-          class: 'h-(--height-map)',
+          class: 'h-(--height-map-lg)',
           data: {
             controller: 'cluster-map',
             cluster_map_markers_value: partner_locations.to_json,

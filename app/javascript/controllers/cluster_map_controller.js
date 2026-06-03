@@ -77,7 +77,7 @@ export default class extends Controller {
 		if (this.markersValue.length > 0) {
 			const bounds = cluster.getBounds();
 			if (bounds.isValid()) {
-				this.map.fitBounds(bounds, { padding: [20, 15] });
+				this.map.fitBounds(bounds, { padding: [10, 10] });
 			}
 		} else {
 			this.map.setView([54.0, -2.0], 6);
