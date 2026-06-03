@@ -93,6 +93,25 @@ RSpec.describe PartnersQuery do
       end
     end
 
+    context "with an unknown or invalid neighbourhood filter" do
+      before do
+        address = create(:address, neighbourhood: neighbourhood)
+        create(:partner, address: address)
+      end
+
+      it "returns no partners for a non-existent neighbourhood id" do
+        results = described_class.new(site: site).call(neighbourhood_id: 0)
+
+        expect(results).to be_empty
+      end
+
+      it "does not raise for a non-integer neighbourhood id" do
+        expect do
+          described_class.new(site: site).call(neighbourhood_id: "not-a-number").to_a
+        end.not_to raise_error
+      end
+    end
+
     context "with tag filter" do
       let!(:category) { create(:category) }
       let!(:partner_with_tag) do

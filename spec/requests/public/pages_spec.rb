@@ -54,6 +54,23 @@ RSpec.describe "Public Pages", type: :request do
       expect(response).to be_successful
       expect(response.body).to include("<title>")
     end
+
+    context "with a featured jump-link neighbourhood" do
+      # E08000003 is one of the pinned JUMP_NEIGHBOURHOOD_CODES (Manchester)
+      let!(:manchester) do
+        create(:neighbourhood, name: "Manchester", unit: "district", unit_code_value: "E08000003")
+      end
+
+      before { Rails.cache.delete("directory/jump_neighbourhoods") }
+
+      it "links the jump label to the partners directory filtered by that neighbourhood" do
+        get "http://lvh.me"
+
+        expect(response).to be_successful
+        expect(response.body).to include("/partners?neighbourhood=#{manchester.id}")
+        expect(response.body).to include("Manchester")
+      end
+    end
   end
 
   describe "GET /privacy" do

@@ -141,6 +141,8 @@ class PartnersQuery
   # in its wards, not just those assigned to the area node itself.
   def filter_by_neighbourhood(partners, neighbourhood_id)
     ids = neighbourhood_subtree_ids(neighbourhood_id)
+    return partners.none if ids.empty?
+
     partners
       .left_joins(:address, :service_areas)
       .where(
@@ -150,10 +152,11 @@ class PartnersQuery
       .distinct
   end
 
-  # @return [Array<Integer>] the neighbourhood id plus all descendant ids
+  # @return [Array<Integer>] the neighbourhood id plus all descendant ids, or
+  #   [] when the id is blank/unknown — so an invalid filter matches nothing
+  #   rather than raising on a non-integer value passed to an integer column.
   def neighbourhood_subtree_ids(neighbourhood_id)
-    neighbourhood = Neighbourhood.find_by(id: neighbourhood_id)
-    neighbourhood ? neighbourhood.subtree_ids : [neighbourhood_id]
+    Neighbourhood.find_by(id: neighbourhood_id)&.subtree_ids || []
   end
 
   def filter_by_tag(partners, tag_id)
