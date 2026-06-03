@@ -4,21 +4,28 @@
  * Tailwind v4 uses CSS-first configuration.
  */
 
-@import "tailwindcss";
+/* Disable automatic content detection so we only scan admin templates.
+   The public site has its own entrypoint (public_tailwind.css); scanning its
+   pages/components here would generate unused CSS. See #3139.
+*/
+@import "tailwindcss" source(none);
 @plugin "daisyui" {
 	themes:
 		light --default,
 		corporate;
 }
 
-/* Source paths for content detection.
-   TODO(#3163): convert to source(none) then positive admin-only includes.
+/* Admin-only source paths for content detection.
+   Admin templates live under the admin/ subdirs of views/ and components/,
+   plus the admin layout. Datatables, helpers and Stimulus controllers are
+   shared utilities that also emit classes used by the admin UI.
 */
 @source "../../app/datatables/**/*.rb";
 @source "../javascript/**/*.js";
 @source "../helpers/**/*.rb";
-@source "../views/**/*.erb";
-@source "../views/**/*.rb";
+@source "../views/admin/**/*.{erb,rb}";
+@source "../views/layouts/admin/**/*.{erb,rb}";
+@source "../components/admin/**/*.rb";
 
 /* Safelist for dynamically generated icon sizes */
 /* size-3 size-4 size-5 size-6 size-8 size-10 size-12 */

@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
   before_action :store_user_location!, if: :storable_location?
   before_action :authenticate_by_ip if Rails.env.staging?
   protect_from_forgery with: :exception
+  before_action :discard_stale_auth_flash, unless: :devise_controller?
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_supporters
   before_action :set_navigation
@@ -26,6 +27,21 @@ class ApplicationController < ActionController::Base
 
   def set_appsignal_namespace
     Appsignal::Transaction.current.set_namespace('public')
+  end
+
+  # Devise sets a persistent flash[:alert] (e.g. "You need to sign in...") when
+  # an unauthenticated user is bounced away from /admin. That message is only
+  # relevant on the sign-in page it redirects to. If the user instead navigates
+  # to a public site page, the flash would otherwise persist and be shown
+  # there (see #2144), so drop it.
+  #
+  # Scoped to the public site: admin pages legitimately surface flash[:alert]
+  # (e.g. Admin::PartnersController#user_not_authorized) and Devise controllers,
+  # which render the sign-in warning, are excluded by the before_action filter.
+  def discard_stale_auth_flash
+    return if request.subdomain == Site::ADMIN_SUBDOMAIN
+
+    flash.delete(:alert) if flash[:alert].present?
   end
 
   def user_not_authorized
@@ -49,15 +65,20 @@ class ApplicationController < ActionController::Base
     redirect_to new_user_session_path
   end
 
-  # Set the day either using the URL or by today's date
+  # Set the day either using the URL or by today's date.
+  # Falls back to today if the URL params don't form a valid date
+  # (e.g. month=13, day=32 from crawlers hitting random URLs).
   def set_day
     @today = Date.today
-    day = params[:day] || 1
     @current_day =
-      if params[:year] && params[:month] && day
-        Date.new(params[:year].to_i,
-                 params[:month].to_i,
-                 params[:day].to_i)
+      if params[:year] && params[:month] && params[:day]
+        begin
+          Date.new(params[:year].to_i,
+                   params[:month].to_i,
+                   params[:day].to_i)
+        rescue ArgumentError
+          @today
+        end
       else
         @today
       end

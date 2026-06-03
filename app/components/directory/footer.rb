@@ -62,9 +62,8 @@ class Components::Directory::Footer < Components::Directory::Base
         data_nosnippet: true) do
       span { "#{t('colophon.year', year: Time.zone.today.year)} #{t('colophon.copyright')}" }
       span do
-        build = ENV['GIT_REV'] ? ENV['GIT_REV'][0, 7] : 'main'
         plain 'Build: '
-        link_to(build, "https://github.com/geeksforsocialchange/PlaceCal/commit/#{build}",
+        link_to(AppVersion.label(fallback: 'main'), AppVersion.url,
                 class: 'text-tertiary underline hover:decoration-primary')
       end
     end

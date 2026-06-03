@@ -81,5 +81,10 @@ builder:
   arch: amd64
   args:
     RUBY_VERSION: <%= File.read('.ruby-version').strip %>
+    # Friendly version from the latest git tag (e.g. v0.27.3), computed on the
+    # host because the .git dir is excluded from the Docker build context.
+    # Baked into the image as ENV APP_VERSION by the Dockerfile, so it reaches
+    # runtime without a separate env var. Falls back to the short commit SHA.
+    APP_VERSION: <%= `git describe --tags --always 2>/dev/null`.strip %>
 
 # Database migrations run via bin/docker-entrypoint (db:prepare)
