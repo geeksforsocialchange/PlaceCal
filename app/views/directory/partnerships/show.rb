@@ -69,7 +69,7 @@ class Views::Directory::Partnerships::Show < Views::Base
   def render_partners
     div(class: 'pt-4 pb-8') do
       h2(class: 'allcaps-label text-tertiary mb-4') { t('directory.partnerships.show.partners_heading') }
-      div(class: 'grid grid-cols-1 md:grid-cols-2 gap-2') do
+      div(class: 'grid grid-cols-1 md:grid-cols-2 gap-x-6') do
         displayed_partners.each do |partner|
           Directory::PartnerMini(partner: partner, event_count: @partner_event_counts[partner.id] || 0)
         end
@@ -87,6 +87,7 @@ class Views::Directory::Partnerships::Show < Views::Base
         Directory::EventRow(event: event)
       end
       render_event_overflow(flat_events.drop(10))
+      render_see_all_button(t('directory.partnerships.show.see_all_events'), "#{partnership_base_url}/events")
     end
   end
 
