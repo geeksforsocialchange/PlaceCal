@@ -54,11 +54,11 @@ class Views::Directory::Partners::Index < Views::Base
   end
 
   def render_results_header
-    filtered_count = @pagy ? @pagy.count : partner_list.size
+    filtered_total = @pagy ? @pagy.count : partner_list.size
     div(class: 'flex justify-between items-baseline flex-wrap gap-2 py-3') do
       div(class: 'text-sm text-tertiary') do
         if any_filter_active?
-          plain "Showing #{filtered_count} of #{@total_count} partners"
+          plain "Showing #{partner_list.size} of #{filtered_total} partners"
         else
           plain "#{@total_count} partners"
         end

@@ -178,7 +178,8 @@ class Views::Directory::Partnerships::Show < Views::Base
             end
           end
         end
-        a(href: '/get-in-touch',
+        contact_href = coordinator&.email.present? ? "mailto:#{coordinator.email}" : '/get-in-touch'
+        a(href: contact_href,
           class: 'btn-dark-outline transition-colors') do
           plain t('directory.partnerships.show.contact_coordinator')
         end
