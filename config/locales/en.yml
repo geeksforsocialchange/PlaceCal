@@ -34,6 +34,35 @@ en:
           one: "Show 1 more event"
           other: "Show %{count} more events"
         serves: "Serves %{area}."
+    partnerships:
+      index:
+        hero_title: "Partnerships on PlaceCal"
+        hero_subtitle: "A partnership is a group of community organisations working together on a local PlaceCal site. Each has its own subdomain with a hyperlocal version of the calendar."
+        hero_kicker: "%{count} partnerships serving %{partners} partners"
+        search_placeholder: "Search partnerships…"
+        search_button: "Search"
+        empty: "No partnerships found."
+        clear_search: "Clear search"
+      show:
+        kicker: "Partnership"
+        visit: "Visit %{url}"
+        partners_heading: "Partners in this partnership"
+        see_all_partners: "See all %{count} partners"
+        upcoming_events: "Upcoming events"
+        show_more_events:
+          one: "Show 1 more event"
+          other: "Show %{count} more events"
+        see_all_events: "See all events"
+        events_this_month:
+          one: "%{count} event this month"
+          other: "%{count} events this month"
+        map_coming_soon: "Map coming soon"
+        get_involved: "Get involved"
+        cta_text: "Running a community group%{area}? Join this partnership to list your events."
+        cta_area: " in %{name}"
+        contact_coordinator: "Contact coordinator"
+      card:
+        kicker: "Partnership"
     sidebar:
       part_of: "Part of"
       partnerships:

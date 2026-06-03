@@ -7,13 +7,14 @@ class Components::Directory::PageHero < Components::Directory::Base
   prop :breadcrumb_label, _Nilable(String), default: nil
   prop :breadcrumb_path, _Nilable(String), default: nil
 
-  def view_template
+  def view_template(&block)
     section(class: 'bg-foreground pt-6 pb-4', style: 'color: var(--color-background)') do
       div(class: 'container-public') do
         render_breadcrumb if @breadcrumb_label
         render_kicker if @kicker
         h1(class: 'hero-title') { @title }
         render_subtitle if @subtitle
+        yield if block
       end
     end
   end
