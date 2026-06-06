@@ -132,10 +132,13 @@ class Components::Navigation < Components::Base
   def menu_nav_classes
     [
       'nav header__menu row-start-2 col-start-1 col-span-2 flex flex-col justify-evenly is-hidden',
-      '-mx-6 h-auto overflow-clip transition-[display,height,margin-top,padding-block] duration-300',
+      'h-auto overflow-clip transition-[display,height,margin-top,padding-block] duration-300',
       'md:flex-row',
       *(if @site&.default_site?
           [
+            # negative margins must match container-public's padding (0.75rem, then 1.25rem at md)
+            # so the dropdown sits flush to the edges without overflowing the viewport; lg:mx-0 below
+            '-mx-3 md:-mx-5',
             'pt-4 gap-0.5  lg:row-start-1 lg:col-start-2 lg:col-span-1',
             'md:flex-row md:gap-8 md:pt-3 md:pb-4 md:mt-6',
             'md:max-lg:[&:is(.is-hidden)]:py-0 md:max-lg:[&:is(.is-hidden)]:mt-4.5 md:max-lg:bg-home-background',
@@ -144,7 +147,7 @@ class Components::Navigation < Components::Base
           ]
         else
           [
-            'gap-1 mt-4',
+            '-mx-6 gap-1 mt-4',
             'max-md:pb-1 max-md:bg-tertiary max-md:[&:is(.is-hidden)]:h-0 max-md:[&:is(.is-hidden)]:pb-0',
             'md:-mx-6',
             'md:max-lg:px-2 md:max-lg:bg-foreground',
