@@ -50,7 +50,7 @@ class Views::Directory::Home < Views::Base
             span { safe('&rarr;') }
           end
         end
-        div(class: 'grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-5') do
+        div(class: 'grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-5 lg:mt-0') do
           @partnerships.first(6).each do |partnership|
             Directory::PartnershipCard(partnership: partnership)
           end
