@@ -577,7 +577,7 @@ RSpec.describe "Public Partners", type: :request do
 
     context "with containing sites (partnerships)" do
       let(:partner) { create(:riverside_partner) }
-      let(:partnership_site) { create(:site, slug: "test-partnership", name: "Test Partnership") }
+      let(:partnership_site) { create(:site, slug: "test-partnership", name: "Test Partnership", is_published: true) }
 
       before do
         partnership_site.neighbourhoods << partner.address.neighbourhood
