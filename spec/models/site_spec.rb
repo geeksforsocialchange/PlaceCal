@@ -127,6 +127,31 @@ RSpec.describe Site, type: :model do
     end
   end
 
+  describe ".sites_that_contain_partner" do
+    let(:neighbourhood) { create(:neighbourhood) }
+    let(:address) { create(:address, neighbourhood: neighbourhood) }
+    let(:partner) { create(:partner, address: address) }
+
+    it "returns published sites that contain the partner" do
+      site = create(:site, is_published: true, neighbourhoods: [neighbourhood])
+
+      expect(described_class.sites_that_contain_partner(partner)).to include(site)
+    end
+
+    it "excludes unpublished sites that contain the partner" do
+      create(:site, is_published: false, neighbourhoods: [neighbourhood])
+
+      expect(described_class.sites_that_contain_partner(partner)).to be_empty
+    end
+
+    it "returns only the published sites when both exist" do
+      published = create(:site, is_published: true, neighbourhoods: [neighbourhood])
+      create(:site, is_published: false, neighbourhoods: [neighbourhood])
+
+      expect(described_class.sites_that_contain_partner(partner)).to contain_exactly(published)
+    end
+  end
+
   describe "scopes" do
     describe "default ordering" do
       let!(:site_a) { create(:site, name: "Alpha Site") }
