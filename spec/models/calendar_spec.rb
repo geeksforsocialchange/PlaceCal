@@ -160,4 +160,61 @@ RSpec.describe Calendar, type: :model do
       expect(calendar.events_this_week).to eq(0)
     end
   end
+
+  describe "#flag_start_import_job!" do
+    let(:calendar) { create(:calendar) }
+
+    it "stamps import_started_at when an import begins" do
+      calendar.update_columns(calendar_state: "in_queue", import_started_at: nil) # rubocop:disable Rails/SkipsModelValidations
+
+      expect { calendar.flag_start_import_job! }
+        .to change { calendar.reload.import_started_at }.from(nil)
+
+      expect(calendar.calendar_state).to eq("in_worker")
+      expect(calendar.import_started_at).to be_within(5.seconds).of(Time.current)
+    end
+  end
+
+  describe ".reset_stuck_imports!" do
+    let(:calendar) { create(:calendar) }
+
+    def put_in_worker(started_at)
+      calendar.update_columns(calendar_state: "in_worker", import_started_at: started_at) # rubocop:disable Rails/SkipsModelValidations
+    end
+
+    it "resets a calendar stuck in_worker beyond the threshold" do
+      put_in_worker(3.hours.ago)
+
+      expect(described_class.reset_stuck_imports!).to contain_exactly(calendar.id)
+      expect(calendar.reload.calendar_state).to eq("idle")
+    end
+
+    it "resets a legacy in_worker calendar with no import_started_at" do
+      put_in_worker(nil)
+
+      expect(described_class.reset_stuck_imports!).to contain_exactly(calendar.id)
+      expect(calendar.reload.calendar_state).to eq("idle")
+    end
+
+    it "leaves a calendar that started importing recently" do
+      put_in_worker(10.minutes.ago)
+
+      expect(described_class.reset_stuck_imports!).to be_empty
+      expect(calendar.reload.calendar_state).to eq("in_worker")
+    end
+
+    it "ignores calendars that are not in_worker" do
+      calendar.update_columns(calendar_state: "bad_source", import_started_at: 3.hours.ago) # rubocop:disable Rails/SkipsModelValidations
+
+      expect(described_class.reset_stuck_imports!).to be_empty
+      expect(calendar.reload.calendar_state).to eq("bad_source")
+    end
+
+    it "honours a custom threshold" do
+      put_in_worker(30.minutes.ago)
+
+      expect(described_class.reset_stuck_imports!(threshold: 15.minutes)).to contain_exactly(calendar.id)
+      expect(calendar.reload.calendar_state).to eq("idle")
+    end
+  end
 end

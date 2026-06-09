@@ -12,6 +12,11 @@ class Calendar < ApplicationRecord
 
   ALLOWED_STATES = %i[idle in_queue in_worker error bad_source].freeze
 
+  # A calendar should only sit in `in_worker` for the seconds/minutes an import
+  # actually takes. Anything still `in_worker` for longer than this has been
+  # orphaned by a job worker that died mid-import (e.g. OOM-killed).
+  STUCK_IMPORT_THRESHOLD = 2.hours
+
   # ==== Enums / Enumerize ====
   # Defines the strategy this Calendar uses to assign events to locations.
   # @attr [Enumerable<Symbol>] :strategy
@@ -36,6 +41,7 @@ class Calendar < ApplicationRecord
   attribute :api_token,            :string                       # nullable
   attribute :checksum_updated_at,  :datetime                     # nullable
   attribute :critical_error,       :text                         # nullable
+  attribute :import_started_at,    :datetime                     # nullable — when the current import job began
   attribute :importer_mode,        :string, default: 'auto'      # nullable
   attribute :importer_used,        :string                       # nullable
   attribute :is_working,           :boolean, default: true       # NOT NULL
@@ -117,6 +123,25 @@ class Calendar < ApplicationRecord
     end
   end
 
+  # Recover calendars orphaned in `in_worker` by a job worker that died
+  # mid-import. Such calendars are never re-imported on their own:
+  # {#queue_for_import!} skips them ({#is_busy?}) and the admin UI can't
+  # requeue them ({#can_be_requeued?} is false). Resetting them to idle lets
+  # the next scan pick them up again.
+  # @param threshold [ActiveSupport::Duration] minimum time `in_worker` before
+  #   a calendar is considered stuck
+  # @return [Array<Integer>] ids of the calendars that were reset
+  def self.reset_stuck_imports!(threshold: STUCK_IMPORT_THRESHOLD)
+    stuck = where(calendar_state: :in_worker)
+            .where('import_started_at < :cutoff OR import_started_at IS NULL', cutoff: threshold.ago)
+    ids = stuck.pluck(:id)
+    return ids if ids.empty?
+
+    stuck.update_all(calendar_state: 'idle') # rubocop:disable Rails/SkipsModelValidations
+    Rails.logger.warn("[Calendar] Reset #{ids.size} stuck calendar(s) from in_worker to idle: #{ids.join(', ')}")
+    ids
+  end
+
   # ==== Instance methods ====
 
   # @return [Boolean] whether this strategy requires a default place
@@ -187,7 +212,7 @@ class Calendar < ApplicationRecord
     without_timestamps do
       return unless calendar_state.in_queue?
 
-      update! calendar_state: :in_worker, notices: nil
+      update! calendar_state: :in_worker, notices: nil, import_started_at: DateTime.current
     end
   end
 
