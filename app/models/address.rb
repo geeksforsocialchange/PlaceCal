@@ -152,7 +152,8 @@ class Address < ApplicationRecord
     self.longitude = res['longitude']
     self.latitude = res['latitude']
 
-    # TODO: backfill city for existing addresses. See #3123
+    # Existing addresses are backfilled via the addresses:backfill_city rake
+    # task (see #3123).
     self.city = res['admin_district'] if city.blank?
   end
 end
