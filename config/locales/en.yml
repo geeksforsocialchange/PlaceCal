@@ -26,6 +26,19 @@ en:
     breadcrumbs:
       root: "Directory"
     partners:
+      index:
+        filters:
+          search: "Search"
+          search_placeholder: "Name or keyword…"
+          category: "Category"
+          partnership: "Partnership"
+          neighbourhood: "Neighbourhood"
+          apply: "Filter"
+          clear: "Clear"
+          all_categories: "All categories"
+          all_partnerships: "All partnerships"
+          all_neighbourhoods: "All neighbourhoods"
+          all_of: "All of %{name}"
       show:
         upcoming_events: "Upcoming events"
         location: "Location"

@@ -7,7 +7,7 @@ class Views::Directory::Partners::Index < Views::Base
   prop :query, _Nilable(String), default: nil
   prop :categories, _Interface(:each), default: -> { [] }
   prop :partnerships_list, _Interface(:each), default: -> { [] }
-  prop :neighbourhoods, _Interface(:each), default: -> { [] }
+  prop :neighbourhoods_tree, _Interface(:each), default: -> { [] }
   prop :selected_category, _Nilable(String), default: nil
   prop :selected_partnership, _Nilable(String), default: nil
   prop :selected_neighbourhood, _Nilable(String), default: nil
@@ -33,7 +33,7 @@ class Views::Directory::Partners::Index < Views::Base
         query: @query,
         categories: @categories,
         partnerships_list: @partnerships_list,
-        neighbourhoods: @neighbourhoods,
+        neighbourhoods_tree: @neighbourhoods_tree,
         selected_category: @selected_category,
         selected_partnership: @selected_partnership,
         selected_neighbourhood: @selected_neighbourhood

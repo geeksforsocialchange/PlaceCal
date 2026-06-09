@@ -248,6 +248,94 @@ RSpec.describe PartnersQuery do
     end
   end
 
+  describe "#neighbourhood_tree" do
+    # Directory site so the scope is all visible partners, independent of which
+    # neighbourhoods the site owns — matching how the public directory uses it.
+    subject(:tree) { described_class.new(site: directory_site).neighbourhood_tree }
+
+    let(:directory_site) { create(:default_site) }
+    let(:district) { create(:millbrook_district) }
+    let(:riverside) { create(:riverside_ward, parent: district) }
+    let(:oldtown) { create(:oldtown_ward, parent: district) }
+
+    let!(:riverside_partners) do
+      Array.new(2) { create(:partner, address: create(:address, neighbourhood: riverside)) }
+    end
+    let!(:oldtown_partner) do
+      create(:partner, address: create(:address, neighbourhood: oldtown))
+    end
+
+    it "drops the country level and roots the tree at regions" do
+      expect(tree.length).to eq(1)
+      expect(tree.first[:unit]).to eq("region")
+    end
+
+    it "nests region > county > district > ward" do
+      region = tree.first
+      county = region[:children].first
+      district_node = county[:children].first
+      wards = district_node[:children]
+
+      expect(region[:unit]).to eq("region")
+      expect(county[:unit]).to eq("county")
+      expect(district_node[:unit]).to eq("district")
+      expect(district_node[:id]).to eq(district.id)
+      expect(wards.map { |w| w[:id] }).to contain_exactly(riverside.id, oldtown.id)
+    end
+
+    it "rolls subtree partner counts up to every ancestor level" do
+      region = tree.first
+      county = region[:children].first
+      district_node = county[:children].first
+
+      expect(region[:count]).to eq(3)
+      expect(county[:count]).to eq(3)
+      expect(district_node[:count]).to eq(3)
+    end
+
+    it "counts each ward on its own" do
+      wards = tree.first[:children].first[:children].first[:children]
+      counts = wards.to_h { |w| [w[:id], w[:count]] }
+
+      expect(counts[riverside.id]).to eq(2)
+      expect(counts[oldtown.id]).to eq(1)
+    end
+
+    it "sorts children by name at each level" do
+      wards = tree.first[:children].first[:children].first[:children]
+      names = wards.map { |w| w[:name] }
+
+      expect(names).to eq(names.sort_by(&:downcase))
+    end
+
+    it "returns an empty array when no partners have neighbourhoods" do
+      Partner.destroy_all
+      expect(tree).to eq([])
+    end
+
+    context "with a selected neighbourhood that has no partners under the scope" do
+      let(:empty_ward) { create(:greenfield_ward, parent: district) }
+
+      def find_node(nodes, id)
+        nodes.each do |node|
+          return node if node[:id] == id
+
+          found = find_node(node[:children], id)
+          return found if found
+        end
+        nil
+      end
+
+      it "keeps the selected neighbourhood in the tree with a zero count" do
+        result = described_class.new(site: directory_site).neighbourhood_tree(selected_id: empty_ward.id)
+        node = find_node(result, empty_ward.id)
+
+        expect(node).to be_present
+        expect(node[:count]).to eq(0)
+      end
+    end
+  end
+
   describe "#categories_with_counts" do
     let!(:category1) { create(:category, name: "Arts") }
     let!(:category2) { create(:category, name: "Sports") }
