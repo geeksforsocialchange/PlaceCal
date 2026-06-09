@@ -44,5 +44,25 @@ RSpec.describe CalendarImporter::Parsers::Eventbrite do
         expect { parser.download_calendar }.not_to raise_error
       end
     end
+
+    it "raises InaccessibleFeed when the Eventbrite organiser no longer exists" do
+      os_event_url = "https://www.eventbrite.co.uk/o/deleted-organiser-99999999999"
+      calendar = build(
+        :calendar,
+        strategy: :event,
+        name: :import_test_calendar,
+        source: os_event_url
+      )
+      allow(calendar).to receive(:check_source_reachable)
+
+      parser = described_class.new(calendar, url: os_event_url)
+      allow(EventbriteSDK::Organizer).to receive(:retrieve).and_raise(EventbriteSDK::ResourceNotFound)
+
+      # A deleted/renamed organiser must surface as an unreachable source
+      # (-> bad_source) rather than an uncaught exception that strands the
+      # calendar in `in_worker` and retries forever.
+      expect { parser.download_calendar }
+        .to raise_error(CalendarImporter::Exceptions::InaccessibleFeed, /not found/)
+    end
   end
 end
