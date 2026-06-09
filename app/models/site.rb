@@ -314,7 +314,9 @@ class Site < ApplicationRecord
 
       return [] if site_ids.empty?
 
-      sites = Site.where(id: site_ids).includes(:tags).order(:name)
+      # Only published sites are live on the public directory, so a partner can
+      # only "appear" on a published site.
+      sites = Site.published.where(id: site_ids).includes(:tags).order(:name)
 
       # Sites with tags only match if the partner has at least one of those tags
       partner_tag_ids = partner.tag_ids.to_set
