@@ -62,13 +62,20 @@ class PartnersQuery
   # matching what filtering by that node returns. The country level is dropped
   # (it filters to everything, same as no filter) and its children become roots.
   #
+  # @param selected_id [Integer, String, nil] keep this neighbourhood in the
+  #   tree even when the current scope leaves it with no partners, so the picker
+  #   still reflects the active selection
   # @return [Array<Hash>] nested nodes of
   #   { id:, name:, unit:, count:, children: [...] }
-  def neighbourhood_tree(scope: nil)
+  def neighbourhood_tree(scope: nil, selected_id: nil)
     pairs = neighbourhood_partner_pairs(scope: scope)
-    return [] if pairs.empty?
-
     direct = Neighbourhood.where(id: pairs.map { |r| r['neighbourhood_id'] }.uniq).to_a
+
+    selected = Neighbourhood.find_by(id: selected_id) if selected_id.present?
+    direct << selected if selected && direct.none? { |n| n.id == selected.id }
+
+    return [] if direct.empty?
+
     ancestor_ids = direct.flat_map(&:ancestor_ids).uniq
     nodes = Neighbourhood.where(id: (direct.map(&:id) + ancestor_ids).uniq).to_a
     by_id = nodes.index_by(&:id)

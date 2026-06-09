@@ -136,7 +136,7 @@ class PartnersController < ApplicationController
       partnership_count: Site.where(is_published: true).where.not(slug: 'default-site').count,
       categories: query.categories_with_counts(scope: category_scope).map { |c| { id: c[:category].id, name: c[:category].name, count: c[:count] } },
       partnerships_list: query.partnerships_with_counts(scope: partnership_scope).map { |p| { id: p[:partnership].id, name: p[:partnership].name, count: p[:count] } },
-      neighbourhoods_tree: query.neighbourhood_tree(scope: neighbourhood_scope),
+      neighbourhoods_tree: query.neighbourhood_tree(scope: neighbourhood_scope, selected_id: params[:neighbourhood]),
       selected_category: params[:category],
       selected_partnership: params[:partnership],
       selected_neighbourhood: params[:neighbourhood]

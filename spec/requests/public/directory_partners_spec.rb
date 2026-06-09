@@ -123,6 +123,12 @@ RSpec.describe "Directory Partners", type: :request do
         expect(response.body).to include("Alphacat")
         expect(response.body).not_to include("Bravocat")
       end
+
+      it "still shows the selected neighbourhood when no partners match the other filters" do
+        # other_ward has no Alphacat partners, but the picker should reflect it.
+        get partners_url(host: "lvh.me", params: { neighbourhood: other_ward.id, category: alpha_partner.categories.first.id })
+        expect(response.body).to include(other_ward.shortname)
+      end
     end
   end
 

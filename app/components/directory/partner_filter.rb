@@ -18,11 +18,11 @@ class Components::Directory::PartnerFilter < Components::Directory::Base
          class: 'bg-home-background-3 rounded-card p-4 mb-4 text-sm') do
       div(class: 'flex flex-wrap lg:flex-nowrap gap-3 items-end') do
         render_search_field
-        Directory::CustomSelect(name: 'category', label_text: 'Category', options: @categories, selected: @selected_category) if @categories.any?
-        Directory::CustomSelect(name: 'partnership', label_text: 'Partnership', options: @partnerships_list, selected: @selected_partnership) if @partnerships_list.any?
+        Directory::CustomSelect(name: 'category', label_text: t('directory.partners.index.filters.category'), default_label: t('directory.partners.index.filters.all_categories'), options: @categories, selected: @selected_category) if @categories.any?
+        Directory::CustomSelect(name: 'partnership', label_text: t('directory.partners.index.filters.partnership'), default_label: t('directory.partners.index.filters.all_partnerships'), options: @partnerships_list, selected: @selected_partnership) if @partnerships_list.any?
       end
       div(class: 'flex flex-wrap gap-3 items-end mt-3') do
-        Directory::NeighbourhoodCascade(tree: @neighbourhoods_tree, selected: @selected_neighbourhood) if @neighbourhoods_tree.any?
+        Directory::NeighbourhoodCascade(tree: @neighbourhoods_tree, selected: @selected_neighbourhood, label_text: t('directory.partners.index.filters.neighbourhood')) if @neighbourhoods_tree.any?
         render_buttons
       end
     end
@@ -34,10 +34,10 @@ class Components::Directory::PartnerFilter < Components::Directory::Base
     # Full width on its own line when wrapped, so Category and Partnership get a
     # roomy half each instead of three cramped columns; shares the row on lg.
     div(class: 'flex-1 basis-full lg:basis-auto min-w-35') do
-      label(for: 'q', class: 'block allcaps-label text-tertiary mb-1') { 'Search' }
+      label(for: 'q', class: 'block allcaps-label text-tertiary mb-1') { t('directory.partners.index.filters.search') }
       input(
         type: 'text', name: 'q', id: 'q', value: @query,
-        placeholder: 'Name or keyword…',
+        placeholder: t('directory.partners.index.filters.search_placeholder'),
         class: 'w-full h-[42px] border-2 border-rules rounded-sm px-4 text-sm bg-background text-foreground outline-none focus:border-foreground transition-colors'
       )
     end
@@ -47,12 +47,12 @@ class Components::Directory::PartnerFilter < Components::Directory::Base
     div(class: 'flex gap-2 items-end') do
       button(type: 'submit',
              class: 'inline-flex items-center justify-center h-[42px] bg-foreground text-background rounded-sm px-5 text-sm font-bold border-2 border-foreground cursor-pointer hover:bg-tertiary hover:border-tertiary transition-colors') do
-        plain 'Filter'
+        plain t('directory.partners.index.filters.apply')
       end
       if any_filter_active?
         a(href: partners_path,
           class: 'with-no-sass inline-flex items-center justify-center h-[42px] rounded-sm px-4 text-sm font-bold bg-background text-foreground border-2 border-foreground no-underline hover:bg-foreground hover:text-background transition-colors') do
-          plain 'Clear'
+          plain t('directory.partners.index.filters.clear')
         end
       end
     end

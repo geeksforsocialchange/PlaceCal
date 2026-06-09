@@ -312,6 +312,28 @@ RSpec.describe PartnersQuery do
       Partner.destroy_all
       expect(tree).to eq([])
     end
+
+    context "with a selected neighbourhood that has no partners under the scope" do
+      let(:empty_ward) { create(:greenfield_ward, parent: district) }
+
+      def find_node(nodes, id)
+        nodes.each do |node|
+          return node if node[:id] == id
+
+          found = find_node(node[:children], id)
+          return found if found
+        end
+        nil
+      end
+
+      it "keeps the selected neighbourhood in the tree with a zero count" do
+        result = described_class.new(site: directory_site).neighbourhood_tree(selected_id: empty_ward.id)
+        node = find_node(result, empty_ward.id)
+
+        expect(node).to be_present
+        expect(node[:count]).to eq(0)
+      end
+    end
   end
 
   describe "#categories_with_counts" do
