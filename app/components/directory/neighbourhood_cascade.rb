@@ -18,7 +18,8 @@ class Components::Directory::NeighbourhoodCascade < Components::Directory::Base
       data: {
         controller: 'neighbourhood-cascade',
         neighbourhood_cascade_tree_value: @tree.to_a.to_json,
-        neighbourhood_cascade_selected_value: @selected.to_s
+        neighbourhood_cascade_selected_value: @selected.to_s,
+        neighbourhood_cascade_label_value: @label_text
       }
     ) do
       label(class: 'block allcaps-label text-tertiary mb-1') { @label_text }

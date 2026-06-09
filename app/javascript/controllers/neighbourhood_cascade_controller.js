@@ -11,6 +11,7 @@ export default class extends Controller {
 	static values = {
 		tree: Array,
 		selected: String,
+		label: { type: String, default: "Neighbourhood" },
 	};
 
 	connect() {
@@ -41,6 +42,14 @@ export default class extends Controller {
 		select.className =
 			"w-full sm:w-56 border-2 border-rules rounded-sm px-4 py-2 text-sm bg-background text-foreground cursor-pointer hover:border-foreground transition-colors";
 		select.dataset.depth = depth;
+		// Accessible name: the dynamically-created selects aren't tied to the
+		// visible label, so give each one an explicit aria-label.
+		select.setAttribute(
+			"aria-label",
+			depth === 0
+				? this.labelValue
+				: `${this.labelValue} within ${this.path[depth - 1].name}`,
+		);
 		// Bind directly rather than via data-action: these selects are created
 		// dynamically and Stimulus's action observer binds asynchronously, which
 		// can miss a fast first interaction. A direct listener is bound immediately.
