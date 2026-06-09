@@ -38,7 +38,7 @@ class Components::Directory::PartnerFilter < Components::Directory::Base
       input(
         type: 'text', name: 'q', id: 'q', value: @query,
         placeholder: 'Name or keyword…',
-        class: 'w-full border-2 border-rules rounded-sm px-4 py-2 text-sm bg-background text-foreground outline-none focus:border-foreground transition-colors'
+        class: 'w-full h-[42px] border-2 border-rules rounded-sm px-4 text-sm bg-background text-foreground outline-none focus:border-foreground transition-colors'
       )
     end
   end

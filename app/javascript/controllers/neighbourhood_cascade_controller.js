@@ -40,7 +40,7 @@ export default class extends Controller {
 
 		const select = document.createElement("select");
 		select.className =
-			"w-full sm:w-56 border-2 border-rules rounded-sm px-4 py-2 text-sm bg-background text-foreground cursor-pointer hover:border-foreground transition-colors";
+			"w-full sm:w-56 h-[42px] border-2 border-rules rounded-sm px-4 text-sm bg-background text-foreground cursor-pointer hover:border-foreground transition-colors";
 		select.dataset.depth = depth;
 		// Accessible name: the dynamically-created selects aren't tied to the
 		// visible label, so give each one an explicit aria-label.
