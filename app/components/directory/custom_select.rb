@@ -53,7 +53,7 @@ class Components::Directory::CustomSelect < Components::Directory::Base
       style: 'display: none',
       class: 'absolute z-50 left-0 right-0 mt-1 bg-foreground rounded-sm overflow-hidden shadow-lg'
     ) do
-      div(class: 'max-h-60 overflow-y-auto py-1') do
+      div(class: 'max-h-[60vh] overflow-y-auto py-1') do
         all_options.each do |opt|
           render_option(opt)
         end

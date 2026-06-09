@@ -47,6 +47,9 @@ export default class extends Controller {
 		this.hiddenSelectTarget.dispatchEvent(
 			new Event("change", { bubbles: true }),
 		);
+
+		// Apply the filter immediately on selection — no need to press Filter.
+		this.element.closest("form")?.requestSubmit();
 	}
 
 	closeOnOutsideClick(event) {

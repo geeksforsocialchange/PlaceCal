@@ -95,6 +95,11 @@ export default class extends Controller {
 			if (node) this.path.push(node);
 		}
 		this.render();
+
+		// Apply the filter immediately on selection — no need to press Filter.
+		// (render() has already updated the hidden field.) The cascade rebuilds
+		// itself from the URL on the next page, so drilling further still works.
+		this.element.closest("form")?.requestSubmit();
 	}
 
 	// The list of nodes shown by the select at the given depth.
