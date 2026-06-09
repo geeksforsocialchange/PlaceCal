@@ -46,12 +46,12 @@ class Components::Directory::PartnerFilter < Components::Directory::Base
   def render_buttons
     div(class: 'flex gap-2 items-end') do
       button(type: 'submit',
-             class: 'bg-foreground text-background rounded-sm px-5 py-2 text-sm font-bold border-2 border-foreground cursor-pointer hover:bg-tertiary hover:border-tertiary transition-colors') do
+             class: 'inline-flex items-center justify-center h-[42px] bg-foreground text-background rounded-sm px-5 text-sm font-bold border-2 border-foreground cursor-pointer hover:bg-tertiary hover:border-tertiary transition-colors') do
         plain 'Filter'
       end
       if any_filter_active?
         a(href: partners_path,
-          class: 'inline-flex items-center rounded-sm px-4 py-2 text-sm font-bold bg-background text-foreground border-2 border-rules no-underline hover:border-foreground transition-colors') do
+          class: 'inline-flex items-center justify-center h-[42px] rounded-sm px-4 text-sm font-bold bg-background text-foreground border-2 border-rules no-underline hover:border-foreground transition-colors') do
           plain 'Clear'
         end
       end
