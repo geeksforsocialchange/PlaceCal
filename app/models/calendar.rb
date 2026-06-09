@@ -12,9 +12,13 @@ class Calendar < ApplicationRecord
 
   ALLOWED_STATES = %i[idle in_queue in_worker error bad_source].freeze
 
-  # A calendar should only sit in `in_worker` for the seconds/minutes an import
-  # actually takes. Anything still `in_worker` for longer than this has been
-  # orphaned by a job worker that died mid-import (e.g. OOM-killed).
+  # An import attempt should occupy `in_queue`/`in_worker` for at most the time
+  # it takes the worker to drain the queue and run the import (a single import
+  # is capped at Delayed::Worker.max_run_time). Anything still busy for longer
+  # than this has been orphaned by a worker that died mid-import (e.g.
+  # OOM-killed) before it could record a terminal state. Kept comfortably above
+  # the worst-case queue-drain time to avoid resetting calendars that are
+  # legitimately still waiting their turn.
   STUCK_IMPORT_THRESHOLD = 2.hours
 
   # ==== Enums / Enumerize ====
@@ -41,7 +45,7 @@ class Calendar < ApplicationRecord
   attribute :api_token,            :string                       # nullable
   attribute :checksum_updated_at,  :datetime                     # nullable
   attribute :critical_error,       :text                         # nullable
-  attribute :import_started_at,    :datetime                     # nullable — when the current import job began
+  attribute :import_started_at,    :datetime                     # nullable — when the current import attempt was queued/started
   attribute :importer_mode,        :string, default: 'auto'      # nullable
   attribute :importer_used,        :string                       # nullable
   attribute :is_working,           :boolean, default: true       # NOT NULL
@@ -123,22 +127,24 @@ class Calendar < ApplicationRecord
     end
   end
 
-  # Recover calendars orphaned in `in_worker` by a job worker that died
-  # mid-import. Such calendars are never re-imported on their own:
-  # {#queue_for_import!} skips them ({#is_busy?}) and the admin UI can't
-  # requeue them ({#can_be_requeued?} is false). Resetting them to idle lets
-  # the next scan pick them up again.
-  # @param threshold [ActiveSupport::Duration] minimum time `in_worker` before
-  #   a calendar is considered stuck
+  # Recover calendars orphaned in a busy state (`in_queue` or `in_worker`) by a
+  # job worker that died before it could record a terminal state. Such
+  # calendars are never re-imported on their own: {#queue_for_import!} skips
+  # them ({#is_busy?}) and the admin UI can't requeue them
+  # ({#can_be_requeued?} is false). Resetting them to idle lets the next scan
+  # pick them up again. (`import_started_at IS NULL` covers legacy rows stuck
+  # before this column existed.)
+  # @param threshold [ActiveSupport::Duration] minimum time in a busy state
+  #   before a calendar is considered stuck
   # @return [Array<Integer>] ids of the calendars that were reset
   def self.reset_stuck_imports!(threshold: STUCK_IMPORT_THRESHOLD)
-    stuck = where(calendar_state: :in_worker)
+    stuck = where(calendar_state: %i[in_queue in_worker])
             .where('import_started_at < :cutoff OR import_started_at IS NULL', cutoff: threshold.ago)
     ids = stuck.pluck(:id)
     return ids if ids.empty?
 
     stuck.update_all(calendar_state: 'idle') # rubocop:disable Rails/SkipsModelValidations
-    Rails.logger.warn("[Calendar] Reset #{ids.size} stuck calendar(s) from in_worker to idle: #{ids.join(', ')}")
+    Rails.logger.warn("[Calendar] Reset #{ids.size} stuck calendar(s) to idle: #{ids.join(', ')}")
     ids
   end
 
@@ -201,7 +207,9 @@ class Calendar < ApplicationRecord
     without_timestamps do
       return if is_busy?
 
-      update! calendar_state: :in_queue, notices: nil
+      # Stamp when the attempt enters the pipeline so reset_stuck_imports! can
+      # detect attempts orphaned while still `in_queue` (not just `in_worker`).
+      update! calendar_state: :in_queue, notices: nil, import_started_at: DateTime.current
       CalendarImporterJob.perform_later id, from_date, force_import
     end
   end
