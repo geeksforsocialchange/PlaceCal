@@ -36,8 +36,15 @@ module CalendarImporter::Parsers
       end
 
       @events
-    rescue RestClient::BadGateway => e
+    rescue RestClient::BadGateway
       []
+    rescue EventbriteSDK::ResourceNotFound => e
+      # The Eventbrite organiser no longer exists — usually deleted, or renamed
+      # (which changes the numeric id baked into the source URL). Flag the
+      # calendar as a bad source rather than letting the error bubble up
+      # unhandled, which would strand the calendar in `in_worker` and retry the
+      # dead organiser forever.
+      raise InaccessibleFeed, "Eventbrite organiser #{organizer_id} not found (#{e.message})"
     end
 
     def import_events_from(data)

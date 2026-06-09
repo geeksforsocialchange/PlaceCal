@@ -5,6 +5,22 @@ class CalendarImporterJob < ApplicationJob
 
   queue_as :default
 
+  # Backstop for exceptions not matched by a more specific handler below. A
+  # worker that dies mid-import strands the calendar in `in_worker`; an
+  # *uncaught* exception does the same (the state transition never completes).
+  # Flag the calendar into the terminal `error` state so it isn't stranded,
+  # then re-raise so the exception still surfaces in error tracking — unexpected
+  # exceptions are bugs we want to see, not silently swallow (see the
+  # "does not swallow unrelated StandardError" spec).
+  #
+  # Declared first so the specific handlers below take precedence: rescue_from
+  # matches handlers in reverse declaration order, so this only catches what
+  # the others don't (and must not clobber e.g. the timeout -> bad_source map).
+  rescue_from StandardError do |exception|
+    report_error exception, 'Unexpected error during import'
+    raise exception
+  end
+
   rescue_from UnsupportedFeed do |exception|
     report_error exception, 'Calendar URL is not supported'
   end

@@ -116,12 +116,24 @@ RSpec.describe CalendarImporterJob do
   end
 
   describe "non-network errors" do
-    it "does not swallow unrelated StandardError exceptions" do
+    before do
       task = instance_double(CalendarImporter::CalendarImporterTask)
       allow(CalendarImporter::CalendarImporterTask).to receive(:new).and_return(task)
       allow(task).to receive(:run).and_raise(KeyError, "boom")
+    end
 
+    it "does not swallow unrelated StandardError exceptions" do
+      # Unexpected exceptions are bugs we want surfaced in error tracking, so
+      # the backstop re-raises rather than swallowing.
       expect { perform_import }.to raise_error(KeyError, /boom/)
+    end
+
+    it "still flags the calendar into a terminal state so it isn't stranded" do
+      expect { perform_import }.to raise_error(KeyError)
+
+      # Without this, the calendar would be stranded in `in_worker` forever.
+      expect(calendar.reload.calendar_state).to eq("error")
+      expect(calendar.critical_error).to include("boom")
     end
   end
 end
