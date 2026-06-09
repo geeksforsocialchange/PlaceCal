@@ -113,23 +113,30 @@ class PartnersController < ApplicationController
   def render_directory_index
     @sort = params[:sort] || 'recent'
     query = PartnersQuery.new(site: current_site)
-    partners = query.call(
+    filters = {
       query: params[:q],
       tag_id: params[:category],
       partnership_id: params[:partnership],
-      neighbourhood_id: params[:neighbourhood],
-      sort: @sort
-    )
+      neighbourhood_id: params[:neighbourhood]
+    }
+    partners = query.call(**filters, sort: @sort)
     paginate_with_az_filter(partners)
+
+    # Each facet's counts cross-filter on the OTHER active filters but not its
+    # own, so the numbers narrow as you filter while you can still switch within
+    # a facet (e.g. the category list reflects the chosen neighbourhood).
+    category_scope = query.call(**filters.except(:tag_id))
+    partnership_scope = query.call(**filters.except(:partnership_id))
+    neighbourhood_scope = query.call(**filters.except(:neighbourhood_id))
 
     render Views::Directory::Partners::Index.new(
       partners: @partners, pagy: @pagy, site: @site, query: params[:q], sort: @sort,
       az_letters: @az_letters, selected_letter: @selected_letter,
       total_count: Partner.visible.count,
       partnership_count: Site.where(is_published: true).where.not(slug: 'default-site').count,
-      categories: query.categories_with_counts.map { |c| { id: c[:category].id, name: c[:category].name, count: c[:count] } },
-      partnerships_list: query.partnerships_with_counts.map { |p| { id: p[:partnership].id, name: p[:partnership].name, count: p[:count] } },
-      neighbourhoods_tree: query.neighbourhood_tree,
+      categories: query.categories_with_counts(scope: category_scope).map { |c| { id: c[:category].id, name: c[:category].name, count: c[:count] } },
+      partnerships_list: query.partnerships_with_counts(scope: partnership_scope).map { |p| { id: p[:partnership].id, name: p[:partnership].name, count: p[:count] } },
+      neighbourhoods_tree: query.neighbourhood_tree(scope: neighbourhood_scope),
       selected_category: params[:category],
       selected_partnership: params[:partnership],
       selected_neighbourhood: params[:neighbourhood]

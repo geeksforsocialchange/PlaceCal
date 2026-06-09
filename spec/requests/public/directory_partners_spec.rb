@@ -100,6 +100,30 @@ RSpec.describe "Directory Partners", type: :request do
         expect(response.body).to include(partner.name)
       end
     end
+
+    context "with cross-filtering facets" do
+      let(:other_ward) { create(:oldtown_ward) }
+      let!(:alpha_partner) do
+        create(:partner, address: create(:address, neighbourhood: ward))
+          .tap { |p| p.categories << create(:category_tag, name: "Alphacat") }
+      end
+      let!(:bravo_partner) do
+        create(:partner, address: create(:address, neighbourhood: other_ward))
+          .tap { |p| p.categories << create(:category_tag, name: "Bravocat") }
+      end
+
+      it "lists every category when unfiltered" do
+        get partners_url(host: "lvh.me")
+        expect(response.body).to include("Alphacat")
+        expect(response.body).to include("Bravocat")
+      end
+
+      it "limits the category facet to the selected neighbourhood" do
+        get partners_url(host: "lvh.me", params: { neighbourhood: ward.id })
+        expect(response.body).to include("Alphacat")
+        expect(response.body).not_to include("Bravocat")
+      end
+    end
   end
 
   describe "GET /partners/:id (directory show)" do
