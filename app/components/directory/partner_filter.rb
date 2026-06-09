@@ -51,7 +51,7 @@ class Components::Directory::PartnerFilter < Components::Directory::Base
       end
       if any_filter_active?
         a(href: partners_path,
-          class: 'inline-flex items-center justify-center h-[42px] rounded-sm px-4 text-sm font-bold bg-background text-foreground border-2 border-rules no-underline hover:border-foreground transition-colors') do
+          class: 'inline-flex items-center justify-center h-[42px] rounded-sm px-4 text-sm font-bold bg-background text-foreground border-2 border-foreground no-underline hover:bg-foreground hover:text-background transition-colors') do
           plain 'Clear'
         end
       end
