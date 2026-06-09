@@ -129,9 +129,7 @@ class PartnersController < ApplicationController
       partnership_count: Site.where(is_published: true).where.not(slug: 'default-site').count,
       categories: query.categories_with_counts.map { |c| { id: c[:category].id, name: c[:category].name, count: c[:count] } },
       partnerships_list: query.partnerships_with_counts.map { |p| { id: p[:partnership].id, name: p[:partnership].name, count: p[:count] } },
-      neighbourhoods: ensure_selected_neighbourhood(
-        group_neighbourhoods_by_district(query.neighbourhoods_with_counts), params[:neighbourhood]
-      ),
+      neighbourhoods_tree: query.neighbourhood_tree,
       selected_category: params[:category],
       selected_partnership: params[:partnership],
       selected_neighbourhood: params[:neighbourhood]
@@ -152,32 +150,6 @@ class PartnersController < ApplicationController
       @selected_letter = nil
       @pagy, @partners = pagy(partners, limit: 30)
     end
-  end
-
-  def group_neighbourhoods_by_district(neighbourhoods_with_counts)
-    grouped = neighbourhoods_with_counts
-              .group_by { |n| n[:neighbourhood].district&.shortname || n[:neighbourhood].shortname }
-              .map do |district_name, items|
-                {
-                  group: district_name,
-                  items: items.map { |n| { id: n[:neighbourhood].id, name: n[:neighbourhood].shortname, count: n[:count] } }
-                }
-              end
-    grouped.sort_by { |g| g[:group] }
-  end
-
-  # Area-level neighbourhoods (e.g. a district linked from a homepage jump
-  # link) aren't in the dropdown, which only lists neighbourhoods partners are
-  # directly assigned to. Inject the selected one so the filter UI reflects it.
-  def ensure_selected_neighbourhood(grouped, neighbourhood_id)
-    return grouped if neighbourhood_id.blank?
-    return grouped if grouped.any? { |g| g[:items].any? { |i| i[:id].to_s == neighbourhood_id.to_s } }
-
-    neighbourhood = Neighbourhood.find_by(id: neighbourhood_id)
-    return grouped unless neighbourhood
-
-    group_name = neighbourhood.district&.shortname || neighbourhood.shortname
-    grouped + [{ group: group_name, items: [{ id: neighbourhood.id, name: neighbourhood.shortname }] }]
   end
 
   def render_local_index
