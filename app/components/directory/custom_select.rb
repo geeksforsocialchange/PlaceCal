@@ -37,9 +37,9 @@ class Components::Directory::CustomSelect < Components::Directory::Base
     button(
       type: 'button',
       data: { custom_select_target: 'trigger', action: 'custom-select#toggle' },
-      class: 'w-full h-[42px] flex items-center justify-between border-2 border-rules rounded-sm px-4 text-sm bg-background text-foreground cursor-pointer hover:border-foreground transition-colors'
+      class: 'w-full h-[42px] flex items-center gap-2 border-2 border-rules rounded-sm px-4 text-sm bg-background text-foreground cursor-pointer hover:border-foreground transition-colors'
     ) do
-      span(class: 'truncate min-w-0 text-left', data: { role: 'label' }) { selected_label }
+      span(class: 'flex-1 min-w-0 truncate text-left', data: { role: 'label' }) { selected_label }
       span(
         data: { custom_select_target: 'arrow' },
         class: 'transition-transform duration-200 shrink-0'

@@ -21,7 +21,7 @@ class Components::Directory::NeighbourhoodCascade < Components::Directory::Base
       label(class: 'block allcaps-label text-tertiary mb-1') { @label_text }
       div(class: 'flex flex-wrap gap-2') do
         cascade_levels.each do |level|
-          div(class: 'w-full md:w-56') do
+          div(class: 'flex-1 min-w-0 md:flex-none md:w-56') do
             Directory::CustomSelect(
               name: 'neighbourhood',
               label_text: nil,
