@@ -39,7 +39,7 @@ class Components::Directory::Footer < Components::Directory::Base
         plain t('directory.footer.tagline')
       end
       div(class: 'mt-3') do
-        mail_to('info@placecal.org', 'info@placecal.org', class: 'text-sm font-serif text-foreground no-underline hover:underline hover:decoration-primary')
+        mail_to('support@placecal.org', 'support@placecal.org', class: 'text-sm font-serif text-foreground no-underline hover:underline hover:decoration-primary')
       end
     end
   end
@@ -58,19 +58,22 @@ class Components::Directory::Footer < Components::Directory::Base
   end
 
   def render_impressum
-    div(class: 'container-public mt-6 pt-5 border-t-2 border-rules text-xs text-tertiary font-serif flex justify-between items-center flex-wrap gap-4',
+    div(class: 'container-public mt-6 pt-5 border-t-2 border-rules text-xs text-tertiary font-serif',
         data_nosnippet: true) do
-      div(class: 'flex items-center gap-3') do
+      div(class: 'flex justify-between flex-wrap gap-2') do
+        span { "#{t('colophon.year', year: Time.zone.today.year)} #{t('colophon.copyright')}" }
+        span do
+          plain "#{t('directory.footer.build')} "
+          link_to(AppVersion.label(fallback: 'main'), AppVersion.url,
+                  class: 'text-tertiary underline hover:decoration-primary')
+        end
+      end
+      div(class: 'mt-5 flex items-center gap-3') do
+        span { t('directory.footer.created_by') }
         link_to('https://gfsc.community', class: 'shrink-0') do
           image_tag('gfsc-logo-dark.svg', class: 'h-8 w-auto', alt: t('directory.footer.gfsc_logo_alt'),
                                           width: 77, height: 32)
         end
-        span { "#{t('colophon.year', year: Time.zone.today.year)} #{t('colophon.copyright')}" }
-      end
-      span do
-        plain "#{t('directory.footer.build')} "
-        link_to(AppVersion.label(fallback: 'main'), AppVersion.url,
-                class: 'text-tertiary underline hover:decoration-primary')
       end
     end
   end
