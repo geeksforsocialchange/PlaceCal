@@ -15,31 +15,32 @@ class Components::Directory::Footer < Components::Directory::Base
   def render_grid
     div(class: 'container-public grid grid-cols-1 md:grid-cols-[1.4fr_1fr_1fr_1fr] gap-8') do
       render_brand_column
-      render_link_column('Browse', [
-                           ['Events', :events_path],
-                           ['Partners', :partners_path],
-                           ['Partnerships', :partnerships_path]
+      render_link_column(t('directory.footer.browse'), [
+                           [t('directory.footer.events'), :events_path],
+                           [t('directory.footer.partners'), :partners_path],
+                           [t('directory.footer.partnerships'), :partnerships_path]
                          ])
-      render_link_column('For partners', [
-                           ['Get in touch', :get_in_touch_path],
-                           ['Admin log in', :new_user_session_path]
+      render_link_column(t('directory.footer.for_partners'), [
+                           [t('directory.footer.get_in_touch'), :get_in_touch_path],
+                           [t('directory.footer.discord'), 'http://discord.gfsc.studio/'],
+                           [t('directory.footer.admin_log_in'), :new_user_session_path]
                          ])
-      render_link_column('About', [
-                           ['Our story', :our_story_path],
-                           ['Privacy policy', :privacy_path],
-                           ['Terms of use', :terms_of_use_path]
+      render_link_column(t('directory.footer.about'), [
+                           [t('directory.footer.our_story'), :our_story_path],
+                           [t('directory.footer.privacy_policy'), :privacy_path],
+                           [t('directory.footer.terms_of_use'), :terms_of_use_path]
                          ])
     end
   end
 
   def render_brand_column
     div do
-      image_tag('home/icons/logo-dark.svg', class: 'h-10 mb-4', alt: 'PlaceCal logo', width: 127, height: 40)
+      image_tag('home/icons/logo-dark.svg', class: 'h-10 mb-4', alt: t('directory.footer.placecal_logo_alt'), width: 127, height: 40)
       div(class: 'font-serif text-base text-tertiary leading-relaxed') do
-        plain 'An open, community-run directory of local events and services near you.'
+        plain t('directory.footer.tagline')
       end
       div(class: 'mt-3') do
-        mail_to('info@placecal.org', 'info@placecal.org', class: 'text-sm font-serif text-foreground no-underline hover:underline hover:decoration-primary')
+        mail_to('support@placecal.org', 'support@placecal.org', class: 'text-sm font-serif text-foreground no-underline hover:underline hover:decoration-primary')
       end
     end
   end
@@ -48,9 +49,10 @@ class Components::Directory::Footer < Components::Directory::Base
     div do
       h2(class: 'allcaps-label text-foreground mb-3') { title }
       ul(class: 'list-none space-y-1') do
-        links.each do |label, path_method|
+        links.each do |label, target|
           li do
-            link_to(label, send(path_method), class: 'font-serif text-detail text-foreground no-underline hover:underline hover:decoration-primary')
+            href = target.is_a?(Symbol) ? send(target) : target
+            link_to(label, href, class: 'font-serif text-detail text-foreground no-underline hover:underline hover:decoration-primary')
           end
         end
       end
@@ -58,13 +60,19 @@ class Components::Directory::Footer < Components::Directory::Base
   end
 
   def render_impressum
-    div(class: 'container-public mt-6 pt-5 border-t-2 border-rules text-xs text-tertiary font-serif flex justify-between flex-wrap gap-2',
+    div(class: 'container-public mt-6 pt-5 border-t-2 border-rules text-xs text-tertiary font-serif',
         data_nosnippet: true) do
-      span { "#{t('colophon.year', year: Time.zone.today.year)} #{t('colophon.copyright')}" }
-      span do
-        plain 'Build: '
-        link_to(AppVersion.label(fallback: 'main'), AppVersion.url,
-                class: 'text-tertiary underline hover:decoration-primary')
+      link_to('https://gfsc.community', class: 'inline-block mb-2') do
+        image_tag('gfsc-logo-dark.svg', class: 'h-10 w-auto', alt: t('directory.footer.gfsc_logo_alt'),
+                                        width: 144, height: 40)
+      end
+      div(class: 'flex justify-between flex-wrap gap-2') do
+        span { "#{t('colophon.year', year: Time.zone.today.year)} #{t('colophon.copyright')}" }
+        span do
+          plain "#{t('directory.footer.build')} "
+          link_to(AppVersion.label(fallback: 'main'), AppVersion.url,
+                  class: 'text-tertiary underline hover:decoration-primary')
+        end
       end
     end
   end
