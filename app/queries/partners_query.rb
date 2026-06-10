@@ -211,7 +211,7 @@ class PartnersQuery
   end
 
   def build_base_scope
-    return Partner.visible if @site&.directory_site?
+    return Partner.visible if @site.nil?
     return Partner.none if site_neighbourhood_ids.empty?
 
     scope = Partner.visible

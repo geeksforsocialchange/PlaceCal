@@ -239,8 +239,6 @@ RSpec.describe "Public Events", type: :request do
   end
 
   describe "GET /events/:id with bad ID" do
-    let!(:default_site) { create_default_site }
-
     it "returns not found for non-existent event" do
       get event_url(99_999, host: "lvh.me")
       expect(response).to have_http_status(:not_found)
@@ -248,9 +246,7 @@ RSpec.describe "Public Events", type: :request do
     end
   end
 
-  describe "default site directory" do
-    let!(:default_site) { create_default_site }
-
+  describe "directory events" do
     it "serves directory events page on base domain" do
       get events_url(host: "lvh.me")
       expect(response).to be_successful

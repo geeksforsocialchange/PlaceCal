@@ -13,6 +13,10 @@ class Site < ApplicationRecord
   # defining the admin subdomain string here.
   ADMIN_SUBDOMAIN = 'admin'
 
+  # Canonical apex URL for the nationwide directory. The directory has no Site
+  # row — an apex request resolves to no site and renders the directory.
+  DIRECTORY_URL = 'https://placecal.org'
+
   # ==== Enums / Enumerize ====
   # Theme picker
   enumerize :theme,
@@ -79,7 +83,6 @@ class Site < ApplicationRecord
   # ==== Validations ====
   validates :name, :slug, :url, presence: true
   validates :slug, uniqueness: true
-  validates :place_name unless :default_site?
   validates :hero_text, length: { maximum: 120 }
 
   # ==== Scopes ====
@@ -110,18 +113,6 @@ class Site < ApplicationRecord
       .for_site(self)
       .published
       .count
-  end
-
-  # @return [Boolean]
-  def default_site?
-    slug == 'default-site'
-  end
-
-  alias directory_site? default_site?
-
-  # @return [Boolean] true for any non-default site
-  def local_site?
-    !default_site?
   end
 
   # @return [Boolean] whether neighbourhood badges should be shown
@@ -181,8 +172,6 @@ class Site < ApplicationRecord
   #   in that case we return nil so the page renders with the default styling
   #   instead of raising Propshaft::MissingAssetError (see issue #2936).
   def stylesheet_link
-    return nil if default_site?
-
     return "themes/#{theme}" unless theme == :custom
 
     custom_path = "themes/custom/#{slug}"
@@ -201,13 +190,11 @@ class Site < ApplicationRecord
 
   # @return [String] robots.txt content, blocking crawlers if unpublished
   def robots
-    config = File.read(Rails.root.join("config/robots/#{self.class.robots_config_filename}"))
-
     if is_published?
-      "#{config}\nSitemap: https://placecal.org/sitemap.xml\n"
+      self.class.published_robots
     else
       <<~TXT
-        #{config}
+        #{self.class.robots_config}
         User-agent: *
         Disallow: /
       TXT
@@ -228,6 +215,23 @@ class Site < ApplicationRecord
   # ==== Class methods ====
 
   class << self
+    # robots.txt for the nationwide directory at the apex domain. The directory
+    # has no Site row and is always publicly crawlable.
+    # @return [String]
+    def directory_robots
+      published_robots
+    end
+
+    # @return [String] the permissive robots.txt template plus sitemap reference
+    def published_robots
+      "#{robots_config}\nSitemap: #{DIRECTORY_URL}/sitemap.xml\n"
+    end
+
+    # @return [String] contents of the environment's robots.txt template
+    def robots_config
+      File.read(Rails.root.join("config/robots/#{robots_config_filename}"))
+    end
+
     # Selects the robots.txt template based on ALLOW_AI_SEARCH_BOTS env var.
     # In production, defaults to allowing search-AI bots (permissive template).
     # Set ALLOW_AI_SEARCH_BOTS=false to block all AI bots (strict template).
@@ -267,7 +271,8 @@ class Site < ApplicationRecord
     # Find the requested Site from information in the rails request object.
     #
     # @param request The request must expose the methods: host, subdomain, subdomains
-    # @return [Site]
+    # @return [Site, nil] nil for the apex / no-subdomain request (the
+    #   nationwide directory has no Site row)
     def find_by_request(request)
       # If there is a site with the domain in request.host, return it
       site = find_using_domain(request.host)
@@ -280,8 +285,7 @@ class Site < ApplicationRecord
           request.subdomain
         end
 
-      # No subdomain? Fall back to the default site.
-      site_slug ||= 'default-site'
+      return if site_slug.blank?
 
       Site.find_by(slug: site_slug)
     end

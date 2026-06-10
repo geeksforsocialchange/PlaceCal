@@ -3,7 +3,6 @@
 require "rails_helper"
 
 RSpec.describe "Directory Partners", type: :request do
-  let!(:default_site) { create(:default_site) }
   let(:ward) { create(:riverside_ward) }
 
   describe "GET /partners (directory index)" do

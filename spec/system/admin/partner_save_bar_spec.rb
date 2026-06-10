@@ -12,10 +12,6 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
 
   let!(:partner) { create(:partner) }
 
-  before do
-    create_default_site
-  end
-
   def visit_partner_edit
     url = admin_url("/partners/#{partner.id}/edit")
     visit url

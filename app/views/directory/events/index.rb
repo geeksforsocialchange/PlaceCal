@@ -4,7 +4,7 @@ class Views::Directory::Events::Index < Views::Base
   PERIOD_OPTIONS = [['This week', 'week'], ['Today', 'day'], ['This month', 'month'], ['All upcoming', 'future']].freeze
 
   prop :events, Hash
-  prop :site, ::Site
+  prop :site, _Nilable(::Site)
   prop :period, String, default: 'week'
   prop :current_day, Date
   prop :total_count, Integer, default: 0

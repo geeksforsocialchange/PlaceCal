@@ -6,13 +6,6 @@ module SeedSites # rubocop:disable Metrics/ModuleLength
   IMAGES_DIR = Rails.root.join('db/seeds/images/sites')
 
   SITE_DATA = {
-    normal_island_default: {
-      place_name: 'Normal Island',
-      hero_text: 'Community events across Normal Island',
-      theme: :blue,
-      hero_image: 'normal_island_hero.jpg',
-      logo: 'normal_island_logo.svg'
-    },
     normal_island_country: {
       place_name: 'Normal Island (country)',
       hero_text: 'Everything happening across Normal Island',
@@ -94,16 +87,6 @@ module SeedSites # rubocop:disable Metrics/ModuleLength
 
   def self.run
     $stdout.puts 'Sites'
-
-    # Default site (fallback for no-subdomain requests)
-    create_site(
-      slug: 'default-site',
-      name: 'Normal Island Central',
-      tagline: 'Community events across Normal Island',
-      url: 'http://default-site.lvh.me:3000',
-      data_key: :normal_island_default,
-      published: false
-    )
 
     # Normal Island (country)
     create_site(

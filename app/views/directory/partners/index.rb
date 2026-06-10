@@ -3,7 +3,7 @@
 class Views::Directory::Partners::Index < Views::Base
   prop :partners, _Interface(:each)
   prop :pagy, _Nilable(Pagy::Offset), default: nil
-  prop :site, ::Site
+  prop :site, _Nilable(::Site)
   prop :query, _Nilable(String), default: nil
   prop :categories, _Interface(:each), default: -> { [] }
   prop :partnerships_list, _Interface(:each), default: -> { [] }

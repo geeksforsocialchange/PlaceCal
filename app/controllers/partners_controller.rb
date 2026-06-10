@@ -15,7 +15,7 @@ class PartnersController < ApplicationController
   # GET /partners
   # GET /partners.json
   def index
-    if default_site?
+    if directory_request?
       render_directory_index
     else
       render_local_index
@@ -59,11 +59,11 @@ class PartnersController < ApplicationController
     # Map
     @map = get_map_markers([@partner])
 
-    @containing_sites = Site.sites_that_contain_partner(@partner) if default_site?
+    @containing_sites = Site.sites_that_contain_partner(@partner) if directory_request?
 
     respond_to do |format|
       format.html do
-        view_class = default_site? ? Views::Directory::Partners::Show : Views::Partners::Show
+        view_class = directory_request? ? Views::Directory::Partners::Show : Views::Partners::Show
         render view_class.new(
           partner: @partner, site: @site, current_day: @current_day,
           map: @map, events: @events,
@@ -133,7 +133,7 @@ class PartnersController < ApplicationController
       partners: @partners, pagy: @pagy, site: @site, query: params[:q], sort: @sort,
       az_letters: @az_letters, selected_letter: @selected_letter,
       total_count: Partner.visible.count,
-      partnership_count: Site.where(is_published: true).where.not(slug: 'default-site').count,
+      partnership_count: Site.where(is_published: true).count,
       categories: query.categories_with_counts(scope: category_scope).map { |c| { id: c[:category].id, name: c[:category].name, count: c[:count] } },
       partnerships_list: query.partnerships_with_counts(scope: partnership_scope).map { |p| { id: p[:partnership].id, name: p[:partnership].name, count: p[:count] } },
       neighbourhoods_tree: query.neighbourhood_tree(scope: neighbourhood_scope, selected_id: params[:neighbourhood]),
