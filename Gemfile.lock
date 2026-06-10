@@ -1,3 +1,19 @@
+PATH
+  remote: gems/pancal
+  specs:
+    pancal (0.1.0)
+      activesupport
+      eventbrite_sdk
+      httparty
+      icalendar
+      icalendar-recurrence
+      json-ld
+      kramdown
+      nokogiri
+      rails-html-sanitizer
+      rest-client
+      uk_postcode
+
 GEM
   remote: https://gem.coop/
   specs:
@@ -887,6 +903,7 @@ DEPENDENCIES
   literal
   lookbook (>= 2.3.14)
   pagy
+  pancal!
   paper_trail
   pg
   phlex-rails (~> 2.3)

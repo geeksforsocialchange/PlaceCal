@@ -7,10 +7,10 @@ class Views::Admin::Calendars::New < Views::Admin::Base
   def view_template
     content_for(:title) { 'New Calendar' }
 
-    api_token_parsers = CalendarImporter::CalendarImporter::PARSERS
-                        .select(&:requires_api_token?)
-                        .map { |p| p::KEY }
-                        .to_json
+    api_token_parsers = PanCal.readers
+                              .select(&:requires_api_token?)
+                              .map { |p| p::KEY }
+                              .to_json
 
     div(data: {
           controller: 'calendar-wizard',

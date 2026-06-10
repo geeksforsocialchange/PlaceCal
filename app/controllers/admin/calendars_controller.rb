@@ -110,31 +110,25 @@ module Admin
       return render json: { valid: false, error: 'Please enter a valid URL' } unless Validation::CALENDAR_URL_REGEX.match?(source)
 
       # Try to detect the importer
-      temp_calendar = Calendar.new(source: source, importer_mode: 'auto')
       begin
-        importer = CalendarImporter::CalendarImporter.new(temp_calendar)
-        parser = importer.parser
+        parser = PanCal.detect(PanCal::Source.new(url: source))
 
-        if parser
-          response = {
-            valid: true,
-            importer_key: parser::KEY,
-            importer_name: parser::NAME
-          }
+        response = {
+          valid: true,
+          importer_key: parser::KEY,
+          importer_name: parser::NAME
+        }
 
-          # API-based parsers need an API key rather than fetching this URL
-          if parser.requires_api_token?
-            response[:warning] = true
-            response[:warning_message] = t('admin.calendars.wizard.source.api_importer_warning', name: parser::NAME)
-          end
-
-          render json: response
-        else
-          render json: { valid: false, error: 'Unable to detect calendar format' }
+        # API-based parsers need an API key rather than fetching this URL
+        if parser.requires_api_token?
+          response[:warning] = true
+          response[:warning_message] = t('admin.calendars.wizard.source.api_importer_warning', name: parser::NAME)
         end
-      rescue CalendarImporter::Exceptions::InaccessibleFeed => e
-        render json: { valid: false, error: e.message }
-      rescue CalendarImporter::Exceptions::UnsupportedFeed
+
+        render json: response
+      rescue PanCal::InaccessibleFeed => e
+        render json: { valid: false, error: CalendarImporter::ErrorMessage.human(e) }
+      rescue PanCal::UnsupportedFeed
         # URL is reachable but format couldn't be auto-detected
         # Allow user to manually select
         render json: { valid: false, needs_manual_selection: true }
@@ -154,7 +148,7 @@ module Admin
     end
 
     def build_importer_options
-      importer_names = CalendarImporter::CalendarImporter::PARSERS.to_h { |p| [p::KEY, p::NAME] }
+      importer_names = PanCal.readers.to_h { |p| [p::KEY, p::NAME] }
       [{ value: 'pending', label: I18n.t('admin.calendars.importer.pending') }] +
         Calendar.distinct.pluck(:importer_used).compact.compact_blank.sort.map do |i|
           { value: i, label: importer_names[i] || i.titleize }

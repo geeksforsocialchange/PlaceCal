@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# Adapter between PlaceCal and PanCal: builds a PanCal::Source from the
+# Calendar, reads the feed, persists the checksum, and feeds the canonical
+# events through EventResolver.
 class CalendarImporter::CalendarImporterTask
   attr_reader :calendar,
               :from_date,
@@ -12,14 +15,16 @@ class CalendarImporter::CalendarImporterTask
   end
 
   def run
-    parsed_events = event_data_from_parser
+    result = PanCal.read(calendar.pancal_source, force: force_import, logger: Rails.logger)
+
+    # PanCal never mutates caller state — persisting the checksum is our job
+    calendar.flag_checksum_change!(result.checksum) if result.changed?
+
+    parsed_events = result.events.map do |event_data|
+      CalendarImporter::EventResolver.new(event_data, calendar, notices, from_date)
+    end
 
     if parsed_events.present?
-      # this can be useful if you want to force import on your local machine
-      # if @force_import
-      #   calendar.events.destroy_all
-      # end
-
       parsed_events.each do |parsed_event|
         process_event parsed_event
       end
@@ -27,7 +32,7 @@ class CalendarImporter::CalendarImporterTask
       purge_stale_events_from_calendar
     end
 
-    calendar.flag_complete_import_job! notices, parser::KEY
+    calendar.flag_complete_import_job! notices, result.reader_key
   end
 
   private
@@ -38,28 +43,6 @@ class CalendarImporter::CalendarImporterTask
 
   def active_event_uids
     @active_event_uids ||= Set.new
-  end
-
-  def parser
-    @parser ||= CalendarImporter::CalendarImporter.new(calendar).parser
-  end
-
-  # Get a properly formatted event list from the source
-  def calendar_source
-    @calendar_source ||= parser.new(
-      calendar,
-      from: from_date,
-      force_import: force_import
-    ).calendar_to_events
-  end
-
-  # Send the event data to be imported
-  def event_data_from_parser
-    return [] if !force_import && !calendar_source.checksum_changed
-
-    calendar_source.events.map do |event_data|
-      CalendarImporter::EventResolver.new(event_data, calendar, notices, from_date)
-    end
   end
 
   # Attempt to create each event

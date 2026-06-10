@@ -17,6 +17,8 @@ gem 'stimulus-rails'              # Stimulus JS controllers
 gem 'turbo-rails'                 # Turbo Drive/Frames/Streams
 
 # Calendar importers
+gem 'pancal', path: 'gems/pancal' # Event feed parsing engine ("pandoc for events")
+
 gem 'eventbrite_sdk'              # Eventbrite API client
 gem 'httparty'                    # HTTP requests for feed fetching
 gem 'icalendar'                   # ICS feed parsing

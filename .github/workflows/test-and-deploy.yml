@@ -44,6 +44,7 @@ jobs:
         run: |
           bin/yarn run format:check
           bundle exec rubocop
+          bundle exec rubocop --config gems/pancal/.rubocop.yml gems/pancal
 
   security:
     runs-on: ubuntu-latest
@@ -57,6 +58,23 @@ jobs:
 
       - name: Run Brakeman
         run: bundle exec brakeman --no-pager
+
+  # PanCal gem suite — must pass standalone, with no Rails and no database
+  pancal:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+
+      - uses: ruby/setup-ruby@12fd324f1d0b43274fdc8130f6980590a667c455 # v1.312.0
+        with:
+          bundler-cache: true
+          cache-version: 3
+          working-directory: gems/pancal
+
+      - name: Run PanCal specs
+        working-directory: gems/pancal
+        run: bundle exec rspec
 
   test:
     runs-on: ubuntu-latest
@@ -182,22 +200,23 @@ jobs:
   # This job provides a single status check for branch protection rules
   # It runs on all PRs and pushes, unlike deploy which only runs on main/production
   ci:
-    needs: [lint, security, test]
+    needs: [lint, security, pancal, test]
     runs-on: ubuntu-latest
     if: always()
     steps:
       - name: Check all jobs passed
         run: |
-          if [ "${{ needs.lint.result }}" != "success" ] || [ "${{ needs.security.result }}" != "success" ] || [ "${{ needs.test.result }}" != "success" ]; then
+          if [ "${{ needs.lint.result }}" != "success" ] || [ "${{ needs.security.result }}" != "success" ] || [ "${{ needs.pancal.result }}" != "success" ] || [ "${{ needs.test.result }}" != "success" ]; then
             echo "lint result: ${{ needs.lint.result }}"
             echo "security result: ${{ needs.security.result }}"
+            echo "pancal result: ${{ needs.pancal.result }}"
             echo "test result: ${{ needs.test.result }}"
             exit 1
           fi
           echo "All checks passed!"
 
   deploy:
-    needs: [lint, security, test]
+    needs: [lint, security, pancal, test]
     runs-on: ubuntu-latest
     if: >-
       github.repository == 'geeksforsocialchange/PlaceCal' &&

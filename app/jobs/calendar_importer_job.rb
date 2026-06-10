@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class CalendarImporterJob < ApplicationJob
-  include CalendarImporter::Exceptions
-
   queue_as :default
 
   # Backstop for exceptions not matched by a more specific handler below. A
@@ -21,22 +19,22 @@ class CalendarImporterJob < ApplicationJob
     raise exception
   end
 
-  rescue_from UnsupportedFeed do |exception|
+  rescue_from PanCal::UnsupportedFeed do |exception|
     report_error exception, 'Calendar URL is not supported'
   end
 
-  rescue_from InaccessibleFeed do |exception|
-    report_bad_source_error exception.message
+  rescue_from PanCal::InaccessibleFeed do |exception|
+    report_bad_source_error CalendarImporter::ErrorMessage.human(exception)
   end
 
   # Network timeouts and TLS failures are expected when scraping third-party
   # feeds that are slow or temporarily down. Treat them as an unreachable
   # source instead of letting them surface as unhandled exceptions (see issue
-  # #3100). Most HTTP fetches funnel through Parsers::Base.read_http_source,
-  # which already maps these to InaccessibleFeed; this backstop covers parsers
-  # that make HTTP requests by other means (e.g. API and POST-based parsers).
+  # #3100). Most HTTP fetches funnel through PanCal::Readers::Base.read_http_source,
+  # which already maps these to InaccessibleFeed; this backstop covers readers
+  # that make HTTP requests by other means (e.g. API and POST-based readers).
   # RestClient::Exceptions::Timeout (the parent of RestClient's Read/OpenTimeout)
-  # covers the Eventbrite parser, which fetches via RestClient/EventbriteSDK —
+  # covers the Eventbrite reader, which fetches via RestClient/EventbriteSDK —
   # its timeout errors are not subclasses of Net::ReadTimeout/Net::OpenTimeout.
   rescue_from Net::ReadTimeout, Net::OpenTimeout, OpenSSL::SSL::SSLError,
               RestClient::Exceptions::Timeout do |exception|
@@ -47,7 +45,7 @@ class CalendarImporterJob < ApplicationJob
     report_bad_source_error I18n.t('admin.calendars.wizard.source.unreachable')
   end
 
-  rescue_from InvalidResponse do |exception|
+  rescue_from PanCal::InvalidResponse do |exception|
     report_error exception, 'Calendar URL returned un-parsable data'
   end
 
