@@ -25,23 +25,23 @@ RSpec.describe PanCal::Readers::Ticketsource do
 
   describe '.allowlist_pattern' do
     it 'matches www.ticketsource.co.uk venue pages' do
-      expect(described_class.allowlist_pattern).to match('https://www.ticketsource.co.uk/fairfield-house')
+      expect('https://www.ticketsource.co.uk/fairfield-house').to match(described_class.allowlist_pattern)
     end
 
     it 'matches ticketsource.co.uk venue pages without www' do
-      expect(described_class.allowlist_pattern).to match('https://ticketsource.co.uk/some-venue')
+      expect('https://ticketsource.co.uk/some-venue').to match(described_class.allowlist_pattern)
     end
 
     it 'matches venue pages with trailing slash' do
-      expect(described_class.allowlist_pattern).to match('https://www.ticketsource.co.uk/fairfield-house/')
+      expect('https://www.ticketsource.co.uk/fairfield-house/').to match(described_class.allowlist_pattern)
     end
 
     it 'does not match event subpages' do
-      expect(described_class.allowlist_pattern).not_to match('https://www.ticketsource.co.uk/fairfield-house/event/e-xxxxx')
+      expect('https://www.ticketsource.co.uk/fairfield-house/event/e-xxxxx').not_to match(described_class.allowlist_pattern)
     end
 
     it 'does not match non-ticketsource URLs' do
-      expect(described_class.allowlist_pattern).not_to match('https://www.example.com/fairfield-house')
+      expect('https://www.example.com/fairfield-house').not_to match(described_class.allowlist_pattern)
     end
   end
 

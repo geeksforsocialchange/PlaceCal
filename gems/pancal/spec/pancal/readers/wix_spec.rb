@@ -6,15 +6,15 @@ RSpec.describe PanCal::Readers::Wix do
   describe '.allowlist_pattern' do
     it 'matches wixsite.com event URLs' do
       pattern = described_class.allowlist_pattern
-      expect(pattern).to match('https://user123.wixsite.com/mysite/events')
-      expect(pattern).to match('https://user123.wixsite.com/mysite/event/some-event')
-      expect(pattern).to match('https://example.wixsite.com/community')
+      expect('https://user123.wixsite.com/mysite/events').to match(pattern)
+      expect('https://user123.wixsite.com/mysite/event/some-event').to match(pattern)
+      expect('https://example.wixsite.com/community').to match(pattern)
     end
 
     it 'does not match non-wix URLs' do
       pattern = described_class.allowlist_pattern
-      expect(pattern).not_to match('https://example.com/events')
-      expect(pattern).not_to match('https://www.socialrefuge.com/event-list')
+      expect('https://example.com/events').not_to match(pattern)
+      expect('https://www.socialrefuge.com/event-list').not_to match(pattern)
     end
   end
 

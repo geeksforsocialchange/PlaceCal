@@ -55,6 +55,13 @@ RSpec/DescribeClass:
 RSpec/ExampleLength:
   Enabled: false
 
+# allowlist_pattern specs deliberately use literal URLs as the expect subject
+# (`expect('https://…').to match(pattern)`) — the reversed form reads as the
+# URL being matched against the pattern and keeps CodeQL from misreading the
+# URL literals as regexes
+RSpec/ExpectActual:
+  Enabled: false
+
 RSpec/MultipleDescribes:
   Enabled: false
 

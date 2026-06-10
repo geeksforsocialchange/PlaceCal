@@ -6,14 +6,14 @@ RSpec.describe PanCal::Readers::Squarespace do
   describe '.allowlist_pattern' do
     it 'matches squarespace.com URLs' do
       pattern = described_class.allowlist_pattern
-      expect(pattern).to match('https://example.squarespace.com/events')
-      expect(pattern).to match('https://mysite.squarespace.com/calendar')
+      expect('https://example.squarespace.com/events').to match(pattern)
+      expect('https://mysite.squarespace.com/calendar').to match(pattern)
     end
 
     it 'does not match custom domain URLs' do
       pattern = described_class.allowlist_pattern
-      expect(pattern).not_to match('https://www.partisancollective.net/events/listing/')
-      expect(pattern).not_to match('https://example.com/events')
+      expect('https://www.partisancollective.net/events/listing/').not_to match(pattern)
+      expect('https://example.com/events').not_to match(pattern)
     end
   end
 

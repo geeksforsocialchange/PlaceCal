@@ -23,23 +23,23 @@ RSpec.describe PanCal::Readers::Tickettailor do
 
   describe '.allowlist_pattern' do
     it 'matches www.tickettailor.com event pages' do
-      expect(described_class.allowlist_pattern).to match('https://www.tickettailor.com/events/queerrunclub')
+      expect('https://www.tickettailor.com/events/queerrunclub').to match(described_class.allowlist_pattern)
     end
 
     it 'matches tickettailor.com event pages without www' do
-      expect(described_class.allowlist_pattern).to match('https://tickettailor.com/events/some-org')
+      expect('https://tickettailor.com/events/some-org').to match(described_class.allowlist_pattern)
     end
 
     it 'matches event pages with trailing slash' do
-      expect(described_class.allowlist_pattern).to match('https://www.tickettailor.com/events/queerrunclub/')
+      expect('https://www.tickettailor.com/events/queerrunclub/').to match(described_class.allowlist_pattern)
     end
 
     it 'does not match individual event pages' do
-      expect(described_class.allowlist_pattern).not_to match('https://www.tickettailor.com/events/queerrunclub/12345')
+      expect('https://www.tickettailor.com/events/queerrunclub/12345').not_to match(described_class.allowlist_pattern)
     end
 
     it 'does not match non-tickettailor URLs' do
-      expect(described_class.allowlist_pattern).not_to match('https://www.example.com/events/queerrunclub')
+      expect('https://www.example.com/events/queerrunclub').not_to match(described_class.allowlist_pattern)
     end
   end
 
