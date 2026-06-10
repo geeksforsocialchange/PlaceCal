@@ -26,11 +26,21 @@ class PagesController < ApplicationController
   end
 
   def terms_of_use
-    render Views::Directory::TermsOfUse.new
+    render Views::Directory::MarkdownPage.new(
+      slug: 'terms_of_use',
+      title: t('directory.pages.terms_of_use.title'),
+      breadcrumb_label: t('directory.pages.terms_of_use.breadcrumb'),
+      document_title: t('directory.pages.terms_of_use.document_title')
+    )
   end
 
   def privacy
-    render Views::Directory::Privacy.new
+    render Views::Directory::MarkdownPage.new(
+      slug: 'privacy',
+      title: t('directory.pages.privacy.title'),
+      breadcrumb_label: t('directory.pages.privacy.breadcrumb'),
+      document_title: t('directory.pages.privacy.document_title')
+    )
   end
 
   def our_story
