@@ -5,7 +5,7 @@ class PagesController < ApplicationController
   before_action :set_site
 
   def home
-    if default_site?
+    if directory_request?
       render_directory_home
     else
       @neighbourhoods = Site.published.select do |site|
@@ -26,11 +26,21 @@ class PagesController < ApplicationController
   end
 
   def terms_of_use
-    render Views::Directory::TermsOfUse.new
+    render Views::Directory::MarkdownPage.new(
+      slug: 'terms_of_use',
+      title: t('directory.pages.terms_of_use.title'),
+      breadcrumb_label: t('directory.pages.terms_of_use.breadcrumb'),
+      document_title: t('directory.pages.terms_of_use.document_title')
+    )
   end
 
   def privacy
-    render Views::Directory::Privacy.new
+    render Views::Directory::MarkdownPage.new(
+      slug: 'privacy',
+      title: t('directory.pages.privacy.title'),
+      breadcrumb_label: t('directory.pages.privacy.breadcrumb'),
+      document_title: t('directory.pages.privacy.document_title')
+    )
   end
 
   def our_story
@@ -64,8 +74,11 @@ class PagesController < ApplicationController
   def robots
     if current_site
       render plain: current_site.robots
+    elsif directory_request?
+      # The apex serves the nationwide directory: always crawlable
+      render plain: Site.directory_robots
     else
-      # Admin subdomain or no site found - disallow all indexing
+      # Admin subdomain - disallow all indexing
       render plain: "User-agent: *\nDisallow: /"
     end
   end
@@ -88,7 +101,7 @@ class PagesController < ApplicationController
   def render_directory_home
     @stats = Rails.cache.fetch('directory/stats', expires_in: DIRECTORY_CACHE_TTL) do
       {
-        partnerships: Site.where(is_published: true).where.not(slug: 'default-site').count,
+        partnerships: Site.where(is_published: true).count,
         partners: Partner.visible.count,
         events: Event.where(dtstart: Time.zone.today..30.days.from_now).count,
         neighbourhoods: Neighbourhood.districts.count
@@ -105,7 +118,6 @@ class PagesController < ApplicationController
 
     @partnerships = Rails.cache.fetch('directory/partnerships', expires_in: DIRECTORY_CACHE_TTL) do
       Site.where(is_published: true)
-          .where.not(slug: 'default-site')
           .order(partners_count: :desc)
           .limit(6)
           .to_a

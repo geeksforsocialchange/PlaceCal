@@ -3,8 +3,6 @@
 require "rails_helper"
 
 RSpec.describe "Public Joins (Contact Form)", type: :request do
-  let!(:default_site) { create(:default_site) }
-
   describe "GET /get-in-touch" do
     it "returns successful response" do
       get "/get-in-touch", headers: { "Host" => "lvh.me" }

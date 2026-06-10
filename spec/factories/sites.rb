@@ -45,12 +45,6 @@ FactoryBot.define do
         create(:sites_neighbourhood, site: site, neighbourhood: county)
       end
     end
-
-    factory :default_site do
-      name { NormalIsland::SITES[:normal_island_central][:name] }
-      slug { NormalIsland::SITES[:normal_island_central][:slug] }
-      tagline { NormalIsland::SITES[:normal_island_central][:tagline] }
-    end
   end
 
   factory :sites_neighbourhood do

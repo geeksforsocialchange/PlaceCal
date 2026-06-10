@@ -46,10 +46,8 @@ RSpec.describe "Public Pages", type: :request do
     end
   end
 
-  describe "GET / (default site)" do
-    let!(:default_site) { create(:default_site) }
-
-    it "shows default site home page" do
+  describe "GET / (directory)" do
+    it "shows the directory home page" do
       get "http://lvh.me"
       expect(response).to be_successful
       expect(response.body).to include("<title>")
@@ -98,8 +96,6 @@ RSpec.describe "Public Pages", type: :request do
   end
 
   describe "GET /our-story" do
-    let!(:default_site) { create(:default_site) }
-
     it "returns successful response" do
       get "/our-story", headers: { "Host" => "lvh.me" }
       expect(response).to be_successful
@@ -112,8 +108,6 @@ RSpec.describe "Public Pages", type: :request do
   end
 
   describe "GET /find-placecal" do
-    let!(:default_site) { create(:default_site) }
-
     it "returns successful response" do
       get "/find-placecal", headers: { "Host" => "lvh.me" }
       expect(response).to be_successful
@@ -121,8 +115,6 @@ RSpec.describe "Public Pages", type: :request do
   end
 
   describe "GET /community-groups" do
-    let!(:default_site) { create(:default_site) }
-
     it "returns successful response" do
       get "/community-groups", headers: { "Host" => "lvh.me" }
       expect(response).to be_successful
@@ -136,8 +128,6 @@ RSpec.describe "Public Pages", type: :request do
 
   # Audience pages
   describe "GET /vcses" do
-    let!(:default_site) { create(:default_site) }
-
     it "returns successful response" do
       get "/vcses", headers: { "Host" => "lvh.me" }
       expect(response).to be_successful
@@ -145,8 +135,6 @@ RSpec.describe "Public Pages", type: :request do
   end
 
   describe "GET /housing-providers" do
-    let!(:default_site) { create(:default_site) }
-
     it "returns successful response" do
       get "/housing-providers", headers: { "Host" => "lvh.me" }
       expect(response).to be_successful
@@ -154,8 +142,6 @@ RSpec.describe "Public Pages", type: :request do
   end
 
   describe "GET /metropolitan-areas" do
-    let!(:default_site) { create(:default_site) }
-
     it "returns successful response" do
       get "/metropolitan-areas", headers: { "Host" => "lvh.me" }
       expect(response).to be_successful
@@ -163,8 +149,6 @@ RSpec.describe "Public Pages", type: :request do
   end
 
   describe "GET /culture-tourism" do
-    let!(:default_site) { create(:default_site) }
-
     it "returns successful response" do
       get "/culture-tourism", headers: { "Host" => "lvh.me" }
       expect(response).to be_successful
@@ -172,8 +156,6 @@ RSpec.describe "Public Pages", type: :request do
   end
 
   describe "GET /social-prescribers" do
-    let!(:default_site) { create(:default_site) }
-
     it "returns successful response" do
       get "/social-prescribers", headers: { "Host" => "lvh.me" }
       expect(response).to be_successful

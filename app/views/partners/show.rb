@@ -4,7 +4,7 @@ class Views::Partners::Show < Views::Base
   register_value_helper :partner_service_area_text
 
   prop :partner, Partner, reader: :private
-  prop :site, Site, reader: :private
+  prop :site, _Nilable(::Site), reader: :private
   prop :current_day, Date, reader: :private
   prop :map, _Nilable(Array), reader: :private
   prop :events, _Interface(:each), reader: :private
@@ -29,7 +29,7 @@ class Views::Partners::Show < Views::Base
     content_for(:title) { partner.name }
     if partner.image.present?
       content_for(:image) { partner.image }
-    else
+    elsif site
       content_for(:image) { site.og_image }
     end
     content_for(:description) { partner.summary } if partner.summary

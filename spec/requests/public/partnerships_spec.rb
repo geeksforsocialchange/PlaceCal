@@ -3,8 +3,6 @@
 require "rails_helper"
 
 RSpec.describe "Public Partnerships", type: :request do
-  let!(:default_site) { create(:default_site) }
-
   let!(:partnerships) do
     Array.new(3) do |i|
       create(:site, slug: "partnership-#{i}", is_published: true, name: "Test Partnership #{i}")
@@ -27,11 +25,6 @@ RSpec.describe "Public Partnerships", type: :request do
     it "sets page title" do
       get partnerships_url(host: "lvh.me")
       expect(response.body).to include("<title>#{Partnership.model_name.human(count: 2)}")
-    end
-
-    it "excludes default-site from listings" do
-      get partnerships_url(host: "lvh.me")
-      expect(response.body).not_to include(">#{default_site.name}<")
     end
 
     it "shows hero with i18n title" do

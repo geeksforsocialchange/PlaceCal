@@ -7,8 +7,6 @@ require "rails_helper"
 # level. This lives in a system spec because it depends on the custom-select and
 # neighbourhood-cascade Stimulus controllers running in a real browser.
 RSpec.describe "Directory partner filtering", :slow, type: :system do
-  let!(:default_site) { create(:default_site) }
-
   # Two partners in different regions so filtering by one is observable.
   let(:northvale_ward) { create(:riverside_ward) }
   let(:southmere_ward) { create(:cliffside_ward) }

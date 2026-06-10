@@ -25,6 +25,15 @@ en:
   directory:
     breadcrumbs:
       root: "Directory"
+    pages:
+      privacy:
+        title: "PlaceCal Privacy Policy"
+        breadcrumb: "Privacy"
+        document_title: "Privacy Policy"
+      terms_of_use:
+        title: "PlaceCal Terms of Use"
+        breadcrumb: "Terms"
+        document_title: "Terms of Use"
     partners:
       index:
         filters:

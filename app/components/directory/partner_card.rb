@@ -2,7 +2,7 @@
 
 class Components::Directory::PartnerCard < Components::Directory::Base
   prop :partner, ::Partner
-  prop :site, ::Site
+  prop :site, _Nilable(::Site)
 
   def view_template
     a(href: partner_path(@partner),

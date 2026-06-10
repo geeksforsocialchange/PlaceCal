@@ -11,8 +11,6 @@ RSpec.describe "Admin::Home", type: :request do
 
   describe "GET /admin (dashboard)" do
     context "without authentication" do
-      before { create_default_site }
-
       it "redirects to login page" do
         get "http://#{admin_host}"
         expect(response).to redirect_to("http://#{admin_host}/users/sign_in")
