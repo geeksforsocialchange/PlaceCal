@@ -1,7 +1,7 @@
-# frozen_string_literal: true
-#
 # RuboCop configuration for the pancal gem. Mirrors PlaceCal's style where it
 # applies, minus the Rails/GraphQL cops — pancal is a plain Ruby gem.
+# Linted from the PlaceCal root bundle:
+#   rubocop --config gems/pancal/.rubocop.yml gems/pancal
 
 plugins:
   - rubocop-rspec

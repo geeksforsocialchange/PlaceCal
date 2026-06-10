@@ -14,13 +14,16 @@ module PanCal
     # last_checksum: checksum from the previous read, for skip-if-unchanged
     def initialize(url:, reader: :auto, token: nil, last_checksum: nil)
       @url = url
-      @reader = reader || :auto
+      @reader = reader
       @token = token
       @last_checksum = last_checksum
     end
 
+    # Only the literal 'auto' runs the detection cascade. A nil reader is NOT
+    # auto: it names no reader and fails validation, matching how PlaceCal's
+    # importer treated a NULL importer_mode.
     def auto?
-      reader.to_s.empty? || reader.to_s == 'auto'
+      reader.to_s == 'auto'
     end
   end
 end

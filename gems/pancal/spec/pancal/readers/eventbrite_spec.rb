@@ -47,7 +47,7 @@ RSpec.describe PanCal::Readers::Eventbrite do
       # calendar in `in_worker` and retries forever.
       expect { reader.download_calendar }
         .to raise_error(PanCal::InaccessibleFeed, /not found/) do |error|
-          expect(error.code).to eq(:not_found)
+          expect(error.code).to eq(:organiser_not_found)
         end
     end
   end

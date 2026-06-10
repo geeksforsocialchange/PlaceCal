@@ -46,8 +46,10 @@ module PanCal
         # The Eventbrite organiser no longer exists — usually deleted, or renamed
         # (which changes the numeric id baked into the source URL). Flag the
         # source as bad rather than letting the error bubble up unhandled.
+        # Distinct from :not_found: the source URL itself may load fine in a
+        # browser, so callers must not present this as a plain HTTP 404.
         raise InaccessibleFeed.new("Eventbrite organiser #{organizer_id} not found (#{e.message})",
-                                   code: :not_found)
+                                   code: :organiser_not_found)
       end
 
       def import_events_from(data)

@@ -21,6 +21,7 @@ require 'rails-html-sanitizer'
 require 'uk_postcode'
 
 require_relative 'pancal/version'
+require_relative 'pancal/icalendar_overrides'
 require_relative 'pancal/errors'
 require_relative 'pancal/source'
 require_relative 'pancal/result'
@@ -95,6 +96,7 @@ module PanCal
     # When the feed's checksum matches source.last_checksum and force is
     # false, parsing is skipped and the result has no events.
     def read(source, force: false, logger: nil)
+      source = Source.new(url: source) if source.is_a?(String)
       reader_class = detect(source)
       reader_class.new(source, logger: logger).read(force: force)
     end

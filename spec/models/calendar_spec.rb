@@ -229,4 +229,48 @@ RSpec.describe Calendar, type: :model do
       expect(calendar.reload.calendar_state).to eq("idle")
     end
   end
+
+  describe "#pancal_source" do
+    def build_calendar(source:, api_token: nil, importer_mode: "auto")
+      calendar = build(:calendar, source: source, api_token: api_token, importer_mode: importer_mode)
+      allow(calendar).to receive(:check_source_reachable)
+      calendar
+    end
+
+    it "uses the calendar's api_token when present" do
+      calendar = build_calendar(source: "https://www.ticketsource.co.uk/some-venue", api_token: "skl-abc123")
+
+      expect(calendar.pancal_source.token).to eq("skl-abc123")
+    end
+
+    it "does not fall back to the Eventbrite credential for non-Eventbrite sources" do
+      calendar = build_calendar(source: "https://www.ticketsource.co.uk/some-venue")
+
+      with_env("EVENTBRITE_TOKEN" => "eventbrite-secret") do
+        expect(calendar.pancal_source.token).to be_nil
+      end
+    end
+
+    it "falls back to the Eventbrite credential for Eventbrite sources" do
+      calendar = build_calendar(source: "https://www.eventbrite.co.uk/o/some-org-12345")
+
+      with_env("EVENTBRITE_TOKEN" => "eventbrite-secret") do
+        expect(calendar.pancal_source.token).to eq("eventbrite-secret")
+      end
+    end
+
+    it "maps legacy importer modes to the ld-json reader" do
+      calendar = build_calendar(source: "https://www.outsavvy.com/organiser/x", importer_mode: "out-savvy")
+
+      expect(calendar.pancal_source.reader).to eq("ld-json")
+    end
+
+    def with_env(vars)
+      old = vars.keys.index_with { |k| ENV.fetch(k, nil) }
+      vars.each { |k, v| ENV[k] = v }
+      yield
+    ensure
+      old.each { |k, v| ENV[k] = v }
+    end
+  end
 end

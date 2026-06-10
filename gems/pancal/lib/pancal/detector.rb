@@ -31,7 +31,7 @@ module PanCal
       @reader ||=
         if @source.auto?
           READERS.find { |r| r.handles_url?(@source) }
-        else
+        elsif @source.reader
           READERS.find { |r| @source.reader.to_s == r::KEY }
         end
     end

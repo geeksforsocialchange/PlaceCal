@@ -320,7 +320,7 @@ class Calendar < ApplicationRecord
     PanCal::Source.new(
       url: source,
       reader: pancal_reader_key,
-      token: api_token.presence || ENV.fetch('EVENTBRITE_TOKEN', nil),
+      token: pancal_token,
       last_checksum: last_checksum
     )
   end
@@ -358,6 +358,16 @@ class Calendar < ApplicationRecord
     errors.add :source, "The source URL returned an invalid code (#{CalendarImporter::ErrorMessage.human(e)})"
   rescue PanCal::UnsupportedFeed
     errors.add :source, 'Unable to autodetect calendar format, please pick an option from the list below'
+  end
+
+  # API readers (TicketSource, Ticket Tailor) use the per-calendar api_token;
+  # the shared Eventbrite credential applies only to Eventbrite URLs, so a
+  # blank api_token on other API calendars still surfaces as 'API key
+  # required' rather than authenticating against the wrong service.
+  def pancal_token
+    return api_token if api_token.present?
+
+    ENV.fetch('EVENTBRITE_TOKEN', nil) if source.to_s.match?(PanCal::Readers::Eventbrite.allowlist_pattern)
   end
 
   # Older calendars use legacy importer modes (out-savvy, dice-fm) that are

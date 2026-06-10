@@ -14,14 +14,14 @@ module PanCal
 
   # The URL provided is not recognised as a parsable source
   # (and it does not have ld-json data).
-  # Codes: :missing_url, :invalid_url, :unsupported, :unknown_reader
+  # Codes: :missing_url, :invalid_url, :unsupported
   class UnsupportedFeed < Error; end
 
   # The response status from the URL was not success (200).
   # Mainly for direct HTTP based source types.
   # Codes: :forbidden, :not_found, :unreadable, :unresolvable, :socket_error,
-  # :unreachable, :api_key_missing, :api_key_invalid, :api_key_forbidden,
-  # :api_rate_limit, :api_error
+  # :unreachable, :organiser_not_found, :api_key_missing, :api_key_invalid,
+  # :api_key_forbidden, :api_rate_limit, :api_error
   class InaccessibleFeed < Error
     attr_reader :http_status
 

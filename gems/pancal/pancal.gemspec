@@ -24,6 +24,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency 'activesupport'
+  spec.add_dependency 'base64' # not a default gem on Ruby >= 3.4; used by ApiBase
   spec.add_dependency 'eventbrite_sdk'
   spec.add_dependency 'httparty'
   spec.add_dependency 'icalendar'

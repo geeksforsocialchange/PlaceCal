@@ -334,4 +334,33 @@ RSpec.describe PanCal::Detector do
       end
     end
   end
+
+  describe 'reader selection' do
+    it 'treats a nil reader as an unsupported explicit mode, not auto-detect' do
+      VCR.use_cassette(:example_dot_com, allow_playback_repeats: true) do
+        source = PanCal::Source.new(url: 'https://example.com/', reader: nil)
+
+        expect(source).not_to be_auto
+        expect do
+          PanCal.detect(source)
+        end.to raise_error(PanCal::UnsupportedFeed) do |error|
+          expect(error.code).to eq(:unsupported)
+        end
+      end
+    end
+  end
+
+  describe 'PanCal.read with a String URL' do
+    it 'wraps the URL in a Source' do
+      VCR.use_cassette('Yellowbird_Webcal', allow_playback_repeats: true) do
+        url = 'webcal://p24-calendars.icloud.com/published/2/WvhkIr4F3oBQrToPU-lkO6WwDTpzNTpENs-Qtbo48FhhrAfDp3gkIal2XPd5eUVO0LLERrehetRzj43c6zvbotf9_DNI6heKXBejvAkz8JQ'
+
+        result = PanCal.read(url)
+
+        expect(result).to be_a(PanCal::Result)
+        expect(result.reader_key).to eq('ical')
+        expect(result.events.count).to eq(2)
+      end
+    end
+  end
 end
