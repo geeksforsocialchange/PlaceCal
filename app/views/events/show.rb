@@ -33,7 +33,7 @@ class Views::Events::Show < Views::Base
 
   private
 
-  # ── Directory layout (default site) ──
+  # ── Directory layout (nil site) ──
 
   def render_directory_layout
     Directory::PageHero(

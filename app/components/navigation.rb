@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Tailwind classes are generally [ base, default site, partner site]. each section may be split into targets and breakpoints depending on complexity
+# Tailwind classes are generally [ base, directory, partner site]. each section may be split into targets and breakpoints depending on complexity
 
 class Components::Navigation < Components::Base
   prop :navigation, Array # Array of tuples of [name, URL]
