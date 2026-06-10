@@ -6,7 +6,6 @@ class PartnershipsController < ApplicationController
 
   def index
     @partnerships = Site.where(is_published: true)
-                        .where.not(slug: 'default-site')
                         .order(partners_count: :desc)
     @total_partners = Partner.visible.count
 

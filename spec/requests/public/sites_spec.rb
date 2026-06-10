@@ -3,7 +3,6 @@
 require "rails_helper"
 
 RSpec.describe "Public Sites", type: :request do
-  let!(:default_site) { create_default_site }
   let(:site_admin) { create(:root_user) }
   let(:site) { create(:site, slug: "hulme", site_admin: site_admin, url: "https://hulme.lvh.me", place_name: "Hulme Community") }
   let(:ward) { create(:riverside_ward) }
@@ -13,12 +12,12 @@ RSpec.describe "Public Sites", type: :request do
   end
 
   describe "subdomain routing" do
-    it "shows default site for base domain" do
+    it "shows the directory for the base domain" do
       get "http://lvh.me"
       expect(response).to be_successful
     end
 
-    it "redirects non-existent site slug to default" do
+    it "redirects non-existent site slug to the apex" do
       get "http://no-site-set.lvh.me"
       expect(response).to redirect_to("http://lvh.me/")
     end

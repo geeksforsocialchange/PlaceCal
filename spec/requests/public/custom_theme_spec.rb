@@ -7,7 +7,6 @@ require "rails_helper"
 # asset pipeline must not crash with Propshaft::MissingAssetError. The page
 # should render with the default styling instead.
 RSpec.describe "Custom theme with missing stylesheet", type: :request do
-  let!(:default_site) { create_default_site }
   let(:ward) { create(:riverside_ward) }
   let!(:site) do
     create(:site,

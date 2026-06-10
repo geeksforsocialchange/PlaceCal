@@ -6,7 +6,6 @@ require "rails_helper"
 # shown when an unauthenticated user tries to access /admin must NOT persist
 # onto the next page they visit.
 RSpec.describe "Admin authentication flash", type: :request do
-  let!(:default_site) { create_default_site }
   let!(:published_site) { create(:site, is_published: true) }
 
   let(:warning_message) do

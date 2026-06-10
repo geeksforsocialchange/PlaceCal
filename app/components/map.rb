@@ -4,7 +4,7 @@ class Components::Map < Components::Base
   register_value_helper :args_for_map
 
   prop :points, _Nilable(Array)
-  prop :site, String
+  prop :site, _Nilable(String), default: nil
   prop :style, _Nilable(Symbol), default: nil
   prop :compact, _Boolean, default: false
 

@@ -37,7 +37,7 @@ class Views::Layouts::Application < Phlex::HTML
       body do
         div(class: [
               'page',
-              *(if site&.default_site?
+              *(if site.nil?
                   ['max-w-home bg-background border-none mx-auto']
                 else
                   [
@@ -54,7 +54,7 @@ class Views::Layouts::Application < Phlex::HTML
             Flash()
             yield
           end
-          if site&.default_site?
+          if site.nil?
             Directory::Footer()
           else
             Footer(site)
@@ -98,14 +98,15 @@ class Views::Layouts::Application < Phlex::HTML
     link(rel: 'canonical', href: request.original_url)
     meta(name: 'robots', content: 'noarchive')
 
-    script(type: 'application/ld+json') { raw safe(site.to_json_ld(base_url: request.base_url).to_json) } if site
+    json_ld = site ? site.to_json_ld(base_url: request.base_url) : Site.directory_json_ld(request.base_url)
+    script(type: 'application/ld+json') { raw safe(json_ld.to_json) }
     return unless content_for?(:json_ld)
 
     script(type: 'application/ld+json') { raw safe(content_for(:json_ld)) }
   end
 
   def compute_title
-    return 'PlaceCal | The Community Calendar' if current_page?(root_url) && site&.slug == 'default-site'
+    return 'PlaceCal | The Community Calendar' if current_page?(root_url) && site.nil?
     return "#{content_for(:title)} | #{site.name}" if content_for?(:title) && site&.name
     return content_for(:title).to_s if content_for?(:title)
 

@@ -20,10 +20,6 @@ RSpec.describe "Admin Tags", :slow, type: :system do
   let!(:tag) { create(:tag) }
   let!(:system_tag) { create(:tag, system_tag: true) }
 
-  before do
-    create_default_site
-  end
-
   describe "system tag visibility" do
     it "shows system_tag option for root users" do
       sign_in_as(root_user)

@@ -249,11 +249,11 @@ RSpec.describe PartnersQuery do
   end
 
   describe "#neighbourhood_tree" do
-    # Directory site so the scope is all visible partners, independent of which
-    # neighbourhoods the site owns — matching how the public directory uses it.
-    subject(:tree) { described_class.new(site: directory_site).neighbourhood_tree }
+    # Nil site (the directory) so the scope is all visible partners, independent
+    # of which neighbourhoods a site owns — matching how the public directory
+    # uses it.
+    subject(:tree) { described_class.new(site: nil).neighbourhood_tree }
 
-    let(:directory_site) { create(:default_site) }
     let(:district) { create(:millbrook_district) }
     let(:riverside) { create(:riverside_ward, parent: district) }
     let(:oldtown) { create(:oldtown_ward, parent: district) }
@@ -327,7 +327,7 @@ RSpec.describe PartnersQuery do
       end
 
       it "keeps the selected neighbourhood in the tree with a zero count" do
-        result = described_class.new(site: directory_site).neighbourhood_tree(selected_id: empty_ward.id)
+        result = described_class.new(site: nil).neighbourhood_tree(selected_id: empty_ward.id)
         node = find_node(result, empty_ward.id)
 
         expect(node).to be_present

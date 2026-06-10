@@ -3,10 +3,9 @@
 require "rails_helper"
 
 RSpec.describe "Public Sitemaps", type: :request do
-  let!(:default_site) { create(:default_site) }
   let!(:local_site) { create(:site, slug: "mossley", is_published: true, url: "https://mossley.placecal.org/") }
 
-  describe "on the default site" do
+  describe "on the apex (directory)" do
     let(:host) { "lvh.me" }
 
     describe "GET /sitemap.xml" do
@@ -88,6 +87,17 @@ RSpec.describe "Public Sitemaps", type: :request do
     it "includes sitemap directive for published sites" do
       get "/robots.txt", headers: { "Host" => "mossley.lvh.me" }
       expect(response.body).to include("Sitemap: https://placecal.org/sitemap.xml")
+    end
+
+    it "serves a crawlable robots.txt with sitemap on the apex" do
+      get "/robots.txt", headers: { "Host" => "lvh.me" }
+      expect(response.body).to include("Sitemap: https://placecal.org/sitemap.xml")
+      expect(response.body).not_to include("Disallow: /\n")
+    end
+
+    it "disallows everything on the admin subdomain" do
+      get "/robots.txt", headers: { "Host" => "admin.lvh.me" }
+      expect(response.body).to include("Disallow: /")
     end
   end
 end

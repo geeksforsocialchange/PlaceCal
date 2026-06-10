@@ -7,7 +7,6 @@
 # calendars, events, tags, and neighbourhoods.
 RSpec.shared_context "normal island data" do # rubocop:disable RSpec/MultipleMemoizedHelpers
   # Sites
-  let!(:default_site) { create(:default_site) }
   let!(:millbrook_site) { create(:millbrook_site, is_published: true) }
   let!(:ashdale_site) { create(:ashdale_site, is_published: true) }
   let!(:coastshire_site) { create(:coastshire_site, is_published: true) }

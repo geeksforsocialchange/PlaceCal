@@ -90,27 +90,31 @@ class ApplicationController < ActionController::Base
 
   # Get an object representing the requested site.
   # Note:
-  #   The admin site does not have a Site object.
+  #   The admin site does not have a Site object, and neither does the
+  #   nationwide directory: an apex (no-subdomain) request resolves to nil.
   # Side effects:
-  #   If the requested site is invalid then redirect to the home page of the
-  #   default site.
+  #   An unmatched subdomain redirects to the apex (the directory).
   def current_site
-    return @current_site if @current_site
+    return @current_site if defined?(@current_site)
 
-    if Site.any?
-      # Do not return a site for the admin subdomain.
-      # The admin subdomain gives a global view of data.
-      return if request.subdomain == Site::ADMIN_SUBDOMAIN
+    # Do not return a site for the admin subdomain.
+    # The admin subdomain gives a global view of data.
+    return @current_site = nil if request.subdomain == Site::ADMIN_SUBDOMAIN
 
-      @current_site = Site.find_by_request(request)
+    @current_site = Site.find_by_request(request)
 
-      redirect_to(root_url(subdomain: false), allow_other_host: true) if @current_site.nil? && !response.redirect?
-    else
-      flash.now[:warning] = 'You have no site in your database, have you run `rails db:seed`?'
-      @current_site = Site.new
+    if @current_site.nil? && request.subdomain.present? &&
+       request.subdomain != 'www' && !response.redirect?
+      redirect_to(root_url(subdomain: false), allow_other_host: true)
     end
 
     @current_site
+  end
+
+  # @return [Boolean] true when this request is for the nationwide directory:
+  #   the apex (no matched site) outside the admin subdomain.
+  def directory_request?
+    current_site.nil? && request.subdomain != Site::ADMIN_SUBDOMAIN
   end
 
   def set_primary_neighbourhood
@@ -217,15 +221,15 @@ class ApplicationController < ActionController::Base
     @site = current_site
   end
 
-  def redirect_from_default_site
-    redirect_to '/find-placecal' if default_site?
+  def redirect_from_directory
+    redirect_to '/find-placecal' if directory_request?
   end
 
   def set_navigation
     return @navigation if @navigation
 
-    @navigation = if default_site?
-                    default_site_navigation
+    @navigation = if directory_request?
+                    directory_navigation
                   else
                     sub_site_navigation
                   end
@@ -252,11 +256,7 @@ class ApplicationController < ActionController::Base
     stored_location_for(resource_or_scope) || admin_root_url(subdomain: Site::ADMIN_SUBDOMAIN)
   end
 
-  def default_site?
-    current_site&.default_site?
-  end
-
-  def default_site_navigation
+  def directory_navigation
     [
       ['Home', root_path],
       ['Partners', partners_path],
