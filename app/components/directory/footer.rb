@@ -22,6 +22,7 @@ class Components::Directory::Footer < Components::Directory::Base
                          ])
       render_link_column(t('directory.footer.for_partners'), [
                            [t('directory.footer.get_in_touch'), :get_in_touch_path],
+                           [t('directory.footer.discord'), 'http://discord.gfsc.studio/'],
                            [t('directory.footer.admin_log_in'), :new_user_session_path]
                          ])
       render_link_column(t('directory.footer.about'), [
@@ -48,9 +49,10 @@ class Components::Directory::Footer < Components::Directory::Base
     div do
       h2(class: 'allcaps-label text-foreground mb-3') { title }
       ul(class: 'list-none space-y-1') do
-        links.each do |label, path_method|
+        links.each do |label, target|
           li do
-            link_to(label, send(path_method), class: 'font-serif text-detail text-foreground no-underline hover:underline hover:decoration-primary')
+            href = target.is_a?(Symbol) ? send(target) : target
+            link_to(label, href, class: 'font-serif text-detail text-foreground no-underline hover:underline hover:decoration-primary')
           end
         end
       end

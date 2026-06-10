@@ -12,6 +12,13 @@ RSpec.describe Components::Directory::Footer, type: :component do
     expect(logo[:alt]).to eq(I18n.t("directory.footer.gfsc_logo_alt"))
   end
 
+  it "links to the GFSC Discord" do
+    render_inline(described_class.new)
+
+    link = page.find("a", text: I18n.t("directory.footer.discord"))
+    expect(link[:href]).to eq("http://discord.gfsc.studio/")
+  end
+
   context "when APP_VERSION is set" do
     before do
       stub_const("ENV", ENV.to_hash.merge("APP_VERSION" => "v0.9.1"))
