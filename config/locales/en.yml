@@ -89,6 +89,22 @@ en:
     contact:
       get_in_touch: "Get in touch"
       no_contact: "No contact information — let us know!"
+    footer:
+      tagline: "An open, community-run directory of local events and services near you."
+      browse: "Browse"
+      events: "Events"
+      partners: "Partners"
+      partnerships: "Partnerships"
+      for_partners: "For partners"
+      get_in_touch: "Get in touch"
+      admin_log_in: "Admin log in"
+      about: "About"
+      our_story: "Our story"
+      privacy_policy: "Privacy policy"
+      terms_of_use: "Terms of use"
+      build: "Build:"
+      placecal_logo_alt: "PlaceCal logo"
+      gfsc_logo_alt: "Geeks for Social Change"
 
   # ===========================================================================
   # DATE & TIME FORMATS
