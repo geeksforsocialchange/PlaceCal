@@ -266,12 +266,13 @@ RSpec.describe Calendar, type: :model do
     end
 
     def with_env(vars)
-      old = {}
       old = vars.keys.index_with { |k| ENV.fetch(k, nil) }
       vars.each { |k, v| ENV[k] = v }
-      yield
-    ensure
-      old.each { |k, v| ENV[k] = v }
+      begin
+        yield
+      ensure
+        old.each { |k, v| ENV[k] = v }
+      end
     end
   end
 end
