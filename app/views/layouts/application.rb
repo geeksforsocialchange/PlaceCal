@@ -81,13 +81,19 @@ class Views::Layouts::Application < Phlex::HTML
     meta(name: 'description', content: description_text)
     meta(property: 'og:description', content: description_text)
 
-    if content_for?(:image)
+    # Admin and Devise pages get no og:image — shared admin URLs redirect to
+    # the login page, and link previews of those are just clutter (#2077).
+    if request.subdomain == 'admin' || devise_page?
+      # no og:image
+    elsif content_for?(:image)
       meta(property: 'og:image', content: image_url(content_for(:image)))
+      meta(property: 'og:image:alt', content: content_for(:image_alt)) if content_for?(:image_alt)
     else
-      meta(property: 'og:image', content: image_url('og/wide.png'))
-      meta(property: 'og:image:alt', content: 'PlaceCal logo')
-      meta(property: 'og:image:width', content: '1920')
-      meta(property: 'og:image:height', content: '1080')
+      # Generated share card (#2077): site card on a site subdomain, brand card otherwise
+      meta(property: 'og:image', content: og_image_url)
+      meta(property: 'og:image:alt', content: default_image_alt)
+      meta(property: 'og:image:width', content: '1200')
+      meta(property: 'og:image:height', content: '630')
     end
 
     meta(property: 'og:type', content: 'website')
@@ -111,6 +117,19 @@ class Views::Layouts::Application < Phlex::HTML
     return content_for(:title).to_s if content_for?(:title)
 
     site&.name || 'PlaceCal | The Community Calendar'
+  end
+
+  def devise_page?
+    controller = view_context.controller
+    controller.respond_to?(:devise_controller?) && controller.devise_controller?
+  end
+
+  def default_image_alt
+    if site
+      I18n.t('og_image.alt.site', name: site.name)
+    else
+      I18n.t('og_image.alt.generic')
+    end
   end
 
   def compute_description

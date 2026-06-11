@@ -100,10 +100,10 @@ jobs:
           bundler-cache: true
           cache-version: 3
 
-      - name: Install Imagemagick
+      - name: Install Imagemagick and libvips
         run: |
           sudo apt-get update
-          sudo apt-get install -y imagemagick
+          sudo apt-get install -y imagemagick libvips-dev
 
       - name: Install Chrome for browser tests
         if: matrix.suite == 'system' || startsWith(matrix.suite, 'cucumber')
