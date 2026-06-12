@@ -103,10 +103,7 @@ module OgImage
     end
 
     def ward
-      neighbourhood = partner.address&.neighbourhood
-      return nil unless neighbourhood
-
-      [neighbourhood.shortname, neighbourhood.unit].compact_blank.join(' ')
+      partner.address&.neighbourhood&.shortname
     end
 
     def upcoming_events_text
