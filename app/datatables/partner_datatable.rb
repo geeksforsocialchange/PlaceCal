@@ -12,6 +12,7 @@ class PartnerDatatable < Datatable
       admins: { source: 'Partner.id', searchable: false, orderable: false },
       categories: { source: 'Partner.id', searchable: false, orderable: false },
       updated_at: { source: 'Partner.updated_at', searchable: false, orderable: true },
+      info_confirmed_at: { source: 'Partner.info_confirmed_at', searchable: false, orderable: true },
       actions: { source: 'Partner.id', searchable: false, orderable: false }
     }
   end
@@ -31,6 +32,7 @@ class PartnerDatatable < Datatable
         admins: render_tick_cross(users_count.positive?, "#{users_count} admin#{'s' if users_count != 1}", 'No admins'),
         categories: render_tick_cross(categories_count.positive?, "#{categories_count} categor#{'y' if categories_count == 1}#{'ies' if categories_count != 1}", 'No categories'),
         updated_at: render_updated_at(record),
+        info_confirmed_at: render_relative_time(record.info_confirmed_at),
         actions: render_actions(record)
       }
     end

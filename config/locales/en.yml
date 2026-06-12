@@ -138,14 +138,70 @@ en:
       saved: "Your email preferences have been saved."
     expired:
       title: "This link has expired"
-      body: "For security, email preference links only work for a while. Open a more recent email from PlaceCal and use the preferences link in its footer."
+      body: "For security, links in our emails only work for a while. Open a more recent email from PlaceCal and use the link in that instead."
       contact: "No recent email to hand? We can sort it out at"
+
+  partner_info_confirmations:
+    show:
+      title: "Confirm your information"
+      intro: "You're confirming that the published information for these organisations is up to date:"
+      button: "Yes, everything is up to date"
+    confirmed:
+      title: "Thank you!"
+      thanks: "We've recorded that your information is up to date. This helps us keep PlaceCal accurate for everyone."
+      sign_in_prompt: "Spotted something that needs changing?"
+      sign_in: "Sign in to update your listing"
+
+  # Partner digest email (#3256). First-contact copy is a placeholder
+  # pending PHT sign-off (launch gate A5).
+  partner_digest_mailer:
+    digest:
+      subject: "Your PlaceCal listings — a quick check-in"
+
+  mailers:
+    partner_digest:
+      intro: "Here's your regular check-in on your PlaceCal account and what we're publishing about your organisation."
+      first_contact:
+        what_is_placecal: "You're receiving this because you (or someone at your organisation) have a PlaceCal account. PlaceCal is a community events calendar run by Geeks for Social Change, publishing information about local organisations and what they do."
+        why_this_email: "We've recently updated our privacy policy and introduced proper email preferences. We'll send you this check-in roughly every three months, so the information we publish about your organisation stays accurate. You can read more in our updated privacy policy:"
+        privacy_link: "PlaceCal privacy policy"
+        preferences_note: "You can change which emails we send you at any time, with one click and no login:"
+      preferences_link: "Change which emails you get from PlaceCal"
+      confirm:
+        prompt: "Is everything in this email still right?"
+        button: "Confirm everything is up to date"
+      view_listing: "View your public page"
+      healthy:
+        status: "Your events feed is connected and working."
+        last_synced: "Last synced %{ago} ago."
+        no_upcoming_events: "There are no upcoming events on your feed at the moment."
+        see_all: "See all your events"
+      failing:
+        problem: 'There''s a problem with your events feed "%{name}": %{reason}'
+        reasons:
+          error: "we couldn't read it the last time we tried."
+          bad_source: "the feed address doesn't point to a calendar we can read."
+        fix_link: "Fix your feed in the admin area"
+      no_calendar:
+        status: "You don't have an events feed connected. Your listing works fine without one — but connecting a feed, or adding events in the admin area, helps people find what you do."
+        connect_link: "Add events or connect a feed"
+        manual_events: "Your upcoming events:"
+      account:
+        heading: "Your account"
+        you_have_an_account: "You have a PlaceCal account for %{email}."
+        sign_in: "Sign in to update your listings"
+        forgotten_password: "Forgotten your password? Reset it here"
+      sign_off: "— The PlaceCal Team"
 
   # ===========================================================================
   # DATE & TIME FORMATS
   # ===========================================================================
 
   date:
+    formats:
+      datetime: "%b %-d, %Y %l:%M"
+
+  time:
     formats:
       datetime: "%b %-d, %Y %l:%M"
 

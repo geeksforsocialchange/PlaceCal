@@ -32,6 +32,8 @@ class Partner < ApplicationRecord
   attribute :hidden_reason,           :text                        # nullable
   attribute :hidden_reason_html,      :string                      # nullable, populated by HtmlRenderCache
   # image -- managed by CarrierWave, attribute declaration skipped
+  attribute :info_confirmed_at,       :datetime                    # nullable, written by the digest confirm link
+  attribute :info_confirmed_source,   :string                      # nullable
   attribute :instagram_handle,        :string                      # nullable
   attribute :is_a_place,              :boolean, default: false     # NOT NULL
   attribute :name,                    :string                      # NOT NULL
@@ -65,6 +67,7 @@ class Partner < ApplicationRecord
   has_many :calendars, foreign_key: :organiser_id, dependent: :destroy, inverse_of: :organiser
   has_many :events, foreign_key: :organiser_id, dependent: :destroy, inverse_of: :organiser
   belongs_to :address, optional: true, dependent: :destroy
+  belongs_to :info_confirmed_by, class_name: 'User', optional: true
 
   has_many :partner_tags, dependent: :destroy
   has_many :tags, through: :partner_tags
@@ -200,6 +203,18 @@ class Partner < ApplicationRecord
   end
 
   # ==== Instance methods ====
+
+  # Records that a partner admin has confirmed the listing is up to date
+  # (the digest's confirm button — #3256). Surfaced in the admin partner
+  # index as a staleness indicator.
+  #
+  # @param by [User]
+  # @param source [String] e.g. 'digest_link'
+  def confirm_information!(by:, source:)
+    update!(info_confirmed_at: Time.current,
+            info_confirmed_by: by,
+            info_confirmed_source: source)
+  end
 
   # Strips leading @ from Twitter handles before saving.
   # @param handle [String, nil]

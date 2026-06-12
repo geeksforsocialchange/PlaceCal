@@ -35,6 +35,7 @@ class User < ApplicationRecord
   attribute :email,                    :string, default: ''     # NOT NULL
   attribute :first_name,               :string                  # nullable
   attribute :last_name,                :string                  # nullable
+  attribute :partner_digest_last_sent_at, :datetime             # nullable, nil = never sent (first-contact variant)
   attribute :phone,                    :string                  # nullable
   # role -- managed by enumerize, attribute declaration skipped  # NOT NULL
   attribute :skip_password_validation, :boolean, default: false # virtual, used by Devise password_required?
@@ -47,6 +48,11 @@ class User < ApplicationRecord
   # has_many :partners, through: :partners_users
 
   has_and_belongs_to_many :partners
+  has_many :info_confirmed_partners,
+           class_name: 'Partner',
+           foreign_key: :info_confirmed_by_id,
+           inverse_of: :info_confirmed_by,
+           dependent: :nullify
   has_many :sites, foreign_key: :site_admin_id, inverse_of: :site_admin, dependent: :nullify
   has_many :articles, foreign_key: :author_id, inverse_of: :author, dependent: :nullify
 

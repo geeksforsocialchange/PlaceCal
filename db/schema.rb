@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_12_120100) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_12_150000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -254,6 +254,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_12_120100) do
     t.text "hidden_reason"
     t.string "hidden_reason_html"
     t.string "image"
+    t.datetime "info_confirmed_at"
+    t.bigint "info_confirmed_by_id"
+    t.string "info_confirmed_source"
     t.string "instagram_handle"
     t.boolean "is_a_place", default: false, null: false
     t.string "name", null: false
@@ -273,6 +276,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_12_120100) do
     t.index "lower((name)::text)", name: "index_partners_lower_name_", unique: true
     t.index ["address_id"], name: "index_partners_on_address_id"
     t.index ["hidden"], name: "index_partners_hidden"
+    t.index ["info_confirmed_by_id"], name: "index_partners_on_info_confirmed_by_id"
     t.index ["slug"], name: "index_partners_on_slug", unique: true
   end
 
@@ -403,6 +407,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_12_120100) do
     t.string "last_name"
     t.datetime "last_sign_in_at", precision: nil
     t.inet "last_sign_in_ip"
+    t.datetime "partner_digest_last_sent_at"
     t.string "phone"
     t.datetime "remember_created_at", precision: nil
     t.datetime "reset_password_sent_at", precision: nil
@@ -449,6 +454,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_12_120100) do
   add_foreign_key "partner_tags", "partners"
   add_foreign_key "partner_tags", "tags"
   add_foreign_key "partners", "addresses"
+  add_foreign_key "partners", "users", column: "info_confirmed_by_id"
   add_foreign_key "partners_users", "partners"
   add_foreign_key "partners_users", "users"
   add_foreign_key "service_areas", "neighbourhoods"

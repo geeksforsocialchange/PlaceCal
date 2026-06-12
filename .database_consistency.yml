@@ -35,6 +35,9 @@ User:
   authored_email_subscription_events:
     ForeignKeyCascadeChecker:
       enabled: false # Using model-level dependent: :nullify
+  info_confirmed_partners:
+    ForeignKeyCascadeChecker:
+      enabled: false # Using model-level dependent: :nullify
 
 # Audit trail: old_subscribed is nil when there was no previous record,
 # so the three-state boolean is intentional

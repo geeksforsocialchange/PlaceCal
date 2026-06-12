@@ -10,7 +10,7 @@ class RecurringWatchdogJob < ApplicationJob
 
   INTERVAL = 6.hours
 
-  WATCHED_JOBS = [RecurringCalendarScanJob, RecurringMaintenanceJob].freeze
+  WATCHED_JOBS = [RecurringCalendarScanJob, RecurringMaintenanceJob, RecurringPartnerDigestJob].freeze
 
   def perform
     run do

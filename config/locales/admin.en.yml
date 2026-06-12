@@ -451,6 +451,8 @@ en:
     # Partners
     # -------------------------------------------------------------------------
     partners:
+      columns:
+        info_confirmed: "Info Confirmed"
       filters:
         has_calendar: "Has Calendar?"
         has_admin: "Has Admin?"

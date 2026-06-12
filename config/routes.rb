@@ -104,6 +104,10 @@ Rails.application.routes.draw do
   post 'email-preferences/unsubscribe', to: 'email_preferences#one_click_unsubscribe',
                                         as: :email_preferences_unsubscribe
 
+  # Signed, no-login "confirm everything is up to date" landing (digest button)
+  get 'confirm-partner-info', to: 'partner_info_confirmations#show', as: :partner_info_confirmation
+  post 'confirm-partner-info', to: 'partner_info_confirmations#create'
+
   # ============================================================
   # Legacy & deprecated
   # ============================================================
