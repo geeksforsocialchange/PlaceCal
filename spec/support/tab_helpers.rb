@@ -2,16 +2,30 @@
 
 # Helpers for interacting with daisyUI tabs in system/feature specs
 module TabHelpers
+  # Wait for the form-tabs Stimulus controller to be connected, not just for
+  # the data-controller attribute (present in the raw HTML before JS boots).
+  # Clicking a tab before connect() can be silently reverted by
+  # restoreTabAfterSave().
+  def wait_for_form_tabs
+    expect(page).to have_css("[data-form-tabs-connected]")
+  end
+
+  # Wait for the save-bar Stimulus controller to be connected. Button
+  # visibility only updates via listeners attached in its connect().
+  def wait_for_save_bar
+    expect(page).to have_css("[data-save-bar-connected]")
+  end
+
   # Click a tab by its data-hash attribute and wait for the panel to be visible
   def click_tab(hash)
-    expect(page).to have_css("[data-controller*='form-tabs']")
+    wait_for_form_tabs
     find("input.tab[data-hash='#{hash}']").click
     expect(page).to have_css("[data-section='#{hash}']", visible: true)
   end
 
   # Navigate to a partner form tab by its aria-label (includes emoji prefix)
   def go_to_partner_tab(tab_label)
-    expect(page).to have_css("[data-controller*='form-tabs']")
+    wait_for_form_tabs
     tab = find("input.tab[aria-label='#{tab_label}']")
     tab.click
     tab_hash = tab["data-hash"]
