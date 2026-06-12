@@ -107,7 +107,7 @@ module OgImage
     end
 
     def label
-      t('labels.site')
+      t('labels.community_site')
     end
 
     def label_colour
