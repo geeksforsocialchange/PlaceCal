@@ -620,7 +620,11 @@ en:
         tabs:
           personal: "Personal Details"
           password: "Change Password"
+          emails: "Email Preferences"
           permissions: "My Permissions"
+        emails:
+          intro: "Choose which emails PlaceCal sends you. Changes are saved with your profile."
+          essential_note: "Essential emails, like password resets and invitations, only arrive when you (or someone managing your organisation) asks for them."
         password_title: "Change Password"
         password_description: "Leave blank to keep your current password."
         new_password: "New Password"

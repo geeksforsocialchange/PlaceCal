@@ -117,6 +117,31 @@ en:
       gfsc_logo_alt: "Geeks for Social Change"
 
   # ===========================================================================
+  # EMAIL LISTS & PREFERENCES (see doc/adr/0015)
+  # ===========================================================================
+
+  email_lists:
+    partner_digest:
+      name: "Partner digest"
+      description: "A regular (roughly quarterly) reminder that you have a PlaceCal account, what's published on your listings, whether your events feeds are working, and how to sign in."
+    partnership_updates:
+      name: "Partnership updates"
+      description: "Occasional updates from the people coordinating partnerships your organisation belongs to. We only send these if you've opted in."
+
+  email_preferences:
+    show:
+      title: "Email preferences"
+      intro: "Choose which emails we send to %{email}. Changes take effect straight away — no login needed."
+      save: "Save preferences"
+      essential_note: "Essential emails, like password resets and invitations, only arrive when you (or someone managing your organisation) asks for them."
+    update:
+      saved: "Your email preferences have been saved."
+    expired:
+      title: "This link has expired"
+      body: "For security, email preference links only work for a while. Open a more recent email from PlaceCal and use the preferences link in its footer."
+      contact: "No recent email to hand? We can sort it out at"
+
+  # ===========================================================================
   # DATE & TIME FORMATS
   # ===========================================================================
 

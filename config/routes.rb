@@ -98,6 +98,12 @@ Rails.application.routes.draw do
   get 'privacy', to: 'pages#privacy'
   get 'terms-of-use', to: 'pages#terms_of_use'
 
+  # Signed, no-login email preferences (not in the sitemap: token-gated)
+  get 'email-preferences', to: 'email_preferences#show', as: :email_preferences
+  patch 'email-preferences', to: 'email_preferences#update'
+  post 'email-preferences/unsubscribe', to: 'email_preferences#one_click_unsubscribe',
+                                        as: :email_preferences_unsubscribe
+
   # ============================================================
   # Legacy & deprecated
   # ============================================================

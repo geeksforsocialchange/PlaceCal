@@ -49,6 +49,15 @@ class Views::Admin::Users::Profile < Views::Admin::Base
 
       TabPanel(
         name: 'profile_tabs',
+        label: "\u{2709}\u{FE0F} #{t('admin.users.profile.tabs.emails')}",
+        hash: 'emails',
+        controller_name: 'form-tabs'
+      ) do
+        render Views::Admin::Users::ProfileTabEmails.new
+      end
+
+      TabPanel(
+        name: 'profile_tabs',
         label: "\u{1F6E1}\u{FE0F} #{t('admin.users.profile.tabs.permissions')}",
         hash: 'permissions',
         controller_name: 'form-tabs'

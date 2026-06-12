@@ -56,6 +56,16 @@ class User < ApplicationRecord
 
   has_many :tags_users, dependent: :destroy
   has_many :tags, through: :tags_users
+
+  # Email consent records are erased with the account (right to erasure);
+  # delete_all/nullify bypass EmailSubscriptionEvent's append-only guard.
+  has_many :email_subscriptions, dependent: :delete_all
+  has_many :email_subscription_events, dependent: :delete_all
+  has_many :authored_email_subscription_events,
+           class_name: 'EmailSubscriptionEvent',
+           foreign_key: :actor_id,
+           inverse_of: :actor,
+           dependent: :nullify
   has_many :partnerships, -> { where(type: 'Partnership') }, through: :tags_users, source: :tag
 
   # ==== Uploaders ====

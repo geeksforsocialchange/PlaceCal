@@ -15,6 +15,7 @@ module Admin
       authorize current_user, :update_profile?
 
       if update_user_profile
+        apply_email_subscriptions
         bypass_sign_in(current_user)
         flash[:success] = 'User profile has been updated'
         redirect_to admin_profile_path
@@ -151,6 +152,18 @@ module Admin
                                    :current_password,
                                    :phone,
                                    :avatar)
+    end
+
+    def email_subscription_params
+      params.require(:user)[:email_subscriptions]&.permit(*EmailList.keys) || {}
+    end
+
+    def apply_email_subscriptions
+      email_subscription_params.each do |list_key, value|
+        EmailSubscription.set(current_user, list_key,
+                              ActiveModel::Type::Boolean.new.cast(value),
+                              source: :profile_page, actor: current_user)
+      end
     end
 
     def update_user_profile

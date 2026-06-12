@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_10_090000) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_12_120100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -118,6 +118,29 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_10_090000) do
     t.datetime "run_at", precision: nil
     t.datetime "updated_at", precision: nil
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
+  end
+
+  create_table "email_subscription_events", force: :cascade do |t|
+    t.bigint "actor_id"
+    t.datetime "created_at", null: false
+    t.string "list_key", null: false
+    t.boolean "new_subscribed", null: false
+    t.boolean "old_subscribed"
+    t.string "source", null: false
+    t.bigint "user_id", null: false
+    t.index ["actor_id"], name: "index_email_subscription_events_on_actor_id"
+    t.index ["user_id"], name: "index_email_subscription_events_on_user_id"
+  end
+
+  create_table "email_subscriptions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "list_key", null: false
+    t.string "source", null: false
+    t.boolean "subscribed", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id", "list_key"], name: "index_email_subscriptions_on_user_id_and_list_key", unique: true
+    t.index ["user_id"], name: "index_email_subscriptions_on_user_id"
   end
 
   create_table "events", force: :cascade do |t|
@@ -412,6 +435,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_10_090000) do
   add_foreign_key "articles", "users", column: "author_id"
   add_foreign_key "calendars", "partners", column: "organiser_id"
   add_foreign_key "calendars", "partners", column: "place_id"
+  add_foreign_key "email_subscription_events", "users"
+  add_foreign_key "email_subscription_events", "users", column: "actor_id"
+  add_foreign_key "email_subscriptions", "users"
   add_foreign_key "events", "addresses"
   add_foreign_key "events", "calendars"
   add_foreign_key "events", "online_addresses"
