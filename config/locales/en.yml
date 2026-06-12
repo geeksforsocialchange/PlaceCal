@@ -139,6 +139,7 @@ en:
       partner: "Partner"
       partnership: "Partnership"
       site: "Site"
+      community_site: "Community site"
     upcoming_events:
       one: "1 upcoming event"
       other: "%{count} upcoming events"

@@ -4,7 +4,7 @@ require 'vips'
 
 module OgImage
   # Bump to invalidate cached cards when the design changes.
-  VERSION = 1
+  VERSION = 2
 
   # Renders 1200x630 Open Graph share card PNGs with libvips.
   #
@@ -49,7 +49,9 @@ module OgImage
       users: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>' \
              '<path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
       globe: '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>' \
-             '<path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>'
+             '<path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+      map: '<polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/>' \
+           '<line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/>'
     }.freeze
 
     def to_png
@@ -126,19 +128,35 @@ module OgImage
 
     # ==== Drawing helpers ====
 
-    # Category pill: 22px extrabold uppercase with 2.5px tracking on a 44px
-    # rounded bar, 24px side padding.
-    def pill(text_value, background, foreground)
-      label_img = text(text_value.upcase, size: 22, face: 'Rawline ExtraBold', colour: foreground,
+    # Category pill: extrabold uppercase with 2.5px tracking on a rounded bar.
+    # rubocop:disable Metrics/ParameterLists -- keyword args mirroring CSS pill properties
+    def pill(text_value, background, foreground, size: 22, pad: 24, height: PILL_HEIGHT)
+      label_img = text(text_value.upcase, size: size, face: 'Rawline ExtraBold', colour: foreground,
                                           letter_spacing: 2.5)
-      width = label_img.width + 48
-      height = PILL_HEIGHT
+      width = label_img.width + (pad * 2)
       bar = svg(<<~SVG)
         <svg xmlns="http://www.w3.org/2000/svg" width="#{width}" height="#{height}">
           <rect width="#{width}" height="#{height}" rx="#{height / 2}" fill="#{background}"/>
         </svg>
       SVG
-      composite(bar, label_img, 24, ((height - label_img.height) / 2.0).round)
+      composite(bar, label_img, pad, ((height - label_img.height) / 2.0).round)
+    end
+    # rubocop:enable Metrics/ParameterLists
+
+    # Load an uploaded photo, cover-cropped to width x height with optional
+    # rounded corners applied through an alpha mask.
+    def photo(path, width:, height:, radius: nil)
+      img = Vips::Image.thumbnail(path, width, height: height, crop: :centre)
+      img = img.colourspace(:srgb) unless img.interpretation == :srgb
+      img = img.flatten(background: hex_to_rgb(CREAM)) if img.has_alpha?
+      return img.bandjoin(255) unless radius
+
+      mask = svg(<<~SVG)
+        <svg xmlns="http://www.w3.org/2000/svg" width="#{width}" height="#{height}">
+          <rect width="#{width}" height="#{height}" rx="#{radius}" fill="#fff"/>
+        </svg>
+      SVG
+      img.bandjoin(mask[3])
     end
 
     def title_text(value, size: 76, line_height: 1.04)

@@ -32,6 +32,11 @@ RSpec.describe "OgImage cards" do
       partner = create(:partner)
       expect_card_png(described_class.new(partner).to_png)
     end
+
+    it "renders the photo layout when the partner has an image" do
+      partner = create(:partner, image: File.open(Rails.root.join("spec/fixtures/files/good-cat-picture.jpg")))
+      expect_card_png(described_class.new(partner).to_png)
+    end
   end
 
   describe OgImage::PartnershipCard do
@@ -44,6 +49,12 @@ RSpec.describe "OgImage cards" do
   describe OgImage::SiteCard do
     it "renders a 1200x630 PNG" do
       site = create(:site, tagline: "The Community Calendar")
+      expect_card_png(described_class.new(site).to_png)
+    end
+
+    it "renders the hero layout when the site has a hero image" do
+      site = create(:site, tagline: "The Community Calendar",
+                           hero_image: File.open(Rails.root.join("spec/fixtures/files/test_image.jpg")))
       expect_card_png(described_class.new(site).to_png)
     end
   end
