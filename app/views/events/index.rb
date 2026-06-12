@@ -14,7 +14,6 @@ class Views::Events::Index < Views::Base
 
   def view_template
     content_for(:title) { 'Events' }
-    content_for(:image) { site.og_image }
     content_for(:description) { site.og_description }
 
     Hero('Events & activities', site.tagline)

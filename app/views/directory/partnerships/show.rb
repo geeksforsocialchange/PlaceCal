@@ -12,6 +12,8 @@ class Views::Directory::Partnerships::Show < Views::Base
 
   def view_template
     content_for(:title) { @partnership.name }
+    content_for(:image) { partnership_og_image_url(@partnership) }
+    content_for(:image_alt) { t('og_image.alt.partnership', name: @partnership.name) }
     content_for(:description) { @partnership.description.presence || "#{@partnership.name} — a PlaceCal partnership bringing together community partners and events." }
 
     Directory::PageHero(

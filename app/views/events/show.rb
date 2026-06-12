@@ -12,7 +12,8 @@ class Views::Events::Show < Views::Base
 
   def view_template
     content_for(:title) { event.og_title }
-    content_for(:image) { site.og_image } if site
+    content_for(:image) { event_og_image_url(event) }
+    content_for(:image_alt) { t('og_image.alt.event', name: event.summary) }
     content_for(:description) { html_to_plaintext(event.description_html) }
     content_for(:json_ld) { safe(event.to_json_ld(base_url: request.base_url).to_json) }
 

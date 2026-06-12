@@ -124,6 +124,39 @@ en:
     formats:
       datetime: "%b %-d, %Y %l:%M"
 
+  time:
+    formats:
+      og_date: "%A %-d %B %Y"
+      og_time: "%-l:%M%P"
+
+  # ===========================================================================
+  # OPEN GRAPH SHARE CARDS
+  # ===========================================================================
+
+  og_image:
+    labels:
+      event: "Event"
+      partner: "Partner"
+      partnership: "Partnership"
+      community_site: "Community site"
+    upcoming_events:
+      one: "1 upcoming event"
+      other: "%{count} upcoming events"
+    partner_organisations:
+      one: "1 partner organisation"
+      other: "%{count} partner organisations"
+    events_this_month:
+      one: "1 event this month"
+      other: "%{count} events this month"
+    powered_by: "Powered by"
+    generic:
+      statement: "Events and activities by and for your community"
+    alt:
+      event: "Details for the event %{name} on PlaceCal"
+      partner: "Details for the partner %{name} on PlaceCal"
+      partnership: "Details for the partnership %{name} on PlaceCal"
+      site: "%{name}, powered by PlaceCal"
+
   # ===========================================================================
   # ENUMERIZE (Calendar types)
   # ===========================================================================
