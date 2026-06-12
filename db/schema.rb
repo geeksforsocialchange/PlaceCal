@@ -140,7 +140,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_12_120100) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["user_id", "list_key"], name: "index_email_subscriptions_on_user_id_and_list_key", unique: true
-    t.index ["user_id"], name: "index_email_subscriptions_on_user_id"
   end
 
   create_table "events", force: :cascade do |t|
