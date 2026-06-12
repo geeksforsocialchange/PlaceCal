@@ -18,6 +18,13 @@ RSpec.describe PartnerDigest do
       expect(described_class.new(user).sections.map(&:partner)).to eq [apple, zebra]
     end
 
+    it "excludes hidden partners — the digest describes what's published" do
+      hidden = create(:partner, hidden: true, hidden_reason: "Moderated", hidden_blame_id: 1)
+      user.partners << hidden
+
+      expect(described_class.new(user).sections).to be_empty
+    end
+
     context "with a working feed" do
       let(:partner) { create(:partner) }
 

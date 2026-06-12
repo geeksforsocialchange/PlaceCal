@@ -6,11 +6,16 @@
 # actually delivered — a user suppressed by the subscription guard keeps
 # their first-contact state for if they ever resubscribe.
 class PartnerDigestDeliveryJob < ApplicationJob
+  # The user erased their account between enqueue and send — nothing to do
+  discard_on ActiveJob::DeserializationError
+
   def perform(user)
-    return unless user.partners.any?
     return unless due?(user)
 
-    mail = PartnerDigestMailer.digest(user)
+    digest = PartnerDigest.new(user)
+    return if digest.sections.empty?
+
+    mail = PartnerDigestMailer.digest(user, digest: digest)
     mail.deliver_now
 
     user.update!(partner_digest_last_sent_at: Time.current) if mail.perform_deliveries

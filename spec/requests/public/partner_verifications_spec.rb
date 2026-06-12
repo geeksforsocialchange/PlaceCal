@@ -3,7 +3,10 @@
 require "rails_helper"
 
 RSpec.describe "Partner verifications", type: :request do
-  let(:partner) { create(:partner, name: "Dalston Community Cafe", hidden: true, hidden_reason: "New", hidden_blame_id: 1) }
+  let(:partner) do
+    create(:partner, name: "Dalston Community Cafe", hidden: true,
+                     hidden_reason: Partner::VERIFICATION_HOLD_REASON, hidden_blame_id: 1)
+  end
   let(:token) { PartnerVerificationsController.token_for(partner) }
   let(:host) { "lvh.me" }
 
@@ -48,6 +51,17 @@ RSpec.describe "Partner verifications", type: :request do
 
       expect(response).to have_http_status(:gone)
       expect(partner.reload.verified_at).to be_nil
+    end
+
+    it "records consent but does not unhide a partner hidden by a moderator" do
+      partner.update!(hidden_reason: "Duplicate of another listing")
+
+      post partner_verification_url(host: host), params: { token: token }
+
+      partner.reload
+      expect(partner.verified_at).to be_present
+      expect(partner.partner_consents.last.basis).to eq "verified_by_email"
+      expect(partner.hidden).to be true
     end
   end
 end

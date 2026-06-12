@@ -16,6 +16,16 @@ class PartnerDigest
 
   attr_reader :user
 
+  # Shared by the HTML and text views: which i18n reason applies to a
+  # failing calendar (critical errors without a failing state read as
+  # :error)
+  # @param calendar [Calendar]
+  # @return [String]
+  def self.failing_reason_key(calendar)
+    state = calendar.calendar_state.to_s
+    FAILING_STATES.include?(state) ? state : 'error'
+  end
+
   # @param user [User]
   # @param sections [Array<Section>, nil] override for previews/tests
   def initialize(user, sections: nil)
@@ -23,9 +33,11 @@ class PartnerDigest
     @sections = sections
   end
 
-  # @return [Array<Section>] one per partner, ordered by name
+  # @return [Array<Section>] one per visible partner, ordered by name —
+  #   the digest describes what's published, so hidden partners are out
   def sections
-    @sections ||= user.partners.order(:name).map { |partner| build_section(partner) }
+    @sections ||= user.partners.visible.includes(:calendars).order(:name)
+                      .map { |partner| build_section(partner) }
   end
 
   # The first digest doubles as reintroduction, transparency notice and

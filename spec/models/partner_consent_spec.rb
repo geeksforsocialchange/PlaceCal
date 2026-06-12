@@ -25,14 +25,30 @@ RSpec.describe PartnerConsent, type: :model do
   end
 
   describe "Partner#verify!" do
-    it "publishes the partner and writes the consent record atomically" do
-      hidden = create(:partner, hidden: true, hidden_reason: "Awaiting verification", hidden_blame_id: 1)
+    it "publishes a verification-held partner and writes the consent record atomically" do
+      hidden = create(:partner, hidden: true, hidden_reason: Partner::VERIFICATION_HOLD_REASON, hidden_blame_id: 1)
 
       hidden.verify!
 
       expect(hidden.reload.hidden).to be false
       expect(hidden.verified_at).to be_within(1.minute).of(Time.current)
       expect(hidden.partner_consents.last.basis).to eq "verified_by_email"
+    end
+
+    it "leaves a moderator-hidden partner hidden" do
+      moderated = create(:partner, hidden: true, hidden_reason: "Spam listing", hidden_blame_id: 1)
+
+      moderated.verify!
+
+      expect(moderated.reload.hidden).to be true
+      expect(moderated.verified_at).to be_present
+    end
+
+    it "is idempotent: a second verify does not add another consent record" do
+      verified = create(:partner)
+      verified.verify!
+
+      expect { verified.verify! }.not_to change(described_class, :count)
     end
   end
 end

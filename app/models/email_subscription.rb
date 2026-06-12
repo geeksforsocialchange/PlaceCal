@@ -39,6 +39,17 @@ class EmailSubscription < ApplicationRecord
     row ? row.subscribed : list.default_subscribed?
   end
 
+  # Batch form of .subscribed? — one query for any number of users.
+  #
+  # @param users [Enumerable<User>]
+  # @param list_key [String, Symbol]
+  # @return [Array<User>] the subset effectively subscribed to the list
+  def self.subscribed_users(users, list_key)
+    list = EmailList.find!(list_key)
+    explicit = where(user: users, list_key: list.key.to_s).pluck(:user_id, :subscribed).to_h
+    users.select { |user| explicit.fetch(user.id, list.default_subscribed?) }
+  end
+
   # The single write path: upserts the row and appends an audit event.
   # A no-op when the explicit recorded state is unchanged.
   #

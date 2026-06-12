@@ -108,7 +108,6 @@ class Views::Mailers::PartnerDigest::DigestText < Views::TextBase
   end
 
   def failing_reason(calendar)
-    state = PartnerDigest::FAILING_STATES.include?(calendar.calendar_state.to_s) ? calendar.calendar_state : 'error'
-    t("mailers.partner_digest.failing.reasons.#{state}")
+    t("mailers.partner_digest.failing.reasons.#{PartnerDigest.failing_reason_key(calendar)}")
   end
 end

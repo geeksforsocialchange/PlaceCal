@@ -47,9 +47,10 @@ class RecurringPartnerDigestJob < ApplicationJob
   def due_users
     cutoff = self.class.send_interval.ago
 
-    User.joins(:partners)
-        .where(partner_digest_last_sent_at: [nil, ..cutoff])
-        .distinct
-        .select { |user| EmailSubscription.subscribed?(user, :partner_digest) }
+    due = User.joins(:partners)
+              .where(partner_digest_last_sent_at: [nil, ..cutoff])
+              .distinct
+
+    EmailSubscription.subscribed_users(due, :partner_digest)
   end
 end

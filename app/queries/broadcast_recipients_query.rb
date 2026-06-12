@@ -24,7 +24,7 @@ class BroadcastRecipientsQuery
 
   # @return [Array<User>] those who have opted in to partnership_updates
   def eligible
-    @eligible ||= users.select { |user| EmailSubscription.subscribed?(user, :partnership_updates) }
+    @eligible ||= EmailSubscription.subscribed_users(users, :partnership_updates)
   end
 
   # @return [Integer] reachable people excluded for lack of consent

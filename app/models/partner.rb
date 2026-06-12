@@ -13,6 +13,9 @@ class Partner < ApplicationRecord
   MAX_CATEGORIES = 3
   NEIGHBOURHOOD_UNIT_RANK = %w[ward district county region].freeze
 
+  # hidden_reason used when a partner is created unlisted pending email
+  # verification — the only hide that #verify! is allowed to lift
+  VERIFICATION_HOLD_REASON = 'Awaiting verification'
   # ==== Attributes ====
   # Columns marked (nullable) have no NOT NULL constraint in the DB.
   attribute :accessibility_info,      :text                        # nullable
@@ -54,6 +57,7 @@ class Partner < ApplicationRecord
   attribute :verified_at,                 :datetime                # nullable
 
   attr_accessor :accessed_by_user
+
   # Virtual: consent provenance chosen on the creation form; written to
   # partner_consents by the controller after save
   attr_accessor :consent_basis
@@ -228,10 +232,19 @@ class Partner < ApplicationRecord
 
   # The verify-before-visible flow (#3256 phase 5): clicking the signed
   # link in the verification email publishes the partner and writes the
-  # consent record in one step.
+  # consent record in one step. A partner hidden by a moderator for any
+  # other reason stays hidden — verification records consent but must not
+  # override moderation. Locked so two rapid clicks can't double-record.
   def verify!
-    transaction do
-      update!(verified_at: Time.current, hidden: false)
+    with_lock do
+      break if verified_at
+
+      if !hidden || hidden_reason == VERIFICATION_HOLD_REASON
+        # Empty string, not nil: HtmlRenderCache can't render nil markdown
+        update!(verified_at: Time.current, hidden: false, hidden_reason: '', hidden_blame_id: nil)
+      else
+        update!(verified_at: Time.current)
+      end
       partner_consents.create!(basis: 'verified_by_email')
     end
   end
