@@ -616,6 +616,12 @@ en:
         invite: "Invite User"
       danger_zone:
         site_admin_warning: "This user is a site administrator and cannot be deleted. Remove them as a site admin first."
+      send_login_help:
+        resend_invitation: "Re-send invitation"
+        send_reset: "Send password reset"
+        confirm: "Send a login email to %{email}?"
+        invitation_sent: "Invitation re-sent to %{email}"
+        reset_sent: "Password reset email sent to %{email}"
       profile:
         title: "Your Profile"
         save_button: "Save Profile"

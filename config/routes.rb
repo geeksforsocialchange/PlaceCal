@@ -52,6 +52,7 @@ Rails.application.routes.draw do
       end
       member do
         patch :update_profile
+        post :send_login_help
       end
     end
 
