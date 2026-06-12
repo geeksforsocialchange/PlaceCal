@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_12_170000) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_12_180000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -227,6 +227,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_12_170000) do
     t.index ["partner_subject_id", "verb", "partner_object_id"], name: "unique_organisation_relationship_row", unique: true
   end
 
+  create_table "partner_consents", force: :cascade do |t|
+    t.string "basis", null: false
+    t.datetime "created_at", null: false
+    t.bigint "partner_id", null: false
+    t.bigint "recorded_by_id"
+    t.index ["partner_id"], name: "index_partner_consents_on_partner_id"
+    t.index ["recorded_by_id"], name: "index_partner_consents_on_recorded_by_id"
+  end
+
   create_table "partner_tags", force: :cascade do |t|
     t.bigint "partner_id", null: false
     t.bigint "tag_id", null: false
@@ -273,6 +282,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_12_170000) do
     t.string "twitter_handle"
     t.datetime "updated_at", precision: nil, null: false
     t.string "url"
+    t.string "verification_invite_email"
+    t.datetime "verification_invite_sent_at"
+    t.datetime "verified_at"
     t.index "lower((name)::text)", name: "index_partners_lower_name_", unique: true
     t.index ["address_id"], name: "index_partners_on_address_id"
     t.index ["hidden"], name: "index_partners_hidden"
@@ -464,6 +476,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_12_170000) do
   add_foreign_key "neighbourhoods_users", "users"
   add_foreign_key "organisation_relationships", "partners", column: "partner_object_id"
   add_foreign_key "organisation_relationships", "partners", column: "partner_subject_id"
+  add_foreign_key "partner_consents", "partners"
+  add_foreign_key "partner_consents", "users", column: "recorded_by_id"
   add_foreign_key "partner_tags", "partners"
   add_foreign_key "partner_tags", "tags"
   add_foreign_key "partners", "addresses"

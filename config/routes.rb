@@ -40,6 +40,7 @@ Rails.application.routes.draw do
       end
       member do
         delete :clear_address
+        post :send_verification_invite
       end
     end
     resources :partnerships do
@@ -110,6 +111,10 @@ Rails.application.routes.draw do
   # Signed, no-login "confirm everything is up to date" landing (digest button)
   get 'confirm-partner-info', to: 'partner_info_confirmations#show', as: :partner_info_confirmation
   post 'confirm-partner-info', to: 'partner_info_confirmations#create'
+
+  # Signed, no-login partner verification landing (verify-before-visible)
+  get 'verify-partner', to: 'partner_verifications#show', as: :partner_verification
+  post 'verify-partner', to: 'partner_verifications#create'
 
   # ============================================================
   # Legacy & deprecated

@@ -38,6 +38,17 @@ User:
   info_confirmed_partners:
     ForeignKeyCascadeChecker:
       enabled: false # Using model-level dependent: :nullify
+  recorded_partner_consents:
+    ForeignKeyCascadeChecker:
+      enabled: false # Using model-level dependent: :nullify
+  sent_partnership_broadcasts:
+    ForeignKeyCascadeChecker:
+      enabled: false # Using model-level dependent: :nullify
+
+Partner:
+  partner_consents:
+    ForeignKeyCascadeChecker:
+      enabled: false # Using model-level dependent: :delete_all (append-only table)
 
 # Audit trail: old_subscribed is nil when there was no previous record,
 # so the three-state boolean is intentional

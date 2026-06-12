@@ -152,13 +152,37 @@ en:
       sign_in_prompt: "Spotted something that needs changing?"
       sign_in: "Sign in to update your listing"
 
+  partner_verifications:
+    show:
+      title: "Confirm %{partner} on PlaceCal"
+      breadcrumb: "Verify"
+      intro: "Someone from your community added %{partner} to PlaceCal, a community events calendar. We'd like your okay before the listing goes public."
+      what_happens: "Confirming publishes your listing and records that you've agreed to appear on PlaceCal. You can ask us to change or remove it at any time."
+      button: "Publish %{partner} on PlaceCal"
+    verified:
+      title: "You're on PlaceCal!"
+      thanks: "Thanks — %{partner} is now published and we've recorded your consent."
+      view_listing: "See your public listing"
+      account_note: "Want to manage the listing yourself? We can set you up with an account — just email"
+
   # Partner digest email (#3256). First-contact copy is a placeholder
   # pending GFSC CIC sign-off (launch gate A5).
   partner_digest_mailer:
     digest:
       subject: "Your PlaceCal listings — a quick check-in"
 
+  partner_verification_mailer:
+    invite:
+      subject: "Confirm %{partner} on PlaceCal"
+
   mailers:
+    partner_verification:
+      greeting: "Hello,"
+      added_by: "%{invited_by} has added %{partner} to PlaceCal, a community events calendar that helps people find out what's happening in their area."
+      what_is_placecal: "PlaceCal is run by Geeks for Social Change, a not-for-profit. Listings are free and you stay in control of what's published."
+      what_happens: "Before your listing goes public, we'd like your okay. Clicking the button below publishes your listing and records your consent — nothing else happens without you."
+      verify_button: "Publish %{partner} on PlaceCal"
+      not_expected: "Not expecting this email, or don't want to be listed? Just ignore it, or let us know at"
     partnership_broadcast:
       footer:
         why: "You're receiving this because your organisation is part of %{partnership} on PlaceCal and you've opted in to partnership updates. Sent by %{sender}."

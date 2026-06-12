@@ -490,6 +490,22 @@ en:
       filters:
         has_calendar: "Has Calendar?"
         has_admin: "Has Admin?"
+      consent_bases:
+        not_recorded: "Not recorded"
+        asked_in_person: "Asked in person"
+        they_contacted_us: "They contacted us"
+        public_listing: "From a public listing"
+        verified_by_email: "Verified by email"
+        other: "Other"
+      verification:
+        send_invite: "Send verification invite"
+        confirm: "Email a verification invite to %{email}?"
+        verified: "Verified on %{date}."
+        invite_sent: "Invite sent to %{email} on %{date} — not yet verified."
+        not_verified: "No verification invite has been sent."
+      send_verification_invite:
+        sent: "Verification invite sent to %{email}"
+        no_contact_email: "No contact email is set for this partner — add one first"
       admins:
         add_existing: "Add existing user..."
         add_new: "Invite new admin"
@@ -511,6 +527,10 @@ en:
         tags_description: "Categorise this partner and link to partnerships."
         upcoming_events_description: "Events in the next 30 days from this partner's calendars."
         url_settings_description: "Customise the URL slug for this partner."
+        consent_basis: "Listing Consent"
+        consent_basis_description: "How did this organisation agree to being listed on PlaceCal? Recorded permanently against the partner."
+        verification: "Verification"
+        verification_description: "Invite the partner's named contact to confirm their listing by email. Verifying publishes a hidden partner and records their consent."
       fields:
         accessibility_hint: "Details about accessibility features"
         description_hint: "Full description of what this partner does"
