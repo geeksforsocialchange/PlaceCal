@@ -24,7 +24,11 @@ class RecurringPartnerDigestJob < ApplicationJob
       Appsignal::CheckIn.cron('partner_digest') do
         next unless self.class.enabled?
 
-        due_users.each_with_index do |user, index|
+        # The cap makes the daily scheduler self-batching: a backlog (the
+        # first send, or a quarter boundary) drains over several days,
+        # protecting deliverability per the launch runbook. Anyone not
+        # reached today is still due tomorrow.
+        due_users.first(self.class.daily_send_cap).each_with_index do |user, index|
           PartnerDigestDeliveryJob.set(wait: index * STAGGER).perform_later(user)
         end
       end
@@ -38,6 +42,11 @@ class RecurringPartnerDigestJob < ApplicationJob
   # @return [ActiveSupport::Duration] per-user send interval, default quarterly
   def self.send_interval
     ENV.fetch('PARTNER_DIGEST_INTERVAL_DAYS', '90').to_i.days
+  end
+
+  # @return [Integer] max digests enqueued per daily run
+  def self.daily_send_cap
+    ENV.fetch('PARTNER_DIGEST_DAILY_CAP', '50').to_i
   end
 
   private

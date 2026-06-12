@@ -56,5 +56,15 @@ RSpec.describe RecurringPartnerDigestJob do
       expect { described_class.perform_now }
         .not_to have_enqueued_job(PartnerDigestDeliveryJob)
     end
+
+    it "caps each run so a backlog drains over several days" do
+      allow(described_class).to receive(:daily_send_cap).and_return(1)
+      create_list(:partner_admin, 2)
+
+      described_class.perform_now
+
+      jobs = enqueued_jobs.select { |j| j["job_class"] == "PartnerDigestDeliveryJob" }
+      expect(jobs.size).to eq 1
+    end
   end
 end
