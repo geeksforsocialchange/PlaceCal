@@ -41,7 +41,7 @@ RSpec.describe PartnerDatatable do
 
       columns = datatable.view_columns
       expect(columns.keys).to contain_exactly(
-        :name, :ward, :partnerships, :calendars, :admins, :categories, :updated_at, :actions
+        :name, :ward, :partnerships, :calendars, :admins, :categories, :updated_at, :info_confirmed_at, :actions
       )
     end
 
@@ -73,7 +73,7 @@ RSpec.describe PartnerDatatable do
       data = datatable.data
       expect(data).to be_an(Array)
       expect(data.first.keys).to contain_exactly(
-        :name, :ward, :partnerships, :calendars, :admins, :categories, :updated_at, :actions
+        :name, :ward, :partnerships, :calendars, :admins, :categories, :updated_at, :info_confirmed_at, :actions
       )
     end
 
