@@ -42,7 +42,9 @@ Rails.application.routes.draw do
         delete :clear_address
       end
     end
-    resources :partnerships
+    resources :partnerships do
+      resources :broadcasts, only: %i[index new create], controller: 'partnership_broadcasts'
+    end
     resources :sites
     resources :supporters
     resources :tags

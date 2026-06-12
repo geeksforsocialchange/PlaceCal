@@ -159,6 +159,10 @@ en:
       subject: "Your PlaceCal listings — a quick check-in"
 
   mailers:
+    partnership_broadcast:
+      footer:
+        why: "You're receiving this because your organisation is part of %{partnership} on PlaceCal and you've opted in to partnership updates. Sent by %{sender}."
+        preferences: "Change which emails you get from PlaceCal"
     partner_digest:
       intro: "Here's your regular check-in on your PlaceCal account and what we're publishing about your organisation."
       first_contact:
@@ -255,6 +259,9 @@ en:
       partnership:
         one: "Partnership"
         other: "Partnerships"
+      partnership_broadcast:
+        one: "Broadcast"
+        other: "Broadcasts"
       site:
         one: "Site"
         other: "Sites"
@@ -339,6 +346,10 @@ en:
       partnership:
         <<: *default_attrs
 
+      partnership_broadcast:
+        subject: "Subject"
+        body: "Message"
+
       site:
         <<: *default_attrs
         place_name: "Place Name"
@@ -375,3 +386,5 @@ en:
           attributes:
             tag_ids:
               blank: "Select at least one Tag"
+        partnership_broadcast:
+          daily_cap: "Only one broadcast per partnership can be sent per day — try again tomorrow"

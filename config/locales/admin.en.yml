@@ -450,6 +450,40 @@ en:
     # -------------------------------------------------------------------------
     # Partners
     # -------------------------------------------------------------------------
+    partnership_broadcasts:
+      index:
+        title: "Broadcasts — %{partnership}"
+        subtitle: "Updates sent to the admins of partners in this partnership."
+        new_button: "New broadcast"
+        action_link: "Broadcasts"
+        empty: "No broadcasts have been sent for this partnership yet."
+        deleted_sender: "(deleted account)"
+        columns:
+          sent_at: "Sent"
+          subject: "Subject"
+          sender: "Sender"
+          recipients: "Recipients"
+          excluded: "Excluded"
+      new:
+        title: "New broadcast — %{partnership}"
+        body_hint: "Plain text. Replies will go to your email address."
+        preview_button: "Preview & confirm"
+      confirm:
+        title: "Confirm broadcast"
+        warning: "You're about to email %{people} people across %{partners} partners in %{partnership}. This can't be undone."
+        send_button:
+          one: "Send to %{count} person"
+          other: "Send to %{count} people"
+        back: "Back to editing"
+      preview:
+        reach: "This will reach %{people} people across %{partners} partners."
+        excluded:
+          one: "%{count} person can't be emailed because they haven't opted in to partnership updates."
+          other: "%{count} people can't be emailed because they haven't opted in to partnership updates."
+      create:
+        sent:
+          one: "Broadcast queued for %{count} recipient"
+          other: "Broadcast queued for %{count} recipients"
     partners:
       columns:
         info_confirmed: "Info Confirmed"

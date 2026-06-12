@@ -72,6 +72,12 @@ class User < ApplicationRecord
            foreign_key: :actor_id,
            inverse_of: :actor,
            dependent: :nullify
+  # The sent-broadcasts log outlives the sender's account
+  has_many :sent_partnership_broadcasts,
+           class_name: 'PartnershipBroadcast',
+           foreign_key: :sender_id,
+           inverse_of: :sender,
+           dependent: :nullify
   has_many :partnerships, -> { where(type: 'Partnership') }, through: :tags_users, source: :tag
 
   # ==== Uploaders ====

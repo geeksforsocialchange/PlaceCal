@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_12_150000) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_12_170000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -287,6 +287,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_12_150000) do
     t.index ["user_id", "partner_id"], name: "index_partners_users_user_id_partner_id"
   end
 
+  create_table "partnership_broadcasts", force: :cascade do |t|
+    t.text "body", null: false
+    t.datetime "created_at", null: false
+    t.integer "excluded_count", default: 0, null: false
+    t.bigint "partnership_id", null: false
+    t.integer "recipient_count", default: 0, null: false
+    t.bigint "sender_id"
+    t.string "subject", null: false
+    t.datetime "updated_at", null: false
+    t.index ["partnership_id"], name: "index_partnership_broadcasts_on_partnership_id"
+    t.index ["sender_id"], name: "index_partnership_broadcasts_on_sender_id"
+  end
+
   create_table "seed_migration_data_migrations", id: :serial, force: :cascade do |t|
     t.datetime "migrated_on", precision: nil
     t.integer "runtime"
@@ -457,6 +470,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_12_150000) do
   add_foreign_key "partners", "users", column: "info_confirmed_by_id"
   add_foreign_key "partners_users", "partners"
   add_foreign_key "partners_users", "users"
+  add_foreign_key "partnership_broadcasts", "tags", column: "partnership_id"
+  add_foreign_key "partnership_broadcasts", "users", column: "sender_id"
   add_foreign_key "service_areas", "neighbourhoods"
   add_foreign_key "service_areas", "partners"
   add_foreign_key "sites", "users", column: "site_admin_id"
