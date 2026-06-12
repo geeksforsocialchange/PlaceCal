@@ -28,7 +28,7 @@ This ticket fixes both together: a recurring partner email system with proper su
 
 **A4. The Honda/Flybe constraint (hard rule).** We never send a standalone "please confirm your consent" email — asking for consent is itself marketing, and the ICO has fined for exactly this. All re-permissioning happens _inside_ the lawful service email (the digest), via the preferences link.
 
-**A5. First-edition copy gets a human pass.** The first digest does triple duty: reintroduction ("PlaceCal here, you have an account because…"), transparency notice (privacy policy updated, here's how we'll email you), and re-permissioning (opt in to partnership updates here). Highest-leverage copywriting in the project — PHT signs it off, not placeholder copy.
+**A5. First-edition copy gets a human pass.** The first digest does triple duty: reintroduction ("PlaceCal here, you have an account because…"), transparency notice (privacy policy updated, here's how we'll email you), and re-permissioning (opt in to partnership updates here). Highest-leverage copywriting in the project — GFSC CIC signs it off, not placeholder copy.
 
 **A6. Record history honestly.** Seed legacy users' subscriptions with `source: 'legacy_onboarding'` (Phase 1.7) so the audit trail reads "verbal consent at onboarding, formalised by email on date X" rather than pretending records exist.
 
@@ -124,7 +124,7 @@ Builds directly on the Phase 1 infrastructure; can ship as a follow-up PR but is
 - [ ] LIA written and filed (A1)
 - [ ] Privacy policy updated and **deployed to production** (A2 / Phase 1.6)
 - [ ] DUAA charity soft opt-in question answered and noted (A3)
-- [ ] First-edition copy signed off by PHT (A5)
+- [ ] First-edition copy signed off by GFSC CIC (A5)
 - [ ] MailerSend domain authentication verified: SPF, DKIM, DMARC all passing — a bulk send from a misconfigured domain torches deliverability
 - [ ] `List-Unsubscribe` headers verified in a real received email (Gmail "unsubscribe" link appears next to sender)
 - [ ] Legacy seeding migration run; spot-check `source: 'legacy_onboarding'` rows and that `partnership_updates` is empty
@@ -142,7 +142,7 @@ Builds directly on the Phase 1 infrastructure; can ship as a follow-up PR but is
 ### Post-launch (first two cycles)
 
 - Weekly: review unsubscribes, opt-ins to `partnership_updates`, confirm-button clicks. These are also engagement data — which partners are alive?
-- Sweep hard bounces: a bouncing admin email = a stale partner contact. Feed these to PHT as a re-onboarding worklist (this is half the point of the project).
+- Sweep hard bounces: a bouncing admin email = a stale partner contact. Feed these to GFSC CIC as a re-onboarding worklist (this is half the point of the project).
 - Handle replies/SARs: `email_subscription_events` answers "what did this person consent to and when".
 - After two digest cycles: transition window closes — anything marketing-flavoured goes only to recorded opt-ins from then on. Note the date.
 

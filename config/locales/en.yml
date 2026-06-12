@@ -153,7 +153,7 @@ en:
       sign_in: "Sign in to update your listing"
 
   # Partner digest email (#3256). First-contact copy is a placeholder
-  # pending PHT sign-off (launch gate A5).
+  # pending GFSC CIC sign-off (launch gate A5).
   partner_digest_mailer:
     digest:
       subject: "Your PlaceCal listings — a quick check-in"
