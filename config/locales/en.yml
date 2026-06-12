@@ -156,7 +156,6 @@ en:
       partner: "Details for the partner %{name} on PlaceCal"
       partnership: "Details for the partnership %{name} on PlaceCal"
       site: "%{name}, powered by PlaceCal"
-      generic: "PlaceCal: events and activities by and for your community"
 
   # ===========================================================================
   # ENUMERIZE (Calendar types)

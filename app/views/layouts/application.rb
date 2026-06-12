@@ -88,12 +88,17 @@ class Views::Layouts::Application < Phlex::HTML
     elsif content_for?(:image)
       meta(property: 'og:image', content: image_url(content_for(:image)))
       meta(property: 'og:image:alt', content: content_for(:image_alt)) if content_for?(:image_alt)
-    else
-      # Generated share card (#2077): site card on a site subdomain, brand card otherwise
+    elsif site
+      # Generated share card for site homepages and other site pages (#2077)
       meta(property: 'og:image', content: og_image_url)
-      meta(property: 'og:image:alt', content: default_image_alt)
+      meta(property: 'og:image:alt', content: I18n.t('og_image.alt.site', name: site.name))
       meta(property: 'og:image:width', content: '1200')
       meta(property: 'og:image:height', content: '630')
+    else
+      meta(property: 'og:image', content: image_url('og/wide.png'))
+      meta(property: 'og:image:alt', content: 'PlaceCal logo')
+      meta(property: 'og:image:width', content: '1920')
+      meta(property: 'og:image:height', content: '1080')
     end
 
     meta(property: 'og:type', content: 'website')
@@ -122,14 +127,6 @@ class Views::Layouts::Application < Phlex::HTML
   def devise_page?
     controller = view_context.controller
     controller.respond_to?(:devise_controller?) && controller.devise_controller?
-  end
-
-  def default_image_alt
-    if site
-      I18n.t('og_image.alt.site', name: site.name)
-    else
-      I18n.t('og_image.alt.generic')
-    end
   end
 
   def compute_description
