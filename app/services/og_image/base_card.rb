@@ -4,7 +4,7 @@ require 'vips'
 
 module OgImage
   # Bump to invalidate cached cards when the design changes.
-  VERSION = 2
+  VERSION = 3
 
   # Renders 1200x630 Open Graph share card PNGs with libvips.
   #
@@ -12,6 +12,10 @@ module OgImage
   # a cream canvas with a colour-coded category pill, a Trocchi title,
   # icon + text detail rows and the PlaceCal logo as a bottom-right
   # watermark. Subclasses supply content via #label, #title, #rows etc.
+  #
+  # Site-backed cards (Site, Partnership) also share an optional hero-image
+  # background layout here, opted into by overriding #hero_path.
+  # rubocop:disable Metrics/ClassLength -- cohesive drawing helpers + hero layout
   class BaseCard
     WIDTH = 1200
     HEIGHT = 630
@@ -38,6 +42,15 @@ module OgImage
     ROW_GAP = 17
     META_MAX_WIDTH = WIDTH - (PADDING_X * 2) - ROW_ICON_SIZE - ROW_ICON_GAP
 
+    # Hero-background layout (site-backed cards): the hero fills the canvas
+    # behind a scrim with the identity in a rounded cream panel pinned left.
+    PANEL_X = 64
+    PANEL_Y = 64
+    PANEL_WIDTH = 600
+    PANEL_HEIGHT = HEIGHT - (PANEL_Y * 2)
+    PANEL_PAD_X = 58
+    PANEL_TEXT_WIDTH = PANEL_WIDTH - (PANEL_PAD_X * 2)
+
     ASSETS_DIR = Rails.root.join('app/assets/images/og')
 
     # Feather-style icons matching the event page detail set.
@@ -61,9 +74,96 @@ module OgImage
     private
 
     def render
+      return render_with_hero if hero_path.present?
+
       canvas = background
       canvas = compose_content(canvas)
       compose_watermark(canvas)
+    end
+
+    # Full-bleed hero with a soft scrim for legibility and the identity
+    # vertically centred in a rounded cream panel pinned left. Opted into by
+    # site-backed subclasses that override #hero_path.
+    def render_with_hero
+      canvas = photo(hero_path, width: WIDTH, height: HEIGHT)
+      canvas = composite(canvas, scrim, 0, 0)
+      canvas = composite(canvas, panel, PANEL_X, PANEL_Y)
+
+      pill_img = pill(label, accent, label_colour, size: 20, pad: 22, height: 40)
+      title_img = text(title, size: 58, face: 'Trocchi', colour: BROWN, line_height: 1.03,
+                              wrap_width: PANEL_TEXT_WIDTH, max_height: 220)
+      row_imgs = rows.filter_map do |icon, value|
+        next if value.blank?
+
+        [icon_image(icon, size: 30),
+         text(value, size: 26, face: 'Rawline SemiBold', colour: BROWN, max_width: PANEL_TEXT_WIDTH - 45)]
+      end
+      lockup = hero_lockup
+
+      total = pill_img.height + 24 + title_img.height + 28 +
+              (row_imgs.size * 45) - 15 + 34 + lockup.height
+      x = PANEL_X + PANEL_PAD_X
+      y = PANEL_Y + ((PANEL_HEIGHT - total) / 2)
+
+      canvas = composite(canvas, pill_img, x, y)
+      y += pill_img.height + 24
+      canvas = composite(canvas, title_img, x, y)
+      y += title_img.height + 28
+      row_imgs.each do |icon_img, text_img|
+        canvas = composite(canvas, icon_img, x, y)
+        canvas = composite(canvas, text_img, x + 45, y + ((30 - text_img.height) / 2))
+        y += 30 + 15
+      end
+      composite(canvas, lockup, x, y + 34 - 15)
+    end
+
+    # Path to a full-bleed hero image, or nil for the type-only layout.
+    def hero_path
+      nil
+    end
+
+    # Branding pinned to the bottom of the hero panel. Defaults to the
+    # "Powered by PlaceCal" lockup; PlaceCal-native cards use the bare logo.
+    def hero_lockup
+      powered_by_lockup(logo_height: 32, opacity: 0.85)
+    end
+
+    # "POWERED BY" + logo as one transparent group, centre-aligned.
+    def powered_by_lockup(logo_height:, opacity:)
+      logo = svg_asset('logo-header.svg', height: logo_height)
+      label_img = text(t('powered_by'), size: 19, face: 'Rawline ExtraBold',
+                                        colour: ICON_BROWN, letter_spacing: 2)
+      group = Vips::Image.black(label_img.width + 12 + logo.width, logo.height, bands: 4)
+                         .copy(interpretation: :srgb)
+      group = composite(group, label_img, 0, (logo.height - label_img.height) / 2)
+      apply_opacity(composite(group, logo, label_img.width + 12, 0), opacity)
+    end
+
+    # linear-gradient(105deg, rgba(43,36,31,.34) 0%, .10 42%, transparent 64%)
+    # expressed as an SVG gradient: CSS 105deg gives the direction vector
+    # (sin 105, -cos 105), drawn here through the canvas centre.
+    def scrim
+      svg(<<~SVG)
+        <svg xmlns="http://www.w3.org/2000/svg" width="#{WIDTH}" height="#{HEIGHT}">
+          <defs>
+            <linearGradient id="scrim" gradientUnits="userSpaceOnUse"
+                            x1="-39" y1="144" x2="1239" y2="486">
+              <stop offset="0" stop-color="rgb(43,36,31)" stop-opacity="0.34"/>
+              <stop offset="0.42" stop-color="rgb(43,36,31)" stop-opacity="0.10"/>
+              <stop offset="0.64" stop-color="rgb(43,36,31)" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <rect width="#{WIDTH}" height="#{HEIGHT}" fill="url(#scrim)"/>
+        </svg>
+      SVG
+    end
+
+    def panel
+      svg(<<~SVG)
+        <svg xmlns="http://www.w3.org/2000/svg" width="#{PANEL_WIDTH}" height="#{PANEL_HEIGHT}">
+          <rect width="#{PANEL_WIDTH}" height="#{PANEL_HEIGHT}" rx="24" fill="#{CREAM}"/>
+        </svg>
+      SVG
     end
 
     def background
@@ -143,12 +243,13 @@ module OgImage
     end
     # rubocop:enable Metrics/ParameterLists
 
-    # Load an uploaded photo, cover-cropped to width x height with optional
+    # Load an uploaded photo as an opaque width x height tile with optional
     # rounded corners applied through an alpha mask.
-    def photo(path, width:, height:, radius: nil)
-      img = Vips::Image.thumbnail(path, width, height: height, crop: :centre)
-      img = img.colourspace(:srgb) unless img.interpretation == :srgb
-      img = img.flatten(background: hex_to_rgb(CREAM)) if img.has_alpha?
+    # - fit: :cover (default) crops to fill, for full-bleed photos.
+    # - fit: :contain shrinks the whole image to fit on a cream tile, so
+    #   wide logos stay intact instead of being cropped (matches the site).
+    def photo(path, width:, height:, radius: nil, fit: :cover)
+      img = fitted_photo(path, width: width, height: height, fit: fit)
       return img.bandjoin(255) unless radius
 
       mask = svg(<<~SVG)
@@ -157,6 +258,23 @@ module OgImage
         </svg>
       SVG
       img.bandjoin(mask[3])
+    end
+
+    # Returns an opaque 3-band sRGB image of exactly width x height.
+    def fitted_photo(path, width:, height:, fit:)
+      if fit == :contain
+        img = Vips::Image.thumbnail(path, width, height: height, size: :down)
+        img = img.colourspace(:srgb) unless img.interpretation == :srgb
+        img = img.flatten(background: hex_to_rgb(CREAM)) if img.has_alpha?
+        left = ((width - img.width) / 2.0).round
+        top = ((height - img.height) / 2.0).round
+        img.embed(left, top, width, height, extend: :background, background: hex_to_rgb(CREAM))
+      else
+        img = Vips::Image.thumbnail(path, width, height: height, crop: :centre)
+        img = img.colourspace(:srgb) unless img.interpretation == :srgb
+        img = img.flatten(background: hex_to_rgb(CREAM)) if img.has_alpha?
+        img
+      end
     end
 
     def title_text(value, size: 76, line_height: 1.04)
@@ -258,4 +376,5 @@ module OgImage
       I18n.t(key, scope: 'og_image', **)
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end

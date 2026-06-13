@@ -12,6 +12,16 @@ module OgImage
 
     attr_reader :site
 
+    def hero_path
+      path = site.hero_image&.opengraph&.path
+      path if path.present? && File.exist?(path)
+    end
+
+    # PlaceCal-native card: the bare logo rather than a "Powered by" lockup.
+    def hero_lockup
+      svg_asset('logo-header.svg', height: 32, opacity: 0.85)
+    end
+
     def label
       t('labels.partnership')
     end
@@ -26,6 +36,7 @@ module OgImage
 
     def rows
       [
+        [:map, site.primary_neighbourhood&.name],
         [:users, partners_text],
         [:calendar, events_text]
       ]
