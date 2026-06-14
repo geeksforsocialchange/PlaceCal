@@ -2,22 +2,24 @@
 
 class Views::Collections::Show < Views::Base
   prop :collection, Collection, reader: :private
-  prop :site, Site, reader: :private
+  prop :site, _Nilable(::Site), reader: :private
   prop :events, Hash, reader: :private
 
   def view_template
     content_for(:title) { collection.name }
     content_for(:description) { collection.description }
-    content_for(:permalink) { collection.permalink(base_url: site.url) }
+    content_for(:permalink) { collection.permalink(base_url: site&.url) }
     if collection.image?
       content_for(:image) { image_url(collection.image.standard.url) }
       content_for(:image_alt) { "Image for #{collection.name}" }
     end
 
-    Hero(collection.name, site.tagline)
+    Hero(collection.name, site&.tagline)
 
     div(class: 'container-public mb-32') do
-      Breadcrumb(trail: [[collection.name, collection.named_route]], site_name: site.name)
+      breadcrumb_args = { trail: [[collection.name, collection.named_route]] }
+      breadcrumb_args[:site_name] = site.name if site
+      Breadcrumb(**breadcrumb_args)
 
       hr
 
@@ -49,10 +51,10 @@ class Views::Collections::Show < Views::Base
   def render_events
     EventList(
       events: events,
-      primary_neighbourhood: site.primary_neighbourhood,
-      show_neighbourhoods: site.show_neighbourhoods?,
-      badge_zoom_level: site.badge_zoom_level&.to_s,
-      site_tagline: site.tagline
+      primary_neighbourhood: site&.primary_neighbourhood,
+      show_neighbourhoods: site ? site.show_neighbourhoods? : false,
+      badge_zoom_level: site&.badge_zoom_level&.to_s,
+      site_tagline: site&.tagline
     )
   end
 end

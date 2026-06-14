@@ -62,6 +62,36 @@ a.btn-dark-outline:hover {
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
+/* Rendered markdown documents (legal pages — privacy, terms of use) */
+.markdown-content > :first-child {
+	@apply mt-0;
+}
+.markdown-content h2 {
+	@apply text-2xl font-bold mt-8 mb-3;
+}
+.markdown-content h3 {
+	@apply text-xl font-bold mt-6 mb-2;
+}
+.markdown-content p {
+	@apply my-4;
+}
+.markdown-content ul {
+	@apply list-disc pl-6 my-4 space-y-1;
+}
+.markdown-content ol {
+	@apply list-decimal pl-6 my-4 space-y-1;
+}
+.markdown-content li {
+	@apply pl-1;
+}
+.markdown-content a {
+	@apply underline;
+	color: var(--color-foreground);
+}
+.markdown-content a:hover {
+	@apply no-underline;
+}
+
 /* Override leaflet.markercluster default styles */
 .marker-cluster-small,
 .marker-cluster-medium,

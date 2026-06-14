@@ -264,12 +264,6 @@ module NormalIsland
   # Seeds use the geographic-level keys (normal_island_country, coastshire_county, etc.)
   # Factories use the named keys (millbrook_community_calendar, ashdale_connect, etc.)
   SITES = {
-    normal_island_central: {
-      name: 'Normal Island Central',
-      slug: 'default-site',
-      tagline: 'Community events across Normal Island',
-      country: true
-    },
     normal_island_country: {
       name: 'Normal Island (country)',
       slug: 'normal-island',

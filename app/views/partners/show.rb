@@ -4,7 +4,7 @@ class Views::Partners::Show < Views::Base
   register_value_helper :partner_service_area_text
 
   prop :partner, Partner, reader: :private
-  prop :site, Site, reader: :private
+  prop :site, _Nilable(::Site), reader: :private
   prop :current_day, Date, reader: :private
   prop :map, _Nilable(Array), reader: :private
   prop :events, _Interface(:each), reader: :private
@@ -27,11 +27,8 @@ class Views::Partners::Show < Views::Base
 
   def set_content_for_tags
     content_for(:title) { partner.name }
-    if partner.image.present?
-      content_for(:image) { partner.image }
-    else
-      content_for(:image) { site.og_image }
-    end
+    content_for(:image) { partner_og_image_url(partner) }
+    content_for(:image_alt) { t('og_image.alt.partner', name: partner.name) }
     content_for(:description) { partner.summary } if partner.summary
     content_for(:json_ld) { safe(partner.to_json_ld(base_url: request.base_url).to_json) }
   end

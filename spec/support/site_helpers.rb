@@ -2,11 +2,6 @@
 
 # Helpers for site-related testing
 module SiteHelpers
-  # Create the default site required for URL routing
-  def create_default_site
-    Site.find_by(slug: "default-site") || create(:site, slug: "default-site")
-  end
-
   # Generate a URL for a specific site subdomain
   def site_url(site, path)
     host = Rails.application.routes.default_url_options[:host]

@@ -5,7 +5,7 @@ class PagesController < ApplicationController
   before_action :set_site
 
   def home
-    if default_site?
+    if directory_request?
       render_directory_home
     else
       @neighbourhoods = Site.published.select do |site|
@@ -26,11 +26,21 @@ class PagesController < ApplicationController
   end
 
   def terms_of_use
-    render Views::Directory::TermsOfUse.new
+    render Views::Directory::MarkdownPage.new(
+      slug: 'terms_of_use',
+      title: t('directory.pages.terms_of_use.title'),
+      breadcrumb_label: t('directory.pages.terms_of_use.breadcrumb'),
+      document_title: t('directory.pages.terms_of_use.document_title')
+    )
   end
 
   def privacy
-    render Views::Directory::Privacy.new
+    render Views::Directory::MarkdownPage.new(
+      slug: 'privacy',
+      title: t('directory.pages.privacy.title'),
+      breadcrumb_label: t('directory.pages.privacy.breadcrumb'),
+      document_title: t('directory.pages.privacy.document_title')
+    )
   end
 
   def our_story
@@ -64,8 +74,11 @@ class PagesController < ApplicationController
   def robots
     if current_site
       render plain: current_site.robots
+    elsif directory_request?
+      # The apex serves the nationwide directory: always crawlable
+      render plain: Site.directory_robots
     else
-      # Admin subdomain or no site found - disallow all indexing
+      # Admin subdomain - disallow all indexing
       render plain: "User-agent: *\nDisallow: /"
     end
   end
@@ -73,12 +86,22 @@ class PagesController < ApplicationController
   NEIGHBOURHOOD_UNIT_RANK = %w[ward district county region].freeze
   DIRECTORY_CACHE_TTL = 1.day
 
+  # ONS GSS codes for the places featured as homepage "jump" links, in display
+  # order. Pinned by code (stable across environments) rather than by id.
+  JUMP_NEIGHBOURHOOD_CODES = %w[
+    E08000003
+    E12000007
+    E07000148
+    E08000035
+    E08000021
+  ].freeze
+
   private
 
   def render_directory_home
     @stats = Rails.cache.fetch('directory/stats', expires_in: DIRECTORY_CACHE_TTL) do
       {
-        partnerships: Site.where(is_published: true).where.not(slug: 'default-site').count,
+        partnerships: Site.where(is_published: true).count,
         partners: Partner.visible.count,
         events: Event.where(dtstart: Time.zone.today..30.days.from_now).count,
         neighbourhoods: Neighbourhood.districts.count
@@ -89,13 +112,12 @@ class PagesController < ApplicationController
       build_partner_locations
     end
 
-    @jump_sites = Rails.cache.fetch('directory/jump_sites', expires_in: DIRECTORY_CACHE_TTL) do
-      build_jump_sites.to_a
+    @jump_neighbourhoods = Rails.cache.fetch('directory/jump_neighbourhoods', expires_in: DIRECTORY_CACHE_TTL) do
+      build_jump_neighbourhoods.to_a
     end
 
     @partnerships = Rails.cache.fetch('directory/partnerships', expires_in: DIRECTORY_CACHE_TTL) do
       Site.where(is_published: true)
-          .where.not(slug: 'default-site')
           .order(partners_count: :desc)
           .limit(6)
           .to_a
@@ -125,20 +147,15 @@ class PagesController < ApplicationController
       partner_event_counts: @partner_event_counts,
       stats: @stats,
       partner_locations: @partner_locations,
-      jump_sites: @jump_sites
+      jump_neighbourhoods: @jump_neighbourhoods
     )
   end
 
-  def build_jump_sites
-    partnership_ids = Tag.where(type: 'Partnership').joins(:sites).select('sites.id')
-    sites = Site.where(is_published: true)
-                .where.not(slug: 'default-site')
-                .where.not(id: partnership_ids)
-                .order(partners_count: :desc)
-                .limit(3)
-    return sites if sites.any?
-
-    Site.where(slug: %w[manchester london norwich], is_published: true)
+  def build_jump_neighbourhoods
+    found = Neighbourhood.latest_release
+                         .where(unit_code_value: JUMP_NEIGHBOURHOOD_CODES)
+                         .index_by(&:unit_code_value)
+    JUMP_NEIGHBOURHOOD_CODES.filter_map { |code| found[code] }
   end
 
   def build_partner_locations

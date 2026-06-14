@@ -6,7 +6,7 @@ class Components::Directory::PartnershipCard < Components::Directory::Base
   def view_template
     a(href: partnership_path(@partnership),
       class: [
-        'flex flex-col rounded-card overflow-hidden no-underline',
+        'flex flex-col rounded-card overflow-hidden no-underline break-inside-avoid mb-4',
         'text-foreground hover:shadow-lg transition-shadow min-h-50'
       ].join(' ')) do
       render_head
@@ -19,7 +19,7 @@ class Components::Directory::PartnershipCard < Components::Directory::Base
   def render_head
     div(class: 'bg-foreground text-background px-5 py-4 flex justify-between items-start') do
       div do
-        div(class: 'text-2xs font-extra-bold uppercase tracking-wide text-background/80 mb-1') { 'Partnership' }
+        div(class: 'text-2xs font-extra-bold uppercase tracking-wide text-background/80 mb-1') { t('directory.partnerships.card.kicker') }
         div(class: 'font-serif font-regular text-card leading-tight text-background') { @partnership.name }
       end
       span(class: 'text-background/70 text-lg') { safe('&rarr;') }
@@ -37,7 +37,7 @@ class Components::Directory::PartnershipCard < Components::Directory::Base
         end
         span(class: 'inline-flex items-center gap-1 bg-primary-light text-foreground text-2xs font-bold rounded-full px-2.5 py-0.5') do
           raw(view_context.icon(:partner, size: nil, css_class: 'w-3 h-3'))
-          plain "#{@partnership.partners_count} #{'partner'.pluralize(@partnership.partners_count)}"
+          plain "#{@partnership.partners_count} #{Partner.model_name.human(count: @partnership.partners_count).downcase}"
         end
       end
       div(class: 'text-detail leading-relaxed text-tertiary line-clamp-3') { @partnership.description } if @partnership.description.present?

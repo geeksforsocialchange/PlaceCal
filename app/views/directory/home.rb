@@ -9,7 +9,7 @@ class Views::Directory::Home < Views::Base
   prop :stats, Hash
   prop :partner_event_counts, Hash, default: -> { {} }
   prop :partner_locations, _Interface(:each), default: -> { [] }
-  prop :jump_sites, _Interface(:each), default: -> { [] }
+  prop :jump_neighbourhoods, _Interface(:each), default: -> { [] }
 
   def view_template
     content_for(:description) { 'Find community groups, venues and events near you. PlaceCal aggregates thousands of events from hundreds of local organisations across the UK.' }
@@ -19,7 +19,7 @@ class Views::Directory::Home < Views::Base
       subtitle: 'PlaceCal aggregates thousands of events and activities from hundreds of local community organisations across the UK. This is the directory for all of it — search by place, by interest, or browse the map.',
       search_path: partners_path,
       partner_locations: @partner_locations,
-      jump_sites: @jump_sites
+      jump_neighbourhoods: @jump_neighbourhoods
     )
 
     Directory::StatsStrip(stats: [
@@ -50,7 +50,7 @@ class Views::Directory::Home < Views::Base
             span { safe('&rarr;') }
           end
         end
-        div(class: 'grid md:grid-cols-2 lg:grid-cols-3 gap-4') do
+        div(class: 'grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-5 lg:mt-0') do
           @partnerships.first(6).each do |partnership|
             Directory::PartnershipCard(partnership: partnership)
           end

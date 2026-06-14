@@ -21,8 +21,15 @@ Capybara.app_host = "http://lvh.me"
 Capybara.server_host = "127.0.0.1"
 
 RSpec.configure do |config|
-  # Clean up after each system test
+  # Clean up after each system test. reset_sessions! clears cookies but not
+  # sessionStorage, so leftover keys (e.g. partnerTabAfterSave from save-bar)
+  # can leak into the next test and silently switch tabs on page load.
   config.after(type: :system) do
+    begin
+      page.execute_script("window.sessionStorage.clear()")
+    rescue StandardError
+      nil # browser may not have a page loaded
+    end
     Capybara.reset_sessions!
   end
 

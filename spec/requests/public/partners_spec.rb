@@ -316,9 +316,7 @@ RSpec.describe "Public Partners", type: :request do
     end
   end
 
-  describe "default site directory" do
-    let!(:default_site) { create_default_site }
-
+  describe "directory partners index" do
     it "serves directory partners page on base domain" do
       get partners_url(host: "lvh.me")
       expect(response).to be_successful
@@ -373,8 +371,6 @@ RSpec.describe "Public Partners", type: :request do
   end
 
   describe "directory partner show page" do
-    let!(:default_site) { create_default_site }
-
     context "with full contact details" do
       let(:partner) { create(:riverside_partner) }
 
@@ -577,7 +573,7 @@ RSpec.describe "Public Partners", type: :request do
 
     context "with containing sites (partnerships)" do
       let(:partner) { create(:riverside_partner) }
-      let(:partnership_site) { create(:site, slug: "test-partnership", name: "Test Partnership") }
+      let(:partnership_site) { create(:site, slug: "test-partnership", name: "Test Partnership", is_published: true) }
 
       before do
         partnership_site.neighbourhoods << partner.address.neighbourhood

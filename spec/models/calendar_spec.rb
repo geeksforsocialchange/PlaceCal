@@ -160,4 +160,73 @@ RSpec.describe Calendar, type: :model do
       expect(calendar.events_this_week).to eq(0)
     end
   end
+
+  describe "import attempt timestamps" do
+    let(:calendar) { create(:calendar) }
+
+    it "stamps import_started_at when an attempt is queued" do
+      calendar.update_columns(calendar_state: "idle", import_started_at: nil) # rubocop:disable Rails/SkipsModelValidations
+
+      expect { calendar.queue_for_import!(false) }
+        .to change { calendar.reload.import_started_at }.from(nil)
+
+      expect(calendar.calendar_state).to eq("in_queue")
+      expect(calendar.import_started_at).to be_within(5.seconds).of(Time.current)
+    end
+
+    it "stamps import_started_at when the worker starts the import" do
+      calendar.update_columns(calendar_state: "in_queue", import_started_at: nil) # rubocop:disable Rails/SkipsModelValidations
+
+      expect { calendar.flag_start_import_job! }
+        .to change { calendar.reload.import_started_at }.from(nil)
+
+      expect(calendar.calendar_state).to eq("in_worker")
+      expect(calendar.import_started_at).to be_within(5.seconds).of(Time.current)
+    end
+  end
+
+  describe ".reset_stuck_imports!" do
+    let(:calendar) { create(:calendar) }
+
+    def put_stuck(state, started_at)
+      calendar.update_columns(calendar_state: state, import_started_at: started_at) # rubocop:disable Rails/SkipsModelValidations
+    end
+
+    %w[in_worker in_queue].each do |state|
+      it "resets a calendar stuck in #{state} beyond the threshold" do
+        put_stuck(state, 3.hours.ago)
+
+        expect(described_class.reset_stuck_imports!).to contain_exactly(calendar.id)
+        expect(calendar.reload.calendar_state).to eq("idle")
+      end
+
+      it "resets a legacy #{state} calendar with no import_started_at" do
+        put_stuck(state, nil)
+
+        expect(described_class.reset_stuck_imports!).to contain_exactly(calendar.id)
+        expect(calendar.reload.calendar_state).to eq("idle")
+      end
+
+      it "leaves a #{state} calendar whose attempt started recently" do
+        put_stuck(state, 10.minutes.ago)
+
+        expect(described_class.reset_stuck_imports!).to be_empty
+        expect(calendar.reload.calendar_state).to eq(state)
+      end
+    end
+
+    it "ignores calendars that are not in a busy state" do
+      put_stuck("bad_source", 3.hours.ago)
+
+      expect(described_class.reset_stuck_imports!).to be_empty
+      expect(calendar.reload.calendar_state).to eq("bad_source")
+    end
+
+    it "honours a custom threshold" do
+      put_stuck("in_worker", 30.minutes.ago)
+
+      expect(described_class.reset_stuck_imports!(threshold: 15.minutes)).to contain_exactly(calendar.id)
+      expect(calendar.reload.calendar_state).to eq("idle")
+    end
+  end
 end

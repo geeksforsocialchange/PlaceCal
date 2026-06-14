@@ -153,7 +153,7 @@ class EventsQuery
   # ===================
 
   def base_scope
-    @base_scope ||= if @site.nil? || @site.directory_site?
+    @base_scope ||= if @site.nil?
                       Event.includes(:place, :organiser)
                     else
                       events_for_site.includes(:place, :organiser)

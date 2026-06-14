@@ -69,7 +69,7 @@ class Views::Directory::Partners::Show < Views::Partners::Show
       h2(class: 'udl udl--fw allcaps text-xl') { t('directory.partners.show.location') }
       p(class: 'mb-3') { t('directory.partners.show.serves', area: partner_service_area_text(partner)) } if partner.has_service_areas?
       div(class: 'grid grid-cols-[1fr_auto] gap-4 items-start') do
-        Map(points: map, site: site.slug, compact: true) if map
+        Map(points: map, site: site&.slug, compact: true) if map
         Address(address: partner.address) if partner.address
       end
     end

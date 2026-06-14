@@ -69,6 +69,19 @@ a {
 	background-color: $mossley-primary;
 	padding-top: 1rem;
 
+	// The shared header component floats inside the page with side margins
+	// (mx-4 lg:mx-12), which exposes white bands of page background either
+	// side of Mossley's solid blue bar. Trade the margins for equivalent
+	// padding so the bar runs the full page width.
+	&.header__partner {
+		margin-inline: 0;
+		padding-inline: 1rem;
+
+		@include for-tablet-landscape-up {
+			padding-inline: 3rem;
+		}
+	}
+
 	&__branding {
 		width: 180px;
 		height: 61px;

@@ -37,7 +37,7 @@ class Views::Layouts::Application < Phlex::HTML
       body do
         div(class: [
               'page',
-              *(if site&.default_site?
+              *(if site.nil?
                   ['max-w-home bg-background border-none mx-auto']
                 else
                   [
@@ -54,7 +54,7 @@ class Views::Layouts::Application < Phlex::HTML
             Flash()
             yield
           end
-          if site&.default_site?
+          if site.nil?
             Directory::Footer()
           else
             Footer(site)
@@ -81,8 +81,19 @@ class Views::Layouts::Application < Phlex::HTML
     meta(name: 'description', content: description_text)
     meta(property: 'og:description', content: description_text)
 
-    if content_for?(:image)
+    # Admin and Devise pages get no og:image — shared admin URLs redirect to
+    # the login page, and link previews of those are just clutter (#2077).
+    if request.subdomain == 'admin' || devise_page?
+      # no og:image
+    elsif content_for?(:image)
       meta(property: 'og:image', content: image_url(content_for(:image)))
+      meta(property: 'og:image:alt', content: content_for(:image_alt)) if content_for?(:image_alt)
+    elsif site
+      # Generated share card for site homepages and other site pages (#2077)
+      meta(property: 'og:image', content: og_image_url)
+      meta(property: 'og:image:alt', content: I18n.t('og_image.alt.site', name: site.name))
+      meta(property: 'og:image:width', content: '1200')
+      meta(property: 'og:image:height', content: '630')
     else
       meta(property: 'og:image', content: image_url('og/wide.png'))
       meta(property: 'og:image:alt', content: 'PlaceCal logo')
@@ -98,18 +109,24 @@ class Views::Layouts::Application < Phlex::HTML
     link(rel: 'canonical', href: request.original_url)
     meta(name: 'robots', content: 'noarchive')
 
-    script(type: 'application/ld+json') { raw safe(site.to_json_ld(base_url: request.base_url).to_json) } if site
+    json_ld = site ? site.to_json_ld(base_url: request.base_url) : Site.directory_json_ld(request.base_url)
+    script(type: 'application/ld+json') { raw safe(json_ld.to_json) }
     return unless content_for?(:json_ld)
 
     script(type: 'application/ld+json') { raw safe(content_for(:json_ld)) }
   end
 
   def compute_title
-    return 'PlaceCal | The Community Calendar' if current_page?(root_url) && site&.slug == 'default-site'
+    return 'PlaceCal | The Community Calendar' if current_page?(root_url) && site.nil?
     return "#{content_for(:title)} | #{site.name}" if content_for?(:title) && site&.name
     return content_for(:title).to_s if content_for?(:title)
 
     site&.name || 'PlaceCal | The Community Calendar'
+  end
+
+  def devise_page?
+    controller = view_context.controller
+    controller.respond_to?(:devise_controller?) && controller.devise_controller?
   end
 
   def compute_description

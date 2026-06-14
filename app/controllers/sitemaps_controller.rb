@@ -3,13 +3,13 @@
 class SitemapsController < ApplicationController
   CACHE_TTL = 1.day
   MAX_URLS_PER_SITEMAP = 50_000
-  BASE = 'https://placecal.org'
+  BASE = Site::DIRECTORY_URL
 
   skip_before_action :set_supporters
   skip_before_action :set_navigation
 
   before_action :set_site
-  before_action :require_default_site
+  before_action :require_directory
 
   def index
     render xml: cached_xml('sitemap/index') { build_index }
@@ -33,8 +33,8 @@ class SitemapsController < ApplicationController
 
   private
 
-  def require_default_site
-    head :not_found unless default_site?
+  def require_directory
+    head :not_found unless directory_request?
   end
 
   def cached_xml(key, &)
@@ -72,7 +72,7 @@ class SitemapsController < ApplicationController
     urls = []
     urls << url_entry("#{BASE}/partnerships")
 
-    Site.published.where.not(slug: 'default-site').pluck(:slug, :url, :updated_at).each do |slug, site_url, updated_at|
+    Site.published.pluck(:slug, :url, :updated_at).each do |slug, site_url, updated_at|
       urls << url_entry("#{BASE}/partnerships/#{slug}", updated_at)
       urls << url_entry(site_url.chomp('/'), updated_at)
     end

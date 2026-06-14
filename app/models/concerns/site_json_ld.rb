@@ -3,30 +3,31 @@
 module SiteJsonLd
   extend ActiveSupport::Concern
 
-  def to_json_ld(base_url:)
-    if default_site?
-      default_site_json_ld(base_url)
-    else
-      subsite_json_ld(base_url)
+  class_methods do
+    # Static JSON-LD for the nationwide directory (no Site row backs it).
+    # @param base_url [String]
+    # @return [Hash]
+    def directory_json_ld(base_url)
+      {
+        '@context' => 'https://schema.org',
+        '@type' => 'WebSite',
+        'name' => 'PlaceCal',
+        'url' => base_url,
+        'publisher' => {
+          '@type' => 'Organization',
+          'name' => 'PlaceCal',
+          'url' => self::DIRECTORY_URL,
+          'sameAs' => ['https://twitter.com/PlaceCal']
+        }
+      }
     end
   end
 
-  private
-
-  def default_site_json_ld(base_url)
-    {
-      '@context' => 'https://schema.org',
-      '@type' => 'WebSite',
-      'name' => 'PlaceCal',
-      'url' => base_url,
-      'publisher' => {
-        '@type' => 'Organization',
-        'name' => 'PlaceCal',
-        'url' => 'https://placecal.org',
-        'sameAs' => ['https://twitter.com/PlaceCal']
-      }
-    }
+  def to_json_ld(base_url:)
+    subsite_json_ld(base_url)
   end
+
+  private
 
   def subsite_json_ld(base_url)
     data = {

@@ -7,19 +7,19 @@ class Views::Directory::Partnerships::Index < Views::Base
   prop :total_partners, Integer, default: 0
 
   def view_template
-    content_for(:title) { 'Partnerships' }
+    content_for(:title) { Partnership.model_name.human(count: 2) }
     content_for(:description) { "Explore #{partnership_list.size} partnerships serving #{@total_partners} partners on PlaceCal." }
 
     Directory::PageHero(
-      title: 'Partnerships on PlaceCal',
-      kicker: "#{partnership_list.size} partnerships · serving #{@total_partners} partners",
-      subtitle: 'A partnership is a group of community organisations working together on a local PlaceCal site. Each has its own subdomain with a hyperlocal version of the calendar.',
-      breadcrumb_label: 'Partnerships'
+      title: t('directory.partnerships.index.hero_title'),
+      kicker: t('directory.partnerships.index.hero_kicker', count: partnership_list.size, partners: @total_partners),
+      subtitle: t('directory.partnerships.index.hero_subtitle'),
+      breadcrumb_label: Partnership.model_name.human(count: 2)
     )
 
     div(class: 'container-public py-6') do
       render_search
-      div(class: 'grid md:grid-cols-2 lg:grid-cols-3 gap-4') do
+      div(class: 'lg:columns-2 gap-x-4') do
         filtered_partnerships.each do |partnership|
           Directory::PartnershipCard(partnership: partnership)
         end
@@ -39,12 +39,12 @@ class Views::Directory::Partnerships::Index < Views::Base
         end
         input(
           type: 'text', name: 'q', value: @query,
-          placeholder: 'Search partnerships…',
+          placeholder: t('directory.partnerships.index.search_placeholder'),
           class: 'flex-1 border-0 bg-transparent py-2 text-foreground text-sm outline-none placeholder:text-tertiary'
         )
         button(type: 'submit',
                class: 'bg-foreground text-background rounded-full px-4 py-1.5 text-sm font-bold border-0 cursor-pointer hover:bg-tertiary transition-colors') do
-          plain 'Search'
+          plain t('directory.partnerships.index.search_button')
         end
       end
     end
@@ -52,10 +52,10 @@ class Views::Directory::Partnerships::Index < Views::Base
 
   def render_empty_state
     div(class: 'py-10 text-center') do
-      p(class: 'text-tertiary text-lg') { 'No partnerships found.' }
+      p(class: 'text-tertiary text-lg') { t('directory.partnerships.index.empty') }
       if @query.present?
         a(href: partnerships_path, class: 'inline-flex items-center gap-2 mt-3 text-foreground font-bold no-underline hover:underline') do
-          plain 'Clear search'
+          plain t('directory.partnerships.index.clear_search')
         end
       end
     end

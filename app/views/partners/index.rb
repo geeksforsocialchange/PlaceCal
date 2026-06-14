@@ -9,7 +9,6 @@ class Views::Partners::Index < Views::Base
 
   def view_template
     content_for(:title) { 'Partners' }
-    content_for(:image) { site.og_image }
     content_for(:description) { site.og_description }
 
     Hero('Our Partners', site.tagline)

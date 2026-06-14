@@ -26,16 +26,19 @@ User-agent: atlassian-bot
 User-agent: Awario
 User-agent: bedrockbot
 User-agent: bigsur.ai
+User-agent: Brightbot
 User-agent: Brightbot 1.0
 User-agent: BuddyBot
 User-agent: Bytespider
 User-agent: CCBot
 User-agent: ChatGLM-Spider
 User-agent: ChatGPT Agent
+User-agent: Claude-Code
 User-agent: Claude-Web
 User-agent: ClaudeBot
 User-agent: Cloudflare-AutoRAG
 User-agent: CloudVertexBot
+User-agent: Code
 User-agent: cohere-training-data-crawler
 User-agent: Cotoyogi
 User-agent: Crawl4AI
@@ -55,12 +58,14 @@ User-agent: Google-Agent
 User-agent: Google-CloudVertexBot
 User-agent: Google-Extended
 User-agent: Google-Firebase
+User-agent: Google-Gemini-CLI
 User-agent: Google-NotebookLM
 User-agent: GoogleAgent-Mariner
 User-agent: GoogleOther
 User-agent: GoogleOther-Image
 User-agent: GoogleOther-Video
 User-agent: GPTBot
+User-agent: HenkBot
 User-agent: iAskBot
 User-agent: iaskspider
 User-agent: iaskspider/2.0
@@ -85,12 +90,15 @@ User-agent: Meta-ExternalFetcher
 User-agent: meta-webindexer
 User-agent: MistralAI-User
 User-agent: MyCentralAIScraperBot
+User-agent: NagetBot
 User-agent: netEstate Imprint Crawler
+User-agent: newsai
 User-agent: NotebookLM
 User-agent: NovaAct
 User-agent: omgili
 User-agent: omgilibot
 User-agent: OpenAI
+User-agent: opencode
 User-agent: Operator
 User-agent: PanguBot
 User-agent: Panscient
@@ -104,14 +112,17 @@ User-agent: SBIntuitionsBot
 User-agent: Scrapy
 User-agent: SemrushBot-OCOB
 User-agent: SemrushBot-SWA
+User-agent: Shap-User
 User-agent: ShapBot
 User-agent: Sidetrade indexer bot
 User-agent: Spider
 User-agent: TavilyBot
+User-agent: Terra Cotta
 User-agent: TerraCotta
 User-agent: Thinkbot
 User-agent: TikTokSpider
 User-agent: Timpibot
+User-agent: Trae
 User-agent: TwinAgent
 User-agent: VelenPublicWebCrawler
 User-agent: WARDBot

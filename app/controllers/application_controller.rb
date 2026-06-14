@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
   before_action :store_user_location!, if: :storable_location?
   before_action :authenticate_by_ip if Rails.env.staging?
   protect_from_forgery with: :exception
+  before_action :discard_stale_auth_flash, unless: :devise_controller?
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_supporters
   before_action :set_navigation
@@ -26,6 +27,21 @@ class ApplicationController < ActionController::Base
 
   def set_appsignal_namespace
     Appsignal::Transaction.current.set_namespace('public')
+  end
+
+  # Devise sets a persistent flash[:alert] (e.g. "You need to sign in...") when
+  # an unauthenticated user is bounced away from /admin. That message is only
+  # relevant on the sign-in page it redirects to. If the user instead navigates
+  # to a public site page, the flash would otherwise persist and be shown
+  # there (see #2144), so drop it.
+  #
+  # Scoped to the public site: admin pages legitimately surface flash[:alert]
+  # (e.g. Admin::PartnersController#user_not_authorized) and Devise controllers,
+  # which render the sign-in warning, are excluded by the before_action filter.
+  def discard_stale_auth_flash
+    return if request.subdomain == Site::ADMIN_SUBDOMAIN
+
+    flash.delete(:alert) if flash[:alert].present?
   end
 
   def user_not_authorized
@@ -49,15 +65,20 @@ class ApplicationController < ActionController::Base
     redirect_to new_user_session_path
   end
 
-  # Set the day either using the URL or by today's date
+  # Set the day either using the URL or by today's date.
+  # Falls back to today if the URL params don't form a valid date
+  # (e.g. month=13, day=32 from crawlers hitting random URLs).
   def set_day
     @today = Date.today
-    day = params[:day] || 1
     @current_day =
-      if params[:year] && params[:month] && day
-        Date.new(params[:year].to_i,
-                 params[:month].to_i,
-                 params[:day].to_i)
+      if params[:year] && params[:month] && params[:day]
+        begin
+          Date.new(params[:year].to_i,
+                   params[:month].to_i,
+                   params[:day].to_i)
+        rescue ArgumentError
+          @today
+        end
       else
         @today
       end
@@ -69,27 +90,31 @@ class ApplicationController < ActionController::Base
 
   # Get an object representing the requested site.
   # Note:
-  #   The admin site does not have a Site object.
+  #   The admin site does not have a Site object, and neither does the
+  #   nationwide directory: an apex (no-subdomain) request resolves to nil.
   # Side effects:
-  #   If the requested site is invalid then redirect to the home page of the
-  #   default site.
+  #   An unmatched subdomain redirects to the apex (the directory).
   def current_site
-    return @current_site if @current_site
+    return @current_site if defined?(@current_site)
 
-    if Site.any?
-      # Do not return a site for the admin subdomain.
-      # The admin subdomain gives a global view of data.
-      return if request.subdomain == Site::ADMIN_SUBDOMAIN
+    # Do not return a site for the admin subdomain.
+    # The admin subdomain gives a global view of data.
+    return @current_site = nil if request.subdomain == Site::ADMIN_SUBDOMAIN
 
-      @current_site = Site.find_by_request(request)
+    @current_site = Site.find_by_request(request)
 
-      redirect_to(root_url(subdomain: false), allow_other_host: true) if @current_site.nil? && !response.redirect?
-    else
-      flash.now[:warning] = 'You have no site in your database, have you run `rails db:seed`?'
-      @current_site = Site.new
+    if @current_site.nil? && request.subdomain.present? &&
+       request.subdomain != 'www' && !response.redirect?
+      redirect_to(root_url(subdomain: false), allow_other_host: true)
     end
 
     @current_site
+  end
+
+  # @return [Boolean] true when this request is for the nationwide directory:
+  #   the apex (no matched site) outside the admin subdomain.
+  def directory_request?
+    current_site.nil? && request.subdomain != Site::ADMIN_SUBDOMAIN
   end
 
   def set_primary_neighbourhood
@@ -196,15 +221,15 @@ class ApplicationController < ActionController::Base
     @site = current_site
   end
 
-  def redirect_from_default_site
-    redirect_to '/find-placecal' if default_site?
+  def redirect_from_directory
+    redirect_to '/find-placecal' if directory_request?
   end
 
   def set_navigation
     return @navigation if @navigation
 
-    @navigation = if default_site?
-                    default_site_navigation
+    @navigation = if directory_request?
+                    directory_navigation
                   else
                     sub_site_navigation
                   end
@@ -231,11 +256,7 @@ class ApplicationController < ActionController::Base
     stored_location_for(resource_or_scope) || admin_root_url(subdomain: Site::ADMIN_SUBDOMAIN)
   end
 
-  def default_site?
-    current_site&.default_site?
-  end
-
-  def default_site_navigation
+  def directory_navigation
     [
       ['Home', root_path],
       ['Partners', partners_path],

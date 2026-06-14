@@ -5,7 +5,7 @@ class Components::Directory::Hero < Components::Directory::Base
   prop :subtitle, _Nilable(String), default: nil
   prop :search_path, _Nilable(String), default: nil
   prop :partner_locations, _Interface(:each), default: -> { [] }
-  prop :jump_sites, _Interface(:each), default: -> { [] }
+  prop :jump_neighbourhoods, _Interface(:each), default: -> { [] }
 
   def view_template
     section(class: 'bg-foreground py-10 lg:py-14', style: 'color: var(--color-background)') do
@@ -48,15 +48,24 @@ class Components::Directory::Hero < Components::Directory::Base
   end
 
   def render_jump_links
-    return if @jump_sites.none?
+    links = jump_links
+    return if links.none?
 
     div(class: 'flex items-center gap-6 mt-6 flex-wrap') do
       span(class: 'text-sm') { 'Jump to:' }
-      @jump_sites.each do |site|
-        a(href: partnership_path(site.slug),
+      links.each do |link|
+        a(href: partners_path(neighbourhood: link[:neighbourhood_id]),
           class: 'font-bold text-detail no-underline hover:underline hover:decoration-primary',
-          style: 'color: inherit') { site.name }
+          style: 'color: inherit') { link[:name] }
       end
+    end
+  end
+
+  # Each jump link points at the partners directory filtered to that place,
+  # labelled with the neighbourhood name.
+  def jump_links
+    @jump_neighbourhoods.map do |neighbourhood|
+      { name: neighbourhood.name, neighbourhood_id: neighbourhood.id }
     end
   end
 
