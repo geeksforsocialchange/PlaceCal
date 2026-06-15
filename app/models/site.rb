@@ -6,12 +6,17 @@ class Site < ApplicationRecord
   extend Enumerize
   include HtmlRenderCache
   include SiteJsonLd
+  include SlugRetainable
 
   # ==== Constants ====
 
   # ASSUMPTION: There is no row in the sites table for the admin site, hence
   # defining the admin subdomain string here.
   ADMIN_SUBDOMAIN = 'admin'
+
+  # Canonical apex URL for the nationwide directory. The directory has no Site
+  # row — an apex request resolves to no site and renders the directory.
+  DIRECTORY_URL = 'https://placecal.org'
 
   # ==== Enums / Enumerize ====
   # Theme picker
@@ -79,7 +84,6 @@ class Site < ApplicationRecord
   # ==== Validations ====
   validates :name, :slug, :url, presence: true
   validates :slug, uniqueness: true
-  validates :place_name unless :default_site?
   validates :hero_text, length: { maximum: 120 }
 
   # ==== Scopes ====
@@ -89,6 +93,13 @@ class Site < ApplicationRecord
 
   def to_s
     "#{id}: #{name}"
+  end
+
+  # @return [Boolean] whether FriendlyId should generate a new slug
+  # Regenerates from the name whenever the slug is blank (e.g. left empty on
+  # the new-site form), mirroring Partner so the slug auto-populates on create.
+  def should_generate_new_friendly_id?
+    slug.blank?
   end
 
   # @return [Array<Neighbourhood>] all neighbourhoods in this site's subtrees
@@ -110,18 +121,6 @@ class Site < ApplicationRecord
       .for_site(self)
       .published
       .count
-  end
-
-  # @return [Boolean]
-  def default_site?
-    slug == 'default-site'
-  end
-
-  alias directory_site? default_site?
-
-  # @return [Boolean] true for any non-default site
-  def local_site?
-    !default_site?
   end
 
   # @return [Boolean] whether neighbourhood badges should be shown
@@ -175,15 +174,16 @@ class Site < ApplicationRecord
     refresh_events_count!
   end
 
-  # @return [String] Sprockets stylesheet path for this site's theme
+  # @return [String, nil] asset pipeline stylesheet path for this site's theme,
+  #   or nil when no stylesheet should be linked. For the :custom theme the
+  #   per-site asset (themes/custom/<slug>.css) may not exist in the pipeline;
+  #   in that case we return nil so the page renders with the default styling
+  #   instead of raising Propshaft::MissingAssetError (see issue #2936).
   def stylesheet_link
-    return nil if default_site?
+    return "themes/#{theme}" unless theme == :custom
 
-    if theme == :custom
-      "themes/custom/#{slug}"
-    else
-      "themes/#{theme}"
-    end
+    custom_path = "themes/custom/#{slug}"
+    custom_path if asset_present?("#{custom_path}.css")
   end
 
   # @return [String, false] Open Graph image URL, or false
@@ -198,22 +198,48 @@ class Site < ApplicationRecord
 
   # @return [String] robots.txt content, blocking crawlers if unpublished
   def robots
-    config = File.read(Rails.root.join("config/robots/#{self.class.robots_config_filename}"))
-
     if is_published?
-      "#{config}\nSitemap: https://placecal.org/sitemap.xml\n"
+      self.class.published_robots
     else
       <<~TXT
-        #{config}
+        #{self.class.robots_config}
         User-agent: *
         Disallow: /
       TXT
     end
   end
 
+  private
+
+  # @param logical_path [String] asset logical path, e.g. "themes/custom/foo.css"
+  # @return [Boolean] whether the asset resolves in the pipeline. Uses the same
+  #   resolver that stylesheet_link_tag relies on (Propshaft::Helper#compute_asset_path),
+  #   so the guard matches link behaviour in both development (dynamic) and
+  #   production (static manifest) modes.
+  def asset_present?(logical_path)
+    Rails.application.assets&.resolver&.resolve(logical_path).present?
+  end
+
   # ==== Class methods ====
 
   class << self
+    # robots.txt for the nationwide directory at the apex domain. The directory
+    # has no Site row and is always publicly crawlable.
+    # @return [String]
+    def directory_robots
+      published_robots
+    end
+
+    # @return [String] the permissive robots.txt template plus sitemap reference
+    def published_robots
+      "#{robots_config}\nSitemap: #{DIRECTORY_URL}/sitemap.xml\n"
+    end
+
+    # @return [String] contents of the environment's robots.txt template
+    def robots_config
+      File.read(Rails.root.join("config/robots/#{robots_config_filename}"))
+    end
+
     # Selects the robots.txt template based on ALLOW_AI_SEARCH_BOTS env var.
     # In production, defaults to allowing search-AI bots (permissive template).
     # Set ALLOW_AI_SEARCH_BOTS=false to block all AI bots (strict template).
@@ -253,7 +279,8 @@ class Site < ApplicationRecord
     # Find the requested Site from information in the rails request object.
     #
     # @param request The request must expose the methods: host, subdomain, subdomains
-    # @return [Site]
+    # @return [Site, nil] nil for the apex / no-subdomain request (the
+    #   nationwide directory has no Site row)
     def find_by_request(request)
       # If there is a site with the domain in request.host, return it
       site = find_using_domain(request.host)
@@ -266,8 +293,7 @@ class Site < ApplicationRecord
           request.subdomain
         end
 
-      # No subdomain? Fall back to the default site.
-      site_slug ||= 'default-site'
+      return if site_slug.blank?
 
       Site.find_by(slug: site_slug)
     end
@@ -300,7 +326,9 @@ class Site < ApplicationRecord
 
       return [] if site_ids.empty?
 
-      sites = Site.where(id: site_ids).includes(:tags).order(:name)
+      # Only published sites are live on the public directory, so a partner can
+      # only "appear" on a published site.
+      sites = Site.published.where(id: site_ids).includes(:tags).order(:name)
 
       # Sites with tags only match if the partner has at least one of those tags
       partner_tag_ids = partner.tag_ids.to_set

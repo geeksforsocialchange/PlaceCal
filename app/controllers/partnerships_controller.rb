@@ -6,7 +6,6 @@ class PartnershipsController < ApplicationController
 
   def index
     @partnerships = Site.where(is_published: true)
-                        .where.not(slug: 'default-site')
                         .order(partners_count: :desc)
     @total_partners = Partner.visible.count
 
@@ -16,7 +15,7 @@ class PartnershipsController < ApplicationController
   def show
     @partnership = Site.includes(:site_admin, :primary_neighbourhood).friendly.find(params[:id])
     @partners = PartnersQuery.new(site: @partnership).call
-    @upcoming_events = EventsQuery.new(site: @partnership).call(period: 'upcoming')
+    @upcoming_events = EventsQuery.new(site: @partnership).call(period: 'future')
 
     partner_ids = Array(@partners.respond_to?(:each_pair) ? @partners.values.flatten : @partners).map(&:id)
     @partner_event_counts = Event.future(Time.current)

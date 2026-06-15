@@ -14,7 +14,11 @@ RSpec.describe Site, type: :model do
 
   describe "validations" do
     it { is_expected.to validate_presence_of(:name) }
-    it { is_expected.to validate_presence_of(:slug) }
+
+    # NOTE: slug presence is enforced at the model and database level, but a
+    # blank slug is auto-generated from the name before validation (see
+    # #should_generate_new_friendly_id? and the "FriendlyId" specs below), so
+    # validate_presence_of(:slug) cannot be asserted via shoulda-matchers.
 
     # NOTE: FriendlyId handles slug uniqueness at the database level
     # No explicit validates_uniqueness_of on slug in the model
@@ -41,6 +45,33 @@ RSpec.describe Site, type: :model do
     it "uses slug for URL" do
       site = create(:site, name: "Test Site", slug: "test-site")
       expect(site.to_param).to eq("test-site")
+    end
+
+    it "auto-populates the slug from the name on create when slug is left blank" do
+      site = create(:site, name: "My Brand New Site", slug: "")
+      expect(site.slug).to eq("my-brand-new-site")
+    end
+
+    it "auto-populates the slug from the name on create when no slug is given" do
+      site = build(:site, name: "Another New Site")
+      site.slug = nil
+      site.save!
+      expect(site.slug).to eq("another-new-site")
+    end
+
+    it "keeps an explicitly provided slug on create" do
+      site = create(:site, name: "Named Site", slug: "my-custom-slug")
+      expect(site.slug).to eq("my-custom-slug")
+    end
+
+    describe "#should_generate_new_friendly_id?" do
+      it "is true when the slug is blank" do
+        expect(build(:site, slug: "").should_generate_new_friendly_id?).to be(true)
+      end
+
+      it "is false when the slug is present" do
+        expect(build(:site, slug: "present").should_generate_new_friendly_id?).to be(false)
+      end
     end
   end
 
@@ -124,6 +155,31 @@ RSpec.describe Site, type: :model do
 
       site.refresh_events_count!
       expect(site.reload.events_count).to eq(2)
+    end
+  end
+
+  describe ".sites_that_contain_partner" do
+    let(:neighbourhood) { create(:neighbourhood) }
+    let(:address) { create(:address, neighbourhood: neighbourhood) }
+    let(:partner) { create(:partner, address: address) }
+
+    it "returns published sites that contain the partner" do
+      site = create(:site, is_published: true, neighbourhoods: [neighbourhood])
+
+      expect(described_class.sites_that_contain_partner(partner)).to include(site)
+    end
+
+    it "excludes unpublished sites that contain the partner" do
+      create(:site, is_published: false, neighbourhoods: [neighbourhood])
+
+      expect(described_class.sites_that_contain_partner(partner)).to be_empty
+    end
+
+    it "returns only the published sites when both exist" do
+      published = create(:site, is_published: true, neighbourhoods: [neighbourhood])
+      create(:site, is_published: false, neighbourhoods: [neighbourhood])
+
+      expect(described_class.sites_that_contain_partner(partner)).to contain_exactly(published)
     end
   end
 

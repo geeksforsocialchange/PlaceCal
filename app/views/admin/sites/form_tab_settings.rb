@@ -48,16 +48,13 @@ class Views::Admin::Sites::FormTabSettings < Views::Admin::Base
       end
 
       fieldset(class: 'fieldset') do
-        legend(class: 'fieldset-legend') do
-          plain attr_label(:site, :slug)
-          whitespace
-          span(class: 'text-error') { t('admin.labels.required') }
-        end
+        legend(class: 'fieldset-legend') { plain attr_label(:site, :slug) }
         if policy(site).permitted_attributes.include?(:slug)
           raw form.input_field(:slug, class: 'input input-bordered w-full font-mono text-sm')
         else
           raw form.input_field(:slug, class: 'input input-bordered w-full font-mono text-sm bg-base-200', disabled: true)
         end
+        p(class: 'fieldset-label') { t('admin.hints.leave_blank_to_autogenerate') }
       end
     end
   end

@@ -77,6 +77,12 @@ Rails.application.routes.draw do
           month: /\d{1,2}/,
           day: /\d{1,2}/ }
 
+  # Open Graph share card images (#2077)
+  get '/opengraph.png', to: 'og_images#default', as: :og_image
+  get '/events/:id/opengraph.png', to: 'og_images#event', as: :event_og_image
+  get '/partners/:id/opengraph.png', to: 'og_images#partner', as: :partner_og_image
+  get '/partnerships/:id/opengraph.png', to: 'og_images#partnership', as: :partnership_og_image
+
   # Events
   resources :events, only: %i[index show]
   get '/events/:year/:month/:day', to: 'events#index', constraints: ymd, as: :events_by_date

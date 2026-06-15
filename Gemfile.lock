@@ -83,7 +83,7 @@ GEM
     ancestry (5.1.0)
       activerecord (>= 5.2.6)
       logger
-    appsignal (4.8.4)
+    appsignal (4.8.5)
       logger
       rack (>= 2.0.0)
     ast (2.4.3)
@@ -121,9 +121,9 @@ GEM
     bindex (0.8.1)
     binding_of_caller (2.0.0)
       debug_inspector (>= 1.2.0)
-    bootsnap (1.24.5)
+    bootsnap (1.24.6)
       msgpack (~> 1.2)
-    brakeman (8.0.4)
+    brakeman (8.0.5)
       racc
     builder (3.3.0)
     byebug (13.0.0)
@@ -166,7 +166,7 @@ GEM
       descendants_tracker (~> 0.0.1)
     concurrent-ruby (1.3.6)
     connection_pool (3.0.2)
-    console (1.35.1)
+    console (1.36.0)
       fiber-annotation
       fiber-local (~> 1.1)
       json
@@ -174,8 +174,9 @@ GEM
       bigdecimal
       rexml
     crass (1.0.6)
-    css_parser (2.2.0)
+    css_parser (3.0.0)
       addressable
+      ssrf_filter (~> 1.5)
     csv (3.3.5)
     cucumber (10.2.0)
       base64 (~> 0.2)
@@ -212,7 +213,7 @@ GEM
     database_cleaner-active_record (2.2.2)
       activerecord (>= 5.a)
       database_cleaner-core (~> 2.0)
-    database_cleaner-core (2.0.1)
+    database_cleaner-core (2.1.0)
     database_consistency (3.0.5)
       activerecord (>= 3.2)
     date (3.5.1)
@@ -296,7 +297,7 @@ GEM
       faraday (>= 1, < 3)
     faraday-multipart (1.2.0)
       multipart-post (~> 2.0)
-    faraday-net_http (3.4.3)
+    faraday-net_http (3.4.4)
       net-http (~> 0.5)
     faraday-net_http_persistent (2.3.1)
       faraday (~> 2.5)
@@ -331,30 +332,30 @@ GEM
       csv (>= 3.0.0)
     globalid (1.3.0)
       activesupport (>= 6.1)
-    google-protobuf (4.35.0)
+    google-protobuf (4.35.1)
       bigdecimal
       rake (~> 13.3)
-    google-protobuf (4.35.0-aarch64-linux-gnu)
+    google-protobuf (4.35.1-aarch64-linux-gnu)
       bigdecimal
       rake (~> 13.3)
-    google-protobuf (4.35.0-aarch64-linux-musl)
+    google-protobuf (4.35.1-aarch64-linux-musl)
       bigdecimal
       rake (~> 13.3)
-    google-protobuf (4.35.0-arm64-darwin)
+    google-protobuf (4.35.1-arm64-darwin)
       bigdecimal
       rake (~> 13.3)
-    google-protobuf (4.35.0-x86_64-darwin)
+    google-protobuf (4.35.1-x86_64-darwin)
       bigdecimal
       rake (~> 13.3)
-    google-protobuf (4.35.0-x86_64-linux-gnu)
+    google-protobuf (4.35.1-x86_64-linux-gnu)
       bigdecimal
       rake (~> 13.3)
-    google-protobuf (4.35.0-x86_64-linux-musl)
+    google-protobuf (4.35.1-x86_64-linux-musl)
       bigdecimal
       rake (~> 13.3)
     graphiql-rails (1.10.5)
       railties
-    graphql (2.6.2)
+    graphql (2.6.3)
       base64
       fiber-storage
       logger
@@ -399,13 +400,13 @@ GEM
     invisible_captcha (2.3.0)
       rails (>= 5.2)
     io-console (0.8.2)
-    io-event (1.16.1)
+    io-event (1.16.2)
     irb (1.18.0)
       pp (>= 0.6.0)
       prism (>= 1.3.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
-    json (2.19.5)
+    json (2.19.9)
     json-canonicalization (1.0.0)
     json-ld (3.3.2)
       htmlentities (~> 4.3)
@@ -476,7 +477,7 @@ GEM
     minitest (6.0.6)
       drb (~> 2.0)
       prism (~> 1.5)
-    msgpack (1.8.0)
+    msgpack (1.8.3)
     multi_json (1.21.1)
     multi_test (1.1.0)
     multi_xml (0.9.1)
@@ -486,7 +487,7 @@ GEM
       uri (>= 0.11.1)
     net-http-persistent (4.0.8)
       connection_pool (>= 2.2.4, < 4)
-    net-imap (0.6.4)
+    net-imap (0.6.4.1)
       date
       net-protocol
     net-pop (0.1.2)
@@ -520,7 +521,7 @@ GEM
       racc (~> 1.4)
     orm_adapter (0.5.0)
     ostruct (0.6.3)
-    pagy (43.5.5)
+    pagy (43.5.6)
       json
       uri
       yaml
@@ -553,11 +554,11 @@ GEM
       actionpack (>= 7.0.0)
       activesupport (>= 7.0.0)
       rack
-    psych (5.3.1)
+    psych (5.4.0)
       date
       stringio
     public_suffix (7.0.5)
-    puma (8.0.1)
+    puma (8.0.2)
       nio4r (~> 2.0)
     pundit (2.5.2)
       activesupport (>= 3.0.0)
@@ -598,11 +599,11 @@ GEM
       activesupport (>= 5.0.0)
       minitest
       nokogiri (>= 1.6)
-    rails-erd (1.7.2)
-      activerecord (>= 4.2)
-      activesupport (>= 4.2)
+    rails-erd (2.0.2)
+      activerecord (>= 7.0)
+      activesupport (>= 7.0)
       choice (~> 0.2.0)
-      ruby-graphviz (~> 1.2)
+      ostruct
     rails-html-sanitizer (1.7.0)
       loofah (~> 2.25)
       nokogiri (>= 1.15.7, != 1.16.7, != 1.16.6, != 1.16.5, != 1.16.4, != 1.16.3, != 1.16.2, != 1.16.1, != 1.16.0.rc1, != 1.16.0)
@@ -656,7 +657,8 @@ GEM
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
     rexml (3.4.4)
-    rouge (4.7.0)
+    rouge (5.0.0)
+      strscan (~> 3.1)
     rspec-core (3.13.6)
       rspec-support (~> 3.13.0)
     rspec-expectations (3.13.5)
@@ -674,7 +676,7 @@ GEM
       rspec-mocks (>= 3.13.0, < 5.0.0)
       rspec-support (>= 3.13.0, < 5.0.0)
     rspec-support (3.13.7)
-    rubocop (1.86.2)
+    rubocop (1.87.0)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -695,7 +697,7 @@ GEM
       lint_roller (~> 1.1)
       rubocop (>= 1.75.0, < 2.0)
       rubocop-ast (>= 1.47.1, < 2.0)
-    rubocop-rails (2.35.3)
+    rubocop-rails (2.35.4)
       activesupport (>= 4.2.0)
       lint_roller (~> 1.1)
       rack (>= 1.1)
@@ -704,11 +706,10 @@ GEM
     rubocop-rake (0.7.1)
       lint_roller (~> 1.1)
       rubocop (>= 1.72.1)
-    rubocop-rspec (3.9.0)
+    rubocop-rspec (3.10.2)
       lint_roller (~> 1.1)
-      rubocop (~> 1.81)
-    ruby-graphviz (1.2.5)
-      rexml
+      regexp_parser (>= 2.0)
+      rubocop (~> 1.86, >= 1.86.2)
     ruby-lsp (0.26.9)
       language_server-protocol (~> 3.17.0)
       prism (>= 1.2, < 2.0)
@@ -727,22 +728,22 @@ GEM
     ruby-vips (2.3.0)
       ffi (~> 1.12)
       logger
-    rubyzip (3.3.0)
-    sass-embedded (1.100.0-aarch64-linux-gnu)
+    rubyzip (3.4.0)
+    sass-embedded (1.101.0-aarch64-linux-gnu)
       google-protobuf (~> 4.31)
-    sass-embedded (1.100.0-aarch64-linux-musl)
+    sass-embedded (1.101.0-aarch64-linux-musl)
       google-protobuf (~> 4.31)
-    sass-embedded (1.100.0-arm-linux-gnueabihf)
+    sass-embedded (1.101.0-arm-linux-gnueabihf)
       google-protobuf (~> 4.31)
-    sass-embedded (1.100.0-arm-linux-musleabihf)
+    sass-embedded (1.101.0-arm-linux-musleabihf)
       google-protobuf (~> 4.31)
-    sass-embedded (1.100.0-arm64-darwin)
+    sass-embedded (1.101.0-arm64-darwin)
       google-protobuf (~> 4.31)
-    sass-embedded (1.100.0-x86_64-darwin)
+    sass-embedded (1.101.0-x86_64-darwin)
       google-protobuf (~> 4.31)
-    sass-embedded (1.100.0-x86_64-linux-gnu)
+    sass-embedded (1.101.0-x86_64-linux-gnu)
       google-protobuf (~> 4.31)
-    sass-embedded (1.100.0-x86_64-linux-musl)
+    sass-embedded (1.101.0-x86_64-linux-musl)
       google-protobuf (~> 4.31)
     securerandom (0.4.1)
     selenium-webdriver (4.44.0)
@@ -762,7 +763,7 @@ GEM
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.13.2)
     simplecov_json_formatter (0.1.4)
-    spring (4.5.0)
+    spring (4.6.0)
     sshkit (1.25.0)
       base64
       logger
@@ -777,6 +778,7 @@ GEM
       prism
       require-hooks (~> 0.2)
     stringio (3.2.0)
+    strscan (3.1.8)
     sys-uname (1.5.1)
       ffi (~> 1.1)
       memoist3 (~> 1.0.0)
@@ -813,7 +815,7 @@ GEM
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
     websocket (1.2.11)
-    websocket-driver (0.8.0)
+    websocket-driver (0.8.1)
       base64
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
@@ -898,10 +900,10 @@ DEPENDENCIES
   rails-erd
   rdoc
   rspec-rails (~> 8.0)
-  rubocop (= 1.86.2)
+  rubocop (= 1.87.0)
   rubocop-graphql (= 1.6.0)
   rubocop-performance (= 1.26.1)
-  rubocop-rails (= 2.35.3)
+  rubocop-rails (= 2.35.4)
   rubocop-rake
   rubocop-rspec
   ruby-lsp

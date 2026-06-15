@@ -15,7 +15,7 @@ class PartnersController < ApplicationController
   # GET /partners
   # GET /partners.json
   def index
-    if default_site?
+    if directory_request?
       render_directory_index
     else
       render_local_index
@@ -59,11 +59,11 @@ class PartnersController < ApplicationController
     # Map
     @map = get_map_markers([@partner])
 
-    @containing_sites = Site.sites_that_contain_partner(@partner) if default_site?
+    @containing_sites = Site.sites_that_contain_partner(@partner) if directory_request?
 
     respond_to do |format|
       format.html do
-        view_class = default_site? ? Views::Directory::Partners::Show : Views::Partners::Show
+        view_class = directory_request? ? Views::Directory::Partners::Show : Views::Partners::Show
         render view_class.new(
           partner: @partner, site: @site, current_day: @current_day,
           map: @map, events: @events,
@@ -113,23 +113,30 @@ class PartnersController < ApplicationController
   def render_directory_index
     @sort = params[:sort] || 'recent'
     query = PartnersQuery.new(site: current_site)
-    partners = query.call(
+    filters = {
       query: params[:q],
       tag_id: params[:category],
       partnership_id: params[:partnership],
-      neighbourhood_id: params[:neighbourhood],
-      sort: @sort
-    )
+      neighbourhood_id: params[:neighbourhood]
+    }
+    partners = query.call(**filters, sort: @sort)
     paginate_with_az_filter(partners)
+
+    # Each facet's counts cross-filter on the OTHER active filters but not its
+    # own, so the numbers narrow as you filter while you can still switch within
+    # a facet (e.g. the category list reflects the chosen neighbourhood).
+    category_scope = query.call(**filters.except(:tag_id))
+    partnership_scope = query.call(**filters.except(:partnership_id))
+    neighbourhood_scope = query.call(**filters.except(:neighbourhood_id))
 
     render Views::Directory::Partners::Index.new(
       partners: @partners, pagy: @pagy, site: @site, query: params[:q], sort: @sort,
       az_letters: @az_letters, selected_letter: @selected_letter,
       total_count: Partner.visible.count,
-      partnership_count: Site.where(is_published: true).where.not(slug: 'default-site').count,
-      categories: query.categories_with_counts.map { |c| { id: c[:category].id, name: c[:category].name, count: c[:count] } },
-      partnerships_list: query.partnerships_with_counts.map { |p| { id: p[:partnership].id, name: p[:partnership].name, count: p[:count] } },
-      neighbourhoods: group_neighbourhoods_by_district(query.neighbourhoods_with_counts),
+      partnership_count: Site.where(is_published: true).count,
+      categories: query.categories_with_counts(scope: category_scope).map { |c| { id: c[:category].id, name: c[:category].name, count: c[:count] } },
+      partnerships_list: query.partnerships_with_counts(scope: partnership_scope).map { |p| { id: p[:partnership].id, name: p[:partnership].name, count: p[:count] } },
+      neighbourhoods_tree: query.neighbourhood_tree(scope: neighbourhood_scope, selected_id: params[:neighbourhood]),
       selected_category: params[:category],
       selected_partnership: params[:partnership],
       selected_neighbourhood: params[:neighbourhood]
@@ -138,7 +145,10 @@ class PartnersController < ApplicationController
 
   def paginate_with_az_filter(partners)
     if @sort == 'name'
-      @az_letters = partners.pluck(Arel.sql('UPPER(LEFT(partners.name, 1))')).uniq.select { |l| l&.match?(/[A-Z]/) }.to_set
+      # reorder(nil) drops the name ORDER BY: with a DISTINCT relation (added by
+      # the neighbourhood filter) Postgres rejects ordering by a column that's
+      # not in the restricted DISTINCT select list. See issue #3226.
+      @az_letters = partners.reorder(nil).pluck(Arel.sql('UPPER(LEFT(partners.name, 1))')).uniq.select { |l| l&.match?(/[A-Z]/) }.to_set
       @selected_letter = params[:letter]&.upcase if params[:letter].present? && params[:letter].match?(/\A[a-zA-Z]\z/)
       filtered = @selected_letter ? partners.where('partners.name LIKE ?', "#{@selected_letter}%") : partners
       @pagy, @partners = pagy(filtered, limit: 30)
@@ -147,18 +157,6 @@ class PartnersController < ApplicationController
       @selected_letter = nil
       @pagy, @partners = pagy(partners, limit: 30)
     end
-  end
-
-  def group_neighbourhoods_by_district(neighbourhoods_with_counts)
-    grouped = neighbourhoods_with_counts
-              .group_by { |n| n[:neighbourhood].district&.shortname || n[:neighbourhood].shortname }
-              .map do |district_name, items|
-                {
-                  group: district_name,
-                  items: items.map { |n| { id: n[:neighbourhood].id, name: n[:neighbourhood].shortname, count: n[:count] } }
-                }
-              end
-    grouped.sort_by { |g| g[:group] }
   end
 
   def render_local_index

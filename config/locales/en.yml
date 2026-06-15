@@ -25,7 +25,29 @@ en:
   directory:
     breadcrumbs:
       root: "Directory"
+    pages:
+      privacy:
+        title: "PlaceCal Privacy Policy"
+        breadcrumb: "Privacy"
+        document_title: "Privacy Policy"
+      terms_of_use:
+        title: "PlaceCal Terms of Use"
+        breadcrumb: "Terms"
+        document_title: "Terms of Use"
     partners:
+      index:
+        filters:
+          search: "Search"
+          search_placeholder: "Name or keyword…"
+          category: "Category"
+          partnership: "Partnership"
+          neighbourhood: "Neighbourhood"
+          apply: "Filter"
+          clear: "Clear"
+          all_categories: "All categories"
+          all_partnerships: "All partnerships"
+          all_neighbourhoods: "All neighbourhoods"
+          all_of: "All of %{name}"
       show:
         upcoming_events: "Upcoming events"
         location: "Location"
@@ -34,6 +56,35 @@ en:
           one: "Show 1 more event"
           other: "Show %{count} more events"
         serves: "Serves %{area}."
+    partnerships:
+      index:
+        hero_title: "Partnerships on PlaceCal"
+        hero_subtitle: "Discover local partnerships across the UK bringing communities together through PlaceCal. Each partnership runs its own calendar site, connecting the groups, events and services in their area."
+        hero_kicker: "%{count} partnerships serving %{partners} partners"
+        search_placeholder: "Search partnerships…"
+        search_button: "Search"
+        empty: "No partnerships found."
+        clear_search: "Clear search"
+      show:
+        kicker: "Partnership"
+        visit: "Visit %{url}"
+        partners_heading: "Partners in this partnership"
+        see_all_partners: "See all %{count} partners"
+        upcoming_events: "Upcoming events"
+        show_more_events:
+          one: "Show 1 more event"
+          other: "Show %{count} more events"
+        see_all_events: "See all events"
+        events_this_month:
+          one: "%{count} event this month"
+          other: "%{count} events this month"
+        map_coming_soon: "Map coming soon"
+        get_involved: "Get involved"
+        cta_text: "Running a community group%{area}? Join this partnership to list your events."
+        cta_area: " in %{name}"
+        contact_coordinator: "Contact coordinator"
+      card:
+        kicker: "Partnership"
     sidebar:
       part_of: "Part of"
       partnerships:
@@ -47,6 +98,23 @@ en:
     contact:
       get_in_touch: "Get in touch"
       no_contact: "No contact information — let us know!"
+    footer:
+      tagline: "An open, community-run directory of local events and services near you."
+      browse: "Browse"
+      events: "Events"
+      partners: "Partners"
+      partnerships: "Partnerships"
+      for_partners: "For partners"
+      get_in_touch: "Get in touch"
+      discord: "Chat on Discord"
+      admin_log_in: "Admin log in"
+      about: "About"
+      our_story: "Our story"
+      privacy_policy: "Privacy policy"
+      terms_of_use: "Terms of use"
+      build: "Build:"
+      placecal_logo_alt: "PlaceCal logo"
+      gfsc_logo_alt: "Geeks for Social Change"
 
   # ===========================================================================
   # DATE & TIME FORMATS
@@ -55,6 +123,39 @@ en:
   date:
     formats:
       datetime: "%b %-d, %Y %l:%M"
+
+  time:
+    formats:
+      og_date: "%A %-d %B %Y"
+      og_time: "%-l:%M%P"
+
+  # ===========================================================================
+  # OPEN GRAPH SHARE CARDS
+  # ===========================================================================
+
+  og_image:
+    labels:
+      event: "Event"
+      partner: "Partner"
+      partnership: "Partnership"
+      community_site: "Community site"
+    upcoming_events:
+      one: "1 upcoming event"
+      other: "%{count} upcoming events"
+    partner_organisations:
+      one: "1 partner organisation"
+      other: "%{count} partner organisations"
+    events_this_month:
+      one: "1 event this month"
+      other: "%{count} events this month"
+    powered_by: "Powered by"
+    generic:
+      statement: "Events and activities by and for your community"
+    alt:
+      event: "Details for the event %{name} on PlaceCal"
+      partner: "Details for the partner %{name} on PlaceCal"
+      partnership: "Details for the partnership %{name} on PlaceCal"
+      site: "%{name}, powered by PlaceCal"
 
   # ===========================================================================
   # ENUMERIZE (Calendar types)

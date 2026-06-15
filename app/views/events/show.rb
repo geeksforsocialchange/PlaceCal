@@ -6,17 +6,18 @@ class Views::Events::Show < Views::Base
   register_value_helper :html_to_plaintext
 
   prop :event, ::Event, reader: :private
-  prop :site, Site, reader: :private
+  prop :site, _Nilable(::Site), reader: :private
   prop :map, _Nilable(Array), reader: :private
   prop :containing_sites, _Nilable(_Interface(:each)), reader: :private, default: nil
 
   def view_template
     content_for(:title) { event.og_title }
-    content_for(:image) { site.og_image }
+    content_for(:image) { event_og_image_url(event) }
+    content_for(:image_alt) { t('og_image.alt.event', name: event.summary) }
     content_for(:description) { html_to_plaintext(event.description_html) }
     content_for(:json_ld) { safe(event.to_json_ld(base_url: request.base_url).to_json) }
 
-    if site.default_site?
+    if site.nil?
       render_directory_layout
     else
       Event(
@@ -33,7 +34,7 @@ class Views::Events::Show < Views::Base
 
   private
 
-  # ── Directory layout (default site) ──
+  # ── Directory layout (nil site) ──
 
   def render_directory_layout
     Directory::PageHero(
@@ -93,7 +94,7 @@ class Views::Events::Show < Views::Base
     return unless map
 
     div(class: 'py-4') do
-      Map(points: map, site: site.slug, style: :multi)
+      Map(points: map, site: site&.slug, style: :multi)
     end
   end
 

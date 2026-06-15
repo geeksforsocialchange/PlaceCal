@@ -3,7 +3,6 @@
 require "rails_helper"
 
 RSpec.describe "Directory Partners", type: :request do
-  let!(:default_site) { create(:default_site) }
   let(:ward) { create(:riverside_ward) }
 
   describe "GET /partners (directory index)" do
@@ -59,6 +58,14 @@ RSpec.describe "Directory Partners", type: :request do
         letter = partner.name[0].upcase
         expect(response.body).to include("letter-#{letter}")
       end
+
+      # Regression for #3226: the neighbourhood filter adds DISTINCT, and the
+      # A-Z letter pluck must not carry the name ORDER BY into the DISTINCT
+      # select or Postgres raises PG::InvalidColumnReference.
+      it "succeeds when combined with a neighbourhood filter" do
+        get partners_url(host: "lvh.me", params: { sort: "name", neighbourhood: ward.id })
+        expect(response).to be_successful
+      end
     end
 
     context "with service-area-only partner" do
@@ -90,6 +97,36 @@ RSpec.describe "Directory Partners", type: :request do
         get partners_url(host: "lvh.me", params: { q: partner.name })
         expect(response).to be_successful
         expect(response.body).to include(partner.name)
+      end
+    end
+
+    context "with cross-filtering facets" do
+      let(:other_ward) { create(:oldtown_ward) }
+      let!(:alpha_partner) do
+        create(:partner, address: create(:address, neighbourhood: ward))
+          .tap { |p| p.categories << create(:category_tag, name: "Alphacat") }
+      end
+      let!(:bravo_partner) do
+        create(:partner, address: create(:address, neighbourhood: other_ward))
+          .tap { |p| p.categories << create(:category_tag, name: "Bravocat") }
+      end
+
+      it "lists every category when unfiltered" do
+        get partners_url(host: "lvh.me")
+        expect(response.body).to include("Alphacat")
+        expect(response.body).to include("Bravocat")
+      end
+
+      it "limits the category facet to the selected neighbourhood" do
+        get partners_url(host: "lvh.me", params: { neighbourhood: ward.id })
+        expect(response.body).to include("Alphacat")
+        expect(response.body).not_to include("Bravocat")
+      end
+
+      it "still shows the selected neighbourhood when no partners match the other filters" do
+        # other_ward has no Alphacat partners, but the picker should reflect it.
+        get partners_url(host: "lvh.me", params: { neighbourhood: other_ward.id, category: alpha_partner.categories.first.id })
+        expect(response.body).to include(other_ward.shortname)
       end
     end
   end

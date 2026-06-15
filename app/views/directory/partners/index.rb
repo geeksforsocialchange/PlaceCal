@@ -3,11 +3,11 @@
 class Views::Directory::Partners::Index < Views::Base
   prop :partners, _Interface(:each)
   prop :pagy, _Nilable(Pagy::Offset), default: nil
-  prop :site, ::Site
+  prop :site, _Nilable(::Site)
   prop :query, _Nilable(String), default: nil
   prop :categories, _Interface(:each), default: -> { [] }
   prop :partnerships_list, _Interface(:each), default: -> { [] }
-  prop :neighbourhoods, _Interface(:each), default: -> { [] }
+  prop :neighbourhoods_tree, _Interface(:each), default: -> { [] }
   prop :selected_category, _Nilable(String), default: nil
   prop :selected_partnership, _Nilable(String), default: nil
   prop :selected_neighbourhood, _Nilable(String), default: nil
@@ -33,7 +33,7 @@ class Views::Directory::Partners::Index < Views::Base
         query: @query,
         categories: @categories,
         partnerships_list: @partnerships_list,
-        neighbourhoods: @neighbourhoods,
+        neighbourhoods_tree: @neighbourhoods_tree,
         selected_category: @selected_category,
         selected_partnership: @selected_partnership,
         selected_neighbourhood: @selected_neighbourhood
@@ -54,11 +54,11 @@ class Views::Directory::Partners::Index < Views::Base
   end
 
   def render_results_header
-    filtered_count = @pagy ? @pagy.count : partner_list.size
+    filtered_total = @pagy ? @pagy.count : partner_list.size
     div(class: 'flex justify-between items-baseline flex-wrap gap-2 py-3') do
       div(class: 'text-sm text-tertiary') do
         if any_filter_active?
-          plain "Showing #{filtered_count} of #{@total_count} partners"
+          plain "Showing #{partner_list.size} of #{filtered_total} partners"
         else
           plain "#{@total_count} partners"
         end

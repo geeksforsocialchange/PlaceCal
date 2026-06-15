@@ -12,10 +12,6 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
 
   let!(:partner) { create(:partner) }
 
-  before do
-    create_default_site
-  end
-
   def visit_partner_edit
     url = admin_url("/partners/#{partner.id}/edit")
     visit url
@@ -44,6 +40,11 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
       Rails.logger.warn "Retrying partner edit page load (attempt #{attempts})"
       visit url
     end
+
+    # Wait for the Stimulus controllers to connect before interacting —
+    # clicks before connect() are reverted or ignored (flaky in CI)
+    wait_for_form_tabs
+    wait_for_save_bar
   end
 
   # Helper to modify form fields in a way that triggers JavaScript input events
@@ -68,9 +69,6 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     end
 
     it "shows Back, Save, and Continue buttons on middle tabs" do
-      # Wait for Stimulus save-bar controller to connect
-      expect(page).to have_css('[data-controller="save-bar"]')
-
       # Go to Location tab
       find('input[aria-label="📍 Location"]').click
 
@@ -116,9 +114,6 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     end
 
     it "changes button text to include Save when dirty" do
-      # Wait for Stimulus save-bar controller to connect
-      expect(page).to have_css('[data-controller="save-bar"]')
-
       # Go to a middle tab first
       find('input[aria-label="📍 Location"]').click
 
@@ -187,8 +182,6 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     end
 
     it "navigates to next tab when clicking Continue without changes" do
-      # Wait for Stimulus save-bar controller to connect and show the Continue button
-      expect(page).to have_css('[data-controller="save-bar"]')
       expect(page).to have_button("Continue", visible: :visible)
       click_button "Continue"
 
@@ -197,9 +190,6 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     end
 
     it "navigates to previous tab when clicking Back without changes" do
-      # Wait for Stimulus save-bar controller to connect
-      expect(page).to have_css('[data-controller="save-bar"]')
-
       # Go to Location tab first
       find('input[aria-label="📍 Location"]').click
       expect(page).to have_button("Back", visible: :visible)

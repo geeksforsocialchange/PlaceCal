@@ -13,7 +13,7 @@ class EventsController < ApplicationController
   # GET /events
   # GET /events.json
   def index
-    if default_site? && request.format.html? && params[:simple].blank?
+    if directory_request? && html_format? && params[:simple].blank?
       render_directory_index
     else
       render_local_index
@@ -30,7 +30,7 @@ class EventsController < ApplicationController
     elsif @event.address
       @map = get_map_markers([@event.address])
     end
-    @containing_sites = Site.sites_that_contain_partner(@event.organiser) if default_site? && @event.organiser
+    @containing_sites = Site.sites_that_contain_partner(@event.organiser) if directory_request? && @event.organiser
     respond_to do |format|
       format.html do
         render Views::Events::Show.new(
@@ -47,6 +47,13 @@ class EventsController < ApplicationController
   end
 
   private
+
+  # Treats a wildcard Accept header (curl, crawlers) as HTML, matching how
+  # respond_to would serve it. The directory has no Site row, so falling
+  # through to the local index would render a site-less local view.
+  def html_format?
+    request.format.html? || request.format == Mime::ALL
+  end
 
   def set_event
     @event = Event.find(params[:id])
@@ -78,7 +85,6 @@ class EventsController < ApplicationController
     @events = paginated.group_by { |e| e.dtstart.to_date }
 
     partnerships = Site.where(is_published: true)
-                       .where.not(slug: 'default-site')
                        .order(:name)
                        .pluck(:slug, :name)
                        .map { |slug, name| { slug: slug, name: name } }

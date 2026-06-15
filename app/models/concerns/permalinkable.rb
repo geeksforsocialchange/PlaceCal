@@ -10,7 +10,7 @@
 #     permalink_resource 'events'
 #   end
 #
-#   # Default: uses the default site's URL (https://placecal.org)
+#   # Default: uses the directory apex URL (https://placecal.org)
 #   event.permalink  # => "https://placecal.org/events/42"
 #
 #   # With site context: pass the site's URL for subdomain-aware links
@@ -21,7 +21,7 @@ module Permalinkable
   class_methods do
     def permalink_resource(resource_name)
       define_method(:permalink) do |base_url: nil|
-        base_url ||= Site.find_by(slug: 'default-site')&.url || 'https://placecal.org'
+        base_url ||= Site::DIRECTORY_URL
         "#{base_url.chomp('/')}/#{resource_name}/#{id}"
       end
     end

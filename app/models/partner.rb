@@ -7,6 +7,7 @@ class Partner < ApplicationRecord
   include Permalinkable
   extend FriendlyId
   include HtmlRenderCache
+  include SlugRetainable
 
   # ==== Constants ====
 
