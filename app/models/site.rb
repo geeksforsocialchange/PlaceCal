@@ -6,6 +6,7 @@ class Site < ApplicationRecord
   extend Enumerize
   include HtmlRenderCache
   include SiteJsonLd
+  include SlugRetainable
 
   # ==== Constants ====
 
