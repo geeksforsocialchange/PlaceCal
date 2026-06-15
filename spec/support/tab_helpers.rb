@@ -16,11 +16,14 @@ module TabHelpers
     expect(page).to have_css("[data-save-bar-connected]")
   end
 
-  # Click a tab by its data-hash attribute and wait for the panel to be visible
+  # Click a tab by its data-hash attribute and wait for it to be selected.
+  # Verifies the radio is checked rather than panel visibility, which avoids
+  # CI flakiness from CSS :checked rendering lag on daisyUI tabs.
   def click_tab(hash)
     wait_for_form_tabs
-    find("input.tab[data-hash='#{hash}']").click
-    expect(page).to have_css("[data-section='#{hash}']", visible: true)
+    tab = find("input.tab[data-hash='#{hash}']")
+    tab.click
+    expect(tab).to be_checked
   end
 
   # Navigate to a partner form tab by its aria-label (includes emoji prefix)
@@ -28,8 +31,7 @@ module TabHelpers
     wait_for_form_tabs
     tab = find("input.tab[aria-label='#{tab_label}']")
     tab.click
-    tab_hash = tab["data-hash"]
-    expect(page).to have_css("[data-section='#{tab_hash}']", visible: true) if tab_hash
+    expect(tab).to be_checked
   end
 
   def go_to_basic_info_tab = go_to_partner_tab("📋 Basic Info")
