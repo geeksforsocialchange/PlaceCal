@@ -499,7 +499,8 @@ class Partner < ApplicationRecord
     specs = JSON.parse(opening_times)
     return unless specs.is_a?(Array)
 
-    by_day = Hash.new { |hash, key| hash[key] = [] }
+    by_day = {}
+    has_invalid_range = false
 
     specs.each do |spec|
       next unless spec.is_a?(Hash)
@@ -509,13 +510,14 @@ class Partner < ApplicationRecord
       next if opens.nil? || closes.nil?
 
       if closes <= opens
-        errors.add :opening_times, :end_before_start
+        has_invalid_range = true
         next
       end
 
-      by_day[opening_times_day(spec)] << [opens, closes]
+      (by_day[opening_times_day(spec)] ||= []) << [opens, closes]
     end
 
+    errors.add(:opening_times, :end_before_start) if has_invalid_range
     flag_overlapping_opening_times(by_day)
   end
 
@@ -539,15 +541,12 @@ class Partner < ApplicationRecord
   end
 
   def flag_overlapping_opening_times(by_day)
-    by_day.each_value do |ranges|
+    has_overlap = by_day.each_value.any? do |ranges|
       sorted = ranges.sort_by(&:first)
-      sorted.each_cons(2) do |(_, prev_close), (next_open, _)|
-        if next_open < prev_close
-          errors.add :opening_times, :overlapping
-          break
-        end
-      end
+      sorted.each_cons(2).any? { |(_, prev_close), (next_open, _)| next_open < prev_close }
     end
+
+    errors.add(:opening_times, :overlapping) if has_overlap
   end
 
   def three_or_less_category_tags
