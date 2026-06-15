@@ -94,6 +94,13 @@ class Site < ApplicationRecord
     "#{id}: #{name}"
   end
 
+  # @return [Boolean] whether FriendlyId should generate a new slug
+  # Regenerates from the name whenever the slug is blank (e.g. left empty on
+  # the new-site form), mirroring Partner so the slug auto-populates on create.
+  def should_generate_new_friendly_id?
+    slug.blank?
+  end
+
   # @return [Array<Neighbourhood>] all neighbourhoods in this site's subtrees
   def owned_neighbourhoods
     neighbourhoods.map(&:subtree).flatten
