@@ -23,7 +23,7 @@ class Views::Admin::Calendars::FormTabSettings < Views::Admin::Base
   private
 
   def render_api_token_section(calendar)
-    api_token_modes = CalendarImporter::CalendarImporter::PARSERS.select(&:requires_api_token?).map { |p| p::KEY }
+    api_token_modes = PanCal.readers.select(&:requires_api_token?).map { |p| p::KEY }
     return unless calendar.importer_mode.in?(api_token_modes) || calendar.api_token.present?
 
     SectionHeader(

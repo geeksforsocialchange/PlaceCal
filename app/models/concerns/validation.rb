@@ -5,8 +5,9 @@ module Validation
   # Does NOT block private IPs (use PRIVATE_IP_RANGES for that).
   URL_REGEX = %r{\Ahttps?://[^\s]+\z}i.freeze
 
-  # Calendar sources also accept webcal:// scheme
-  CALENDAR_URL_REGEX = %r{\A(https?|webcal)://[^\s]+\z}i.freeze
+  # Calendar sources also accept webcal:// scheme; the canonical definition
+  # lives in the pancal gem alongside the feed readers
+  CALENDAR_URL_REGEX = PanCal::CALENDAR_URL_REGEX
 
   # RFC 1918 / loopback / link-local ranges that should not be used
   # as calendar source URLs (SSRF prevention).

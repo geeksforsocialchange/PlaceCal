@@ -28,7 +28,7 @@ RSpec.describe CalendarImporter::EventResolver do
   def patch_ics_dates(event, from_date, to_date)
     patch = Module.new
     patch.define_method(:occurrences_between) do |_from, _to|
-      [CalendarImporter::Events::Base::Dates.new(from_date, to_date)]
+      [PanCal::Event::Occurrence.new(from_date, to_date)]
     end
 
     event.extend patch
@@ -54,7 +54,7 @@ RSpec.describe CalendarImporter::EventResolver do
     )
     patch_ics_dates(event, start_date, end_date)
   end
-  let(:ics_event_data) { CalendarImporter::Events::IcsEvent.new(fake_ics_event, start_date, end_date) }
+  let(:ics_event_data) { PanCal::Events::IcsEvent.new(fake_ics_event, start_date, end_date) }
 
   describe "location strategies" do
     it "online only strategy does not set place or address" do
@@ -64,9 +64,9 @@ RSpec.describe CalendarImporter::EventResolver do
       resolver = described_class.new(ics_event_data, calendar, notices, start_date)
       resolver.determine_location_for_strategy
 
-      expect(resolver.data.place_id).to be_nil
-      expect(resolver.data.address_id).to be_nil
-      expect(resolver.data.organiser_id).to eq(calendar.organiser_id)
+      expect(resolver.resolved_ids[:place_id]).to be_nil
+      expect(resolver.resolved_ids[:address_id]).to be_nil
+      expect(resolver.resolved_ids[:organiser_id]).to eq(calendar.organiser_id)
     end
 
     it "no location strategy does not set place or address" do
@@ -76,9 +76,9 @@ RSpec.describe CalendarImporter::EventResolver do
       resolver = described_class.new(ics_event_data, calendar, notices, start_date)
       resolver.determine_location_for_strategy
 
-      expect(resolver.data.place_id).to be_nil
-      expect(resolver.data.address_id).to be_nil
-      expect(resolver.data.organiser_id).to eq(calendar.organiser_id)
+      expect(resolver.resolved_ids[:place_id]).to be_nil
+      expect(resolver.resolved_ids[:address_id]).to be_nil
+      expect(resolver.resolved_ids[:organiser_id]).to eq(calendar.organiser_id)
     end
   end
 
@@ -87,64 +87,64 @@ RSpec.describe CalendarImporter::EventResolver do
       it "detects google meet url in custom properties" do
         meet_link = "https://meet.google.com/aaa-aaaa-aaa"
         fake_ics_event[:custom_properties] = { "x_google_conference" => [meet_link] }
-        ics_event_data = CalendarImporter::Events::IcsEvent.new(fake_ics_event, start_date, end_date)
+        ics_event_data = PanCal::Events::IcsEvent.new(fake_ics_event, start_date, end_date)
 
         calendar = make_calendar_for_strategy("event")
 
         resolver = described_class.new(ics_event_data, calendar, [], start_date)
         resolver.determine_online_location
 
-        expect(resolver.data.online_address_id).to be_present
+        expect(resolver.resolved_ids[:online_address_id]).to be_present
 
-        online_address = OnlineAddress.find(resolver.data.online_address_id)
+        online_address = OnlineAddress.find(resolver.resolved_ids[:online_address_id])
         expect(online_address.url).to eq(meet_link)
       end
 
       it "detects jitsi link in description" do
         jitsi_link = "https://meet.jit.si/blahblabladsf"
         fake_ics_event[:description] = "Join us on jitsi: #{jitsi_link} words words words"
-        ics_event_data = CalendarImporter::Events::IcsEvent.new(fake_ics_event, start_date, end_date)
+        ics_event_data = PanCal::Events::IcsEvent.new(fake_ics_event, start_date, end_date)
 
         calendar = make_calendar_for_strategy("place")
 
         resolver = described_class.new(ics_event_data, calendar, [], start_date)
         resolver.determine_online_location
 
-        expect(resolver.data.online_address_id).to be_present
+        expect(resolver.resolved_ids[:online_address_id]).to be_present
 
-        online_address = OnlineAddress.find(resolver.data.online_address_id)
+        online_address = OnlineAddress.find(resolver.resolved_ids[:online_address_id])
         expect(online_address.url).to eq(jitsi_link)
       end
 
       it "detects google meet link in description" do
         meet_link = "https://meet.google.com/aaa-aaaa-aaa"
         fake_ics_event[:description] = "Join us on meets: #{meet_link} words words words"
-        ics_event_data = CalendarImporter::Events::IcsEvent.new(fake_ics_event, start_date, end_date)
+        ics_event_data = PanCal::Events::IcsEvent.new(fake_ics_event, start_date, end_date)
 
         calendar = make_calendar_for_strategy("event")
 
         resolver = described_class.new(ics_event_data, calendar, [], start_date)
         resolver.determine_online_location
 
-        expect(resolver.data.online_address_id).to be_present
+        expect(resolver.resolved_ids[:online_address_id]).to be_present
 
-        online_address = OnlineAddress.find(resolver.data.online_address_id)
+        online_address = OnlineAddress.find(resolver.resolved_ids[:online_address_id])
         expect(online_address.url).to eq(meet_link)
       end
 
       it "detects zoom link in description" do
         zoom_link = "https://us04web.zoom.us/j/78434510758?pwd=aILSsYSJRSb_uO87tFjulZuLAA0eXT.1"
         fake_ics_event[:description] = "join us on zoom: <p>#{zoom_link}<p> words words words"
-        ics_event_data = CalendarImporter::Events::IcsEvent.new(fake_ics_event, start_date, end_date)
+        ics_event_data = PanCal::Events::IcsEvent.new(fake_ics_event, start_date, end_date)
 
         calendar = make_calendar_for_strategy("event")
 
         resolver = described_class.new(ics_event_data, calendar, [], start_date)
         resolver.determine_online_location
 
-        expect(resolver.data.online_address_id).to be_present
+        expect(resolver.resolved_ids[:online_address_id]).to be_present
 
-        online_address = OnlineAddress.find(resolver.data.online_address_id)
+        online_address = OnlineAddress.find(resolver.resolved_ids[:online_address_id])
         expect(online_address.url).to eq(zoom_link)
       end
     end
@@ -162,16 +162,16 @@ RSpec.describe CalendarImporter::EventResolver do
           online_event: true,
           url: eventbrite_link
         )
-        event_data = CalendarImporter::Events::EventbriteEvent.new(fake_eventbrite_event)
+        event_data = PanCal::Events::EventbriteEvent.new(fake_eventbrite_event)
 
         calendar = make_calendar_for_strategy("event")
 
         resolver = described_class.new(event_data, calendar, [], start_date)
         resolver.determine_online_location
 
-        expect(resolver.data.online_address_id).to be_present
+        expect(resolver.resolved_ids[:online_address_id]).to be_present
 
-        online_address = OnlineAddress.find(resolver.data.online_address_id)
+        online_address = OnlineAddress.find(resolver.resolved_ids[:online_address_id])
         expect(online_address.url).to eq(eventbrite_link)
       end
     end
@@ -191,11 +191,11 @@ RSpec.describe CalendarImporter::EventResolver do
 
       patch = Module.new
       patch.define_method(:occurrences_between) do |_from, _to|
-        occurrences.map { |s, e| CalendarImporter::Events::Base::Dates.new(s, e) }
+        occurrences.map { |s, e| PanCal::Event::Occurrence.new(s, e) }
       end
       event.extend patch
 
-      CalendarImporter::Events::IcsEvent.new(event, occurrences.first[0], occurrences.first[1])
+      PanCal::Events::IcsEvent.new(event, occurrences.first[0], occurrences.first[1])
     end
 
     it "does not create duplicates when re-importing identical recurring events" do

@@ -1,0 +1,337 @@
+# frozen_string_literal: true
+
+# Ported from PlaceCal spec/jobs/calendar_importer/wix_parser_spec.rb.
+
+RSpec.describe PanCal::Readers::Wix do
+  describe '.allowlist_pattern' do
+    it 'matches wixsite.com event URLs' do
+      pattern = described_class.allowlist_pattern
+      expect('https://user123.wixsite.com/mysite/events').to match(pattern)
+      expect('https://user123.wixsite.com/mysite/event/some-event').to match(pattern)
+      expect('https://example.wixsite.com/community').to match(pattern)
+    end
+
+    it 'does not match non-wix URLs' do
+      pattern = described_class.allowlist_pattern
+      expect('https://example.com/events').not_to match(pattern)
+      expect('https://www.socialrefuge.com/event-list').not_to match(pattern)
+    end
+  end
+
+  describe '.handles_url?' do
+    it 'returns true for wixsite.com URLs' do
+      source = PanCal::Source.new(url: 'https://user123.wixsite.com/mysite/events')
+      expect(described_class.handles_url?(source)).to be true
+    end
+
+    it 'returns true for custom domain Wix sites with events' do
+      valid_wix_event = {
+        'id' => 'event-123',
+        'title' => 'Test Event',
+        'scheduling' => { 'config' => { 'startDate' => '2026-01-17T19:00:00.000Z' } }
+      }
+
+      html = <<~HTML
+        <html>
+          <head>
+            <meta name="generator" content="Wix.com Website Builder"/>
+          </head>
+          <body>
+            <script type="application/json">{"events": [#{valid_wix_event.to_json}]}</script>
+          </body>
+        </html>
+      HTML
+
+      allow(PanCal::Readers::Base).to receive(:read_http_source).and_return(html)
+      source = PanCal::Source.new(url: 'https://www.example-wix-site.com/events')
+      expect(described_class.handles_url?(source)).to be true
+    end
+
+    it 'returns false for non-Wix sites' do
+      allow(PanCal::Readers::Base).to receive(:read_http_source).and_return(
+        '<html><head><meta name="generator" content="WordPress"></head></html>'
+      )
+      source = PanCal::Source.new(url: 'https://example.com/events')
+      expect(described_class.handles_url?(source)).to be false
+    end
+
+    it 'returns false when HTTP request fails' do
+      allow(PanCal::Readers::Base).to receive(:read_http_source)
+        .and_raise(PanCal::InaccessibleFeed, 'Not found')
+      source = PanCal::Source.new(url: 'https://example.com/events')
+      expect(described_class.handles_url?(source)).to be false
+    end
+  end
+
+  describe '.wix_site?' do
+    it 'returns true for pages with Wix generator meta tag and events' do
+      valid_wix_event = {
+        'id' => 'event-123',
+        'title' => 'Test Event',
+        'scheduling' => { 'config' => { 'startDate' => '2026-01-17T19:00:00.000Z' } }
+      }
+
+      html = <<~HTML
+        <html>
+          <head>
+            <meta name="generator" content="Wix.com Website Builder"/>
+          </head>
+          <body>
+            <script type="application/json">{"events": [#{valid_wix_event.to_json}]}</script>
+          </body>
+        </html>
+      HTML
+
+      allow(PanCal::Readers::Base).to receive(:read_http_source).and_return(html)
+      expect(described_class.wix_site?('https://example.com')).to be true
+    end
+
+    it 'returns false for pages with Wix meta tag but no events' do
+      html = <<~HTML
+        <html>
+          <head>
+            <meta name="generator" content="Wix.com Website Builder"/>
+          </head>
+          <body>
+            <script type="application/json">{"noEvents": true}</script>
+          </body>
+        </html>
+      HTML
+
+      allow(PanCal::Readers::Base).to receive(:read_http_source).and_return(html)
+      expect(described_class.wix_site?('https://example.com')).to be false
+    end
+
+    it 'returns false for non-Wix pages' do
+      html = '<html><head><meta name="generator" content="WordPress"></head></html>'
+      allow(PanCal::Readers::Base).to receive(:read_http_source).and_return(html)
+      expect(described_class.wix_site?('https://example.com')).to be false
+    end
+  end
+
+  describe '#download_calendar' do
+    it 'extracts events from Wix page HTML' do
+      wix_url = 'https://www.socialrefuge.com/event-list'
+
+      VCR.use_cassette(:wix_events) do
+        source = PanCal::Source.new(url: wix_url, reader: 'wix')
+
+        reader = described_class.new(source)
+        data = reader.download_calendar
+
+        expect(data).to be_an(Array)
+        expect(data).not_to be_empty
+        expect(data.first).to include('id', 'title', 'scheduling')
+      end
+    end
+  end
+
+  describe '#import_events_from' do
+    let(:wix_data) do
+      [
+        {
+          'id' => 'event-123',
+          'title' => 'Test Event',
+          'description' => 'A test event',
+          'slug' => 'test-event',
+          'scheduling' => {
+            'config' => {
+              'startDate' => '2026-01-17T19:00:00.000Z',
+              'endDate' => '2026-01-17T23:00:00.000Z',
+              'timeZoneId' => 'Europe/London',
+              'scheduleTbd' => false
+            }
+          },
+          'location' => {
+            'name' => 'Test Venue',
+            'address' => '123 Test Street',
+            'fullAddress' => {
+              'formattedAddress' => '123 Test Street, Manchester M1 1AA, UK'
+            }
+          }
+        }
+      ]
+    end
+
+    it 'converts Wix data to WixEvent objects' do
+      source = PanCal::Source.new(url: 'https://example.wixsite.com/test/events')
+      reader = described_class.new(source)
+      events = reader.import_events_from(wix_data)
+
+      expect(events.length).to eq(1)
+      expect(events.first).to be_a(PanCal::Events::WixEvent)
+      expect(events.first.summary).to eq('Test Event')
+    end
+
+    it 'skips events with scheduleTbd set to true' do
+      tbd_data = [
+        {
+          'id' => 'tbd-event',
+          'title' => 'TBD Event',
+          'scheduling' => {
+            'config' => {
+              'scheduleTbd' => true
+            }
+          }
+        }
+      ]
+
+      source = PanCal::Source.new(url: 'https://example.wixsite.com/test/events')
+      reader = described_class.new(source)
+      events = reader.import_events_from(tbd_data)
+
+      expect(events).to be_empty
+    end
+
+    it 'returns empty array when data is not an array' do
+      source = PanCal::Source.new(url: 'https://example.wixsite.com/test/events')
+      reader = described_class.new(source)
+
+      expect(reader.import_events_from(nil)).to eq([])
+      expect(reader.import_events_from({})).to eq([])
+      expect(reader.import_events_from('string')).to eq([])
+    end
+  end
+
+  describe '#extract_wix_events (private)' do
+    let(:source) { PanCal::Source.new(url: 'https://example.wixsite.com/test/events') }
+    let(:reader) { described_class.new(source) }
+
+    let(:valid_wix_event) do
+      {
+        'id' => 'event-123',
+        'title' => 'Test Event',
+        'scheduling' => { 'config' => { 'startDate' => '2026-01-17T19:00:00.000Z' } }
+      }
+    end
+
+    it 'extracts events from valid Wix HTML with embedded JSON' do
+      html = <<~HTML
+        <html>
+          <head>
+            <script type="application/json">{"events": [#{valid_wix_event.to_json}]}</script>
+          </head>
+        </html>
+      HTML
+
+      events = reader.send(:extract_wix_events, html)
+      expect(events).to be_an(Array)
+      expect(events.length).to eq(1)
+      expect(events.first['title']).to eq('Test Event')
+    end
+
+    it 'returns empty array when no script tags present' do
+      html = '<html><body><p>No events here</p></body></html>'
+      events = reader.send(:extract_wix_events, html)
+      expect(events).to eq([])
+    end
+
+    it 'returns empty array when script tags have invalid JSON' do
+      html = <<~HTML
+        <html>
+          <script type="application/json">{ invalid json }</script>
+        </html>
+      HTML
+
+      events = reader.send(:extract_wix_events, html)
+      expect(events).to eq([])
+    end
+
+    it "returns empty array when JSON doesn't contain Wix events" do
+      html = <<~HTML
+        <html>
+          <script type="application/json">{"someOther": "data"}</script>
+        </html>
+      HTML
+
+      events = reader.send(:extract_wix_events, html)
+      expect(events).to eq([])
+    end
+
+    it 'handles malformed HTML gracefully' do
+      html = "<html><script type='application/json'>{\"events\": []"
+      events = reader.send(:extract_wix_events, html)
+      expect(events).to eq([])
+    end
+
+    it 'finds events in nested JSON structures' do
+      html = <<~HTML
+        <html>
+          <script type="application/json">
+            {"wrapper": {"data": {"events": [#{valid_wix_event.to_json}]}}}
+          </script>
+        </html>
+      HTML
+
+      events = reader.send(:extract_wix_events, html)
+      expect(events.length).to eq(1)
+      expect(events.first['title']).to eq('Test Event')
+    end
+  end
+
+  describe '#find_events_array (private)' do
+    let(:source) { PanCal::Source.new(url: 'https://example.wixsite.com/test/events') }
+    let(:reader) { described_class.new(source) }
+
+    let(:valid_wix_event) do
+      {
+        'id' => 'event-123',
+        'title' => 'Test Event',
+        'scheduling' => { 'config' => { 'startDate' => '2026-01-17T19:00:00.000Z' } }
+      }
+    end
+
+    it 'finds events at top level of hash' do
+      json = { 'events' => [valid_wix_event] }
+      result = reader.send(:find_events_array, json)
+      expect(result).to eq([valid_wix_event])
+    end
+
+    it 'finds deeply nested events array' do
+      json = {
+        'level1' => {
+          'level2' => {
+            'level3' => {
+              'events' => [valid_wix_event]
+            }
+          }
+        }
+      }
+      result = reader.send(:find_events_array, json)
+      expect(result).to eq([valid_wix_event])
+    end
+
+    it 'respects depth limit to prevent stack overflow' do
+      # Build a structure deeper than the 15-level limit
+      json = valid_wix_event
+      20.times { json = { 'nested' => json } }
+      json = { 'events' => [json] }
+
+      # Should not find events because they're too deeply nested
+      result = reader.send(:find_events_array, json, 14)
+      expect(result).to be_nil
+    end
+
+    it 'returns nil for non-hash/non-array input' do
+      expect(reader.send(:find_events_array, 'string')).to be_nil
+      expect(reader.send(:find_events_array, 123)).to be_nil
+      expect(reader.send(:find_events_array, nil)).to be_nil
+    end
+
+    it 'searches through arrays to find nested events' do
+      json = [
+        { 'other' => 'data' },
+        { 'events' => [valid_wix_event] }
+      ]
+      result = reader.send(:find_events_array, json)
+      expect(result).to eq([valid_wix_event])
+    end
+
+    it 'returns nil when events array contains non-Wix events' do
+      non_wix_events = [{ 'name' => 'Not a Wix event' }]
+      json = { 'events' => non_wix_events }
+      result = reader.send(:find_events_array, json)
+      expect(result).to be_nil
+    end
+  end
+end

@@ -155,7 +155,7 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
         expect do
           importer_task = described_class.new(calendar, Time.zone.today, true)
           importer_task.run
-        end.to raise_error(CalendarImporter::Exceptions::InaccessibleFeed)
+        end.to raise_error(PanCal::InaccessibleFeed)
       end
     end
 
@@ -172,7 +172,7 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
         expect do
           importer_task = described_class.new(calendar, Time.zone.today, true)
           importer_task.run
-        end.to raise_error(CalendarImporter::Exceptions::InvalidResponse, /Source responded with invalid JSON/)
+        end.to raise_error(PanCal::InvalidResponse, /Source responded with invalid JSON/)
       end
     end
   end

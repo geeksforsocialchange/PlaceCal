@@ -2,9 +2,13 @@
 
 # Coordinates event import: resolves location, detects online links, and saves occurrences.
 #
+# Wraps a canonical PanCal event. PanCal events carry no database ids, so the
+# resolved place/address/organiser/online-address ids are tracked here and
+# merged into the attributes at save time.
+#
 # Delegates location resolution to LocationResolver and online detection to OnlineDetector.
 class CalendarImporter::EventResolver
-  attr_reader :data, :uid, :notices, :calendar
+  attr_reader :data, :uid, :notices, :calendar, :resolved_ids
 
   def initialize(event_data, calendar, notices, from_date)
     @data = event_data
@@ -12,6 +16,12 @@ class CalendarImporter::EventResolver
     @calendar = calendar
     @notices = notices
     @from_date = from_date
+    @resolved_ids = {
+      place_id: nil,
+      address_id: nil,
+      organiser_id: nil,
+      online_address_id: nil
+    }
   end
 
   def is_private?
@@ -27,15 +37,20 @@ class CalendarImporter::EventResolver
   end
 
   def determine_online_location
-    CalendarImporter::OnlineDetector.new(data).detect
+    @resolved_ids[:online_address_id] = CalendarImporter::OnlineDetector.new(data).detect
   end
 
   def determine_location_for_strategy
     place, address = CalendarImporter::LocationResolver.new(calendar, data).resolve
 
-    data.place_id = place.id if place
-    data.address_id = address&.id
-    data.organiser_id = calendar.organiser_id
+    @resolved_ids[:place_id] = place.id if place
+    @resolved_ids[:address_id] = address&.id
+    @resolved_ids[:organiser_id] = calendar.organiser_id
+  end
+
+  # Canonical event attributes plus the ids resolved by this class
+  def event_attributes(event_time)
+    data.attributes.merge(@resolved_ids).merge(event_time)
   end
 
   def save_all_occurences
@@ -72,7 +87,7 @@ class CalendarImporter::EventResolver
 
       event_time[:are_spaces_available] = occurence.status if occurence.respond_to?(:status)
 
-      attributes = data.attributes.merge(event_time)
+      attributes = event_attributes(event_time)
       begin
         unless event.update(attributes)
           notices << event.errors.full_messages.join(', ')

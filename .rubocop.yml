@@ -26,6 +26,10 @@ AllCops:
     - "vendor/**/*"
     - ".git/**/*"
     - "db/schema.rb"
+    # The pancal gem is Rails-free and has its own .rubocop.yml; the CI lint
+    # job lints it from the root bundle with
+    # `rubocop --config gems/pancal/.rubocop.yml gems/pancal`
+    - "gems/**/*"
 
 # =============================================================================
 # GraphQL cops

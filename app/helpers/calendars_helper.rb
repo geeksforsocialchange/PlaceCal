@@ -12,11 +12,11 @@ module CalendarsHelper
   end
 
   def options_for_importer
-    CalendarImporter::CalendarImporter::PARSERS
-      .dup
-      .keep_if { |parser| parser::PUBLIC }
-      .map { |parser| [parser::NAME, parser::KEY] }
-      .prepend(['(Auto detect)', 'auto'])
+    PanCal.readers
+          .dup
+          .keep_if { |parser| parser::PUBLIC }
+          .map { |parser| [parser::NAME, parser::KEY] }
+          .prepend(['(Auto detect)', 'auto'])
   end
 
   def summarize_dates(dates)
@@ -65,10 +65,10 @@ module CalendarsHelper
   end
 
   def calendar_import_sources
-    parsers = CalendarImporter::CalendarImporter::PARSERS
-              .dup
-              .keep_if { |parser| parser::PUBLIC }
-              .sort { |a, b| a::NAME <=> b::NAME }
+    parsers = PanCal.readers
+                    .dup
+                    .keep_if { |parser| parser::PUBLIC }
+                    .sort { |a, b| a::NAME <=> b::NAME }
 
     parsers.each do |parser|
       yield parser::NAME, parser::DOMAINS

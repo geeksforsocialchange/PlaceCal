@@ -1,0 +1,88 @@
+# RuboCop configuration for the pancal gem. Mirrors PlaceCal's style where it
+# applies, minus the Rails/GraphQL cops — pancal is a plain Ruby gem.
+# Linted from the PlaceCal root bundle:
+#   rubocop --config gems/pancal/.rubocop.yml gems/pancal
+
+plugins:
+  - rubocop-rspec
+  - rubocop-performance
+
+AllCops:
+  NewCops: enable
+  SuggestExtensions: false
+  TargetRubyVersion: 3.2
+
+# Readers/events are ports of long-lived PlaceCal parser code; keep the
+# metrics relaxed rather than forcing churn during the extraction
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/BlockLength:
+  Exclude:
+    - "spec/**/*"
+    - "pancal.gemspec"
+
+Metrics/ClassLength:
+  Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: false
+
+Metrics/PerceivedComplexity:
+  Enabled: false
+
+Naming/PredicatePrefix:
+  Enabled: false
+
+Naming/PredicateMethod:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+# Readers and ported specs keep their original PlaceCal line lengths
+Layout/LineLength:
+  Enabled: false
+
+# Specs ported from PlaceCal's suite use long examples and literal blocks;
+# the RSpec cop choices below mirror PlaceCal's root .rubocop.yml
+RSpec/DescribeClass:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Enabled: false
+
+# allowlist_pattern specs deliberately use literal URLs as the expect subject
+# (`expect('https://…').to match(pattern)`) — the reversed form reads as the
+# URL being matched against the pattern and keeps CodeQL from misreading the
+# URL literals as regexes
+RSpec/ExpectActual:
+  Enabled: false
+
+RSpec/MultipleDescribes:
+  Enabled: false
+
+RSpec/NoExpectationExample:
+  Enabled: false
+
+RSpec/SpecFilePathFormat:
+  Enabled: false
+
+RSpec/VerifiedDoubles:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
+RSpec/NestedGroups:
+  Max: 5
+
+Style/MultilineBlockChain:
+  Exclude:
+    - "spec/**/*"

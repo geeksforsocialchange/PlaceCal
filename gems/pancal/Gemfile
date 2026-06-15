@@ -1,0 +1,13 @@
+# frozen_string_literal: true
+
+source 'https://rubygems.org'
+
+gemspec
+
+# RuboCop is intentionally absent: the gem is linted from the PlaceCal root
+# bundle with `rubocop --config gems/pancal/.rubocop.yml gems/pancal`
+group :development, :test do
+  gem 'rspec'
+  gem 'vcr'
+  gem 'webmock'
+end
