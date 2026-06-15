@@ -325,10 +325,10 @@ class Views::Admin::Partners::New < Views::Admin::Base
                            "Optionally invite someone to manage this partner. They'll receive an email invitation.")
         div(class: 'space-y-6') do
           div(class: 'flex items-center gap-3 p-4 bg-base-200/50 rounded-xl') do
-            input(type: 'checkbox', class: 'checkbox checkbox-sm',
+            input(type: 'checkbox', id: 'partner_skip_admin', class: 'checkbox checkbox-sm',
                   data: { 'partner-wizard-target': 'skipAdminCheckbox',
                           action: 'change->partner-wizard#toggleAdminFields' })
-            label(class: 'text-sm') { "Skip this step - I'll add admins later" }
+            label(for: 'partner_skip_admin', class: 'text-sm') { "Skip this step - I'll add admins later" }
           end
           div(data: { 'partner-wizard-target': 'adminFields' }) do
             render_admin_details_card(form)
