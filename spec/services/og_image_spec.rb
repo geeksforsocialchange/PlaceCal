@@ -44,6 +44,11 @@ RSpec.describe "OgImage cards" do
       site = create(:site)
       expect_card_png(described_class.new(site).to_png)
     end
+
+    it "renders the hero layout when the site has a hero image" do
+      site = create(:site, hero_image: File.open(Rails.root.join("spec/fixtures/files/test_image.jpg")))
+      expect_card_png(described_class.new(site).to_png)
+    end
   end
 
   describe OgImage::SiteCard do

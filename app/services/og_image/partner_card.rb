@@ -58,7 +58,7 @@ module OgImage
       logo = svg_asset('logo-header.svg', height: 36, opacity: 0.82)
       canvas = composite(canvas, logo, PADDING_X, HEIGHT - 60 - logo.height)
 
-      frame = photo(photo_path, width: PHOTO_SIZE, height: PHOTO_SIZE, radius: PHOTO_RADIUS)
+      frame = photo(photo_path, width: PHOTO_SIZE, height: PHOTO_SIZE, radius: PHOTO_RADIUS, fit: :contain)
       composite(canvas, frame, WIDTH - PHOTO_COLUMN + 24, (HEIGHT - PHOTO_SIZE) / 2)
     end
 
