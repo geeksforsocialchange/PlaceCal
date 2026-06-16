@@ -246,6 +246,16 @@ RSpec.describe "Public Events", type: :request do
     end
   end
 
+  describe "admin subdomain" do
+    # The admin subdomain has no Site row and is not the directory; rendering
+    # the local index there used to raise a Literal::TypeError on the nil site
+    # (#3267). It should redirect to the apex directory instead.
+    it "redirects /events to the apex directory" do
+      get events_url(host: "admin.lvh.me")
+      expect(response).to redirect_to(events_url(host: "lvh.me"))
+    end
+  end
+
   describe "directory events" do
     it "serves directory events page on base domain" do
       get events_url(host: "lvh.me")
