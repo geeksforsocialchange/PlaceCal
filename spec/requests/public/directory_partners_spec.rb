@@ -44,7 +44,7 @@ RSpec.describe "Directory Partners", type: :request do
 
     it "sets page title" do
       get partners_url(host: "lvh.me")
-      expect(response.body).to include("<title>Partners")
+      expect(response.body).to include("<title>Partners | PlaceCal</title>")
     end
 
     context "with A-Z sort" do

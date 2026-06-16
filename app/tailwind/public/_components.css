@@ -332,6 +332,17 @@ textarea.join-control {
 	background: var(--color-secondary);
 }
 
+/* Directory paginator pills (app/components/directory/paginator.rb) */
+.paginator-pill {
+	@apply inline-flex items-center justify-center min-w-9 h-9 px-2 rounded-full text-sm font-bold text-foreground no-underline bg-home-background-3 transition-colors;
+}
+.paginator-pill:hover {
+	@apply bg-primary;
+}
+.paginator-pill--active {
+	@apply inline-flex items-center justify-center min-w-9 h-9 px-2 rounded-full text-sm font-bold text-background no-underline bg-foreground;
+}
+
 /* Override leaflet.markercluster default styles */
 .marker-cluster-small,
 .marker-cluster-medium,

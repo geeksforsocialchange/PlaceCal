@@ -43,7 +43,7 @@ class Components::Directory::CustomSelect < Components::Directory::Base
       span(
         data: { custom_select_target: 'arrow' },
         class: 'transition-transform duration-200 shrink-0'
-      ) { raw(chevron_svg) }
+      ) { raw(view_context.icon(:chevron_down, size: nil, css_class: 'w-3.5 h-3.5')) }
     end
   end
 
@@ -117,9 +117,5 @@ class Components::Directory::CustomSelect < Components::Directory::Base
   def selected_label
     match = all_options.find { |o| o[:value].to_s == @selected.to_s }
     match ? match[:label] : placeholder
-  end
-
-  def chevron_svg
-    safe('<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>')
   end
 end
