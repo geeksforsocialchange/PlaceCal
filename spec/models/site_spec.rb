@@ -75,6 +75,25 @@ RSpec.describe Site, type: :model do
     end
   end
 
+  describe "#directory_url" do
+    it "returns the url when present" do
+      site = build(:site, url: "https://example.org")
+      expect(site.directory_url).to eq("https://example.org")
+    end
+
+    it "falls back to the placecal.org subdomain when the url is blank" do
+      site = build(:site, slug: "manchester", url: "")
+      expect(site.directory_url).to eq("https://manchester.placecal.org")
+    end
+  end
+
+  describe "#display_url" do
+    it "strips the scheme and trailing slash" do
+      site = build(:site, url: "https://example.org/")
+      expect(site.display_url).to eq("example.org")
+    end
+  end
+
   describe "#owned_neighbourhood_ids" do
     let(:site) { create(:site) }
     let(:ward) { create(:riverside_ward) }

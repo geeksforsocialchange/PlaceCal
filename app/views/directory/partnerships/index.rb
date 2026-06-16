@@ -4,15 +4,16 @@ class Views::Directory::Partnerships::Index < Views::Base
   prop :partnerships, _Interface(:each)
   prop :site, _Nilable(::Site), default: nil
   prop :query, _Nilable(String), default: nil
+  prop :partnership_count, Integer, default: 0
   prop :total_partners, Integer, default: 0
 
   def view_template
     content_for(:title) { Partnership.model_name.human(count: 2) }
-    content_for(:description) { "Explore #{partnership_list.size} partnerships serving #{@total_partners} partners on PlaceCal." }
+    content_for(:description) { "Explore #{@partnership_count} partnerships serving #{@total_partners} partners on PlaceCal." }
 
     Directory::PageHero(
       title: t('directory.partnerships.index.hero_title'),
-      kicker: t('directory.partnerships.index.hero_kicker', count: partnership_list.size, partners: @total_partners),
+      kicker: t('directory.partnerships.index.hero_kicker', count: @partnership_count, partners: @total_partners),
       subtitle: t('directory.partnerships.index.hero_subtitle'),
       breadcrumb_label: Partnership.model_name.human(count: 2)
     )
@@ -20,11 +21,11 @@ class Views::Directory::Partnerships::Index < Views::Base
     div(class: 'container-public py-6') do
       render_search
       div(class: 'lg:columns-2 gap-x-4') do
-        filtered_partnerships.each do |partnership|
+        partnership_list.each do |partnership|
           Directory::PartnershipCard(partnership: partnership)
         end
       end
-      render_empty_state if filtered_partnerships.empty?
+      render_empty_state if partnership_list.empty?
     end
   end
 
@@ -63,14 +64,5 @@ class Views::Directory::Partnerships::Index < Views::Base
 
   def partnership_list
     @partnership_list ||= Array(@partnerships)
-  end
-
-  def filtered_partnerships
-    @filtered_partnerships ||= if @query.present?
-                                 q = @query.downcase
-                                 partnership_list.select { |p| p.name.downcase.include?(q) || p.description&.downcase&.include?(q) }
-                               else
-                                 partnership_list
-                               end
   end
 end

@@ -7,6 +7,7 @@ class Views::Directory::Partnerships::Show < Views::Base
   prop :partners, _Interface(:each)
   prop :upcoming_events, _Interface(:each)
   prop :partner_event_counts, Hash, default: -> { {} }
+  prop :partner_locations, _Interface(:each), default: -> { [] }
   prop :event_count, Integer, default: 0
   prop :site, _Nilable(::Site), default: nil
 
@@ -46,12 +47,10 @@ class Views::Directory::Partnerships::Show < Views::Base
   private
 
   def render_visit_button
-    href = @partnership.url.presence || "https://#{@partnership.slug}.placecal.org"
-    display_url = href.sub(%r{\Ahttps?://}, '').chomp('/')
-    a(href: href,
+    a(href: @partnership.directory_url,
       class: 'inline-flex items-center gap-2 bg-primary text-foreground font-bold rounded-full px-5 py-2 no-underline hover:brightness-110 transition-all') do
       raw(view_context.icon(:external_link, size: nil, css_class: 'w-4 h-4'))
-      plain t('directory.partnerships.show.visit', url: display_url)
+      plain t('directory.partnerships.show.visit', url: @partnership.display_url)
     end
   end
 
@@ -134,18 +133,12 @@ class Views::Directory::Partnerships::Show < Views::Base
 
   def render_map_card
     div(class: 'rounded-card overflow-hidden bg-home-background-3') do
-      partner_locations = partner_list.filter_map do |p|
-        next unless p.address&.latitude
-
-        { lat: p.address.latitude, lon: p.address.longitude, name: p.name, url: partner_path(p) }
-      end
-
-      if partner_locations.any?
+      if @partner_locations.any?
         div(
           class: 'h-(--height-map-lg)',
           data: {
             controller: 'cluster-map',
-            cluster_map_markers_value: partner_locations.to_json,
+            cluster_map_markers_value: @partner_locations.to_json,
             cluster_map_style_url_value: '/map-styles/pink.json'
           }
         )
@@ -190,7 +183,7 @@ class Views::Directory::Partnerships::Show < Views::Base
   end
 
   def partnership_base_url
-    @partnership_base_url ||= @partnership.url.presence || "https://#{@partnership.slug}.placecal.org"
+    @partnership.directory_url
   end
 
   def partner_list

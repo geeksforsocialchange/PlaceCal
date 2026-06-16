@@ -83,7 +83,6 @@ class PagesController < ApplicationController
     end
   end
 
-  NEIGHBOURHOOD_UNIT_RANK = %w[ward district county region].freeze
   DIRECTORY_CACHE_TTL = 1.day
 
   # ONS GSS codes for the places featured as homepage "jump" links, in display
@@ -109,7 +108,9 @@ class PagesController < ApplicationController
     end
 
     @partner_locations = Rails.cache.fetch('directory/partner_locations', expires_in: DIRECTORY_CACHE_TTL) do
-      build_partner_locations
+      PartnerLocationsQuery.new.call.map do |location|
+        { lat: location[:lat], lon: location[:lon], name: location[:name], url: partner_path(location[:slug]) }
+      end
     end
 
     @jump_neighbourhoods = Rails.cache.fetch('directory/jump_neighbourhoods', expires_in: DIRECTORY_CACHE_TTL) do
@@ -132,12 +133,7 @@ class PagesController < ApplicationController
     end
 
     @partner_event_counts = Rails.cache.fetch('directory/partner_event_counts', expires_in: DIRECTORY_CACHE_TTL) do
-      ids = @recent_partners.map(&:id)
-      Event.future(Time.zone.today)
-           .where(place_id: ids)
-           .or(Event.future(Time.zone.today).where(organiser_id: ids))
-           .group(:place_id)
-           .count
+      EventsQuery.upcoming_counts_by_partner(@recent_partners.map(&:id))
     end
 
     render Views::Directory::Home.new(
@@ -156,47 +152,5 @@ class PagesController < ApplicationController
                          .where(unit_code_value: JUMP_NEIGHBOURHOOD_CODES)
                          .index_by(&:unit_code_value)
     JUMP_NEIGHBOURHOOD_CODES.filter_map { |code| found[code] }
-  end
-
-  def build_partner_locations
-    locations = Partner.visible.joins(:address)
-                       .where.not(addresses: { latitude: nil })
-                       .pluck(:name, :slug, 'addresses.latitude', 'addresses.longitude')
-                       .map { |name, slug, lat, lon| { lat: lat, lon: lon, name: name, url: partner_path(slug) } }
-
-    addressless = Partner.visible.where(address_id: nil).includes(service_areas: :neighbourhood)
-    return locations if addressless.none?
-
-    sa_nhood_ids = addressless.flat_map { |p| p.service_areas.map(&:neighbourhood_id) }.compact.uniq
-    centroid_cache = neighbourhood_centroids(sa_nhood_ids)
-
-    addressless.find_each do |p|
-      best = p.service_areas.filter_map(&:neighbourhood)
-              .select { |n| NEIGHBOURHOOD_UNIT_RANK.include?(n.unit) }
-              .min_by { |n| NEIGHBOURHOOD_UNIT_RANK.index(n.unit) }
-      next unless best
-
-      coords = centroid_cache[best.id]
-      next unless coords
-
-      locations << { lat: coords[0], lon: coords[1], name: p.name, url: partner_path(p.slug) }
-    end
-
-    locations
-  end
-
-  def neighbourhood_centroids(neighbourhood_ids)
-    cache = {}
-    Neighbourhood.where(id: neighbourhood_ids).find_each do |n|
-      addrs = Address.where(neighbourhood_id: n.id).where.not(latitude: nil)
-      unless addrs.exists?
-        desc_ids = n.descendant_ids
-        addrs = Address.where(neighbourhood_id: desc_ids).where.not(latitude: nil) if desc_ids.any?
-      end
-      next unless addrs.exists?
-
-      cache[n.id] = [addrs.average(:latitude).to_f, addrs.average(:longitude).to_f]
-    end
-    cache
   end
 end

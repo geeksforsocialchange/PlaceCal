@@ -96,6 +96,19 @@ class Site < ApplicationRecord
     "#{id}: #{name}"
   end
 
+  # The site's public URL, falling back to its conventional placecal.org
+  # subdomain when no explicit url is set.
+  #
+  # @return [String]
+  def directory_url
+    url.presence || "https://#{slug}.placecal.org"
+  end
+
+  # @return [String] directory_url without the scheme or trailing slash, for display
+  def display_url
+    directory_url.sub(%r{\Ahttps?://}, '').chomp('/')
+  end
+
   # @return [Boolean] whether FriendlyId should generate a new slug
   # Regenerates from the name whenever the slug is blank (e.g. left empty on
   # the new-site form), mirroring Partner so the slug auto-populates on create.
