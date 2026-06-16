@@ -13,9 +13,9 @@ class JoinsController < ApplicationController
     @join = Join.new(join_params)
 
     if @join.submit
-      redirect_to '/', notice: "Thank you for your interest in PlaceCal. We'll  be in touch with you shortly."
+      redirect_to '/', notice: t('directory.join.flash.success')
     else
-      flash[:error] = 'Please fill out the required fields below'
+      flash[:error] = t('directory.join.flash.error')
       render Views::Directory::Join.new(join: @join)
     end
   end
