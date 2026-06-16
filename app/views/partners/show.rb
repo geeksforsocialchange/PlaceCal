@@ -27,11 +27,8 @@ class Views::Partners::Show < Views::Base
 
   def set_content_for_tags
     content_for(:title) { partner.name }
-    if partner.image.present?
-      content_for(:image) { partner.image }
-    elsif site
-      content_for(:image) { site.og_image }
-    end
+    content_for(:image) { partner_og_image_url(partner) }
+    content_for(:image_alt) { t('og_image.alt.partner', name: partner.name) }
     content_for(:description) { partner.summary } if partner.summary
     content_for(:json_ld) { safe(partner.to_json_ld(base_url: request.base_url).to_json) }
   end

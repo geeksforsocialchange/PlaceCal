@@ -4,6 +4,7 @@ class Tag < ApplicationRecord
   # ==== Includes / Extends ====
   extend FriendlyId
   extend Enumerize
+  include SlugRetainable
 
   # ==== Constants ====
 

@@ -7,11 +7,14 @@ class Views::Directory::Partnerships::Show < Views::Base
   prop :partners, _Interface(:each)
   prop :upcoming_events, _Interface(:each)
   prop :partner_event_counts, Hash, default: -> { {} }
+  prop :partner_locations, _Interface(:each), default: -> { [] }
   prop :event_count, Integer, default: 0
   prop :site, _Nilable(::Site), default: nil
 
   def view_template
     content_for(:title) { @partnership.name }
+    content_for(:image) { partnership_og_image_url(@partnership) }
+    content_for(:image_alt) { t('og_image.alt.partnership', name: @partnership.name) }
     content_for(:description) { @partnership.description.presence || "#{@partnership.name} — a PlaceCal partnership bringing together community partners and events." }
 
     Directory::PageHero(
@@ -44,12 +47,10 @@ class Views::Directory::Partnerships::Show < Views::Base
   private
 
   def render_visit_button
-    href = @partnership.url.presence || "https://#{@partnership.slug}.placecal.org"
-    display_url = href.sub(%r{\Ahttps?://}, '').chomp('/')
-    a(href: href,
+    a(href: @partnership.directory_url,
       class: 'inline-flex items-center gap-2 bg-primary text-foreground font-bold rounded-full px-5 py-2 no-underline hover:brightness-110 transition-all') do
       raw(view_context.icon(:external_link, size: nil, css_class: 'w-4 h-4'))
-      plain t('directory.partnerships.show.visit', url: display_url)
+      plain t('directory.partnerships.show.visit', url: @partnership.display_url)
     end
   end
 
@@ -86,27 +87,10 @@ class Views::Directory::Partnerships::Show < Views::Base
       flat_events.first(10).each do |event|
         Directory::EventRow(event: event)
       end
-      render_event_overflow(flat_events.drop(10))
-      render_see_all_button(t('directory.partnerships.show.see_all_events'), "#{partnership_base_url}/events")
-    end
-  end
-
-  def render_event_overflow(remaining)
-    return if remaining.empty?
-
-    batch = remaining.first(10)
-    rest = remaining.drop(10)
-    details(class: 'group') do
-      summary(class: 'list-none pt-3 border-t border-rules cursor-pointer [&::-webkit-details-marker]:hidden') do
-        span(class: 'inline-flex items-center gap-1.5 text-sm font-bold text-foreground group-open:hidden') do
-          plain t('directory.partnerships.show.show_more_events', count: [10, remaining.size].min)
-          span(class: 'text-tertiary') { safe('&#9660;') }
-        end
-      end
-      batch.each do |event|
+      Directory::OverflowToggle(items: flat_events.drop(10), label_key: 'directory.partnerships.show.show_more_events') do |event|
         Directory::EventRow(event: event)
       end
-      render_event_overflow(rest)
+      render_see_all_button(t('directory.partnerships.show.see_all_events'), "#{partnership_base_url}/events")
     end
   end
 
@@ -132,24 +116,18 @@ class Views::Directory::Partnerships::Show < Views::Base
 
   def render_map_card
     div(class: 'rounded-card overflow-hidden bg-home-background-3') do
-      partner_locations = partner_list.filter_map do |p|
-        next unless p.address&.latitude
-
-        { lat: p.address.latitude, lon: p.address.longitude, name: p.name, url: partner_path(p) }
-      end
-
-      if partner_locations.any?
+      if @partner_locations.any?
         div(
           class: 'h-(--height-map-lg)',
           data: {
             controller: 'cluster-map',
-            cluster_map_markers_value: partner_locations.to_json,
+            cluster_map_markers_value: @partner_locations.to_json,
             cluster_map_style_url_value: '/map-styles/pink.json'
           }
         )
       else
         div(class: 'h-(--height-map) flex items-center justify-center') do
-          div(class: 'text-tertiary text-sm font-bold') { t('directory.partnerships.show.map_coming_soon') }
+          div(class: 'text-tertiary text-sm font-bold') { t('directory.map_coming_soon') }
         end
       end
     end
@@ -188,7 +166,7 @@ class Views::Directory::Partnerships::Show < Views::Base
   end
 
   def partnership_base_url
-    @partnership_base_url ||= @partnership.url.presence || "https://#{@partnership.slug}.placecal.org"
+    @partnership.directory_url
   end
 
   def partner_list

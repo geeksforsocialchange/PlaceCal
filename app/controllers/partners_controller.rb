@@ -132,6 +132,7 @@ class PartnersController < ApplicationController
     render Views::Directory::Partners::Index.new(
       partners: @partners, pagy: @pagy, site: @site, query: params[:q], sort: @sort,
       az_letters: @az_letters, selected_letter: @selected_letter,
+      area_labels: PartnersQuery.area_labels(@partners),
       total_count: Partner.visible.count,
       partnership_count: Site.where(is_published: true).count,
       categories: query.categories_with_counts(scope: category_scope).map { |c| { id: c[:category].id, name: c[:category].name, count: c[:count] } },

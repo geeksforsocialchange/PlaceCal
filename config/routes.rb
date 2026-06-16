@@ -66,6 +66,24 @@ Rails.application.routes.draw do
     root 'pages#home'
   end
 
+  # robots.txt is intentionally served on every host (the admin subdomain
+  # returns a disallow-all), so it must be matched before the admin redirect
+  # below. Other technical routes (sitemaps, graphql) are fine to redirect.
+  get '/robots.txt', to: 'pages#robots'
+
+  # The admin subdomain has no Site row and is not the nationwide directory.
+  # Public routes carry no subdomain constraint, so any path that isn't an
+  # admin route (e.g. /events, /news, /places) would otherwise fall through to
+  # the public controllers, which assume a current_site and raise on the
+  # site-less admin host (#3267). Bounce those requests to the apex instead.
+  match '*path', via: :all,
+                 constraints: { subdomain: Site::ADMIN_SUBDOMAIN },
+                 to: redirect { |_params, request|
+                   host = request.host.delete_prefix('admin.')
+                   port = request.optional_port ? ":#{request.optional_port}" : ''
+                   "#{request.protocol}#{host}#{port}#{request.fullpath}"
+                 }
+
   # ============================================================
   # Public site
   # ============================================================
@@ -80,6 +98,12 @@ Rails.application.routes.draw do
   ymd = { year: /\d{4}/,
           month: /\d{1,2}/,
           day: /\d{1,2}/ }
+
+  # Open Graph share card images (#2077)
+  get '/opengraph.png', to: 'og_images#default', as: :og_image
+  get '/events/:id/opengraph.png', to: 'og_images#event', as: :event_og_image
+  get '/partners/:id/opengraph.png', to: 'og_images#partner', as: :partner_og_image
+  get '/partnerships/:id/opengraph.png', to: 'og_images#partnership', as: :partnership_og_image
 
   # Events
   resources :events, only: %i[index show]
@@ -144,7 +168,6 @@ Rails.application.routes.draw do
   # ============================================================
   # Technical (SEO, API, dev tools)
   # ============================================================
-  get '/robots.txt', to: 'pages#robots'
   get '/sitemap.xml', to: 'sitemaps#index', defaults: { format: :xml }
   get '/sitemap/partners.xml', to: 'sitemaps#partners', defaults: { format: :xml }
   get '/sitemap/events.xml', to: 'sitemaps#events', defaults: { format: :xml }

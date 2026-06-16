@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Views::Directory::Partners::Index < Views::Base
+  SORT_OPTIONS = %w[recent name].freeze
+
   prop :partners, _Interface(:each)
   prop :pagy, _Nilable(Pagy::Offset), default: nil
   prop :site, _Nilable(::Site)
@@ -16,16 +18,17 @@ class Views::Directory::Partners::Index < Views::Base
   prop :sort, String, default: 'recent'
   prop :az_letters, _Interface(:include?), default: -> { Set.new }
   prop :selected_letter, _Nilable(String), default: nil
+  prop :area_labels, Hash, default: -> { {} }
 
   def view_template
-    content_for(:title) { 'Partners' }
-    content_for(:description) { "Browse #{@total_count} community partners across the UK on PlaceCal. Search by name, category, partnership or neighbourhood." }
+    content_for(:title) { ::Partner.model_name.human(count: 2) }
+    content_for(:description) { t('directory.partners.index.description', count: @total_count) }
 
     Directory::PageHero(
-      title: 'All partners on PlaceCal',
+      title: t('directory.partners.index.hero_title'),
       kicker: kicker_text,
-      subtitle: 'Every community group, venue, library and organisation publishing their events on PlaceCal, UK-wide.',
-      breadcrumb_label: 'Partners'
+      subtitle: t('directory.partners.index.hero_subtitle'),
+      breadcrumb_label: ::Partner.model_name.human(count: 2)
     )
 
     div(class: 'container-public py-6') do
@@ -50,7 +53,7 @@ class Views::Directory::Partners::Index < Views::Base
   private
 
   def kicker_text
-    "#{@total_count} partners across #{@partnership_count} partnerships"
+    t('directory.partners.index.kicker', count: @total_count, partnerships: @partnership_count)
   end
 
   def render_results_header
@@ -58,29 +61,24 @@ class Views::Directory::Partners::Index < Views::Base
     div(class: 'flex justify-between items-baseline flex-wrap gap-2 py-3') do
       div(class: 'text-sm text-tertiary') do
         if any_filter_active?
-          plain "Showing #{partner_list.size} of #{filtered_total} partners"
+          plain t('directory.partners.index.results.filtered', shown: partner_list.size, total: filtered_total)
         else
-          plain "#{@total_count} partners"
+          plain t('directory.partners.index.results.total', count: @total_count)
         end
-        plain " — page #{@pagy.page} of #{@pagy.pages}" if @pagy&.pages && @pagy.pages > 1
+        plain t('directory.partners.index.results.page', page: @pagy.page, pages: @pagy.pages) if @pagy&.pages && @pagy.pages > 1
       end
     end
   end
 
   def render_sort_tabs
-    nav(class: 'flex gap-1 flex-wrap py-2', aria_label: 'Sort order') do
-      [['Recently updated', 'recent'], ['A–Z', 'name']].each do |label, value|
-        sort_params = current_filter_params.merge('sort' => value)
-        if @sort == value
-          span(class: 'inline-flex items-center px-4 py-1.5 rounded-full text-sm font-bold bg-foreground text-background') { label }
-        else
-          a(href: "#{partners_path}?#{sort_params.to_query}",
-            class: 'inline-flex items-center px-4 py-1.5 rounded-full text-sm font-bold bg-home-background-3 text-foreground no-underline hover:bg-primary transition-colors') do
-            plain label
-          end
-        end
-      end
+    items = SORT_OPTIONS.map do |value|
+      {
+        label: t("directory.partners.index.sort.#{value}"),
+        href: "#{partners_path}?#{current_filter_params.merge('sort' => value).to_query}",
+        active: @sort == value
+      }
     end
+    Directory::ToggleTabs(items: items, aria_label: t('directory.aria.sort_order'))
   end
 
   def render_partner_list
@@ -88,18 +86,17 @@ class Views::Directory::Partners::Index < Views::Base
       if @sort == 'name'
         render_alphabetical_list
       else
-        partner_list.each { |partner| Directory::PartnerCard(partner: partner, site: @site) }
+        partner_list.each { |partner| Directory::PartnerCard(partner: partner, site: @site, area: @area_labels[partner.id]) }
       end
     end
 
     return unless partner_list.none?
 
-    div(class: 'py-10 text-center') do
-      p(class: 'text-tertiary text-lg') { 'No partners found matching your filters.' }
-      a(href: partners_path, class: 'inline-flex items-center gap-2 mt-3 text-foreground font-bold no-underline hover:underline') do
-        plain 'Clear filters'
-      end
-    end
+    Directory::EmptyState(
+      message: t('directory.partners.index.empty'),
+      link_text: t('directory.partners.index.clear'),
+      link_href: partners_path
+    )
   end
 
   def partner_list
@@ -115,7 +112,7 @@ class Views::Directory::Partners::Index < Views::Base
         h2(id: "letter-#{letter}",
            class: '[column-span:all] font-serif text-2xl text-foreground mt-8 mb-3 pt-3 border-t-2 border-rules scroll-mt-4') { letter }
       end
-      Directory::PartnerCard(partner: partner, site: @site)
+      Directory::PartnerCard(partner: partner, site: @site, area: @area_labels[partner.id])
     end
   end
 

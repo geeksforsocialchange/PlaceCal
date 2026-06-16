@@ -18,6 +18,10 @@ class Views::Layouts::Application < Phlex::HTML
         csrf_meta_tags
         stylesheet_link_tag 'application', media: 'all', 'data-turbo-track': 'reload'
         stylesheet_link_tag 'public_tailwind', media: 'all', 'data-turbo-track': 'reload'
+        # Legacy informational homepage pages (Views::Homepage::*) opt into the
+        # home.scss bundle. Scoped via content_for so the nationwide directory
+        # pages (which share the nil-site layout) don't inherit its body styling.
+        stylesheet_link_tag 'home', media: 'all', 'data-turbo-track': 'reload' if content_for?(:home_styles)
         stylesheet_link_tag site.stylesheet_link, media: 'all', 'data-turbo-track': 'reload' if site&.stylesheet_link
         stylesheet_link_tag 'print', media: 'print', 'data-turbo-track': 'reload'
         preload_font('rawline/rawline-500.woff2')
@@ -25,7 +29,8 @@ class Views::Layouts::Application < Phlex::HTML
         preload_font('rawline/rawline-800.woff2')
         preload_font('trocchi/Trocchi-Regular.woff2')
         render_meta
-        javascript_include_tag 'es-module-shims', async: true
+        shim_url = asset_path('es-module-shims.js')
+        script { raw safe("if(!HTMLScriptElement.supports||!HTMLScriptElement.supports('importmap')){var s=document.createElement('script');s.src='#{shim_url}';s.async=true;document.head.appendChild(s)}") }
         javascript_importmap_tags
         script(defer: true, 'data-domain': 'placecal.org', src: 'https://plausible.io/js/plausible.js') if Rails.env.production?
         meta(name: 'turbo-refresh-method', content: 'morph')
@@ -81,8 +86,19 @@ class Views::Layouts::Application < Phlex::HTML
     meta(name: 'description', content: description_text)
     meta(property: 'og:description', content: description_text)
 
-    if content_for?(:image)
+    # Admin and Devise pages get no og:image — shared admin URLs redirect to
+    # the login page, and link previews of those are just clutter (#2077).
+    if request.subdomain == 'admin' || devise_page?
+      # no og:image
+    elsif content_for?(:image)
       meta(property: 'og:image', content: image_url(content_for(:image)))
+      meta(property: 'og:image:alt', content: content_for(:image_alt)) if content_for?(:image_alt)
+    elsif site
+      # Generated share card for site homepages and other site pages (#2077)
+      meta(property: 'og:image', content: og_image_url)
+      meta(property: 'og:image:alt', content: I18n.t('og_image.alt.site', name: site.name))
+      meta(property: 'og:image:width', content: '1200')
+      meta(property: 'og:image:height', content: '630')
     else
       meta(property: 'og:image', content: image_url('og/wide.png'))
       meta(property: 'og:image:alt', content: 'PlaceCal logo')
@@ -108,9 +124,14 @@ class Views::Layouts::Application < Phlex::HTML
   def compute_title
     return 'PlaceCal | The Community Calendar' if current_page?(root_url) && site.nil?
     return "#{content_for(:title)} | #{site.name}" if content_for?(:title) && site&.name
-    return content_for(:title).to_s if content_for?(:title)
+    return "#{content_for(:title)} | PlaceCal" if content_for?(:title)
 
     site&.name || 'PlaceCal | The Community Calendar'
+  end
+
+  def devise_page?
+    controller = view_context.controller
+    controller.respond_to?(:devise_controller?) && controller.devise_controller?
   end
 
   def compute_description

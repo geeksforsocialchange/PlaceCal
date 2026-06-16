@@ -12,6 +12,39 @@
 #   )
 #
 class PartnersQuery
+  # Area-breadcrumb label per partner id for the directory cards
+  # (e.g. "Manchester › Hulme › Moss Side"). Each partner's neighbourhood is
+  # its address neighbourhood, falling back to its first service area. Ancestors
+  # are batch-loaded so the partner index doesn't fire an ancestors query per
+  # card (the partner_card used to call hierarchy_path itself — an N+1).
+  #
+  # @param partners [Enumerable<Partner>] partners eager-loaded with their
+  #   address neighbourhood and service areas
+  # @return [Hash{Integer=>String,nil}] partner id => breadcrumb label (or nil)
+  def self.area_labels(partners)
+    partners = partners.to_a
+    return {} if partners.empty?
+
+    # Resolving service_area_neighbourhoods.first below would query per partner;
+    # preload the through-association once.
+    ActiveRecord::Associations::Preloader.new(records: partners, associations: :service_area_neighbourhoods).call
+
+    neighbourhoods = partners.to_h do |partner|
+      hood = partner.address&.neighbourhood
+      hood ||= partner.service_area_neighbourhoods.first if partner.has_service_areas?
+      [partner.id, hood]
+    end
+
+    ancestors = Neighbourhood.where(id: neighbourhoods.values.compact.flat_map(&:ancestor_ids).uniq).index_by(&:id)
+
+    neighbourhoods.transform_values do |hood|
+      next unless hood
+
+      path = hood.ancestor_ids.filter_map { |id| ancestors[id] } + [hood]
+      path.last(3).map(&:shortname).join(' › ')
+    end
+  end
+
   def initialize(site:)
     @site = site
   end

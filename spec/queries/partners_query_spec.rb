@@ -430,4 +430,21 @@ RSpec.describe PartnersQuery do
       expect(results).to include(partner_both_tags, partner_site_tag_only)
     end
   end
+
+  describe ".area_labels" do
+    it "builds the neighbourhood breadcrumb from the partner's address" do
+      region = create(:neighbourhood, name: "Greater Riverside", unit: "region")
+      district = create(:neighbourhood, name: "Riverdale", unit: "district", parent: region)
+      ward = create(:neighbourhood, name: "Riverside", unit: "ward", parent: district)
+      partner = create(:partner, address: create(:address, neighbourhood: ward))
+
+      labels = described_class.area_labels(Partner.where(id: partner.id))
+
+      expect(labels[partner.id]).to eq("#{region.shortname} › #{district.shortname} › #{ward.shortname}")
+    end
+
+    it "returns an empty hash for no partners" do
+      expect(described_class.area_labels(Partner.none)).to eq({})
+    end
+  end
 end

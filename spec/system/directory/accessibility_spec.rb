@@ -25,6 +25,11 @@ RSpec.describe "Directory Accessibility", :slow, type: :system do
       visit public_url("/get-in-touch")
       expect(page).to be_axe_clean
     end
+
+    it "our story page has no accessibility violations" do
+      visit public_url("/our-story")
+      expect(page).to be_axe_clean
+    end
   end
 
   describe "partners" do
@@ -32,11 +37,21 @@ RSpec.describe "Directory Accessibility", :slow, type: :system do
       visit public_url("/partners")
       expect(page).to be_axe_clean
     end
+
+    it "partner show has no accessibility violations" do
+      visit public_url("/partners/#{riverside_hub.slug}")
+      expect(page).to be_axe_clean
+    end
   end
 
   describe "events" do
     it "events index has no accessibility violations" do
       visit public_url("/events")
+      expect(page).to be_axe_clean
+    end
+
+    it "event show has no accessibility violations" do
+      visit public_url("/events/#{event_one.id}")
       expect(page).to be_axe_clean
     end
   end

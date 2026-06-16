@@ -19,9 +19,10 @@ When the ONS conducts boundary reviews (e.g. County Durham in March 2024, effect
 4. Run `rails neighbourhoods:import` locally and verify
 5. Run `rails db:clean_bad_addresses` to prune orphaned addresses
 6. Run `rails addresses:regeocode` to update stale address→neighbourhood links
-7. Verify a specific postcode works (see Verification section)
-8. Commit, merge, deploy
-9. Run import + re-geocode on production
+7. Run `rails neighbourhoods:remap_associations` to re-point site, service area and user links
+8. Verify a specific postcode works (see Verification section)
+9. Commit, merge, deploy
+10. Run import + re-geocode + remap on production
 
 ## Download new data
 
@@ -93,6 +94,26 @@ The re-geocode task finds addresses linked to partners or events that have eithe
 
 It re-queries postcodes.io for each and updates the neighbourhood link.
 
+## Remap site, service area and user links
+
+Re-geocoding only fixes **addresses**. Three other tables also reference neighbourhoods and will silently keep pointing at old-release rows when a ward is redrawn:
+
+- `sites_neighbourhoods` — which areas a site covers (a stale link here means the site stops matching partners; this caused the "Mossley shows one partner" production bug after the May 2024 Tameside redraw)
+- `service_areas` — which areas a partner serves
+- `neighbourhoods_users` — neighbourhood admin permissions
+
+After re-geocoding, run:
+
+```bash
+# Preview what would change
+DRY_RUN=1 rails neighbourhoods:remap_associations
+
+# Apply
+rails neighbourhoods:remap_associations
+```
+
+For each stale reference the task finds the latest-release replacement, matching by unit code first, then by unit + name + parent name. Rows whose neighbourhood has no unambiguous successor (e.g. a ward that was split, renamed, or merged) are **skipped and reported** — review those in the admin UI rather than guessing. If the owner is already linked to the replacement, the stale duplicate row is deleted. The task is idempotent, so re-running it is safe.
+
 ## Verification
 
 Test that a specific postcode resolves correctly:
@@ -109,6 +130,7 @@ The new dataset file and modified script/model must be committed to the repo and
 kamal app exec -d production 'bin/rails neighbourhoods:import'
 kamal app exec -d production 'bin/rails db:clean_bad_addresses'
 kamal app exec -d production 'bin/rails addresses:regeocode'
+kamal app exec -d production 'bin/rails neighbourhoods:remap_associations'
 ```
 
 **Warning:** Between the time your new code is deployed and the import script runs, the `latest_release` scope will filter for the new release date which hasn't been imported yet. This means neighbourhood selection will be temporarily broken. Minimise this window by running the import immediately after deploy.

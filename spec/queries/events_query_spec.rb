@@ -663,4 +663,24 @@ RSpec.describe EventsQuery do
       end
     end
   end
+
+  describe ".upcoming_counts_by_partner" do
+    it "returns an empty hash for blank ids" do
+      expect(described_class.upcoming_counts_by_partner([])).to eq({})
+    end
+
+    it "counts upcoming events hosted at the partner" do
+      partner = create(:partner)
+      create(:future_event, place: partner)
+
+      expect(described_class.upcoming_counts_by_partner([partner.id])).to eq(partner.id => 1)
+    end
+
+    it "excludes past events" do
+      partner = create(:partner)
+      create(:past_event, place: partner)
+
+      expect(described_class.upcoming_counts_by_partner([partner.id])).to eq({})
+    end
+  end
 end

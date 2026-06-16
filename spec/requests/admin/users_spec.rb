@@ -49,6 +49,26 @@ RSpec.describe "Admin::Users", type: :request do
         expect(response).to be_successful
         expect(response.body).to include(target_user.email)
       end
+
+      context "when the target user is a site admin" do
+        let!(:site) { create(:site, name: "Riverside Calendar", site_admin: target_user) }
+
+        it "lists the sites the user administers" do
+          get edit_admin_user_url(target_user, host: admin_host)
+          expect(response).to be_successful
+          expect(response.body).to include(site.name)
+        end
+      end
+
+      context "when the target user administers no sites" do
+        it "renders without error and shows the empty state" do
+          get edit_admin_user_url(target_user, host: admin_host)
+          expect(response).to be_successful
+          expect(response.body).to include(
+            I18n.t("admin.empty.none_assigned", items: Site.model_name.human(count: 2).downcase)
+          )
+        end
+      end
     end
   end
 

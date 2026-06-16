@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-class Views::Homepage::CultureTourism < Views::Base
-  include Views::Homepage::Audiences
-
+class Views::Homepage::CultureTourism < Views::Homepage::Base
   def view_template
     render_audiences(exclude: :culture_tourism)
   end

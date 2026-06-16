@@ -23,6 +23,21 @@ class EventsQuery
   UPCOMING_LIMIT = 10
   WEEKLY_DENSITY_THRESHOLD = 10
 
+  # Upcoming-event counts keyed by partner id, counting events a partner either
+  # hosts (place) or organises. Used to badge partner rows/cards in the directory.
+  #
+  # @param partner_ids [Array<Integer>] partners to count events for
+  # @return [Hash{Integer=>Integer}] partner id => upcoming event count
+  def self.upcoming_counts_by_partner(partner_ids)
+    return {} if partner_ids.blank?
+
+    future = Event.future(Time.current)
+    future.where(place_id: partner_ids)
+          .or(future.where(organiser_id: partner_ids))
+          .group(:place_id)
+          .count
+  end
+
   def initialize(site:, day: Time.zone.today)
     @site = site
     @day = day

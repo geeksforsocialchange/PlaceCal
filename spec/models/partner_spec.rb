@@ -282,6 +282,70 @@ RSpec.describe Partner, type: :model do
       found = JSON.parse(partner.opening_times_data)
       expect(found.length).to eq(2)
     end
+
+    describe "validation" do
+      def spec(day, opens, closes)
+        { dayOfWeek: "http://schema.org/#{day}", opens: opens, closes: closes }
+      end
+
+      it "is valid with non-overlapping times across different days" do
+        partner = build(:partner, opening_times: [
+          spec("Monday", "09:00", "17:00"),
+          spec("Tuesday", "10:00", "20:00")
+        ].to_json)
+
+        expect(partner).to be_valid
+      end
+
+      it "is valid with non-overlapping times on the same day" do
+        partner = build(:partner, opening_times: [
+          spec("Monday", "09:00", "12:00"),
+          spec("Monday", "13:00", "17:00")
+        ].to_json)
+
+        expect(partner).to be_valid
+      end
+
+      it "is invalid when a closing time is before its opening time" do
+        partner = build(:partner, opening_times: [
+          spec("Monday", "17:00", "09:00")
+        ].to_json)
+
+        expect(partner).not_to be_valid
+        expect(partner.errors[:opening_times])
+          .to include(I18n.t("activerecord.errors.models.partner.attributes.opening_times.end_before_start"))
+      end
+
+      it "is invalid when a closing time equals its opening time" do
+        partner = build(:partner, opening_times: [
+          spec("Monday", "09:00", "09:00")
+        ].to_json)
+
+        expect(partner).not_to be_valid
+        expect(partner.errors[:opening_times])
+          .to include(I18n.t("activerecord.errors.models.partner.attributes.opening_times.end_before_start"))
+      end
+
+      it "is invalid when two ranges overlap on the same day" do
+        partner = build(:partner, opening_times: [
+          spec("Monday", "09:00", "13:00"),
+          spec("Monday", "12:00", "17:00")
+        ].to_json)
+
+        expect(partner).not_to be_valid
+        expect(partner.errors[:opening_times])
+          .to include(I18n.t("activerecord.errors.models.partner.attributes.opening_times.overlapping"))
+      end
+
+      it "allows identical times on different days without flagging overlap" do
+        partner = build(:partner, opening_times: [
+          spec("Monday", "09:00", "17:00"),
+          spec("Tuesday", "09:00", "17:00")
+        ].to_json)
+
+        expect(partner).to be_valid
+      end
+    end
   end
 
   describe "scopes" do

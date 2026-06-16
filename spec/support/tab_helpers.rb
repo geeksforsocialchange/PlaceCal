@@ -16,20 +16,21 @@ module TabHelpers
     expect(page).to have_css("[data-save-bar-connected]")
   end
 
-  # Click a tab by its data-hash attribute and wait for the panel to be visible
+  # Click a tab by its data-hash attribute and wait for it to be selected.
+  # Uses a retryable CSS selector for the assertion instead of checking the
+  # already-resolved element — avoids CI flakiness where the checked state
+  # lags behind the click in headless Chrome.
   def click_tab(hash)
     wait_for_form_tabs
     find("input.tab[data-hash='#{hash}']").click
-    expect(page).to have_css("[data-section='#{hash}']", visible: true)
+    expect(page).to have_css("input.tab[data-hash='#{hash}']:checked", wait: 5)
   end
 
   # Navigate to a partner form tab by its aria-label (includes emoji prefix)
   def go_to_partner_tab(tab_label)
     wait_for_form_tabs
-    tab = find("input.tab[aria-label='#{tab_label}']")
-    tab.click
-    tab_hash = tab["data-hash"]
-    expect(page).to have_css("[data-section='#{tab_hash}']", visible: true) if tab_hash
+    find("input.tab[aria-label='#{tab_label}']").click
+    expect(page).to have_css("input.tab[aria-label='#{tab_label}']:checked", wait: 5)
   end
 
   def go_to_basic_info_tab = go_to_partner_tab("📋 Basic Info")

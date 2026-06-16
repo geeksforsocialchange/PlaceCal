@@ -12,21 +12,21 @@ class Views::Directory::Home < Views::Base
   prop :jump_neighbourhoods, _Interface(:each), default: -> { [] }
 
   def view_template
-    content_for(:description) { 'Find community groups, venues and events near you. PlaceCal aggregates thousands of events from hundreds of local organisations across the UK.' }
+    content_for(:description) { t('directory.home.description') }
 
     Directory::Hero(
-      title: 'Find community groups, venues and events near you.',
-      subtitle: 'PlaceCal aggregates thousands of events and activities from hundreds of local community organisations across the UK. This is the directory for all of it — search by place, by interest, or browse the map.',
+      title: t('directory.home.hero_title'),
+      subtitle: t('directory.home.hero_subtitle'),
       search_path: partners_path,
       partner_locations: @partner_locations,
       jump_neighbourhoods: @jump_neighbourhoods
     )
 
     Directory::StatsStrip(stats: [
-                            { value: @stats[:partnerships], label: 'Partnerships', icon: :partnership },
-                            { value: @stats[:partners], label: 'Partners', icon: :partner },
-                            { value: @stats[:events], label: 'Events this month', icon: :event },
-                            { value: @stats[:neighbourhoods], label: 'Neighbourhoods', icon: :neighbourhood }
+                            { value: @stats[:partnerships], label: ::Partnership.model_name.human(count: 2), icon: :partnership },
+                            { value: @stats[:partners], label: ::Partner.model_name.human(count: 2), icon: :partner },
+                            { value: @stats[:events], label: t('directory.home.stats.events'), icon: :event },
+                            { value: @stats[:neighbourhoods], label: ::Neighbourhood.model_name.human(count: 2), icon: :neighbourhood }
                           ])
 
     render_partnerships_section
@@ -41,12 +41,12 @@ class Views::Directory::Home < Views::Base
       div(class: 'container-public') do
         div(class: 'flex justify-between items-baseline flex-wrap gap-2') do
           div do
-            div(class: 'allcaps-label text-tertiary') { 'Partnerships' }
-            h2(class: 'font-serif font-regular text-section text-foreground') { 'Community hubs running on PlaceCal' }
+            div(class: 'allcaps-label text-tertiary') { t('directory.home.partnerships.kicker') }
+            h2(class: 'font-serif font-regular text-section text-foreground') { t('directory.home.partnerships.heading') }
           end
           a(href: partnerships_path,
             class: 'btn-primary-outline transition-colors') do
-            plain 'See all partnerships'
+            plain t('directory.home.partnerships.see_all')
             span { safe('&rarr;') }
           end
         end
@@ -72,8 +72,8 @@ class Views::Directory::Home < Views::Base
 
   def render_recent_partners
     div do
-      div(class: 'allcaps-label text-tertiary') { 'Activity' }
-      h2(class: 'font-serif font-regular text-section text-foreground mb-4') { 'Recently joined PlaceCal' }
+      div(class: 'allcaps-label text-tertiary') { t('directory.home.activity.kicker') }
+      h2(class: 'font-serif font-regular text-section text-foreground mb-4') { t('directory.home.activity.heading') }
       div(class: 'flex flex-col gap-2') do
         partners = @recent_partners.first(5)
         partners.each do |partner|
@@ -82,8 +82,8 @@ class Views::Directory::Home < Views::Base
       end
       div(class: 'mt-4') do
         a(href: partners_path,
-          class: 'inline-flex items-center gap-2 bg-home-background border-2 border-primary rounded-full px-5 py-2 text-detail font-bold text-foreground no-underline hover:bg-primary transition-colors') do
-          plain 'Browse all partners'
+          class: 'btn-primary-outline transition-colors') do
+          plain t('directory.home.activity.browse_all')
           span { safe('&rarr;') }
         end
       end
@@ -92,8 +92,8 @@ class Views::Directory::Home < Views::Base
 
   def render_upcoming_events
     div do
-      div(class: 'allcaps-label text-tertiary') { 'Tonight & this week' }
-      h2(class: 'font-serif font-regular text-section text-foreground mb-4') { 'Happening around the UK' }
+      div(class: 'allcaps-label text-tertiary') { t('directory.home.events.kicker') }
+      h2(class: 'font-serif font-regular text-section text-foreground mb-4') { t('directory.home.events.heading') }
       div do
         flat_events.first(5).each do |event|
           Directory::EventRow(event: event)
@@ -101,8 +101,8 @@ class Views::Directory::Home < Views::Base
       end
       div(class: 'mt-4') do
         a(href: events_path,
-          class: 'inline-flex items-center gap-2 bg-home-background border-2 border-primary rounded-full px-5 py-2 text-detail font-bold text-foreground no-underline hover:bg-primary transition-colors') do
-          plain 'Filter events by place'
+          class: 'btn-primary-outline transition-colors') do
+          plain t('directory.home.events.filter_by_place')
           span { safe('&rarr;') }
         end
       end
@@ -113,16 +113,16 @@ class Views::Directory::Home < Views::Base
     section(class: 'py-10') do
       div(class: 'container-public grid md:grid-cols-2 gap-4') do
         render_cta_card(
-          heading: 'What is PlaceCal?',
-          body: 'PlaceCal is an online calendar which lists events and activities by and for members of local communities, curated around interests and locality.',
-          link_text: 'Our story',
+          heading: t('directory.home.cta.what_is.heading'),
+          body: t('directory.home.cta.what_is.body'),
+          link_text: t('directory.home.cta.what_is.link'),
           link_path: our_story_path,
           head_class: 'bg-secondary'
         )
         render_cta_card(
-          heading: 'Run PlaceCal in your community',
-          body: 'Setting up a PlaceCal means a dedicated website for your community, connected to the directory. We work with you on the ground to build partnerships with local venues and organisers.',
-          link_text: 'Get in touch',
+          heading: t('directory.home.cta.run.heading'),
+          body: t('directory.home.cta.run.body'),
+          link_text: t('directory.home.cta.run.link'),
           link_path: get_in_touch_path,
           head_class: 'bg-primary'
         )

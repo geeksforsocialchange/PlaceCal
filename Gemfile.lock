@@ -123,7 +123,7 @@ GEM
       debug_inspector (>= 1.2.0)
     bootsnap (1.24.6)
       msgpack (~> 1.2)
-    brakeman (8.0.4)
+    brakeman (8.0.5)
       racc
     builder (3.3.0)
     byebug (13.0.0)
@@ -332,25 +332,25 @@ GEM
       csv (>= 3.0.0)
     globalid (1.3.0)
       activesupport (>= 6.1)
-    google-protobuf (4.35.0)
+    google-protobuf (4.35.1)
       bigdecimal
       rake (~> 13.3)
-    google-protobuf (4.35.0-aarch64-linux-gnu)
+    google-protobuf (4.35.1-aarch64-linux-gnu)
       bigdecimal
       rake (~> 13.3)
-    google-protobuf (4.35.0-aarch64-linux-musl)
+    google-protobuf (4.35.1-aarch64-linux-musl)
       bigdecimal
       rake (~> 13.3)
-    google-protobuf (4.35.0-arm64-darwin)
+    google-protobuf (4.35.1-arm64-darwin)
       bigdecimal
       rake (~> 13.3)
-    google-protobuf (4.35.0-x86_64-darwin)
+    google-protobuf (4.35.1-x86_64-darwin)
       bigdecimal
       rake (~> 13.3)
-    google-protobuf (4.35.0-x86_64-linux-gnu)
+    google-protobuf (4.35.1-x86_64-linux-gnu)
       bigdecimal
       rake (~> 13.3)
-    google-protobuf (4.35.0-x86_64-linux-musl)
+    google-protobuf (4.35.1-x86_64-linux-musl)
       bigdecimal
       rake (~> 13.3)
     graphiql-rails (1.10.5)
@@ -365,6 +365,8 @@ GEM
     groupdate (6.8.0)
       activesupport (>= 7.2)
     hashdiff (1.2.1)
+    highline (3.1.2)
+      reline
     htmlbeautifier (1.4.3)
     htmlentities (4.4.2)
     http-accept (1.7.0)
@@ -376,6 +378,18 @@ GEM
       multi_xml (>= 0.5.2)
     i18n (1.14.8)
       concurrent-ruby (~> 1.0)
+    i18n-tasks (1.1.2)
+      activesupport (>= 4.0.2)
+      ast (>= 2.1.0)
+      erubi
+      highline (>= 3.0.0)
+      i18n
+      parser (>= 3.2.2.1)
+      prism
+      rails-i18n
+      rainbow (>= 2.2.2, < 4.0)
+      ruby-progressbar (~> 1.8, >= 1.8.1)
+      terminal-table (>= 1.5.1)
     icalendar (2.12.3)
       base64
       ice_cube (~> 0.16)
@@ -400,13 +414,13 @@ GEM
     invisible_captcha (2.3.0)
       rails (>= 5.2)
     io-console (0.8.2)
-    io-event (1.16.1)
+    io-event (1.16.2)
     irb (1.18.0)
       pp (>= 0.6.0)
       prism (>= 1.3.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
-    json (2.19.8)
+    json (2.19.9)
     json-canonicalization (1.0.0)
     json-ld (3.3.2)
       htmlentities (~> 4.3)
@@ -477,7 +491,7 @@ GEM
     minitest (6.0.6)
       drb (~> 2.0)
       prism (~> 1.5)
-    msgpack (1.8.1)
+    msgpack (1.8.3)
     multi_json (1.21.1)
     multi_test (1.1.0)
     multi_xml (0.9.1)
@@ -487,7 +501,7 @@ GEM
       uri (>= 0.11.1)
     net-http-persistent (4.0.8)
       connection_pool (>= 2.2.4, < 4)
-    net-imap (0.6.4)
+    net-imap (0.6.4.1)
       date
       net-protocol
     net-pop (0.1.2)
@@ -521,7 +535,7 @@ GEM
       racc (~> 1.4)
     orm_adapter (0.5.0)
     ostruct (0.6.3)
-    pagy (43.5.5)
+    pagy (43.5.6)
       json
       uri
       yaml
@@ -599,7 +613,7 @@ GEM
       activesupport (>= 5.0.0)
       minitest
       nokogiri (>= 1.6)
-    rails-erd (2.0.0)
+    rails-erd (2.0.2)
       activerecord (>= 7.0)
       activesupport (>= 7.0)
       choice (~> 0.2.0)
@@ -607,6 +621,9 @@ GEM
     rails-html-sanitizer (1.7.0)
       loofah (~> 2.25)
       nokogiri (>= 1.15.7, != 1.16.7, != 1.16.6, != 1.16.5, != 1.16.4, != 1.16.3, != 1.16.2, != 1.16.1, != 1.16.0.rc1, != 1.16.0)
+    rails-i18n (8.1.0)
+      i18n (>= 0.7, < 2)
+      railties (>= 8.0.0, < 9)
     railties (8.1.3)
       actionpack (= 8.1.3)
       activesupport (= 8.1.3)
@@ -697,7 +714,7 @@ GEM
       lint_roller (~> 1.1)
       rubocop (>= 1.75.0, < 2.0)
       rubocop-ast (>= 1.47.1, < 2.0)
-    rubocop-rails (2.35.3)
+    rubocop-rails (2.35.4)
       activesupport (>= 4.2.0)
       lint_roller (~> 1.1)
       rack (>= 1.1)
@@ -728,22 +745,22 @@ GEM
     ruby-vips (2.3.0)
       ffi (~> 1.12)
       logger
-    rubyzip (3.3.1)
-    sass-embedded (1.100.0-aarch64-linux-gnu)
+    rubyzip (3.4.0)
+    sass-embedded (1.101.0-aarch64-linux-gnu)
       google-protobuf (~> 4.31)
-    sass-embedded (1.100.0-aarch64-linux-musl)
+    sass-embedded (1.101.0-aarch64-linux-musl)
       google-protobuf (~> 4.31)
-    sass-embedded (1.100.0-arm-linux-gnueabihf)
+    sass-embedded (1.101.0-arm-linux-gnueabihf)
       google-protobuf (~> 4.31)
-    sass-embedded (1.100.0-arm-linux-musleabihf)
+    sass-embedded (1.101.0-arm-linux-musleabihf)
       google-protobuf (~> 4.31)
-    sass-embedded (1.100.0-arm64-darwin)
+    sass-embedded (1.101.0-arm64-darwin)
       google-protobuf (~> 4.31)
-    sass-embedded (1.100.0-x86_64-darwin)
+    sass-embedded (1.101.0-x86_64-darwin)
       google-protobuf (~> 4.31)
-    sass-embedded (1.100.0-x86_64-linux-gnu)
+    sass-embedded (1.101.0-x86_64-linux-gnu)
       google-protobuf (~> 4.31)
-    sass-embedded (1.100.0-x86_64-linux-musl)
+    sass-embedded (1.101.0-x86_64-linux-musl)
       google-protobuf (~> 4.31)
     securerandom (0.4.1)
     selenium-webdriver (4.44.0)
@@ -782,6 +799,8 @@ GEM
     sys-uname (1.5.1)
       ffi (~> 1.1)
       memoist3 (~> 1.0.0)
+    terminal-table (4.0.0)
+      unicode-display_width (>= 1.1.1, < 4)
     thor (1.5.0)
     thread_safe (0.3.6)
     timecop (0.9.11)
@@ -872,6 +891,7 @@ DEPENDENCIES
   graphql-client
   groupdate
   httparty
+  i18n-tasks
   icalendar
   icalendar-recurrence
   image_processing
@@ -903,7 +923,7 @@ DEPENDENCIES
   rubocop (= 1.87.0)
   rubocop-graphql (= 1.6.0)
   rubocop-performance (= 1.26.1)
-  rubocop-rails (= 2.35.3)
+  rubocop-rails (= 2.35.4)
   rubocop-rake
   rubocop-rspec
   ruby-lsp

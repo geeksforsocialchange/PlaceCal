@@ -7,6 +7,7 @@ class Partner < ApplicationRecord
   include Permalinkable
   extend FriendlyId
   include HtmlRenderCache
+  include SlugRetainable
 
   # ==== Constants ====
 
@@ -172,6 +173,7 @@ class Partner < ApplicationRecord
   validate :neighbourhood_admin_address_access, on: %i[create update]
   validate :must_have_address_or_service_area
   validate :opening_times_is_json_or_nil
+  validate :opening_times_are_valid
   validate :three_or_less_category_tags
   validate :partnership_admins_must_add_partnership, on: %i[create]
   validate :must_give_reason_to_hide
@@ -539,6 +541,66 @@ class Partner < ApplicationRecord
     return if opening_times.nil?
 
     errors.add :base, 'Partner.opening_times must be valid json'
+  end
+
+  # Validates each opening hours specification has a sensible time range and
+  # that ranges on the same day do not overlap. Skips when the value is blank
+  # or not parseable (handled by #opening_times_is_json_or_nil).
+  def opening_times_are_valid
+    return if opening_times.blank?
+    return unless valid_json? opening_times
+
+    specs = JSON.parse(opening_times)
+    return unless specs.is_a?(Array)
+
+    by_day = {}
+    has_invalid_range = false
+
+    specs.each do |spec|
+      next unless spec.is_a?(Hash)
+
+      opens = parse_opening_time(spec['opens'])
+      closes = parse_opening_time(spec['closes'])
+      next if opens.nil? || closes.nil?
+
+      if closes <= opens
+        has_invalid_range = true
+        next
+      end
+
+      (by_day[opening_times_day(spec)] ||= []) << [opens, closes]
+    end
+
+    errors.add(:opening_times, :end_before_start) if has_invalid_range
+    flag_overlapping_opening_times(by_day)
+  end
+
+  # @return [Integer, nil] minutes since midnight, or nil if unparseable
+  def parse_opening_time(value)
+    return nil if value.blank?
+
+    match = value.to_s.match(/\A(\d{1,2}):(\d{2})/)
+    return nil unless match
+
+    hours = match[1].to_i
+    minutes = match[2].to_i
+    return nil if hours > 23 || minutes > 59
+
+    (hours * 60) + minutes
+  end
+
+  # @return [String] day key for grouping (last URL segment, or "" if absent)
+  def opening_times_day(spec)
+    spec['dayOfWeek'].to_s.split('/').last.to_s
+  end
+
+  def flag_overlapping_opening_times(by_day)
+    has_overlap = by_day.each_value.any? do |ranges|
+      sorted = ranges.sort_by(&:first)
+      sorted.each_cons(2).any? { |(_, prev_close), (next_open, _)| next_open < prev_close }
+    end
+
+    errors.add(:opening_times, :overlapping) if has_overlap
   end
 
   def three_or_less_category_tags

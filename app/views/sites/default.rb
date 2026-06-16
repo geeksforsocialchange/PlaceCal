@@ -6,7 +6,6 @@ class Views::Sites::Default < Views::Base
   prop :places_with_free_wifi, ActiveRecord::Relation, reader: :private
 
   def view_template
-    content_for(:image) { site.og_image }
     content_for(:description) { site.og_description }
 
     HeroSection(
