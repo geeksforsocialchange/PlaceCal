@@ -8,76 +8,125 @@ class Views::Directory::Join < Views::Base
   prop :join, Join, reader: :private
 
   def view_template
-    content_for(:title) { 'Get in touch' }
+    content_for(:title) { t('directory.join.hero.title') }
 
     Directory::PageHero(
-      title: 'Get in touch',
-      kicker: 'Join PlaceCal',
-      subtitle: 'Want to run PlaceCal in your community, group, or area? Contact us to discuss how you can join our not-for-profit social enterprise.',
-      breadcrumb_label: 'Get in touch'
+      title: t('directory.join.hero.title'),
+      kicker: t('directory.join.hero.kicker'),
+      subtitle: t('directory.join.hero.subtitle'),
+      breadcrumb_label: t('directory.join.hero.breadcrumb')
     )
 
-    div(class: 'container-public py-8') do
-      div(class: 'max-w-(--width-prose-lg) mx-auto') do
-        render_flash_messages
-        render_form
-        p(class: 'text-sm text-tertiary mt-6') do
-          plain 'Email us at '
-          mail_to 'info@placecal.org', class: 'text-foreground underline hover:decoration-primary'
-        end
-      end
+    div(class: 'container-editorial py-8') do
+      render_form
+      render_email_cta
     end
   end
 
   private
 
-  def render_flash_messages
-    return unless view_context.flash.any?
-
-    div(class: 'mb-4') do
-      view_context.flash.each do |_key, value|
-        div(class: 'rounded-card px-4 py-3 text-sm font-bold bg-primary text-foreground') { value }
-      end
-    end
-  end
-
+  # simple_form_for gives us the form tag, CSRF token and model binding. We
+  # render each control with the plain Rails form-builder helpers (text_field,
+  # check_box, submit, …) rather than simple_form's `f.input` wrappers so the
+  # bespoke label/grid/chip markup below is fully under our control. Those
+  # helpers return an ActiveSupport::SafeBuffer, which `raw` writes straight
+  # into the Phlex output buffer.
   def render_form
-    simple_form_for join, url: get_in_touch_path, html: { class: 'space-y-4' } do |f|
+    simple_form_for join, url: get_in_touch_path do |f|
       invisible_captcha
-      div(class: 'grid md:grid-cols-2 gap-4') do
-        raw f.input(:name, label: 'Name', input_html: { class: input_class })
-        raw f.input(:email, as: :email, label: 'Email address', input_html: { class: input_class })
-        raw f.input(:job_title, label: 'Job title', input_html: { class: input_class })
-        raw f.input(:phone, as: :tel, label: 'Phone number', input_html: { class: input_class })
-        raw f.input(:job_org, label: 'Organisation name', input_html: { class: input_class })
-        raw f.input(:area, label: 'The area it covers', input_html: { class: input_class })
-      end
 
-      div(class: 'bg-home-background-3 rounded-card p-4') do
-        p(class: 'font-bold text-sm text-foreground mb-3') { "I'd like:" }
-        div(class: 'flex flex-wrap gap-4') do
-          render_checkbox(f, :ringback, 'A ring back')
-          render_checkbox(f, :more_info, 'More information')
+      div(class: 'join-card') do
+        div(class: 'join-grid') do
+          render_field(f, :name, required: true)
+          render_field(f, :email, type: :email_field, required: true)
+          render_field(f, :job_title)
+          render_field(f, :phone, type: :telephone_field)
+          render_field(f, :job_org)
+          render_field(f, :area)
         end
+
+        render_choices(f)
+        render_why(f)
+        render_actions(f)
       end
-
-      raw f.input(:why, as: :text, label: 'Why I want PlaceCal',
-                        placeholder: "Enter information about why you'd like to join PlaceCal here",
-                        input_html: { class: "#{input_class} min-h-30", rows: 5 })
-
-      raw f.submit('Submit',
-                   class: 'bg-foreground text-background rounded-full px-6 py-3 text-sm font-bold border-0 cursor-pointer hover:bg-tertiary transition-colors')
     end
   end
 
-  def render_checkbox(form, field, label_text)
-    div(class: 'flex items-center gap-2') do
-      raw form.check_box(field, class: 'w-4 h-4 accent-primary')
-      label(for: "join_#{field}", class: 'text-sm text-foreground cursor-pointer') { label_text }
+  # A single labelled text input in the field grid.
+  def render_field(form, attribute, type: :text_field, required: false)
+    div(class: 'join-field') do
+      render_label(attribute, required:)
+      raw form.public_send(
+        type, attribute,
+        class: 'join-control',
+        required:,
+        placeholder: t("directory.join.placeholders.#{attribute}")
+      )
     end
   end
 
-  def input_class
-    'w-full border-2 border-rules rounded-card px-4 py-2 text-sm bg-background text-foreground outline-none focus:border-foreground transition-colors'
+  def render_why(form)
+    div(class: 'join-block join-field') do
+      render_label(:why, required: true)
+      raw form.text_area(
+        :why,
+        class: 'join-control',
+        rows: 5,
+        required: true,
+        placeholder: t('directory.join.placeholders.why')
+      )
+    end
+  end
+
+  def render_choices(form)
+    div(class: 'join-block') do
+      p(class: 'join-label mb-3') { t('directory.join.choices_legend') }
+      div(class: 'join-choices') do
+        render_choice(form, :ringback)
+        render_choice(form, :more_info)
+      end
+    end
+  end
+
+  def render_choice(form, attribute)
+    label(class: 'join-choice') do
+      raw form.check_box(attribute)
+      span(class: 'join-choice__box') { icon(:check, size: '4') }
+      plain Join.human_attribute_name(attribute)
+    end
+  end
+
+  def render_actions(form)
+    div(class: 'join-actions') do
+      raw form.submit(t('directory.join.submit'), class: 'join-submit')
+      p(class: 'join-note') { t('directory.join.note') }
+    end
+  end
+
+  # Field label with a required (*) or optional marker, matching the design.
+  def render_label(attribute, required: false)
+    label(for: "join_#{attribute}", class: 'join-label') do
+      plain Join.human_attribute_name(attribute)
+      if required
+        span(class: 'req', aria_hidden: 'true') { '*' }
+      else
+        span(class: 'opt') { t('directory.join.optional') }
+      end
+    end
+  end
+
+  def render_email_cta
+    address = t('directory.join.email_cta.address')
+
+    div(class: 'join-email-cta') do
+      div do
+        h3(class: 'join-email-cta__heading') { t('directory.join.email_cta.heading') }
+        p(class: 'join-email-cta__body') { t('directory.join.email_cta.body') }
+      end
+      a(href: "mailto:#{address}", class: 'join-email-link with-no-sass') do
+        icon(:mail, size: '4')
+        plain address
+      end
+    end
   end
 end

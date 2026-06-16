@@ -166,6 +166,31 @@ en:
     contact:
       get_in_touch: "Get in touch"
       no_contact: "No contact information — let us know!"
+    join:
+      hero:
+        kicker: "Join PlaceCal"
+        title: "Get in touch"
+        subtitle: "Want PlaceCal for your community, group, or area? Contact us to discuss how you can join our not-for-profit and collectively owned community calendar."
+        breadcrumb: "Get in touch"
+      optional: "optional"
+      choices_legend: "I'd like"
+      placeholders:
+        name: "Your full name"
+        email: "you@organisation.org"
+        job_title: "e.g. Community coordinator"
+        phone: "So we can call you back"
+        job_org: "Who you're with"
+        area: "Neighbourhood, town or region"
+        why: "Tell us a little about your community and what you're hoping PlaceCal can do for it."
+      submit: "Submit"
+      note: "We read every message and usually reply within two working days."
+      email_cta:
+        heading: "Rather just email?"
+        body: "Drop us a line directly and we'll pick it up from there."
+        address: "info@placecal.org"
+      flash:
+        success: "Thank you for your interest in PlaceCal. We'll be in touch with you shortly."
+        error: "Please fill out the required fields below."
     footer:
       tagline: "An open, community-run directory of local events and services near you."
       browse: "Browse"
@@ -248,6 +273,26 @@ en:
   # ===========================================================================
   # ACTIVERECORD
   # ===========================================================================
+
+  # ===========================================================================
+  # ACTIVEMODEL (non-persisted models, e.g. the Join enquiry form)
+  # ===========================================================================
+  activemodel:
+    models:
+      join:
+        one: "Join enquiry"
+        other: "Join enquiries"
+    attributes:
+      join:
+        name: "Name"
+        email: "Email address"
+        job_title: "Job title"
+        phone: "Phone number"
+        job_org: "Organisation name"
+        area: "The area it covers"
+        ringback: "A ring back"
+        more_info: "More information"
+        why: "Why I want PlaceCal"
 
   activerecord:
     # -------------------------------------------------------------------------

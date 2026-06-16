@@ -92,6 +92,244 @@ a.btn-dark-outline:hover {
 	@apply no-underline;
 }
 
+/* "Get in touch" / Join enquiry form (app/views/directory/join.rb) */
+.join-card {
+	background: var(--color-background);
+	border: 2px solid var(--color-rules);
+	border-radius: var(--radius-card);
+	padding: 2rem 2.25rem 2.25rem;
+}
+.join-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 1.1rem 1.25rem;
+}
+@media (width >= theme(--breakpoint-md)) {
+	.join-grid {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+.join-block {
+	margin-top: 1.4rem;
+}
+
+.join-field {
+	display: flex;
+	flex-direction: column;
+	gap: 0.4rem;
+	min-width: 0;
+}
+.join-label {
+	display: flex;
+	align-items: center;
+	gap: 0.3rem;
+	font-weight: 700;
+	font-size: var(--text-detail);
+	color: var(--color-foreground);
+}
+.join-label .req {
+	color: var(--color-secondary-deep);
+	font-weight: 800;
+}
+.join-label .opt {
+	color: var(--color-tertiary);
+	font-weight: 600;
+	font-size: var(--text-xs);
+}
+
+.join-control {
+	width: 100%;
+	font-size: var(--text-base);
+	font-weight: 500;
+	color: var(--color-foreground);
+	background: var(--color-background);
+	border: 2px solid var(--color-rules-dark);
+	border-radius: 0.65rem;
+	padding: 0.72rem 0.9rem;
+	outline: none;
+	transition:
+		border-color 0.15s,
+		box-shadow 0.15s,
+		background 0.15s;
+}
+.join-control::placeholder {
+	color: var(--color-tertiary);
+}
+.join-control:hover {
+	border-color: var(--color-tertiary);
+}
+.join-control:focus {
+	border-color: var(--color-foreground);
+	background: #fff;
+	box-shadow: 0 0 0 3px rgb(91 78 70 / 0.12);
+}
+textarea.join-control {
+	min-height: 132px;
+	resize: vertical;
+	line-height: 1.5;
+}
+
+/* Custom checkbox "chips" for the "I'd like" choices */
+.join-choices {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.7rem;
+}
+.join-choice {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.6rem;
+	padding: 0.62rem 1.15rem 0.62rem 0.8rem;
+	border: 2px solid var(--color-rules-dark);
+	border-radius: 9999px;
+	background: var(--color-background);
+	cursor: pointer;
+	font-weight: 700;
+	font-size: 0.95rem;
+	color: var(--color-foreground);
+	user-select: none;
+	transition:
+		border-color 0.15s,
+		background 0.15s;
+}
+.join-choice:hover {
+	border-color: var(--color-tertiary);
+}
+.join-choice input {
+	position: absolute;
+	opacity: 0;
+	pointer-events: none;
+}
+.join-choice__box {
+	width: 22px;
+	height: 22px;
+	flex-shrink: 0;
+	border: 2px solid var(--color-rules-dark);
+	border-radius: 6px;
+	background: #fff;
+	display: grid;
+	place-items: center;
+	transition:
+		background 0.15s,
+		border-color 0.15s;
+}
+.join-choice__box svg {
+	color: var(--color-background);
+	opacity: 0;
+	transform: scale(0.6);
+	transition:
+		opacity 0.15s,
+		transform 0.15s;
+}
+.join-choice:has(input:checked) {
+	border-color: var(--color-foreground);
+	background: var(--color-home-background-3);
+}
+.join-choice:has(input:checked) .join-choice__box {
+	background: var(--color-foreground);
+	border-color: var(--color-foreground);
+}
+.join-choice:has(input:checked) .join-choice__box svg {
+	opacity: 1;
+	transform: scale(1);
+}
+.join-choice:has(input:focus-visible) {
+	box-shadow: 0 0 0 3px rgb(91 78 70 / 0.12);
+}
+
+/* Submit row */
+.join-actions {
+	display: flex;
+	align-items: center;
+	gap: 1.25rem;
+	flex-wrap: wrap;
+	margin-top: 1.85rem;
+}
+.join-submit {
+	display: inline-flex;
+	align-items: center;
+	background: var(--color-foreground);
+	color: var(--color-background);
+	font-weight: 700;
+	font-size: 1.02rem;
+	padding: 0.8rem 2.1rem;
+	border: 0;
+	border-radius: 9999px;
+	box-shadow: 0 0 0 2px var(--color-foreground);
+	cursor: pointer;
+	transition: 0.2s;
+}
+.join-submit:hover {
+	background: var(--color-background);
+	color: var(--color-foreground);
+}
+.join-note {
+	font-size: 0.86rem;
+	color: var(--color-tertiary);
+	max-width: 34ch;
+	line-height: 1.45;
+}
+
+/* Email fallback CTA card (sits below the form card) */
+.join-email-cta {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 1.25rem;
+	margin-top: 1.25rem;
+	background: var(--color-secondary);
+	border-radius: var(--radius-card);
+	padding: 1.6rem 1.9rem;
+}
+.join-email-cta__heading {
+	font-family: var(--font-serif);
+	font-weight: 400;
+	font-size: 1.35rem;
+	line-height: 1.15;
+	color: var(--color-foreground);
+	margin-bottom: 0.2rem;
+}
+.join-email-cta__body {
+	font-size: 0.95rem;
+	color: var(--color-foreground);
+}
+.join-email-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.55rem;
+	white-space: nowrap;
+	text-decoration: none;
+	background: var(--color-foreground);
+	color: var(--color-background);
+	font-weight: 700;
+	font-size: 1rem;
+	padding: 0.7rem 1.4rem;
+	border-radius: 9999px;
+	box-shadow: 0 0 0 2px var(--color-foreground);
+	transition: 0.2s;
+}
+.join-email-link:hover {
+	background: var(--color-background);
+	color: var(--color-foreground);
+}
+
+/* Flash messages — distinct success / error states (Components::Flash) */
+.flash-message {
+	border-radius: var(--radius-card);
+	padding: 0.75rem 1rem;
+	font-size: 0.9rem;
+	font-weight: 700;
+	color: var(--color-foreground);
+}
+.flash-message--success {
+	background: var(--color-primary);
+}
+.flash-message--error {
+	background: var(--color-secondary);
+}
+
 /* Override leaflet.markercluster default styles */
 .marker-cluster-small,
 .marker-cluster-medium,
