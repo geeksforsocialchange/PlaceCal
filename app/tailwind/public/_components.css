@@ -343,6 +343,23 @@ textarea.join-control {
 	@apply inline-flex items-center justify-center min-w-9 h-9 px-2 rounded-full text-sm font-bold text-background no-underline bg-foreground;
 }
 
+/* Small rounded pill badge (event counts, category chips on partner/partnership
+   cards). Colours stay inline at the call site; --tight trims the padding. */
+.badge {
+	@apply inline-flex items-center text-2xs font-bold rounded-full px-2.5 py-0.5;
+}
+.badge--tight {
+	@apply px-2;
+}
+
+/* Inverting outline button on cream sections (e.g. Our Story "show more"). */
+a.btn-home-outline {
+	@apply inline-flex items-center gap-2 rounded-full border-2 border-home-background bg-home-background px-6 py-[0.7rem] text-base font-bold text-foreground no-underline transition-colors;
+}
+a.btn-home-outline:hover {
+	@apply border-foreground bg-foreground text-background;
+}
+
 /* Override leaflet.markercluster default styles */
 .marker-cluster-small,
 .marker-cluster-medium,

@@ -87,27 +87,10 @@ class Views::Directory::Partnerships::Show < Views::Base
       flat_events.first(10).each do |event|
         Directory::EventRow(event: event)
       end
-      render_event_overflow(flat_events.drop(10))
-      render_see_all_button(t('directory.partnerships.show.see_all_events'), "#{partnership_base_url}/events")
-    end
-  end
-
-  def render_event_overflow(remaining)
-    return if remaining.empty?
-
-    batch = remaining.first(10)
-    rest = remaining.drop(10)
-    details(class: 'group') do
-      summary(class: 'list-none pt-3 border-t border-rules cursor-pointer [&::-webkit-details-marker]:hidden') do
-        span(class: 'inline-flex items-center gap-1.5 text-sm font-bold text-foreground group-open:hidden') do
-          plain t('directory.partnerships.show.show_more_events', count: [10, remaining.size].min)
-          span(class: 'text-tertiary') { safe('&#9660;') }
-        end
-      end
-      batch.each do |event|
+      Directory::OverflowToggle(items: flat_events.drop(10), label_key: 'directory.partnerships.show.show_more_events') do |event|
         Directory::EventRow(event: event)
       end
-      render_event_overflow(rest)
+      render_see_all_button(t('directory.partnerships.show.see_all_events'), "#{partnership_base_url}/events")
     end
   end
 

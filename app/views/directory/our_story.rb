@@ -151,7 +151,7 @@ class Views::Directory::OurStory < Views::Base
             t("#{T}.cta.heading")
           end
           link_to get_in_touch_path,
-                  class: 'with-no-sass inline-flex items-center gap-2 rounded-full border-2 border-home-background bg-home-background px-6 py-[0.7rem] text-base font-bold text-foreground no-underline transition-colors hover:border-foreground hover:bg-foreground hover:text-background' do
+                  class: 'with-no-sass btn-home-outline' do
             plain t("#{T}.cta.button")
             span(aria_hidden: 'true') { safe('→') }
           end
