@@ -43,7 +43,7 @@ class Views::Directory::OurStory < Views::Base
   private
 
   def narrow(classes = '', &)
-    div(class: "mx-auto w-full max-w-[960px] px-6 #{classes}".strip, &)
+    div(class: "container-editorial #{classes}".strip, &)
   end
 
   def render_start
@@ -64,9 +64,9 @@ class Views::Directory::OurStory < Views::Base
   end
 
   def render_stat(stat)
-    div(class: 'flex flex-col bg-home-background border-2 border-rules rounded-card px-[1.1rem] py-[0.9rem]') do
+    div(class: 'flex flex-col min-w-0 bg-home-background border-2 border-rules rounded-card px-[1.1rem] py-[0.9rem]') do
       span(class: 'font-serif text-stat leading-none text-primary') { stat[:value] }
-      span(class: 'allcaps-label text-tertiary mt-1.5 text-[0.7rem]') { stat[:label] }
+      span(class: 'allcaps-label text-tertiary mt-1.5 text-[0.7rem] wrap-anywhere') { stat[:label] }
     end
   end
 
@@ -84,31 +84,28 @@ class Views::Directory::OurStory < Views::Base
   end
 
   def render_problems
-    section(class: 'bg-home-background border-t-[5px] border-rules py-11') do
-      narrow do
-        div(class: 'allcaps-label text-secondary-deep mb-2') { t("#{T}.problems.eyebrow") }
-        h2(class: 'font-serif font-regular text-section text-foreground mt-0 mb-9') { t("#{T}.problems.heading") }
-        div(class: 'flex flex-col gap-12') do
-          PROBLEMS.each { |feature| render_feature(:problems, feature) }
-        end
-      end
-    end
+    feature_section(:problems, PROBLEMS, eyebrow_class: 'text-secondary-deep',
+                                         wrapper_class: 'bg-home-background border-t-[5px] border-rules py-11')
   end
 
   def render_solutions
-    section(class: 'pt-11 pb-3') do
+    feature_section(:solutions, SOLUTIONS, eyebrow_class: 'text-tertiary', wrapper_class: 'pt-11 pb-3')
+  end
+
+  def feature_section(section_key, items, eyebrow_class:, wrapper_class:)
+    section(class: wrapper_class) do
       narrow do
-        div(class: 'allcaps-label text-tertiary mb-2') { t("#{T}.solutions.eyebrow") }
-        h2(class: 'font-serif font-regular text-section text-foreground mt-0 mb-9') { t("#{T}.solutions.heading") }
+        div(class: "allcaps-label #{eyebrow_class} mb-2") { t("#{T}.#{section_key}.eyebrow") }
+        h2(class: 'font-serif font-regular text-section text-foreground mt-0 mb-9') { t("#{T}.#{section_key}.heading") }
         div(class: 'flex flex-col gap-12') do
-          SOLUTIONS.each { |feature| render_feature(:solutions, feature) }
+          items.each { |feature| render_feature(section_key, feature) }
         end
       end
     end
   end
 
-  def render_feature(section, feature)
-    base = "#{T}.#{section}.#{feature[:key]}"
+  def render_feature(section_key, feature)
+    base = "#{T}.#{section_key}.#{feature[:key]}"
     accent = feature[:num] ? 'text-secondary-deep' : 'text-tertiary'
 
     div(class: 'grid md:grid-cols-[0.85fr_1fr] gap-11 items-center') do

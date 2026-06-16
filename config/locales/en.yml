@@ -18,6 +18,11 @@ en:
   contact:
     email: "support@placecal.org"
 
+  components:
+    details:
+      open: "Open to read more"
+      close: "Close"
+
   # ===========================================================================
   # DIRECTORY (public placecal.org)
   # ===========================================================================

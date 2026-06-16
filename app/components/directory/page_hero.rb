@@ -14,7 +14,7 @@ class Components::Directory::PageHero < Components::Directory::Base
   def view_template(&block)
     section(class: 'bg-foreground pt-6 pb-4 relative overflow-hidden', style: 'color: var(--color-background)') do
       render_background_image if @background_image_url
-      div(class: "#{@narrow ? 'mx-auto w-full max-w-[960px] px-6' : 'container-public'} relative z-10") do
+      div(class: "#{@narrow ? 'container-editorial' : 'container-public'} relative z-10") do
         render_breadcrumb if @breadcrumb_label
         render_kicker if @kicker
         h1(class: 'hero-title') { @title }

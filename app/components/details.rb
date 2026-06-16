@@ -62,8 +62,8 @@ class Components::Details < Components::Base
     div(class: 'btn btn--small btn--home-3') do
       raw(view_context.icon(:home_plus, size: nil, css_class: 'details__button__child__open'))
       raw(view_context.icon(:home_minus, size: nil, css_class: 'details__button__child__close'))
-      span(class: 'details__button__child__open') { 'Open to read more' }
-      span(class: 'details__button__child__close') { 'Close' }
+      span(class: 'details__button__child__open') { t('components.details.open') }
+      span(class: 'details__button__child__close') { t('components.details.close') }
     end
   end
 end
