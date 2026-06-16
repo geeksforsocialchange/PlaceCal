@@ -151,7 +151,7 @@ class Views::Directory::Partnerships::Show < Views::Base
         )
       else
         div(class: 'h-(--height-map) flex items-center justify-center') do
-          div(class: 'text-tertiary text-sm font-bold') { t('directory.partnerships.show.map_coming_soon') }
+          div(class: 'text-tertiary text-sm font-bold') { t('directory.map_coming_soon') }
         end
       end
     end

@@ -67,6 +67,7 @@ gem 'paper_trail'                 # Event version tracking and audit log
 group :development, :test do
   gem 'byebug'                    # Debugger
   gem 'dotenv-rails'              # Load .env files
+  gem 'i18n-tasks', require: false # Find missing/unused locale keys (CLI + guard spec)
 end
 
 group :development do

@@ -38,7 +38,7 @@ class Components::Directory::PageHero < Components::Directory::Base
   end
 
   def render_breadcrumb
-    nav(class: 'text-sm mb-2', style: 'color: var(--color-background)', aria_label: 'Breadcrumb') do
+    nav(class: 'text-sm mb-2', style: 'color: var(--color-background)', aria_label: t('directory.aria.breadcrumb')) do
       a(href: root_path, class: 'no-underline hover:underline', style: 'color: inherit') { t('directory.breadcrumbs.root') }
       span(class: 'mx-1.5 opacity-60') { safe('›') }
       if @breadcrumb_path

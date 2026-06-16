@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 class Views::Directory::Events::Index < Views::Base
-  PERIOD_OPTIONS = [['This week', 'week'], ['Today', 'day'], ['This month', 'month'], ['All upcoming', 'future']].freeze
+  # Period values in the order they appear in the filter dropdown and the tab bar
+  # respectively. Labels come from the `directory.events.index.periods` locale.
+  SELECT_PERIODS = %w[week day month future].freeze
+  TAB_PERIODS = %w[day week month future].freeze
 
   prop :events, Hash
   prop :site, _Nilable(::Site)
@@ -14,14 +17,14 @@ class Views::Directory::Events::Index < Views::Base
   prop :pagy, _Nilable(Pagy::Offset), default: nil
 
   def view_template
-    content_for(:title) { 'Events' }
-    content_for(:description) { "Discover #{@total_count} upcoming events and activities from community organisations across the UK on PlaceCal." }
+    content_for(:title) { ::Event.model_name.human(count: 2) }
+    content_for(:description) { t('directory.events.index.description', count: @total_count) }
 
     Directory::PageHero(
-      title: 'Events on PlaceCal',
+      title: t('directory.events.index.hero_title'),
       kicker: kicker_text,
-      subtitle: 'A nationwide event feed is a lot. Narrow down by place, interest, or partnership to see what\'s coming up near you.',
-      breadcrumb_label: 'Events'
+      subtitle: t('directory.events.index.hero_subtitle'),
+      breadcrumb_label: ::Event.model_name.human(count: 2)
     )
 
     div(class: 'container-public py-6') do
@@ -36,7 +39,7 @@ class Views::Directory::Events::Index < Views::Base
   private
 
   def kicker_text
-    "#{@total_count} upcoming events across the UK"
+    t('directory.events.index.kicker', count: @total_count)
   end
 
   def render_filters
@@ -53,10 +56,10 @@ class Views::Directory::Events::Index < Views::Base
 
   def render_search_field
     div(class: 'flex-1 min-w-50') do
-      label(for: 'q', class: 'block allcaps-label text-tertiary mb-1') { 'Search' }
+      label(for: 'q', class: 'block allcaps-label text-tertiary mb-1') { t('directory.filters.search') }
       input(
         type: 'text', name: 'q', id: 'q', value: @query,
-        placeholder: 'Event name or keyword…',
+        placeholder: t('directory.events.index.search_placeholder'),
         class: 'w-full border-2 border-rules rounded-full px-4 py-2 text-sm bg-background text-foreground outline-none focus:border-foreground transition-colors'
       )
     end
@@ -67,7 +70,7 @@ class Views::Directory::Events::Index < Views::Base
 
     Directory::CustomSelect(
       name: 'partnership',
-      label_text: 'Partnership',
+      label_text: t('directory.filters.partnership'),
       options: @partnerships_list.map { |item| { id: item[:slug], name: item[:name] } },
       selected: @selected_partnership
     )
@@ -76,8 +79,8 @@ class Views::Directory::Events::Index < Views::Base
   def render_period_select
     Directory::CustomSelect(
       name: 'period',
-      label_text: 'Time range',
-      options: PERIOD_OPTIONS.map { |label, value| { id: value, name: label } },
+      label_text: t('directory.events.index.period_label'),
+      options: SELECT_PERIODS.map { |value| { id: value, name: period_option_label(value) } },
       selected: @period,
       include_blank: false
     )
@@ -87,20 +90,21 @@ class Views::Directory::Events::Index < Views::Base
     div(class: 'flex gap-2 items-end') do
       button(type: 'submit',
              class: 'bg-foreground text-background rounded-full px-5 py-2 text-sm font-bold border-0 cursor-pointer hover:bg-tertiary transition-colors') do
-        plain 'Filter'
+        plain t('directory.filters.apply')
       end
       if any_filter_active?
         a(href: events_path,
           class: 'inline-flex items-center rounded-full px-4 py-2 text-sm font-bold text-tertiary border-2 border-rules no-underline hover:border-foreground transition-colors') do
-          plain 'Clear'
+          plain t('directory.filters.clear')
         end
       end
     end
   end
 
   def render_period_tabs
-    nav(class: 'flex gap-1 flex-wrap py-2', aria_label: 'Time period') do
-      [['Today', 'day'], ['This week', 'week'], ['This month', 'month'], ['All upcoming', 'future']].each do |label, value|
+    nav(class: 'flex gap-1 flex-wrap py-2', aria_label: t('directory.aria.time_period')) do
+      TAB_PERIODS.each do |value|
+        label = period_option_label(value)
         params = current_filter_params.merge('period' => value)
         if @period == value
           span(class: 'inline-flex items-center px-4 py-1.5 rounded-full text-sm font-bold bg-foreground text-background') { label }
@@ -118,9 +122,9 @@ class Views::Directory::Events::Index < Views::Base
     count = flat_events.size
     div(class: 'text-sm text-tertiary py-2') do
       if count.zero?
-        plain "No events #{period_label}"
+        plain t('directory.events.index.results.none', period: period_phrase)
       else
-        plain "#{count} #{'event'.pluralize(count)} #{period_label}"
+        plain t('directory.events.index.results.count', count: count, period: period_phrase)
       end
     end
   end
@@ -150,11 +154,11 @@ class Views::Directory::Events::Index < Views::Base
 
   def render_empty_state
     div(class: 'py-10 text-center') do
-      p(class: 'text-tertiary text-lg mb-4') { "No events found #{period_label}." }
+      p(class: 'text-tertiary text-lg mb-4') { t('directory.events.index.empty', period: period_phrase) }
       unless @period == 'future'
         a(href: "#{events_path}?period=future",
           class: 'inline-flex items-center gap-2 text-foreground font-bold no-underline hover:underline') do
-          plain 'Show all upcoming events'
+          plain t('directory.events.index.show_all')
         end
       end
     end
@@ -164,13 +168,14 @@ class Views::Directory::Events::Index < Views::Base
     @flat_events ||= @events.values.flatten
   end
 
-  def period_label
-    case @period
-    when 'day' then 'today'
-    when 'week' then 'this week'
-    when 'month' then 'this month'
-    else ''
-    end
+  def period_option_label(value)
+    t("directory.events.index.periods.#{value}")
+  end
+
+  # Sentence fragment (with a leading space) appended to the results header,
+  # e.g. " this week". Blank for the "future" period.
+  def period_phrase
+    t("directory.events.index.period_phrases.#{@period}", default: '')
   end
 
   def any_filter_active?
