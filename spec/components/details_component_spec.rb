@@ -60,6 +60,12 @@ RSpec.describe Components::Details, type: :phlex do
     expect(page).to have_selector(".details__summary p", text: "Already wrapped")
   end
 
+  it "renders rich summary_content markup in place of the summary string" do
+    render_inline(described_class.new(summary_content: -> { em { "emphasised summary" } }))
+
+    expect(page).to have_selector(".details__summary em", text: "emphasised summary")
+  end
+
   it "renders image with alt text" do
     render_inline(described_class.new(**attrs))
 
@@ -72,13 +78,20 @@ RSpec.describe Components::Details, type: :phlex do
     expect(page).to have_no_selector("img")
   end
 
-  it "renders toggle button with plus and minus icons" do
-    render_inline(described_class.new(**attrs))
+  it "renders toggle button with plus and minus icons when block given" do
+    render_inline(described_class.new(**attrs)) { "The detail value" }
 
     expect(page).to have_selector(".btn svg[data-icon-name='home_plus']")
     expect(page).to have_selector(".btn svg[data-icon-name='home_minus']")
     expect(page).to have_text("Open to read more")
     expect(page).to have_text("Close")
+  end
+
+  it "does not render toggle button when no block given" do
+    render_inline(described_class.new(**attrs))
+
+    expect(page).to have_no_text("Open to read more")
+    expect(page).to have_no_selector(".btn svg[data-icon-name='home_plus']")
   end
 
   it "renders block content in details__detail div" do

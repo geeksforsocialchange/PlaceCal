@@ -34,6 +34,57 @@ en:
         title: "PlaceCal Terms of Use"
         breadcrumb: "Terms"
         document_title: "Terms of Use"
+      our_story:
+        heading: "Our story"
+        lede: "We wanted to examine the causes of social isolation and loneliness within neighbourhoods in order to figure out how to combat them."
+        research:
+          stats: "We spoke to over 6,000 people in Manchester and divested over £200,000 in funds directly to community groups."
+          finding_intro: "A key finding was that people who were isolated commonly thought "
+          finding_quote: "“There’s nothing to do in my neighbourhood!”"
+          finding_outro: ". In communities up and down the country, this has led to social isolation and loneliness for a number of citizens, and therefore a lack of community resilience."
+          body:
+            - "This is a big issue in the UK in particular, where it is estimated that around 2 million older people experience loneliness and isolation. Studies show that social isolation and loneliness is as bad for your health as smoking two packets of cigarettes a week."
+            - "Despite massive investments of time and money by big institutions such as city councils and health providers into event listings, asset maps and community directories, still no one could find out what was happening in their area."
+            - "We continued to work with age friendly partnerships in Hulme and Moss Side (our pilot area, where we are based) to find out why."
+        problems_heading: "We found three big problems"
+        problems:
+          not_working_together:
+            header: "People were not working together"
+            summary: "Every large institution was working on their own community information websites, with different organisations gathering the same data."
+            body:
+              - "This top-down approach of people in large institutions trying to gather information on small community groups was inefficient and missed out large swathes of activities and groups."
+              - "It also resulted in duplication, or several low quality results rather than one really good one."
+          software_not_working:
+            header: "Current software wasn’t working"
+            summary: "Existing community information websites were either maintained on behalf of the groups by institutional staff or required community groups to regularly log in to keep their events updated."
+            body:
+              - "This meant that community groups had to input their information in one site for each provider, in addition to social media sites like Facebook, Twitter and Instagram, creating an ever-increasing amount of work for a very small amount of publicity."
+          low_tech_skills:
+            header: "Tech skills are very low"
+            summary: "Digital exclusion has affected community groups disproportionately, particularly in deprived areas such as Manchester. Groups often don’t have the skills or tools needed to promote themselves effectively."
+            body:
+              - "Staff at many institutions have felt equally left behind by recent innovations."
+              - "Most groups in our neighbourhood had never published anything online about their group at all, relying completely on word of mouth and thereby missing out on many opportunities to connect with new and enthusiastic participants."
+        solutions:
+          heading: "We needed to fix all of these together to have an impact."
+          intro: "This meant creating a package of software and training with shared ownership so that everyone could work together to build stronger communities:"
+          logo_alt: "PlaceCal"
+          collective_ownership:
+            header: "Collective, not-for-profit ownership"
+            summary: "To be sustainable, everything must be owned and managed directly by institutions and community groups working together."
+            body:
+              - "This supports the existing efforts being done in neighbourhoods by partnerships of councils, community organisers, and public health services."
+          existing_tools:
+            header: "Software built on existing tools"
+            summary: "Our software builds on top of tools that community groups are already using, such as Google Calendar, Outlook 365, and Facebook."
+            body:
+              - "These listings are then converted into super simple, highly accessible and constantly updated listings for each neighbourhood, community group and venue."
+          training:
+            header: "A training program that includes everyone"
+            summary: "Our educational program for institutions and community groups alike walks everyone through the process of publishing and updating their information."
+        join:
+          heading: "Set up PlaceCal in your community"
+          cta: "Get in touch"
     partners:
       index:
         filters:
