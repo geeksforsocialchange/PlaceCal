@@ -30,6 +30,90 @@ en:
   directory:
     breadcrumbs:
       root: "Directory"
+    aria:
+      breadcrumb: "Breadcrumb"
+      time_period: "Time period"
+      sort_order: "Sort order"
+      filter_by_letter: "Filter by letter"
+      pagination: "Pagination"
+    # Shared filter chrome, used by both the partner filter and the events
+    # filter form (app/components/directory/partner_filter.rb,
+    # neighbourhood_cascade.rb and app/views/directory/events/index.rb).
+    filters:
+      all: "All"
+      all_plural: "All %{label}"
+      search: "Search"
+      search_placeholder: "Name or keyword…"
+      apply: "Filter"
+      clear: "Clear"
+      category: "Category"
+      partnership: "Partnership"
+      neighbourhood: "Neighbourhood"
+      all_categories: "All categories"
+      all_partnerships: "All partnerships"
+      all_neighbourhoods: "All neighbourhoods"
+      all_of: "All of %{name}"
+    map_coming_soon: "Map coming soon"
+    hero:
+      search_placeholder: "Search partners…"
+      search_button: "Search"
+      jump_to: "Jump to:"
+    event_row:
+      online: "Online"
+    home:
+      description: "Find community groups, venues and events near you. PlaceCal aggregates thousands of events from hundreds of local organisations across the UK."
+      hero_title: "Find community groups, venues and events near you."
+      hero_subtitle: "PlaceCal aggregates thousands of events and activities from hundreds of local community organisations across the UK. This is the directory for all of it — search by place, by interest, or browse the map."
+      stats:
+        # Partner/Partnership/Neighbourhood labels come from model_name.human;
+        # only the non-model "this month" label lives here.
+        events: "Events this month"
+      partnerships:
+        kicker: "Partnerships"
+        heading: "Community hubs running on PlaceCal"
+        see_all: "See all partnerships"
+      activity:
+        kicker: "Activity"
+        heading: "Recently joined PlaceCal"
+        browse_all: "Browse all partners"
+      events:
+        kicker: "Tonight & this week"
+        heading: "Happening around the UK"
+        filter_by_place: "Filter events by place"
+      cta:
+        what_is:
+          heading: "What is PlaceCal?"
+          body: "PlaceCal is an online calendar which lists events and activities by and for members of local communities, curated around interests and locality."
+          link: "Our story"
+        run:
+          heading: "Run PlaceCal in your community"
+          body: "Setting up a PlaceCal means a dedicated website for your community, connected to the directory. We work with you on the ground to build partnerships with local venues and organisers."
+          link: "Get in touch"
+    events:
+      index:
+        description: "Discover %{count} upcoming events and activities from community organisations across the UK on PlaceCal."
+        hero_title: "Events on PlaceCal"
+        hero_subtitle: "A nationwide event feed is a lot. Narrow down by place, interest, or partnership to see what's coming up near you."
+        kicker: "%{count} upcoming events across the UK"
+        search_placeholder: "Event name or keyword…"
+        period_label: "Time range"
+        periods:
+          day: "Today"
+          week: "This week"
+          month: "This month"
+          future: "All upcoming"
+        period_phrases:
+          day: " today"
+          week: " this week"
+          month: " this month"
+          future: ""
+        results:
+          none: "No events%{period}"
+          count:
+            one: "%{count} event%{period}"
+            other: "%{count} events%{period}"
+        empty: "No events found%{period}."
+        show_all: "Show all upcoming events"
     pages:
       privacy:
         title: "PlaceCal Privacy Policy"
@@ -104,18 +188,19 @@ en:
           button: "Get in touch"
     partners:
       index:
-        filters:
-          search: "Search"
-          search_placeholder: "Name or keyword…"
-          category: "Category"
-          partnership: "Partnership"
-          neighbourhood: "Neighbourhood"
-          apply: "Filter"
-          clear: "Clear"
-          all_categories: "All categories"
-          all_partnerships: "All partnerships"
-          all_neighbourhoods: "All neighbourhoods"
-          all_of: "All of %{name}"
+        description: "Browse %{count} community partners across the UK on PlaceCal. Search by name, category, partnership or neighbourhood."
+        hero_title: "All partners on PlaceCal"
+        hero_subtitle: "Every community group, venue, library and organisation publishing their events on PlaceCal, UK-wide."
+        kicker: "%{count} partners across %{partnerships} partnerships"
+        results:
+          filtered: "Showing %{shown} of %{total} partners"
+          total: "%{count} partners"
+          page: " — page %{page} of %{pages}"
+        sort:
+          recent: "Recently updated"
+          name: "A–Z"
+        empty: "No partners found matching your filters."
+        clear: "Clear filters"
       show:
         upcoming_events: "Upcoming events"
         location: "Location"
@@ -146,7 +231,6 @@ en:
         events_this_month:
           one: "%{count} event this month"
           other: "%{count} events this month"
-        map_coming_soon: "Map coming soon"
         get_involved: "Get involved"
         cta_text: "Running a community group%{area}? Join this partnership to list your events."
         cta_area: " in %{name}"

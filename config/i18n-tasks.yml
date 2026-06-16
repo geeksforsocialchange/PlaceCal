@@ -1,0 +1,60 @@
+# i18n-tasks configuration
+# Finds missing and unused translations. Run `bundle exec i18n-tasks health`.
+# A guard spec (spec/i18n_keys_spec.rb) fails the build on missing keys.
+
+base_locale: en
+locales: [en]
+
+data:
+  # PlaceCal splits its locale data across several files. The default reader
+  # only loads `en.yml`, so the namespaced files must be listed explicitly or
+  # every key in them looks "missing".
+  read:
+    - config/locales/%{locale}.yml
+    - config/locales/*.%{locale}.yml
+  # New keys added by `i18n-tasks add-missing` land in the matching file.
+  write:
+    - ["config/locales/admin.%{locale}.yml", "admin.*"]
+    - ["config/locales/devise.%{locale}.yml", "devise.*"]
+    - config/locales/%{locale}.yml
+
+search:
+  paths:
+    - app/
+    - lib/
+
+ignore_missing:
+  # Devise/Rails supply these from the gems' own locale files at runtime.
+  - "devise.*"
+  - "errors.messages.*"
+  - "date.day_names" # provided by rails-i18n / ActiveSupport
+  # OpenGraph card services (app/services/og_image/*) look these up through a
+  # private `t(key)` helper that injects `scope: 'og_image'`, so the real keys
+  # live under `og_image.*` but appear here unscoped.
+  - "powered_by"
+  - "generic.statement"
+  - "labels.{event,partner,partnership,community_site}"
+  - "upcoming_events"
+  - "partner_organisations"
+  - "events_this_month"
+
+ignore_unused:
+  # Resolved dynamically (e.g. Model.model_name.human, attr_label,
+  # interpolated keys) so static analysis can't see the call sites.
+  - "activerecord.*"
+  - "activemodel.*"
+  - "enumerize.*"
+  - "simple_form.*"
+  - "devise.*"
+  - "neighbourhoods.*"
+  - "time.formats.*"
+  - "date.formats.*"
+  - "errors.messages.*" # Devise/Rails runtime messages
+  # Built from interpolated values in code:
+  - "directory.events.index.periods.*" # period_option_label("#{value}")
+  - "directory.events.index.period_phrases.*" # period_phrase("#{@period}")
+  # OurStory builds every key from `T = 'directory.pages.our_story'` and
+  # interpolated section names (see app/views/directory/our_story.rb).
+  - "directory.pages.our_story.*"
+  # OG card services resolve keys through a scoped `t` helper (scope: 'og_image').
+  - "og_image.*"

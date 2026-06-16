@@ -68,12 +68,12 @@ class Components::Directory::NeighbourhoodCascade < Components::Directory::Base
         options: nodes.map { |n| option_for(n) },
         selected: selected_node && selected_node[:id].to_s,
         include_blank: true,
-        default_label: t('directory.partners.index.filters.all_neighbourhoods')
+        default_label: t('directory.filters.all_neighbourhoods')
       }
     else
       parent = path[depth - 1]
       {
-        options: [{ id: parent[:id], name: t('directory.partners.index.filters.all_of', name: parent[:name]) }] + nodes.map { |n| option_for(n) },
+        options: [{ id: parent[:id], name: t('directory.filters.all_of', name: parent[:name]) }] + nodes.map { |n| option_for(n) },
         selected: (selected_node || parent)[:id].to_s,
         include_blank: false,
         default_label: nil

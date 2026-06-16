@@ -108,7 +108,10 @@ class Components::Directory::CustomSelect < Components::Directory::Base
   end
 
   def placeholder
-    @default_label || (@label_text.present? ? "All #{@label_text.downcase.pluralize}" : 'All')
+    return @default_label if @default_label
+    return t('directory.filters.all') if @label_text.blank?
+
+    t('directory.filters.all_plural', label: @label_text.downcase.pluralize)
   end
 
   def selected_label
