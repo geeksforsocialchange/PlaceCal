@@ -36,7 +36,7 @@ class Views::Directory::Partnerships::Index < Views::Base
          class: 'mb-6') do
       div(class: 'flex items-center bg-home-background-3 rounded-full p-1 pl-2 max-w-(--width-search)') do
         div(class: 'px-2 text-tertiary') do
-          raw(safe('<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>'))
+          raw(view_context.icon(:search, size: nil, css_class: 'w-4 h-4'))
         end
         input(
           type: 'text', name: 'q', value: @query,

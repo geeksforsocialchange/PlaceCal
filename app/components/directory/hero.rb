@@ -33,7 +33,7 @@ class Components::Directory::Hero < Components::Directory::Base
     form(action: @search_path, method: 'get',
          class: 'flex items-center bg-background rounded-full p-1 pl-2 max-w-(--width-search-hero) shadow-[0_0_0_2px_rgba(255,255,255,0.2)]') do
       div(class: 'px-2 text-tertiary') do
-        raw(safe('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>'))
+        raw(view_context.icon(:search, size: nil, css_class: 'w-[18px] h-[18px]'))
       end
       input(
         type: 'text', name: 'q',

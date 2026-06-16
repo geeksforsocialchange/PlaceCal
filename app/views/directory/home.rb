@@ -82,7 +82,7 @@ class Views::Directory::Home < Views::Base
       end
       div(class: 'mt-4') do
         a(href: partners_path,
-          class: 'inline-flex items-center gap-2 bg-home-background border-2 border-primary rounded-full px-5 py-2 text-detail font-bold text-foreground no-underline hover:bg-primary transition-colors') do
+          class: 'btn-primary-outline transition-colors') do
           plain t('directory.home.activity.browse_all')
           span { safe('&rarr;') }
         end
@@ -101,7 +101,7 @@ class Views::Directory::Home < Views::Base
       end
       div(class: 'mt-4') do
         a(href: events_path,
-          class: 'inline-flex items-center gap-2 bg-home-background border-2 border-primary rounded-full px-5 py-2 text-detail font-bold text-foreground no-underline hover:bg-primary transition-colors') do
+          class: 'btn-primary-outline transition-colors') do
           plain t('directory.home.events.filter_by_place')
           span { safe('&rarr;') }
         end
