@@ -7,8 +7,8 @@
 # interval ago). No inline sending.
 #
 # PAUSE SWITCH: sending is off unless PARTNER_DIGEST_ENABLED=true, so a
-# deploy can't trigger the first send before the launch gates in
-# doc/proposals/3256-partner-email-notifications-prompt.md Part C are met.
+# deploy can't trigger the first send before the launch runbook gates in
+# doc/adr/0015-email-subscription-and-consent-architecture.md are met.
 # To stop a send in progress: unset the variable and delete queued
 # PartnerDigestDeliveryJob rows from delayed_jobs.
 #
