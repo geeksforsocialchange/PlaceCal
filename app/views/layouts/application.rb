@@ -124,7 +124,7 @@ class Views::Layouts::Application < Phlex::HTML
   def compute_title
     return 'PlaceCal | The Community Calendar' if current_page?(root_url) && site.nil?
     return "#{content_for(:title)} | #{site.name}" if content_for?(:title) && site&.name
-    return content_for(:title).to_s if content_for?(:title)
+    return "#{content_for(:title)} | PlaceCal" if content_for?(:title)
 
     site&.name || 'PlaceCal | The Community Calendar'
   end

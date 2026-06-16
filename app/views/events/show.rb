@@ -69,21 +69,21 @@ class Views::Events::Show < Views::Base
     div(class: 'grid md:grid-cols-3 gap-6 py-4') do
       if event.organiser
         div do
-          h3(class: 'allcaps-label text-tertiary mb-2') { 'Contact information' }
+          h2(class: 'allcaps-label text-tertiary mb-2') { 'Contact information' }
           ContactDetails(partner: event.organiser)
         end
       end
       div do
-        h3(class: 'allcaps-label text-tertiary mb-2') { 'Event address' }
+        h2(class: 'allcaps-label text-tertiary mb-2') { 'Event address' }
         Address(address: event.address, raw_location: event.raw_location_from_source)
       end
       div do
-        h3(class: 'allcaps-label text-tertiary mb-2') { 'Event organiser' }
+        h2(class: 'allcaps-label text-tertiary mb-2') { 'Event organiser' }
         span { link_to event.organiser, event.organiser }
       end
       if show_venue?
         div do
-          h3(class: 'allcaps-label text-tertiary mb-2') { 'Venue' }
+          h2(class: 'allcaps-label text-tertiary mb-2') { 'Venue' }
           span { link_to event.place, event.place }
         end
       end
@@ -135,7 +135,7 @@ class Views::Events::Show < Views::Base
 
   def render_sidebar_organiser
     div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
-      h3(class: 'allcaps-label text-tertiary mb-2') { 'Organised by' }
+      h2(class: 'allcaps-label text-tertiary mb-2') { 'Organised by' }
       a(href: partner_path(event.organiser),
         class: 'font-extra-bold text-sm text-foreground no-underline hover:underline hover:decoration-primary') do
         plain event.organiser.name

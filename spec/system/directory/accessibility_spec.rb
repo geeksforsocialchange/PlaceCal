@@ -49,6 +49,11 @@ RSpec.describe "Directory Accessibility", :slow, type: :system do
       visit public_url("/events")
       expect(page).to be_axe_clean
     end
+
+    it "event show has no accessibility violations" do
+      visit public_url("/events/#{event_one.id}")
+      expect(page).to be_axe_clean
+    end
   end
 
   describe "partnerships" do

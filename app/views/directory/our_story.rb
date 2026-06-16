@@ -63,11 +63,13 @@ class Views::Directory::OurStory < Views::Base
     end
   end
 
+  # Matches the homepage StatsStrip bead (Components::Directory::StatsStrip):
+  # foreground numeral on a bordered cream card. The foreground brown also
+  # clears WCAG AA on cream, unlike the previous lime/green.
   def render_stat(stat)
-    div(class: 'flex flex-col min-w-0 bg-home-background border-2 border-rules rounded-card px-[1.1rem] py-[0.9rem]') do
-      # Deeper green than --color-primary lime, which fails WCAG AA on cream (1.71:1); this clears 3:1 for the large numeral.
-      span(class: 'font-serif text-stat leading-none', style: 'color: #6b8e23') { stat[:value] }
-      span(class: 'allcaps-label text-tertiary mt-1.5 text-[0.7rem] wrap-anywhere') { stat[:label] }
+    div(class: 'flex flex-col bg-home-background border-2 border-rules rounded-card py-3.5 px-4.5 min-w-0') do
+      span(class: 'font-serif text-stat leading-none text-foreground') { stat[:value] }
+      span(class: 'allcaps-label text-tertiary mt-1.5 wrap-anywhere') { stat[:label] }
     end
   end
 
