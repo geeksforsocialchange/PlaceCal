@@ -28,6 +28,8 @@
 	/* Contrast colours */
 	--color-secondary: #f19089;
 	--color-secondary-light: #f4a6a1;
+	/* Deeper salmon for small text / numerals that need contrast on cream */
+	--color-secondary-deep: #e66f67;
 	/* Used for top map stripe and navigation in some states */
 	--color-tertiary: #786551;
 	/* Bottom of the double line on the map */
@@ -143,6 +145,7 @@ https://tailwindcss.com/docs/theme#default-theme-variable-reference
 	/* Contrast colours */
 	--color-secondary: var(--color-secondary);
 	--color-secondary-light: var(--color-secondary-light);
+	--color-secondary-deep: var(--color-secondary-deep);
 	/* Used for top map stripe and navigation in some states */
 	--color-tertiary: var(--color-tertiary);
 	/* Bottom of the double line on the map */

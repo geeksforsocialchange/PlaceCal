@@ -18,6 +18,10 @@ class Views::Layouts::Application < Phlex::HTML
         csrf_meta_tags
         stylesheet_link_tag 'application', media: 'all', 'data-turbo-track': 'reload'
         stylesheet_link_tag 'public_tailwind', media: 'all', 'data-turbo-track': 'reload'
+        # Legacy informational homepage pages (Views::Homepage::*) opt into the
+        # home.scss bundle. Scoped via content_for so the nationwide directory
+        # pages (which share the nil-site layout) don't inherit its body styling.
+        stylesheet_link_tag 'home', media: 'all', 'data-turbo-track': 'reload' if content_for?(:home_styles)
         stylesheet_link_tag site.stylesheet_link, media: 'all', 'data-turbo-track': 'reload' if site&.stylesheet_link
         stylesheet_link_tag 'print', media: 'print', 'data-turbo-track': 'reload'
         preload_font('rawline/rawline-500.woff2')

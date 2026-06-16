@@ -3,7 +3,11 @@
 # Render a collapsible HTML details element which is expanded at the `for-tablet-landscape-up` breakpoint
 class Components::Details < Components::Base
   prop :header, _Nilable(String), default: nil
-  prop :summary, String
+  prop :summary, _Nilable(String), default: nil
+  # Rich summary markup as an alternative to the +summary+ string, e.g. when the
+  # summary needs emphasis or multiple paragraphs. Rendered in the component's
+  # context so callers can use the Phlex DSL instead of an HTML string.
+  prop :summary_content, _Nilable(Proc), default: nil
   prop :header_class, String, default: ''
   prop :header_level, Integer, default: 3
   prop :image_url, _Nilable(String), default: nil
@@ -24,8 +28,10 @@ class Components::Details < Components::Base
         render_header if @header
         render_summary_content
         render_image if @image_url
-        render_toggle_button
-        div(class: 'details__detail', &block) if block
+        if block
+          render_toggle_button
+          div(class: 'details__detail', &block)
+        end
       end
     end
   end
@@ -38,9 +44,11 @@ class Components::Details < Components::Base
 
   def render_summary_content
     div(class: 'details__summary') do
-      if @summary.match?(/^<p/)
+      if @summary_content
+        instance_exec(&@summary_content)
+      elsif @summary&.match?(/^<p/)
         raw safe(@summary)
-      else
+      elsif @summary
         p { plain @summary }
       end
     end
@@ -54,8 +62,8 @@ class Components::Details < Components::Base
     div(class: 'btn btn--small btn--home-3') do
       raw(view_context.icon(:home_plus, size: nil, css_class: 'details__button__child__open'))
       raw(view_context.icon(:home_minus, size: nil, css_class: 'details__button__child__close'))
-      span(class: 'details__button__child__open') { 'Open to read more' }
-      span(class: 'details__button__child__close') { 'Close' }
+      span(class: 'details__button__child__open') { t('components.details.open') }
+      span(class: 'details__button__child__close') { t('components.details.close') }
     end
   end
 end
