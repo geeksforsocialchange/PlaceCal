@@ -25,6 +25,9 @@ RSpec.describe "Directory partner filtering", :slow, type: :system do
     expect(page).to have_content("Southern Partner")
 
     within("[data-controller='neighbourhood-cascade']") do
+      # Wait for the custom-select controller to connect; clicking the trigger
+      # before connect() leaves the toggle a no-op and the panel never opens.
+      expect(page).to have_css("[data-custom-select-connected]")
       find("[data-custom-select-target='trigger']").click
       click_button("Northvale (1)")
     end
