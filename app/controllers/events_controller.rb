@@ -13,11 +13,6 @@ class EventsController < ApplicationController
   # GET /events
   # GET /events.json
   def index
-    # The admin subdomain has no Site row and is not the directory, so the
-    # local index would render with a nil site and raise. Send such requests
-    # to the apex directory instead. (#3267)
-    return redirect_to(events_url(subdomain: false), allow_other_host: true) if @site.nil? && !directory_request?
-
     if directory_request? && html_format? && params[:simple].blank?
       render_directory_index
     else
