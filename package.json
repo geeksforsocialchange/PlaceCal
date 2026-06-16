@@ -11,7 +11,7 @@
 		"husky": "9.1.7",
 		"leaflet": "1.9.4",
 		"lint-staged": "17.0.7",
-		"prettier": "3.8.3",
+		"prettier": "3.8.4",
 		"tom-select": "2.6.1"
 	},
 	"scripts": {
