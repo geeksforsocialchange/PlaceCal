@@ -283,17 +283,19 @@ textarea.join-control {
 	border-radius: var(--radius-card);
 	padding: 1.6rem 1.9rem;
 }
+/* Darker than --color-foreground (#5b4e46): brown text on the salmon card
+   only reaches 3.46:1, below WCAG AA 4.5:1 for body copy. This shade clears it. */
 .join-email-cta__heading {
 	font-family: var(--font-serif);
 	font-weight: 400;
 	font-size: 1.35rem;
 	line-height: 1.15;
-	color: var(--color-foreground);
+	color: #3d342e;
 	margin-bottom: 0.2rem;
 }
 .join-email-cta__body {
 	font-size: 0.95rem;
-	color: var(--color-foreground);
+	color: #3d342e;
 }
 .join-email-link {
 	display: inline-flex;
