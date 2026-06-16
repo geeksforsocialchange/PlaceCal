@@ -39,26 +39,9 @@ class Views::Directory::Partners::Show < Views::Partners::Show
       flat.first(10).each do |event|
         Directory::EventRow(event: event, context_partner: partner)
       end
-      render_event_overflow(flat.drop(10))
-    end
-  end
-
-  def render_event_overflow(remaining)
-    return if remaining.empty?
-
-    batch = remaining.first(10)
-    rest = remaining.drop(10)
-    details(class: 'group') do
-      summary(class: 'list-none pt-3 border-t border-rules cursor-pointer [&::-webkit-details-marker]:hidden') do
-        span(class: 'inline-flex items-center gap-1.5 text-sm font-bold text-foreground group-open:hidden') do
-          plain t('directory.partners.show.show_more_events', count: [10, remaining.size].min)
-          span(class: 'text-tertiary') { safe('&#9660;') }
-        end
-      end
-      batch.each do |event|
+      Directory::OverflowToggle(items: flat.drop(10), label_key: 'directory.partners.show.show_more_events') do |event|
         Directory::EventRow(event: event, context_partner: partner)
       end
-      render_event_overflow(rest)
     end
   end
 

@@ -25,7 +25,7 @@ class Components::Directory::PartnerMini < Components::Directory::Base
   def render_event_badge
     return unless @event_count.positive?
 
-    span(class: 'inline-flex items-center bg-primary text-foreground text-2xs font-bold rounded-full px-2 py-0.5 whitespace-nowrap shrink-0') do
+    span(class: 'badge badge--tight bg-primary text-foreground whitespace-nowrap shrink-0') do
       plain "#{@event_count} #{'event'.pluralize(@event_count)}"
     end
   end
@@ -36,7 +36,7 @@ class Components::Directory::PartnerMini < Components::Directory::Base
 
     div(class: 'flex flex-wrap gap-1 mt-1.5') do
       chips.each do |label|
-        span(class: 'inline-flex items-center bg-home-background-3 text-tertiary text-2xs font-bold rounded-full px-2 py-0.5') do
+        span(class: 'badge badge--tight bg-home-background-3 text-tertiary') do
           plain label
         end
       end

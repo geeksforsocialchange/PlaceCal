@@ -3,6 +3,9 @@
 class Components::Directory::PartnerCard < Components::Directory::Base
   prop :partner, ::Partner
   prop :site, _Nilable(::Site)
+  # Neighbourhood breadcrumb, precomputed by PartnersQuery.area_labels so the
+  # card doesn't walk the neighbourhood ancestry itself (avoids an N+1 in lists).
+  prop :area, _Nilable(String), default: nil
 
   def view_template
     a(href: partner_path(@partner),
@@ -17,7 +20,7 @@ class Components::Directory::PartnerCard < Components::Directory::Base
   def render_info
     div do
       div(class: 'font-bold text-xl leading-tight border-b-[3px] border-rules group-hover:border-tertiary/20 pb-1.5 mb-1.5') { @partner.name }
-      div(class: 'text-sm text-tertiary font-bold mb-0.5') { area_text } if area_text.present?
+      div(class: 'text-sm text-tertiary font-bold mb-0.5') { @area } if @area.present?
       div(class: 'text-foreground leading-snug mt-1 line-clamp-2') { @partner.summary.truncate(120) } if @partner.summary.present?
       render_chips
     end
@@ -29,18 +32,10 @@ class Components::Directory::PartnerCard < Components::Directory::Base
 
     div(class: 'flex flex-wrap gap-1 mt-2.5') do
       chips.each do |label|
-        span(class: 'inline-flex items-center bg-home-background-3 text-tertiary text-2xs font-bold rounded-full px-2 py-0.5') do
+        span(class: 'badge badge--tight bg-home-background-3 text-tertiary') do
           plain label
         end
       end
     end
-  end
-
-  def area_text
-    return @area_text if defined?(@area_text)
-
-    hood = @partner.address&.neighbourhood
-    hood ||= @partner.service_area_neighbourhoods.first if @partner.has_service_areas?
-    @area_text = hood && hood.hierarchy_path.last(3).map(&:shortname).join(' › ')
   end
 end

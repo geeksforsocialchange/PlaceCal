@@ -18,6 +18,7 @@ class Views::Directory::Partners::Index < Views::Base
   prop :sort, String, default: 'recent'
   prop :az_letters, _Interface(:include?), default: -> { Set.new }
   prop :selected_letter, _Nilable(String), default: nil
+  prop :area_labels, Hash, default: -> { {} }
 
   def view_template
     content_for(:title) { ::Partner.model_name.human(count: 2) }
@@ -85,7 +86,7 @@ class Views::Directory::Partners::Index < Views::Base
       if @sort == 'name'
         render_alphabetical_list
       else
-        partner_list.each { |partner| Directory::PartnerCard(partner: partner, site: @site) }
+        partner_list.each { |partner| Directory::PartnerCard(partner: partner, site: @site, area: @area_labels[partner.id]) }
       end
     end
 
@@ -111,7 +112,7 @@ class Views::Directory::Partners::Index < Views::Base
         h2(id: "letter-#{letter}",
            class: '[column-span:all] font-serif text-2xl text-foreground mt-8 mb-3 pt-3 border-t-2 border-rules scroll-mt-4') { letter }
       end
-      Directory::PartnerCard(partner: partner, site: @site)
+      Directory::PartnerCard(partner: partner, site: @site, area: @area_labels[partner.id])
     end
   end
 

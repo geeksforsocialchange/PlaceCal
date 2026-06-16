@@ -39,7 +39,7 @@ class Components::Directory::PartnerRow < Components::Directory::Base
     return unless @event_count.positive?
 
     div(class: 'text-right') do
-      span(class: 'inline-flex items-center bg-primary-light text-foreground text-2xs font-bold rounded-full px-2.5 py-0.5') do
+      span(class: 'badge bg-primary-light text-foreground') do
         plain "#{@event_count} #{'event'.pluralize(@event_count)}"
       end
     end
