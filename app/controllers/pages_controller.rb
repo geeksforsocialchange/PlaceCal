@@ -44,7 +44,7 @@ class PagesController < ApplicationController
   end
 
   def our_story
-    render Views::Homepage::OurStory.new
+    render Views::Directory::OurStory.new
   end
 
   def community_groups

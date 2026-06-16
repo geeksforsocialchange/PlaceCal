@@ -36,55 +36,67 @@ en:
         document_title: "Terms of Use"
       our_story:
         heading: "Our story"
-        lede: "We wanted to examine the causes of social isolation and loneliness within neighbourhoods in order to figure out how to combat them."
-        research:
-          stats: "We spoke to over 6,000 people in Manchester and divested over £200,000 in funds directly to community groups."
-          finding_intro: "A key finding was that people who were isolated commonly thought "
-          finding_quote: "“There’s nothing to do in my neighbourhood!”"
-          finding_outro: ". In communities up and down the country, this has led to social isolation and loneliness for a number of citizens, and therefore a lack of community resilience."
+        hero_title: "We set out to examine the causes of social isolation and loneliness within neighbourhoods, and figure out how to combat them."
+        hero_lede: "PlaceCal grew out of years of work with age-friendly partnerships in Manchester. It started with listening, not building."
+        start:
+          eyebrow: "How we began"
+          heading: "We started by listening"
           body:
-            - "This is a big issue in the UK in particular, where it is estimated that around 2 million older people experience loneliness and isolation. Studies show that social isolation and loneliness is as bad for your health as smoking two packets of cigarettes a week."
-            - "Despite massive investments of time and money by big institutions such as city councils and health providers into event listings, asset maps and community directories, still no one could find out what was happening in their area."
-            - "We continued to work with age friendly partnerships in Hulme and Moss Side (our pilot area, where we are based) to find out why."
-        problems_heading: "We found three big problems"
+            - "We spoke to over 6,000 people across Manchester and divested more than £200,000 in funds directly to community groups. We kept working with the age-friendly partnerships in Hulme and Moss Side, the pilot area where we are based, to find out why so many people felt cut off from their own neighbourhood."
+            - "Social isolation is a major issue in the UK, where it is estimated that around two million older people experience loneliness. Studies show it is as bad for your health as smoking. Yet despite huge investment by councils and health providers in event listings, asset maps and directories, no one could reliably find out what was actually happening nearby."
+        stats:
+          - value: "6,000+"
+            label: "Conversations"
+          - value: "£200k"
+            label: "Divested to communities"
+          - value: "2 million"
+            label: "Isolated older people"
+        quote:
+          text: "“There’s nothing to do in my neighbourhood.”"
+          caption: "The same sentence, in communities up and down the country. That isolation erodes community resilience, and it was the finding that set everything else in motion."
         problems:
-          not_working_together:
-            header: "People were not working together"
-            summary: "Every large institution was working on their own community information websites, with different organisations gathering the same data."
-            body:
-              - "This top-down approach of people in large institutions trying to gather information on small community groups was inefficient and missed out large swathes of activities and groups."
-              - "It also resulted in duplication, or several low quality results rather than one really good one."
-          software_not_working:
-            header: "Current software wasn’t working"
-            summary: "Existing community information websites were either maintained on behalf of the groups by institutional staff or required community groups to regularly log in to keep their events updated."
-            body:
-              - "This meant that community groups had to input their information in one site for each provider, in addition to social media sites like Facebook, Twitter and Instagram, creating an ever-increasing amount of work for a very small amount of publicity."
-          low_tech_skills:
-            header: "Tech skills are very low"
-            summary: "Digital exclusion has affected community groups disproportionately, particularly in deprived areas such as Manchester. Groups often don’t have the skills or tools needed to promote themselves effectively."
-            body:
-              - "Staff at many institutions have felt equally left behind by recent innovations."
-              - "Most groups in our neighbourhood had never published anything online about their group at all, relying completely on word of mouth and thereby missing out on many opportunities to connect with new and enthusiastic participants."
-        solutions:
-          heading: "We needed to fix all of these together to have an impact."
-          intro: "This meant creating a package of software and training with shared ownership so that everyone could work together to build stronger communities:"
+          eyebrow: "What we learned"
+          heading: "We found three big problems"
+          people:
+            kicker: "People"
+            title: "People weren’t working together"
+            image_alt: "Different institutions each building their own systems"
+            body: "Every large institution was building its own community-information website, with different organisations gathering exactly the same data. This top-down approach was inefficient, missed whole swathes of small groups, and produced duplicate, low-quality listings rather than one really good one."
+          software:
+            kicker: "Software"
+            title: "The existing software wasn’t working"
+            image_alt: "An older person struggling to keep listings updated"
+            body: "Community-information sites were either maintained on a group’s behalf by institutional staff, or required the groups themselves to log in and keep events updated. So groups re-entered the same information on site after site, on top of Facebook, Twitter and Instagram, for an ever-increasing workload and a tiny amount of publicity."
+          skills:
+            kicker: "Skills"
+            title: "Tech skills were very low"
+            image_alt: "A person unsure how to publish online"
+            body: "Digital exclusion hits community groups hardest, particularly in deprived areas. Many groups had never published anything online at all, relying entirely on word of mouth, and missing out on connecting with new and enthusiastic participants. Staff at large institutions often felt just as left behind."
+        turning:
+          heading: "We needed to fix all of these together to have any impact."
+          body: "That meant building a single package of software and training, with shared ownership, so that everyone could work together to build stronger communities."
           logo_alt: "PlaceCal"
-          collective_ownership:
-            header: "Collective, not-for-profit ownership"
-            summary: "To be sustainable, everything must be owned and managed directly by institutions and community groups working together."
-            body:
-              - "This supports the existing efforts being done in neighbourhoods by partnerships of councils, community organisers, and public health services."
-          existing_tools:
-            header: "Software built on existing tools"
-            summary: "Our software builds on top of tools that community groups are already using, such as Google Calendar, Outlook 365, and Facebook."
-            body:
-              - "These listings are then converted into super simple, highly accessible and constantly updated listings for each neighbourhood, community group and venue."
-          training:
-            header: "A training program that includes everyone"
-            summary: "Our educational program for institutions and community groups alike walks everyone through the process of publishing and updating their information."
-        join:
+        solutions:
+          eyebrow: "What we built"
+          heading: "One package, owned together"
+          ownership:
+            kicker: "Ownership"
+            title: "Collective, not-for-profit ownership"
+            image_alt: "Councils, organisers and residents around a shared map pin"
+            body: "To be sustainable, everything is owned and managed directly by the institutions and community groups using it. PlaceCal supports the work already being done in neighbourhoods by partnerships of councils, community organisers and public-health services."
+          technology:
+            kicker: "Technology"
+            title: "Software built on existing tools"
+            image_alt: "Calendars and tools feeding into one place"
+            body: "PlaceCal builds on the tools groups already use, like Google Calendar, Outlook 365 and Facebook. Those listings are converted into super-simple, highly accessible and constantly-updated calendars for each neighbourhood, community group and venue."
+          people:
+            kicker: "People"
+            title: "A training programme that includes everyone"
+            image_alt: "A training session bringing everyone along"
+            body: "Our education programme walks institutions and community groups alike through the process of publishing and updating their information, so no one is left behind by the technology."
+        cta:
           heading: "Set up PlaceCal in your community"
-          cta: "Get in touch"
+          button: "Get in touch"
     partners:
       index:
         filters:
