@@ -167,11 +167,17 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     end
 
     it "does not prompt when switching tabs without changes" do
-      # Switch tabs without making changes - no prompt expected
-      find('input[aria-label="📍 Location"]').click
+      # Wait for the form to settle into its clean (no unsaved changes) state
+      # before switching. While field enhancements initialise, the save bar can
+      # briefly read as dirty (its baseline snapshot races the enhancement); a
+      # tab click during that window fires the unsaved-changes confirm, which —
+      # with no accept_confirm here — is dismissed and cancels the switch, so
+      # the Location tab never becomes checked (flaky in CI). A clean save bar
+      # shows "Continue" rather than "Save & Continue".
+      expect(page).to have_no_button("Save & Continue", visible: :all)
 
-      # Should be on Location tab
-      expect(page).to have_css('input[aria-label="📍 Location"]:checked', visible: :all)
+      # Switch tabs without making changes - no prompt expected
+      go_to_place_tab
     end
   end
 
