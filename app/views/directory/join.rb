@@ -120,7 +120,8 @@ class Views::Directory::Join < Views::Base
 
     div(class: 'join-email-cta') do
       div do
-        h3(class: 'join-email-cta__heading') { t('directory.join.email_cta.heading') }
+        # h2 (not h3) to keep the heading order correct after the hero's h1.
+        h2(class: 'join-email-cta__heading') { t('directory.join.email_cta.heading') }
         p(class: 'join-email-cta__body') { t('directory.join.email_cta.body') }
       end
       a(href: "mailto:#{address}", class: 'join-email-link with-no-sass') do

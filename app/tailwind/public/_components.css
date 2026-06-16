@@ -291,7 +291,7 @@ textarea.join-control {
 	font-size: 1.35rem;
 	line-height: 1.15;
 	color: #3d342e;
-	margin-bottom: 0.2rem;
+	margin: 0 0 0.2rem;
 }
 .join-email-cta__body {
 	font-size: 0.95rem;
