@@ -102,20 +102,14 @@ class Views::Directory::Events::Index < Views::Base
   end
 
   def render_period_tabs
-    nav(class: 'flex gap-1 flex-wrap py-2', aria_label: t('directory.aria.time_period')) do
-      TAB_PERIODS.each do |value|
-        label = period_option_label(value)
-        params = current_filter_params.merge('period' => value)
-        if @period == value
-          span(class: 'inline-flex items-center px-4 py-1.5 rounded-full text-sm font-bold bg-foreground text-background') { label }
-        else
-          a(href: "#{events_path}?#{params.to_query}",
-            class: 'inline-flex items-center px-4 py-1.5 rounded-full text-sm font-bold bg-home-background-3 text-foreground no-underline hover:bg-primary transition-colors') do
-            plain label
-          end
-        end
-      end
+    items = TAB_PERIODS.map do |value|
+      {
+        label: period_option_label(value),
+        href: "#{events_path}?#{current_filter_params.merge('period' => value).to_query}",
+        active: @period == value
+      }
     end
+    Directory::ToggleTabs(items: items, aria_label: t('directory.aria.time_period'))
   end
 
   def render_results_header
@@ -153,15 +147,12 @@ class Views::Directory::Events::Index < Views::Base
   end
 
   def render_empty_state
-    div(class: 'py-10 text-center') do
-      p(class: 'text-tertiary text-lg mb-4') { t('directory.events.index.empty', period: period_phrase) }
-      unless @period == 'future'
-        a(href: "#{events_path}?period=future",
-          class: 'inline-flex items-center gap-2 text-foreground font-bold no-underline hover:underline') do
-          plain t('directory.events.index.show_all')
-        end
-      end
-    end
+    show_all = @period != 'future'
+    Directory::EmptyState(
+      message: t('directory.events.index.empty', period: period_phrase),
+      link_text: (t('directory.events.index.show_all') if show_all),
+      link_href: ("#{events_path}?period=future" if show_all)
+    )
   end
 
   def flat_events

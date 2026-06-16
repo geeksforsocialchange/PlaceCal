@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Views::Directory::Partners::Index < Views::Base
+  SORT_OPTIONS = %w[recent name].freeze
+
   prop :partners, _Interface(:each)
   prop :pagy, _Nilable(Pagy::Offset), default: nil
   prop :site, _Nilable(::Site)
@@ -68,19 +70,14 @@ class Views::Directory::Partners::Index < Views::Base
   end
 
   def render_sort_tabs
-    nav(class: 'flex gap-1 flex-wrap py-2', aria_label: t('directory.aria.sort_order')) do
-      [[t('directory.partners.index.sort.recent'), 'recent'], [t('directory.partners.index.sort.name'), 'name']].each do |label, value|
-        sort_params = current_filter_params.merge('sort' => value)
-        if @sort == value
-          span(class: 'inline-flex items-center px-4 py-1.5 rounded-full text-sm font-bold bg-foreground text-background') { label }
-        else
-          a(href: "#{partners_path}?#{sort_params.to_query}",
-            class: 'inline-flex items-center px-4 py-1.5 rounded-full text-sm font-bold bg-home-background-3 text-foreground no-underline hover:bg-primary transition-colors') do
-            plain label
-          end
-        end
-      end
+    items = SORT_OPTIONS.map do |value|
+      {
+        label: t("directory.partners.index.sort.#{value}"),
+        href: "#{partners_path}?#{current_filter_params.merge('sort' => value).to_query}",
+        active: @sort == value
+      }
     end
+    Directory::ToggleTabs(items: items, aria_label: t('directory.aria.sort_order'))
   end
 
   def render_partner_list
@@ -94,12 +91,11 @@ class Views::Directory::Partners::Index < Views::Base
 
     return unless partner_list.none?
 
-    div(class: 'py-10 text-center') do
-      p(class: 'text-tertiary text-lg') { t('directory.partners.index.empty') }
-      a(href: partners_path, class: 'inline-flex items-center gap-2 mt-3 text-foreground font-bold no-underline hover:underline') do
-        plain t('directory.partners.index.clear')
-      end
-    end
+    Directory::EmptyState(
+      message: t('directory.partners.index.empty'),
+      link_text: t('directory.partners.index.clear'),
+      link_href: partners_path
+    )
   end
 
   def partner_list

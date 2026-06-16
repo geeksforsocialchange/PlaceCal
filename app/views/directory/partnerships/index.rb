@@ -52,14 +52,11 @@ class Views::Directory::Partnerships::Index < Views::Base
   end
 
   def render_empty_state
-    div(class: 'py-10 text-center') do
-      p(class: 'text-tertiary text-lg') { t('directory.partnerships.index.empty') }
-      if @query.present?
-        a(href: partnerships_path, class: 'inline-flex items-center gap-2 mt-3 text-foreground font-bold no-underline hover:underline') do
-          plain t('directory.partnerships.index.clear_search')
-        end
-      end
-    end
+    Directory::EmptyState(
+      message: t('directory.partnerships.index.empty'),
+      link_text: (t('directory.partnerships.index.clear_search') if @query.present?),
+      link_href: (partnerships_path if @query.present?)
+    )
   end
 
   def partnership_list
