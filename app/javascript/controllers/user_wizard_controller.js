@@ -11,6 +11,7 @@ import {
 	showInputSuccess,
 	clearInputStyling,
 	setContinueButtonEnabled,
+	markWizardConnected,
 } from "controllers/mixins/wizard";
 
 /**
@@ -39,6 +40,7 @@ export default class extends Controller {
 		this.checkEmailDebounced = debounce(this.performEmailCheck.bind(this), 400);
 		updateWizardUI(this);
 		this.updateContinueButton();
+		markWizardConnected(this);
 	}
 
 	// Step navigation

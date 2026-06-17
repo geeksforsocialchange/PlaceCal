@@ -12,6 +12,7 @@ import {
 	showInputSuccess,
 	clearInputStyling,
 	setContinueButtonEnabled,
+	markWizardConnected,
 } from "controllers/mixins/wizard";
 
 /**
@@ -62,6 +63,8 @@ export default class extends Controller {
 			this.setupPartnerListener();
 			this.updateContinueButton();
 		}, 100);
+
+		markWizardConnected(this);
 	}
 
 	// Step navigation

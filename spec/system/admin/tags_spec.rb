@@ -41,9 +41,16 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       # Wait for tabs, navigate to Basic Info tab (tab state may be stored from previous tests)
       expect(page).to have_css(".tabs.tabs-lift")
       click_tab("basic")
+      # Wait for the save-bar to connect so its clean/dirty baseline is taken
+      # against the loaded form before we edit it.
+      wait_for_save_bar
       expect(page).to have_field("Name")
 
       fill_in "Name", with: "A new tag name"
+      # Confirm the edit registered (and made the form dirty) before saving;
+      # a Save on a form the controller still reads as pristine submits the
+      # unchanged value.
+      expect(page).to have_field("Name", with: "A new tag name")
       click_button "Save"
 
       assert_has_flash(:success, "Tag was saved successfully")
@@ -106,9 +113,14 @@ RSpec.describe "Admin Tags", :slow, type: :system do
       # Name is on Basic Info tab (default)
       expect(page).to have_css('input[name="tag[name]"][value="AlphaFacility"]')
 
+      # Wait for the save-bar to connect before editing, so its dirty baseline
+      # is taken against the loaded form.
+      wait_for_save_bar
+
       # Change name and description on Basic Info tab
       fill_in "Name", with: "AlphaFacility 2"
       fill_in "Description", with: "The description has changed."
+      expect(page).to have_field("Name", with: "AlphaFacility 2")
       click_button "Save"
 
       assert_has_flash(:success, "Tag was saved successfully")

@@ -11,6 +11,7 @@ import {
 	clearInputError,
 	setContinueButtonEnabled,
 	clearInputStyling,
+	markWizardConnected,
 } from "controllers/mixins/wizard";
 
 /**
@@ -72,6 +73,7 @@ export default class extends Controller {
 		);
 		updateWizardUI(this);
 		this.updateContinueButton();
+		markWizardConnected(this);
 	}
 
 	// Step navigation

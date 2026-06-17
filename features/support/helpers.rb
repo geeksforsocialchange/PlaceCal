@@ -37,6 +37,25 @@ module CucumberHelpers
     JS
   end
 
+  # Wait for the wizard Stimulus controller (partner/calendar/user "new" forms)
+  # to connect. A "Continue"/step click before connect is silently dropped, so
+  # the step transition never happens. Mirrors TabHelpers#wait_for_form_tabs.
+  def wait_for_wizard
+    expect(page).to have_css("[data-wizard-connected]")
+  end
+
+  # Wait for the form-tabs Stimulus controller (multi-tab edit forms) to connect
+  # before clicking a tab; clicks before connect can be reverted on load.
+  def wait_for_form_tabs
+    expect(page).to have_css("[data-form-tabs-connected]")
+  end
+
+  # Wait for the save-bar Stimulus controller to connect before interacting with
+  # a tracked form, so its clean/dirty baseline is taken against the loaded form.
+  def wait_for_save_bar
+    expect(page).to have_css("[data-save-bar-connected]")
+  end
+
   # Wait for page to settle after JavaScript actions
   def wait_for_page_load
     Timeout.timeout(Capybara.default_max_wait_time) do
