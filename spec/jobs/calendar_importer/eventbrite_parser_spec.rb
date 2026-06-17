@@ -52,8 +52,11 @@ RSpec.describe CalendarImporter::Parsers::Eventbrite do
           .tap { |c| allow(c).to receive(:check_source_reachable) }
       end
       let(:parser) { described_class.new(calendar, url: os_event_url) }
+      let(:max_retries) { CalendarImporter::Parsers::Base::HTTP_MAX_RETRIES }
 
-      before { allow(parser).to receive(:sleep) } # don't actually back off in tests
+      # Backoff sleeps happen inside Base.with_http_retries — stub there so the
+      # tests don't actually wait.
+      before { allow(CalendarImporter::Parsers::Base).to receive(:sleep) }
 
       it "retries the organiser listing and degrades to an empty result when it keeps failing" do
         allow(EventbriteSDK::Organizer).to receive(:retrieve)
@@ -62,9 +65,9 @@ RSpec.describe CalendarImporter::Parsers::Eventbrite do
         # An ongoing Eventbrite outage must not crash the import (which would
         # flag the calendar as errored and wipe nothing) — it returns [].
         expect(parser.download_calendar).to eq([])
-        expect(parser).to have_received(:sleep).exactly(described_class::MAX_RETRIES).times
+        expect(CalendarImporter::Parsers::Base).to have_received(:sleep).exactly(max_retries).times
         expect(EventbriteSDK::Organizer).to have_received(:retrieve)
-          .exactly(described_class::MAX_RETRIES + 1).times
+          .exactly(max_retries + 1).times
       end
 
       it "treats a raw 429 from the listing endpoint as transient too" do
@@ -73,7 +76,7 @@ RSpec.describe CalendarImporter::Parsers::Eventbrite do
 
         expect(parser.download_calendar).to eq([])
         expect(EventbriteSDK::Organizer).to have_received(:retrieve)
-          .exactly(described_class::MAX_RETRIES + 1).times
+          .exactly(max_retries + 1).times
       end
 
       it "does not retry or swallow non-transient errors" do
@@ -81,7 +84,7 @@ RSpec.describe CalendarImporter::Parsers::Eventbrite do
           .and_raise(RestClient::Unauthorized)
 
         expect { parser.download_calendar }.to raise_error(RestClient::Unauthorized)
-        expect(parser).not_to have_received(:sleep)
+        expect(CalendarImporter::Parsers::Base).not_to have_received(:sleep)
       end
 
       describe "#fetch_event_description" do
@@ -90,7 +93,7 @@ RSpec.describe CalendarImporter::Parsers::Eventbrite do
 
           expect(parser.fetch_event_description("123")).to be_nil
           expect(parser).to have_received(:get_event_description)
-            .exactly(described_class::MAX_RETRIES + 1).times
+            .exactly(max_retries + 1).times
         end
 
         it "retries and returns the description once Eventbrite recovers" do
