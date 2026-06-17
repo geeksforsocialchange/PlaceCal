@@ -43,7 +43,15 @@ module CalendarImporter
         }
         headers['User-Agent'] = user_agent if user_agent
 
-        response = HTTParty.get(url, headers: headers)
+        # Retry transient rate-limit/5xx responses with backoff before treating
+        # them as a hard error; the mapping below only fires once retries are
+        # exhausted.
+        response = Base.with_http_retries(
+          "#{self.class::NAME} API request",
+          retry_if: ->(r) { TRANSIENT_HTTP_STATUSES.include?(r.code) }
+        ) do
+          HTTParty.get(url, headers: headers)
+        end
 
         unless response.success?
           case response.code

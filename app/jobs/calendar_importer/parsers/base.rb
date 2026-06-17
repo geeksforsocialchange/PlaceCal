@@ -12,6 +12,18 @@ module CalendarImporter::Parsers
     NAME = ''
     KEY = ''
 
+    # Third-party event sources intermittently return rate-limit (429) and
+    # server-error (5xx) responses. These are transient upstream failures, not
+    # problems with our request, so they're worth retrying with backoff before
+    # giving up (see AppSignal incidents #311/#331 for the Eventbrite case that
+    # motivated this). 408 Request Timeout is included as a transient network
+    # hiccup. This is the HTTParty (status-code) view of "transient"; the
+    # RestClient/SDK exception-class equivalent is Eventbrite::TRANSIENT_HTTP_ERRORS
+    # — keep the two in sync when adding a status.
+    TRANSIENT_HTTP_STATUSES = [408, 429, 500, 502, 503, 504].freeze
+    HTTP_MAX_RETRIES = 3
+    HTTP_RETRY_BACKOFF = 2 # seconds, multiplied by the attempt number
+
     def self.requires_api_token?
       false
     end
@@ -43,6 +55,48 @@ module CalendarImporter::Parsers
     def self.handles_url?(calendar)
       calendar.source =~ allowlist_pattern
     end
+
+    # Run a block, retrying transient HTTP failures with a linear backoff before
+    # giving up. Two retry triggers are supported so this works across the
+    # different HTTP clients the parsers use:
+    #
+    #   retry_on: a list of exception classes to retry (e.g. RestClient's typed
+    #             5xx/429 errors, raised by the Eventbrite SDK).
+    #   retry_if: a predicate on the block's return value (e.g. an HTTParty
+    #             response whose .code is a transient status).
+    #
+    # Once retries are exhausted the last exception is re-raised (or the last
+    # result returned) so the caller decides how to degrade.
+    def self.with_http_retries(context, retry_on: [], retry_if: nil, max_retries: HTTP_MAX_RETRIES)
+      attempt = 0
+
+      loop do
+        result =
+          begin
+            yield
+          rescue *retry_on => e
+            attempt += 1
+            raise if attempt > max_retries
+
+            log_http_retry(context, attempt, max_retries, "#{e.class} (#{e.message})")
+            sleep(HTTP_RETRY_BACKOFF * attempt)
+            next
+          end
+
+        return result unless retry_if && attempt < max_retries && retry_if.call(result)
+
+        attempt += 1
+        log_http_retry(context, attempt, max_retries, 'transient response')
+        sleep(HTTP_RETRY_BACKOFF * attempt)
+      end
+    end
+
+    def self.log_http_retry(context, attempt, max_retries, reason)
+      Rails.logger.warn(
+        "#{context}: transient HTTP failure (#{reason}), retry #{attempt}/#{max_retries}"
+      )
+    end
+    private_class_method :log_http_retry
 
     def initialize(calendar, options = {})
       @calendar = calendar
@@ -99,7 +153,12 @@ module CalendarImporter::Parsers
 
       # User-Agent is currently set to make Resident Advisor happy, but this is also more "honest".
       # It may be this method needs per-vendor headers
-      response = HTTParty.get(url, follow_redirects: follow_redirects, headers: { 'User-Agent': 'Httparty' })
+      response = with_http_retries(
+        "Fetching #{url}",
+        retry_if: ->(r) { TRANSIENT_HTTP_STATUSES.include?(r.code) }
+      ) do
+        HTTParty.get(url, follow_redirects: follow_redirects, headers: { 'User-Agent': 'Httparty' })
+      end
       return response.body if response.success?
 
       msg = case response.code
