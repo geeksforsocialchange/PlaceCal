@@ -17,7 +17,9 @@ module CalendarImporter::Parsers
     # problems with our request, so they're worth retrying with backoff before
     # giving up (see AppSignal incidents #311/#331 for the Eventbrite case that
     # motivated this). 408 Request Timeout is included as a transient network
-    # hiccup.
+    # hiccup. This is the HTTParty (status-code) view of "transient"; the
+    # RestClient/SDK exception-class equivalent is Eventbrite::TRANSIENT_HTTP_ERRORS
+    # — keep the two in sync when adding a status.
     TRANSIENT_HTTP_STATUSES = [408, 429, 500, 502, 503, 504].freeze
     HTTP_MAX_RETRIES = 3
     HTTP_RETRY_BACKOFF = 2 # seconds, multiplied by the attempt number

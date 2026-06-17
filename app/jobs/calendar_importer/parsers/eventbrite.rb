@@ -17,7 +17,9 @@ module CalendarImporter::Parsers
     # exception classes to retry. The SDK wraps RestClient::InternalServerError
     # as its own class for the list endpoint; 429/502/503/504 from the SDK
     # propagate as raw RestClient errors, and the description endpoint uses
-    # RestClient directly. See AppSignal incidents #311/#331.
+    # RestClient directly. See AppSignal incidents #311/#331. This is the
+    # exception-class mirror of Base::TRANSIENT_HTTP_STATUSES — keep the two in
+    # sync when adding a transient case.
     TRANSIENT_HTTP_ERRORS = [
       EventbriteSDK::InternalServerError, # 500, wrapped by the SDK
       RestClient::InternalServerError,    # 500
@@ -80,12 +82,21 @@ module CalendarImporter::Parsers
     # failures. The description is supplementary, so a failed fetch for one
     # event must not lose the whole calendar — import the event without it.
     def fetch_event_description(event_id)
+      # Circuit breaker: once a description fetch has exhausted its retries the
+      # endpoint is likely down, so skip the rest for this run. Without this a
+      # large calendar would pay (event count × backoff) seconds during an
+      # outage and could exceed the worker's max_run_time — and the description
+      # endpoint is exactly what fails in incidents #311/#200.
+      return if @skip_descriptions
+
       Base.with_http_retries("Eventbrite event #{event_id} description", retry_on: TRANSIENT_HTTP_ERRORS) do
         get_event_description(EventbriteSDK.token, event_id)
       end
     rescue *TRANSIENT_HTTP_ERRORS => e
+      @skip_descriptions = true
       Rails.logger.warn(
-        "Eventbrite description fetch failed for event #{event_id}: #{e.class} (#{e.message})"
+        "Eventbrite description fetch failed for event #{event_id} (#{e.class}: #{e.message}); " \
+        'skipping descriptions for the rest of this import'
       )
       nil
     end

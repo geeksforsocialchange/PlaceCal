@@ -107,6 +107,19 @@ RSpec.describe CalendarImporter::Parsers::Eventbrite do
 
           expect(parser.fetch_event_description("123")).to eq("<p>recovered</p>")
           expect(call_count).to eq(2)
+          # one failure -> one backoff before the successful retry
+          expect(CalendarImporter::Parsers::Base).to have_received(:sleep).once
+        end
+
+        it "stops attempting descriptions for the rest of the run after one fails (circuit breaker)" do
+          allow(parser).to receive(:get_event_description).and_raise(RestClient::InternalServerError)
+
+          expect(parser.fetch_event_description("1")).to be_nil
+          expect(parser.fetch_event_description("2")).to be_nil
+
+          # Only the first event exhausts its retries; the second short-circuits
+          # with no further HTTP calls, bounding total backoff per import run.
+          expect(parser).to have_received(:get_event_description).exactly(max_retries + 1).times
         end
       end
     end
