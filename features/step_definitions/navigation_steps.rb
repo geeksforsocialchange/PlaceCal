@@ -161,6 +161,10 @@ When("I go to the {string} step") do |step_name|
   tab_hash = tab_hashes[step_name.downcase]
   raise "Unknown step: #{step_name}" unless tab_hash
 
+  # Wait for the form-tabs controller to connect; a tab click before connect can
+  # be reverted on load, leaving the panel hidden.
+  wait_for_form_tabs
+
   # Find and click the tab by data-hash attribute (more reliable than emoji aria-labels)
   tab = page.find("input.tab[data-hash='#{tab_hash}']")
 
@@ -199,6 +203,9 @@ When("I click the {string} tab") do |tab_name|
     "Preview" => "preview"
   }
 
+  # Wait for the form-tabs controller to connect before clicking.
+  wait_for_form_tabs
+
   # Try data-hash first, fall back to aria-label match
   tab_hash = tab_hashes[tab_name]
   tab = if tab_hash
@@ -225,6 +232,9 @@ When("I go to form step {int}") do |step_number|
   tab_hashes = %w[basic location contact tags admins]
   tab_hash = tab_hashes[step_number - 1]
   raise "Invalid step number: #{step_number}" unless tab_hash
+
+  # Wait for the form-tabs controller to connect before clicking.
+  wait_for_form_tabs
 
   tab = page.find("input.tab[data-hash='#{tab_hash}']")
   # Handle unsaved changes confirmation if it appears

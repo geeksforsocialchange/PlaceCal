@@ -48,6 +48,17 @@ export const wizardValues = {
 };
 
 /**
+ * Mark the wizard as connected for tests. A "Continue"/step click before the
+ * controller connects is silently dropped (no Stimulus action listener yet),
+ * so the step transition never happens. Specs wait for this marker before
+ * interacting, mirroring the form-tabs/save-bar connected markers.
+ * @param {Controller} controller - Stimulus controller
+ */
+export function markWizardConnected(controller) {
+	controller.element.dataset.wizardConnected = "true";
+}
+
+/**
  * Common Stimulus targets for wizard controllers
  */
 export const wizardTargets = [
