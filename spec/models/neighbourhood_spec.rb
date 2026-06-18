@@ -115,6 +115,28 @@ RSpec.describe Neighbourhood, type: :model do
     end
   end
 
+  describe "#contextual_fullname" do
+    let(:ward) { create(:riverside_ward, name_abbr: "Rvrsde") }
+
+    it "includes parent name and unit type" do
+      # NOTE: parent_name is set on update via callback
+      ward.update!(parent_name: ward.parent.name)
+      expect(ward.contextual_fullname).to include("Riverside")
+      expect(ward.contextual_fullname).to include("Ward")
+    end
+
+    it "uses the full name rather than the abbreviation" do
+      ward.update!(parent_name: ward.parent.name)
+      expect(ward.contextual_fullname).to include(ward.name)
+      expect(ward.contextual_fullname).not_to include("Rvrsde")
+    end
+
+    it "falls back to the unit when there is no parent" do
+      neighbourhood = build(:neighbourhood, name: "Full Name", name_abbr: "Abbr", unit: "ward", parent_name: nil)
+      expect(neighbourhood.contextual_fullname).to eq("Full Name (Ward)")
+    end
+  end
+
   describe "#legacy_neighbourhood?" do
     it "returns true for neighbourhoods with old release dates" do
       neighbourhood = build(:neighbourhood, release_date: DateTime.new(2020, 1))
