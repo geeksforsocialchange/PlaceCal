@@ -107,7 +107,7 @@ group :test do
   gem 'pundit-matchers', '~> 4.0' # Policy spec matchers
   gem 'rspec-rails', '~> 8.0'     # Test framework
   gem 'selenium-webdriver'        # Browser driver for system tests
-  gem 'shoulda-matchers', '~> 7.0' # Model/controller matchers
+  gem 'shoulda-matchers', '~> 8.0' # Model/controller matchers
   gem 'simplecov', require: false # Code coverage
   gem 'timecop'                   # Time travel in tests
   gem 'vcr'                       # Record/replay HTTP interactions
