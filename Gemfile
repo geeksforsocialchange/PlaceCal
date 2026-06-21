@@ -72,15 +72,18 @@ group :development, :test do
 end
 
 group :development do
+  gem 'annotaterb'                # Annotate models/specs with schema (run: annotaterb models)
   gem 'better_errors'             # Better error pages
   gem 'binding_of_caller'         # REPL in error pages
   gem 'brakeman', '~> 8.0'        # Static security analysis
+  gem 'bullet'                    # Detect N+1 queries and missing eager loading
   gem 'database_consistency', require: false # Schema validation
   gem 'foreman'                   # Process manager (Procfile.dev)
   gem 'graphiql-rails'            # GraphQL IDE at /graphiql
   gem 'letter_opener'             # Preview emails in browser
   gem 'listen'                    # File-watching for Lookbook live reload
   gem 'lookbook', '>= 2.3.14'    # Component preview UI (Storybook for Rails)
+  gem 'rack-mini-profiler'        # In-page performance profiler (?pp=help in dev)
   gem 'rails-erd'                 # Entity-relationship diagrams
   gem 'rdoc'                      # Documentation generator
   gem 'rubocop', '1.87.0', require: false

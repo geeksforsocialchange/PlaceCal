@@ -63,6 +63,13 @@ safe for our data volume. Config: `config/initializers/strong_migrations.rb`.
 - Consider database views for complex queries
 - Implement efficient bulk operations
 - Monitor slow queries
+- **Watch `bullet`** — it flags N+1 queries and missing eager loading in
+  development (logs + an in-page footer). When it warns, add the missing
+  `includes`/`preload`; don't ignore it.
+- Models/specs carry **schema annotations** via `annotaterb`; run
+  `bundle exec annotaterb models` after a migration (the `lib/tasks/annotate_rb.rake`
+  hook also annotates on `db:migrate`) so the schema is visible at the top/bottom
+  of each model.
 
 ## Code Examples You Follow
 
