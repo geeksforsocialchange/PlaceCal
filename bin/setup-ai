@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Install PlaceCal's vendored Claude Code plugins (agents + a skill) into the
-# local, gitignored .claude/ directory by symlinking them from their tracked
-# source of truth in doc/ai/plugins/. Idempotent — safe to re-run.
+# Install PlaceCal's AI assistant tooling into the local, gitignored .claude/
+# directory: symlink the vendored plugins (an agent + a skill) from their tracked
+# source of truth in doc/ai/plugins/, and register the RuboCop auto-correct
+# PostToolUse hook in .claude/settings.json. Idempotent — safe to re-run.
 #
-# The plugins themselves are documented in doc/ai/plugins/README.md.
+# The plugins are documented in doc/ai/plugins/README.md; the hook in
+# doc/ai/hooks/.
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SRC="$ROOT/doc/ai/plugins"

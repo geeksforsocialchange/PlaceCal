@@ -76,5 +76,5 @@ The `phlex` and `phlex-rails` gems include built-in ruby-lsp addons that index:
 ## Troubleshooting
 
 - **Restart ruby-lsp** after changing the Gemfile (VS Code: `Cmd+Shift+P` → "Ruby LSP: Restart")
-- **Warnings about missing gems** (e.g. `claude-on-rails`) are harmless — those are optional gems not installed locally
+- **Warnings about missing gems** are harmless — optional or platform-specific gems that aren't installed in your environment
 - **Addons not loading**: Check `ruby-lsp` output for addon discovery errors

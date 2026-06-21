@@ -255,7 +255,7 @@ Two layers, both tracked in the repo as plain markdown:
 bin/setup-ai
 ```
 
-This symlinks the plugins from `doc/ai/plugins/` into your local (gitignored) `.claude/` so Claude Code picks them up. It's idempotent — re-run it any time. No gems are installed; the AI tooling is now pure markdown + scripts.
+This symlinks the plugins from `doc/ai/plugins/` into your local (gitignored) `.claude/` and registers the RuboCop auto-correct hook in `.claude/settings.json` (your `settings.local.json` is left untouched). It's idempotent — re-run it any time. No gems are installed by this script; the assistant tooling is plain markdown + scripts.
 
 ### Disabling
 
