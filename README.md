@@ -242,33 +242,26 @@ PlaceCal includes optional support for AI coding assistants. We're tool-agnostic
 
 **Note:** This is a legacy codebase with significant tech debt. AI assistants can help navigate and improve it, but expect some rough edges.
 
+### What's Included
+
+Two layers, both tracked in the repo as plain markdown:
+
+- **Context** — `AGENTS.md` and `doc/ai/` (`context.md` plus per-domain guidance in `doc/ai/prompts/`). Loaded automatically by Claude Code / Cursor; point other assistants at `AGENTS.md` and `doc/ai/context.md`.
+- **Plugins** — `doc/ai/plugins/` holds vendored, PlaceCal-adapted Claude Code plugins (a `better-stimulus` agent and a `rails-hotwire-driver` skill for verifying changes against the running dev server). See `doc/ai/plugins/README.md`.
+
 ### Setup
 
 ```sh
 bin/setup-ai
 ```
 
-This enables the optional `:ai` gem group and installs dependencies.
-
-### What's Included
-
-- `AGENTS.md` - Context file for AI assistants
-- `doc/ai/` - Agent configuration and prompts
-- `agents-swarm.yml` - Multi-agent swarm configuration
-
-### Using with Different Tools
-
-The configuration is designed to be adaptable:
-
-- **Claude Code / Cursor**: Uses `AGENTS.md` for context automatically
-- **Other assistants**: Point them at `AGENTS.md` and `doc/ai/context.md`
-- **Swarm-based tools**: Use `agents-swarm.yml` for multi-agent setups
+This symlinks the plugins from `doc/ai/plugins/` into your local (gitignored) `.claude/` so Claude Code picks them up. It's idempotent — re-run it any time. No gems are installed; the AI tooling is now pure markdown + scripts.
 
 ### Disabling
 
 ```sh
-bundle config unset --local with
-bundle install
+rm -f .claude/agents/better-stimulus.md
+rm -f .claude/skills/rails-hotwire-driver
 ```
 
 ## Donations

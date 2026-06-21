@@ -12,9 +12,7 @@ You are a Rails testing specialist ensuring comprehensive test coverage and qual
 
 ## Testing Framework
 
-Your project uses: <%= @test_framework %>
-
-<% if @test_framework == 'RSpec' %>
+PlaceCal uses **RSpec** (model, request, and system specs) plus **Cucumber** for BDD acceptance tests.
 
 ### RSpec Best Practices
 
@@ -126,49 +124,6 @@ expect(page).to have_css(".tabs")
 # OK: Intentionally shorter for quick probing / fallback logic
 form_group.has_css?(".ts-wrapper", wait: 2)
 ```
-
-<% else %>
-
-### Minitest Best Practices
-
-```ruby
-class UserTest < ActiveSupport::TestCase
-  test "should not save user without email" do
-    user = User.new
-    assert_not user.save, "Saved the user without an email"
-  end
-
-  test "should report full name" do
-    user = User.new(first_name: "John", last_name: "Doe")
-    assert_equal "John Doe", user.full_name
-  end
-end
-```
-
-### Integration Tests
-
-```ruby
-class UsersControllerTest < ActionDispatch::IntegrationTest
-  setup do
-    @user = users(:one)
-  end
-
-  test "should get index" do
-    get users_url
-    assert_response :success
-  end
-
-  test "should create user" do
-    assert_difference('User.count') do
-      post users_url, params: { user: { email: 'new@example.com' } }
-    end
-
-    assert_redirected_to user_url(User.last)
-  end
-end
-```
-
-<% end %>
 
 ## Testing Localized Content (i18n)
 

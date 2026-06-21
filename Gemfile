@@ -113,8 +113,3 @@ group :test do
   gem 'vcr'                       # Record/replay HTTP interactions
   gem 'webmock'                   # Stub HTTP requests (used by VCR)
 end
-
-# Run `bin/setup-ai` to enable, or manually: bundle config set --local with ai && bundle install
-group :ai, optional: true do
-  gem 'claude-on-rails'
-end

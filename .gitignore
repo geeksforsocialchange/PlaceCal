@@ -78,3 +78,5 @@ spec/examples.txt
 
 # User local files
 .local/
+# rails-hotwire-driver session jar (runtime)
+.hotwire/
