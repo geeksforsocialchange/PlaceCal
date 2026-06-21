@@ -11,9 +11,6 @@
 # pushing.
 CI.run do
   step 'Style: JS/CSS format', 'bin/yarn run format:check'
-  # Use `bundle exec rubocop` (not bin/rubocop): the bin/rubocop binstub forces
-  # --config .rubocop.yml, which breaks inherit_from of .rubocop_todo.yml and
-  # surfaces thousands of grandfathered offenses. This matches CI.
   step 'Style: Ruby', 'bundle exec rubocop'
 
   step 'Security: Brakeman', 'bundle exec brakeman --no-pager'
