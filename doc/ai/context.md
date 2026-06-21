@@ -4,11 +4,13 @@ This project optionally supports AI coding assistants with specialized agents fo
 
 ## Project Information
 
-- **Rails Version**: 8.x
-- **Ruby Version**: 4.0.1
+_Exact versions live in `Gemfile` / `Gemfile.lock` / `.ruby-version` — the source of truth. This list is for orientation; don't pin versions here, they drift._
+
+- **Rails**: 8
+- **Ruby**: see `.ruby-version`
 - **Project Type**: Full-stack Rails
-- **Component Framework**: Phlex 2.x (with Literal typed props)
-- **Test Framework**: RSpec
+- **Component Framework**: Phlex (with Literal typed props)
+- **Test Framework**: RSpec (+ Cucumber)
 - **GraphQL**: Enabled
 - **Turbo/Stimulus**: Enabled
 
@@ -54,7 +56,7 @@ Pass localized strings via data attributes from Rails — never hardcode in JS.
 
 ### Specialist prompt files
 
-Detailed per-domain rules live in `doc/ai/prompts/`. These are loaded automatically in swarm mode but should be consulted when working in a specific area:
+Detailed per-domain rules live in `doc/ai/prompts/`. Consult the relevant one when working in a specific area:
 
 - `views.md` — Phlex components, i18n patterns, accessibility
 - `controllers.md` — Strong params, response handling, i18n
@@ -62,6 +64,26 @@ Detailed per-domain rules live in `doc/ai/prompts/`. These are loaded automatica
 - `stimulus.md` — JS controllers, data attributes for i18n
 - `models.md` — AR patterns, migrations, validations
 - `graphql.md` — Schema design, resolvers, authorization
+
+### Plugins (capabilities)
+
+`doc/ai/plugins/` holds vendored Claude Code plugins, installed into your local
+`.claude/` by `bin/setup-ai`. See `doc/ai/plugins/README.md`.
+
+- **`better-stimulus`** (agent) — StimulusJS best practices for our native-JS /
+  importmap setup. Use when writing or reviewing a Stimulus controller.
+- **`rails-hotwire-driver`** (skill) — drive the running dev server from the
+  terminal to **verify a change actually works** before claiming it does (see the
+  Verification Rules in `CLAUDE.md`). It exercises the server contract
+  (controllers, redirects, Turbo Streams, the SQL/errors in `development.log`)
+  but does **not** run JavaScript. The verify loop: fast server-side assertions
+  via the skill's curl scripts, then for anything JS-dependent (Stimulus, DOM,
+  maps) verify in Claude in Chrome (our `lvh.me` standard), or optionally bridge
+  the logged-in session into a Playwright MCP for a scripted browser.
+- **`rubocop-autocorrect`** (hook) — a `PostToolUse` hook (source in
+  `doc/ai/hooks/`, registered in `.claude/settings.json` by `bin/setup-ai`) that
+  runs `rubocop -A` on every Ruby file the assistant edits and feeds any
+  remaining offenses back to fix. Keeps style automatic — don't hand-fix RuboCop.
 
 ## Asset Pipeline
 

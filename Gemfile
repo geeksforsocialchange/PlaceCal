@@ -63,6 +63,7 @@ gem 'csv'                         # CSV parsing (neighbourhood data imports)
 gem 'enumerize'                   # Enumerated attributes (site theme, badge zoom)
 gem 'invisible_captcha'           # Spam protection on contact form
 gem 'paper_trail'                 # Event version tracking and audit log
+gem 'strong_migrations'           # Catch unsafe migrations before they reach production
 
 group :development, :test do
   gem 'byebug'                    # Debugger
@@ -71,15 +72,18 @@ group :development, :test do
 end
 
 group :development do
+  gem 'annotaterb'                # Annotate models/specs with schema (run: annotaterb models)
   gem 'better_errors'             # Better error pages
   gem 'binding_of_caller'         # REPL in error pages
   gem 'brakeman', '~> 8.0'        # Static security analysis
+  gem 'bullet'                    # Detect N+1 queries and missing eager loading
   gem 'database_consistency', require: false # Schema validation
   gem 'foreman'                   # Process manager (Procfile.dev)
   gem 'graphiql-rails'            # GraphQL IDE at /graphiql
   gem 'letter_opener'             # Preview emails in browser
   gem 'listen'                    # File-watching for Lookbook live reload
   gem 'lookbook', '>= 2.3.14'    # Component preview UI (Storybook for Rails)
+  gem 'rack-mini-profiler'        # In-page performance profiler (?pp=help in dev)
   gem 'rails-erd'                 # Entity-relationship diagrams
   gem 'rdoc'                      # Documentation generator
   gem 'rubocop', '1.87.0', require: false
@@ -109,12 +113,8 @@ group :test do
   gem 'selenium-webdriver'        # Browser driver for system tests
   gem 'shoulda-matchers', '~> 8.0' # Model/controller matchers
   gem 'simplecov', require: false # Code coverage
+  gem 'test-prof'                 # Test suite profiling (factory profiler, FactoryDefault)
   gem 'timecop'                   # Time travel in tests
   gem 'vcr'                       # Record/replay HTTP interactions
   gem 'webmock'                   # Stub HTTP requests (used by VCR)
-end
-
-# Run `bin/setup-ai` to enable, or manually: bundle config set --local with ai && bundle install
-group :ai, optional: true do
-  gem 'claude-on-rails'
 end

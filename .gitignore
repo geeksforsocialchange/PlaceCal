@@ -71,10 +71,10 @@ doc/rdoc
 
 # AI coding assistants (user-specific settings)
 .claude/
-.claude-swarm/
-claude-swarm.log
 spec/examples.txt
 .mcp.json
 
 # User local files
 .local/
+# rails-hotwire-driver session jar (runtime)
+.hotwire/
