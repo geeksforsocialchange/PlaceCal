@@ -1,5 +1,57 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: partners
+#
+#  id                      :bigint           not null, primary key
+#  accessibility_info      :text
+#  accessibility_info_html :string
+#  admin_email             :string
+#  admin_name              :string
+#  booking_info            :text
+#  calendar_email          :string
+#  calendar_name           :string
+#  calendar_phone          :string
+#  can_be_assigned_events  :boolean          default(FALSE), not null
+#  description             :text
+#  description_html        :string
+#  facebook_link           :string
+#  hidden                  :boolean          default(FALSE), not null
+#  hidden_reason           :text
+#  hidden_reason_html      :string
+#  image                   :string
+#  instagram_handle        :string
+#  is_a_place              :boolean          default(FALSE), not null
+#  name                    :string           not null
+#  opening_times           :jsonb
+#  partner_email           :string
+#  partner_name            :string
+#  partner_phone           :string
+#  public_email            :string
+#  public_name             :string
+#  public_phone            :string
+#  slug                    :string
+#  summary                 :string
+#  summary_html            :string
+#  twitter_handle          :string
+#  url                     :string
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
+#  address_id              :bigint
+#  hidden_blame_id         :integer
+#
+# Indexes
+#
+#  index_partners_hidden         (hidden)
+#  index_partners_lower_name_    (lower((name)::text)) UNIQUE
+#  index_partners_on_address_id  (address_id)
+#  index_partners_on_slug        (slug) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (address_id => addresses.id)
+#
 require "rails_helper"
 
 RSpec.describe Partner, type: :model do

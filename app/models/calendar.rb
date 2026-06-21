@@ -1,5 +1,45 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: calendars
+#
+#  id                   :bigint           not null, primary key
+#  api_token            :string
+#  calendar_state       :string           default("idle")
+#  checksum_updated_at  :datetime
+#  critical_error       :text
+#  import_started_at    :datetime
+#  importer_mode        :string           default("auto")
+#  importer_used        :string
+#  is_working           :boolean          default(TRUE), not null
+#  last_checksum        :string
+#  last_import_at       :datetime
+#  name                 :string           not null
+#  notice_count         :integer
+#  notices              :jsonb
+#  public_contact_email :string
+#  public_contact_name  :string
+#  public_contact_phone :string
+#  source               :string           not null
+#  strategy             :string
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#  organiser_id         :bigint           not null
+#  place_id             :bigint
+#
+# Indexes
+#
+#  index_calendars_on_calendar_state  (calendar_state)
+#  index_calendars_on_organiser_id    (organiser_id)
+#  index_calendars_on_place_id        (place_id)
+#  index_calendars_source             (source) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (organiser_id => partners.id)
+#  fk_rails_...  (place_id => partners.id)
+#
 class Calendar < ApplicationRecord
   # ==== Includes / Extends ====
   include ActionView::Helpers::DateHelper

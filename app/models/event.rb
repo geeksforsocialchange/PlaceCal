@@ -1,5 +1,51 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: events
+#
+#  id                       :bigint           not null, primary key
+#  are_spaces_available     :string
+#  description              :text
+#  description_html         :string
+#  dtend                    :datetime
+#  dtstart                  :datetime         not null
+#  footer                   :text
+#  is_active                :boolean          default(TRUE), not null
+#  notices                  :jsonb
+#  publisher_url            :string
+#  raw_location_from_source :text
+#  rrule                    :jsonb
+#  summary                  :text             not null
+#  summary_html             :string
+#  uid                      :string
+#  created_at               :datetime         not null
+#  updated_at               :datetime         not null
+#  address_id               :bigint
+#  calendar_id              :bigint
+#  online_address_id        :bigint
+#  organiser_id             :bigint           not null
+#  place_id                 :bigint
+#
+# Indexes
+#
+#  index_events_address_id                   (address_id)
+#  index_events_calendar_id_dtstart          (calendar_id,dtstart)
+#  index_events_dtstart                      (dtstart)
+#  index_events_on_online_address_id         (online_address_id)
+#  index_events_on_organiser_id_and_dtstart  (organiser_id,dtstart)
+#  index_events_on_place_id                  (place_id)
+#  index_events_uid                          (uid)
+#  index_events_unique_per_calendar          (calendar_id,uid,dtstart,dtend) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (address_id => addresses.id)
+#  fk_rails_...  (calendar_id => calendars.id)
+#  fk_rails_...  (online_address_id => online_addresses.id)
+#  fk_rails_...  (organiser_id => partners.id)
+#  fk_rails_...  (place_id => partners.id)
+#
 class Event < ApplicationRecord
   # ==== Includes / Extends ====
   has_paper_trail ignore: %i[rrule notices]
