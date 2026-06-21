@@ -80,6 +80,10 @@ Detailed per-domain rules live in `doc/ai/prompts/`. Consult the relevant one wh
   via the skill's curl scripts, then for anything JS-dependent (Stimulus, DOM,
   maps) verify in Claude in Chrome (our `lvh.me` standard), or optionally bridge
   the logged-in session into a Playwright MCP for a scripted browser.
+- **`rubocop-autocorrect`** (hook) — a `PostToolUse` hook (source in
+  `doc/ai/hooks/`, registered in `.claude/settings.json` by `bin/setup-ai`) that
+  runs `rubocop -A` on every Ruby file the assistant edits and feeds any
+  remaining offenses back to fix. Keeps style automatic — don't hand-fix RuboCop.
 
 ## Asset Pipeline
 

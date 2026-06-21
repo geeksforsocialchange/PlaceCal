@@ -63,6 +63,7 @@ gem 'csv'                         # CSV parsing (neighbourhood data imports)
 gem 'enumerize'                   # Enumerated attributes (site theme, badge zoom)
 gem 'invisible_captcha'           # Spam protection on contact form
 gem 'paper_trail'                 # Event version tracking and audit log
+gem 'strong_migrations'           # Catch unsafe migrations before they reach production
 
 group :development, :test do
   gem 'byebug'                    # Debugger
@@ -109,6 +110,7 @@ group :test do
   gem 'selenium-webdriver'        # Browser driver for system tests
   gem 'shoulda-matchers', '~> 8.0' # Model/controller matchers
   gem 'simplecov', require: false # Code coverage
+  gem 'test-prof'                 # Test suite profiling (factory profiler, FactoryDefault)
   gem 'timecop'                   # Time travel in tests
   gem 'vcr'                       # Record/replay HTTP interactions
   gem 'webmock'                   # Stub HTTP requests (used by VCR)

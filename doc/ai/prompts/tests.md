@@ -125,6 +125,30 @@ expect(page).to have_css(".tabs")
 form_group.has_css?(".ts-wrapper", wait: 2)
 ```
 
+## Profiling & Speeding Up the Suite
+
+`test-prof` is available for diagnosing slow specs — most slowness is factory
+cascades (one `create` pulling in a tree of associated records). Reach for it
+before adding more `build_stubbed` by hand:
+
+```bash
+FPROF=1 bin/rspec spec/models          # which factories run, and how often
+FPROF=flamegraph bin/rspec             # visual factory flamegraph
+EVENT_PROF=sql.active_record bin/rspec # specs that spend the most time in SQL
+TAG_PROF=type bin/rspec                # time grouped by spec type
+```
+
+When a factory is created many times with the same associations across an
+example, use **FactoryDefault** (wired up in `spec/support/test_prof.rb`) to
+build it once and reuse it:
+
+```ruby
+let(:site) { create_default(:site) }   # later create(:partner) reuses this site
+```
+
+Prefer `build_stubbed` over `create` when a spec doesn't need the record
+persisted, and only create the associations the assertion actually touches.
+
 ## Testing Localized Content (i18n)
 
 When testing UI text, use locale keys rather than hardcoded strings:

@@ -25,6 +25,24 @@ link "$SRC/better-stimulus/agent.md"        "$ROOT/.claude/agents/better-stimulu
 # Skills (whole directory, scripts co-located)
 link "$SRC/rails-hotwire-driver"            "$ROOT/.claude/skills/rails-hotwire-driver"
 
+# Hooks: register the RuboCop auto-correct PostToolUse hook in the local
+# .claude/settings.json (merged idempotently; settings.local.json is untouched).
+HOOK="$ROOT/doc/ai/hooks/rubocop-autocorrect.sh"
+SETTINGS="$ROOT/.claude/settings.json"
+ruby -rjson -e '
+  settings_path, hook = ARGV
+  settings = File.exist?(settings_path) ? JSON.parse(File.read(settings_path)) : {}
+  hooks = (settings["hooks"] ||= {})
+  post  = (hooks["PostToolUse"] ||= [])
+  already = post.any? { |e| Array(e["hooks"]).any? { |h| h["command"] == hook } }
+  unless already
+    post << { "matcher" => "Write|Edit|MultiEdit",
+              "hooks" => [{ "type" => "command", "command" => hook }] }
+    File.write(settings_path, JSON.pretty_generate(settings) + "\n")
+  end
+' "$SETTINGS" "$HOOK"
+echo "  hook   rubocop-autocorrect -> .claude/settings.json (PostToolUse)"
+
 cat <<'EOF'
 
 AI tooling installed successfully!
@@ -32,6 +50,7 @@ AI tooling installed successfully!
 What you get (see doc/ai/plugins/README.md):
   - better-stimulus       agent  — StimulusJS best practices
   - rails-hotwire-driver  skill  — drive the running dev server to verify changes
+  - rubocop-autocorrect   hook   — auto-fixes RuboCop after every Ruby edit
 
 Context for assistants stays in:
   - AGENTS.md / doc/ai/context.md  — project conventions
@@ -40,7 +59,8 @@ Context for assistants stays in:
 Edit the plugins in doc/ai/plugins/ (the symlinks point back there); re-run
 this script if the links go stale.
 
-To remove the local links later:
+To remove later:
   rm -f .claude/agents/better-stimulus.md
   rm -f .claude/skills/rails-hotwire-driver
+  # and delete the rubocop-autocorrect PostToolUse entry from .claude/settings.json
 EOF

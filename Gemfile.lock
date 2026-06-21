@@ -700,12 +700,15 @@ GEM
       prism
       require-hooks (~> 0.2)
     stringio (3.2.0)
+    strong_migrations (2.8.0)
+      activerecord (>= 7.2)
     strscan (3.1.8)
     sys-uname (1.5.1)
       ffi (~> 1.1)
       memoist3 (~> 1.0.0)
     terminal-table (4.0.0)
       unicode-display_width (>= 1.1.1, < 4)
+    test-prof (1.6.1)
     thor (1.5.0)
     thread_safe (0.3.6)
     timecop (0.9.11)
@@ -838,6 +841,8 @@ DEPENDENCIES
   spring
   stimulus-rails
   strict_ivars
+  strong_migrations
+  test-prof
   timecop
   turbo-rails
   uk_postcode
