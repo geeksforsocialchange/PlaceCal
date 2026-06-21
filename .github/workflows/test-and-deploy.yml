@@ -23,6 +23,11 @@ on:
 permissions:
   contents: read
 
+# These lint / security / test jobs mirror config/ci.rb, which devs can run
+# locally in one shot with `bin/ci` (Rails 8.1 ActiveSupport::ContinuousIntegration).
+# Keep the two in sync — a check added here should be added there, and vice
+# versa. CI keeps the jobs split and the test suite parallelised for speed;
+# bin/ci runs the same steps sequentially.
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -57,6 +62,9 @@ jobs:
 
       - name: Run Brakeman
         run: bundle exec brakeman --no-pager
+
+      - name: Audit JavaScript dependencies (importmap)
+        run: bin/importmap audit
 
   test:
     runs-on: ubuntu-latest
