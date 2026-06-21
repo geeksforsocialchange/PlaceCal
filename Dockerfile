@@ -31,13 +31,25 @@ RUN apt-get update -qq && \
       imagemagick libmagickwand-dev && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-# Install Node.js
+# Install Node.js from the official dist (arch-aware, checksum-verified).
 # renovate: datasource=node-version depName=node
 ARG NODE_VERSION=24.17.0
 ENV PATH=/usr/local/node/bin:$PATH
-RUN curl -sL https://github.com/nodenv/node-build/archive/master.tar.gz | tar xz -C /tmp/ && \
-    /tmp/node-build-master/bin/node-build "${NODE_VERSION}" /usr/local/node && \
-    rm -rf /tmp/node-build-master
+RUN set -eux; \
+    arch="$(dpkg --print-architecture)"; \
+    case "$arch" in \
+      amd64) node_arch="x64" ;; \
+      arm64) node_arch="arm64" ;; \
+      *) echo "Unsupported architecture: $arch" >&2; exit 1 ;; \
+    esac; \
+    tarball="node-v${NODE_VERSION}-linux-${node_arch}.tar.gz"; \
+    curl -fsSLO "https://nodejs.org/dist/v${NODE_VERSION}/${tarball}"; \
+    curl -fsSL "https://nodejs.org/dist/v${NODE_VERSION}/SHASUMS256.txt" \
+      | grep " ${tarball}\$" | sha256sum -c -; \
+    mkdir -p /usr/local/node; \
+    tar -xzf "${tarball}" -C /usr/local/node --strip-components=1 --no-same-owner; \
+    rm "${tarball}"; \
+    node --version; npm --version
 
 # Install yarn
 RUN npm install -g yarn
