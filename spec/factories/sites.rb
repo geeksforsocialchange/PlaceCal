@@ -1,5 +1,44 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: sites
+#
+#  id                :bigint           not null, primary key
+#  badge_zoom_level  :string
+#  description       :text
+#  description_html  :string
+#  events_count      :integer          default(0), not null
+#  footer_logo       :string
+#  hero_alttext      :string
+#  hero_image        :string
+#  hero_image_credit :string
+#  hero_text         :string
+#  is_published      :boolean          default(FALSE), not null
+#  logo              :string
+#  name              :string           not null
+#  partners_count    :integer          default(0), not null
+#  place_name        :string
+#  slug              :string           not null
+#  tagline           :string
+#  theme             :string
+#  url               :string           not null
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  site_admin_id     :bigint
+#
+# Indexes
+#
+#  index_sites_is_published       (is_published)
+#  index_sites_on_events_count    (events_count)
+#  index_sites_on_partners_count  (partners_count)
+#  index_sites_slug               (slug) UNIQUE
+#  index_sites_url                (url)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (site_admin_id => users.id)
+#
 require_relative "../../lib/normal_island"
 
 FactoryBot.define do
