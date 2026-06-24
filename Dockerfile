@@ -33,7 +33,7 @@ RUN apt-get update -qq && \
 
 # Install Node.js from the official dist (arch-aware, checksum-verified).
 # renovate: datasource=node-version depName=node
-ARG NODE_VERSION=24.17.0
+ARG NODE_VERSION=24.18.0
 ENV PATH=/usr/local/node/bin:$PATH
 RUN set -eux; \
     arch="$(dpkg --print-architecture)"; \
