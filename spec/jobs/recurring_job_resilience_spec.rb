@@ -71,11 +71,13 @@ RSpec.describe RecurringWatchdogJob, type: :job do
       allow(Delayed::Job).to receive(:exists?).and_return(true)
       allow(RecurringCalendarScanJob).to receive(:perform_later)
       allow(RecurringMaintenanceJob).to receive(:perform_later)
+      allow(RecurringPartnerDigestJob).to receive(:perform_later)
 
       described_class.perform_now
 
       expect(RecurringCalendarScanJob).not_to have_received(:perform_later)
       expect(RecurringMaintenanceJob).not_to have_received(:perform_later)
+      expect(RecurringPartnerDigestJob).not_to have_received(:perform_later)
     end
 
     it "re-seeds a missing calendar scan job" do
@@ -83,24 +85,30 @@ RSpec.describe RecurringWatchdogJob, type: :job do
         .with(["handler LIKE ?", "%RecurringCalendarScanJob%"]).and_return(false)
       allow(Delayed::Job).to receive(:exists?)
         .with(["handler LIKE ?", "%RecurringMaintenanceJob%"]).and_return(true)
+      allow(Delayed::Job).to receive(:exists?)
+        .with(["handler LIKE ?", "%RecurringPartnerDigestJob%"]).and_return(true)
       allow(RecurringCalendarScanJob).to receive(:perform_later)
       allow(RecurringMaintenanceJob).to receive(:perform_later)
+      allow(RecurringPartnerDigestJob).to receive(:perform_later)
 
       described_class.perform_now
 
       expect(RecurringCalendarScanJob).to have_received(:perform_later)
       expect(RecurringMaintenanceJob).not_to have_received(:perform_later)
+      expect(RecurringPartnerDigestJob).not_to have_received(:perform_later)
     end
 
-    it "re-seeds both jobs when both are missing" do
+    it "re-seeds all jobs when all are missing" do
       allow(Delayed::Job).to receive(:exists?).and_return(false)
       allow(RecurringCalendarScanJob).to receive(:perform_later)
       allow(RecurringMaintenanceJob).to receive(:perform_later)
+      allow(RecurringPartnerDigestJob).to receive(:perform_later)
 
       described_class.perform_now
 
       expect(RecurringCalendarScanJob).to have_received(:perform_later)
       expect(RecurringMaintenanceJob).to have_received(:perform_later)
+      expect(RecurringPartnerDigestJob).to have_received(:perform_later)
     end
   end
 end

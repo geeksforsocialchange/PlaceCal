@@ -2,7 +2,7 @@
 
 module Admin
   class UsersController < Admin::ApplicationController
-    before_action :set_user, only: %i[edit update destroy]
+    before_action :set_user, only: %i[edit update destroy send_login_help]
     before_action :set_user_partners_controller, only: %i[new edit create]
     before_action :validate_partner_relation, only: %i[create]
 
@@ -15,6 +15,7 @@ module Admin
       authorize current_user, :update_profile?
 
       if update_user_profile
+        apply_email_subscriptions
         bypass_sign_in(current_user)
         flash[:success] = 'User profile has been updated'
         redirect_to admin_profile_path
@@ -105,6 +106,23 @@ module Admin
       end
     end
 
+    # Re-sends the Devise invitation (never accepted) or a password reset
+    # (accepted) — existing Devise machinery only, never a parallel flow
+    # (#3256 phase 3, from #2278)
+    def send_login_help
+      authorize @user, :update?
+
+      if @user.created_by_invite? && !@user.invitation_accepted?
+        @user.invite!
+        flash[:success] = t('.invitation_sent', email: @user.email)
+      else
+        @user.send_reset_password_instructions
+        flash[:success] = t('.reset_sent', email: @user.email)
+      end
+
+      redirect_back_or_to(edit_admin_user_path(@user))
+    end
+
     def lookup_email
       authorize User, :new?
 
@@ -151,6 +169,18 @@ module Admin
                                    :current_password,
                                    :phone,
                                    :avatar)
+    end
+
+    def email_subscription_params
+      params.require(:user)[:email_subscriptions]&.permit(*EmailList.keys) || {}
+    end
+
+    def apply_email_subscriptions
+      email_subscription_params.each do |list_key, value|
+        EmailSubscription.set(current_user, list_key,
+                              ActiveModel::Type::Boolean.new.cast(value),
+                              source: :profile_page, actor: current_user)
+      end
     end
 
     def update_user_profile

@@ -66,6 +66,22 @@ class PartnershipDatatable < Datatable
     edit_admin_partnership_path(record)
   end
 
+  # Adds the broadcasts (sent-updates log / compose) link alongside Edit
+  def render_actions(record)
+    <<~HTML.html_safe
+      <div class="flex items-center gap-2">
+        <a href="#{edit_path_for(record)}"
+           class="inline-flex items-center px-2.5 py-1.5 text-xs font-medium rounded text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+          Edit
+        </a>
+        <a href="#{admin_partnership_broadcasts_path(record)}"
+           class="inline-flex items-center px-2.5 py-1.5 text-xs font-medium rounded text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+          #{ERB::Util.html_escape(I18n.t('admin.partnership_broadcasts.index.action_link'))}
+        </a>
+      </div>
+    HTML
+  end
+
   def render_name_cell(record)
     <<~HTML.html_safe
       <div class="flex flex-col">

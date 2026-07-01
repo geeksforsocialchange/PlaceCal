@@ -21,7 +21,8 @@ Rails.application.config.after_initialize do
     next
   end
 
-  [RecurringCalendarScanJob, RecurringMaintenanceJob, RecurringWatchdogJob].each do |job_class|
+  [RecurringCalendarScanJob, RecurringMaintenanceJob, RecurringPartnerDigestJob,
+   RecurringWatchdogJob].each do |job_class|
     unless Delayed::Job.exists?(['handler LIKE ?', "%#{job_class.name}%"])
       job_class.perform_later
       Rails.logger.info("Seeded #{job_class.name}")

@@ -26,6 +26,36 @@ User:
   articles:
     ForeignKeyCascadeChecker:
       enabled: false # Using model-level dependent: :nullify
+  email_subscriptions:
+    ForeignKeyCascadeChecker:
+      enabled: false # Using model-level dependent: :delete_all
+  email_subscription_events:
+    ForeignKeyCascadeChecker:
+      enabled: false # Using model-level dependent: :delete_all
+  authored_email_subscription_events:
+    ForeignKeyCascadeChecker:
+      enabled: false # Using model-level dependent: :nullify
+  info_confirmed_partners:
+    ForeignKeyCascadeChecker:
+      enabled: false # Using model-level dependent: :nullify
+  recorded_partner_consents:
+    ForeignKeyCascadeChecker:
+      enabled: false # Using model-level dependent: :nullify
+  sent_partnership_broadcasts:
+    ForeignKeyCascadeChecker:
+      enabled: false # Using model-level dependent: :nullify
+
+Partner:
+  partner_consents:
+    ForeignKeyCascadeChecker:
+      enabled: false # Using model-level dependent: :delete_all (append-only table)
+
+# Audit trail: old_subscribed is nil when there was no previous record,
+# so the three-state boolean is intentional
+EmailSubscriptionEvent:
+  old_subscribed:
+    ThreeStateBooleanChecker:
+      enabled: false
 
 # Site model - sites_neighbourhood is the join table, not a direct association
 Site:
