@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Views::Homepage::ResourceNotFound < Views::Base
+class Views::Shared::ResourceNotFound < Views::Base
   def view_template
     div(id: 'not_found') do
       h1 { 'Not found' }

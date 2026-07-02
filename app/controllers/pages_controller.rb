@@ -4,15 +4,12 @@ class PagesController < ApplicationController
   before_action :set_primary_neighbourhood, only: [:site]
   before_action :set_site
 
+  # Only ever reached as the nationwide directory: hosts with a Site route to
+  # sites#index (Sites::Local), the admin subdomain has its own root, and the
+  # join subdomain has its own routes/catch-all. The legacy pre-directory
+  # homepage (Views::Homepage::Home) was unreachable and has been deleted.
   def home
-    if directory_request?
-      render_directory_home
-    else
-      @neighbourhoods = Site.published.select do |site|
-        site.tags.none? { |tag| tag.type == 'Partnership' }
-      end
-      render Views::Homepage::Home.new(neighbourhoods: @neighbourhoods)
-    end
+    render_directory_home
   end
 
   def find_placecal

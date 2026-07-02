@@ -7,7 +7,7 @@
 @import "tailwindcss" source(none);
 @import "./public/fonts.css";
 
-@source "../views/{directory,homepage,join,sites,devise}/**/*.rb";
+@source "../views/{directory,homepage,join,sites,shared,devise}/**/*.rb";
 @source "../views/layouts/application.rb";
 @source "../views/base.rb";
 @source "../components/{shared,sites,homepage,directory,join}/**/*.rb";
