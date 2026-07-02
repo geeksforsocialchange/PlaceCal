@@ -4,9 +4,14 @@
 # design system. A narrow (960px) editorial page: hero, the research that
 # started it, three problems, a turning point, the three-part solution, and a
 # call to action. Copy lives under directory.pages.our_story in en.yml.
+#
+# Served on both the directory (/our-story) and the join marketing site,
+# which passes its book-a-demo path as the closing CTA.
 class Views::Directory::OurStory < Views::Base
   T = 'directory.pages.our_story'
   IMAGE_BASE = 'home/our_story'
+
+  prop :cta_path, _Nilable(String), default: nil
 
   # Alternating illustration/text rows — rows 1 & 3 image-left, row 2 image-right.
   PROBLEMS = [
@@ -150,7 +155,7 @@ class Views::Directory::OurStory < Views::Base
           h2(class: 'my-0 font-serif font-regular text-[clamp(1.5rem,3vw,2rem)] leading-[1.1] text-foreground') do
             t("#{T}.cta.heading")
           end
-          link_to get_in_touch_path,
+          link_to @cta_path || get_in_touch_path,
                   class: 'with-no-sass btn-home-outline' do
             plain t("#{T}.cta.button")
             span(aria_hidden: 'true') { safe('→') }

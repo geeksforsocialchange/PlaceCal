@@ -34,8 +34,10 @@ class JoinPagesController < ApplicationController
     render Views::Join::Features.new
   end
 
+  # The directory's Our Story page, reused in the join chrome with the
+  # closing CTA pointed at book-a-demo.
   def our_story
-    render Views::Join::OurStory.new
+    render Views::Directory::OurStory.new(cta_path: join_demo_path)
   end
 
   def pricing

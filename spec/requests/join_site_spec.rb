@@ -44,6 +44,13 @@ RSpec.describe "Join marketing site", type: :request do
       expect(response.body).to include("join.placecal.org")
       expect(response.body).to include("Book a demo")
     end
+
+    it "reuses the directory Our Story page with a join breadcrumb and book-a-demo CTA" do
+      get "http://join.lvh.me/our-story"
+      expect(response.body).to include(CGI.escapeHTML(I18n.t("directory.pages.our_story.hero_title")))
+      expect(response.body).to include(I18n.t("join.breadcrumbs.root"))
+      expect(response.body).to include("/book-a-demo")
+    end
   end
 
   describe "POST /book-a-demo" do

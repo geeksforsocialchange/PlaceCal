@@ -188,21 +188,8 @@ en:
           body: Designed with link workers — 30-second search, one-click referral sheet.
         - title: Multi-site partnerships
           body: One partner can appear on several local PlaceCals without duplicating data.
-    our_story:
-      title: Our story.
-      lede: We wanted to examine the causes of social isolation and loneliness within neighbourhoods in order to figure out how to combat them.
-      research_1: We spoke to over 6,000 people in Manchester and divested over £200,000 in funds directly to community groups.
-      research_2: A key finding was that people who were isolated commonly thought "There's nothing to do in my neighbourhood!". In communities up and down the country, this has led to social isolation and loneliness — and therefore a lack of community resilience.
-      problems_heading: We found three big problems
-      problems:
-        - title: People were not working together
-          body: Every large institution was working on their own community information websites, with different organisations gathering the same data.
-        - title: Current software wasn't working
-          body: Existing community information websites either required community groups to regularly log in, or were maintained on behalf of groups by institutional staff — doubling the work.
-        - title: Tech skills are very low
-          body: Digital exclusion has affected community groups disproportionately, particularly in deprived areas. Groups often don't have the skills or tools needed to promote themselves.
-      fix_heading: We needed to fix all of these together.
-      fix_body: A package of software and training with shared, collective ownership.
+    # Our story is served by the directory's page (Views::Directory::OurStory,
+    # copy under directory.pages.our_story) — no join-specific copy.
     pricing:
       title: Honest pricing.
       lede: We are a not-for-profit co-op. These numbers reflect the real cost of maintaining high-quality community infrastructure — nothing more.
