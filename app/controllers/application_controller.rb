@@ -232,8 +232,9 @@ class ApplicationController < ActionController::Base
     @site = current_site
   end
 
+  # News has no directory-wide index; apex requests bounce to the homepage.
   def redirect_from_directory
-    redirect_to '/find-placecal' if directory_request?
+    redirect_to '/' if directory_request?
   end
 
   def set_navigation

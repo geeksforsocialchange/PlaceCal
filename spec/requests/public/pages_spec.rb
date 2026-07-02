@@ -107,58 +107,31 @@ RSpec.describe "Public Pages", type: :request do
     end
   end
 
+  # The legacy informational pages are deleted (#3163); their URLs 301.
   describe "GET /find-placecal" do
-    it "returns successful response" do
+    it "redirects to the directory homepage" do
       get "/find-placecal", headers: { "Host" => "lvh.me" }
-      expect(response).to be_successful
+      expect(response).to redirect_to("/")
     end
   end
 
-  describe "GET /community-groups" do
-    it "returns successful response" do
+  %w[community-groups vcses housing-providers metropolitan-areas
+     culture-tourism social-prescribers].each do |audience_slug|
+    describe "GET /#{audience_slug}" do
+      it "redirects to the join site when it is enabled" do
+        get "/#{audience_slug}", headers: { "Host" => "lvh.me" }
+        expect(response).to redirect_to("http://join.lvh.me/who-its-for/#{audience_slug}")
+      end
+    end
+  end
+
+  describe "audience pages while the join site is disabled" do
+    it "redirects to get-in-touch" do
+      Rails.application.config.x.join_site_enabled = false
       get "/community-groups", headers: { "Host" => "lvh.me" }
-      expect(response).to be_successful
-    end
-
-    it "includes audience content" do
-      get "/community-groups", headers: { "Host" => "lvh.me" }
-      expect(response.body).to match(/communit/i)
-    end
-  end
-
-  # Audience pages
-  describe "GET /vcses" do
-    it "returns successful response" do
-      get "/vcses", headers: { "Host" => "lvh.me" }
-      expect(response).to be_successful
-    end
-  end
-
-  describe "GET /housing-providers" do
-    it "returns successful response" do
-      get "/housing-providers", headers: { "Host" => "lvh.me" }
-      expect(response).to be_successful
-    end
-  end
-
-  describe "GET /metropolitan-areas" do
-    it "returns successful response" do
-      get "/metropolitan-areas", headers: { "Host" => "lvh.me" }
-      expect(response).to be_successful
-    end
-  end
-
-  describe "GET /culture-tourism" do
-    it "returns successful response" do
-      get "/culture-tourism", headers: { "Host" => "lvh.me" }
-      expect(response).to be_successful
-    end
-  end
-
-  describe "GET /social-prescribers" do
-    it "returns successful response" do
-      get "/social-prescribers", headers: { "Host" => "lvh.me" }
-      expect(response).to be_successful
+      expect(response).to redirect_to("/get-in-touch")
+    ensure
+      Rails.application.config.x.join_site_enabled = true
     end
   end
 

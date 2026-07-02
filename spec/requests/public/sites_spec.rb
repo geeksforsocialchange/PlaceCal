@@ -42,14 +42,23 @@ RSpec.describe "Public Sites", type: :request do
     end
   end
 
-  describe "find placecal page" do
-    it "shows published sites" do
-      # Publish the site so it appears in the list
-      site.update!(is_published: true)
+  describe "legacy informational pages (deleted, #3163)" do
+    it "redirects find-placecal to the directory homepage" do
+      get "http://lvh.me/find-placecal"
+      expect(response).to redirect_to("/")
+    end
 
-      get find_placecal_url(host: "lvh.me")
-      expect(response).to be_successful
-      expect(response.body).to include(site.place_name)
+    it "redirects audience pages to the join site when it is enabled" do
+      get "http://lvh.me/housing-providers"
+      expect(response).to redirect_to("http://join.lvh.me/who-its-for/housing-providers")
+    end
+
+    it "redirects audience pages to get-in-touch while the join site is disabled" do
+      Rails.application.config.x.join_site_enabled = false
+      get "http://lvh.me/housing-providers"
+      expect(response).to redirect_to("/get-in-touch")
+    ensure
+      Rails.application.config.x.join_site_enabled = true
     end
   end
 

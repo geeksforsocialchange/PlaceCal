@@ -161,15 +161,23 @@ Rails.application.routes.draw do
   get '/places/:id/events/:year/:month/:day', to: 'partners#show', constraints: ymd
   get '/places/:id/embed', to: 'places#embed'
 
-  # Deprecated: moving to join.placecal.org
-  get 'find-placecal', to: 'pages#find_placecal'
   get 'our-story', to: 'pages#our_story'
-  get 'community-groups', to: 'pages#community_groups'
-  get 'metropolitan-areas', to: 'pages#metropolitan_areas'
-  get 'vcses', to: 'pages#vcses'
-  get 'housing-providers', to: 'pages#housing_providers'
-  get 'social-prescribers', to: 'pages#social_prescribers'
-  get 'culture-tourism', to: 'pages#culture_tourism'
+
+  # The legacy informational pages are deleted (#3163). Their URLs redirect:
+  # find-placecal's job is done by the directory homepage, and the audience
+  # pitches move to the join site — pointed at get-in-touch until it launches.
+  get 'find-placecal', to: redirect('/')
+  %w[community-groups metropolitan-areas vcses housing-providers
+     social-prescribers culture-tourism].each do |audience_slug|
+    get audience_slug, to: redirect { |_params, request|
+      if Rails.application.config.x.join_site_enabled
+        port = request.optional_port ? ":#{request.optional_port}" : ''
+        "#{request.protocol}join.#{request.domain}#{port}/who-its-for/#{audience_slug}"
+      else
+        '/get-in-touch'
+      end
+    }
+  end
 
   # Deprecated: collections
   resources :collections, only: %i[show]

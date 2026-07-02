@@ -12,16 +12,6 @@ class PagesController < ApplicationController
     render_directory_home
   end
 
-  def find_placecal
-    @neighbourhoods = Site.published.select do |site|
-      site.tags.none? { |tag| tag.type == 'Partnership' }
-    end
-    @partnerships = Site.published.select do |site|
-      site.tags.any? { |tag| tag.type == 'Partnership' }
-    end
-    render Views::Homepage::FindPlacecal.new(neighbourhoods: @neighbourhoods, partnerships: @partnerships)
-  end
-
   def terms_of_use
     render Views::Directory::MarkdownPage.new(
       slug: 'terms_of_use',
@@ -42,30 +32,6 @@ class PagesController < ApplicationController
 
   def our_story
     render Views::Directory::OurStory.new
-  end
-
-  def community_groups
-    render Views::Homepage::CommunityGroups.new
-  end
-
-  def vcses
-    render Views::Homepage::Vcses.new
-  end
-
-  def housing_providers
-    render Views::Homepage::HousingProviders.new
-  end
-
-  def metropolitan_areas
-    render Views::Homepage::MetropolitanAreas.new
-  end
-
-  def social_prescribers
-    render Views::Homepage::SocialPrescribers.new
-  end
-
-  def culture_tourism
-    render Views::Homepage::CultureTourism.new
   end
 
   def robots
