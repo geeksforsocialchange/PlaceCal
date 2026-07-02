@@ -76,8 +76,8 @@ en:
         lede: We work with six kinds of organisation. Each has its own story — pick yours.
       see_pitch: See the pitch
       for_kicker: For %{audience}
-      how_kicker: How it works for you
-      impact_kicker: Proof & impact
+      how_heading: How it works for you
+      impact_heading: Proof & impact
       rollout:
         heading: A four-step rollout
         steps:

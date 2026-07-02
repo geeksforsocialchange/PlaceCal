@@ -41,12 +41,12 @@ class Views::Join::Audience < Views::Join::Base
     section(class: 'py-10') do
       div(class: 'container-public grid lg:grid-cols-[1.4fr_1fr] gap-10 items-start') do
         div do
-          div(class: 'allcaps-label text-tertiary mb-2') { t('join.audiences.how_kicker') }
-          p(class: 'text-base leading-relaxed mt-0 mb-6') { t("#{prefix}.details") }
-          div(class: 'allcaps-label text-tertiary mb-4') { t('join.audiences.impact_kicker') }
+          h2(class: 'font-serif font-regular text-section text-foreground mt-0 mb-3') { t('join.audiences.how_heading') }
+          p(class: 'text-base leading-relaxed mt-0 mb-8') { t("#{prefix}.details") }
+          h2(class: 'font-serif font-regular text-section text-foreground mt-0 mb-4') { t('join.audiences.impact_heading') }
           t("#{prefix}.impact").each do |impact|
             div(class: 'bg-home-background border-2 border-rules rounded-card px-6 py-5 mb-3') do
-              h2(class: 'font-serif font-regular text-card text-foreground m-0 mb-1') { impact[:title] }
+              h3(class: 'font-serif font-regular text-card text-foreground m-0 mb-1') { impact[:title] }
               p(class: 'text-detail text-tertiary leading-relaxed m-0') { impact[:body] }
             end
           end
