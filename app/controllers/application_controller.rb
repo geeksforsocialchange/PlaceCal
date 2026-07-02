@@ -49,7 +49,7 @@ class ApplicationController < ActionController::Base
   end
 
   def resource_not_found
-    render Views::Homepage::ResourceNotFound.new, status: :not_found
+    render Views::Shared::ResourceNotFound.new, status: :not_found
   end
 
   def not_acceptable
@@ -101,6 +101,9 @@ class ApplicationController < ActionController::Base
     # The admin subdomain gives a global view of data.
     return @current_site = nil if request.subdomain == Site::ADMIN_SUBDOMAIN
 
+    # The join marketing site has no Site row either.
+    return @current_site = nil if join_site_request?
+
     @current_site = Site.find_by_request(request)
 
     if @current_site.nil? && request.subdomain.present? &&
@@ -112,9 +115,15 @@ class ApplicationController < ActionController::Base
   end
 
   # @return [Boolean] true when this request is for the nationwide directory:
-  #   the apex (no matched site) outside the admin subdomain.
+  #   the apex (no matched site) outside the admin and join subdomains.
   def directory_request?
-    current_site.nil? && request.subdomain != Site::ADMIN_SUBDOMAIN
+    current_site.nil? && request.subdomain != Site::ADMIN_SUBDOMAIN && !join_site_request?
+  end
+
+  # @return [Boolean] true when this request is for the join marketing site
+  #   (join.placecal.org).
+  def join_site_request?
+    request.subdomain == Site::JOIN_SUBDOMAIN
   end
 
   def set_primary_neighbourhood
@@ -221,8 +230,9 @@ class ApplicationController < ActionController::Base
     @site = current_site
   end
 
+  # News has no directory-wide index; apex requests bounce to the homepage.
   def redirect_from_directory
-    redirect_to '/find-placecal' if directory_request?
+    redirect_to '/' if directory_request?
   end
 
   def set_navigation

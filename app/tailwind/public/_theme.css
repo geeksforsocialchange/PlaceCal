@@ -30,6 +30,12 @@
 	--color-secondary-light: #f4a6a1;
 	/* Deeper salmon for small text / numerals that need contrast on cream */
 	--color-secondary-deep: #e66f67;
+	/* Text on the salmon (--color-secondary) surfaces: --color-foreground only
+	   reaches 3.46:1 there; this darker brown clears WCAG AA at 4.87:1 */
+	--color-secondary-ink: #43392f;
+	/* Coral dark enough for small text on cream (secondary-deep is 2.99:1),
+	   and as a CTA background under cream text — 5.3:1 both ways */
+	--color-secondary-strong: #b5443d;
 	/* Used for top map stripe and navigation in some states */
 	--color-tertiary: #786551;
 	/* Bottom of the double line on the map */
@@ -146,6 +152,8 @@ https://tailwindcss.com/docs/theme#default-theme-variable-reference
 	--color-secondary: var(--color-secondary);
 	--color-secondary-light: var(--color-secondary-light);
 	--color-secondary-deep: var(--color-secondary-deep);
+	--color-secondary-ink: var(--color-secondary-ink);
+	--color-secondary-strong: var(--color-secondary-strong);
 	/* Used for top map stripe and navigation in some states */
 	--color-tertiary: var(--color-tertiary);
 	/* Bottom of the double line on the map */

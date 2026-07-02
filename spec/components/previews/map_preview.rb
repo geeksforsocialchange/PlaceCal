@@ -8,7 +8,7 @@ class MapPreview < Lookbook::Preview
       { lat: 53.4601, lon: -2.2480, name: "Moss Side Leisure Centre", url: "/partners/2" },
       { lat: 53.4650, lon: -2.2530, name: "Zion Arts Centre", url: "/partners/3" }
     ]
-    render Components::Map.new(points: points, site: nil)
+    render Components::Shared::Map.new(points: points, site: nil)
   end
 
   # @label Single point
@@ -16,11 +16,11 @@ class MapPreview < Lookbook::Preview
     points = [
       { lat: 53.4631, lon: -2.2496, name: "Hulme Community Garden", url: "/partners/1" }
     ]
-    render Components::Map.new(points: points, site: nil)
+    render Components::Shared::Map.new(points: points, site: nil)
   end
 
   # @label Empty (no points)
   def empty
-    render Components::Map.new(points: [], site: nil)
+    render Components::Shared::Map.new(points: [], site: nil)
   end
 end

@@ -14,6 +14,12 @@ module SystemHelpers
     "http://lvh.me:#{port}#{path}"
   end
 
+  # Build a URL for the join marketing site with the current test server port
+  def join_url(path)
+    port = Capybara.current_session.server.port
+    "http://join.lvh.me:#{port}#{path}"
+  end
+
   # Named sign_in_as to avoid collision with Warden::Test::Helpers#login_as.
   # Waits for the post-login page to load before returning, preventing race
   # conditions where the next `visit` fires before authentication completes.

@@ -18,10 +18,6 @@ class Views::Layouts::Application < Phlex::HTML
         csrf_meta_tags
         stylesheet_link_tag 'application', media: 'all', 'data-turbo-track': 'reload'
         stylesheet_link_tag 'public_tailwind', media: 'all', 'data-turbo-track': 'reload'
-        # Legacy informational homepage pages (Views::Homepage::*) opt into the
-        # home.scss bundle. Scoped via content_for so the nationwide directory
-        # pages (which share the nil-site layout) don't inherit its body styling.
-        stylesheet_link_tag 'home', media: 'all', 'data-turbo-track': 'reload' if content_for?(:home_styles)
         stylesheet_link_tag site.stylesheet_link, media: 'all', 'data-turbo-track': 'reload' if site&.stylesheet_link
         stylesheet_link_tag 'print', media: 'print', 'data-turbo-track': 'reload'
         preload_font('rawline/rawline-500.woff2')
@@ -37,8 +33,6 @@ class Views::Layouts::Application < Phlex::HTML
       end
 
       # app/assets/stylesheets/base/layout.scss
-      # app/assets/stylesheets/home/_layout.scss
-      # app/assets/stylesheets/home/pages/_index.scss
       body do
         div(class: [
               'page',
@@ -53,16 +47,22 @@ class Views::Layouts::Application < Phlex::HTML
                   ]
                 end)
             ]) do
-          Navigation(navigation: navigation, site: site)
+          if join_site?
+            Join::Header()
+          else
+            Shared::Navigation(navigation: navigation, site: site)
+          end
           # FIXME: move main elem into component to save excess divs
           main do
-            Flash()
+            Shared::Flash()
             yield
           end
-          if site.nil?
+          if join_site?
+            Join::Footer()
+          elsif site.nil?
             Directory::Footer()
           else
-            Footer(site)
+            Sites::Footer(site)
           end
         end
       end
@@ -121,10 +121,12 @@ class Views::Layouts::Application < Phlex::HTML
     script(type: 'application/ld+json') { raw safe(content_for(:json_ld)) }
   end
 
+  # A page-supplied title always wins — the root shortcut used to run first,
+  # which stamped the directory branding over the join homepage's title.
   def compute_title
-    return 'PlaceCal | The Community Calendar' if current_page?(root_url) && site.nil?
     return "#{content_for(:title)} | #{site.name}" if content_for?(:title) && site&.name
     return "#{content_for(:title)} | PlaceCal" if content_for?(:title)
+    return 'PlaceCal | The Community Calendar' if current_page?(root_url) && site.nil?
 
     site&.name || 'PlaceCal | The Community Calendar'
   end
@@ -152,5 +154,11 @@ class Views::Layouts::Application < Phlex::HTML
 
   def navigation
     view_context.instance_variable_get(:@navigation)
+  end
+
+  # The join marketing site shares this layout (and its nil-site page chrome)
+  # but swaps in its own header and footer.
+  def join_site?
+    request.subdomain == Site::JOIN_SUBDOMAIN
   end
 end

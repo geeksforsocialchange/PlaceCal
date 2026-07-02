@@ -9,7 +9,7 @@ class ContactDetailsPreview < Lookbook::Preview
       twitter_handle: "hulme_cc",
       instagram_handle: "hulmecc"
     )
-    render Components::ContactDetails.new(
+    render Components::Shared::ContactDetails.new(
       partner: partner,
       email: "info@hulme.example.org",
       phone: "0161 234 5678",
@@ -20,6 +20,6 @@ class ContactDetailsPreview < Lookbook::Preview
   # @label Minimal (no contact info)
   def minimal
     partner = Partner.new(name: "Mystery Organisation")
-    render Components::ContactDetails.new(partner: partner)
+    render Components::Shared::ContactDetails.new(partner: partner)
   end
 end
