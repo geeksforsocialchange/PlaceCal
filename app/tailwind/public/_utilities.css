@@ -54,6 +54,16 @@
 	margin-bottom: calc(var(--spacing) * 3);
 }
 
+/* Join site display headline — bigger than hero-title, used on join.placecal.org */
+@utility join-headline {
+	font-family: var(--font-serif);
+	font-weight: var(--font-weight-regular);
+	font-size: clamp(2.4rem, 5vw, 3.6rem);
+	line-height: 1.05;
+	text-wrap: balance;
+	color: var(--color-foreground);
+}
+
 /* Allcaps label used for kickers, section labels, form labels, sidebar headings */
 @utility allcaps-label {
 	font-size: var(--text-2xs);

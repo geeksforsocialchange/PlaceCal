@@ -81,6 +81,35 @@ Rails.application.routes.draw do
                  }
 
   # ============================================================
+  # Join marketing site (join.placecal.org, #3163)
+  # ============================================================
+  # Gated on config.x.join_site_enabled (see config/initializers/join_site.rb)
+  # so this merges without changing the live site. The old audience pages
+  # under "Legacy & deprecated" below move here.
+  constraints(Sites::JoinSite) do
+    scope as: :join, controller: :join_pages do
+      get '/', action: :home, as: :root
+      get 'who-its-for', action: :audiences, as: :audiences
+      get 'who-its-for/:slug', action: :audience, as: :audience
+      get 'features', action: :features, as: :features
+      get 'our-story', action: :our_story, as: :our_story
+      get 'pricing', action: :pricing, as: :pricing
+      get 'book-a-demo', action: :demo, as: :demo
+      post 'book-a-demo', action: :demo_create
+    end
+  end
+
+  # Anything else on the join subdomain — including everything while the flag
+  # is off — bounces to the apex, mirroring the admin catch-all above.
+  match '*path', via: :all,
+                 constraints: { subdomain: Site::JOIN_SUBDOMAIN },
+                 to: redirect { |_params, request|
+                   host = request.host.delete_prefix('join.')
+                   port = request.optional_port ? ":#{request.optional_port}" : ''
+                   "#{request.protocol}#{host}#{port}#{request.fullpath}"
+                 }
+
+  # ============================================================
   # Public site
   # ============================================================
 

@@ -5,6 +5,10 @@
 class Components::Navigation < Components::Base
   prop :navigation, Array # Array of tuples of [name, URL]
   prop :site, _Nilable(::Site), default: nil
+  # Optional override for the nil-site CTA pill (defaults to "Join us" →
+  # get-in-touch). The join marketing site swaps in "Book a demo".
+  prop :cta_label, _Nilable(String), default: nil
+  prop :cta_path, _Nilable(String), default: nil
 
   def view_template
     header(class: [
@@ -85,7 +89,7 @@ class Components::Navigation < Components::Base
   # TODO: Change to join.placecal.org once the join flow is live
   def render_join_button
     li(class: 'text-center max-md:py-3') do
-      link_to('Join us', get_in_touch_path, class: 'inline-flex items-center rounded-full bg-secondary px-4 py-1.5 text-detail font-bold no-underline hover:brightness-110 transition-all', style: 'color: #43392f')
+      link_to(@cta_label || 'Join us', @cta_path || get_in_touch_path, class: 'inline-flex items-center rounded-full bg-secondary px-4 py-1.5 text-detail font-bold no-underline hover:brightness-110 transition-all', style: 'color: #43392f')
     end
   end
 

@@ -317,6 +317,30 @@ textarea.join-control {
 	color: var(--color-foreground);
 }
 
+/* Join marketing site (join.placecal.org) primary CTA — salmon-deep pill.
+   Element-agnostic: used on links and the demo form's submit input. */
+.btn-join {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	background: var(--color-secondary-deep);
+	color: var(--color-background);
+	font-weight: 700;
+	font-size: var(--text-base);
+	padding: 0.7rem 1.5rem;
+	border: 0;
+	border-radius: 9999px;
+	box-shadow: 0 0 0 2px var(--color-secondary-deep);
+	text-decoration: none;
+	cursor: pointer;
+	transition: 0.2s;
+}
+.btn-join:hover {
+	background: var(--color-foreground);
+	box-shadow: 0 0 0 2px var(--color-foreground);
+	color: var(--color-background);
+}
+
 /* Flash messages — distinct success / error states (Components::Flash) */
 .flash-message {
 	border-radius: var(--radius-card);

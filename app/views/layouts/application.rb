@@ -53,13 +53,19 @@ class Views::Layouts::Application < Phlex::HTML
                   ]
                 end)
             ]) do
-          Navigation(navigation: navigation, site: site)
+          if join_site?
+            JoinSite::Header()
+          else
+            Navigation(navigation: navigation, site: site)
+          end
           # FIXME: move main elem into component to save excess divs
           main do
             Flash()
             yield
           end
-          if site.nil?
+          if join_site?
+            JoinSite::Footer()
+          elsif site.nil?
             Directory::Footer()
           else
             Footer(site)
@@ -152,5 +158,12 @@ class Views::Layouts::Application < Phlex::HTML
 
   def navigation
     view_context.instance_variable_get(:@navigation)
+  end
+
+  # The join marketing site shares this layout (and its nil-site page chrome)
+  # but swaps in its own header and footer.
+  def join_site?
+    request.subdomain == Site::JOIN_SUBDOMAIN &&
+      Rails.application.config.x.join_site_enabled
   end
 end

@@ -99,12 +99,7 @@ class PagesController < ApplicationController
 
   def render_directory_home
     @stats = Rails.cache.fetch('directory/stats', expires_in: DIRECTORY_CACHE_TTL) do
-      {
-        partnerships: Site.where(is_published: true).count,
-        partners: Partner.visible.count,
-        events: Event.where(dtstart: Time.zone.today..30.days.from_now).count,
-        neighbourhoods: Neighbourhood.districts.count
-      }
+      DirectoryStatsQuery.new.call
     end
 
     @partner_locations = Rails.cache.fetch('directory/partner_locations', expires_in: DIRECTORY_CACHE_TTL) do
