@@ -16,19 +16,23 @@ class Views::Join::Home < Views::Join::Base
 
   private
 
+  # Mirrors the directory homepage hero (Components::Directory::Hero): brown
+  # panel, hero-title, sidebar column — with stat tiles where the map sits.
   def render_hero
-    section(class: 'py-12 bg-home-background border-b border-rules') do
-      div(class: 'container-public grid lg:grid-cols-[1.3fr_1fr] gap-10 items-center') do
-        div do
-          div(class: 'allcaps-label text-secondary-deep mb-2') { t('join.home.hero.kicker') }
-          h1(class: 'join-headline m-0 mb-4') { t('join.home.hero.title') }
-          p(class: 'text-base leading-relaxed max-w-(--width-prose) mt-0 mb-6') { t('join.home.hero.intro') }
-          div(class: 'flex gap-2.5 flex-wrap items-center') do
-            a(href: join_demo_path, class: 'btn-join') { t('join.home.hero.cta_demo') }
-            a(href: join_our_story_path, class: 'btn-primary-outline') { t('join.home.hero.cta_how') }
+    section(class: 'bg-foreground py-10 lg:py-14', style: 'color: var(--color-background)') do
+      div(class: 'container-public') do
+        div(class: 'lg:grid lg:grid-cols-[1fr_var(--width-sidebar-lg)] lg:gap-8 lg:items-center') do
+          div(class: 'pb-6 lg:pb-0') do
+            div(class: 'allcaps-label mb-2 opacity-80') { t('join.home.hero.kicker') }
+            h1(class: 'hero-title') { t('join.home.hero.title') }
+            p(class: 'text-base leading-relaxed max-w-(--width-prose) mt-0 mb-6') { t('join.home.hero.intro') }
+            div(class: 'flex gap-2.5 flex-wrap items-center') do
+              a(href: join_demo_path, class: 'btn-join') { t('join.home.hero.cta_demo') }
+              a(href: join_our_story_path, class: 'btn-primary-outline') { t('join.home.hero.cta_how') }
+            end
           end
+          render_stats
         end
-        render_stats
       end
     end
   end
