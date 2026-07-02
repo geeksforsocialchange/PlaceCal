@@ -44,10 +44,9 @@ RSpec.describe "Public Joins (Contact Form)", type: :request do
         }
       end
 
-      it "re-renders the form with errors" do
+      it "re-renders the form with errors and a 422 so Turbo shows them" do
         post "/get-in-touch", params: invalid_params, headers: { "Host" => "lvh.me" }
-        # Renders form again or redirects depending on captcha
-        expect(response).to be_successful.or be_redirect
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
   end

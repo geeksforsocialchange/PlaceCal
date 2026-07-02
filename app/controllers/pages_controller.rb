@@ -37,8 +37,9 @@ class PagesController < ApplicationController
   def robots
     if current_site
       render plain: current_site.robots
-    elsif directory_request?
-      # The apex serves the nationwide directory: always crawlable
+    elsif directory_request? || join_site_request?
+      # The apex serves the nationwide directory and join.placecal.org is the
+      # public marketing site: both always crawlable
       render plain: Site.directory_robots
     else
       # Admin subdomain - disallow all indexing
@@ -61,9 +62,7 @@ class PagesController < ApplicationController
   private
 
   def render_directory_home
-    @stats = Rails.cache.fetch('directory/stats', expires_in: DIRECTORY_CACHE_TTL) do
-      DirectoryStatsQuery.new.call
-    end
+    @stats = DirectoryStatsQuery.fetch_cached
 
     @partner_locations = Rails.cache.fetch('directory/partner_locations', expires_in: DIRECTORY_CACHE_TTL) do
       PartnerLocationsQuery.new.call.map do |location|

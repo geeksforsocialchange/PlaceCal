@@ -20,7 +20,7 @@ class Views::Join::Home < Views::Join::Base
     section(class: 'py-12 bg-home-background border-b border-rules') do
       div(class: 'container-public grid lg:grid-cols-[1.3fr_1fr] gap-10 items-center') do
         div do
-          div(class: 'allcaps-label text-secondary-deep mb-2') { t('join.home.hero.kicker') }
+          div(class: 'allcaps-label text-secondary-strong mb-2') { t('join.home.hero.kicker') }
           h1(class: 'join-headline m-0 mb-4') { t('join.home.hero.title') }
           p(class: 'text-base leading-relaxed max-w-(--width-prose) mt-0 mb-6') { t('join.home.hero.intro') }
           div(class: 'flex gap-2.5 flex-wrap items-center') do
@@ -44,10 +44,10 @@ class Views::Join::Home < Views::Join::Base
 
   def stat_tile(value, label)
     div(class: 'bg-secondary rounded-card p-5') do
-      div(class: 'font-serif text-[2.4rem] leading-none text-foreground') do
+      div(class: 'font-serif text-[2.4rem] leading-none text-secondary-ink') do
         plain value.is_a?(Numeric) ? value.to_fs(:delimited) : value.to_s
       end
-      div(class: 'allcaps-label text-foreground mt-1.5') { label }
+      div(class: 'allcaps-label text-secondary-ink mt-1.5') { label }
     end
   end
 
@@ -61,7 +61,7 @@ class Views::Join::Home < Views::Join::Base
           center: true
         )
         div(class: 'grid md:grid-cols-2 lg:grid-cols-3 gap-4') do
-          Join::Base::AUDIENCES.each { |key| Join::AudienceCard(audience: key) }
+          Join::Base::AUDIENCE_KEYS.each { |key| Join::AudienceCard(audience: key) }
         end
       end
     end
@@ -124,8 +124,8 @@ class Views::Join::Home < Views::Join::Base
   def render_cta
     section(class: 'py-12 bg-secondary') do
       div(class: 'container-narrow text-center') do
-        h2(class: 'font-serif font-regular text-[2.2rem] leading-tight text-foreground m-0 mb-3') { t('join.home.cta.heading') }
-        p(class: 'text-base leading-relaxed mt-0 mb-6') { t('join.home.cta.body') }
+        h2(class: 'font-serif font-regular text-[2.2rem] leading-tight text-secondary-ink m-0 mb-3') { t('join.home.cta.heading') }
+        p(class: 'text-base leading-relaxed text-secondary-ink mt-0 mb-6') { t('join.home.cta.body') }
         a(href: join_demo_path, class: 'btn-dark') { t('join.home.cta.button') }
       end
     end

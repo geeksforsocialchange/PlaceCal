@@ -5,6 +5,7 @@ en:
     band:
       host: join.placecal.org
       directory_link: Browse the directory · placecal.org
+      aria_label: PlaceCal sites
     nav:
       audiences: Who it's for
       features: Features

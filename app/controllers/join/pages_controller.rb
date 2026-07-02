@@ -6,26 +6,20 @@ class Join::PagesController < ApplicationController
   before_action :set_site
   invisible_captcha only: %i[demo_create]
 
-  STATS_CACHE_TTL = 1.day
-
   def home
-    # Shares the 'directory/stats' cache with the nationwide directory
-    # homepage so the two sites quote the same numbers.
-    stats = Rails.cache.fetch('directory/stats', expires_in: STATS_CACHE_TTL) do
-      DirectoryStatsQuery.new.call
-    end
-    render Views::Join::Home.new(stats: stats)
+    render Views::Join::Home.new(stats: DirectoryStatsQuery.fetch_cached)
   end
 
   def audiences
     render Views::Join::Audiences.new
   end
 
+  # Match the dashed slug exactly — accepting the underscored key form too
+  # would serve every audience page at two URLs, each claiming to be canonical.
   def audience
-    key = params[:slug].to_s.tr('-', '_')
-    raise ActiveRecord::RecordNotFound unless Components::Join::Base::AUDIENCES.include?(key)
+    raise ActiveRecord::RecordNotFound unless Components::Join::Base::AUDIENCE_SLUGS.include?(params[:slug])
 
-    render Views::Join::Audience.new(audience: key)
+    render Views::Join::Audience.new(audience: params[:slug].tr('-', '_'))
   end
 
   def features
@@ -59,9 +53,7 @@ class Join::PagesController < ApplicationController
 
   private
 
-  # Same form and params as JoinsController#create — the book-a-demo page
-  # renders the shared ContactForm.
   def contact_request_params
-    params.require(:contact_request).permit(:name, :email, :phone, :job_title, :job_org, :area, :ringback, :more_info, :why)
+    params.require(:contact_request).permit(*ContactRequest::PERMITTED_PARAMS)
   end
 end

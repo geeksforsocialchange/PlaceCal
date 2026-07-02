@@ -168,8 +168,15 @@ Rails.application.routes.draw do
   %w[community-groups metropolitan-areas vcses housing-providers
      social-prescribers culture-tourism].each do |audience_slug|
     get audience_slug, to: redirect { |_params, request|
-      port = request.optional_port ? ":#{request.optional_port}" : ''
-      "#{request.protocol}join.#{request.domain}#{port}/who-its-for/#{audience_slug}"
+      # These routes are reachable on every host, including partner sites'
+      # custom domains, where join.<request.domain> wouldn't exist — always
+      # target the canonical join host in production.
+      if Rails.env.production?
+        "https://join.placecal.org/who-its-for/#{audience_slug}"
+      else
+        port = request.optional_port ? ":#{request.optional_port}" : ''
+        "#{request.protocol}join.#{request.domain}#{port}/who-its-for/#{audience_slug}"
+      end
     }
   end
 

@@ -5,16 +5,19 @@
 # ContactRequest — a top-level Join model would be shadowed by this module
 # inside every view that includes the Components kit.
 class Components::Join::Base < Components::Base
-  # Ordered audience keys — one "Who it's for" page each, mirroring the
-  # join.audiences.* locale tree.
-  AUDIENCES = %w[
-    community_groups
-    metropolitan_areas
-    housing_providers
-    social_prescribers
-    vcses
-    culture_tourism
-  ].freeze
+  # Ordered audience registry: key → square card image. One "Who it's for"
+  # page each; keys mirror the join.audiences.* locale tree. Keeping the image
+  # beside the key means an audience can't exist without card artwork.
+  AUDIENCES = {
+    'community_groups' => 'home/audiences/communities_square.jpg',
+    'metropolitan_areas' => 'home/audiences/metro_square.jpg',
+    'housing_providers' => 'home/audiences/housing_square.jpg',
+    'social_prescribers' => 'home/audiences/social_square.jpg',
+    'vcses' => 'home/audiences/vcses_square.jpg',
+    'culture_tourism' => 'home/audiences/culture_square.jpg'
+  }.freeze
+  AUDIENCE_KEYS = AUDIENCES.keys.freeze
+  AUDIENCE_SLUGS = AUDIENCE_KEYS.map { |key| key.tr('_', '-') }.freeze
 
   private
 

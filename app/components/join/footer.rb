@@ -31,7 +31,7 @@ class Components::Join::Footer < Components::Join::Base
   end
 
   def audience_links
-    AUDIENCES.map do |key|
+    AUDIENCE_KEYS.map do |key|
       [t("join.audiences.#{key}.title"), audience_path(key)]
     end
   end

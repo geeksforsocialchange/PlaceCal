@@ -20,10 +20,8 @@ en:
   contact:
     email: "support@placecal.org"
 
-  components:
-    details:
-      open: "Open to read more"
-      close: "Close"
+  navigation:
+    join_us: "Join us"
 
   # ===========================================================================
   # DIRECTORY (public placecal.org)

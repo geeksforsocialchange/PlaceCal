@@ -2,7 +2,7 @@
 
 # Shared base for the join marketing site pages (join.placecal.org, #3163).
 # Copy lives under join.* in config/locales/join.en.yml; the audience keys
-# are Components::Join::Base::AUDIENCES.
+# are Components::Join::Base::AUDIENCE_KEYS.
 class Views::Join::Base < Views::Base
   register_output_helper :icon
 
@@ -12,15 +12,17 @@ class Views::Join::Base < Views::Base
     join_audience_path(key.tr('_', '-'))
   end
 
-  # Taupe breadcrumb trail on cream/salmon page tops (the design's .bc).
+  # Breadcrumb trail on join page tops (the design's .bc) — taupe on cream,
+  # or the AA-safe ink on salmon heroes (taupe only reaches 2.4:1 there).
   # Pass [label] for the current page, or [label, path] pairs for links.
-  def breadcrumb(*crumbs)
-    nav(class: 'text-xs text-tertiary mb-3', aria_label: t('join.aria.breadcrumb')) do
-      a(href: join_root_path, class: 'with-no-sass text-tertiary no-underline hover:underline') { t('join.breadcrumbs.root') }
+  def breadcrumb(*crumbs, on_secondary: false)
+    tone = on_secondary ? 'text-secondary-ink' : 'text-tertiary'
+    nav(class: "text-xs #{tone} mb-3", aria_label: t('join.aria.breadcrumb')) do
+      a(href: join_root_path, class: "with-no-sass #{tone} no-underline hover:underline") { t('join.breadcrumbs.root') }
       crumbs.each do |label, path|
         span(class: 'mx-1.5 opacity-60') { safe('&rsaquo;') }
         if path
-          a(href: path, class: 'with-no-sass text-tertiary no-underline hover:underline') { label }
+          a(href: path, class: "with-no-sass #{tone} no-underline hover:underline") { label }
         else
           span { label }
         end

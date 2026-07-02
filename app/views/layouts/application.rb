@@ -121,10 +121,12 @@ class Views::Layouts::Application < Phlex::HTML
     script(type: 'application/ld+json') { raw safe(content_for(:json_ld)) }
   end
 
+  # A page-supplied title always wins — the root shortcut used to run first,
+  # which stamped the directory branding over the join homepage's title.
   def compute_title
-    return 'PlaceCal | The Community Calendar' if current_page?(root_url) && site.nil?
     return "#{content_for(:title)} | #{site.name}" if content_for?(:title) && site&.name
     return "#{content_for(:title)} | PlaceCal" if content_for?(:title)
+    return 'PlaceCal | The Community Calendar' if current_page?(root_url) && site.nil?
 
     site&.name || 'PlaceCal | The Community Calendar'
   end

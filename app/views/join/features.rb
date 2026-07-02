@@ -11,7 +11,7 @@ class Views::Join::Features < Views::Join::Base
         p(class: 'text-base leading-relaxed max-w-(--width-prose) mt-0 mb-8') { t('join.features.lede') }
         div(class: 'grid md:grid-cols-2 lg:grid-cols-3 gap-4') do
           t('join.features.list').each do |feature|
-            Join::FeatureCard(title: feature[:title], body: feature[:body])
+            Join::FeatureCard(title: feature[:title], body: feature[:body], heading_level: 2)
           end
         end
       end

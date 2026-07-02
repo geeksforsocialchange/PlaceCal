@@ -4,15 +4,14 @@ class Views::Mailers::Join::JoinUs < Views::Mailers::Base
   prop :contact_request, ContactRequest, reader: :private
 
   def email_content
-    field 'Name', contact_request.name
-    field 'Email', contact_request.email
-    field 'Phone number', contact_request.phone
-    field 'Job Title', contact_request.job_title
-    field 'Organization Name', contact_request.job_org
-    field 'Area you cover', contact_request.area
-    field 'A Ring Back', contact_request.ringback == '1' ? 'Yes' : 'No'
-    field 'More Information', contact_request.more_info == '1' ? 'Yes' : 'No'
-    field 'Why I Want Placecal', contact_request.why
+    %i[name email phone job_title job_org area].each do |attribute|
+      field ContactRequest.human_attribute_name(attribute), contact_request.public_send(attribute)
+    end
+    # ContactRequest casts the checkboxes to booleans, so test truthiness —
+    # comparing against the raw '1' param value was always false.
+    field ContactRequest.human_attribute_name(:ringback), contact_request.ringback ? 'Yes' : 'No'
+    field ContactRequest.human_attribute_name(:more_info), contact_request.more_info ? 'Yes' : 'No'
+    field ContactRequest.human_attribute_name(:why), contact_request.why
   end
 
   private

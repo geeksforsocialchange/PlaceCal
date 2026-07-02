@@ -2,14 +2,22 @@
 
 # Headline numbers shared by the nationwide directory homepage and the join
 # marketing site: live partnerships, visible partners, events over the next
-# month, and districts covered. Callers wrap this in Rails.cache (both use the
-# 'directory/stats' key so the two homepages stay in sync).
+# month, and districts covered.
 #
 # @example
-#   DirectoryStatsQuery.new.call
+#   DirectoryStatsQuery.fetch_cached
 #   # => { partnerships: 10, partners: 413, events: 918, neighbourhoods: 42 }
 #
 class DirectoryStatsQuery
+  CACHE_KEY = 'directory/stats'
+  CACHE_TTL = 1.day
+
+  # One cache entry shared by both homepages, so they quote the same numbers.
+  # @return [Hash] counts keyed by :partnerships, :partners, :events, :neighbourhoods
+  def self.fetch_cached
+    Rails.cache.fetch(CACHE_KEY, expires_in: CACHE_TTL) { new.call }
+  end
+
   # @return [Hash] counts keyed by :partnerships, :partners, :events, :neighbourhoods
   def call
     {

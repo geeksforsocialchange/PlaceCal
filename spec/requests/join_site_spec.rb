@@ -18,7 +18,7 @@ RSpec.describe "Join marketing site", type: :request do
       expect(response.body).to include("Who PlaceCal is for.")
     end
 
-    Components::Join::Base::AUDIENCES.each do |key|
+    Components::Join::Base::AUDIENCE_KEYS.each do |key|
       it "serves the #{key.humanize.downcase} audience page" do
         get "http://join.lvh.me/who-its-for/#{key.tr('_', '-')}"
         expect(response).to be_successful
@@ -29,6 +29,22 @@ RSpec.describe "Join marketing site", type: :request do
     it "404s an unknown audience" do
       get "http://join.lvh.me/who-its-for/pigeon-fanciers"
       expect(response).to have_http_status(:not_found)
+    end
+
+    it "404s the underscored slug form so each audience page has one canonical URL" do
+      get "http://join.lvh.me/who-its-for/community_groups"
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "uses the marketing title on the homepage, not the directory branding" do
+      get "http://join.lvh.me/"
+      expect(response.body).to include("<title>#{I18n.t('join.home.title')} | PlaceCal</title>")
+    end
+
+    it "serves a crawlable robots.txt" do
+      get "http://join.lvh.me/robots.txt"
+      expect(response).to be_successful
+      expect(response.body).not_to include("Disallow: /\n")
     end
 
     %w[/features /our-story /pricing /book-a-demo].each do |path|
