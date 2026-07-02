@@ -46,8 +46,11 @@ class Views::Directory::OurStory < Views::Base
 
   private
 
+  # A clearly-narrower article measure than the heroes' container-public rail:
+  # close-but-not-equal widths read as misalignment, a decisive difference
+  # reads as a deliberate centered column.
   def narrow(classes = '', &)
-    div(class: "container-editorial #{classes}".strip, &)
+    div(class: "mx-auto max-w-[820px] px-6 #{classes}".strip, &)
   end
 
   def render_start
