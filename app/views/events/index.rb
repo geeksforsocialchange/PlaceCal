@@ -16,7 +16,7 @@ class Views::Events::Index < Views::Base
     content_for(:title) { 'Events' }
     content_for(:description) { site.og_description }
 
-    Hero('Events & activities', site.tagline)
+    Shared::Hero('Events & activities', site.tagline)
 
     div(class: 'container-public mb-32') do
       turbo_frame_tag 'events-browser', data: { turbo_action: 'advance' } do
@@ -34,11 +34,11 @@ class Views::Events::Index < Views::Base
   def render_paginator
     div(class: 'paginator', id: 'paginator') do
       div(class: 'paginator__context') do
-        Breadcrumb(trail: [['Events', events_path]], site_name: site.name) do
+        Sites::Breadcrumb(trail: [['Events', events_path]], site_name: site.name) do
           div(class: 'breadcrumb__actions') do
             today = Time.zone.today
             today_url = "/events/#{today.year}/#{today.month}/#{today.day}?period=#{period}&sort=#{sort}&repeating=#{repeating}#paginator"
-            EventFilter(
+            Sites::EventFilter(
               pointer: current_day,
               period: period,
               sort: sort,
@@ -52,7 +52,7 @@ class Views::Events::Index < Views::Base
           end
         end
       end
-      Timeline(
+      Sites::Timeline(
         pointer: current_day,
         period: period,
         sort: sort,
@@ -63,7 +63,7 @@ class Views::Events::Index < Views::Base
   end
 
   def render_event_list
-    EventList(
+    Sites::EventList(
       events: events,
       period: period,
       primary_neighbourhood: site.primary_neighbourhood,
@@ -76,7 +76,7 @@ class Views::Events::Index < Views::Base
   end
 
   def render_meta_section
-    Meta('/hello/world') do |component|
+    Sites::Meta('/hello/world') do |component|
       component.with_link do
         link_to "Subscribe to #{site.name} with iCal", events_url(protocol: :webcal, format: :ics)
       end

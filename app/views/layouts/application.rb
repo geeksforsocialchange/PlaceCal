@@ -56,11 +56,11 @@ class Views::Layouts::Application < Phlex::HTML
           if join_site?
             Join::Header()
           else
-            Navigation(navigation: navigation, site: site)
+            Shared::Navigation(navigation: navigation, site: site)
           end
           # FIXME: move main elem into component to save excess divs
           main do
-            Flash()
+            Shared::Flash()
             yield
           end
           if join_site?
@@ -68,7 +68,7 @@ class Views::Layouts::Application < Phlex::HTML
           elsif site.nil?
             Directory::Footer()
           else
-            Footer(site)
+            Sites::Footer(site)
           end
         end
       end

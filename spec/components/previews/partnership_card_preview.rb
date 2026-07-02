@@ -8,6 +8,6 @@ class PartnershipCardPreview < Lookbook::Preview
       tagline: "Community events in south Manchester",
       url: "https://hulme.placecal.org/"
     )
-    render Components::PartnershipCard.new(site: site)
+    render Components::Homepage::PartnershipCard.new(site: site)
   end
 end

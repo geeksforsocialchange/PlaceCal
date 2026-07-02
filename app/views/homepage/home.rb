@@ -13,7 +13,7 @@ class Views::Homepage::Home < Views::Homepage::Base
             end
           end
         end
-        CaseStudy(
+        Homepage::CaseStudy(
           partner: 'The Trans Dimension',
           link_url: '/find-placecal',
           logo_src: 'home/logos/tdd_logo.svg',
@@ -33,18 +33,18 @@ class Views::Homepage::Home < Views::Homepage::Base
           div(class: 'container-with-header__body') do
             ul(class: 'four_col_grid') do
               neighbourhoods.take(4).each do |site|
-                NeighbourhoodHomeCard(site: site)
+                Homepage::NeighbourhoodHomeCard(site: site)
               end
             end
           end
         end
-        FullWidthAction(title: 'Find your PlaceCal', link_text: 'See calendars', link_url: find_placecal_path, color: 'red') do
+        Homepage::FullWidthAction(title: 'Find your PlaceCal', link_text: 'See calendars', link_url: find_placecal_path, color: 'red') do
           plain 'Ready to get started with PlaceCal? Here you can see a list of all current PlaceCal instances, organised by interest and location.'
         end
-        FullWidthAction(title: 'Want to create a PlaceCal for your community?', link_text: 'Get in touch', link_url: get_in_touch_path, color: 'green') do
+        Homepage::FullWidthAction(title: 'Want to create a PlaceCal for your community?', link_text: 'Get in touch', link_url: get_in_touch_path, color: 'green') do
           plain 'Work with us to set up a PlaceCal for your community, built through on-the-ground connections with venues, organisers, and community members.'
         end
-        FullWidthAction(title: 'How did PlaceCal start?', link_text: 'Learn more', link_url: our_story_path, color: 'cream') do
+        Homepage::FullWidthAction(title: 'How did PlaceCal start?', link_text: 'Learn more', link_url: our_story_path, color: 'cream') do
           plain 'We wanted to examine the causes of social isolation and loneliness within communities in order to figure out how to combat them.'
         end
       end

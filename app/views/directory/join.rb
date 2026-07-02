@@ -14,7 +14,7 @@ class Views::Directory::Join < Views::Base
     )
 
     div(class: 'container-editorial py-8') do
-      ContactForm(contact_request: contact_request, url: get_in_touch_path)
+      Shared::ContactForm(contact_request: contact_request, url: get_in_touch_path)
     end
   end
 end

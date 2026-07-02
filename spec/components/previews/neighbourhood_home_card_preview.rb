@@ -8,6 +8,6 @@ class NeighbourhoodHomeCardPreview < Lookbook::Preview
       slug: "hulme-moss-side",
       place_name: "Hulme & Moss Side"
     )
-    render Components::NeighbourhoodHomeCard.new(site: site)
+    render Components::Homepage::NeighbourhoodHomeCard.new(site: site)
   end
 end

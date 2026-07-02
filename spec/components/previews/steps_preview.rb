@@ -8,6 +8,6 @@ class StepsPreview < Lookbook::Preview
       { id: "2", image_alt: "Step 2: Connect calendar", content: "<p><strong>Step 2:</strong> Connect your existing online calendar.</p>" },
       { id: "3", image_alt: "Step 3: Go live", content: "<p><strong>Step 3:</strong> Your events appear on PlaceCal automatically.</p>" }
     ]
-    render Components::Steps.new(steps: steps)
+    render Components::Homepage::Steps.new(steps: steps)
   end
 end

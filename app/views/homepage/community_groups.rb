@@ -24,7 +24,7 @@ class Views::Homepage::CommunityGroups < Views::Homepage::Base
 
   def render_details
     div(class: 'card card--plain pattern pattern--audience') do
-      Details(
+      Homepage::Details(
         header: 'We turn your local knowledge into great community information websites',
         header_class: 'center alt-title',
         header_level: 2,
@@ -44,7 +44,7 @@ class Views::Homepage::CommunityGroups < Views::Homepage::Base
   end
 
   def render_steps
-    Steps(
+    Homepage::Steps(
       steps: [
         { id: 1, content: '<p>We have a chat on the phone to get the ball rolling, and set a time to come and show you how it works.</p>', image_alt: 'Two people talking on the phone' },
         { id: 2, content: '<p>We help you enter all the information you already know about local groups into PlaceCal.</p>', image_alt: 'Two people entering information into PlaceCal' },

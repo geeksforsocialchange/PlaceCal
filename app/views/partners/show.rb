@@ -59,10 +59,10 @@ class Views::Partners::Show < Views::Base
 
   def render_local_layout
     div do
-      Hero(partner.name, site.tagline)
+      Shared::Hero(partner.name, site.tagline)
 
       div(class: 'container-public mb-32') do
-        Breadcrumb(
+        Sites::Breadcrumb(
           trail: [['Partners', partners_path], [partner.name, partner_path(partner)]],
           site_name: site.name
         )
@@ -82,7 +82,7 @@ class Views::Partners::Show < Views::Base
       end
       div(class: 'gi gi__2-5') do
         render_partner_image
-        Map(points: map, site: site.slug, compact: true)
+        Shared::Map(points: map, site: site.slug, compact: true)
         render_opening_times
       end
     end
@@ -90,12 +90,12 @@ class Views::Partners::Show < Views::Base
 
   def render_contact_and_address
     h3(class: 'udl udl--fw allcaps h4') { 'Get in touch' }
-    ContactDetails(partner: partner)
+    Shared::ContactDetails(partner: partner)
 
     h3(class: 'udl udl--fw allcaps h4') { 'Address' }
     p { "We operate in #{partner_service_area_text(partner)}." } if partner.has_service_areas?
 
-    Address(address: partner.address)
+    Shared::Address(address: partner.address)
 
     render_accessibility_details if partner.accessibility_info_html.present?
 
@@ -146,11 +146,11 @@ class Views::Partners::Show < Views::Base
         div(class: 'gi gi__1-2') do
           h2(class: 'udl udl--fw allcaps h4') { 'Address' }
           div(class: 'small') do
-            Address(address: place.address)
+            Shared::Address(address: place.address)
           end
           h2(class: 'udl udl--fw allcaps h4') { 'Contact' }
           div(class: 'small') do
-            ContactDetails(
+            Shared::ContactDetails(
               partner: partner,
               email: place.public_email,
               phone: place.public_phone,
@@ -167,7 +167,7 @@ class Views::Partners::Show < Views::Base
       render_events_paginator if paginator
 
       if events.any?
-        EventList(
+        Sites::EventList(
           events: events,
           period: period,
           primary_neighbourhood: site.primary_neighbourhood,
@@ -187,7 +187,7 @@ class Views::Partners::Show < Views::Base
     today = Time.zone.today
     filter_period = date_period || period
     div(class: 'paginator', id: 'paginator') do
-      Timeline(
+      Sites::Timeline(
         pointer: current_day,
         period: period,
         date_period: date_period,
@@ -198,7 +198,7 @@ class Views::Partners::Show < Views::Base
       )
       div(class: 'paginator__actions') do
         today_url = "/#{path}/#{today.year}/#{today.month}/#{today.day}?period=#{filter_period}&sort=#{sort}&repeating=#{repeating}#paginator"
-        EventFilter(
+        Sites::EventFilter(
           pointer: current_day,
           period: filter_period,
           sort: sort,
@@ -221,7 +221,7 @@ class Views::Partners::Show < Views::Base
   end
 
   def render_meta_section
-    Meta("/partners/#{partner.id}") do |component|
+    Sites::Meta("/partners/#{partner.id}") do |component|
       component.with_link do
         link_to "Subscribe to #{partner}'s events with iCal", partner_url(partner, protocol: :webcal, format: :ics)
       end

@@ -20,14 +20,14 @@ class Views::Events::Show < Views::Base
     if site.nil?
       render_directory_layout
     else
-      Event(
+      Sites::Event(
         display_context: :page,
         event: event,
         primary_neighbourhood: site.primary_neighbourhood,
         site_tagline: site.tagline
       )
       render_event_details
-      Map(points: map, site: site.slug, style: :multi)
+      Shared::Map(points: map, site: site.slug, style: :multi)
       render_event_meta
     end
   end
@@ -70,12 +70,12 @@ class Views::Events::Show < Views::Base
       if event.organiser
         div do
           h2(class: 'allcaps-label text-tertiary mb-2') { 'Contact information' }
-          ContactDetails(partner: event.organiser)
+          Shared::ContactDetails(partner: event.organiser)
         end
       end
       div do
         h2(class: 'allcaps-label text-tertiary mb-2') { 'Event address' }
-        Address(address: event.address, raw_location: event.raw_location_from_source)
+        Shared::Address(address: event.address, raw_location: event.raw_location_from_source)
       end
       div do
         h2(class: 'allcaps-label text-tertiary mb-2') { 'Event organiser' }
@@ -94,7 +94,7 @@ class Views::Events::Show < Views::Base
     return unless map
 
     div(class: 'py-4') do
-      Map(points: map, site: site&.slug, style: :multi)
+      Shared::Map(points: map, site: site&.slug, style: :multi)
     end
   end
 
@@ -178,7 +178,7 @@ class Views::Events::Show < Views::Base
       if event.organiser
         h3(class: 'h4 udl') { 'Contact information' }
         div(class: 'small') do
-          ContactDetails(partner: event.organiser)
+          Shared::ContactDetails(partner: event.organiser)
         end
       end
     end
@@ -188,7 +188,7 @@ class Views::Events::Show < Views::Base
     div(class: 'gi gi__1-3') do
       h3(class: 'h4 udl') { 'Event address' }
       div(class: 'small') do
-        Address(address: event.address, raw_location: event.raw_location_from_source)
+        Shared::Address(address: event.address, raw_location: event.raw_location_from_source)
       end
     end
   end
@@ -216,7 +216,7 @@ class Views::Events::Show < Views::Base
   end
 
   def render_event_meta
-    Meta("/events/#{event.id}") do |component|
+    Sites::Meta("/events/#{event.id}") do |component|
       component.with_link do
         contact = event.calendar&.contact_information
         if contact

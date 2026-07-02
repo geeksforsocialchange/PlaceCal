@@ -5,7 +5,7 @@ class Views::Homepage::Privacy < Views::Base
     content_for(:title) { 'Privacy Policy' }
 
     article(class: 'home margin') do
-      Hero('PlaceCal Privacy Policy')
+      Shared::Hero('PlaceCal Privacy Policy')
 
       div(class: 'card card--plain') do
         div(class: 'max_width') do

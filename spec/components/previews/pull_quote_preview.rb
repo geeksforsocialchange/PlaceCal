@@ -3,7 +3,7 @@
 class PullQuotePreview < Lookbook::Preview
   # @label Dark mode (default)
   def dark_mode
-    render Components::PullQuote.new(
+    render Components::Homepage::PullQuote.new(
       source: "Kim Foale",
       quote_context: "Founder, PlaceCal",
       options: {}
@@ -12,7 +12,7 @@ class PullQuotePreview < Lookbook::Preview
 
   # @label Light mode
   def light_mode
-    render Components::PullQuote.new(
+    render Components::Homepage::PullQuote.new(
       source: "Sarah Johnson",
       quote_context: "Community Organiser",
       options: { light_mode: true }

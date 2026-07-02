@@ -3,7 +3,7 @@
 class FullWidthActionPreview < Lookbook::Preview
   # @label Blue
   def blue
-    render Components::FullWidthAction.new(
+    render Components::Homepage::FullWidthAction.new(
       title: "Get started with PlaceCal",
       link_text: "Find out more",
       link_url: "/get-in-touch",
@@ -13,7 +13,7 @@ class FullWidthActionPreview < Lookbook::Preview
 
   # @label Cream
   def cream
-    render Components::FullWidthAction.new(
+    render Components::Homepage::FullWidthAction.new(
       title: "For community groups",
       link_text: "Learn more",
       link_url: "/community-groups",
@@ -23,7 +23,7 @@ class FullWidthActionPreview < Lookbook::Preview
 
   # @label Green
   def green
-    render Components::FullWidthAction.new(
+    render Components::Homepage::FullWidthAction.new(
       title: "For local authorities",
       link_text: "Get in touch",
       link_url: "/get-in-touch",
@@ -33,7 +33,7 @@ class FullWidthActionPreview < Lookbook::Preview
 
   # @label Red
   def red
-    render Components::FullWidthAction.new(
+    render Components::Homepage::FullWidthAction.new(
       title: "For housing providers",
       link_text: "See how it works",
       link_url: "/housing-providers",

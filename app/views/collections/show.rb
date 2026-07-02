@@ -14,12 +14,12 @@ class Views::Collections::Show < Views::Base
       content_for(:image_alt) { "Image for #{collection.name}" }
     end
 
-    Hero(collection.name, site&.tagline)
+    Shared::Hero(collection.name, site&.tagline)
 
     div(class: 'container-public mb-32') do
       breadcrumb_args = { trail: [[collection.name, collection.named_route]] }
       breadcrumb_args[:site_name] = site.name if site
-      Breadcrumb(**breadcrumb_args)
+      Sites::Breadcrumb(**breadcrumb_args)
 
       hr
 
@@ -49,7 +49,7 @@ class Views::Collections::Show < Views::Base
   end
 
   def render_events
-    EventList(
+    Sites::EventList(
       events: events,
       primary_neighbourhood: site&.primary_neighbourhood,
       show_neighbourhoods: site ? site.show_neighbourhoods? : false,

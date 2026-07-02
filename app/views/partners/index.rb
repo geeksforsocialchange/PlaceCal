@@ -11,11 +11,11 @@ class Views::Partners::Index < Views::Base
     content_for(:title) { 'Partners' }
     content_for(:description) { site.og_description }
 
-    Hero('Our Partners', site.tagline)
+    Shared::Hero('Our Partners', site.tagline)
     turbo_frame_tag 'partner_previews' do
       div(class: 'container-public mb-32') do
-        Breadcrumb(trail: [['Partners', partners_path]], site_name: site.name) do
-          PartnerFilter(
+        Sites::Breadcrumb(trail: [['Partners', partners_path]], site_name: site.name) do
+          Sites::PartnerFilter(
             site: site,
             selected_category: selected_category,
             selected_neighbourhood: selected_neighbourhood
@@ -26,12 +26,12 @@ class Views::Partners::Index < Views::Base
 
         ul(class: 'partners reset two-col', id: 'partners') do
           partners.each do |partner|
-            PartnerPreview(partner: partner, site: site)
+            Sites::PartnerPreview(partner: partner, site: site)
           end
         end
       end
       div(id: 'map') do
-        Map(points: map, site: site.slug)
+        Shared::Map(points: map, site: site.slug)
       end
     end
   end

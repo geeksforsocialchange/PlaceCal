@@ -3,7 +3,7 @@
 class CaseStudyPreview < Lookbook::Preview
   # @label Default
   def default
-    render Components::CaseStudy.new(
+    render Components::Homepage::CaseStudy.new(
       partner: "Hulme Community Garden Centre",
       link_url: "/find-placecal",
       logo_src: "https://placekitten.com/200/80",

@@ -3,7 +3,7 @@
 class PaginatorPreview < Lookbook::Preview
   # @label Day view
   def day_view
-    render Components::Paginator.new(
+    render Components::Sites::Paginator.new(
       pointer: Time.zone.today,
       period: "day",
       sort: "time",
@@ -13,7 +13,7 @@ class PaginatorPreview < Lookbook::Preview
 
   # @label Week view
   def week_view
-    render Components::Paginator.new(
+    render Components::Sites::Paginator.new(
       pointer: Time.zone.today,
       period: "week",
       sort: "time",
@@ -23,7 +23,7 @@ class PaginatorPreview < Lookbook::Preview
 
   # @label Without breadcrumb
   def without_breadcrumb
-    render Components::Paginator.new(
+    render Components::Sites::Paginator.new(
       pointer: Time.zone.today,
       period: "day",
       sort: "time",

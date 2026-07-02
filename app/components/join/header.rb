@@ -5,7 +5,7 @@
 class Components::Join::Header < Components::Join::Base
   def view_template
     render_band
-    render Components::Navigation.new(
+    render Components::Shared::Navigation.new(
       navigation: nav_items,
       site: nil,
       cta_label: t('join.nav.book_demo'),

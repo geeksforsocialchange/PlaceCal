@@ -44,7 +44,7 @@ module Views::Homepage::Audiences
       AUDIENCE_DATA.each do |data|
         next if data[:key] == exclude
 
-        Audience(
+        Components::Homepage::Audience(
           title: data[:title],
           body: data[:body],
           image: data[:image],

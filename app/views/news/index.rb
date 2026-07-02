@@ -11,7 +11,7 @@ class Views::News::Index < Views::Base
   def view_template
     content_for(:title) { 'News from your area' }
 
-    Hero('News from your area', site.tagline)
+    Shared::Hero('News from your area', site.tagline)
 
     div(class: 'articles') do
       articles.each do |article|
