@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Views::Partners::Index < Views::Base
+class Views::Sites::Partners::Index < Views::Base
   prop :partners, ActiveRecord::Relation, reader: :private
   prop :site, Site, reader: :private
   prop :map, _Nilable(Array), reader: :private

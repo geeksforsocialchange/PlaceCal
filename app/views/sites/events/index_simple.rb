@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Views::Events::IndexSimple < Views::Base
+class Views::Sites::Events::IndexSimple < Views::Base
   prop :events, Hash, reader: :private
 
   def view_template

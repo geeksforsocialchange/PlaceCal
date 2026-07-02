@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Views::Events::Index < Views::Base
+class Views::Sites::Events::Index < Views::Base
   prop :events, Hash, reader: :private
   prop :period, String, reader: :private
   prop :sort, String, reader: :private

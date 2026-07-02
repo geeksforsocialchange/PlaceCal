@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Views::Events::Show < Views::Base
+class Views::Sites::Events::Show < Views::Base
   register_output_helper :event_link
   register_output_helper :online_link
   register_value_helper :html_to_plaintext

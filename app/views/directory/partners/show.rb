@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Views::Directory::Partners::Show < Views::Partners::Show
+class Views::Directory::Partners::Show < Views::Sites::Partners::Show
   def view_template
     set_content_for_tags
 

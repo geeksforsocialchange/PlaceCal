@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Views::Events::IndexText < Views::TextBase
+class Views::Sites::Events::IndexText < Views::TextBase
   prop :events, Hash, reader: :private
 
   def text_content

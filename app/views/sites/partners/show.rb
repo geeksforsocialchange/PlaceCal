@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Views::Partners::Show < Views::Base
+class Views::Sites::Partners::Show < Views::Base
   register_value_helper :partner_service_area_text
 
   prop :partner, Partner, reader: :private

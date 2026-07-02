@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Views::Collections::Index < Views::Base
+class Views::Sites::Collections::Index < Views::Base
   prop :collections, ActiveRecord::Relation, reader: :private
 
   def view_template

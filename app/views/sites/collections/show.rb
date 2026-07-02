@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Views::Collections::Show < Views::Base
+class Views::Sites::Collections::Show < Views::Base
   prop :collection, Collection, reader: :private
   prop :site, _Nilable(::Site), reader: :private
   prop :events, Hash, reader: :private

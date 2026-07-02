@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Views::News::Index < Views::Base
+class Views::Sites::News::Index < Views::Base
   register_output_helper :article_partner_links
   register_value_helper :article_summary_text
 

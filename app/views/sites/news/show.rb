@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Views::News::Show < Views::Base
+class Views::Sites::News::Show < Views::Base
   register_output_helper :article_partner_links
 
   prop :article, Article, reader: :private
