@@ -87,7 +87,7 @@ Rails.application.routes.draw do
   # so this merges without changing the live site. The old audience pages
   # under "Legacy & deprecated" below move here.
   constraints(Sites::JoinSite) do
-    scope as: :join, controller: :join_pages do
+    scope as: :join, module: :join, controller: :pages do
       get '/', action: :home, as: :root
       get 'who-its-for', action: :audiences, as: :audiences
       get 'who-its-for/:slug', action: :audience, as: :audience

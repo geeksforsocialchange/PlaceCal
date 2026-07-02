@@ -4,7 +4,7 @@
 # the "book a demo" enquiry form. Routes are constrained to the join subdomain
 # and the config.x.join_site_enabled flag (config/initializers/join_site.rb),
 # so nothing here is reachable until the site is switched on.
-class JoinPagesController < ApplicationController
+class Join::PagesController < ApplicationController
   before_action :set_site
   invisible_captcha only: %i[demo_create]
 

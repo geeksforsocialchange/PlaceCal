@@ -1,22 +1,19 @@
 /* Public site Tailwind CSS  */
-@import "tailwindcss";
+
+/* Disable automatic content detection and positively include each public
+   section (#3163) — the admin sections have their own entrypoint
+   (admin_tailwind.css) with the mirror-image include list.
+*/
+@import "tailwindcss" source(none);
 @import "./public/fonts.css";
 
-/* https://tailwindcss.com/docs/detecting-classes-in-source-files#ignoring-specific-paths
-   Each section (admin/sites/homepage/join) is a subdir of app/views/ +
-   app/components/ + app/controllers/. Admin subdirs are excluded here.
-*/
-@source not "../../app/assets";
-@source not "../../app/datatables";
-@source not "../../app/components/admin";
-@source not "../../app/helpers/neighbourhoods_helper.rb";
-@source not "../../app/views/admin";
-@source not "../../app/views/layouts/admin";
-@source not "../../db";
-@source not "../../doc";
-@source not "../../features";
-@source not "../../public";
-@source not "../../spec";
+@source "../views/{directory,homepage,join,sites,devise}/**/*.rb";
+@source "../views/layouts/application.rb";
+@source "../views/base.rb";
+@source "../components/{shared,sites,homepage,directory,join}/**/*.rb";
+@source "../components/base.rb";
+@source "../helpers/**/*.rb";
+@source "../javascript/**/*.js";
 
 /* remove tailwind theme: https://tailwindcss.com/docs/theme#using-a-custom-theme */
 @theme {
