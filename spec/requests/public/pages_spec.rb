@@ -118,20 +118,10 @@ RSpec.describe "Public Pages", type: :request do
   %w[community-groups vcses housing-providers metropolitan-areas
      culture-tourism social-prescribers].each do |audience_slug|
     describe "GET /#{audience_slug}" do
-      it "redirects to the join site when it is enabled" do
+      it "redirects to the join site" do
         get "/#{audience_slug}", headers: { "Host" => "lvh.me" }
         expect(response).to redirect_to("http://join.lvh.me/who-its-for/#{audience_slug}")
       end
-    end
-  end
-
-  describe "audience pages while the join site is disabled" do
-    it "redirects to get-in-touch" do
-      Rails.application.config.x.join_site_enabled = false
-      get "/community-groups", headers: { "Host" => "lvh.me" }
-      expect(response).to redirect_to("/get-in-touch")
-    ensure
-      Rails.application.config.x.join_site_enabled = true
     end
   end
 

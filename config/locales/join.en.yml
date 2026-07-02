@@ -1,6 +1,5 @@
 # Copy for the join.placecal.org marketing site (#3163).
-# NOTE: this copy is a first pass from the design prototype and is not yet
-# signed off — the site ships behind JOIN_SITE_ENABLED (off in production).
+# NOTE: this copy is a first pass from the design prototype.
 en:
   join:
     band:

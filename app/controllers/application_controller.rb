@@ -101,8 +101,7 @@ class ApplicationController < ActionController::Base
     # The admin subdomain gives a global view of data.
     return @current_site = nil if request.subdomain == Site::ADMIN_SUBDOMAIN
 
-    # The join marketing site has no Site row either (when enabled; when
-    # disabled the subdomain falls through to the unmatched-subdomain redirect).
+    # The join marketing site has no Site row either.
     return @current_site = nil if join_site_request?
 
     @current_site = Site.find_by_request(request)
@@ -122,10 +121,9 @@ class ApplicationController < ActionController::Base
   end
 
   # @return [Boolean] true when this request is for the join marketing site
-  #   (join.placecal.org) and that site is enabled.
+  #   (join.placecal.org).
   def join_site_request?
-    request.subdomain == Site::JOIN_SUBDOMAIN &&
-      Rails.application.config.x.join_site_enabled
+    request.subdomain == Site::JOIN_SUBDOMAIN
   end
 
   def set_primary_neighbourhood

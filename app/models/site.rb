@@ -55,7 +55,7 @@ class Site < ApplicationRecord
   ADMIN_SUBDOMAIN = 'admin'
 
   # Reserved for the join.placecal.org marketing site (#3163) — like admin,
-  # it has no Site row. Gated behind config.x.join_site_enabled.
+  # it has no Site row.
   JOIN_SUBDOMAIN = 'join'
 
   # Canonical apex URL for the nationwide directory. The directory has no Site

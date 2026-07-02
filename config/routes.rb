@@ -83,10 +83,8 @@ Rails.application.routes.draw do
   # ============================================================
   # Join marketing site (join.placecal.org, #3163)
   # ============================================================
-  # Gated on config.x.join_site_enabled (see config/initializers/join_site.rb)
-  # so this merges without changing the live site. The old audience pages
-  # under "Legacy & deprecated" below move here.
-  constraints(Sites::JoinSite) do
+  # Replaces the old apex audience pages, whose URLs redirect here.
+  constraints(subdomain: Site::JOIN_SUBDOMAIN) do
     scope as: :join, module: :join, controller: :pages do
       get '/', action: :home, as: :root
       get 'who-its-for', action: :audiences, as: :audiences
@@ -99,8 +97,8 @@ Rails.application.routes.draw do
     end
   end
 
-  # Anything else on the join subdomain — including everything while the flag
-  # is off — bounces to the apex, mirroring the admin catch-all above.
+  # Anything else on the join subdomain bounces to the apex, mirroring the
+  # admin catch-all above.
   match '*path', via: :all,
                  constraints: { subdomain: Site::JOIN_SUBDOMAIN },
                  to: redirect { |_params, request|
@@ -165,17 +163,13 @@ Rails.application.routes.draw do
 
   # The legacy informational pages are deleted (#3163). Their URLs redirect:
   # find-placecal's job is done by the directory homepage, and the audience
-  # pitches move to the join site — pointed at get-in-touch until it launches.
+  # pitches live on the join site.
   get 'find-placecal', to: redirect('/')
   %w[community-groups metropolitan-areas vcses housing-providers
      social-prescribers culture-tourism].each do |audience_slug|
     get audience_slug, to: redirect { |_params, request|
-      if Rails.application.config.x.join_site_enabled
-        port = request.optional_port ? ":#{request.optional_port}" : ''
-        "#{request.protocol}join.#{request.domain}#{port}/who-its-for/#{audience_slug}"
-      else
-        '/get-in-touch'
-      end
+      port = request.optional_port ? ":#{request.optional_port}" : ''
+      "#{request.protocol}join.#{request.domain}#{port}/who-its-for/#{audience_slug}"
     }
   end
 

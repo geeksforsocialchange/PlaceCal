@@ -157,7 +157,6 @@ class Views::Layouts::Application < Phlex::HTML
   # The join marketing site shares this layout (and its nil-site page chrome)
   # but swaps in its own header and footer.
   def join_site?
-    request.subdomain == Site::JOIN_SUBDOMAIN &&
-      Rails.application.config.x.join_site_enabled
+    request.subdomain == Site::JOIN_SUBDOMAIN
   end
 end

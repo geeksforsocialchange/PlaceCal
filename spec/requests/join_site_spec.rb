@@ -2,11 +2,10 @@
 
 require "rails_helper"
 
-# The join marketing site (join.placecal.org, #3163) is constrained to the
-# join subdomain and the config.x.join_site_enabled flag (on by default
-# outside production), so it merges without changing the live site.
+# The join marketing site (join.placecal.org, #3163), served entirely from
+# the join subdomain — unknown paths there bounce to the apex.
 RSpec.describe "Join marketing site", type: :request do
-  describe "when enabled (the default outside production)" do
+  describe "the join subdomain" do
     it "serves the homepage" do
       get "http://join.lvh.me/"
       expect(response).to be_successful
@@ -79,22 +78,10 @@ RSpec.describe "Join marketing site", type: :request do
     end
   end
 
-  describe "when disabled (the production default until launch)" do
-    around do |example|
-      Rails.application.config.x.join_site_enabled = false
-      example.run
-    ensure
-      Rails.application.config.x.join_site_enabled = true
-    end
-
-    it "redirects the join subdomain to the apex" do
-      get "http://join.lvh.me/"
-      expect(response).to redirect_to("http://lvh.me/")
-    end
-
-    it "redirects join paths to their apex equivalent" do
-      get "http://join.lvh.me/pricing"
-      expect(response).to redirect_to("http://lvh.me/pricing")
+  describe "unknown paths on the join subdomain" do
+    it "redirect to their apex equivalent" do
+      get "http://join.lvh.me/events"
+      expect(response).to redirect_to("http://lvh.me/events")
     end
   end
 

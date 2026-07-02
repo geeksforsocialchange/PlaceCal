@@ -40,8 +40,7 @@ class Components::Base < Phlex::HTML
   # True when rendering on the join marketing site (join.placecal.org) —
   # lets components shared with the directory adapt their labels/links.
   def join_site_request?
-    request.subdomain == Site::JOIN_SUBDOMAIN &&
-      Rails.application.config.x.join_site_enabled
+    request.subdomain == Site::JOIN_SUBDOMAIN
   end
 
   if Rails.env.development?
