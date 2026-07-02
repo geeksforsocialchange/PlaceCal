@@ -7,14 +7,11 @@ class Components::Directory::PageHero < Components::Directory::Base
   prop :breadcrumb_label, _Nilable(String), default: nil
   prop :breadcrumb_path, _Nilable(String), default: nil
   prop :background_image_url, _Nilable(String), default: nil
-  # Constrains the hero content to the narrow (960px) editorial measure so it
-  # lines up with a page built on the same width (e.g. Our Story).
-  prop :narrow, _Boolean, default: false
 
   def view_template(&block)
     section(class: 'bg-foreground pt-6 pb-4 relative overflow-hidden', style: 'color: var(--color-background)') do
       render_background_image if @background_image_url
-      div(class: "#{@narrow ? 'container-editorial' : 'container-public'} relative z-10") do
+      div(class: 'container-public relative z-10') do
         render_breadcrumb if @breadcrumb_label
         render_kicker if @kicker
         h1(class: 'hero-title') { @title }

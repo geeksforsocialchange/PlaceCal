@@ -30,7 +30,6 @@ class Views::Directory::OurStory < Views::Base
     content_for(:title) { t("#{T}.heading") }
 
     Directory::PageHero(
-      narrow: true,
       breadcrumb_label: t("#{T}.heading"),
       kicker: t("#{T}.heading"),
       title: t("#{T}.hero_title"),
