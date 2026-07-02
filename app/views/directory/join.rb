@@ -5,7 +5,7 @@ class Views::Directory::Join < Views::Base
   register_output_helper :invisible_captcha
   register_output_helper :icon
 
-  prop :join, Join, reader: :private
+  prop :join_request, JoinRequest, reader: :private
 
   def view_template
     content_for(:title) { t('directory.join.hero.title') }
@@ -32,7 +32,7 @@ class Views::Directory::Join < Views::Base
   # helpers return an ActiveSupport::SafeBuffer, which `raw` writes straight
   # into the Phlex output buffer.
   def render_form
-    simple_form_for join, url: get_in_touch_path do |f|
+    simple_form_for join_request, url: get_in_touch_path do |f|
       invisible_captcha
 
       div(class: 'join-card') do
@@ -92,7 +92,7 @@ class Views::Directory::Join < Views::Base
     label(class: 'join-choice') do
       raw form.check_box(attribute)
       span(class: 'join-choice__box') { icon(:check, size: '4') }
-      plain Join.human_attribute_name(attribute)
+      plain JoinRequest.human_attribute_name(attribute)
     end
   end
 
@@ -105,8 +105,8 @@ class Views::Directory::Join < Views::Base
 
   # Field label with a required (*) or optional marker, matching the design.
   def render_label(attribute, required: false)
-    label(for: "join_#{attribute}", class: 'join-label') do
-      plain Join.human_attribute_name(attribute)
+    label(for: "join_request_#{attribute}", class: 'join-label') do
+      plain JoinRequest.human_attribute_name(attribute)
       if required
         span(class: 'req', aria_hidden: 'true') { '*' }
       else

@@ -2,7 +2,7 @@
 
 # Header for the join site: a salmon band cross-linking back to the directory,
 # then the shared nil-site navigation with a "Book a demo" CTA.
-class Components::JoinSite::Header < Components::JoinSite::Base
+class Components::Join::Header < Components::Join::Base
   def view_template
     render_band
     render Components::Navigation.new(

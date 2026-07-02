@@ -19,7 +19,7 @@ RSpec.describe "Public Joins (Contact Form)", type: :request do
     context "with valid params" do
       let(:valid_params) do
         {
-          join: {
+          join_request: {
             name: "Test User",
             email: "test@example.com",
             why: "I want to help my community"
@@ -36,7 +36,7 @@ RSpec.describe "Public Joins (Contact Form)", type: :request do
     context "with invalid params" do
       let(:invalid_params) do
         {
-          join: {
+          join_request: {
             name: "",
             email: "",
             why: ""

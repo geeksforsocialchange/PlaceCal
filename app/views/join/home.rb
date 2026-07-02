@@ -65,7 +65,7 @@ class Views::Join::Home < Views::Join::Base
           center: true
         )
         div(class: 'grid md:grid-cols-2 lg:grid-cols-3 gap-4') do
-          DemoRequest::AUDIENCES.each { |key| JoinSite::AudienceCard(audience: key) }
+          DemoRequest::AUDIENCES.each { |key| Join::AudienceCard(audience: key) }
         end
       end
     end
@@ -112,7 +112,7 @@ class Views::Join::Home < Views::Join::Base
         )
         div(class: 'grid md:grid-cols-2 lg:grid-cols-3 gap-4') do
           t('join.features.list').first(6).each do |feature|
-            JoinSite::FeatureCard(title: feature[:title], body: feature[:body])
+            Join::FeatureCard(title: feature[:title], body: feature[:body])
           end
         end
         div(class: 'text-center mt-6') do

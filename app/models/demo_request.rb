@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # "Book a demo" enquiry from the join marketing site (join.placecal.org).
-# Not persisted — like Join, it's a form object that delivers a mail.
+# Not persisted — like JoinRequest, it's a form object that delivers a mail.
 class DemoRequest
   include ActiveModel::Model
   include ActiveModel::Attributes

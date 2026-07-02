@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Components::JoinSite::Footer < Components::JoinSite::Base
+class Components::Join::Footer < Components::Join::Base
   include Phlex::Rails::Helpers::MailTo
 
   def view_template

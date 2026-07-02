@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 # Chrome and cards for the join marketing site (join.placecal.org, #3163).
-# Named JoinSite rather than Join: a Components::Join module would shadow the
-# ::Join form model inside every view that includes the Components kit.
-class Components::JoinSite::Base < Components::Base
+# This namespace is only possible because the enquiry form model is named
+# JoinRequest — a top-level Join model would be shadowed by this module
+# inside every view that includes the Components kit.
+class Components::Join::Base < Components::Base
   private
 
   # Absolute URL of the apex (the nationwide directory) from the join

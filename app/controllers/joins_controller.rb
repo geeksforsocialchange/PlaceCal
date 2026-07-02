@@ -5,24 +5,24 @@ class JoinsController < ApplicationController
   invisible_captcha only: %i[create update]
 
   def new
-    @join = Join.new
-    render Views::Directory::Join.new(join: @join)
+    @join_request = JoinRequest.new
+    render Views::Directory::Join.new(join_request: @join_request)
   end
 
   def create
-    @join = Join.new(join_params)
+    @join_request = JoinRequest.new(join_request_params)
 
-    if @join.submit
+    if @join_request.submit
       redirect_to '/', notice: t('directory.join.flash.success')
     else
       flash[:error] = t('directory.join.flash.error')
-      render Views::Directory::Join.new(join: @join)
+      render Views::Directory::Join.new(join_request: @join_request)
     end
   end
 
   private
 
-  def join_params
-    params.require(:join).permit(:name, :email, :phone, :job_title, :job_org, :area, :ringback, :more_info, :why)
+  def join_request_params
+    params.require(:join_request).permit(:name, :email, :phone, :job_title, :job_org, :area, :ringback, :more_info, :why)
   end
 end

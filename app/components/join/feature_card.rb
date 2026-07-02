@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Components::JoinSite::FeatureCard < Components::JoinSite::Base
+class Components::Join::FeatureCard < Components::Join::Base
   prop :title, String
   prop :body, String
 

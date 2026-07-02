@@ -85,7 +85,7 @@ class Views::Join::Audience < Views::Join::Base
           h2(class: 'font-serif font-regular text-section text-foreground m-0') { t('join.audiences.others.heading') }
         end
         div(class: 'grid md:grid-cols-2 lg:grid-cols-3 gap-4') do
-          others.first(3).each { |key| JoinSite::AudienceCard(audience: key) }
+          others.first(3).each { |key| Join::AudienceCard(audience: key) }
         end
       end
     end

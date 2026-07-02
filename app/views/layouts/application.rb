@@ -54,7 +54,7 @@ class Views::Layouts::Application < Phlex::HTML
                 end)
             ]) do
           if join_site?
-            JoinSite::Header()
+            Join::Header()
           else
             Navigation(navigation: navigation, site: site)
           end
@@ -64,7 +64,7 @@ class Views::Layouts::Application < Phlex::HTML
             yield
           end
           if join_site?
-            JoinSite::Footer()
+            Join::Footer()
           elsif site.nil?
             Directory::Footer()
           else

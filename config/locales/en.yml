@@ -359,15 +359,15 @@ en:
   # ===========================================================================
 
   # ===========================================================================
-  # ACTIVEMODEL (non-persisted models, e.g. the Join enquiry form)
+  # ACTIVEMODEL (non-persisted models, e.g. the JoinRequest enquiry form)
   # ===========================================================================
   activemodel:
     models:
-      join:
+      join_request:
         one: "Join enquiry"
         other: "Join enquiries"
     attributes:
-      join:
+      join_request:
         name: "Name"
         email: "Email address"
         job_title: "Job title"
