@@ -3,7 +3,7 @@
 # Linked card for one audience ("Who it's for"), used on the join homepage,
 # the audiences index, and the "you might also be interested in" strip.
 class Components::Join::AudienceCard < Components::Join::Base
-  # Square card image per audience key (keys mirror DemoRequest::AUDIENCES
+  # Square card image per audience key (keys mirror Join::Base::AUDIENCES
   # and the join.audiences.* locale tree).
   IMAGES = {
     'community_groups' => 'home/audiences/communities_square.jpg',

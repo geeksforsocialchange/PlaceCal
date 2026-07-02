@@ -65,7 +65,7 @@ class Views::Join::Home < Views::Join::Base
           center: true
         )
         div(class: 'grid md:grid-cols-2 lg:grid-cols-3 gap-4') do
-          DemoRequest::AUDIENCES.each { |key| Join::AudienceCard(audience: key) }
+          Join::Base::AUDIENCES.each { |key| Join::AudienceCard(audience: key) }
         end
       end
     end

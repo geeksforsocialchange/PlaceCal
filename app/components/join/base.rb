@@ -2,9 +2,20 @@
 
 # Chrome and cards for the join marketing site (join.placecal.org, #3163).
 # This namespace is only possible because the enquiry form model is named
-# JoinRequest — a top-level Join model would be shadowed by this module
+# ContactRequest — a top-level Join model would be shadowed by this module
 # inside every view that includes the Components kit.
 class Components::Join::Base < Components::Base
+  # Ordered audience keys — one "Who it's for" page each, mirroring the
+  # join.audiences.* locale tree.
+  AUDIENCES = %w[
+    community_groups
+    metropolitan_areas
+    housing_providers
+    social_prescribers
+    vcses
+    culture_tourism
+  ].freeze
+
   private
 
   # Absolute URL of the apex (the nationwide directory) from the join

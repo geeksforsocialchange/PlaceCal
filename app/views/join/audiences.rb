@@ -10,7 +10,7 @@ class Views::Join::Audiences < Views::Join::Base
         h1(class: 'join-headline m-0 mb-2') { t('join.audiences.index.title') }
         p(class: 'text-base leading-relaxed max-w-(--width-prose) mt-0 mb-8') { t('join.audiences.index.lede') }
         div(class: 'grid md:grid-cols-2 lg:grid-cols-3 gap-4') do
-          DemoRequest::AUDIENCES.each { |key| Join::AudienceCard(audience: key) }
+          Join::Base::AUDIENCES.each { |key| Join::AudienceCard(audience: key) }
         end
       end
     end

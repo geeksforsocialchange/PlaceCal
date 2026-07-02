@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # One "Who it's for" pitch page. The audience key is validated by the
-# controller against DemoRequest::AUDIENCES.
+# controller against Join::Base::AUDIENCES.
 class Views::Join::Audience < Views::Join::Base
   prop :audience, String, reader: :private
 
@@ -76,7 +76,7 @@ class Views::Join::Audience < Views::Join::Base
   end
 
   def render_others
-    others = DemoRequest::AUDIENCES - [audience]
+    others = Join::Base::AUDIENCES - [audience]
 
     section(class: 'py-10 bg-home-background-3') do
       div(class: 'container-public') do

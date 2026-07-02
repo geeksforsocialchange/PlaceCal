@@ -19,7 +19,7 @@ RSpec.describe "Join marketing site", type: :request do
       expect(response.body).to include("Who PlaceCal is for.")
     end
 
-    DemoRequest::AUDIENCES.each do |key|
+    Components::Join::Base::AUDIENCES.each do |key|
       it "serves the #{key.humanize.downcase} audience page" do
         get "http://join.lvh.me/who-its-for/#{key.tr('_', '-')}"
         expect(response).to be_successful
@@ -50,23 +50,22 @@ RSpec.describe "Join marketing site", type: :request do
     # invisible_captcha's timestamp/spinner checks are off in test
     # (config/initializers/invisible_captcha.rb) so this posts directly.
     def submit_demo(params)
-      post "http://join.lvh.me/book-a-demo", params: { demo_request: params }
+      post "http://join.lvh.me/book-a-demo", params: { contact_request: params }
     end
 
     it "sends the enquiry and redirects home" do
       expect do
         submit_demo(name: "Test User", email: "test@example.com",
-                    organisation: "Test Org", audience: "housing_providers",
-                    message: "We would like a demo")
+                    job_org: "Test Org", why: "We would like a demo")
       end.to change { ActionMailer::Base.deliveries.count }.by(1)
 
       expect(response).to redirect_to("http://join.lvh.me/")
-      expect(ActionMailer::Base.deliveries.last.subject).to eq("New demo request")
+      expect(ActionMailer::Base.deliveries.last.subject).to eq("New Join Request")
     end
 
     it "re-renders the form when required fields are missing" do
       expect do
-        submit_demo(name: "", email: "")
+        submit_demo(name: "", email: "", why: "")
       end.not_to(change { ActionMailer::Base.deliveries.count })
 
       expect(response).to have_http_status(:unprocessable_content)

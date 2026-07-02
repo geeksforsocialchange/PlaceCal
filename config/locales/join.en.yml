@@ -2,14 +2,6 @@
 # NOTE: this copy is a first pass from the design prototype and is not yet
 # signed off — the site ships behind JOIN_SITE_ENABLED (off in production).
 en:
-  activemodel:
-    attributes:
-      demo_request:
-        name: Name
-        email: Work email
-        organisation: Organisation
-        audience: I'm working for a…
-        message: What you're trying to do
   join:
     band:
       host: join.placecal.org
@@ -245,15 +237,6 @@ en:
     demo:
       title: Book a 30-minute chat.
       lede: No pitch deck. We listen, learn what you're trying to do, and tell you honestly whether PlaceCal is the right fit.
-      optional: optional
-      select_prompt: Pick the closest fit…
-      placeholders:
-        name: Your name
-        email: you@organisation.org
-        organisation: Organisation name
-        message: Tell us a little about what you're trying to do
-      submit: Send & pick a time
-      note: We read every message and usually reply within two working days.
       flash:
         success: Thanks — we've got your message and we'll be in touch to pick a time.
         error: Sorry — we couldn't send that. Please check the form below and try again.

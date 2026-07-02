@@ -2,7 +2,7 @@
 
 # Shared base for the join marketing site pages (join.placecal.org, #3163).
 # Copy lives under join.* in config/locales/join.en.yml; the audience keys
-# are DemoRequest::AUDIENCES.
+# are Components::Join::Base::AUDIENCES.
 class Views::Join::Base < Views::Base
   register_output_helper :icon
 

@@ -25,7 +25,7 @@ class JoinPagesController < ApplicationController
 
   def audience
     key = params[:slug].to_s.tr('-', '_')
-    raise ActiveRecord::RecordNotFound unless DemoRequest::AUDIENCES.include?(key)
+    raise ActiveRecord::RecordNotFound unless Components::Join::Base::AUDIENCES.include?(key)
 
     render Views::Join::Audience.new(audience: key)
   end
@@ -43,23 +43,25 @@ class JoinPagesController < ApplicationController
   end
 
   def demo
-    render Views::Join::Demo.new(demo_request: DemoRequest.new)
+    render Views::Join::Demo.new(contact_request: ContactRequest.new)
   end
 
   def demo_create
-    @demo_request = DemoRequest.new(demo_params)
+    @contact_request = ContactRequest.new(contact_request_params)
 
-    if @demo_request.submit
+    if @contact_request.submit
       redirect_to join_root_path, notice: t('join.demo.flash.success')
     else
       flash.now[:error] = t('join.demo.flash.error')
-      render Views::Join::Demo.new(demo_request: @demo_request), status: :unprocessable_content
+      render Views::Join::Demo.new(contact_request: @contact_request), status: :unprocessable_content
     end
   end
 
   private
 
-  def demo_params
-    params.require(:demo_request).permit(:name, :email, :organisation, :audience, :message)
+  # Same form and params as JoinsController#create — the book-a-demo page
+  # renders the shared ContactForm.
+  def contact_request_params
+    params.require(:contact_request).permit(:name, :email, :phone, :job_title, :job_org, :area, :ringback, :more_info, :why)
   end
 end

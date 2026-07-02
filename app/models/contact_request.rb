@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class JoinRequest
+class ContactRequest
   include ActiveModel::Model
   include ActiveModel::Attributes
 
