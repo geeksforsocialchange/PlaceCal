@@ -59,10 +59,9 @@ class Components::Join::Footer < Components::Join::Base
   end
 
   def render_impressum
-    div(class: 'container-public mt-6 pt-5 border-t-2 border-rules text-xs text-tertiary font-serif flex justify-between flex-wrap gap-2',
+    div(class: 'container-public mt-6 pt-5 border-t-2 border-rules text-xs text-tertiary font-serif [&_p]:my-1',
         data_nosnippet: true) do
-      span { t('join.footer.impressum_copyright', year: Time.zone.today.year) }
-      span { t('join.footer.impressum_company') }
+      Impressum()
     end
   end
 end

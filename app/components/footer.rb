@@ -120,19 +120,7 @@ class Components::Footer < Components::Base
 
   def render_impressum
     div(class: 'footer__item footer__impressum', data_nosnippet: true) do
-      p do
-        plain "#{t('colophon.year', year: Time.zone.today.year)} #{t('colophon.copyright')}"
-        br
-        plain t('colophon.company')
-        br
-        plain t('colophon.address')
-      end
-      p do
-        plain 'Build: '
-        tag.tt do
-          link_to(AppVersion.label(fallback: 'main'), AppVersion.url)
-        end
-      end
+      Impressum(logo: false)
     end
   end
 end

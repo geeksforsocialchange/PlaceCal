@@ -29,8 +29,6 @@ en:
       our_story: Our story
       gfsc: Geeks for Social Change
       email: hello@placecal.org
-      impressum_copyright: "© %{year} Geeks for Social Change Ltd · Manchester, UK"
-      impressum_company: Company No. 12436630
       placecal_logo_alt: PlaceCal
     home:
       title: Run PlaceCal in your community

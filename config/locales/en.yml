@@ -14,6 +14,8 @@ en:
     copyright: "GFSC Community Interest Company"
     company: "Registered in England and Wales #12135472"
     address: "5 Ribston Street, Manchester, M15 5RH"
+    build: "Build:"
+    gfsc_logo_alt: "Geeks for Social Change"
 
   contact:
     email: "support@placecal.org"
@@ -273,9 +275,7 @@ en:
       our_story: "Our story"
       privacy_policy: "Privacy policy"
       terms_of_use: "Terms of use"
-      build: "Build:"
       placecal_logo_alt: "PlaceCal logo"
-      gfsc_logo_alt: "Geeks for Social Change"
 
   # ===========================================================================
   # DATE & TIME FORMATS
