@@ -48,4 +48,4 @@ jobs:
             --title "Update AI bot list from ai.robots.txt" \
             --body "Automated monthly update of AI crawler lists from https://github.com/ai-robots-txt/ai.robots.txt" \
             --label "dependencies"
-          gh pr merge --auto --squash
+          gh pr merge --auto --merge
