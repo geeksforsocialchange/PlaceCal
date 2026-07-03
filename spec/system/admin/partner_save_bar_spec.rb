@@ -69,8 +69,9 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     end
 
     it "shows Back, Save, and Continue buttons on middle tabs" do
-      # Go to Location tab
-      find('input[aria-label="📍 Location"]').click
+      # go_to_place_tab waits for the tab's :checked state, so the click can't
+      # be silently swallowed before the save-bar listeners react (flaky in CI)
+      go_to_place_tab
 
       # Wait for button visibility to update (JavaScript runs on setTimeout)
       expect(page).to have_button("Back")
@@ -79,8 +80,7 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     end
 
     it "shows Back and Save buttons on Preview tab (no Continue)" do
-      # Go to Preview tab
-      find('input[aria-label="👁️ Preview"]').click
+      go_to_partner_tab("👁️ Preview")
 
       expect(page).to have_button("Back")
       expect(page).to have_button("Save")
@@ -114,15 +114,16 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     end
 
     it "changes button text to include Save when dirty" do
-      # Go to a middle tab first
-      find('input[aria-label="📍 Location"]').click
+      # Go to a middle tab first (waits for :checked — a raw click can be
+      # swallowed before the save-bar listeners react, flaky in CI)
+      go_to_place_tab
 
       # Initially shows "Back" and "Continue"
       expect(page).to have_button("Back")
       expect(page).to have_button("Continue", visible: :all)
 
       # Go back to basic and modify
-      find('input[aria-label="📋 Basic Info"]').click
+      go_to_basic_info_tab
       modify_field('input[name="partner[name]"]', "Modified Partner Name")
 
       # Go to location tab again
@@ -130,6 +131,9 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
       accept_confirm do
         find('input[aria-label="📍 Location"]').click
       end
+
+      # Wait for the accepted tab switch to land before asserting the buttons
+      expect(page).to have_css('input[aria-label="📍 Location"]:checked', visible: :all)
 
       # Now should show "Save & Back" and "Save & Continue"
       expect(page).to have_button("Save & Back")
