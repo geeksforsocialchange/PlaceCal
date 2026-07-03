@@ -30,7 +30,7 @@ class Views::Admin::Articles::FormTabReferences < Views::Admin::Base
       StackedListSelector(
         field_name: 'article[partner_ids][]',
         items: article.partners,
-        options: disabled_fields.include?(:partner_ids) ? [] : options_for_partners,
+        options: disabled_fields.include?(:partner_ids) ? [] : options_for_article_partners,
         icon_name: :partner,
         icon_color: 'bg-emerald-100 text-emerald-600',
         empty_text: t('admin.empty.none_assigned', items: Partner.model_name.human(count: 2).downcase),

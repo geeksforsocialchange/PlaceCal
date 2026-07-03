@@ -262,6 +262,8 @@ en:
     # Articles
     # -------------------------------------------------------------------------
     articles:
+      errors:
+        partner_required: "Link this article to at least one partner — articles with no partner don't appear on any site"
       sections:
         details: "Article Details"
       fields:
