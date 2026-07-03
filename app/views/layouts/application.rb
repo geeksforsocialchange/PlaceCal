@@ -114,6 +114,8 @@ class Views::Layouts::Application < Phlex::HTML
     link(rel: 'canonical', href: request.original_url)
     meta(name: 'robots', content: 'noarchive')
 
+    link(rel: 'alternate', type: 'application/rss+xml', title: compute_title, href: content_for(:rss_feed)) if content_for?(:rss_feed)
+
     json_ld = site ? site.to_json_ld(base_url: request.base_url) : Site.directory_json_ld(request.base_url)
     script(type: 'application/ld+json') { raw safe(json_ld.to_json) }
     return unless content_for?(:json_ld)

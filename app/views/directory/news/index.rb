@@ -10,6 +10,7 @@ class Views::Directory::News::Index < Views::Base
   def view_template
     content_for(:title) { hero_title }
     content_for(:description) { t('directory.news.index.description') }
+    content_for(:rss_feed) { rss_feed_path }
 
     Directory::PageHero(
       title: hero_title,
@@ -30,6 +31,11 @@ class Views::Directory::News::Index < Views::Base
       render_empty_state if article_list.empty?
 
       Directory::Paginator(pagy: @pagy)
+
+      p(class: 'mt-6 text-sm') do
+        link_to t('directory.news.index.rss'), rss_feed_path,
+                class: 'with-no-sass text-tertiary underline decoration-primary decoration-2 underline-offset-2 hover:text-foreground'
+      end
     end
   end
 
@@ -56,6 +62,10 @@ class Views::Directory::News::Index < Views::Base
   def area_label_for(article)
     partner = article.partners.first
     partner && @area_labels[partner.id]
+  end
+
+  def rss_feed_path
+    news_index_path(**{ format: :rss, partner: @partner&.slug }.compact)
   end
 
   def render_empty_state

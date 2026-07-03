@@ -11,6 +11,7 @@ class Views::News::Index < Views::Base
 
   def view_template
     content_for(:title) { page_title }
+    content_for(:rss_feed) { rss_feed_path }
 
     Hero(page_title, site.tagline)
 
@@ -22,6 +23,10 @@ class Views::News::Index < Views::Base
 
     p(class: 'articles__pagination') do
       link_to t('news.index.older'), news_index_path(**pagination_params) if articles.count == NewsController::ARTICLES_PER_PAGE
+    end
+
+    p(class: 'articles__rss') do
+      link_to t('news.index.rss'), rss_feed_path
     end
   end
 
@@ -37,6 +42,10 @@ class Views::News::Index < Views::Base
 
   def pagination_params
     { offset: next_offset, partner: partner&.slug }.compact
+  end
+
+  def rss_feed_path
+    news_index_path(**{ format: :rss, partner: partner&.slug }.compact)
   end
 
   def render_article_card(article)

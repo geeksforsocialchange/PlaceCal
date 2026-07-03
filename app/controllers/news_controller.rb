@@ -10,10 +10,15 @@ class NewsController < ApplicationController
   before_action :set_partner_filter, only: %i[index]
 
   def index
-    if directory_request?
-      render_directory_index
-    else
-      render_site_index
+    respond_to do |format|
+      format.html do
+        if directory_request?
+          render_directory_index
+        else
+          render_site_index
+        end
+      end
+      format.rss { render_feed }
     end
   end
 
@@ -55,6 +60,25 @@ class NewsController < ApplicationController
     render Views::News::Index.new(
       articles: @articles, site: @site, partner: @partner, next_offset: @next_offset
     )
+  end
+
+  # RSS 2.0 (issue #3308 Phase 3): same scoping as the HTML index — per site,
+  # per partner via ?partner=, or platform-wide on the directory
+  def render_feed
+    @articles = base_articles.includes(:partners).limit(ARTICLES_PER_PAGE)
+    @feed_title = feed_title
+    @feed_description = @site&.tagline.presence || t('news.feed.description')
+
+    render :index, layout: false
+  end
+
+  def feed_title
+    name = @site&.name || 'PlaceCal'
+    if @partner
+      t('news.feed.title_for_partner', name: name, partner: @partner.name)
+    else
+      t('news.feed.title', name: name)
+    end
   end
 
   def render_directory_index
