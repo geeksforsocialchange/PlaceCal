@@ -139,6 +139,16 @@ RSpec.describe "Directory Partners", type: :request do
       expect(response).to be_successful
     end
 
+    it "links partnerships in the sidebar relative to the current host" do
+      site = create(:site, is_published: true)
+      site.neighbourhoods << partner.address.neighbourhood
+
+      get partner_url(partner, host: "lvh.me")
+
+      expect(response.body).to include("http://#{site.slug}.lvh.me")
+      expect(response.body).not_to include("#{site.slug}.placecal.org")
+    end
+
     it "displays partner name in hero" do
       get partner_url(partner, host: "lvh.me")
       expect(response.body).to include(partner.name)
