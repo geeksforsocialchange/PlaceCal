@@ -190,35 +190,56 @@ en:
     # copy under directory.pages.our_story) — no join-specific copy.
     pricing:
       title: Honest pricing.
-      lede: We are a not-for-profit co-op. These numbers reflect the real cost of maintaining high-quality community infrastructure — nothing more.
-      community:
-        name: Community
-        price: Free
-        blurb: For individual community groups who want to publish their events via an existing PlaceCal.
+      lede: We're a not-for-profit. Those who can pay fund free listings for those who can't — that's the whole model, so here's exactly what things cost.
+      free:
+        heading: Listing your group is always free.
+        body: If you just want your group's events on PlaceCal, it costs nothing — join an existing site near you. Come along to one of our free monthly drop-ins and we'll help you get set up.
+        cta: See upcoming drop-ins
+      setup:
+        kicker: Site setup
+        heading: Your own PlaceCal site.
+        lede: A one-off launch fee for a branded calendar site for your neighbourhood, city, or community of interest. Every tier gets exactly the same things — we price by what you can afford, not by locking away features.
+        bands:
+          community:
+            name: Community
+            price: £750
+            blurb: Grassroots and volunteer-run partnerships.
+          organisation:
+            name: Organisation
+            price: £2,500
+            blurb: Funded charities and networks with staff.
+          institution:
+            name: Institution
+            price: From £7,500
+            blurb: Local authorities and statutory bodies.
+        one_off: one-off
+        includes_heading: Every setup includes
         items:
-          - List your group
-          - Import from Google/Outlook/Facebook
-          - Training from partnership coordinator
-      partnership:
-        name: Partnership
-        price: From £8k/year
-        blurb: For neighbourhoods, boroughs, or VCSE networks running their own PlaceCal.
-        items:
-          - Your own subdomain
-          - Branded site & partner onboarding
-          - Training programme for partners
-          - Ongoing support & platform updates
+          - A 1:1 working session with our team to scope your site
+          - Domain, branding and initial site structure
+          - Admin accounts for your team
+          - Handbook access and ongoing drop-in support
+      service:
+        kicker: Ongoing service
+        heading: A monthly fee that scales with your groups.
+        lede: The monthly service covers moderation, support, and keeping everyone's calendar feeds healthy. Billed annually by invoice — and we only count active groups, so you never pay for dormant listings.
+        caption: Monthly service cost by number of groups on your site
+        groups_header: Groups on your site
+        price_header: Monthly service
+        rows:
+          - groups: Up to 10 groups
+            price: Free
+          - groups: 11–50 groups
+            price: £20/month
+          - groups: 51–200 groups
+            price: £50/month
+          - groups: 200+ groups
+            price: Let's talk
+      extras:
+        heading: Training & onboarding
+        body: We also run a standalone training course for community organisers — three hands-on sessions covering partnership building, the platform, and calendar feeds — and when you don't have the capacity to onboard your community's groups yourself, we can do it for you. Both are priced to fit your situation, so let's talk.
         cta: Book a demo
-      metropolitan:
-        name: Metropolitan
-        price: Custom
-        blurb: For councils, housing providers and health systems running PlaceCal across many neighbourhoods.
-        items:
-          - Multi-partnership deployments
-          - Custom integrations (social prescribing, etc.)
-          - Dedicated support
-          - SLAs available
-      footnote: All prices ex-VAT. Discounts for registered charities. Nothing here is more expensive than a printed directory that will be out of date in six months.
+      footnote: All prices ex-VAT. Pay-what-you-can rates available — just ask. Nothing here is more expensive than a printed directory that will be out of date in six months.
     demo:
       title: Book a 30-minute chat.
       lede: No pitch deck. We listen, learn what you're trying to do, and tell you honestly whether PlaceCal is the right fit.
