@@ -125,6 +125,59 @@ RSpec.describe "Admin::Articles", type: :request do
     end
   end
 
+  describe "record-level authorization for non-staff" do
+    let!(:foreign_article) { create(:article, title: "Someone else's news", partners: [create(:partner)]) }
+
+    context "as a partner admin" do
+      before { sign_in partner_admin }
+
+      it "cannot open the edit form for another partner's article" do
+        get edit_admin_article_url(foreign_article, host: admin_host)
+
+        expect(response).to redirect_to(admin_root_path)
+      end
+
+      it "cannot update another partner's article" do
+        put admin_article_url(foreign_article, host: admin_host), params: {
+          article: { title: "Hijacked" }
+        }
+
+        expect(response).to redirect_to(admin_root_path)
+        expect(foreign_article.reload.title).to eq("Someone else's news")
+      end
+
+      it "cannot delete another partner's article" do
+        delete admin_article_url(foreign_article, host: admin_host)
+
+        expect(response).to redirect_to(admin_root_path)
+        expect(Article.exists?(foreign_article.id)).to be true
+      end
+
+      it "cannot create an article for another partner" do
+        other_partner = create(:partner)
+
+        post admin_articles_url(host: admin_host), params: {
+          article: { title: "Planted article", body: "Some words", author_id: partner_admin.id,
+                     partner_ids: [other_partner.id] }
+        }
+
+        expect(response).to redirect_to(admin_root_path)
+        expect(Article.find_by(title: "Planted article")).to be_nil
+      end
+    end
+
+    it "still allows editors to manage any article" do
+      sign_in editor_user
+
+      put admin_article_url(foreign_article, host: admin_host), params: {
+        article: { title: "Edited by staff" }
+      }
+
+      expect(response).to be_redirect
+      expect(foreign_article.reload.title).to eq("Edited by staff")
+    end
+  end
+
   describe "partner requirement for non-staff authors" do
     context "as a partner admin" do
       before { sign_in partner_admin }

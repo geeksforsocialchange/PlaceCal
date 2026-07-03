@@ -15,19 +15,33 @@ class ArticlePolicy < ApplicationPolicy
   end
 
   def show?
-    index?
+    update?
   end
 
+  # Non-staff may only create articles linked to partners they manage — the
+  # form only offers those, but the ids arrive as raw params. An empty partner
+  # list passes here (the form must be openable before partners are picked);
+  # the controller separately requires at least one partner for non-staff.
   def create?
-    index?
+    return false unless index?
+    return true if user.root? || user.editor?
+
+    (record_partner_ids - managed_partner_ids).empty?
   end
 
   def new?
     index?
   end
 
+  # Root/editor manage everything; everyone else only articles linked to a
+  # partner they manage (their own, or one in their patch for neighbourhood
+  # admins) — the same rule as Scope#resolve. index? alone is not enough:
+  # the controller finds records outside the policy scope by slug.
   def update?
-    index?
+    return false unless index?
+    return true if user.root? || user.editor?
+
+    record_partner_ids.intersect?(managed_partner_ids)
   end
 
   def edit?
@@ -89,6 +103,31 @@ class ArticlePolicy < ApplicationPolicy
   end
 
   private
+
+  # @return [Array<Integer>] partner ids on the record being authorized
+  def record_partner_ids
+    record.is_a?(Article) ? record.partner_ids : []
+  end
+
+  # Partner ids the user manages: their assigned partners plus, for
+  # neighbourhood admins, every partner with an address or service area in
+  # their patch. Mirrors Scope#resolve.
+  #
+  # @return [Array<Integer>]
+  def managed_partner_ids
+    @managed_partner_ids ||= begin
+      ids = user.partner_ids
+      if user.neighbourhood_admin?
+        neighbourhood_ids = user.owned_neighbourhood_ids
+        ids |= Partner
+               .left_joins(:address, :service_areas)
+               .where('addresses.neighbourhood_id IN (?) OR service_areas.neighbourhood_id IN (?)',
+                      neighbourhood_ids, neighbourhood_ids)
+               .pluck(:id)
+      end
+      ids
+    end
+  end
 
   # Does the current User have Partners in their Neighbourhoods?
   # @return [ActiveRecord::Relation<Article>] A list of Partners
