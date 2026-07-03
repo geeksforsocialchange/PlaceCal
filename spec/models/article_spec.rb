@@ -57,6 +57,21 @@ RSpec.describe Article do
 
       expect(article_draft.published_at).to be_present
     end
+
+    it "keeps an explicitly set publication date when publishing" do
+      backdated = 3.weeks.ago.change(usec: 0)
+      article = create(:article, is_draft: false, published_at: backdated)
+
+      expect(article.published_at).to eq(backdated)
+    end
+
+    it "clears the date on unpublish and restamps on republish" do
+      article.update!(is_draft: true)
+      expect(article.reload.published_at).to be_nil
+
+      article.update!(is_draft: false)
+      expect(article.published_at).to be_present
+    end
   end
 
   describe ".with_tags" do

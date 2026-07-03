@@ -128,7 +128,9 @@ class Article < ApplicationRecord
   private
 
   # ==== Private methods ====
+  # Publishing stamps the current time unless a publication date was set
+  # explicitly (backdating, seeds); unpublishing clears it
   def update_published_at
-    self.published_at = is_draft ? nil : Time.current
+    self.published_at = is_draft ? nil : (published_at || Time.current)
   end
 end
