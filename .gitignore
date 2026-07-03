@@ -45,8 +45,9 @@ notes.md
 # Coverage
 coverage
 
-# ERD pdf as it's messing up diffs
+# ERD output as it's messing up diffs
 erd.pdf
+erd.mmd
 
 # Ignore the dump directory
 dump/

@@ -9,7 +9,7 @@
 #  body          :text             not null
 #  body_html     :string
 #  is_draft      :boolean          default(TRUE), not null
-#  published_at  :date
+#  published_at  :datetime
 #  slug          :string
 #  title         :text             not null
 #  created_at    :datetime         not null
@@ -18,8 +18,9 @@
 #
 # Indexes
 #
-#  index_articles_on_author_id  (author_id)
-#  index_articles_on_slug       (slug) UNIQUE
+#  index_articles_on_author_id     (author_id)
+#  index_articles_on_published_at  (published_at)
+#  index_articles_on_slug          (slug) UNIQUE
 #
 # Foreign Keys
 #
@@ -35,7 +36,7 @@ class Article < ApplicationRecord
   attribute :body,         :text
   attribute :body_html,    :string # populated by HtmlRenderCache
   attribute :is_draft,     :boolean, default: true
-  attribute :published_at, :date
+  attribute :published_at, :datetime
   attribute :slug,         :string
   attribute :title,        :text
 
@@ -113,6 +114,6 @@ class Article < ApplicationRecord
 
   # ==== Private methods ====
   def update_published_at
-    self.published_at = is_draft ? nil : DateTime.now
+    self.published_at = is_draft ? nil : Time.current
   end
 end
