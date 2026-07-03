@@ -14,12 +14,10 @@ class NewsController < ApplicationController
 
     @article_count = Article
                      .for_site(@site)
-                     .published
                      .count
 
     @articles = Article
                 .for_site(@site)
-                .published
                 .by_publish_date
                 .offset(@offset)
                 .limit(ARTICLES_PER_PAGE)

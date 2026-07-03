@@ -170,10 +170,7 @@ class Site < ApplicationRecord
 
   # @return [Integer] published articles count for this site
   def news_article_count
-    Article
-      .for_site(self)
-      .published
-      .count
+    Article.for_site(self).count
   end
 
   # @return [Boolean] whether neighbourhood badges should be shown

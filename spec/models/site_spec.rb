@@ -241,6 +241,27 @@ RSpec.describe Site, type: :model do
     end
   end
 
+  describe "#news_article_count" do
+    let(:ward) { create(:riverside_ward) }
+    let(:site) do
+      create(:site).tap { |s| create(:sites_neighbourhood, site: s, neighbourhood: ward) }
+    end
+
+    it "counts published articles from the site's partners, including service-area ones" do
+      address_partner = create(:partner, address: create(:address, neighbourhood: ward))
+      service_area_partner = create(:mobile_partner,
+                                    address: create(:address, neighbourhood: create(:oldtown_ward)),
+                                    service_area_wards: [ward])
+
+      create(:article, partners: [address_partner])
+      create(:article, partners: [service_area_partner])
+      create(:article, partners: [address_partner], is_draft: true)
+      create(:article) # no partner — visible nowhere
+
+      expect(site.news_article_count).to eq(2)
+    end
+  end
+
   describe "scopes" do
     describe "default ordering" do
       let!(:site_a) { create(:site, name: "Alpha Site") }

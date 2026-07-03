@@ -119,95 +119,99 @@ RSpec.describe Article do
   end
 
   describe ".for_site" do
-    let(:neighbourhood_1) { create(:riverside_ward) }
-    let(:neighbourhood_2) { create(:oldtown_ward) }
-    let(:author) { create(:root) }
+    # Visibility follows the partner (issue #3308 §4): an article is visible on
+    # a site iff at least one of its partners is on that site per PartnersQuery.
+    let(:site_ward) { create(:riverside_ward) }
+    let(:other_ward) { create(:oldtown_ward) }
+    let(:site) do
+      create(:site).tap { |s| create(:sites_neighbourhood, site: s, neighbourhood: site_ward) }
+    end
+    let(:site_partner) { create(:partner, address: create(:address, neighbourhood: site_ward)) }
 
-    it "returns articles for site (via neighbourhood)" do
-      site = create(:site)
-      site.neighbourhoods << neighbourhood_1
-      site.neighbourhoods << neighbourhood_2
-
-      partner_1 = create(:partner, address: create(:address, neighbourhood: neighbourhood_1))
-      partner_2 = create(:partner, address: create(:address, neighbourhood: neighbourhood_2))
-
-      # from first partner
-      2.times do |n|
-        partner_1.articles.create!(
-          title: "#{n} Article from Partner 1",
-          is_draft: false,
-          body: "lorem ipsum dorem ditsum",
-          author: author
-        )
-      end
-
-      # from second partner
-      3.times do |n|
-        partner_2.articles.create!(
-          title: "#{n} Article from Partner 2",
-          is_draft: false,
-          body: "lorem ipsum dorem ditsum",
-          author: author
-        )
-      end
-
-      found = described_class.for_site(site).select(:id)
-      expect(found.count).to eq(5)
+    def create_article(partners:, is_draft: false)
+      create(:article, partners: partners, is_draft: is_draft)
     end
 
-    it "returns articles with site tags applied" do
-      tag = create(:tag)
+    it "returns articles from partners whose address is in a site neighbourhood" do
+      article = create_article(partners: [site_partner])
 
-      site = create(:site)
-      site.tags << tag
-      site.validate!
-
-      3.times do |n|
-        article = described_class.create!(
-          title: "#{n} Article with tag",
-          is_draft: false,
-          body: "lorem ipsum dorem ditsum",
-          author: author
-        )
-        article.tags << tag
-        article.validate!
-      end
-
-      found = described_class.for_site(site)
-      expect(found.count).to eq(3)
+      expect(described_class.for_site(site)).to contain_exactly(article)
     end
 
-    it "finds articles by both neighbourhood and tag" do
-      site = create(:site)
+    it "returns articles from partners with only a service area in a site neighbourhood" do
+      # Address is deliberately outside the site; only the service area matches
+      partner = create(:mobile_partner,
+                       address: create(:address, neighbourhood: other_ward),
+                       service_area_wards: [site_ward])
+      article = create_article(partners: [partner])
 
-      site.neighbourhoods << neighbourhood_1
+      expect(described_class.for_site(site)).to contain_exactly(article)
+    end
 
-      partner = create(:partner, address: create(:address, neighbourhood: neighbourhood_1))
+    it "excludes articles from partners outside the site's neighbourhoods" do
+      partner = create(:partner, address: create(:address, neighbourhood: other_ward))
+      create_article(partners: [partner])
 
-      3.times do |n|
-        partner.articles.create!(
-          title: "#{n} Article from Partner by neighbourhood",
-          is_draft: false,
-          body: "lorem ipsum dorem ditsum",
-          author: author
-        )
+      expect(described_class.for_site(site)).to be_empty
+    end
+
+    it "excludes draft articles" do
+      create_article(partners: [site_partner], is_draft: true)
+
+      expect(described_class.for_site(site)).to be_empty
+    end
+
+    it "excludes articles from hidden partners" do
+      site_partner.update!(hidden: true, hidden_reason: "spam", hidden_blame_id: create(:root_user).id)
+      create_article(partners: [site_partner])
+
+      expect(described_class.for_site(site)).to be_empty
+    end
+
+    it "excludes articles with no partners" do
+      create(:article)
+
+      expect(described_class.for_site(site)).to be_empty
+    end
+
+    it "returns a multi-partner article once" do
+      second_partner = create(:partner, address: create(:address, neighbourhood: site_ward))
+      article = create_article(partners: [site_partner, second_partner])
+
+      expect(described_class.for_site(site).to_a).to contain_exactly(article)
+    end
+
+    it "returns nothing for a site with no neighbourhoods" do
+      empty_site = create(:site)
+      create_article(partners: [site_partner])
+
+      expect(described_class.for_site(empty_site)).to be_empty
+    end
+
+    context "when the site has partnership tags" do
+      let(:partnership) { create(:partnership_tag) }
+
+      before { site.tags << partnership }
+
+      it "returns articles from tagged partners in the site's neighbourhoods" do
+        site_partner.tags << partnership
+        article = create_article(partners: [site_partner])
+
+        expect(described_class.for_site(site)).to contain_exactly(article)
       end
 
-      tag = create(:tag)
-      site.tags << tag
+      it "excludes articles from untagged partners even in the site's neighbourhoods" do
+        create_article(partners: [site_partner])
 
-      5.times do |n|
-        article = described_class.create!(
-          title: "#{n} Article with tag",
-          is_draft: false,
-          body: "lorem ipsum dorem ditsum",
-          author: author
-        )
-        article.tags << tag
+        expect(described_class.for_site(site)).to be_empty
       end
 
-      found = described_class.for_site(site).select(:id)
-      expect(found.count).to eq(8)
+      it "ignores article tags for visibility (they are an API curation tool)" do
+        article = create(:article)
+        article.tags << partnership
+
+        expect(described_class.for_site(site)).to be_empty
+      end
     end
   end
 
