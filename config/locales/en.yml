@@ -23,6 +23,35 @@ en:
       open: "Open to read more"
       close: "Close"
 
+  navigation:
+    home: "Home"
+    events: "Events"
+    partners: "Partners"
+    partnerships: "Partnerships"
+    news: "News"
+
+  # ===========================================================================
+  # NEWS (site subdomains; directory news lives under directory.news)
+  # ===========================================================================
+
+  news:
+    index:
+      title: "News from your area"
+      title_for_partner: "News from %{partner}"
+      older: "Older news items"
+      read_more: "Find out more"
+      rss: "Subscribe to these news posts (RSS)"
+    show:
+      by: "By"
+      back: "Back to news"
+    partner_section:
+      title: "Latest news"
+      more: "More news from %{partner}"
+    feed:
+      title: "%{name}: news"
+      title_for_partner: "%{name}: news from %{partner}"
+      description: "Community news from PlaceCal partners"
+
   # ===========================================================================
   # DIRECTORY (public placecal.org)
   # ===========================================================================
@@ -203,12 +232,30 @@ en:
         clear: "Clear filters"
       show:
         upcoming_events: "Upcoming events"
+        latest_news: "Latest news"
+        more_news: "More news from %{name}"
         location: "Location"
         accessibility_info: "Accessibility info"
         show_more_events:
           one: "Show 1 more event"
           other: "Show %{count} more events"
         serves: "Serves %{area}."
+    news:
+      index:
+        hero_title: "News from PlaceCal partners"
+        hero_subtitle: "Community news straight from the groups organising things near you, newest first."
+        description: "Read the latest community news from partners across PlaceCal."
+        results:
+          total:
+            one: "1 news post"
+            other: "%{count} news posts"
+          page: " — page %{page} of %{pages}"
+        empty: "No news posts yet."
+        rss: "Subscribe to these news posts (RSS)"
+      show:
+        kicker: "News"
+        back: "All news"
+        by: "By"
     partnerships:
       index:
         hero_title: "Partnerships on PlaceCal"

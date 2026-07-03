@@ -61,6 +61,12 @@ class PartnersController < ApplicationController
 
     @containing_sites = Site.sites_that_contain_partner(@partner) if directory_request?
 
+    # Latest news (issue #3308 Phase 2): up to 3 recent posts, with a count so
+    # the view knows whether to offer "more news from X"
+    news_scope = Article.published.for_partner(@partner).by_publish_date
+    @news_total = news_scope.count
+    @news_articles = news_scope.limit(3)
+
     respond_to do |format|
       format.html do
         view_class = directory_request? ? Views::Directory::Partners::Show : Views::Partners::Show
@@ -70,7 +76,8 @@ class PartnersController < ApplicationController
           period: @period, date_period: @date_period, sort: @sort,
           repeating: @repeating, no_event_message: @no_event_message,
           paginator: @paginator, show_monthly: @show_monthly || false,
-          containing_sites: @containing_sites
+          containing_sites: @containing_sites,
+          news_articles: @news_articles, news_total: @news_total
         )
       end
       format.ics do

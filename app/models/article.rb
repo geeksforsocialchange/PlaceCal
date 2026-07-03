@@ -63,6 +63,10 @@ class Article < ApplicationRecord
   scope :published, -> { where is_draft: false }
   scope :by_publish_date, -> { order(published_at: :desc) }
 
+  scope :for_partner, lambda { |partner|
+    joins(:article_partners).where(article_partners: { partner_id: partner.id })
+  }
+
   scope :global_newsfeed, -> { published.order(published_at: :desc) }
 
   scope :with_partner_tag, lambda { |tag_id|
@@ -103,6 +107,17 @@ class Article < ApplicationRecord
   # @return [String, nil] high-resolution header image URL
   def highres_image
     article_image&.highres&.url
+  end
+
+  # Image for social-share cards: the article's own image, falling back to the
+  # first partner's. Callers fall through to the site/directory default when nil.
+  #
+  # @return [String, nil] image path
+  def og_image_path
+    return highres_image if article_image.present?
+
+    partner_with_image = partners.detect(&:image?)
+    partner_with_image&.image&.url(:standard)
   end
 
   # @return [Array] FriendlyId slug candidates

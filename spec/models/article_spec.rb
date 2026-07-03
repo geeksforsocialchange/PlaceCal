@@ -216,6 +216,28 @@ RSpec.describe Article do
     end
   end
 
+  describe "#og_image_path" do
+    it "is nil with no article image and no partner image" do
+      article = create(:article, partners: [create(:partner)])
+
+      expect(article.og_image_path).to be_nil
+    end
+
+    it "falls back to a partner's image" do
+      partner = create(:partner, image: Rack::Test::UploadedFile.new("spec/fixtures/files/good-cat-picture.jpg", "image/jpeg"))
+      article = create(:article, partners: [partner])
+
+      expect(article.og_image_path).to be_present
+    end
+
+    it "prefers the article's own image" do
+      article = create(:article,
+                       article_image: Rack::Test::UploadedFile.new("spec/fixtures/files/good-cat-picture.jpg", "image/jpeg"))
+
+      expect(article.og_image_path).to eq(article.highres_image)
+    end
+  end
+
   describe "body_html" do
     it "is rendered from body" do
       art = create(:article)

@@ -6,12 +6,13 @@ class Views::News::Index < Views::Base
 
   prop :articles, ActiveRecord::Relation, reader: :private
   prop :site, Site, reader: :private
+  prop :partner, _Nilable(Partner), reader: :private, default: nil
   prop :next_offset, _Nilable(Integer), reader: :private
 
   def view_template
-    content_for(:title) { 'News from your area' }
+    content_for(:title) { page_title }
 
-    Hero('News from your area', site.tagline)
+    Hero(page_title, site.tagline)
 
     div(class: 'articles') do
       articles.each do |article|
@@ -20,11 +21,23 @@ class Views::News::Index < Views::Base
     end
 
     p(class: 'articles__pagination') do
-      link_to 'Older news items', "?offset=#{next_offset}" if articles.count == NewsController::ARTICLES_PER_PAGE
+      link_to t('news.index.older'), news_index_path(**pagination_params) if articles.count == NewsController::ARTICLES_PER_PAGE
     end
   end
 
   private
+
+  def page_title
+    if partner
+      t('news.index.title_for_partner', partner: partner.name)
+    else
+      t('news.index.title')
+    end
+  end
+
+  def pagination_params
+    { offset: next_offset, partner: partner&.slug }.compact
+  end
 
   def render_article_card(article)
     div(class: 'articles__article-card g') do
@@ -56,7 +69,7 @@ class Views::News::Index < Views::Base
           end
         end
 
-        p { link_to 'Find out more', news_path(article), class: 'btn btn--alt btn--mt' }
+        p { link_to t('news.index.read_more'), news_path(article), class: 'btn btn--alt btn--mt' }
       end
     end
   end

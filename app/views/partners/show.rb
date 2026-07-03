@@ -16,6 +16,8 @@ class Views::Partners::Show < Views::Base
   prop :date_period, _Nilable(String), reader: :private, default: nil
   prop :show_monthly, _Boolean, reader: :private, default: true
   prop :containing_sites, _Nilable(_Interface(:each)), reader: :private, default: nil
+  prop :news_articles, _Interface(:each), reader: :private, default: -> { [] }
+  prop :news_total, Integer, reader: :private, default: 0
 
   def view_template
     set_content_for_tags
@@ -70,6 +72,7 @@ class Views::Partners::Show < Views::Base
         render_partner_details
         render_managees
         render_events_section
+        render_news_section
       end
     end
   end
@@ -179,6 +182,30 @@ class Views::Partners::Show < Views::Base
       else
         p { em { no_event_message || empty_period_message } }
       end
+    end
+  end
+
+  def render_news_section
+    return if news_articles.blank?
+
+    hr
+    h2(class: 'udl udl--fw allcaps h4') { t('news.partner_section.title') }
+    ul(class: 'reset') do
+      news_articles.each do |article|
+        li(class: 'mb-2') do
+          link_to article.title, news_path(article)
+          plain ' — '
+          span(title: article.published_at.to_s) { article.published_at.strftime('%B %Y') }
+        end
+      end
+    end
+
+    return unless news_total > news_articles.size
+
+    p do
+      link_to t('news.partner_section.more', partner: partner.name),
+              news_index_path(partner: partner.slug),
+              class: 'btn btn--alt btn--mt'
     end
   end
 

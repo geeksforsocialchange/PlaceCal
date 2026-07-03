@@ -1,38 +1,69 @@
 # frozen_string_literal: true
 
 class NewsController < ApplicationController
+  include Pagy::Offset::Method
+
   ARTICLES_PER_PAGE = 20
 
   before_action :set_article, only: %i[show]
   before_action :set_site
-  before_action :redirect_from_directory
+  before_action :set_partner_filter, only: %i[index]
 
   def index
-    @offset = params[:offset].to_i
-    @offset = 0 if @offset.negative?
-    @next_offset = @offset + ARTICLES_PER_PAGE
-
-    @article_count = Article
-                     .for_site(@site)
-                     .count
-
-    @articles = Article
-                .for_site(@site)
-                .by_publish_date
-                .offset(@offset)
-                .limit(ARTICLES_PER_PAGE)
-
-    render Views::News::Index.new(articles: @articles, site: @site, next_offset: @next_offset)
+    if directory_request?
+      render_directory_index
+    else
+      render_site_index
+    end
   end
 
   def show
-    render Views::News::Show.new(article: @article, site: @site)
+    if directory_request?
+      render Views::Directory::News::Show.new(article: @article)
+    else
+      render Views::News::Show.new(article: @article, site: @site)
+    end
   end
 
   private
 
-  # Use callbacks to share common setup or constraints between actions.
   def set_article
     @article = Article.published.friendly.find(params[:id])
+  end
+
+  def set_partner_filter
+    @partner = Partner.friendly.find(params[:partner]) if params[:partner].present?
+  end
+
+  # Published articles for this host (site-scoped or platform-wide on the
+  # directory), optionally narrowed to one partner, newest first
+  def base_articles
+    articles = directory_request? ? Article.published : Article.for_site(@site)
+    articles = articles.for_partner(@partner) if @partner
+    articles.by_publish_date
+  end
+
+  def render_site_index
+    @offset = params[:offset].to_i
+    @offset = 0 if @offset.negative?
+    @next_offset = @offset + ARTICLES_PER_PAGE
+
+    articles = base_articles
+    @article_count = articles.count
+    @articles = articles.offset(@offset).limit(ARTICLES_PER_PAGE)
+
+    render Views::News::Index.new(
+      articles: @articles, site: @site, partner: @partner, next_offset: @next_offset
+    )
+  end
+
+  def render_directory_index
+    articles = base_articles.includes(partners: [{ address: :neighbourhood }, { service_areas: :neighbourhood }])
+    @pagy, @articles = pagy(articles, limit: ARTICLES_PER_PAGE)
+    @area_labels = PartnersQuery.area_labels(@articles.flat_map(&:partners).uniq)
+
+    render Views::Directory::News::Index.new(
+      articles: @articles, pagy: @pagy, partner: @partner, area_labels: @area_labels
+    )
   end
 end

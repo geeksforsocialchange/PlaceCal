@@ -258,18 +258,24 @@ class ApplicationController < ActionController::Base
 
   def directory_navigation
     [
-      ['Home', root_path],
-      ['Partners', partners_path],
-      ['Partnerships', partnerships_path],
-      ['Events', events_path]
+      [t('navigation.home'), root_path],
+      [t('navigation.partners'), partners_path],
+      [t('navigation.partnerships'), partnerships_path],
+      [t('navigation.events'), events_path],
+      [t('navigation.news'), news_index_path]
     ]
   end
 
   def sub_site_navigation
-    [
-      ['Home', root_path],
-      ['Events', events_path],
-      ['Partners', partners_path]
+    nav = [
+      [t('navigation.home'), root_path],
+      [t('navigation.events'), events_path],
+      [t('navigation.partners'), partners_path]
     ]
+    # No sad empty News tab: only sites whose partners have published news get
+    # one. current_site is nil on the admin subdomain, which also builds this
+    # nav (and never renders it).
+    nav << [t('navigation.news'), news_index_path] if current_site&.news_article_count&.positive?
+    nav
   end
 end
