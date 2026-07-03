@@ -172,6 +172,82 @@ RSpec.describe "Admin::Articles", type: :request do
     end
   end
 
+  describe "publishing UX (issue #3308 Phase 4)" do
+    context "on the new-article form as a partner admin" do
+      before { sign_in partner_admin }
+
+      it "offers Save draft and Publish actions" do
+        get new_admin_article_url(host: admin_host)
+
+        expect(response.body).to include(I18n.t("admin.articles.actions.save_draft"))
+        expect(response.body).to include(I18n.t("admin.articles.actions.publish"))
+      end
+
+      it "hides the partnerships selector" do
+        get new_admin_article_url(host: admin_host)
+
+        expect(response.body).not_to include(I18n.t("admin.articles.references.partnerships_hint"))
+      end
+
+      it "shows plain-language markdown microcopy" do
+        get new_admin_article_url(host: admin_host)
+
+        expect(response.body).to include(I18n.t("admin.articles.markdown.hint_link"))
+      end
+
+      it "publishes immediately when created via Publish" do
+        post admin_articles_url(host: admin_host), params: {
+          article: { title: "Published straight away", body: "Some words", author_id: partner_admin.id,
+                     partner_ids: [partner.id], is_draft: "false" }
+        }
+
+        article = Article.find_by(title: "Published straight away")
+        expect(article.is_draft).to be false
+        expect(article.published_at).to be_present
+      end
+
+      it "stays a draft when created via Save draft" do
+        post admin_articles_url(host: admin_host), params: {
+          article: { title: "Still cooking", body: "Some words", author_id: partner_admin.id,
+                     partner_ids: [partner.id], is_draft: "true" }
+        }
+
+        expect(Article.find_by(title: "Still cooking").is_draft).to be true
+      end
+    end
+
+    it "shows the partnerships selector to editors" do
+      sign_in editor_user
+
+      get new_admin_article_url(host: admin_host)
+
+      expect(response.body).to include(I18n.t("admin.articles.references.partnerships_hint"))
+    end
+
+    context "on the edit form" do
+      before { sign_in partner_admin }
+
+      it "offers Publish on a draft" do
+        draft = create(:article, partners: [partner], is_draft: true)
+
+        get edit_admin_article_url(draft, host: admin_host)
+
+        expect(response.body).to include(I18n.t("admin.articles.actions.publish"))
+        expect(response.body).not_to include(I18n.t("admin.articles.actions.unpublish"))
+      end
+
+      it "offers Unpublish and a view-live link on a published article" do
+        article = create(:article, partners: [partner])
+
+        get edit_admin_article_url(article, host: admin_host)
+
+        expect(response.body).to include(I18n.t("admin.articles.actions.unpublish"))
+        expect(response.body).to include(I18n.t("admin.articles.actions.view_live"))
+        expect(response.body).to include("/news/#{article.slug}")
+      end
+    end
+  end
+
   describe "POST /admin/articles" do
     context "with bad image upload" do
       before { sign_in root_user }

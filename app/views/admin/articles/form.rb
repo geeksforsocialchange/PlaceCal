@@ -27,8 +27,8 @@ class Views::Admin::Articles::Form < Views::Admin::Base
     div(class: 'card bg-base-100 border border-base-300 shadow-sm') do
       div(class: 'card-body p-6') do
         SectionHeader(
-          title: 'Image',
-          description: 'Image will be cropped to 16:9 ratio.',
+          title: t('admin.articles.image.title'),
+          description: t('admin.articles.image.description'),
           margin: 4
         )
         render Views::Admin::Articles::FormTabImage.new(form: form)
@@ -38,16 +38,26 @@ class Views::Admin::Articles::Form < Views::Admin::Base
     div(class: 'card bg-base-100 border border-base-300 shadow-sm') do
       div(class: 'card-body p-6') do
         SectionHeader(
-          title: 'References',
-          description: 'Link this article to partners and partnerships.',
+          title: t('admin.articles.references.title'),
+          description: t('admin.articles.references.description'),
           margin: 4
         )
         render Views::Admin::Articles::FormTabReferences.new(form: form)
       end
     end
 
+    # Clear "save draft" vs "publish" actions instead of a checkbox buried in
+    # a settings tab (issue #3308 Phase 4). The buttons submit is_draft; save
+    # draft comes first so implicit (Enter-key) submission never publishes.
     SaveBar() do
-      raw form.submit(t('admin.actions.save'), class: 'btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange')
+      button(type: 'submit', name: 'article[is_draft]', value: 'true',
+             class: 'btn bg-base-300 hover:bg-base-content/20 text-base-content border-base-300') do
+        plain t('admin.articles.actions.save_draft')
+      end
+      button(type: 'submit', name: 'article[is_draft]', value: 'false',
+             class: 'btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange') do
+        plain t('admin.articles.actions.publish')
+      end
     end
   end
 
@@ -64,6 +74,26 @@ class Views::Admin::Articles::Form < Views::Admin::Base
       settings_hash: 'settings',
       form: form,
       record: article
-    )
+    ) do
+      render_publish_toggle
+    end
+  end
+
+  # Publish/unpublish lives in the always-visible save bar rather than a
+  # checkbox in the settings tab (issue #3308 Phase 4)
+  def render_publish_toggle
+    if article.is_draft
+      button(type: 'submit', name: 'article[is_draft]', value: 'false',
+             class: 'btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange',
+             data: { action: 'click->save-bar#saveOnly' }) do
+        plain t('admin.articles.actions.publish')
+      end
+    else
+      button(type: 'submit', name: 'article[is_draft]', value: 'true',
+             class: 'btn btn-ghost border border-base-300 text-base-content',
+             data: { action: 'click->save-bar#saveOnly' }) do
+        plain t('admin.articles.actions.unpublish')
+      end
+    end
   end
 end

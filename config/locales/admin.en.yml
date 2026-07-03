@@ -262,6 +262,21 @@ en:
     # Articles
     # -------------------------------------------------------------------------
     articles:
+      actions:
+        save_draft: "Save draft"
+        publish: "Publish"
+        unpublish: "Unpublish to draft"
+        view_live: "View live"
+      status:
+        published: "Published"
+        draft: "Draft"
+        draft_hint: "Only admins can see this article. Publish it with the button in the save bar."
+        published_hint: "This article is live on PlaceCal. You can unpublish it from the save bar."
+      references:
+        title: "References"
+        description: "Link this article to partners and partnerships."
+        partners_hint: "Link this article to one or more partners — it appears on their pages and on every site they're part of."
+        partnerships_hint: "Link this article to partnerships for filtering and organization."
       errors:
         partner_required: "Link this article to at least one partner — articles with no partner don't appear on any site"
       sections:
@@ -271,6 +286,8 @@ en:
         published: "Published"
         not_published: "Not published"
       markdown:
+        hint: "Just write — plain text works fine, and the toolbar adds bold text, lists and links. Want more formatting? See the"
+        hint_link: "Markdown guide"
         write: "Write"
         preview: "Preview"
         preview_placeholder: "Start typing to see preview..."

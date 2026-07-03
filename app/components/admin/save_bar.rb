@@ -23,8 +23,9 @@ class Components::Admin::SaveBar < Components::Admin::Base
   end
 
   def view_template(&block)
-    # In simple mode, the content block from ERB is treated as button content
-    @button_blocks << block if block && !@wizard && !@multi_step
+    # In simple and multi-step modes, the content block is treated as extra
+    # button content (rendered before the built-in buttons)
+    @button_blocks << block if block && !@wizard
 
     div(
       class: 'sticky bottom-0 z-40 bg-base-200 border-t border-base-300 py-4 px-4 sm:px-6 -mx-4 sm:-mx-6 mt-6 shadow-[0_-4px_20px_-4px_rgba(0,0,0,0.15)]',
@@ -120,6 +121,10 @@ class Components::Admin::SaveBar < Components::Admin::Base
           data_save_bar_target: 'saveButton',
           data_action: 'click->save-bar#saveOnly'
         ) { t('admin.actions.save') }
+
+        # Extra buttons render after Save so pressing Enter in a field
+        # (implicit submission uses the first submit button) stays a plain save
+        @button_blocks.each(&:call)
 
         button(
           type: 'submit',

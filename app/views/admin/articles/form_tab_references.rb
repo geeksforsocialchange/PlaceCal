@@ -9,7 +9,9 @@ class Views::Admin::Articles::FormTabReferences < Views::Admin::Base
 
     div(class: 'grid grid-cols-1 lg:grid-cols-2 gap-8') do
       render_partners_section(article, disabled_fields)
-      render_partnerships_section(article, disabled_fields)
+      # Partnership tags are a root/editor curation tool (they feed the
+      # tag-based API, not site visibility) — hidden from partner admins
+      render_partnerships_section(article, disabled_fields) if current_user.root? || current_user.editor?
     end
   end
 
@@ -23,7 +25,7 @@ class Views::Admin::Articles::FormTabReferences < Views::Admin::Base
         end
         div do
           h2(class: 'text-lg font-semibold') { Partner.model_name.human(count: 2) }
-          p(class: 'text-sm text-gray-600 mt-0.5') { 'Link this article to one or more partners.' }
+          p(class: 'text-sm text-gray-600 mt-0.5') { t('admin.articles.references.partners_hint') }
         end
       end
 
@@ -49,7 +51,7 @@ class Views::Admin::Articles::FormTabReferences < Views::Admin::Base
         end
         div do
           h2(class: 'text-lg font-semibold') { Partnership.model_name.human(count: 2) }
-          p(class: 'text-sm text-gray-600 mt-0.5') { 'Link this article to partnerships for filtering and organization.' }
+          p(class: 'text-sm text-gray-600 mt-0.5') { t('admin.articles.references.partnerships_hint') }
         end
       end
 
