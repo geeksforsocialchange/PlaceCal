@@ -154,7 +154,7 @@ class Views::Admin::Users::New < Views::Admin::Base
         StackedListSelector(
           field_name: 'user[partner_ids][]',
           items: user.partners.order(:name),
-          options: options_for_partners(user),
+          options: options_for_user_partners(user),
           permitted_ids: permitted_options_for_partners,
           icon_name: :partner, icon_color: 'bg-emerald-100 text-emerald-600',
           empty_text: t('admin.empty.none_assigned', items: Partner.model_name.human(count: 2).downcase),

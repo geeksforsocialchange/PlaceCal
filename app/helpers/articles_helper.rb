@@ -2,10 +2,6 @@
 
 # app/helpers/articles_helper.rb
 module ArticlesHelper
-  def options_for_partners
-    policy_scope(Partner).all.order(:name).pluck(:name, :id)
-  end
-
   # Partners the current user may attach an article to. Root and editor manage
   # all articles (issue #2045), so they can attach any partner; everyone else
   # is limited to the partners they administer.

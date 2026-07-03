@@ -24,7 +24,10 @@ module UsersHelper
     true # they have no rights
   end
 
-  def options_for_partners(user = nil)
+  # Partner options for assigning partners to a user in the user form: the
+  # partners the current user administers, plus the target user's existing
+  # partners so saved assignments outside that set aren't dropped on render.
+  def options_for_user_partners(user = nil)
     options = policy_scope(Partner).all.order(:name).pluck(:name, :id)
     return options unless user
 

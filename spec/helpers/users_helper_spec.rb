@@ -20,7 +20,7 @@ RSpec.describe UsersHelper, type: :helper do
     p
   end
 
-  describe "#options_for_partners" do
+  describe "#options_for_user_partners" do
     context "as root user" do
       before do
         allow(helper).to receive(:policy_scope) do |_scope|
@@ -31,13 +31,13 @@ RSpec.describe UsersHelper, type: :helper do
       it "returns all allowed partners with no user" do
         expected = Partner.order(:name).pluck(:name, :id)
 
-        expect(helper.options_for_partners).to eq(expected)
+        expect(helper.options_for_user_partners).to eq(expected)
       end
 
       it "returns all allowed partners with user" do
         expected = Partner.order(:name).pluck(:name, :id)
 
-        expect(helper.options_for_partners(neighbourhood_admin)).to eq(expected)
+        expect(helper.options_for_user_partners(neighbourhood_admin)).to eq(expected)
       end
     end
 
@@ -55,13 +55,13 @@ RSpec.describe UsersHelper, type: :helper do
       it "returns neighbourhood partners with no user" do
         expected = [partner_in_neighbourhood, partner_servicing_neighbourhood].pluck(:name, :id)
 
-        expect(helper.options_for_partners.sort).to eq(expected.sort)
+        expect(helper.options_for_user_partners.sort).to eq(expected.sort)
       end
 
       it "returns neighbourhood partners with user" do
         expected = [partner_in_neighbourhood, partner_servicing_neighbourhood].pluck(:name, :id)
 
-        expect(helper.options_for_partners(neighbourhood_admin).sort).to eq(expected.sort)
+        expect(helper.options_for_user_partners(neighbourhood_admin).sort).to eq(expected.sort)
       end
 
       it "returns neighbourhood partners & partners owned by user for partner owning user" do
@@ -71,7 +71,7 @@ RSpec.describe UsersHelper, type: :helper do
           partner_admin.partners.first
         ].pluck(:name, :id)
 
-        expect(helper.options_for_partners(partner_admin).sort).to eq(expected.sort)
+        expect(helper.options_for_user_partners(partner_admin).sort).to eq(expected.sort)
       end
     end
   end

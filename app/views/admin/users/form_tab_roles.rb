@@ -118,7 +118,7 @@ class Views::Admin::Users::FormTabRoles < Views::Admin::Base
       StackedListSelector(
         field_name: 'user[partner_ids][]',
         items: user.partners.order(:name),
-        options: options_for_partners(user),
+        options: options_for_user_partners(user),
         permitted_ids: permitted_options_for_partners,
         icon_name: :partner,
         icon_color: 'bg-emerald-100 text-emerald-600',
