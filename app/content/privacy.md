@@ -28,9 +28,13 @@ Most of the personal information we process is provided to us directly by you fo
 
 We use the information that you have given us in order to share this information with those browsing the site and viewing organisations and their calendars.
 
-Under the UK General Data Protection Regulation (UK GDPR), the lawful basis we rely on for processing this information is your consent.
+Under the UK General Data Protection Regulation (UK GDPR), the lawful bases we rely on are:
 
-You are able to remove your consent at any time. You can do this by contacting [support@placecal.org](mailto:support@placecal.org).
+- **Contract** – when you create an account, we process your details so we can provide the service you signed up for.
+- **Legitimate interests** – we process partner and event information so we can publish accurate community information, which is the whole point of PlaceCal. This includes occasionally emailing account holders about the state of their account and listings.
+- **Consent** – for optional emails like partnership updates. You choose these yourself, and you can change your mind at any time.
+
+If you have questions about any of this, or want to object to how we process your information, contact us at [support@placecal.org](mailto:support@placecal.org).
 
 ### How we store your personal information
 
@@ -41,6 +45,18 @@ We keep personal identifiers, contacts and characteristics (as described in the 
 When a user requests to delete their account we will remove all personal identifying information associated with that user account. This does not automatically remove that same individual's information from partners and calendars. For a user's information to be removed from a partner or calendar, or for a partner or calendar that user manages to be deleted, this needs to be specified. Once a user account is deleted their information will be removed from PlaceCal and no longer be accessible by any user or staff.
 
 Copies of this data may be created by employees and registered volunteers of GFSC Community Interest Company solely for development purposes. This information is destroyed when employees leave the company or volunteer agreements end.
+
+## Emails we send you
+
+If you have a PlaceCal account, we'll email you from time to time:
+
+- **Account and listing emails** – a regular (roughly quarterly) reminder that you have an account, what's published on your listing, whether your events feed is working, and how to sign in. We send these so the information we publish about your organisation stays accurate. You can stop them with one click in any email.
+- **Partnership updates** – if your organisation belongs to a partnership (like a local network of organisations), the people coordinating it can send occasional updates. **We only send these if you've opted in.**
+- **Essential emails** – things like password resets and invitations. These only arrive when you (or someone managing your organisation) asks for them.
+
+Every email we send links to a preferences page where you can change what you receive, without needing to log in.
+
+**If you joined PlaceCal a while ago:** many of our partners signed up in person, before we had a system for recording email preferences. We email existing account holders on the basis described above, and our reminder emails are also how we invite you to set your preferences properly. If you'd rather we didn't email you at all, one click sorts it.
 
 ## Your data protection rights
 
@@ -88,7 +104,3 @@ PlaceCal uses an error logging service called [Appsignal](https://www.appsignal.
 PlaceCal doesn't store first party cookies.
 
 PlaceCal uses a third party service called [Plausible](https://plausible.io/) which allows us to track site visits. You can consult Plausible's privacy policy on [their data policy page](https://plausible.io/data-policy).
-
-## Consent
-
-By using our website, you hereby consent to our Privacy Policy and agree to its [Terms and Conditions](/terms-of-use).

@@ -450,10 +450,62 @@ en:
     # -------------------------------------------------------------------------
     # Partners
     # -------------------------------------------------------------------------
+    partnership_broadcasts:
+      index:
+        title: "Broadcasts — %{partnership}"
+        subtitle: "Updates sent to the admins of partners in this partnership."
+        new_button: "New broadcast"
+        action_link: "Broadcasts"
+        empty: "No broadcasts have been sent for this partnership yet."
+        deleted_sender: "(deleted account)"
+        columns:
+          sent_at: "Sent"
+          subject: "Subject"
+          sender: "Sender"
+          recipients: "Recipients"
+          excluded: "Excluded"
+      new:
+        title: "New broadcast — %{partnership}"
+        body_hint: "Plain text. Replies will go to your email address."
+        preview_button: "Preview & confirm"
+      confirm:
+        title: "Confirm broadcast"
+        warning: "You're about to email %{people} people across %{partners} partners in %{partnership}. This can't be undone."
+        send_button:
+          one: "Send to %{count} person"
+          other: "Send to %{count} people"
+        back: "Back to editing"
+      preview:
+        reach: "This will reach %{people} people across %{partners} partners."
+        excluded:
+          one: "%{count} person can't be emailed because they haven't opted in to partnership updates."
+          other: "%{count} people can't be emailed because they haven't opted in to partnership updates."
+      create:
+        sent:
+          one: "Broadcast queued for %{count} recipient"
+          other: "Broadcast queued for %{count} recipients"
     partners:
+      columns:
+        info_confirmed: "Info Confirmed"
       filters:
         has_calendar: "Has Calendar?"
         has_admin: "Has Admin?"
+      consent_bases:
+        not_recorded: "Not recorded"
+        asked_in_person: "Asked in person"
+        they_contacted_us: "They contacted us"
+        public_listing: "From a public listing"
+        verified_by_email: "Verified by email"
+        other: "Other"
+      verification:
+        send_invite: "Send verification invite"
+        confirm: "Email a verification invite to %{email}?"
+        verified: "Verified on %{date}."
+        invite_sent: "Invite sent to %{email} on %{date} — not yet verified."
+        not_verified: "No verification invite has been sent."
+      send_verification_invite:
+        sent: "Verification invite sent to %{email}"
+        no_contact_email: "No contact email is set for this partner — add one first"
       admins:
         add_existing: "Add existing user..."
         add_new: "Invite new admin"
@@ -475,6 +527,10 @@ en:
         tags_description: "Categorise this partner and link to partnerships."
         upcoming_events_description: "Events in the next 30 days from this partner's calendars."
         url_settings_description: "Customise the URL slug for this partner."
+        consent_basis: "Listing Consent"
+        consent_basis_description: "How did this organisation agree to being listed on PlaceCal? Recorded permanently against the partner."
+        verification: "Verification"
+        verification_description: "Invite the partner's named contact to confirm their listing by email. Verifying publishes a hidden partner and records their consent."
       fields:
         accessibility_hint: "Details about accessibility features"
         description_hint: "Full description of what this partner does"
@@ -614,13 +670,23 @@ en:
         invite: "Invite User"
       danger_zone:
         site_admin_warning: "This user is a site administrator and cannot be deleted. Remove them as a site admin first."
+      send_login_help:
+        resend_invitation: "Re-send invitation"
+        send_reset: "Send password reset"
+        confirm: "Send a login email to %{email}?"
+        invitation_sent: "Invitation re-sent to %{email}"
+        reset_sent: "Password reset email sent to %{email}"
       profile:
         title: "Your Profile"
         save_button: "Save Profile"
         tabs:
           personal: "Personal Details"
           password: "Change Password"
+          emails: "Email Preferences"
           permissions: "My Permissions"
+        emails:
+          intro: "Choose which emails PlaceCal sends you. Changes are saved with your profile."
+          essential_note: "Essential emails, like password resets and invitations, only arrive when you (or someone managing your organisation) asks for them."
         password_title: "Change Password"
         password_description: "Leave blank to keep your current password."
         new_password: "New Password"

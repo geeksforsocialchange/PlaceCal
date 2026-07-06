@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_10_090000) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_12_180000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -120,6 +120,28 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_10_090000) do
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
+  create_table "email_subscription_events", force: :cascade do |t|
+    t.bigint "actor_id"
+    t.datetime "created_at", null: false
+    t.string "list_key", null: false
+    t.boolean "new_subscribed", null: false
+    t.boolean "old_subscribed"
+    t.string "source", null: false
+    t.bigint "user_id", null: false
+    t.index ["actor_id"], name: "index_email_subscription_events_on_actor_id"
+    t.index ["user_id"], name: "index_email_subscription_events_on_user_id"
+  end
+
+  create_table "email_subscriptions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "list_key", null: false
+    t.string "source", null: false
+    t.boolean "subscribed", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id", "list_key"], name: "index_email_subscriptions_on_user_id_and_list_key", unique: true
+  end
+
   create_table "events", force: :cascade do |t|
     t.bigint "address_id"
     t.string "are_spaces_available"
@@ -205,6 +227,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_10_090000) do
     t.index ["partner_subject_id", "verb", "partner_object_id"], name: "unique_organisation_relationship_row", unique: true
   end
 
+  create_table "partner_consents", force: :cascade do |t|
+    t.string "basis", null: false
+    t.datetime "created_at", null: false
+    t.bigint "partner_id", null: false
+    t.bigint "recorded_by_id"
+    t.index ["partner_id"], name: "index_partner_consents_on_partner_id"
+    t.index ["recorded_by_id"], name: "index_partner_consents_on_recorded_by_id"
+  end
+
   create_table "partner_tags", force: :cascade do |t|
     t.bigint "partner_id", null: false
     t.bigint "tag_id", null: false
@@ -232,6 +263,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_10_090000) do
     t.text "hidden_reason"
     t.string "hidden_reason_html"
     t.string "image"
+    t.datetime "info_confirmed_at"
+    t.bigint "info_confirmed_by_id"
+    t.string "info_confirmed_source"
     t.string "instagram_handle"
     t.boolean "is_a_place", default: false, null: false
     t.string "name", null: false
@@ -248,9 +282,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_10_090000) do
     t.string "twitter_handle"
     t.datetime "updated_at", precision: nil, null: false
     t.string "url"
+    t.string "verification_invite_email"
+    t.datetime "verification_invite_sent_at"
+    t.datetime "verified_at"
     t.index "lower((name)::text)", name: "index_partners_lower_name_", unique: true
     t.index ["address_id"], name: "index_partners_on_address_id"
     t.index ["hidden"], name: "index_partners_hidden"
+    t.index ["info_confirmed_by_id"], name: "index_partners_on_info_confirmed_by_id"
     t.index ["slug"], name: "index_partners_on_slug", unique: true
   end
 
@@ -259,6 +297,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_10_090000) do
     t.integer "user_id"
     t.index ["partner_id", "user_id"], name: "index_partners_users_partner_id_user_id", unique: true
     t.index ["user_id", "partner_id"], name: "index_partners_users_user_id_partner_id"
+  end
+
+  create_table "partnership_broadcasts", force: :cascade do |t|
+    t.text "body", null: false
+    t.datetime "created_at", null: false
+    t.integer "excluded_count", default: 0, null: false
+    t.bigint "partnership_id", null: false
+    t.integer "recipient_count", default: 0, null: false
+    t.bigint "sender_id"
+    t.string "subject", null: false
+    t.datetime "updated_at", null: false
+    t.index ["partnership_id"], name: "index_partnership_broadcasts_on_partnership_id"
+    t.index ["sender_id"], name: "index_partnership_broadcasts_on_sender_id"
   end
 
   create_table "seed_migration_data_migrations", id: :serial, force: :cascade do |t|
@@ -381,6 +432,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_10_090000) do
     t.string "last_name"
     t.datetime "last_sign_in_at", precision: nil
     t.inet "last_sign_in_ip"
+    t.datetime "partner_digest_last_sent_at"
     t.string "phone"
     t.datetime "remember_created_at", precision: nil
     t.datetime "reset_password_sent_at", precision: nil
@@ -412,6 +464,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_10_090000) do
   add_foreign_key "articles", "users", column: "author_id"
   add_foreign_key "calendars", "partners", column: "organiser_id"
   add_foreign_key "calendars", "partners", column: "place_id"
+  add_foreign_key "email_subscription_events", "users"
+  add_foreign_key "email_subscription_events", "users", column: "actor_id"
+  add_foreign_key "email_subscriptions", "users"
   add_foreign_key "events", "addresses"
   add_foreign_key "events", "calendars"
   add_foreign_key "events", "online_addresses"
@@ -421,11 +476,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_10_090000) do
   add_foreign_key "neighbourhoods_users", "users"
   add_foreign_key "organisation_relationships", "partners", column: "partner_object_id"
   add_foreign_key "organisation_relationships", "partners", column: "partner_subject_id"
+  add_foreign_key "partner_consents", "partners"
+  add_foreign_key "partner_consents", "users", column: "recorded_by_id"
   add_foreign_key "partner_tags", "partners"
   add_foreign_key "partner_tags", "tags"
   add_foreign_key "partners", "addresses"
+  add_foreign_key "partners", "users", column: "info_confirmed_by_id"
   add_foreign_key "partners_users", "partners"
   add_foreign_key "partners_users", "users"
+  add_foreign_key "partnership_broadcasts", "tags", column: "partnership_id"
+  add_foreign_key "partnership_broadcasts", "users", column: "sender_id"
   add_foreign_key "service_areas", "neighbourhoods"
   add_foreign_key "service_areas", "partners"
   add_foreign_key "sites", "users", column: "site_admin_id"

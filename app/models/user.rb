@@ -73,6 +73,7 @@ class User < ApplicationRecord
   attribute :email,                    :string, default: ''     # NOT NULL
   attribute :first_name,               :string                  # nullable
   attribute :last_name,                :string                  # nullable
+  attribute :partner_digest_last_sent_at, :datetime             # nullable, nil = never sent (first-contact variant)
   attribute :phone,                    :string                  # nullable
   # role -- managed by enumerize, attribute declaration skipped  # NOT NULL
   attribute :skip_password_validation, :boolean, default: false # virtual, used by Devise password_required?
@@ -85,6 +86,11 @@ class User < ApplicationRecord
   # has_many :partners, through: :partners_users
 
   has_and_belongs_to_many :partners
+  has_many :info_confirmed_partners,
+           class_name: 'Partner',
+           foreign_key: :info_confirmed_by_id,
+           inverse_of: :info_confirmed_by,
+           dependent: :nullify
   has_many :sites, foreign_key: :site_admin_id, inverse_of: :site_admin, dependent: :nullify
   has_many :articles, foreign_key: :author_id, inverse_of: :author, dependent: :nullify
 
@@ -94,6 +100,22 @@ class User < ApplicationRecord
 
   has_many :tags_users, dependent: :destroy
   has_many :tags, through: :tags_users
+
+  # Own email consent records are erased with the account (right to
+  # erasure; delete_all bypasses the events' append-only guard), while
+  # records of this user acting on others (consent recording, broadcasts)
+  # outlive it via nullify.
+  has_many :email_subscriptions, dependent: :delete_all
+  has_many :email_subscription_events, dependent: :delete_all
+  has_many :authored_email_subscription_events, class_name: 'EmailSubscriptionEvent',
+                                                foreign_key: :actor_id, inverse_of: :actor,
+                                                dependent: :nullify
+  has_many :recorded_partner_consents, class_name: 'PartnerConsent',
+                                       foreign_key: :recorded_by_id, inverse_of: :recorded_by,
+                                       dependent: :nullify
+  has_many :sent_partnership_broadcasts, class_name: 'PartnershipBroadcast',
+                                         foreign_key: :sender_id, inverse_of: :sender,
+                                         dependent: :nullify
   has_many :partnerships, -> { where(type: 'Partnership') }, through: :tags_users, source: :tag
 
   # ==== Uploaders ====

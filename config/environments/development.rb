@@ -57,6 +57,9 @@ Rails.application.configure do
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false
 
+  # Mailer previews (http://lvh.me:3000/rails/mailers)
+  config.action_mailer.preview_paths << Rails.root.join('spec/mailers/previews').to_s
+
   config.action_mailer.perform_caching = false
 
   # Print deprecation notices to the Rails logger.

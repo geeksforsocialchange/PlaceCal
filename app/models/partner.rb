@@ -66,6 +66,9 @@ class Partner < ApplicationRecord
   MAX_CATEGORIES = 3
   NEIGHBOURHOOD_UNIT_RANK = %w[ward district county region].freeze
 
+  # hidden_reason used when a partner is created unlisted pending email
+  # verification — the only hide that #verify! is allowed to lift
+  VERIFICATION_HOLD_REASON = 'Awaiting verification'
   # ==== Attributes ====
   # Columns marked (nullable) have no NOT NULL constraint in the DB.
   attribute :accessibility_info,      :text                        # nullable
@@ -85,6 +88,8 @@ class Partner < ApplicationRecord
   attribute :hidden_reason,           :text                        # nullable
   attribute :hidden_reason_html,      :string                      # nullable, populated by HtmlRenderCache
   # image -- managed by CarrierWave, attribute declaration skipped
+  attribute :info_confirmed_at,       :datetime                    # nullable, written by the digest confirm link
+  attribute :info_confirmed_source,   :string                      # nullable
   attribute :instagram_handle,        :string                      # nullable
   attribute :is_a_place,              :boolean, default: false     # NOT NULL
   attribute :name,                    :string                      # NOT NULL
@@ -100,8 +105,15 @@ class Partner < ApplicationRecord
   attribute :summary_html,            :string                      # nullable, populated by HtmlRenderCache
   attribute :twitter_handle,          :string                      # nullable
   attribute :url,                     :string                      # nullable
+  attribute :verification_invite_email,   :string                  # nullable
+  attribute :verification_invite_sent_at, :datetime                # nullable
+  attribute :verified_at,                 :datetime                # nullable
 
   attr_accessor :accessed_by_user
+
+  # Virtual: consent provenance chosen on the creation form; written to
+  # partner_consents by the controller after save
+  attr_accessor :consent_basis
 
   friendly_id :name, use: :slugged
 
@@ -118,6 +130,11 @@ class Partner < ApplicationRecord
   has_many :calendars, foreign_key: :organiser_id, dependent: :destroy, inverse_of: :organiser
   has_many :events, foreign_key: :organiser_id, dependent: :destroy, inverse_of: :organiser
   belongs_to :address, optional: true, dependent: :destroy
+  belongs_to :info_confirmed_by, class_name: 'User', optional: true
+
+  # Append-only; delete_all bypasses PartnerConsent's read-only guard when
+  # the partner itself is erased
+  has_many :partner_consents, dependent: :delete_all
 
   has_many :partner_tags, dependent: :destroy
   has_many :tags, through: :partner_tags
@@ -254,6 +271,42 @@ class Partner < ApplicationRecord
   end
 
   # ==== Instance methods ====
+
+  # Records that a partner admin has confirmed the listing is up to date
+  # (the digest's confirm button — #3256). Surfaced in the admin partner
+  # index as a staleness indicator.
+  #
+  # @param by [User]
+  # @param source [String] e.g. 'digest_link'
+  def confirm_information!(by:, source:)
+    update!(info_confirmed_at: Time.current,
+            info_confirmed_by: by,
+            info_confirmed_source: source)
+  end
+
+  # The verify-before-visible flow (#3256 phase 5): clicking the signed
+  # link in the verification email publishes the partner and writes the
+  # consent record in one step. A partner hidden by a moderator for any
+  # other reason stays hidden — verification records consent but must not
+  # override moderation. Locked so two rapid clicks can't double-record.
+  def verify!
+    with_lock do
+      break if verified_at
+
+      if !hidden || hidden_reason == VERIFICATION_HOLD_REASON
+        # Empty string, not nil: HtmlRenderCache can't render nil markdown
+        update!(verified_at: Time.current, hidden: false, hidden_reason: '', hidden_blame_id: nil)
+      else
+        update!(verified_at: Time.current)
+      end
+      partner_consents.create!(basis: 'verified_by_email')
+    end
+  end
+
+  # @return [String, nil] best contact address for the verification invite
+  def verification_contact_email
+    partner_email.presence || public_email.presence || admin_email.presence
+  end
 
   # Strips leading @ from Twitter handles before saving.
   # @param handle [String, nil]

@@ -16,9 +16,9 @@ class Views::Admin::Partners::Index < Views::Admin::Base
         icon_column_header(:calendar, 'Calendars'),
         icon_column_header(:users, 'Admins'),
         icon_column_header(:tag, 'Categories'),
-        'Last Updated', ''
+        'Last Updated', t('admin.partners.columns.info_confirmed'), ''
       ],
-      columns: %i[name ward partnerships calendars admins categories updated_at actions],
+      columns: %i[name ward partnerships calendars admins categories updated_at info_confirmed_at actions],
       column_config: {
         name: {},
         ward: { sortable: false },
@@ -27,6 +27,7 @@ class Views::Admin::Partners::Index < Views::Admin::Base
         admins: { align: :center, sortable: false, fit: true },
         categories: { align: :center, sortable: false, fit: true },
         updated_at: { fit: true },
+        info_confirmed_at: { fit: true },
         actions: { sortable: false, fit: true }
       },
       default_sort: { column: 'updated_at', direction: 'desc' },

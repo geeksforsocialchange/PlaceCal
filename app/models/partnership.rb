@@ -19,4 +19,5 @@
 #  index_tags_slug_type  (slug,type) UNIQUE
 #
 class Partnership < Tag
+  has_many :partnership_broadcasts, dependent: :destroy
 end

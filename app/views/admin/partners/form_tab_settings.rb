@@ -9,13 +9,71 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base
     render_url_settings(partner)
     render_event_matching(partner)
 
-    return if partner.new_record?
+    if partner.new_record?
+      render_consent_basis
+      return
+    end
 
+    render_verification(partner)
     render_moderation(partner)
     render_danger_zone(partner)
   end
 
   private
+
+  # Consent provenance at creation (#3256 phase 5): how/where we got
+  # permission to list this organisation. Written to the append-only
+  # partner_consents table after save.
+  def render_consent_basis
+    div(class: 'mb-8') do
+      SectionHeader(
+        title: t('admin.partners.sections.consent_basis'),
+        description: t('admin.partners.sections.consent_basis_description'),
+        margin: 4
+      )
+      div(class: 'max-w-md fieldset') do
+        raw form.select(:consent_basis,
+                        PartnerConsent::BASES.map { |basis| [t("admin.partners.consent_bases.#{basis}"), basis] },
+                        { include_blank: t('admin.partners.consent_bases.not_recorded') },
+                        class: 'select select-bordered w-full')
+      end
+    end
+  end
+
+  # Verify-before-visible status + (re)send invite (#3256 phase 5)
+  def render_verification(partner)
+    div(class: 'mb-8') do
+      SectionHeader(
+        title: t('admin.partners.sections.verification'),
+        description: t('admin.partners.sections.verification_description'),
+        margin: 4
+      )
+      div(class: 'max-w-2xl space-y-2') do
+        p(class: 'text-sm') { verification_status_text(partner) }
+        # link_to + turbo_method rather than button_to: this sits inside the
+        # main partner form and button_to would nest a form
+        link_to(send_verification_invite_admin_partner_path(partner),
+                class: 'btn btn-sm btn-outline',
+                data: { turbo_method: :post,
+                        turbo_confirm: t('admin.partners.verification.confirm',
+                                         email: partner.verification_contact_email || '?') }) do
+          t('admin.partners.verification.send_invite')
+        end
+      end
+    end
+  end
+
+  def verification_status_text(partner)
+    if partner.verified_at
+      t('admin.partners.verification.verified', date: partner.verified_at.to_date)
+    elsif partner.verification_invite_sent_at
+      t('admin.partners.verification.invite_sent',
+        date: partner.verification_invite_sent_at.to_date,
+        email: partner.verification_invite_email)
+    else
+      t('admin.partners.verification.not_verified')
+    end
+  end
 
   def render_url_settings(partner)
     return unless policy(partner).permitted_attributes.include?(:slug)

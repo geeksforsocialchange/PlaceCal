@@ -4,7 +4,7 @@ module Admin
   class PartnersController < Admin::ApplicationController
     include LoadUtilities
 
-    before_action :set_partner, only: %i[show edit update destroy clear_address]
+    before_action :set_partner, only: %i[show edit update destroy clear_address send_verification_invite]
     before_action :set_tags, only: %i[new create edit]
     before_action :set_neighbourhoods, only: %i[new edit]
     before_action :set_partner_tags_controller, only: %i[create new edit update]
@@ -42,6 +42,23 @@ module Admin
       redirect_to edit_admin_partner_path(@partner)
     end
 
+    # Sends (or re-sends) the verify-before-visible invitation to the
+    # partner's named contact (#3256 phase 5)
+    def send_verification_invite
+      authorize @partner, :update?
+
+      email = @partner.verification_contact_email
+      if email.blank?
+        flash[:danger] = t('.no_contact_email')
+      else
+        PartnerVerificationMailer.invite(@partner, email: email, invited_by: current_user).deliver_later
+        @partner.update!(verification_invite_sent_at: Time.current, verification_invite_email: email)
+        flash[:success] = t('.sent', email: email)
+      end
+
+      redirect_back_or_to(edit_admin_partner_path(@partner))
+    end
+
     def create
       @partner = Partner.new(permitted_attributes(Partner))
       @partner.accessed_by_user = current_user
@@ -53,6 +70,7 @@ module Admin
 
       respond_to do |format|
         if @partner.save
+          record_consent_basis(@partner)
           invitation_result = invite_partner_admin(@partner) if invited_admin_params[:email].present?
 
           format.html do
@@ -279,6 +297,12 @@ module Admin
     end
 
     # Override ApplicationController#set_partner with eager loading for admin forms
+    def record_consent_basis(partner)
+      return if partner.consent_basis.blank?
+
+      PartnerConsent.create!(partner: partner, basis: partner.consent_basis, recorded_by: current_user)
+    end
+
     def set_partner
       @partner = Partner.friendly
                         .includes(:calendars, :users, :facilities, :categories,
