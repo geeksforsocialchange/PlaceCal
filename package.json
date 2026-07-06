@@ -4,7 +4,7 @@
 	"private": true,
 	"dependencies": {
 		"@hotwired/turbo-rails": "8.0.23",
-		"@tailwindcss/cli": "4.3.1"
+		"@tailwindcss/cli": "4.3.2"
 	},
 	"devDependencies": {
 		"daisyui": "5.6.3",
