@@ -39,10 +39,14 @@ class Views::Partners::Show < Views::Base
 
   # "Partner Name, Place" — the locality makes the <title> match how people
   # actually search ("X in Y"). Neighbourhood name first (most local), city
-  # as fallback; service-area-only partners just get their name.
+  # as fallback; service-area-only partners just get their name. Skipped when
+  # the name already contains the place ("Moss Side Powerhouse Library, Moss
+  # Side" reads clunky in search results and adds nothing).
   def title_with_place
     place = partner.address&.neighbourhood&.name.presence || partner.address&.city.presence
-    place ? "#{partner.name}, #{place}" : partner.name
+    return partner.name if place.nil? || partner.name.downcase.include?(place.downcase)
+
+    "#{partner.name}, #{place}"
   end
 
   def render_partner_description

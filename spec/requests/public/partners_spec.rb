@@ -75,11 +75,18 @@ RSpec.describe "Public Partners", type: :request do
       expect(response.body).to include(partner.address.postcode)
     end
 
-    it "shows correct page title with locality" do
-      get partner_url(partner, host: "#{site.slug}.lvh.me")
+    it "shows the page title with locality" do
+      named_partner = create(:partner, name: "Tea Dance Collective", address: create(:address, neighbourhood: ward))
+      get partner_url(named_partner, host: "#{site.slug}.lvh.me")
       expect(response.body).to include(
-        "<title>#{partner.name}, #{partner.address.neighbourhood.name} | #{site.name}</title>"
+        "<title>Tea Dance Collective, #{ward.name} | #{site.name}</title>"
       )
+    end
+
+    it "omits the locality when the partner name already contains it" do
+      # riverside_partner is "Riverside Community Hub" in the Riverside ward
+      get partner_url(partner, host: "#{site.slug}.lvh.me")
+      expect(response.body).to include("<title>#{partner.name} | #{site.name}</title>")
     end
 
     it "includes Organization JSON-LD structured data" do
