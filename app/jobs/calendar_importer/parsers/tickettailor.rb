@@ -15,9 +15,9 @@ module CalendarImporter
       # Match TicketTailor box office pages like:
       # https://www.tickettailor.com/events/queerrunclub
       # https://tickettailor.com/events/some-org
-      def self.allowlist_pattern
-        %r{^https://(www\.)?tickettailor\.com/events/[^/]+/?$}i
-      end
+      URL_PATTERNS = [
+        { pattern: '^https://(www\.)?tickettailor\.com/events/[^/]+/?$', flags: 'i' }
+      ].freeze
 
       def import_events_from(data)
         return [] unless data.is_a?(Array)

@@ -13,9 +13,9 @@ module CalendarImporter::Parsers
       end
     end
 
-    def self.allowlist_pattern
-      %r{^https://www\.outsavvy\.com/organiser/[^/]*/?$}
-    end
+    URL_PATTERNS = [
+      { pattern: '^https://www\.outsavvy\.com/organiser/[^/]*/?$', flags: '' }
+    ].freeze
 
     # Get event URLs from an organiser page
 

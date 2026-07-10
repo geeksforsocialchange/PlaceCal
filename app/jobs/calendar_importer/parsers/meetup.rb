@@ -10,9 +10,11 @@ module CalendarImporter::Parsers
     KEY = 'meetup'
     DOMAINS = %w[www.meetup.com].freeze
 
-    def self.allowlist_pattern
-      %r{^https://www\.meetup\.com/[^/]*/?$}
-    end
+    # Match Meetup group pages (not individual event pages) like:
+    # https://www.meetup.com/group-name
+    URL_PATTERNS = [
+      { pattern: '^https://www\.meetup\.com/[^/]*/?$', flags: '' }
+    ].freeze
 
     def download_calendar
       group_name = (@url =~ %r{^https://www\.meetup\.com/([^/]*)/?$}) && Regexp.last_match(1)
