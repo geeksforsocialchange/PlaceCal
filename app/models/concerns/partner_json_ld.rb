@@ -25,23 +25,30 @@ module PartnerJsonLd
     data['sameAs'] = same_as if same_as.any?
 
     if address
-      postal_address = {
-        '@type' => 'PostalAddress',
-        'streetAddress' => address.full_street_address,
-        'addressLocality' => address.city,
-        'postalCode' => address.postcode,
-        'addressCountry' => address.country_code
-      }.compact
+      postal_address = postal_address_json_ld(address)
       data['address'] = postal_address
       build_json_ld_location(data, postal_address)
     end
 
+    build_json_ld_area_served(data)
     build_json_ld_events(data, base_url) if base_url
 
     data
   end
 
   private
+
+  # Partners that operate across a region rather than at a fixed venue (no
+  # address, just service areas) get no `location`/`geo` — there's no honest
+  # point to emit. `areaServed` is the right signal for them: it names the
+  # regions served without implying a coordinate. Emitted for any partner with
+  # service areas, whether or not it also has a venue.
+  def build_json_ld_area_served(data)
+    areas = service_area_neighbourhoods.order(:name).map do |neighbourhood|
+      { '@type' => 'AdministrativeArea', 'name' => neighbourhood.name }
+    end
+    data['areaServed'] = areas if areas.any?
+  end
 
   # Partners are all kinds of thing (charities, groups, council services,
   # libraries), so the org itself stays a generic Organization. The physical
@@ -108,16 +115,22 @@ module PartnerJsonLd
         entry['location'] = {
           '@type' => 'Place',
           'name' => event.partner_at_location&.name,
-          'address' => {
-            '@type' => 'PostalAddress',
-            'streetAddress' => event.address.full_street_address,
-            'addressLocality' => event.address.city,
-            'postalCode' => event.address.postcode,
-            'addressCountry' => event.address.country_code
-          }.compact
+          'address' => postal_address_json_ld(event.address)
         }
       end
       entry
     end
+  end
+
+  # Builds a schema.org PostalAddress node from an Address. Shared by the
+  # partner's own address and the addresses of its embedded events.
+  def postal_address_json_ld(addr)
+    {
+      '@type' => 'PostalAddress',
+      'streetAddress' => addr.full_street_address,
+      'addressLocality' => addr.city,
+      'postalCode' => addr.postcode,
+      'addressCountry' => addr.country_code
+    }.compact
   end
 end

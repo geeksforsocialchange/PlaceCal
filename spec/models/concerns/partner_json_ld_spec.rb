@@ -90,6 +90,28 @@ RSpec.describe PartnerJsonLd do
       it "omits location key" do
         expect(data).not_to have_key("location")
       end
+
+      it "emits areaServed instead of a fabricated location" do
+        expect(data).to have_key("areaServed")
+        expect(data).not_to have_key("location")
+      end
+    end
+
+    context "with service areas" do
+      let(:ward) { create(:neighbourhood, name: "Moss Side") }
+      let(:partner) { create(:partner, address: nil, service_areas: [create(:service_area, neighbourhood: ward)]) }
+
+      it "names each served region as an AdministrativeArea" do
+        expect(data["areaServed"]).to eq([
+                                           { "@type" => "AdministrativeArea", "name" => "Moss Side" }
+                                         ])
+      end
+    end
+
+    context "without service areas" do
+      it "omits areaServed" do
+        expect(data).not_to have_key("areaServed")
+      end
     end
 
     context "with a physical location" do
