@@ -27,6 +27,7 @@ class Views::Partners::Show < Views::Base
 
   def set_content_for_tags
     content_for(:title) { partner.name }
+    content_for(:canonical) { partner.permalink }
     content_for(:image) { partner_og_image_url(partner) }
     content_for(:image_alt) { t('og_image.alt.partner', name: partner.name) }
     content_for(:description) { partner.summary } if partner.summary

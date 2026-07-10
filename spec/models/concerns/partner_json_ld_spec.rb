@@ -86,6 +86,51 @@ RSpec.describe PartnerJsonLd do
       it "omits address key" do
         expect(data).not_to have_key("address")
       end
+
+      it "omits location key" do
+        expect(data).not_to have_key("location")
+      end
+    end
+
+    context "with a physical location" do
+      it "emits a generic Place location (not LocalBusiness) with geo" do
+        location = data["location"]
+        expect(location["@type"]).to eq("Place")
+        expect(location["address"]["@type"]).to eq("PostalAddress")
+        expect(location["geo"]["@type"]).to eq("GeoCoordinates")
+        expect(location["geo"]["latitude"]).to eq(partner.address.latitude.to_f)
+        expect(location["geo"]["longitude"]).to eq(partner.address.longitude.to_f)
+      end
+
+      it "keeps the org itself typed as Organization" do
+        expect(data["@type"]).to eq("Organization")
+      end
+
+      it "omits geo when the address has no coordinates" do
+        partner.address.latitude = nil
+        partner.address.longitude = nil
+        expect(partner.to_json_ld["location"]).not_to have_key("geo")
+      end
+    end
+
+    context "with opening times" do
+      before do
+        partner.update!(opening_times: [
+          { "dayOfWeek" => "http://schema.org/Monday", "opens" => "09:00", "closes" => "17:00" }
+        ].to_json)
+      end
+
+      it "emits openingHoursSpecification on the location" do
+        spec = data["location"]["openingHoursSpecification"]
+        expect(spec).to eq([
+                             { "@type" => "OpeningHoursSpecification", "dayOfWeek" => "Monday", "opens" => "09:00", "closes" => "17:00" }
+                           ])
+      end
+
+      it "omits openingHoursSpecification when there are no opening times" do
+        partner.update!(opening_times: "[]")
+        expect(partner.to_json_ld["location"]).not_to have_key("openingHoursSpecification")
+      end
     end
 
     context "with embedded events" do

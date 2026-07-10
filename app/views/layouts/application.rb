@@ -111,7 +111,11 @@ class Views::Layouts::Application < Phlex::HTML
     meta(name: 'twitter:site', content: '@PlaceCal')
     meta(name: 'twitter:creator', content: '@gfscstudio')
     meta(property: 'og:url', content: request.original_url)
-    link(rel: 'canonical', href: request.original_url)
+    # Pages served on multiple site subdomains (partners, events) set
+    # :canonical to their directory-apex permalink so Google consolidates the
+    # duplicates onto placecal.org instead of splitting authority per subdomain.
+    canonical_href = content_for?(:canonical) ? content_for(:canonical) : request.original_url
+    link(rel: 'canonical', href: canonical_href)
     meta(name: 'robots', content: 'noarchive')
 
     json_ld = site ? site.to_json_ld(base_url: request.base_url) : Site.directory_json_ld(request.base_url)

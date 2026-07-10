@@ -51,6 +51,13 @@ RSpec.describe "Public Partners", type: :request do
       expect(response.body).to include(partner.name)
     end
 
+    it "canonicalises to the directory apex, not the site subdomain" do
+      get partner_url(partner, host: "#{site.slug}.lvh.me")
+      expect(response.body).to include(
+        %(<link rel="canonical" href="https://placecal.org/partners/#{partner.slug}">)
+      )
+    end
+
     it "shows partner summary" do
       get partner_url(partner, host: "#{site.slug}.lvh.me")
       expect(response.body).to include(partner.summary)
