@@ -25,7 +25,7 @@ class PartnersController < ApplicationController
   # GET /partners/1
   # GET /partners/1.json
   def show
-    redirect_to root_path if @partner.hidden
+    return redirect_to root_path if @partner.hidden
 
     upcoming_count = Event.by_organiser_or_place(@partner).upcoming.count
     if upcoming_count.zero?
@@ -78,6 +78,13 @@ class PartnersController < ApplicationController
         cal = create_calendar(Event.by_organiser_or_place(@partner).ical_feed, "#{@partner} - Powered by PlaceCal")
         cal.publish
         render plain: cal.to_ical
+      end
+      format.csv do
+        track_csv_download
+        events = Event.by_organiser_or_place(@partner).upcoming.sort_by_time
+        site_url = current_site&.url || 'https://placecal.org'
+        send_data EventsCsv.new(events, site_url: site_url).call,
+                  filename: "#{@partner.slug}-events.csv", type: :csv
       end
     end
   end

@@ -121,6 +121,13 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
           plain t('directory.sidebar.subscribe_ical')
         end
       end
+      div(class: 'mt-1.5') do
+        a(href: partner_url(@partner, format: :csv),
+          class: 'inline-flex items-center gap-1.5 text-sm font-bold text-foreground no-underline hover:underline hover:decoration-primary') do
+          raw(view_context.icon(:arrow_down, size: '3.5'))
+          plain t('directory.sidebar.download_csv')
+        end
+      end
     end
   end
 end
