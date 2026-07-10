@@ -117,7 +117,10 @@ class Views::Layouts::Application < Phlex::HTML
     canonical_href = content_for?(:canonical) ? content_for(:canonical) : request.original_url
     meta(property: 'og:url', content: canonical_href)
     link(rel: 'canonical', href: canonical_href)
-    meta(name: 'robots', content: 'noarchive')
+    # Views can tighten robots via content_for (e.g. past events set noindex
+    # so thousands of stale event pages don't dilute the site in the index).
+    robots_content = content_for?(:robots) ? content_for(:robots) : 'noarchive'
+    meta(name: 'robots', content: robots_content)
 
     json_ld = site ? site.to_json_ld(base_url: request.base_url) : Site.directory_json_ld(request.base_url)
     script(type: 'application/ld+json') { raw safe(json_ld.to_json) }

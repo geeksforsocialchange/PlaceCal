@@ -26,7 +26,7 @@ class Views::Partners::Show < Views::Base
   private
 
   def set_content_for_tags
-    content_for(:title) { partner.name }
+    content_for(:title) { title_with_place }
     content_for(:canonical) { partner.permalink }
     content_for(:image) { partner_og_image_url(partner) }
     content_for(:image_alt) { t('og_image.alt.partner', name: partner.name) }
@@ -35,6 +35,14 @@ class Views::Partners::Show < Views::Base
     # names the same URL as the canonical tag above — the structured data must
     # reinforce the canonical entity, not contradict it per-subdomain.
     content_for(:json_ld) { safe(partner.to_json_ld(base_url: ::Site::DIRECTORY_URL).to_json) }
+  end
+
+  # "Partner Name, Place" — the locality makes the <title> match how people
+  # actually search ("X in Y"). Neighbourhood name first (most local), city
+  # as fallback; service-area-only partners just get their name.
+  def title_with_place
+    place = partner.address&.neighbourhood&.name.presence || partner.address&.city.presence
+    place ? "#{partner.name}, #{place}" : partner.name
   end
 
   def render_partner_description

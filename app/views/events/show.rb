@@ -13,6 +13,9 @@ class Views::Events::Show < Views::Base
   def view_template
     content_for(:title) { event.og_title }
     content_for(:canonical) { event.permalink }
+    # Past events have no search value and accumulate forever — noindex them
+    # so they stop eating crawl budget and diluting the indexed site.
+    content_for(:robots) { 'noindex, noarchive' } if event.past?
     content_for(:image) { event_og_image_url(event) }
     content_for(:image_alt) { t('og_image.alt.event', name: event.summary) }
     content_for(:description) { html_to_plaintext(event.description_html) }
