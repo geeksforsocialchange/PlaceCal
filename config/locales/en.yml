@@ -247,6 +247,7 @@ en:
       categories: "Categories"
       share_subscribe: "Share & subscribe"
       subscribe_ical: "Subscribe via iCal"
+      download_csv: "Download events (CSV)"
     contact:
       get_in_touch: "Get in touch"
       no_contact: "No contact information — let us know!"
@@ -292,6 +293,26 @@ en:
       build: "Build:"
       placecal_logo_alt: "PlaceCal logo"
       gfsc_logo_alt: "Geeks for Social Change"
+
+  # ===========================================================================
+  # EVENT EXPORTS (shared by local sites and the directory)
+  # ===========================================================================
+
+  events:
+    csv_export:
+      link: "Download events as CSV"
+      # Column headers for the events CSV (app/services/events_csv.rb).
+      # These double as Canva Bulk Create field names — the shared poster
+      # template's fields are connected to them by name, so renaming a
+      # header means updating the template too (see doc/canva-posters.md).
+      headers:
+        title: "Title"
+        date: "Date"
+        time: "Time"
+        location: "Location"
+        organiser: "Organiser"
+        url: "More info"
+        description: "Description"
 
   # ===========================================================================
   # DATE & TIME FORMATS
