@@ -54,13 +54,7 @@ module EventJsonLd
       location = {
         '@type' => 'Place',
         'name' => partner_at_location&.name,
-        'address' => {
-          '@type' => 'PostalAddress',
-          'streetAddress' => location_address.full_street_address,
-          'addressLocality' => location_address.city,
-          'postalCode' => location_address.postcode,
-          'addressCountry' => location_address.country_code
-        }.compact
+        'address' => location_address.to_json_ld
       }.compact
 
       if location_address.latitude && location_address.longitude

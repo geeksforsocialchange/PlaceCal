@@ -38,18 +38,26 @@ RSpec.describe "Public Sitemaps", type: :request do
     end
 
     describe "GET /sitemap/events.xml" do
-      let!(:recent_event) { create(:event, dtstart: 1.week.from_now, dtend: 1.week.from_now + 1.hour) }
-      let!(:old_event) { create(:event, dtstart: 6.months.ago, dtend: 6.months.ago + 1.hour) }
+      let!(:upcoming_event) { create(:event, dtstart: 1.week.from_now, dtend: 1.week.from_now + 1.hour) }
+      let!(:past_event) { create(:event, dtstart: 1.week.ago, dtend: 1.week.ago + 1.hour) }
+      let!(:ongoing_event) { create(:event, dtstart: 1.day.ago, dtend: 1.day.from_now) }
 
-      it "includes recent events" do
+      it "includes upcoming events" do
         get "/sitemap/events.xml", headers: { "Host" => host }
         expect(response).to be_successful
-        expect(response.body).to include("https://placecal.org/events/#{recent_event.id}")
+        expect(response.body).to include("https://placecal.org/events/#{upcoming_event.id}")
       end
 
-      it "excludes events older than 3 months" do
+      # Past event pages are noindexed (see Views::Events::Show), so listing
+      # them would trigger "submitted URL marked noindex" warnings.
+      it "excludes past events" do
         get "/sitemap/events.xml", headers: { "Host" => host }
-        expect(response.body).not_to include("events/#{old_event.id}")
+        expect(response.body).not_to include("events/#{past_event.id}")
+      end
+
+      it "includes multi-day events still running" do
+        get "/sitemap/events.xml", headers: { "Host" => host }
+        expect(response.body).to include("events/#{ongoing_event.id}")
       end
     end
 

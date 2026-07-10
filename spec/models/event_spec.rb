@@ -99,6 +99,41 @@ RSpec.describe Event, type: :model do
     end
   end
 
+  describe "#past?" do
+    it "is true once the event is over" do
+      event = build(:event, dtstart: 2.days.ago, dtend: 2.days.ago + 1.hour)
+      expect(event.past?).to be true
+    end
+
+    it "is false for upcoming events" do
+      event = build(:event, dtstart: 1.day.from_now, dtend: 1.day.from_now + 1.hour)
+      expect(event.past?).to be false
+    end
+
+    it "is false for a multi-day event still running" do
+      event = build(:event, dtstart: 1.day.ago, dtend: 1.day.from_now)
+      expect(event.past?).to be false
+    end
+
+    it "falls back to dtstart when dtend is missing" do
+      event = build(:event, dtstart: 2.days.ago, dtend: nil)
+      expect(event.past?).to be true
+    end
+  end
+
+  describe "#og_title" do
+    it "includes the organiser when present" do
+      event = build(:event, summary: "Tea Dance", organiser: build(:partner, name: "The Powerhouse"))
+      expect(event.og_title).to include("Tea Dance")
+      expect(event.og_title).to include("@ The Powerhouse")
+    end
+
+    it "still returns a title without an organiser" do
+      event = build(:event, summary: "Tea Dance", organiser: nil)
+      expect(event.og_title).to include("Tea Dance")
+    end
+  end
+
   describe "scopes" do
     let(:partner) { create(:partner) }
 

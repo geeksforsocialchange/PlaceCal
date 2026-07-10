@@ -110,9 +110,17 @@ class Views::Layouts::Application < Phlex::HTML
     meta(name: 'twitter:card', content: 'summary_large_image')
     meta(name: 'twitter:site', content: '@PlaceCal')
     meta(name: 'twitter:creator', content: '@gfscstudio')
-    meta(property: 'og:url', content: request.original_url)
-    link(rel: 'canonical', href: request.original_url)
-    meta(name: 'robots', content: 'noarchive')
+    # Pages served on multiple site subdomains (partners, events) set
+    # :canonical to their directory-apex permalink so Google consolidates the
+    # duplicates onto placecal.org instead of splitting authority per subdomain.
+    # og:url follows it — all URL-identity signals should name the same page.
+    canonical_href = content_for?(:canonical) ? content_for(:canonical) : request.original_url
+    meta(property: 'og:url', content: canonical_href)
+    link(rel: 'canonical', href: canonical_href)
+    # Views can tighten robots via content_for (e.g. past events set noindex
+    # so thousands of stale event pages don't dilute the site in the index).
+    robots_content = content_for?(:robots) ? content_for(:robots) : 'noarchive'
+    meta(name: 'robots', content: robots_content)
 
     json_ld = site ? site.to_json_ld(base_url: request.base_url) : Site.directory_json_ld(request.base_url)
     script(type: 'application/ld+json') { raw safe(json_ld.to_json) }

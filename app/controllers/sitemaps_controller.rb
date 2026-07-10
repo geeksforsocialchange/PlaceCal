@@ -60,7 +60,10 @@ class SitemapsController < ApplicationController
   end
 
   def build_events
-    urls = Event.where(dtstart: 3.months.ago..)
+    # Only events that aren't over (dtend-aware, matching Event#past?) —
+    # past event pages are noindexed, and a sitemap listing noindexed URLs
+    # draws "submitted URL marked noindex" warnings in Search Console.
+    urls = Event.where('COALESCE(dtend, dtstart) >= ?', DateTime.current.beginning_of_day)
                 .order(dtstart: :desc)
                 .limit(MAX_URLS_PER_SITEMAP)
                 .pluck(:id, :updated_at)
