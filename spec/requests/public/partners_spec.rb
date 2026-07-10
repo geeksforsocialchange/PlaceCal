@@ -51,6 +51,20 @@ RSpec.describe "Public Partners", type: :request do
       expect(response.body).to include(partner.name)
     end
 
+    it "canonicalises to the directory apex, not the site subdomain" do
+      get partner_url(partner, host: "#{site.slug}.lvh.me")
+      expect(response.body).to include(
+        %(<link rel="canonical" href="https://placecal.org/partners/#{partner.slug}">)
+      )
+    end
+
+    it "emits JSON-LD whose @id matches the canonical" do
+      get partner_url(partner, host: "#{site.slug}.lvh.me")
+      expect(response.body).to include(
+        %("@id":"https://placecal.org/partners/#{partner.slug}")
+      )
+    end
+
     it "shows partner summary" do
       get partner_url(partner, host: "#{site.slug}.lvh.me")
       expect(response.body).to include(partner.summary)
@@ -61,7 +75,16 @@ RSpec.describe "Public Partners", type: :request do
       expect(response.body).to include(partner.address.postcode)
     end
 
-    it "shows correct page title" do
+    it "shows the page title with locality" do
+      named_partner = create(:partner, name: "Tea Dance Collective", address: create(:address, neighbourhood: ward))
+      get partner_url(named_partner, host: "#{site.slug}.lvh.me")
+      expect(response.body).to include(
+        "<title>Tea Dance Collective, #{ward.name} | #{site.name}</title>"
+      )
+    end
+
+    it "omits the locality when the partner name already contains it" do
+      # riverside_partner is "Riverside Community Hub" in the Riverside ward
       get partner_url(partner, host: "#{site.slug}.lvh.me")
       expect(response.body).to include("<title>#{partner.name} | #{site.name}</title>")
     end

@@ -53,6 +53,23 @@ RSpec.describe "Public Events", type: :request do
       get event_url(event, host: "#{site.slug}.lvh.me")
       expect(response.body).to include(partner.name)
     end
+
+    it "does not noindex upcoming events" do
+      get event_url(event, host: "#{site.slug}.lvh.me")
+      expect(response.body).to include(%(<meta name="robots" content="noarchive">))
+      expect(response.body).not_to include("noindex")
+    end
+
+    it "noindexes past events" do
+      past_event = create(:event,
+                          organiser: partner,
+                          dtstart: 2.days.ago,
+                          dtend: 2.days.ago + 1.hour,
+                          address: address)
+      get event_url(past_event, host: "#{site.slug}.lvh.me")
+      expect(response).to be_successful
+      expect(response.body).to include(%(<meta name="robots" content="noindex, noarchive">))
+    end
   end
 
   describe "GET /events with date filter" do

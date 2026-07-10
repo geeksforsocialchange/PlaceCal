@@ -25,21 +25,85 @@ module PartnerJsonLd
     data['sameAs'] = same_as if same_as.any?
 
     if address
-      data['address'] = {
-        '@type' => 'PostalAddress',
-        'streetAddress' => address.full_street_address,
-        'addressLocality' => address.city,
-        'postalCode' => address.postcode,
-        'addressCountry' => address.country_code
-      }.compact
+      postal_address = address.to_json_ld
+      data['address'] = postal_address
+      build_json_ld_location(data, postal_address)
     end
 
+    build_json_ld_area_served(data)
     build_json_ld_events(data, base_url) if base_url
 
     data
   end
 
   private
+
+  # Partners that operate across a region rather than at a fixed venue (no
+  # address, just service areas) get no `location`/`geo` — there's no honest
+  # point to emit. `areaServed` is the right signal for them: it names the
+  # regions served without implying a coordinate. Emitted for any partner with
+  # service areas, whether or not it also has a venue.
+  def build_json_ld_area_served(data)
+    areas = service_area_neighbourhoods.order(:name).map do |neighbourhood|
+      { '@type' => 'AdministrativeArea', 'name' => neighbourhood.name }
+    end
+    data['areaServed'] = areas if areas.any?
+  end
+
+  # Partners are all kinds of thing (charities, groups, council services,
+  # libraries), so the org itself stays a generic Organization. The physical
+  # venue signals — geo + opening hours — hang off a `location` Place, which
+  # carries no "business" connotation and is what Google reads for local
+  # results. Only emitted when the partner has an address.
+  def build_json_ld_location(data, postal_address)
+    place = { '@type' => 'Place', 'address' => postal_address }
+
+    if address.latitude && address.longitude
+      place['geo'] = {
+        '@type' => 'GeoCoordinates',
+        'latitude' => address.latitude,
+        'longitude' => address.longitude
+      }
+    end
+
+    hours = json_ld_opening_hours
+    place['openingHoursSpecification'] = hours if hours.any?
+
+    data['location'] = place
+  end
+
+  # Maps the stored opening_times (already schema.org-shaped) into an
+  # OpeningHoursSpecification array, normalising the day to a plain name and
+  # times to HH:MM.
+  def json_ld_opening_hours
+    parsed = JSON.parse(opening_times_data)
+    return [] unless parsed.is_a?(Array)
+
+    # Defensive per-slot: the column's validation silently skips (rather than
+    # rejects) malformed slots, and legacy rows predate it entirely — one bad
+    # slot must drop out, not 500 the page or discard its siblings.
+    parsed.filter_map do |slot|
+      next unless slot.is_a?(Hash)
+
+      day = slot['dayOfWeek'].to_s
+      begin
+        opens = Time.zone.parse(slot['opens'].to_s)
+        closes = Time.zone.parse(slot['closes'].to_s)
+      rescue ArgumentError
+        next
+      end
+      next if day.blank? || opens.nil? || closes.nil?
+
+      {
+        '@type' => 'OpeningHoursSpecification',
+        'dayOfWeek' => day.split('/').last,
+        'opens' => opens.strftime('%H:%M'),
+        'closes' => closes.strftime('%H:%M')
+      }
+    end
+  rescue JSON::ParserError
+    []
+  end
 
   def build_json_ld_events(data, base_url)
     upcoming = events.upcoming.sort_by_time.limit(10)
@@ -60,13 +124,7 @@ module PartnerJsonLd
         entry['location'] = {
           '@type' => 'Place',
           'name' => event.partner_at_location&.name,
-          'address' => {
-            '@type' => 'PostalAddress',
-            'streetAddress' => event.address.full_street_address,
-            'addressLocality' => event.address.city,
-            'postalCode' => event.address.postcode,
-            'addressCountry' => event.address.country_code
-          }.compact
+          'address' => event.address.to_json_ld
         }
       end
       entry

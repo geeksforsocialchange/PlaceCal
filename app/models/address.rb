@@ -140,6 +140,19 @@ class Address < ApplicationRecord
     all_address_lines.join(', ')
   end
 
+  # Schema.org PostalAddress node, shared by the partner and event JSON-LD
+  # builders (PartnerJsonLd, EventJsonLd).
+  # @return [Hash]
+  def to_json_ld
+    {
+      '@type' => 'PostalAddress',
+      'streetAddress' => full_street_address,
+      'addressLocality' => city,
+      'postalCode' => postcode,
+      'addressCountry' => country_code
+    }.compact
+  end
+
   private
 
   # ==== Private methods ====

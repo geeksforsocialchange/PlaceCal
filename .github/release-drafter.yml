@@ -1,35 +1,70 @@
-template: |
-  ## What’s Changed
+# Release Drafter config. Maintains a DRAFT GitHub release, continuously updated
+# as PRs merge to main, with categorised notes + an auto-resolved semver bump.
+# Publishing that draft is what deploys production (see test-and-deploy.yml).
+#
+# Categorisation + version bump are driven by PR labels — but the `autolabeler`
+# below applies those labels automatically from PR titles/branches, so no manual
+# labelling is required. Renovate applies `dependencies` itself. To force a
+# specific bump, label the PR `major`/`minor`/`patch` by hand.
+name-template: "v$RESOLVED_VERSION"
+tag-template: "v$RESOLVED_VERSION"
 
-  $CHANGES
 categories:
   - title: "🚀 Features"
-    labels:
-      - "enhancement"
-  - title: "🐛 Bug Fixes"
-    labels:
-      - "bug"
-  - title: "🧰 Maintenance"
-    labels:
-      - "chore"
-      - "code-smell"
-      - "dependencies"
-  - title: "🌍 Translations"
-    labels:
-      - "translation"
-  - title: "📚 Documentation"
-    labels:
-      - "docs"
+    labels: [enhancement]
+  - title: "🐛 Fixes"
+    labels: [fix, bug]
+  - title: "🔒 Security"
+    labels: [security]
+  - title: "🧹 Maintenance"
+    labels: [maintenance, dependencies]
+  - title: "📚 Docs"
+    labels: [docs]
+
+# Anything not matched by the categories above still shows under this heading.
+change-template: "- $TITLE (#$NUMBER) @$AUTHOR"
+change-title-escapes: '\<*_&'
+exclude-labels: [duplicate, "won't fix"]
+
 version-resolver:
   major:
-    labels:
-      - "major"
+    labels: [breaking, major]
   minor:
-    labels:
-      - "minor"
+    labels: [enhancement, minor]
   patch:
-    labels:
-      - "patch"
+    labels: [fix, bug, security, maintenance, docs, dependencies, patch]
   default: patch
-# name-template: '$RESOLVED_VERSION 🌈'
-# tag-template: '$RESOLVED_VERSION'
+
+autolabeler:
+  - label: enhancement
+    title: ["/^feat/i", "/^feature/i", "/^add/i"]
+    branch: ["/^feat/i", "/^feature/i", "/^add/i"]
+  - label: fix
+    title: ["/^fix/i", "/^bugfix/i", "/^hotfix/i"]
+    branch: ["/^fix/i", "/^hotfix/i"]
+  - label: docs
+    title: ["/^docs/i"]
+    branch: ["/^docs/i"]
+    files: ["doc/**", "**/*.md"]
+  - label: maintenance
+    title:
+      [
+        "/^chore/i",
+        "/^refactor/i",
+        "/^ci/i",
+        "/^test/i",
+        "/^perf/i",
+        "/^build/i",
+        "/^upgrade/i",
+        "/^bump/i",
+      ]
+    branch: ["/^chore/i", "/^refactor/i"]
+  - label: breaking
+    title: ["/!:/", "/^break/i"]
+
+template: |
+  ## What's changed
+
+  $CHANGES
+
+  **Full changelog**: https://github.com/geeksforsocialchange/PlaceCal/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION

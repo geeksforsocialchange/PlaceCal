@@ -41,7 +41,9 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
           plain t('directory.sidebar.partnerships_description', name: @partner.name)
         end
         Array(@containing_sites).each do |site_record|
-          a(href: "https://#{site_record.slug}.placecal.org",
+          # Relative to the current host so the links work in development
+          # (slug.lvh.me) as well as production (slug.placecal.org)
+          a(href: root_url(subdomain: site_record.slug),
             class: 'flex items-center justify-between py-2 no-underline text-foreground hover:bg-background/50 transition-colors rounded px-1') do
             div do
               div(class: 'font-extra-bold text-sm') { site_record.name }

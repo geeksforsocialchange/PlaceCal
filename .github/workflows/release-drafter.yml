@@ -1,15 +1,22 @@
 name: Release Drafter
 
 on:
+  # Update the draft release as PRs merge to main.
   push:
     branches:
       - main
+  # Autolabel PRs from their title/branch (see .github/release-drafter.yml).
+  pull_request:
+    types: [opened, reopened, synchronize]
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   update_release_draft:
+    permissions:
+      contents: write # create/update the draft release
+      pull-requests: write # apply autolabels
     runs-on: ubuntu-latest
     steps:
       - uses: release-drafter/release-drafter@4d75298e00d9e34c483e5ff8c68d0ea1c1940c1e # v7.5.1

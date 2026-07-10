@@ -22,7 +22,7 @@ module Permalinkable
     def permalink_resource(resource_name)
       define_method(:permalink) do |base_url: nil|
         base_url ||= Site::DIRECTORY_URL
-        "#{base_url.chomp('/')}/#{resource_name}/#{id}"
+        "#{base_url.chomp('/')}/#{resource_name}/#{to_param}"
       end
     end
   end

@@ -265,6 +265,14 @@ class Event < ApplicationRecord
   def og_title
     str = "#{summary}, #{date}, #{time}"
     str += " @ #{organiser.name}" if organiser
+    str
+  end
+
+  # Whether the event is over (dtend-aware, so a multi-day event still
+  # running doesn't count). Used to noindex stale event pages.
+  # @return [Boolean]
+  def past?
+    (dtend || dtstart) < DateTime.current.beginning_of_day
   end
 
   private
