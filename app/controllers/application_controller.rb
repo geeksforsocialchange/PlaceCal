@@ -179,7 +179,16 @@ class ApplicationController < ActionController::Base
   # Sets a distinct AppSignal action name and sends a server-side pageview
   # to Plausible (iCal clients don't execute JavaScript).
   def track_ical_download
-    Appsignal::Transaction.current.set_action("#{self.class.name}#ical_feed")
+    track_file_download('ical_feed')
+  end
+
+  # Track CSV event exports (see EventsCsv) the same way.
+  def track_csv_download
+    track_file_download('csv_export')
+  end
+
+  def track_file_download(action)
+    Appsignal::Transaction.current.set_action("#{self.class.name}##{action}")
 
     return unless Rails.env.production?
 

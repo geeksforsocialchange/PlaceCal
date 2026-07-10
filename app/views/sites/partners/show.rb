@@ -240,6 +240,10 @@ class Views::Sites::Partners::Show < Views::Base
     Sites::Meta("/partners/#{partner.id}") do |component|
       component.with_link do
         link_to "Subscribe to #{partner}'s events with iCal", partner_url(partner, protocol: :webcal, format: :ics)
+        if events.any?
+          whitespace
+          link_to t('events.csv_export.link'), partner_url(partner, format: :csv)
+        end
       end
     end
   end
