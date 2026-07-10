@@ -153,6 +153,30 @@ RSpec.describe PartnerJsonLd do
         partner.update!(opening_times: "[]")
         expect(partner.to_json_ld["location"]).not_to have_key("openingHoursSpecification")
       end
+
+      # The opening_times validation silently skips malformed slots rather
+      # than rejecting them, and legacy rows predate it — so rendering must
+      # survive whatever is persisted, dropping only the bad slot.
+      it "drops slots with unparseable times instead of raising" do
+        partner.update!(opening_times: [
+          { "dayOfWeek" => "http://schema.org/Monday", "opens" => "25:99", "closes" => "17:00" },
+          { "dayOfWeek" => "http://schema.org/Tuesday", "opens" => "10:00", "closes" => "16:00" }
+        ].to_json)
+        spec = partner.to_json_ld["location"]["openingHoursSpecification"]
+        expect(spec).to eq([
+                             { "@type" => "OpeningHoursSpecification", "dayOfWeek" => "Tuesday", "opens" => "10:00", "closes" => "16:00" }
+                           ])
+      end
+
+      it "drops non-hash slots instead of raising" do
+        partner.update!(opening_times: [
+          "nonsense",
+          { "dayOfWeek" => "http://schema.org/Friday", "opens" => "09:00", "closes" => "12:00" }
+        ].to_json)
+        spec = partner.to_json_ld["location"]["openingHoursSpecification"]
+        expect(spec.length).to eq(1)
+        expect(spec.first["dayOfWeek"]).to eq("Friday")
+      end
     end
 
     context "with embedded events" do

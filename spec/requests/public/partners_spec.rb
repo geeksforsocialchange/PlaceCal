@@ -58,6 +58,13 @@ RSpec.describe "Public Partners", type: :request do
       )
     end
 
+    it "emits JSON-LD whose @id matches the canonical" do
+      get partner_url(partner, host: "#{site.slug}.lvh.me")
+      expect(response.body).to include(
+        %("@id":"https://placecal.org/partners/#{partner.slug}")
+      )
+    end
+
     it "shows partner summary" do
       get partner_url(partner, host: "#{site.slug}.lvh.me")
       expect(response.body).to include(partner.summary)

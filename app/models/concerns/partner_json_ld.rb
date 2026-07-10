@@ -25,7 +25,7 @@ module PartnerJsonLd
     data['sameAs'] = same_as if same_as.any?
 
     if address
-      postal_address = postal_address_json_ld(address)
+      postal_address = address.to_json_ld
       data['address'] = postal_address
       build_json_ld_location(data, postal_address)
     end
@@ -79,10 +79,19 @@ module PartnerJsonLd
     parsed = JSON.parse(opening_times_data)
     return [] unless parsed.is_a?(Array)
 
+    # Defensive per-slot: the column's validation silently skips (rather than
+    # rejects) malformed slots, and legacy rows predate it entirely — one bad
+    # slot must drop out, not 500 the page or discard its siblings.
     parsed.filter_map do |slot|
-      day = slot['dayOfWeek']
-      opens = Time.zone.parse(slot['opens'].to_s)
-      closes = Time.zone.parse(slot['closes'].to_s)
+      next unless slot.is_a?(Hash)
+
+      day = slot['dayOfWeek'].to_s
+      begin
+        opens = Time.zone.parse(slot['opens'].to_s)
+        closes = Time.zone.parse(slot['closes'].to_s)
+      rescue ArgumentError
+        next
+      end
       next if day.blank? || opens.nil? || closes.nil?
 
       {
@@ -115,22 +124,10 @@ module PartnerJsonLd
         entry['location'] = {
           '@type' => 'Place',
           'name' => event.partner_at_location&.name,
-          'address' => postal_address_json_ld(event.address)
+          'address' => event.address.to_json_ld
         }
       end
       entry
     end
-  end
-
-  # Builds a schema.org PostalAddress node from an Address. Shared by the
-  # partner's own address and the addresses of its embedded events.
-  def postal_address_json_ld(addr)
-    {
-      '@type' => 'PostalAddress',
-      'streetAddress' => addr.full_street_address,
-      'addressLocality' => addr.city,
-      'postalCode' => addr.postcode,
-      'addressCountry' => addr.country_code
-    }.compact
   end
 end

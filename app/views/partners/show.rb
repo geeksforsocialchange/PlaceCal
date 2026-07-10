@@ -31,7 +31,10 @@ class Views::Partners::Show < Views::Base
     content_for(:image) { partner_og_image_url(partner) }
     content_for(:image_alt) { t('og_image.alt.partner', name: partner.name) }
     content_for(:description) { partner.summary } if partner.summary
-    content_for(:json_ld) { safe(partner.to_json_ld(base_url: request.base_url).to_json) }
+    # Built from the directory apex, not request.base_url, so the JSON-LD @id
+    # names the same URL as the canonical tag above — the structured data must
+    # reinforce the canonical entity, not contradict it per-subdomain.
+    content_for(:json_ld) { safe(partner.to_json_ld(base_url: ::Site::DIRECTORY_URL).to_json) }
   end
 
   def render_partner_description
