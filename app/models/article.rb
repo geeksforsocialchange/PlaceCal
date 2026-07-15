@@ -9,7 +9,7 @@
 #  body          :text             not null
 #  body_html     :string
 #  is_draft      :boolean          default(TRUE), not null
-#  published_at  :date
+#  published_at  :datetime
 #  slug          :string
 #  title         :text             not null
 #  created_at    :datetime         not null
@@ -18,8 +18,9 @@
 #
 # Indexes
 #
-#  index_articles_on_author_id  (author_id)
-#  index_articles_on_slug       (slug) UNIQUE
+#  index_articles_on_author_id     (author_id)
+#  index_articles_on_published_at  (published_at)
+#  index_articles_on_slug          (slug) UNIQUE
 #
 # Foreign Keys
 #
@@ -35,7 +36,7 @@ class Article < ApplicationRecord
   attribute :body,         :text
   attribute :body_html,    :string # populated by HtmlRenderCache
   attribute :is_draft,     :boolean, default: true
-  attribute :published_at, :date
+  attribute :published_at, :datetime
   attribute :slug,         :string
   attribute :title,        :text
 
@@ -62,6 +63,10 @@ class Article < ApplicationRecord
   scope :published, -> { where is_draft: false }
   scope :by_publish_date, -> { order(published_at: :desc) }
 
+  scope :for_partner, lambda { |partner|
+    joins(:article_partners).where(article_partners: { partner_id: partner.id })
+  }
+
   scope :global_newsfeed, -> { published.order(published_at: :desc) }
 
   scope :with_partner_tag, lambda { |tag_id|
@@ -74,63 +79,19 @@ class Article < ApplicationRecord
     joins(:article_tags).where(article_tags: { tag: tag_ids })
   }
 
+  # Published articles visible on a site: an article is visible iff at least
+  # one of its partners is on the site (per PartnersQuery — address OR service
+  # area in the site's neighbourhoods, strict partnership-tag filter on tagged
+  # sites, hidden partners excluded). News follows the partner, exactly like
+  # events. Article tags play no part in site visibility — they remain a
+  # curation tool for the tag-based GraphQL queries.
   scope :for_site, lambda { |site|
-    # this is a bit complicated but necessary
-    # the main problem to overcome is that we want articles by tag OR location
-    # (emphasis on OR).
-    #
-    # in simple AR land we would just chain scope methods like
-    #   `Article.by_tag(tags).by_location(neighbourhoods)` and be done with it
-    # each scope would set up its `joins` to pull in tables and its `wheres`
-    # to filter based on those joins. simple!
-    # but unfortunately these scopes get combined with 'AND' clauses in
-    # the `where` part.
-    #
-    # so what this does is build up the query for tags and locations like
-    # we were chaining scope methods without the conditions. we store
-    # the conditions as (clause, params) in an array as we go. when we reach
-    # the end we then extend the scope with a `where` clause that combines
-    # everything with `OR' as is needed and then return that to the
-    # calling code as a regular scope for further chaining.
-    #
-    # this also also allows us to skip an entire chunk of query if the
-    # site has no tags or locations.
+    site_partners = PartnersQuery.new(site: site).call.reorder(nil)
 
-    site_neighbourhood_ids = site.owned_neighbourhoods.pluck(:id)
-    site_tag_ids = site.tags.pluck(:id)
-
-    # if site has no tags or neighbourhoods then just return nothing to caller
-    return none if site_neighbourhood_ids.empty? && site_tag_ids.empty?
-
-    scope = all
-
-    where_fragments = []
-    where_params = []
-
-    # articles by neighbourhood
-    if site_neighbourhood_ids.any?
-      # TODO: service areas?
-      scope = scope
-              .joins('LEFT OUTER JOIN article_partners ON articles.id=article_partners.article_id')
-              .joins('LEFT OUTER JOIN partners ON article_partners.partner_id = partners.id')
-              .joins('LEFT OUTER JOIN addresses ON partners.address_id = addresses.id')
-      where_fragments << 'addresses.neighbourhood_id IN (?)'
-      where_params << site_neighbourhood_ids
-    end
-
-    # articles by tag
-    if site_tag_ids.any?
-      scope = scope
-              .joins(' LEFT OUTER JOIN article_tags ON articles.id=article_tags.article_id')
-      where_fragments << 'article_tags.tag_id IN (?)'
-      where_params << site_tag_ids
-    end
-
-    # combine conditions with params to extend the scope
-    scope = scope
-            .where("(#{where_fragments.join(' OR ')})", *where_params)
-
-    scope.distinct('articles.id')
+    published
+      .joins(:partners)
+      .where(partners: { id: site_partners.select(:id) })
+      .distinct
   }
 
   # ==== Callbacks ====
@@ -148,6 +109,17 @@ class Article < ApplicationRecord
     article_image&.highres&.url
   end
 
+  # Image for social-share cards: the article's own image, falling back to the
+  # first partner's. Callers fall through to the site/directory default when nil.
+  #
+  # @return [String, nil] image path
+  def og_image_path
+    return highres_image if article_image.present?
+
+    partner_with_image = partners.detect(&:image?)
+    partner_with_image&.image&.url(:standard)
+  end
+
   # @return [Array] FriendlyId slug candidates
   def slug_candidates
     [%i[title id]]
@@ -156,7 +128,9 @@ class Article < ApplicationRecord
   private
 
   # ==== Private methods ====
+  # Publishing stamps the current time unless a publication date was set
+  # explicitly (backdating, seeds); unpublishing clears it
   def update_published_at
-    self.published_at = is_draft ? nil : DateTime.now
+    self.published_at = is_draft ? nil : (published_at || Time.current)
   end
 end

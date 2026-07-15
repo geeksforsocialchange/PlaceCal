@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe ArticlePolicy, type: :policy do
-  subject { described_class.new(user, article) }
+  subject(:policy) { described_class.new(user, article) }
 
   let(:partner) { create(:partner) }
   let(:article) { create(:article, partners: [partner]) }
@@ -26,6 +26,31 @@ RSpec.describe ArticlePolicy, type: :policy do
     it { is_expected.to permit_action(:create) }
     it { is_expected.to permit_action(:update) }
     it { is_expected.to permit_action(:destroy) }
+  end
+
+  describe "for an editor" do
+    # Regression coverage for issue #2045 — editors manage all news articles
+    let(:user) { create(:editor_user) }
+
+    it { is_expected.to permit_action(:index) }
+    it { is_expected.to permit_action(:show) }
+    it { is_expected.to permit_action(:create) }
+    it { is_expected.to permit_action(:update) }
+    it { is_expected.to permit_action(:destroy) }
+
+    it "has no disabled fields" do
+      expect(policy.disabled_fields).to be_empty
+    end
+
+    describe "scope" do
+      it "resolves every article, including other partners' ones" do
+        with_partner = article
+        without_partner = create(:article)
+
+        resolved = described_class::Scope.new(user, Article).resolve
+        expect(resolved).to contain_exactly(with_partner, without_partner)
+      end
+    end
   end
 
   describe "for a partner admin" do

@@ -9,7 +9,9 @@ class Components::Admin::TabForm < Components::Admin::Base
   prop :settings_hash, _Nilable(String), default: nil
   prop :preview_hash, _Nilable(String), default: nil
 
-  def view_template
+  # An optional block renders as extra buttons in the save bar, next to Save
+  # (e.g. the article form's Publish/Unpublish action)
+  def view_template(&)
     div(class: 'tabs tabs-lift') do
       visible_tabs.each_with_index do |tab, index|
         div(class: 'tab flex-1 cursor-default') if tab[:spacer_before]
@@ -35,7 +37,8 @@ class Components::Admin::TabForm < Components::Admin::Base
       tab_name: @tab_name,
       settings_hash: @settings_hash,
       preview_hash: @preview_hash,
-      storage_key: @storage_key
+      storage_key: @storage_key,
+      &
     )
   end
 

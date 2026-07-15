@@ -2,18 +2,19 @@
 
 class Views::News::Show < Views::Base
   register_output_helper :article_partner_links
+  register_value_helper :article_summary_text
 
   prop :article, Article, reader: :private
   prop :site, Site, reader: :private
 
   def view_template
-    content_for(:title) { article.title }
+    set_content_for_tags
 
     div(vocab: 'http://schema.org/', typeof: 'Article') do
       Hero(article.title, site.tagline, 'name')
       div(class: 'container-public mb-32') do
         Breadcrumb(
-          trail: [['News', news_index_path], [article.title, news_path(article)]],
+          trail: [[t('navigation.news'), news_index_path], [article.title, news_path(article)]],
           site_name: site.name
         )
         hr
@@ -23,6 +24,17 @@ class Views::News::Show < Views::Base
   end
 
   private
+
+  def set_content_for_tags
+    content_for(:title) { article.title }
+    content_for(:description) { article_summary_text(article) }
+
+    og_image = article.og_image_path
+    return if og_image.blank?
+
+    content_for(:image) { og_image }
+    content_for(:image_alt) { article.title }
+  end
 
   def render_article_body
     div(class: 'g article') do
@@ -35,7 +47,8 @@ class Views::News::Show < Views::Base
       div(class: 'gi gi__4-5 article__main') do
         if article.author&.full_name.present?
           h3(class: 'article__author') do
-            plain 'By '
+            plain t('news.show.by')
+            plain ' '
             em { article.author.full_name }
           end
         end
@@ -50,7 +63,6 @@ class Views::News::Show < Views::Base
         if article.article_image.present?
           div(class: 'article__image') do
             image_tag article.article_image.url, class: 'border'
-            p(class: 'article__image-attribute') { 'Image credit and/or title' }
           end
         end
 
@@ -59,7 +71,7 @@ class Views::News::Show < Views::Base
         end
 
         div(class: 'article__back') do
-          link_to 'Back to news', news_path
+          link_to t('news.show.back'), news_index_path
         end
       end
     end
