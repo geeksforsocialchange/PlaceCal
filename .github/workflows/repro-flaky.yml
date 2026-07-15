@@ -1,0 +1,114 @@
+name: Repro Flaky System Tests
+
+# TEMPORARY diagnostic workflow (branch ci/repro-flaky-system-tests).
+# Runs the full system suite across a matrix of seeds in parallel, so we get
+# many independent samples per wall-clock. Captures memory/load over the run
+# plus capybara screenshots and the test log, to pin down the intermittent
+# tab-switch and Net::ReadTimeout failures seen on main. Delete when done.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ci/repro-flaky-system-tests]
+
+jobs:
+  repro:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        # Each entry is an independent full-suite run with a distinct RSpec seed
+        # (test order matters — the two failures came with different seeds).
+        seed: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_PORT: 5432
+          POSTGRES_DB: placecal_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: foobar
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: postgres
+      PGPASSWORD: foobar
+      RAILS_ENV: test
+      CI: true
+
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+
+      - uses: ruby/setup-ruby@8e41b362d2589a22a44c1cfa214b3c83052c195b # v1.318.0
+        with:
+          bundler-cache: true
+          cache-version: 3
+
+      - name: Install Imagemagick and libvips
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y imagemagick libvips-dev
+
+      - name: Install Chrome for browser tests
+        uses: browser-actions/setup-chrome@2e1d749697dd1612b833dba4a722266286fbefcd # latest
+        id: setup-chrome
+        with:
+          chrome-version: stable
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: ".node-version"
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+
+      - name: Prepare database
+        run: bin/rails db:test:prepare
+
+      - name: Build assets
+        run: |
+          bin/yarn run build:all
+          bin/rails dartsass:build
+
+      - name: Precompile Rails assets
+        run: RAILS_ENV=test bin/rails assets:precompile
+
+      - name: Start resource logger
+        run: |
+          ( while true; do
+              echo "$(date +%H:%M:%S) mem=$(free -m | awk '/Mem:/{print $3"/"$2"MB used, "$7"MB avail"}') load=$(cut -d" " -f1-3 /proc/loadavg)";
+              sleep 5;
+            done ) > resource-log-seed-${{ matrix.seed }}.txt 2>&1 &
+          echo "RESLOG_PID=$!" >> "$GITHUB_ENV"
+
+      - name: Run system suite (seed ${{ matrix.seed }})
+        run: RUN_SLOW_TESTS=true bundle exec rspec spec/system --seed ${{ matrix.seed }} --format documentation
+        env:
+          BROWSER_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
+
+      - name: Stop resource logger
+        if: always()
+        run: kill "$RESLOG_PID" 2>/dev/null || true
+
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: repro-seed-${{ matrix.seed }}
+          path: |
+            tmp/capybara/**
+            log/test.log
+            resource-log-seed-${{ matrix.seed }}.txt
+          if-no-files-found: ignore
+          retention-days: 7

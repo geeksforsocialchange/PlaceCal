@@ -30,7 +30,33 @@ module TabHelpers
   def go_to_partner_tab(tab_label)
     wait_for_form_tabs
     find("input.tab[aria-label='#{tab_label}']").click
-    expect(page).to have_css("input.tab[aria-label='#{tab_label}']:checked", wait: 5)
+    return if page.has_css?("input.tab[aria-label='#{tab_label}']:checked", wait: 5)
+
+    # DIAGNOSTIC (ci/repro-flaky-system-tests branch only): dump the exact state
+    # at the moment the tab switch fails, so the CI repro can pin the mechanism.
+    diag =
+      begin
+        page.evaluate_script(<<~JS)
+          (() => {
+            const app = window.Stimulus || window.application;
+            const sb = document.querySelector('[data-controller~="save-bar"]');
+            const ctrl = sb && app.getControllerForElementAndIdentifier(sb, 'save-bar');
+            const checked = document.querySelector('input.tab[name="partner_tabs"]:checked');
+            return JSON.stringify({
+              dirty: ctrl ? ctrl.dirty : 'no-ctrl',
+              checkedTab: checked ? checked.getAttribute('aria-label') : 'none',
+              hash: location.hash,
+              ftConnected: !!document.querySelector('[data-form-tabs-connected]'),
+              sbConnected: !!document.querySelector('[data-save-bar-connected]'),
+              ssKeys: Object.keys(window.sessionStorage),
+              consoleErrs: (window.__consoleErrors || [])
+            });
+          })()
+        JS
+      rescue StandardError => e
+        "diag-eval-failed: #{e.class}: #{e.message}"
+      end
+    raise "TAB SWITCH FAILED for #{tab_label} :: #{diag}"
   end
 
   def go_to_basic_info_tab = go_to_partner_tab("📋 Basic Info")
