@@ -169,6 +169,24 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
 
       expect(page).not_to have_button("Reset sort")
     end
+
+    # Regression: Phlex dasherizes Symbol data-attribute values, so multi-word
+    # columns rendered data-column="updated-at" and the JS fell back to sorting
+    # by the first column (#3336)
+    it "sorts by a multi-word column (updated_at) when clicking its header" do
+      partner_gamma.update_columns(updated_at: 3.days.ago)
+      partner_beta.update_columns(updated_at: 2.days.ago)
+      partner_alpha.update_columns(updated_at: 1.day.ago)
+
+      # Default sort is already updated_at desc, so one click toggles to asc
+      find("th[data-column='updated_at']").click
+      wait_for_datatable
+      expect(page).to have_css("[data-admin-table-target='tbody'] tr:first-child", text: "Gamma")
+
+      find("th[data-column='updated_at']").click
+      wait_for_datatable
+      expect(page).to have_css("[data-admin-table-target='tbody'] tr:first-child", text: "Alpha")
+    end
   end
 
   describe "calendar status filter" do
