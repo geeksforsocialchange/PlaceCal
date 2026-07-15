@@ -12,13 +12,6 @@ class Views::Join::Base < Views::Base
     join_audience_path(key.tr('_', '-'))
   end
 
-  # Absolute URL on the apex (the nationwide directory) from the join
-  # subdomain, e.g. https://placecal.org/foo or http://lvh.me:3000/foo.
-  # Mirrors Components::Join::Base#apex_url.
-  def apex_url(path = '')
-    "#{request.protocol}#{request.domain}#{request.port_string}#{path}"
-  end
-
   # Breadcrumb trail on join page tops (the design's .bc) — taupe on cream,
   # or the AA-safe ink on salmon heroes (taupe only reaches 2.4:1 there).
   # Pass [label] for the current page, or [label, path] pairs for links.

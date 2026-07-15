@@ -55,8 +55,8 @@ class Views::Join::Audience < Views::Join::Base
 
   def render_rollout
     aside(class: 'bg-secondary rounded-card p-5 text-secondary-ink') do
-      h2(class: 'font-serif font-regular text-card text-secondary-ink m-0') { t('join.audiences.rollout.heading') }
-      steps = t('join.audiences.rollout.steps')
+      h2(class: 'font-serif font-regular text-card text-secondary-ink m-0') { t('join.rollout.heading') }
+      steps = t('join.rollout.steps')
       steps.each_with_index do |step, index|
         last = index == steps.length - 1
         div(class: "grid grid-cols-[60px_1fr] gap-5 items-start py-4 #{'border-b-2 border-rules' unless last}") do
