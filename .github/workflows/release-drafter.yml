@@ -13,12 +13,29 @@ permissions:
   contents: read
 
 jobs:
+  # Maintain the categorised draft release + resolved semver bump. Publishing
+  # that draft is what tags and deploys production (see test-and-deploy.yml).
   update_release_draft:
+    if: github.event_name == 'push'
     permissions:
       contents: write # create/update the draft release
-      pull-requests: write # apply autolabels
     runs-on: ubuntu-latest
     steps:
       - uses: release-drafter/release-drafter@4d75298e00d9e34c483e5ff8c68d0ea1c1940c1e # v7.5.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Apply category labels to PRs from their title/branch. Since v7 the
+  # autolabeler is a SEPARATE action from the drafter above — the drafter no
+  # longer labels, so without this job PRs stay unlabelled and the draft can't
+  # categorise them or resolve the version bump. Reads .github/release-drafter.yml.
+  autolabel:
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read # read the config
+      pull-requests: write # apply labels
+    runs-on: ubuntu-latest
+    steps:
+      - uses: release-drafter/release-drafter/autolabeler@4d75298e00d9e34c483e5ff8c68d0ea1c1940c1e # v7.5.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
