@@ -122,8 +122,11 @@ class User < ApplicationRecord
     "#{name} <#{email}>".strip
   end
 
-  # @return [String] "Firstname Lastname (email)"
+  # @return [String] "Firstname Lastname (email)", degrading gracefully when
+  #   either part is missing so we never render a bare "Name ()" (#3241)
   def display_name
+    return full_name.presence || "#{self.class.model_name.human} ##{id}" if email.blank?
+
     name = full_name.presence || email.split('@').first
     "#{name} (#{email})"
   end
