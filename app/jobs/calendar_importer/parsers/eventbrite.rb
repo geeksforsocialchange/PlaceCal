@@ -28,19 +28,16 @@ module CalendarImporter::Parsers
       RestClient::GatewayTimeout,         # 504
       RestClient::TooManyRequests,        # 429 rate limit
 
-      # Network-level failures below never get an HTTP status: the connection
-      # itself dropped. RestClient lets them propagate raw, so without these the
-      # retry loop and the graceful-degrade rescues are both bypassed and the
-      # whole import crashes (AppSignal incident #279, Errno::ECONNRESET during
-      # SSL_connect). All requests here are GETs, so retrying is safe. The
-      # HTTParty parsers get the same treatment in Base.read_http_source.
-      RestClient::Exceptions::Timeout,    # covers open + read timeouts
+      # Dropped-connection errors never get an HTTP status and RestClient lets
+      # them propagate raw, so without these the retry loop and the graceful
+      # degrade are both bypassed and the whole import crashes (AppSignal
+      # incident #279, Errno::ECONNRESET during SSL_connect). All requests here
+      # are GETs, so retrying is safe. Timeouts, SSL and DNS errors are
+      # deliberately NOT listed: CalendarImporterJob's rescue_from backstop
+      # already maps those to bad_source/unreachable (see issue #3100).
       Errno::ECONNRESET,
       Errno::ECONNREFUSED,
-      Errno::EPIPE,
-      Errno::ETIMEDOUT,
-      SocketError,                        # DNS resolution failures
-      OpenSSL::SSL::SSLError              # TLS negotiation failures
+      Errno::EPIPE
     ].freeze
 
     def self.allowlist_pattern
