@@ -670,7 +670,7 @@ GEM
     simple_form (5.4.1)
       actionpack (>= 7.0)
       activemodel (>= 7.0)
-    simplecov (1.0.0)
+    simplecov (1.0.2)
     spring (4.7.0)
     sshkit (1.25.0)
       base64
