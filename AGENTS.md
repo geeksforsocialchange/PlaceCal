@@ -8,6 +8,10 @@ This file configures AI coding assistants for PlaceCal. Review the context file 
 - **When the user says something is wrong, believe them** - Trust the user over your assumptions.
 - **Debug properly** - If a fix doesn't work, investigate why rather than assuming it did.
 
+## Environment Config
+
+Staging runs its own `config/environments/staging.rb`, a near-duplicate of `production.rb`. Changes to production env config (logging, caching, mailers, etc.) must be mirrored in `staging.rb` or they won't reach staging.
+
 ## Development URLs
 
 The admin interface uses a subdomain. Access it at:

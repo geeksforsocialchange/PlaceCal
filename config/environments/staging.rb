@@ -41,9 +41,8 @@ Rails.application.configure do
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   # config.force_ssl = true
 
-  # Use the lowest log level to ensure availability of diagnostic information
-  # when problems arise.
-  config.log_level = :debug
+  # :info drops the per-query SQL noise that was filling the log buffer.
+  config.log_level = (ENV['RAILS_LOG_LEVEL'].presence || 'info').to_sym
 
   # Prepend all log lines with the following tags.
   config.log_tags = [:request_id]
@@ -94,9 +93,14 @@ Rails.application.configure do
   # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new 'app-name')
 
   if ENV['RAILS_LOG_TO_STDOUT'].present?
-    logger           = ActiveSupport::Logger.new(STDOUT)
-    logger.formatter = config.log_formatter
-    config.logger = ActiveSupport::TaggedLogging.new(logger)
+    stdout_logger = ActiveSupport::Logger.new($stdout)
+    stdout_logger.formatter = config.log_formatter
+    logger = ActiveSupport::BroadcastLogger.new(ActiveSupport::TaggedLogging.new(stdout_logger))
+
+    # Ship to AppSignal too for durable, searchable retention.
+    logger.broadcast_to(Appsignal::Logger.new('app')) if ENV['APPSIGNAL_PUSH_API_KEY'].present?
+
+    config.logger = logger
   end
 
   # Do not dump schema after migrations.
