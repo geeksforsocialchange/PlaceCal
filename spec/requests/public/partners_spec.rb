@@ -149,6 +149,11 @@ RSpec.describe "Public Partners", type: :request do
       expect(response).to be_successful
     end
 
+    it "preserves the format so ics feed subscriptions keep working" do
+      get partner_url(offsite_partner, host: "#{site.slug}.lvh.me", format: :ics)
+      expect(response).to redirect_to("https://placecal.org/partners/#{offsite_partner.slug}.ics")
+    end
+
     it "renders when the partner has a service area in the site" do
       offsite_partner.service_areas.create!(neighbourhood: ward)
       get partner_url(offsite_partner, host: "#{site.slug}.lvh.me")

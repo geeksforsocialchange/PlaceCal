@@ -12,6 +12,10 @@ module OffsiteRedirect
   def redirect_offsite_to_permalink(query, record)
     return if current_site.nil? || query.include?(record)
 
-    redirect_to record.permalink, status: :moved_permanently, allow_other_host: true
+    # Keep the requested format so .ics/.csv feed subscriptions still work
+    # after the redirect.
+    target = record.permalink
+    target += ".#{params[:format]}" if params[:format].present?
+    redirect_to target, status: :moved_permanently, allow_other_host: true
   end
 end

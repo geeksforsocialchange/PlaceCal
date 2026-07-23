@@ -93,6 +93,11 @@ RSpec.describe "Public Events", type: :request do
       get event_url(offsite_event, host: "lvh.me")
       expect(response).to be_successful
     end
+
+    it "preserves the format so ics feed subscriptions keep working" do
+      get event_url(offsite_event, host: "#{site.slug}.lvh.me", format: :ics)
+      expect(response).to redirect_to("https://placecal.org/events/#{offsite_event.id}.ics")
+    end
   end
 
   describe "GET /events with date filter" do
