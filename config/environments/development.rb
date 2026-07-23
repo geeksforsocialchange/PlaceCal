@@ -54,6 +54,11 @@ Rails.application.configure do
 
   config.action_mailer.asset_host = asset_url
 
+  # Canonical apex URL for the nationwide directory (Site::DIRECTORY_URL) —
+  # locally that's the dev server itself, so offsite 301s and permalinks
+  # stay on lvh.me instead of bouncing to production.
+  config.x.directory_url = ENV.fetch('DIRECTORY_URL', asset_url)
+
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false
 

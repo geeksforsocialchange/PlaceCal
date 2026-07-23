@@ -3,6 +3,10 @@
 Rails.application.configure do
   host = ENV.fetch('SITE_DOMAIN', 'placecal.org')
   routes.default_url_options = { host: host, protocol: 'https' }
+
+  # Canonical apex URL for the nationwide directory (Site::DIRECTORY_URL).
+  # Follows SITE_DOMAIN so staging stays on its own apex.
+  config.x.directory_url = ENV.fetch('DIRECTORY_URL', "https://#{host}")
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
