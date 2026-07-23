@@ -56,8 +56,8 @@ class Site < ApplicationRecord
 
   # Canonical apex URL for the nationwide directory. The directory has no Site
   # row — an apex request resolves to no site and renders the directory.
-  # Resolved in config/initializers/directory_url.rb (ENV['DIRECTORY_URL'],
-  # else the environment's own apex URL; test pins the production URL).
+  # Resolved in config/initializers/directory_url.rb (the environment's
+  # own apex URL; test pins the production URL).
   DIRECTORY_URL = Rails.configuration.x.directory_url
 
   # ==== Enums / Enumerize ====

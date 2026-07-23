@@ -2,12 +2,13 @@
 
 # Canonical apex URL for the nationwide directory (Site::DIRECTORY_URL).
 #
-# Precedence: ENV['DIRECTORY_URL'], then anything an environment file set
-# (test pins the production URL), then the apex each environment already
-# declares via routes.default_url_options — so development resolves to
+# Anything an environment file set wins (test pins the production URL);
+# otherwise derive the apex each environment already declares via
+# routes.default_url_options — so development resolves to
 # http://lvh.me:3000 and production/staging follow SITE_DOMAIN.
+# (.presence because config.x returns a truthy empty OrderedOptions
+# for unset keys.)
 Rails.application.config.x.directory_url =
-  ENV['DIRECTORY_URL'].presence ||
   Rails.application.config.x.directory_url.presence ||
   begin
     opts = Rails.application.routes.default_url_options
