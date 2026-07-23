@@ -6,6 +6,7 @@
           show_remove: true,
           form: f
         ) %>
+    <%= f.hidden_field :relation_type %>
   <% else %>
     <%= render Components::Admin::CascadingNeighbourhoodFields.new(form: f, relation_type: 'Secondary', show_remove: true) %>
   <% end %>
