@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative '../log_config'
+
 Rails.application.configure do
   host = ENV.fetch('SITE_DOMAIN', 'placecal.org')
   routes.default_url_options = { host: host, protocol: 'https' }
@@ -47,11 +49,7 @@ Rails.application.configure do
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   # config.force_ssl = true
 
-  # :info drops the per-query SQL noise that was filling the log buffer.
-  config.log_level = (ENV['RAILS_LOG_LEVEL'].presence || 'info').to_sym
-
-  # Prepend all log lines with the following tags.
-  config.log_tags = [:request_id]
+  LogConfig.apply(config)
 
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
@@ -72,24 +70,6 @@ Rails.application.configure do
 
   # Send deprecation notices to registered listeners.
   config.active_support.deprecation = :notify
-
-  # Use default logging formatter so that PID and timestamp are not suppressed.
-  config.log_formatter = ::Logger::Formatter.new
-
-  # Use a different logger for distributed setups.
-  # require 'syslog/logger'
-  # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new 'app-name')
-
-  if ENV['RAILS_LOG_TO_STDOUT'].present?
-    stdout_logger = ActiveSupport::Logger.new($stdout)
-    stdout_logger.formatter = config.log_formatter
-    logger = ActiveSupport::BroadcastLogger.new(ActiveSupport::TaggedLogging.new(stdout_logger))
-
-    # Ship to AppSignal too for durable, searchable retention.
-    logger.broadcast_to(Appsignal::Logger.new('app')) if ENV['APPSIGNAL_PUSH_API_KEY'].present?
-
-    config.logger = logger
-  end
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false

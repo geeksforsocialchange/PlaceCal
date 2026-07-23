@@ -10,7 +10,7 @@ This file configures AI coding assistants for PlaceCal. Review the context file 
 
 ## Environment Config
 
-Staging runs its own `config/environments/staging.rb`, a near-duplicate of `production.rb`. Changes to production env config (logging, caching, mailers, etc.) must be mirrored in `staging.rb` or they won't reach staging.
+Staging runs its own `config/environments/staging.rb`, a near-duplicate of `production.rb`. Shared logging lives in `config/log_config.rb` (called from both); other production env config (caching, mailers, storage) still must be mirrored in `staging.rb` or it won't reach staging.
 
 ## Development URLs
 
