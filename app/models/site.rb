@@ -56,9 +56,9 @@ class Site < ApplicationRecord
 
   # Canonical apex URL for the nationwide directory. The directory has no Site
   # row — an apex request resolves to no site and renders the directory.
-  # Per-environment default in config/environments/*, overridable with
-  # ENV['DIRECTORY_URL'].
-  DIRECTORY_URL = Rails.configuration.x.directory_url || 'https://placecal.org'
+  # Resolved in config/initializers/directory_url.rb (ENV['DIRECTORY_URL'],
+  # else the environment's own apex URL; test pins the production URL).
+  DIRECTORY_URL = Rails.configuration.x.directory_url
 
   # ==== Enums / Enumerize ====
   # Theme picker
