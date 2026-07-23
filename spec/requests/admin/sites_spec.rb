@@ -185,6 +185,34 @@ RSpec.describe "Admin::Sites", type: :request do
   end
 
   describe "PUT /admin/sites/:id" do
+    context "when a newly added neighbourhood fails validation and the form re-renders" do
+      before { sign_in root_user }
+
+      # Regression test for the same class of bug as #3356: a just-added secondary
+      # neighbourhood re-renders as a NeighbourhoodCard, which must emit a hidden
+      # neighbourhood_id or the row is silently dropped from the retry submission.
+      it "keeps the added neighbourhood submittable" do
+        ward = neighbourhoods.first
+
+        put admin_site_url(site, host: admin_host), params: {
+          site: {
+            name: "", # forces a validation failure so the form re-renders
+            sites_neighbourhoods_attributes: {
+              "0" => { neighbourhood_id: ward.id.to_s, relation_type: "Secondary" }
+            }
+          }
+        }
+
+        expect(response).to have_http_status(:unprocessable_content)
+
+        doc = Nokogiri::HTML(response.body)
+        neighbourhood_ids = doc.css("input[name^='site[sites_neighbourhoods_attributes]']")
+                               .select { |input| input["name"].end_with?("[neighbourhood_id]") }
+                               .map { |input| input["value"] }
+        expect(neighbourhood_ids).to include(ward.id.to_s)
+      end
+    end
+
     context "with bad image uploads" do
       before { sign_in root_user }
 

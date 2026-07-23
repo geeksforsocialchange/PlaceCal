@@ -214,4 +214,63 @@ RSpec.describe "Admin Partners", :slow, type: :system do
       end
     end
   end
+
+  describe "new partner wizard recovery" do
+    # Regression test for issue #3356: after a failed save the wizard re-renders
+    # with fields pre-filled, but validation state used to only update on input
+    # events — leaving stale "Must be at least 5 characters long" hints and a
+    # disabled Continue button until every field was re-typed
+    it "recovers from a failed save without re-typing fields", :aggregate_failures do
+      click_link "Partners"
+      await_datatables
+      click_link "Add Partner"
+
+      # Step 1: Name
+      fill_in "partner_name", with: "Recovery Test Partner"
+      expect(page).to have_content("This name is available!")
+      click_button "Continue"
+
+      # Step 2: Location (address is enough to proceed)
+      expect(page).to have_content("Set Location")
+      fill_in "partner_address_attributes_street_address", with: "1 Test Street"
+      fill_in "partner_address_attributes_postcode", with: "ZZMB 1RS"
+      click_button "Continue"
+
+      # Step 3: Tags
+      click_button "Continue"
+
+      # Step 4: Contact — a hyphenated Facebook name passes the client-side
+      # checks but fails the server-side format validation
+      fill_in "partner_facebook_link", with: "Group-Name"
+      click_button "Continue"
+
+      # Step 5: Invite (optional), Step 6: Confirm
+      click_button "Continue"
+      click_button "Create Partner"
+
+      # Server rejects the save and re-renders the wizard at step 1
+      expect(page).to have_content("prohibited this Partner from being saved")
+      expect(page).to have_field("partner_name", with: "Recovery Test Partner")
+
+      # Pre-filled fields re-validate on connect: no stale min-length hint,
+      # availability re-checked, Continue enabled without re-typing
+      expect(page).to have_content("This name is available!")
+      expect(page).not_to have_content("Must be at least 5 characters long")
+      expect(page).to have_button("Continue", disabled: false)
+
+      # Fix the one genuinely invalid field and resubmit
+      click_button "Continue"
+      expect(page).to have_content("Set Location")
+      click_button "Continue"
+      click_button "Continue"
+      fill_in "partner_facebook_link", with: "GroupName"
+      expect(page).to have_field("partner_facebook_link", with: "GroupName")
+      click_button "Continue"
+      click_button "Continue"
+      click_button "Create Partner"
+
+      expect(page).to have_content("Partner was successfully created.")
+      expect(Partner.find_by(name: "Recovery Test Partner")).to be_present
+    end
+  end
 end

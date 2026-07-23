@@ -11,6 +11,10 @@ class Components::Admin::NeighbourhoodCard < Components::Admin::Base
 
   def view_template
     div(class: 'nested-fields card bg-base-200/50 border border-base-300') do
+      # Without this hidden field, unpersisted rows rendered as cards (e.g. after
+      # a failed save re-renders the form) would submit nothing and be lost (#3356)
+      raw(@form.hidden_field(:neighbourhood_id)) if @form
+
       div(class: 'card-body p-4 gap-3') do
         if @show_header
           h3(class: 'font-semibold flex items-center gap-2') do

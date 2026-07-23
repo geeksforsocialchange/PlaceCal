@@ -204,6 +204,44 @@ RSpec.describe Partner, type: :model do
     end
   end
 
+  describe "service_areas nested attributes" do
+    let(:ward) { create(:riverside_ward) }
+
+    it "rejects rows with a blank neighbourhood_id" do
+      # The real form submits _destroy: "false" for every kept row — the
+      # reject_if must treat that as "not marked for destruction", not as
+      # a present value
+      partner = build(:partner, service_areas_attributes: [
+                        { neighbourhood_id: ward.id, _destroy: "false" },
+                        { neighbourhood_id: "", _destroy: "false" }
+                      ])
+      expect(partner.service_areas.size).to eq(1)
+      expect(partner).to be_valid
+    end
+
+    # Regression test for issue #3356: an untouched "New Service Area" picker row
+    # submits a blank neighbourhood_id, which used to build an invalid ServiceArea
+    # and also fail check_neighbourhood_access for non-root admins
+    it "lets a neighbourhood admin create a partner despite a leftover blank row" do
+      admin = create(:neighbourhood_admin, neighbourhood: ward)
+      partner = build(:partner, address: nil, accessed_by_user: admin,
+                                service_areas_attributes: [
+                                  { neighbourhood_id: ward.id, _destroy: "false" },
+                                  { neighbourhood_id: "", _destroy: "false" }
+                                ])
+      expect(partner).to be_valid
+    end
+
+    it "still removes existing service areas via _destroy" do
+      partner = create(:mobile_partner, service_area_wards: [ward])
+      sa = partner.service_areas.reload.first
+      partner.update!(service_areas_attributes: [
+                        { id: sa.id, neighbourhood_id: ward.id, _destroy: "1" }
+                      ])
+      expect(partner.reload.service_areas).to be_empty
+    end
+  end
+
   describe "factories" do
     it "creates a valid partner" do
       partner = build(:partner)
