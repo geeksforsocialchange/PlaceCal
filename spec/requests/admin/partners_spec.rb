@@ -362,8 +362,8 @@ RSpec.describe "Admin::Partners", type: :request do
           partner: {
             name: "Common Arts",
             service_areas_attributes: {
-              "0" => { neighbourhood_id: ward.id.to_s },
-              "1" => { neighbourhood_id: "" }
+              "0" => { neighbourhood_id: ward.id.to_s, _destroy: "false" },
+              "1" => { neighbourhood_id: "", _destroy: "false" }
             }
           }
         }

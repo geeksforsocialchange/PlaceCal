@@ -160,9 +160,11 @@ class Partner < ApplicationRecord
 
   # An untouched "New Service Area" picker row submits a blank neighbourhood_id;
   # without reject_if it becomes an invalid ServiceArea that also fails
-  # check_neighbourhood_access for non-root admins (issue #3356)
+  # check_neighbourhood_access for non-root admins (issue #3356).
+  # NB: the form always submits _destroy ("false" for kept rows), so the flag
+  # must be cast, not blank?-checked
   accepts_nested_attributes_for :service_areas, allow_destroy: true, reject_if: lambda { |sa|
-    sa[:neighbourhood_id].blank? && sa[:_destroy].blank?
+    sa[:neighbourhood_id].blank? && !ActiveRecord::Type::Boolean.new.cast(sa[:_destroy])
   }
 
   # ==== Uploaders ====

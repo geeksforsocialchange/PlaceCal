@@ -208,9 +208,12 @@ RSpec.describe Partner, type: :model do
     let(:ward) { create(:riverside_ward) }
 
     it "rejects rows with a blank neighbourhood_id" do
+      # The real form submits _destroy: "false" for every kept row — the
+      # reject_if must treat that as "not marked for destruction", not as
+      # a present value
       partner = build(:partner, service_areas_attributes: [
-                        { neighbourhood_id: ward.id },
-                        { neighbourhood_id: "" }
+                        { neighbourhood_id: ward.id, _destroy: "false" },
+                        { neighbourhood_id: "", _destroy: "false" }
                       ])
       expect(partner.service_areas.size).to eq(1)
       expect(partner).to be_valid
@@ -223,8 +226,8 @@ RSpec.describe Partner, type: :model do
       admin = create(:neighbourhood_admin, neighbourhood: ward)
       partner = build(:partner, address: nil, accessed_by_user: admin,
                                 service_areas_attributes: [
-                                  { neighbourhood_id: ward.id },
-                                  { neighbourhood_id: "" }
+                                  { neighbourhood_id: ward.id, _destroy: "false" },
+                                  { neighbourhood_id: "", _destroy: "false" }
                                 ])
       expect(partner).to be_valid
     end
