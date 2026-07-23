@@ -145,6 +145,16 @@ class PartnersQuery
       .map { |tag| { category: tag, count: tag.partner_count } }
   end
 
+  # Whether the given partner appears on this site — same rules as the
+  # partner listing (address or service area in the site's neighbourhoods,
+  # matching tag on tagged sites).
+  #
+  # @param partner [Partner]
+  # @return [Boolean]
+  def include?(partner)
+    base_scope.exists?(partner.id)
+  end
+
   private
 
   # ===================

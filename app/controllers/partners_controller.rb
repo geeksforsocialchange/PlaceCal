@@ -2,6 +2,7 @@
 
 class PartnersController < ApplicationController
   include MapMarkers
+  include OffsiteRedirect
   include Pagy::Offset::Method
 
   before_action :set_partner, only: %i[show embed]
@@ -26,6 +27,9 @@ class PartnersController < ApplicationController
   # GET /partners/1.json
   def show
     return redirect_to root_path if @partner.hidden
+
+    redirect_offsite_to_permalink(PartnersQuery.new(site: current_site), @partner)
+    return if performed?
 
     upcoming_count = Event.by_organiser_or_place(@partner).upcoming.count
     if upcoming_count.zero?
