@@ -161,6 +161,15 @@ class EventsQuery
       .map { |n| { neighbourhood: n, count: subtree_counts[n.id] } }
   end
 
+  # Whether the given event appears on this site — same rules as the event
+  # listing. Always true for the directory (site: nil).
+  #
+  # @param event [Event]
+  # @return [Boolean]
+  def include?(event)
+    base_scope.exists?(event.id)
+  end
+
   private
 
   # ===================

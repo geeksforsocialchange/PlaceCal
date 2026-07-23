@@ -72,6 +72,29 @@ RSpec.describe "Public Events", type: :request do
     end
   end
 
+  describe "GET /events/:id for an event not on this site" do
+    # Organised by a partner in a ward the site does not own (issue #1722)
+    let(:offsite_address) { create(:address, neighbourhood: create(:oldtown_ward)) }
+    let(:offsite_partner) { create(:partner, address: offsite_address) }
+    let(:offsite_event) do
+      create(:event,
+             organiser: offsite_partner,
+             dtstart: 1.day.from_now,
+             address: offsite_address)
+    end
+
+    it "301-redirects to the canonical directory URL" do
+      get event_url(offsite_event, host: "#{site.slug}.lvh.me")
+      expect(response).to redirect_to("https://placecal.org/events/#{offsite_event.id}")
+      expect(response).to have_http_status(:moved_permanently)
+    end
+
+    it "still renders on the directory apex" do
+      get event_url(offsite_event, host: "lvh.me")
+      expect(response).to be_successful
+    end
+  end
+
   describe "GET /events with date filter" do
     let!(:today_event) do
       create(:event,

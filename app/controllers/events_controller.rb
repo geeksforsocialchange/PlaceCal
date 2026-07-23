@@ -3,6 +3,7 @@
 # app/controllers/events_controller.rb
 class EventsController < ApplicationController
   include MapMarkers
+  include OffsiteRedirect
   include Pagy::Offset::Method
 
   before_action :set_event, only: %i[show]
@@ -25,6 +26,9 @@ class EventsController < ApplicationController
   # GET /events/1
   # GET /events/1.json
   def show
+    redirect_offsite_to_permalink(EventsQuery.new(site: current_site), @event)
+    return if performed?
+
     if @event.partner_at_location
       @map = get_map_markers([@event.partner_at_location])
     elsif @event.address
