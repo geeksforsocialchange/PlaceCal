@@ -693,7 +693,8 @@ GEM
       memoist3 (~> 1.0.0)
     terminal-table (4.0.0)
       unicode-display_width (>= 1.1.1, < 4)
-    test-prof (1.6.1)
+    test-prof (1.6.3)
+      logger
     thor (1.5.0)
     timecop (0.9.11)
     timeout (0.6.1)
