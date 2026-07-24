@@ -86,7 +86,7 @@ GEM
     annotaterb (4.23.0)
       activerecord (>= 6.0.0)
       activesupport (>= 6.0.0)
-    appsignal (4.8.6)
+    appsignal (4.9.0)
       logger
       rack (>= 2.0.0)
     ast (2.4.3)
