@@ -5,6 +5,12 @@ module CalendarImporter::Parsers
     NAME = 'LD+JSON'
     KEY = 'ld-json'
 
+    # No URL pattern — detection downloads the page and looks for schema.org
+    # event data (see handles_url? below).
+    def self.content_detection
+      :ld_json
+    end
+
     def initialize(calendar, options = {})
       super
     end

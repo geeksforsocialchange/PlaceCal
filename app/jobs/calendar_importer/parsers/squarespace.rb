@@ -12,8 +12,12 @@ module CalendarImporter
       KEY = 'squarespace'
       DOMAINS = %w[squarespace.com].freeze
 
-      def self.allowlist_pattern
-        %r{^https://.*\.squarespace\.com/[^/]*/?$}
+      URL_PATTERNS = [
+        { pattern: '^https://.*\.squarespace\.com/[^/]*/?$', flags: '' }
+      ].freeze
+
+      def self.content_detection
+        :squarespace
       end
 
       def self.handles_url?(calendar)

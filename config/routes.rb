@@ -159,6 +159,9 @@ Rails.application.routes.draw do
   get '/api/v1/graphql', to: 'graphql#execute'
   post '/api/v1/graphql', to: 'graphql#execute'
 
+  # Calendar source detection rules for the browser extension
+  get '/api/v1/calendar_detection_rules', to: 'calendar_detection_rules#show'
+
   mount GraphiQL::Rails::Engine, at: '/graphiql', graphql_path: '/api/v1/graphql' if Rails.env.development?
   # Lookbook auto-mounts at /lookbook in development
 end
