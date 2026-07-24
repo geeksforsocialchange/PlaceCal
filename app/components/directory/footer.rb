@@ -60,20 +60,9 @@ class Components::Directory::Footer < Components::Directory::Base
   end
 
   def render_impressum
-    div(class: 'container-public mt-6 pt-5 border-t-2 border-rules text-xs text-tertiary font-serif',
+    div(class: 'container-public mt-6 pt-5 border-t-2 border-rules text-xs text-tertiary font-serif [&_p]:my-1',
         data_nosnippet: true) do
-      link_to('https://gfsc.community', class: 'inline-block mb-2') do
-        image_tag('gfsc-logo-dark.svg', class: 'h-10 w-auto', alt: t('directory.footer.gfsc_logo_alt'),
-                                        width: 144, height: 40)
-      end
-      div(class: 'flex justify-between flex-wrap gap-2') do
-        span { "#{t('colophon.year', year: Time.zone.today.year)} #{t('colophon.copyright')}" }
-        span do
-          plain "#{t('directory.footer.build')} "
-          link_to(AppVersion.label(fallback: 'main'), AppVersion.url,
-                  class: 'text-tertiary underline hover:decoration-primary')
-        end
-      end
+      Shared::Impressum()
     end
   end
 end

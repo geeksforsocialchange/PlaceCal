@@ -14,6 +14,6 @@ class PartnerPreviewPreview < Lookbook::Preview
       name: "Hulme & Moss Side",
       slug: "hulme-moss-side"
     )
-    render Components::PartnerPreview.new(partner: partner, site: site)
+    render Components::Sites::PartnerPreview.new(partner: partner, site: site)
   end
 end
