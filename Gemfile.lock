@@ -138,7 +138,7 @@ GEM
     childprocess (5.1.0)
       logger (~> 1.5)
     choice (0.2.0)
-    concurrent-ruby (1.3.7)
+    concurrent-ruby (1.3.8)
     connection_pool (3.0.2)
     crack (1.0.1)
       bigdecimal
@@ -184,7 +184,7 @@ GEM
       activerecord (>= 5.a)
       database_cleaner-core (~> 2.0)
     database_cleaner-core (2.1.0)
-    database_consistency (3.0.5)
+    database_consistency (3.0.8)
       activerecord (>= 3.2)
     date (3.5.1)
     debug_inspector (1.2.0)
