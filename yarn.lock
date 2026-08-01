@@ -309,10 +309,10 @@ braces@^3.0.3:
   dependencies:
     fill-range "^7.1.1"
 
-daisyui@5.7.1:
-  version "5.7.1"
-  resolved "https://registry.yarnpkg.com/daisyui/-/daisyui-5.7.1.tgz#f10613d09e30cd4786950acc0e5e3015495d861c"
-  integrity sha512-E94FQtecKyq9HKI7xYX1E0XxFIUwOkr6PCpbRUvOJdd15P/oPm6dmhJKwH6PztKHYk1wcANfldkAVaAkYdqVsA==
+daisyui@5.7.4:
+  version "5.7.4"
+  resolved "https://registry.yarnpkg.com/daisyui/-/daisyui-5.7.4.tgz#434b4e3152c6f186e4f08173ec9aabc9509d9af6"
+  integrity sha512-zKzFIwvEvn2QvE1TbUUtDnYFOqWoxeZh+j4QXfhkZKYAT++pO2ijyT9rkFm0GIPDWR1/oo9hHZzd96AsTK0iZg==
 
 detect-libc@^1.0.3:
   version "1.0.3"
