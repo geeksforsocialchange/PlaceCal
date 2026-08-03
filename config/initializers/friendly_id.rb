@@ -18,8 +18,10 @@ FriendlyId.defaults do |config|
   # undesirable to allow as slugs. Edit this list as needed for your app.
   config.use :reserved
 
+  # 'admin', 'join' and 'www' are reserved subdomains (Site slugs become
+  # subdomains): a Site with one of these slugs would be silently shadowed.
   config.reserved_words = %w[new edit index session login logout users admin
-                             stylesheets assets javascripts images]
+                             join www stylesheets assets javascripts images]
 
   #  ## Friendly Finders
   #

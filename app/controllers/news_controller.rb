@@ -24,11 +24,11 @@ class NewsController < ApplicationController
                 .offset(@offset)
                 .limit(ARTICLES_PER_PAGE)
 
-    render Views::News::Index.new(articles: @articles, site: @site, next_offset: @next_offset)
+    render Views::Sites::News::Index.new(articles: @articles, site: @site, next_offset: @next_offset)
   end
 
   def show
-    render Views::News::Show.new(article: @article, site: @site)
+    render Views::Sites::News::Show.new(article: @article, site: @site)
   end
 
   private

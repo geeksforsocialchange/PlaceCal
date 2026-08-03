@@ -142,10 +142,6 @@ RSpec.describe "Visual regression screenshots", :visual_regression, type: :syste
       screenshot_page("/", "home")
     end
 
-    it "find-placecal" do
-      screenshot_page("/find-placecal", "find_placecal")
-    end
-
     it "our-story" do
       screenshot_page("/our-story", "our_story")
     end

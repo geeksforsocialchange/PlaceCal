@@ -4,25 +4,12 @@ class PagesController < ApplicationController
   before_action :set_primary_neighbourhood, only: [:site]
   before_action :set_site
 
+  # Only ever reached as the nationwide directory: hosts with a Site route to
+  # sites#index (Sites::Local), the admin subdomain has its own root, and the
+  # join subdomain has its own routes/catch-all. The legacy pre-directory
+  # homepage (Views::Homepage::Home) was unreachable and has been deleted.
   def home
-    if directory_request?
-      render_directory_home
-    else
-      @neighbourhoods = Site.published.select do |site|
-        site.tags.none? { |tag| tag.type == 'Partnership' }
-      end
-      render Views::Homepage::Home.new(neighbourhoods: @neighbourhoods)
-    end
-  end
-
-  def find_placecal
-    @neighbourhoods = Site.published.select do |site|
-      site.tags.none? { |tag| tag.type == 'Partnership' }
-    end
-    @partnerships = Site.published.select do |site|
-      site.tags.any? { |tag| tag.type == 'Partnership' }
-    end
-    render Views::Homepage::FindPlacecal.new(neighbourhoods: @neighbourhoods, partnerships: @partnerships)
+    render_directory_home
   end
 
   def terms_of_use
@@ -47,35 +34,12 @@ class PagesController < ApplicationController
     render Views::Directory::OurStory.new
   end
 
-  def community_groups
-    render Views::Homepage::CommunityGroups.new
-  end
-
-  def vcses
-    render Views::Homepage::Vcses.new
-  end
-
-  def housing_providers
-    render Views::Homepage::HousingProviders.new
-  end
-
-  def metropolitan_areas
-    render Views::Homepage::MetropolitanAreas.new
-  end
-
-  def social_prescribers
-    render Views::Homepage::SocialPrescribers.new
-  end
-
-  def culture_tourism
-    render Views::Homepage::CultureTourism.new
-  end
-
   def robots
     if current_site
       render plain: current_site.robots
-    elsif directory_request?
-      # The apex serves the nationwide directory: always crawlable
+    elsif directory_request? || join_site_request?
+      # The apex serves the nationwide directory and join.placecal.org is the
+      # public marketing site: both always crawlable
       render plain: Site.directory_robots
     else
       # Admin subdomain - disallow all indexing
@@ -98,14 +62,7 @@ class PagesController < ApplicationController
   private
 
   def render_directory_home
-    @stats = Rails.cache.fetch('directory/stats', expires_in: DIRECTORY_CACHE_TTL) do
-      {
-        partnerships: Site.where(is_published: true).count,
-        partners: Partner.visible.count,
-        events: Event.where(dtstart: Time.zone.today..30.days.from_now).count,
-        neighbourhoods: Neighbourhood.districts.count
-      }
-    end
+    @stats = DirectoryStatsQuery.fetch_cached
 
     @partner_locations = Rails.cache.fetch('directory/partner_locations', expires_in: DIRECTORY_CACHE_TTL) do
       PartnerLocationsQuery.new.call.map do |location|

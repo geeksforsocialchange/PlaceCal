@@ -4,6 +4,6 @@ class FooterPreview < Lookbook::Preview
   # @label Default (no site)
   # @notes Renders the generic PlaceCal footer without site-specific content.
   def default
-    render Components::Footer.new(nil)
+    render Components::Sites::Footer.new(nil)
   end
 end

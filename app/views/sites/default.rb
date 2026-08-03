@@ -8,7 +8,7 @@ class Views::Sites::Default < Views::Base
   def view_template
     content_for(:description) { site.og_description }
 
-    HeroSection(
+    Sites::HeroSection(
       image_path: site.hero_image.url,
       image_credit: site.hero_image_credit,
       title: site.hero_text,
@@ -42,7 +42,7 @@ class Views::Sites::Default < Views::Base
       end
       div(class: 'container-narrow first-ele-h3-serif') do
         raw safe(site.description_html.to_s)
-        Profile(user: site.site_admin) if site.site_admin.present?
+        Sites::Profile(user: site.site_admin) if site.site_admin.present?
       end
     end
   end
@@ -51,10 +51,10 @@ class Views::Sites::Default < Views::Base
     section(class: 'region region__support') do
       div(class: 'container-public') do
         div(class: 'gr gr--3') do
-          div { HelpCard(variant: :adding_events, site: site) }
-          div { HelpCard(places: places_to_get_computer_access, variant: :computer_access) } if places_to_get_computer_access.present?
-          div { HelpCard(places: places_with_free_wifi, variant: :free_wifi) } if places_with_free_wifi.present?
-          div { HelpCard(variant: :getting_help) }
+          div { Sites::HelpCard(variant: :adding_events, site: site) }
+          div { Sites::HelpCard(places: places_to_get_computer_access, variant: :computer_access) } if places_to_get_computer_access.present?
+          div { Sites::HelpCard(places: places_with_free_wifi, variant: :free_wifi) } if places_with_free_wifi.present?
+          div { Sites::HelpCard(variant: :getting_help) }
         end
       end
     end

@@ -81,6 +81,33 @@ Rails.application.routes.draw do
                  }
 
   # ============================================================
+  # Join marketing site (join.placecal.org, #3163)
+  # ============================================================
+  # Replaces the old apex audience pages, whose URLs redirect here.
+  constraints(subdomain: Site::JOIN_SUBDOMAIN) do
+    scope as: :join, module: :join, controller: :pages do
+      get '/', action: :home, as: :root
+      get 'who-its-for', action: :audiences, as: :audiences
+      get 'who-its-for/:slug', action: :audience, as: :audience
+      get 'features', action: :features, as: :features
+      get 'our-story', action: :our_story, as: :our_story
+      get 'pricing', action: :pricing, as: :pricing
+      get 'book-a-demo', action: :demo, as: :demo
+      post 'book-a-demo', action: :demo_create
+    end
+  end
+
+  # Anything else on the join subdomain bounces to the apex, mirroring the
+  # admin catch-all above.
+  match '*path', via: :all,
+                 constraints: { subdomain: Site::JOIN_SUBDOMAIN },
+                 to: redirect { |_params, request|
+                   host = request.host.delete_prefix('join.')
+                   port = request.optional_port ? ":#{request.optional_port}" : ''
+                   "#{request.protocol}#{host}#{port}#{request.fullpath}"
+                 }
+
+  # ============================================================
   # Public site
   # ============================================================
 
@@ -132,15 +159,26 @@ Rails.application.routes.draw do
   get '/places/:id/events/:year/:month/:day', to: 'partners#show', constraints: ymd
   get '/places/:id/embed', to: 'places#embed'
 
-  # Deprecated: moving to join.placecal.org
-  get 'find-placecal', to: 'pages#find_placecal'
   get 'our-story', to: 'pages#our_story'
-  get 'community-groups', to: 'pages#community_groups'
-  get 'metropolitan-areas', to: 'pages#metropolitan_areas'
-  get 'vcses', to: 'pages#vcses'
-  get 'housing-providers', to: 'pages#housing_providers'
-  get 'social-prescribers', to: 'pages#social_prescribers'
-  get 'culture-tourism', to: 'pages#culture_tourism'
+
+  # The legacy informational pages are deleted (#3163). Their URLs redirect:
+  # find-placecal's job is done by the directory homepage, and the audience
+  # pitches live on the join site.
+  get 'find-placecal', to: redirect('/')
+  %w[community-groups metropolitan-areas vcses housing-providers
+     social-prescribers culture-tourism].each do |audience_slug|
+    get audience_slug, to: redirect { |_params, request|
+      # These routes are reachable on every host, including partner sites'
+      # custom domains, where join.<request.domain> wouldn't exist — always
+      # target the canonical join host in production.
+      if Rails.env.production?
+        "https://join.placecal.org/who-its-for/#{audience_slug}"
+      else
+        port = request.optional_port ? ":#{request.optional_port}" : ''
+        "#{request.protocol}join.#{request.domain}#{port}/who-its-for/#{audience_slug}"
+      end
+    }
+  end
 
   # Deprecated: collections
   resources :collections, only: %i[show]

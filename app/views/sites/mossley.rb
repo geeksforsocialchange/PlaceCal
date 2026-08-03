@@ -54,7 +54,7 @@ class Views::Sites::Mossley < Views::Base
         p { "If you're a local organisation and want to join our network, get in touch below." }
         p { 'We provide training and support to help you publish your events and promote your activities.' }
         raw safe(site.description_html.to_s)
-        Profile(user: site.site_admin) if site.site_admin.present?
+        Sites::Profile(user: site.site_admin) if site.site_admin.present?
       end
     end
   end
@@ -64,13 +64,13 @@ class Views::Sites::Mossley < Views::Base
       div(class: 'container-public') do
         div(class: 'g') do
           div(class: 'gi gi__1-3') do
-            HelpCard(variant: :adding_events, site: site)
+            Sites::HelpCard(variant: :adding_events, site: site)
           end
           div(class: 'gi gi__1-3') do
-            HelpCard(places: places_to_get_online, variant: :computer_access)
+            Sites::HelpCard(places: places_to_get_online, variant: :computer_access)
           end
           div(class: 'gi gi__1-3') do
-            HelpCard(variant: :getting_help)
+            Sites::HelpCard(variant: :getting_help)
           end
         end
       end

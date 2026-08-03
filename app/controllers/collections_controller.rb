@@ -8,7 +8,7 @@ class CollectionsController < ApplicationController
 
   def index
     @collections = Collection.all
-    render Views::Collections::Index.new(collections: @collections)
+    render Views::Sites::Collections::Index.new(collections: @collections)
   end
 
   def show
@@ -18,11 +18,11 @@ class CollectionsController < ApplicationController
 
     respond_to do |format|
       format.html do
-        render Views::Collections::Show.new(
+        render Views::Sites::Collections::Show.new(
           collection: @collection, site: @site, events: @events
         )
       end
-      format.text { render Views::Events::IndexText.new(events: @events) }
+      format.text { render Views::Sites::Events::IndexText.new(events: @events) }
     end
   end
 

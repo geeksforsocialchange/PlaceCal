@@ -3,7 +3,7 @@
 class FilterPreview < Lookbook::Preview
   # @label Default (no selection)
   def default
-    render Components::Filter.new(
+    render Components::Sites::Filter.new(
       name: "category",
       label: "Category",
       items: [
@@ -21,7 +21,7 @@ class FilterPreview < Lookbook::Preview
 
   # @label With selection
   def with_selection
-    render Components::Filter.new(
+    render Components::Sites::Filter.new(
       name: "category",
       label: "Category",
       items: [
