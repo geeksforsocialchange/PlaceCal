@@ -16,6 +16,7 @@ class Views::Directory::Partners::Show < Views::Partners::Show
         div do
           render_directory_about
           render_directory_events
+          render_directory_news
           render_directory_location
           render_directory_accessibility
         end
@@ -41,6 +42,25 @@ class Views::Directory::Partners::Show < Views::Partners::Show
       end
       Directory::OverflowToggle(items: flat.drop(10), label_key: 'directory.partners.show.show_more_events') do |event|
         Directory::EventRow(event: event, context_partner: partner)
+      end
+    end
+  end
+
+  def render_directory_news
+    return if news_articles.blank?
+
+    div(class: 'py-4') do
+      h2(class: 'udl udl--fw allcaps text-xl') { t('directory.partners.show.latest_news') }
+      news_articles.each do |article|
+        Directory::NewsRow(article: article, context_partner: partner)
+      end
+
+      if news_total > news_articles.size
+        p(class: 'mt-3') do
+          link_to t('directory.partners.show.more_news', name: partner.name),
+                  news_index_path(partner: partner.slug),
+                  class: 'with-no-sass text-foreground underline decoration-primary decoration-2 underline-offset-2 hover:text-foreground/80'
+        end
       end
     end
   end
