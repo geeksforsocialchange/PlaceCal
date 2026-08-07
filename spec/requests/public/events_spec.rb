@@ -352,6 +352,17 @@ RSpec.describe "Public Events", type: :request do
       expect(response.body).to include(partner_path(partner))
     end
 
+    it "still titles the organiser card when the organiser has no contact details" do
+      organiser = create(:partner, name: "Contactless Org", address: address,
+                                   public_email: nil, public_phone: nil, url: nil,
+                                   facebook_link: nil, twitter_handle: nil, instagram_handle: nil)
+      event = create(:event, organiser: organiser, dtstart: 1.day.from_now, address: address)
+      get event_url(event, host: "lvh.me")
+      expect(response).to be_successful
+      expect(response.body).to include("Organised by")
+      expect(response.body).to include("Contactless Org")
+    end
+
     it "shows the share card with the canonical URL and iCal link" do
       event = create(:event, organiser: partner, dtstart: 1.day.from_now, address: address)
       get event_url(event, host: "lvh.me")

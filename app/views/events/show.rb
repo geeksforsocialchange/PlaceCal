@@ -185,12 +185,19 @@ class Views::Events::Show < Views::Base
   # "Part of" card) so the contacts read as the organiser's, not the event's.
   def render_organiser_contact_card
     organiser = event.organiser
-    Directory::SidebarCard(
+    card_args = {
       eyebrow: t('directory.events.show.organised_by'),
       title: organiser.name,
       title_href: partner_path(organiser)
-    ) do
-      render ContactDetails.new(partner: organiser, variant: :tailwind_rows)
+    }
+    # Skip the light body entirely when there's nothing to put in it, so a
+    # contactless organiser gets a clean titled card, not an empty strip.
+    if organiser.contactable?
+      Directory::SidebarCard(**card_args) do
+        render ContactDetails.new(partner: organiser, variant: :tailwind_rows)
+      end
+    else
+      Directory::SidebarCard(**card_args)
     end
   end
 

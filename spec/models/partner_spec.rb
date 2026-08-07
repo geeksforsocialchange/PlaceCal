@@ -487,4 +487,17 @@ RSpec.describe Partner, type: :model do
       expect(partner.neighbourhood_name_for_site("ward")).to eq("Riverside")
     end
   end
+
+  describe "#contactable?" do
+    it "is true when any public contact method is present" do
+      expect(build(:partner, public_email: "hi@example.org").contactable?).to be true
+    end
+
+    it "is false when every public contact method is blank" do
+      partner = build(:partner,
+                      public_email: nil, public_phone: nil, url: nil,
+                      facebook_link: nil, twitter_handle: nil, instagram_handle: nil)
+      expect(partner.contactable?).to be false
+    end
+  end
 end
