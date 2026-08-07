@@ -7,7 +7,10 @@ class Components::ContactDetails < Components::Base
   prop :email, _Nilable(String), default: nil
   prop :phone, _Nilable(String), default: nil
   prop :url, _Nilable(String), default: nil
-  prop :variant, _Union(:scss, :tailwind), default: :scss
+  # :tailwind renders a self-contained "Get in touch" card; :tailwind_rows
+  # renders just the icon rows for embedding in another card (e.g. the event
+  # page's organiser SidebarCard).
+  prop :variant, _Union(:scss, :tailwind, :tailwind_rows), default: :scss
 
   def after_initialize
     @phone ||= @partner.public_phone
@@ -18,6 +21,7 @@ class Components::ContactDetails < Components::Base
   def view_template
     case @variant
     when :tailwind then render_tailwind
+    when :tailwind_rows then render_tailwind_rows
     when :scss then render_scss
     end
   end
@@ -31,14 +35,20 @@ class Components::ContactDetails < Components::Base
 
     div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
       sidebar_heading(t('directory.contact.get_in_touch'))
-      div(class: 'flex flex-col gap-2') do
-        tailwind_row(:contact_phone, @phone, "tel:#{@phone}") if @phone.present?
-        tailwind_row(:contact_email, @email, "mailto:#{@email}") if @email.present?
-        tailwind_row(:contact_website, strip_url(@url), @url) if @url.present?
-        tailwind_row(:contact_facebook, 'Facebook', "https://facebook.com/#{@partner.facebook_link}") if @partner.facebook_link.present?
-        tailwind_row(:contact_twitter, "@#{@partner.twitter_handle}", "https://twitter.com/#{@partner.twitter_handle}") if @partner.twitter_handle.present?
-        tailwind_row(:contact_instagram, "@#{@partner.instagram_handle}", "https://www.instagram.com/#{@partner.instagram_handle}/") if @partner.instagram_handle.present?
-      end
+      render_tailwind_rows
+    end
+  end
+
+  def render_tailwind_rows
+    return unless contact?
+
+    div(class: 'flex flex-col gap-2') do
+      tailwind_row(:contact_phone, @phone, "tel:#{@phone}") if @phone.present?
+      tailwind_row(:contact_email, @email, "mailto:#{@email}") if @email.present?
+      tailwind_row(:contact_website, strip_url(@url), @url) if @url.present?
+      tailwind_row(:contact_facebook, 'Facebook', "https://facebook.com/#{@partner.facebook_link}") if @partner.facebook_link.present?
+      tailwind_row(:contact_twitter, "@#{@partner.twitter_handle}", "https://twitter.com/#{@partner.twitter_handle}") if @partner.twitter_handle.present?
+      tailwind_row(:contact_instagram, "@#{@partner.instagram_handle}", "https://www.instagram.com/#{@partner.instagram_handle}/") if @partner.instagram_handle.present?
     end
   end
 
