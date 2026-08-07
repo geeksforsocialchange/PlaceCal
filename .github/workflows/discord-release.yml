@@ -2,7 +2,8 @@ name: Discord release notification
 
 # Posts a branded embed to Discord when a release is published, instead of the
 # default GitHub -> Discord webhook that dumps the raw release body (including
-# the long renovate maintenance list).
+# the long renovate maintenance list). Can also be run manually to re-announce
+# a release (or to test the embed) via the "Run workflow" button.
 #
 # Enable by:
 #   1. Add the DISCORD_RELEASE_WEBHOOK repo secret (the Discord webhook URL,
@@ -14,6 +15,11 @@ name: Discord release notification
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to announce (blank = latest published release)"
+        required: false
 
 permissions:
   contents: read
@@ -25,6 +31,10 @@ jobs:
       - name: Post release embed to Discord
         env:
           WEBHOOK: ${{ secrets.DISCORD_RELEASE_WEBHOOK }}
+          EVENT_NAME: ${{ github.event_name }}
+          REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+          INPUT_TAG: ${{ github.event.inputs.tag }}
           RELEASE_NAME: ${{ github.event.release.name }}
           RELEASE_TAG: ${{ github.event.release.tag_name }}
           RELEASE_URL: ${{ github.event.release.html_url }}
@@ -38,10 +48,33 @@ jobs:
               print("DISCORD_RELEASE_WEBHOOK not set; skipping.")
               raise SystemExit(0)
 
-          body = os.environ.get("RELEASE_BODY", "") or ""
-          tag = os.environ.get("RELEASE_TAG", "") or ""
-          name = (os.environ.get("RELEASE_NAME", "") or tag or "New release").strip()
-          url = os.environ.get("RELEASE_URL", "") or ""
+          def api_release():
+              # Manual run: pull the release from the API (given tag, else latest).
+              repo = os.environ["REPO"]
+              tag = (os.environ.get("INPUT_TAG") or "").strip()
+              path = f"tags/{tag}" if tag else "latest"
+              req = urllib.request.Request(
+                  f"https://api.github.com/repos/{repo}/releases/{path}",
+                  headers={
+                      "Authorization": f"Bearer {os.environ['GH_TOKEN']}",
+                      "Accept": "application/vnd.github+json",
+                      "User-Agent": "placecal-release-bot",
+                  },
+              )
+              with urllib.request.urlopen(req) as resp:
+                  return json.load(resp)
+
+          if os.environ.get("EVENT_NAME") == "release":
+              body = os.environ.get("RELEASE_BODY", "") or ""
+              tag = os.environ.get("RELEASE_TAG", "") or ""
+              name = (os.environ.get("RELEASE_NAME", "") or tag or "New release").strip()
+              url = os.environ.get("RELEASE_URL", "") or ""
+          else:
+              rel = api_release()
+              body = rel.get("body") or ""
+              tag = rel.get("tag_name") or ""
+              name = (rel.get("name") or tag or "New release").strip()
+              url = rel.get("html_url") or ""
 
           # Collapse the noisy "Maintenance" section (renovate dependency bumps)
           # into a single count so the human-facing changes stay front and centre.
