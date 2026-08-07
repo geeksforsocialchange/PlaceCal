@@ -184,7 +184,7 @@ GEM
       activerecord (>= 5.a)
       database_cleaner-core (~> 2.0)
     database_cleaner-core (2.1.0)
-    database_consistency (3.0.8)
+    database_consistency (3.0.9)
       activerecord (>= 3.2)
     date (3.5.1)
     debug_inspector (1.2.0)
@@ -213,7 +213,7 @@ GEM
     drb (2.2.3)
     dumb_delegator (1.1.0)
     ed25519 (1.4.0)
-    enumerize (2.8.1)
+    enumerize (3.0.0)
       activesupport (>= 3.2)
     erb (6.0.7)
     erubi (1.13.1)
@@ -302,7 +302,7 @@ GEM
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.8, >= 1.8.1)
       terminal-table (>= 1.5.1)
-    icalendar (2.12.3)
+    icalendar (2.12.4)
       base64
       ice_cube (~> 0.16)
       logger
@@ -564,7 +564,7 @@ GEM
       prism
       zeitwerk
     regexp_parser (2.12.0)
-    reline (0.6.3)
+    reline (0.7.0)
       io-console (~> 0.5)
     request_store (1.7.0)
       rack (>= 1.4)
@@ -578,7 +578,7 @@ GEM
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
     rexml (3.4.4)
-    rouge (5.0.0)
+    rouge (5.1.0)
       strscan (~> 3.1)
     rspec-core (3.13.6)
       rspec-support (~> 3.13.0)
