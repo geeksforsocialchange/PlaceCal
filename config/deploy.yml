@@ -32,6 +32,13 @@ proxy:
     responses: true
     max_request_body: 10_000_000 # 10MB — replaces nginx client_max_body_size
 
+# Raise Docker's default 10m log cap so `docker logs` keeps a useful window.
+logging:
+  driver: json-file
+  options:
+    max-size: 100m
+    max-file: 5
+
 registry:
   server: ghcr.io
   username:

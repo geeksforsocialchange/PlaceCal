@@ -4,14 +4,14 @@
 	"private": true,
 	"dependencies": {
 		"@hotwired/turbo-rails": "8.0.23",
-		"@tailwindcss/cli": "4.3.2"
+		"@tailwindcss/cli": "4.3.3"
 	},
 	"devDependencies": {
-		"daisyui": "5.6.18",
+		"daisyui": "5.7.8",
 		"husky": "9.1.7",
 		"leaflet": "1.9.4",
-		"lint-staged": "17.0.8",
-		"prettier": "3.9.5",
+		"lint-staged": "17.2.0",
+		"prettier": "3.9.6",
 		"tom-select": "2.6.2"
 	},
 	"scripts": {
@@ -28,6 +28,6 @@
 		"{*.{rb,jbuilder,rake,ru},.simplecov,Gemfile,Rakefile}": "bundle exec rubocop --force-exclusion --autocorrect"
 	},
 	"engines": {
-		"node": "24.18.0"
+		"node": "24.19.0"
 	}
 }
