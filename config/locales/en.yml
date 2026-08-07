@@ -114,6 +114,13 @@ en:
             other: "%{count} events%{period}"
         empty: "No events found%{period}."
         show_all: "Show all upcoming events"
+      show:
+        where: "Where"
+        address: "Address"
+        ward: "%{name} ward"
+        more_from: "More from %{name}"
+        information: "Event information"
+        organised_by: "Organised by"
     pages:
       privacy:
         title: "PlaceCal Privacy Policy"

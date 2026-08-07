@@ -34,11 +34,16 @@ class EventsController < ApplicationController
     elsif @event.address
       @map = get_map_markers([@event.address])
     end
-    @containing_sites = Site.sites_that_contain_partner(@event.organiser) if directory_request? && @event.organiser
+    if directory_request? && @event.organiser
+      @more_from_organiser = Event.by_organiser_or_place(@event.organiser)
+                                  .upcoming.sort_by_time
+                                  .where.not(id: @event.id)
+                                  .limit(4)
+    end
     respond_to do |format|
       format.html do
         render Views::Events::Show.new(
-          event: @event, site: @site, map: @map, containing_sites: @containing_sites
+          event: @event, site: @site, map: @map, more_from_organiser: @more_from_organiser
         )
       end
       format.ics do

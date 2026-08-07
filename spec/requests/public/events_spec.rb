@@ -302,5 +302,84 @@ RSpec.describe "Public Events", type: :request do
       get event_url(event, host: "lvh.me")
       expect(response).to be_successful
     end
+
+    it "shows the event date and time in the hero (issue: apex dropped when)" do
+      event = create(:event,
+                     organiser: partner,
+                     dtstart: 1.day.from_now.change(hour: 16, min: 0),
+                     dtend: 1.day.from_now.change(hour: 17, min: 0),
+                     address: address)
+      get event_url(event, host: "lvh.me")
+      expect(response).to be_successful
+
+      # Assert on the visible hero, not the og_title <meta>/<title> which also
+      # carries the date/time — those masked the missing on-page "when".
+      # Date and time render as hero chips per the directory design handoff.
+      hero = Nokogiri::HTML(response.body).at_css("section.bg-foreground")
+      expect(hero).to be_present
+      expect(hero.text).to include(event.dtstart.strftime("%a %-e %b"))
+      expect(hero.text).to include("16:00 – 17:00")
+    end
+
+    it "shows the event information card with date, time and neighbourhood" do
+      event = create(:event,
+                     organiser: partner,
+                     dtstart: 1.day.from_now.change(hour: 16, min: 0),
+                     dtend: 1.day.from_now.change(hour: 17, min: 0),
+                     address: address)
+      get event_url(event, host: "lvh.me")
+      expect(response.body).to include("Event information")
+      expect(response.body).to include(event.dtstart.strftime("%a %-e %b %Y"))
+      expect(response.body).to include(ward.shortname)
+    end
+
+    it "shows the venue in the event information card, linked to the venue partner" do
+      venue = create(:partner, name: "The Venue", address: address)
+      event = create(:event, organiser: partner, place: venue, dtstart: 1.day.from_now, address: address)
+      get event_url(event, host: "lvh.me")
+
+      info = Nokogiri::HTML(response.body).css(".rounded-card").find { |c| c.text.include?("Event information") }
+      expect(info).to be_present
+      venue_link = info.at_css(%(a[href="#{partner_path(venue)}"]))
+      expect(venue_link).to be_present
+      expect(venue_link.text).to include("The Venue")
+    end
+
+    it "shows the organised-by card with a link to the organiser" do
+      event = create(:event, organiser: partner, dtstart: 1.day.from_now, address: address)
+      get event_url(event, host: "lvh.me")
+      expect(response.body).to include("Organised by")
+      expect(response.body).to include(partner_path(partner))
+    end
+
+    it "still titles the organiser card when the organiser has no contact details" do
+      organiser = create(:partner, name: "Contactless Org", address: address,
+                                   public_email: nil, public_phone: nil, url: nil,
+                                   facebook_link: nil, twitter_handle: nil, instagram_handle: nil)
+      event = create(:event, organiser: organiser, dtstart: 1.day.from_now, address: address)
+      get event_url(event, host: "lvh.me")
+      expect(response).to be_successful
+      expect(response.body).to include("Organised by")
+      expect(response.body).to include("Contactless Org")
+    end
+
+    it "shows the share card with the canonical URL and iCal link" do
+      event = create(:event, organiser: partner, dtstart: 1.day.from_now, address: address)
+      get event_url(event, host: "lvh.me")
+      expect(response.body).to include("placecal.org/events/#{event.id}")
+      expect(response.body).to include("Subscribe via iCal")
+    end
+
+    it "shows other upcoming events from the same organiser" do
+      event = create(:event, organiser: partner, dtstart: 1.day.from_now, address: address)
+      other = create(:event,
+                     organiser: partner,
+                     summary: "Another Organiser Event",
+                     dtstart: 3.days.from_now,
+                     address: address)
+      get event_url(event, host: "lvh.me")
+      expect(response.body).to include("Another Organiser Event")
+      expect(response.body).to include(event_path(other))
+    end
   end
 end

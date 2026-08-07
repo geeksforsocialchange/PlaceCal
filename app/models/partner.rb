@@ -414,6 +414,12 @@ class Partner < ApplicationRecord
     errors.blank?
   end
 
+  # @return [Boolean] whether any public contact method is present
+  def contactable?
+    public_email.present? || public_phone.present? || url.present? ||
+      facebook_link.present? || twitter_handle.present? || instagram_handle.present?
+  end
+
   # @return [Boolean] whether name passes format/length validation
   def valid_name?
     self.class.validators_on(:name).each do |validator|
