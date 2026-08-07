@@ -333,6 +333,18 @@ RSpec.describe "Public Events", type: :request do
       expect(response.body).to include(ward.shortname)
     end
 
+    it "shows the venue in the event information card, linked to the venue partner" do
+      venue = create(:partner, name: "The Venue", address: address)
+      event = create(:event, organiser: partner, place: venue, dtstart: 1.day.from_now, address: address)
+      get event_url(event, host: "lvh.me")
+
+      info = Nokogiri::HTML(response.body).css(".rounded-card").find { |c| c.text.include?("Event information") }
+      expect(info).to be_present
+      venue_link = info.at_css(%(a[href="#{partner_path(venue)}"]))
+      expect(venue_link).to be_present
+      expect(venue_link.text).to include("The Venue")
+    end
+
     it "shows the organised-by card with a link to the organiser" do
       event = create(:event, organiser: partner, dtstart: 1.day.from_now, address: address)
       get event_url(event, host: "lvh.me")
