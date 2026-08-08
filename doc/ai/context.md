@@ -96,7 +96,7 @@ Both admin and public interfaces use **importmap-rails** with native ES modules 
 - **Controller mixins**: `app/javascript/controllers/mixins/*.js`
 - **Configuration**: `config/importmap.rb`
 - Changes take effect on browser refresh (no build needed)
-- External dependencies loaded from CDN (esm.sh, jsdelivr):
+- External dependencies loaded from CDN (jsdelivr `/+esm`; avoid esm.sh, whose per-User-Agent builds break maps in Safari):
   - `tom-select` - Enhanced select inputs
   - `leaflet` - Map rendering
   - `maplibre-gl` - Vector tile map styling
