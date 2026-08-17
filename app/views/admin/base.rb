@@ -15,6 +15,7 @@ class Views::Admin::Base < Views::Base
   register_value_helper :options_for_organiser
   register_value_helper :options_for_location
   register_value_helper :options_for_partners
+  register_value_helper :options_for_article_partners
   register_value_helper :options_for_users
   register_value_helper :options_for_user_partnerships
   register_value_helper :permitted_options_for_partners

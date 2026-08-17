@@ -83,6 +83,13 @@ class Views::Admin::Articles::FormTabText < Views::Admin::Base
         else
           span(class: 'text-gray-600 italic') { t('admin.articles.fields.not_published') }
         end
+
+        unless article.is_draft
+          a(href: news_url(article, subdomain: false), target: '_blank', rel: 'noopener',
+            class: 'link text-placecal-teal-dark text-sm ml-2') do
+            plain t('admin.articles.actions.view_live')
+          end
+        end
       end
     end
   end
@@ -94,12 +101,14 @@ class Views::Admin::Articles::FormTabText < Views::Admin::Base
       }
 
       p(class: 'text-sm text-gray-600 mb-3') do
-        plain 'This field accepts '
+        plain t('admin.articles.markdown.hint')
+        plain ' '
         a(
           href: 'https://www.markdownguide.org/basic-syntax/',
           class: 'link underline text-placecal-teal-dark hover:no-underline',
-          target: '_blank'
-        ) { 'Markdown syntax' }
+          target: '_blank',
+          rel: 'noopener'
+        ) { t('admin.articles.markdown.hint_link') }
         plain '.'
       end
 

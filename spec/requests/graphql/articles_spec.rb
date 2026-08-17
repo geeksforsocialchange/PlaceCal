@@ -129,12 +129,16 @@ RSpec.describe "GraphQL Articles", type: :request do
       expect(articles.length).to eq(3)
     end
 
-    it "sorts articles by title" do
+    # ORDER BY published_at DESC first, title as tiebreak — what production has
+    # always returned (explicit publication dates used to be silently clobbered
+    # to identical values at creation, which made this look title-sorted under
+    # the suite's frozen clock)
+    it "sorts articles newest first" do
       result = execute_query(query, variables: { tagId: tag.id })
 
       articles = result["data"]["articlesByTag"]
-      expect(articles.first["name"]).to eq("Tagged published article 0")
-      expect(articles.last["name"]).to eq("Tagged published article 2")
+      expect(articles.first["name"]).to eq("Tagged published article 2")
+      expect(articles.last["name"]).to eq("Tagged published article 0")
     end
   end
 
@@ -194,12 +198,12 @@ RSpec.describe "GraphQL Articles", type: :request do
       expect(articles.length).to eq(5)
     end
 
-    it "sorts articles by title" do
+    it "sorts articles newest first" do
       result = execute_query(query, variables: { tagId: tag.id })
 
       articles = result["data"]["articlesByPartnerTag"]
-      expect(articles.first["name"]).to eq("Partner article 0")
-      expect(articles.last["name"]).to eq("Partner article 4")
+      expect(articles.first["name"]).to eq("Partner article 4")
+      expect(articles.last["name"]).to eq("Partner article 0")
     end
   end
 
