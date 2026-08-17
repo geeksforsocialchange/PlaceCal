@@ -115,7 +115,7 @@ jobs:
 
       - name: Install Chrome for browser tests
         if: matrix.suite == 'system' || startsWith(matrix.suite, 'cucumber')
-        uses: browser-actions/setup-chrome@2e1d749697dd1612b833dba4a722266286fbefcd # latest
+        uses: browser-actions/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4 # latest
         id: setup-chrome
         with:
           chrome-version: stable
