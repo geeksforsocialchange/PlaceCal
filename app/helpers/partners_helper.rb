@@ -1,11 +1,18 @@
 # frozen_string_literal: true
 
 module PartnersHelper
-  # Returns users as [display_name, id] pairs for partner admin assignment
-  # Excludes users already assigned to the partner
+  # Returns users as [display_name, id] pairs for partner admin assignment.
+  #
+  # Excludes users already assigned to the partner, but always keeps the
+  # current user selectable (unless they are already an admin) so that, for
+  # example, a neighbourhood admin can add themselves as a partner admin.
+  # See https://github.com/geeksforsocialchange/PlaceCal/issues/3084
   def options_for_partner_users(partner)
     existing_ids = partner.user_ids
-    User.where.not(id: existing_ids)
+    selectable_ids = User.where.not(id: existing_ids).pluck(:id)
+    selectable_ids |= [current_user.id] if current_user && existing_ids.exclude?(current_user.id)
+
+    User.where(id: selectable_ids)
         .order(:email)
         .map { |u| [u.email, u.id] }
   end
