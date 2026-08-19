@@ -17,20 +17,25 @@ module TabHelpers
   end
 
   # Click a tab by its data-hash attribute and wait for it to be selected.
-  # Uses a retryable CSS selector for the assertion instead of checking the
-  # already-resolved element — avoids CI flakiness where the checked state
-  # lags behind the click in headless Chrome.
   def click_tab(hash)
-    wait_for_form_tabs
-    find("input.tab[data-hash='#{hash}']").click
-    expect(page).to have_css("input.tab[data-hash='#{hash}']:checked", wait: 5)
+    click_tab_matching("input.tab[data-hash='#{hash}']")
   end
 
   # Navigate to a partner form tab by its aria-label (includes emoji prefix)
   def go_to_partner_tab(tab_label)
+    click_tab_matching("input.tab[aria-label='#{tab_label}']")
+  end
+
+  # Click a tab radio and wait for :checked, re-clicking if Selenium dropped
+  # the click on a loaded CI runner (#3341). Not for clicks that trigger a
+  # confirm() — those need a raw click inside accept_confirm/dismiss_confirm.
+  def click_tab_matching(selector)
     wait_for_form_tabs
-    find("input.tab[aria-label='#{tab_label}']").click
-    expect(page).to have_css("input.tab[aria-label='#{tab_label}']:checked", wait: 5)
+    3.times do
+      find(selector).click
+      return if page.has_css?("#{selector}:checked", wait: 2)
+    end
+    expect(page).to have_css("#{selector}:checked")
   end
 
   def go_to_basic_info_tab = go_to_partner_tab("📋 Basic Info")
