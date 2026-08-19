@@ -168,7 +168,7 @@ en:
         - title: Training included
           body: We deliver the training programme for institutions and community groups so everyone can publish and update.
         - title: Open API
-          body: Take your data elsewhere — every partnership gets a public JSON and iCal feed. No lock-in.
+          body: Every event, partner and article on PlaceCal is available through a documented, standards-based GraphQL API. Your own site, app, or AI assistant can pull community events filtered by area, date and category.
         - title: Map & location tools
           body: Every partner pinned. Filter by walking distance, neighbourhood or ward.
         - title: Social prescribing ready
