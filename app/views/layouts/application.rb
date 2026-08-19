@@ -32,7 +32,6 @@ class Views::Layouts::Application < Phlex::HTML
         shim_url = asset_path('es-module-shims.js')
         script { raw safe("if(!HTMLScriptElement.supports||!HTMLScriptElement.supports('importmap')){var s=document.createElement('script');s.src='#{shim_url}';s.async=true;document.head.appendChild(s)}") }
         javascript_importmap_tags
-        script(defer: true, 'data-domain': 'placecal.org', src: 'https://plausible.io/js/plausible.js') if Rails.env.production?
         script { raw safe(matomo_tracking_js) } if Rails.env.production?
         meta(name: 'turbo-refresh-method', content: 'morph')
       end
@@ -155,10 +154,9 @@ class Views::Layouts::Application < Phlex::HTML
     link(rel: 'preload', href: asset_path(path), as: 'font', type: 'font/woff2', crossorigin: 'anonymous')
   end
 
-  # Matomo (stats.gfsc.community, site 1). Runs alongside Plausible while the
-  # two are compared; Plausible is cancelled after that.
-  # disableCookies must be pushed before trackPageView — after it the cookie is
-  # already set. Cookieless keeps parity with Plausible, so no consent banner.
+  # Matomo (stats.gfsc.community, site 1), cookieless: no consent banner needed.
+  # disableCookies must be pushed before trackPageView, or the cookie is
+  # already set by the time it runs.
   def matomo_tracking_js
     <<~JS
       var _paq = window._paq = window._paq || [];
