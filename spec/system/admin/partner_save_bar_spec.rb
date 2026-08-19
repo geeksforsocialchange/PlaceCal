@@ -200,8 +200,8 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     end
 
     it "navigates to previous tab when clicking Back without changes" do
-      # Go to Location tab first
-      find('input[aria-label="📍 Location"]').click
+      # Go to Location tab first (re-clicks if the click is dropped, #3341)
+      go_to_place_tab
       expect(page).to have_button("Back", visible: :visible)
 
       click_button "Back"
