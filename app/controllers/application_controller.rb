@@ -187,18 +187,12 @@ class ApplicationController < ActionController::Base
     token = ENV.fetch('MATOMO_TOKEN_AUTH', nil)
     return if token.blank?
 
-    # Read everything off the request before spawning the thread: the request
-    # object is not safe to touch once the response has been sent. cip and ua
-    # are only honoured by Matomo when token_auth is valid; without them every
-    # download would record as the app server itself.
-    params = {
-      idsite: '1', rec: '1', apiv: '1',
-      url: request.original_url,
-      download: request.original_url,
-      ua: request.user_agent.to_s,
-      cip: request.remote_ip,
-      token_auth: token
-    }
+    # Request state is read before the thread spawns: the request object is
+    # not safe to touch once the response is sent. cip/ua are only honoured
+    # with a valid token_auth, else every download records as the app server.
+    params = { idsite: '1', rec: '1', apiv: '1', token_auth: token,
+               url: request.original_url, download: request.original_url,
+               ua: request.user_agent.to_s, cip: request.remote_ip }
     Thread.new do
       Net::HTTP.post_form(URI('https://stats.gfsc.community/matomo.php'), params)
     rescue StandardError => e
