@@ -26,14 +26,9 @@ module TabHelpers
     click_tab_matching("input.tab[aria-label='#{tab_label}']")
   end
 
-  # Click a tab radio and wait for it to become :checked, re-clicking if the
-  # click didn't register. CI failure screenshots (issue #3341) show Selenium
-  # occasionally dropping the click on a loaded runner: the page is healthy
-  # and clean but the radio never switches. A bounded re-click targets exactly
-  # that, without masking a genuine failure (an intercepted or reverted click
-  # still fails the final assertion).
-  # NOTE: not for clicks that trigger a confirm() (unsaved changes) — those
-  # must stay inside accept_confirm/dismiss_confirm blocks with a raw click.
+  # Click a tab radio and wait for :checked, re-clicking if Selenium dropped
+  # the click on a loaded CI runner (#3341). Not for clicks that trigger a
+  # confirm() — those need a raw click inside accept_confirm/dismiss_confirm.
   def click_tab_matching(selector)
     wait_for_form_tabs
     3.times do
