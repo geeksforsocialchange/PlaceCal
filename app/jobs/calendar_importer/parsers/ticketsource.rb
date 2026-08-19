@@ -17,9 +17,9 @@ module CalendarImporter
       # Match TicketSource venue pages like:
       # https://www.ticketsource.co.uk/fairfield-house
       # https://ticketsource.co.uk/some-venue
-      def self.allowlist_pattern
-        %r{^https://(www\.)?ticketsource\.co\.uk/[^/]+/?$}i
-      end
+      URL_PATTERNS = [
+        { pattern: '^https://(www\.)?ticketsource\.co\.uk/[^/]+/?$', flags: 'i' }
+      ].freeze
 
       def user_agent
         USER_AGENT
