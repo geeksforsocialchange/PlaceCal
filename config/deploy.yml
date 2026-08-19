@@ -64,6 +64,7 @@ env:
     - APPSIGNAL_PUSH_API_KEY
     - EVENTBRITE_TOKEN
     - SITE_DOMAIN
+    - MATOMO_TOKEN_AUTH
 
 volumes:
   - "/data/placecal/uploads:/rails/public/uploads"
