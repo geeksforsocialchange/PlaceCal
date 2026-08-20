@@ -141,6 +141,57 @@ RSpec.describe "Admin::Calendars", type: :request do
       get edit_admin_calendar_url(calendar, host: admin_host)
       expect(response.body).to include("ical")
     end
+
+    describe "the API token field" do
+      def api_token_fieldset(body)
+        Nokogiri::HTML(body).at_css('fieldset[data-source-validator-target="apiTokenSection"]')
+      end
+
+      it "renders the field exactly once so the form does not submit duplicates" do
+        get edit_admin_calendar_url(calendar, host: admin_host)
+        inputs = Nokogiri::HTML(response.body).css('input[name="calendar[api_token]"]')
+        expect(inputs.count).to eq(1)
+      end
+
+      it "shows the field for an importer that requires an API token" do
+        api_calendar = build(:calendar, organiser: partner2, importer_mode: "ticketsource")
+        allow(api_calendar).to receive(:check_source_reachable)
+        api_calendar.save!
+
+        get edit_admin_calendar_url(api_calendar, host: admin_host)
+
+        fieldset = api_token_fieldset(response.body)
+        expect(fieldset).to be_present
+        expect(fieldset["class"]).not_to include("hidden")
+      end
+
+      it "hides the field for an importer that does not require an API token" do
+        get edit_admin_calendar_url(calendar, host: admin_host)
+
+        fieldset = api_token_fieldset(response.body)
+        expect(fieldset).to be_present
+        expect(fieldset["class"]).to include("hidden")
+      end
+
+      it "shows the field when a token is already saved" do
+        tokened = build(:calendar, organiser: partner2, importer_mode: "ical", api_token: "skl-existing-token")
+        allow(tokened).to receive(:check_source_reachable)
+        tokened.save!
+
+        get edit_admin_calendar_url(tokened, host: admin_host)
+
+        fieldset = api_token_fieldset(response.body)
+        expect(fieldset["class"]).not_to include("hidden")
+      end
+
+      it "advertises the api token parsers to the source-validator controller" do
+        get edit_admin_calendar_url(calendar, host: admin_host)
+
+        root = Nokogiri::HTML(response.body).at_css('[data-controller="source-validator"]')
+        parsers = JSON.parse(root["data-source-validator-api-token-parsers-value"])
+        expect(parsers).to include("ticketsource")
+      end
+    end
   end
 
   describe "POST /admin/calendars/test_source" do
