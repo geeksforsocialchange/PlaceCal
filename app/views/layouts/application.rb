@@ -32,7 +32,7 @@ class Views::Layouts::Application < Phlex::HTML
         shim_url = asset_path('es-module-shims.js')
         script { raw safe("if(!HTMLScriptElement.supports||!HTMLScriptElement.supports('importmap')){var s=document.createElement('script');s.src='#{shim_url}';s.async=true;document.head.appendChild(s)}") }
         javascript_importmap_tags
-        script(defer: true, 'data-domain': 'placecal.org', src: 'https://plausible.io/js/plausible.js') if Rails.env.production?
+        script { raw safe(matomo_tracking_js) } if Rails.env.production?
         meta(name: 'turbo-refresh-method', content: 'morph')
       end
 
@@ -152,6 +152,25 @@ class Views::Layouts::Application < Phlex::HTML
 
   def preload_font(path)
     link(rel: 'preload', href: asset_path(path), as: 'font', type: 'font/woff2', crossorigin: 'anonymous')
+  end
+
+  # Matomo (stats.gfsc.community, site 1), cookieless: no consent banner needed.
+  # disableCookies must be pushed before trackPageView, or the cookie is
+  # already set by the time it runs.
+  def matomo_tracking_js
+    <<~JS
+      var _paq = window._paq = window._paq || [];
+      _paq.push(['disableCookies']);
+      _paq.push(['trackPageView']);
+      _paq.push(['enableLinkTracking']);
+      (function() {
+        var u = "https://stats.gfsc.community/";
+        _paq.push(['setTrackerUrl', u + 'matomo.php']);
+        _paq.push(['setSiteId', '1']);
+        var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+        g.async = true; g.src = u + 'matomo.js'; s.parentNode.insertBefore(g, s);
+      })();
+    JS
   end
 
   def site

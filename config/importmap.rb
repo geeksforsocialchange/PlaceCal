@@ -15,13 +15,16 @@ pin '@hotwired/turbo-rails', to: 'https://cdn.jsdelivr.net/npm/@hotwired/turbo-r
 pin '@hotwired/turbo', to: 'https://cdn.jsdelivr.net/npm/@hotwired/turbo@8.0.12/+esm'
 
 # External dependencies
-# jsdelivr bundles ESM with sub-dependencies inline (more reliable than esm.sh)
+# jsdelivr bundles ESM with sub-dependencies inline (more reliable than esm.sh).
+# Maps must use jsdelivr, not esm.sh: esm.sh serves a different build per browser
+# via User-Agent sniffing, and Safari's transitive maplibre-gl fetch hangs forever,
+# so the map's dynamic import() rejects and nothing renders (works fine in Chrome).
 pin 'tom-select', to: 'https://cdn.jsdelivr.net/npm/tom-select@2.4.3/+esm', preload: false
-pin 'leaflet', to: 'https://esm.sh/leaflet@1.9.4', preload: false
+pin 'leaflet', to: 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/+esm', preload: false
 
 # MapLibre GL for vector tile rendering with custom styles
-pin 'maplibre-gl', to: 'https://esm.sh/maplibre-gl@4.7.1', preload: false
-pin '@maplibre/maplibre-gl-leaflet', to: 'https://esm.sh/@maplibre/maplibre-gl-leaflet@0.0.22', preload: false
+pin 'maplibre-gl', to: 'https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/+esm', preload: false
+pin '@maplibre/maplibre-gl-leaflet', to: 'https://cdn.jsdelivr.net/npm/@maplibre/maplibre-gl-leaflet@0.0.22/+esm', preload: false
 
 # Marker clustering for directory overview map
 pin 'leaflet.markercluster', to: 'https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/+esm', preload: false

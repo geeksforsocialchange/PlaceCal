@@ -43,22 +43,34 @@ jobs:
           name = (os.environ.get("RELEASE_NAME", "") or tag or "New release").strip()
           url = os.environ.get("RELEASE_URL", "") or ""
 
-          # Collapse the noisy "Maintenance" section (renovate dependency bumps)
-          # into a single count so the human-facing changes stay front and centre.
+          # Pull the trailing "Full changelog" line off so it stays pinned to the
+          # very bottom regardless of section order.
+          footer = ""
+          match = re.search(r"(?m)^\*\*Full changelog\*\*.*$", body)
+          if match:
+              footer = body[match.start():].strip()
+              body = body[:match.start()]
+
+          # Split into sections, dropping empty template ones (e.g. "What's
+          # changed") and collapsing the noisy renovate "Maintenance" list to a
+          # single count. Maintenance goes last so human-facing changes lead.
           parts = re.split(r"(?m)^(## .*)$", body)
-          rebuilt = [parts[0]]
+          main_sections, maint_sections = [], []
           for header, content in zip(parts[1::2], parts[2::2]):
               bullets = sum(1 for ln in content.splitlines() if ln.lstrip().startswith("- "))
               if bullets == 0:
-                  continue  # drop empty template sections (e.g. "What's changed")
+                  continue
               if "Maintenance" in header:
                   noun = "update" if bullets == 1 else "updates"
-                  rebuilt.append(header)
-                  rebuilt.append(f"\n- {bullets} dependency & maintenance {noun}\n\n")
+                  maint_sections.append(f"{header}\n- {bullets} dependency & maintenance {noun}")
               else:
-                  rebuilt.append(header)
-                  rebuilt.append(content)
-          description = "".join(rebuilt).strip()
+                  main_sections.append(f"{header}\n{content.strip()}")
+
+          preamble = parts[0].strip()
+          blocks = ([preamble] if preamble else []) + main_sections + maint_sections
+          if footer:
+              blocks.append(footer)
+          description = "\n\n".join(blocks).strip()
 
           # Discord caps embed descriptions at 4096 chars.
           limit = 3900
@@ -74,10 +86,15 @@ jobs:
           }
           payload = {"username": "PlaceCal", "embeds": [embed]}
 
+          # Discord sits behind Cloudflare, which 403s (error 1010) requests
+          # that don't send a User-Agent, so set one explicitly.
           req = urllib.request.Request(
               webhook,
               data=json.dumps(payload).encode("utf-8"),
-              headers={"Content-Type": "application/json"},
+              headers={
+                  "Content-Type": "application/json",
+                  "User-Agent": "PlaceCal-release-bot",
+              },
               method="POST",
           )
           with urllib.request.urlopen(req) as resp:

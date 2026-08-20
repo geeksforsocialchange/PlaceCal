@@ -115,7 +115,7 @@ jobs:
 
       - name: Install Chrome for browser tests
         if: matrix.suite == 'system' || startsWith(matrix.suite, 'cucumber')
-        uses: browser-actions/setup-chrome@2e1d749697dd1612b833dba4a722266286fbefcd # latest
+        uses: browser-actions/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4 # latest
         id: setup-chrome
         with:
           chrome-version: stable
@@ -282,6 +282,7 @@ jobs:
           MAILERSEND_PASSWORD: ${{ secrets.MAILERSEND_PASSWORD }}
           APPSIGNAL_PUSH_API_KEY: ${{ secrets.APPSIGNAL_PUSH_API_KEY }}
           EVENTBRITE_TOKEN: ${{ secrets.EVENTBRITE_TOKEN }}
+          MATOMO_TOKEN_AUTH: ${{ secrets.MATOMO_TOKEN_AUTH }}
           # SSL (Cloudflare Origin CA certificate — per-destination)
           SSL_CERTIFICATE_PEM: ${{ steps.dest.outputs.destination == 'production' && secrets.PRODUCTION_SSL_CERTIFICATE_PEM || secrets.STAGING_SSL_CERTIFICATE_PEM }}
           SSL_PRIVATE_KEY_PEM: ${{ steps.dest.outputs.destination == 'production' && secrets.PRODUCTION_SSL_PRIVATE_KEY_PEM || secrets.STAGING_SSL_PRIVATE_KEY_PEM }}
