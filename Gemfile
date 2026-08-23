@@ -89,7 +89,7 @@ group :development do
   gem 'rubocop', '1.89.0', require: false
   gem 'rubocop-graphql', '1.7.0', require: false
   gem 'rubocop-performance', '1.27.0', require: false
-  gem 'rubocop-rails', '2.36.0', require: false
+  gem 'rubocop-rails', '2.37.0', require: false
   gem 'rubocop-rake', require: false
   gem 'rubocop-rspec', require: false
   gem 'ruby-lsp', require: false   # Ruby language server (IDE support)
