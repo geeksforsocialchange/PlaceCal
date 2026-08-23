@@ -88,7 +88,7 @@ group :development do
   gem 'rdoc'                      # Documentation generator
   gem 'rubocop', '1.89.0', require: false
   gem 'rubocop-graphql', '1.7.0', require: false
-  gem 'rubocop-performance', '1.26.1', require: false
+  gem 'rubocop-performance', '1.27.0', require: false
   gem 'rubocop-rails', '2.36.0', require: false
   gem 'rubocop-rake', require: false
   gem 'rubocop-rspec', require: false
