@@ -65,6 +65,189 @@ RSpec.describe "Admin::Articles", type: :request do
     end
   end
 
+  describe "editor role end-to-end (issue #2045 regression)" do
+    before { sign_in editor_user }
+
+    let(:other_partner_article) { create(:article, partners: [create(:partner)]) }
+
+    it "shows the Articles link in the admin nav" do
+      get "http://#{admin_host}"
+      expect(response).to be_successful
+      expect(response.body).to include(admin_articles_path)
+    end
+
+    it "can view the articles index" do
+      get admin_articles_url(host: admin_host)
+      expect(response).to be_successful
+    end
+
+    it "offers every partner in the new-article form" do
+      partner
+      get new_admin_article_url(host: admin_host)
+      expect(response).to be_successful
+      expect(response.body).to include(partner.name)
+    end
+
+    it "can edit another partner's article and still see all partner options" do
+      get edit_admin_article_url(other_partner_article, host: admin_host)
+      expect(response).to be_successful
+      expect(response.body).to include(partner.name)
+    end
+
+    it "can create an article attached to any partner" do
+      post admin_articles_url(host: admin_host), params: {
+        article: {
+          title: "Editor-created article",
+          body: "Words about a community group",
+          author_id: editor_user.id,
+          partner_ids: [partner.id]
+        }
+      }
+
+      expect(response).to redirect_to(admin_articles_path)
+      expect(Article.find_by(title: "Editor-created article").partners).to contain_exactly(partner)
+    end
+
+    it "can update another partner's article" do
+      put admin_article_url(other_partner_article, host: admin_host), params: {
+        article: { title: "Updated by editor" }
+      }
+
+      expect(response).to be_redirect
+      expect(other_partner_article.reload.title).to eq("Updated by editor")
+    end
+
+    it "can delete another partner's article" do
+      delete admin_article_url(other_partner_article, host: admin_host)
+
+      expect(response).to be_redirect
+      expect(Article.exists?(other_partner_article.id)).to be false
+    end
+  end
+
+  describe "partner requirement for non-staff authors" do
+    context "as a partner admin" do
+      before { sign_in partner_admin }
+
+      it "rejects creating an article with no partners" do
+        post admin_articles_url(host: admin_host), params: {
+          article: { title: "Orphan article", body: "Some words", author_id: partner_admin.id, partner_ids: [""] }
+        }
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(response.body).to include("at least one partner")
+        expect(Article.find_by(title: "Orphan article")).to be_nil
+      end
+
+      it "creates an article linked to their partner" do
+        post admin_articles_url(host: admin_host), params: {
+          article: { title: "Partner news", body: "Some words", author_id: partner_admin.id, partner_ids: [partner.id] }
+        }
+
+        expect(response).to redirect_to(admin_articles_path)
+        expect(Article.find_by(title: "Partner news").partners).to contain_exactly(partner)
+      end
+
+      it "rejects removing every partner on update" do
+        article = create(:article, partners: [partner])
+
+        put admin_article_url(article, host: admin_host), params: {
+          article: { title: article.title, partner_ids: [""] }
+        }
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(article.reload.partners).to contain_exactly(partner)
+      end
+    end
+
+    it "allows editors to create partner-less platform posts" do
+      sign_in editor_user
+
+      post admin_articles_url(host: admin_host), params: {
+        article: { title: "Platform announcement", body: "Some words", author_id: editor_user.id, partner_ids: [""] }
+      }
+
+      expect(response).to redirect_to(admin_articles_path)
+      expect(Article.find_by(title: "Platform announcement")).to be_present
+    end
+  end
+
+  describe "publishing UX (issue #3308 Phase 4)" do
+    context "on the new-article form as a partner admin" do
+      before { sign_in partner_admin }
+
+      it "offers Save draft and Publish actions" do
+        get new_admin_article_url(host: admin_host)
+
+        expect(response.body).to include(I18n.t("admin.articles.actions.save_draft"))
+        expect(response.body).to include(I18n.t("admin.articles.actions.publish"))
+      end
+
+      it "hides the partnerships selector" do
+        get new_admin_article_url(host: admin_host)
+
+        expect(response.body).not_to include(I18n.t("admin.articles.references.partnerships_hint"))
+      end
+
+      it "shows plain-language markdown microcopy" do
+        get new_admin_article_url(host: admin_host)
+
+        expect(response.body).to include(I18n.t("admin.articles.markdown.hint_link"))
+      end
+
+      it "publishes immediately when created via Publish" do
+        post admin_articles_url(host: admin_host), params: {
+          article: { title: "Published straight away", body: "Some words", author_id: partner_admin.id,
+                     partner_ids: [partner.id], is_draft: "false" }
+        }
+
+        article = Article.find_by(title: "Published straight away")
+        expect(article.is_draft).to be false
+        expect(article.published_at).to be_present
+      end
+
+      it "stays a draft when created via Save draft" do
+        post admin_articles_url(host: admin_host), params: {
+          article: { title: "Still cooking", body: "Some words", author_id: partner_admin.id,
+                     partner_ids: [partner.id], is_draft: "true" }
+        }
+
+        expect(Article.find_by(title: "Still cooking").is_draft).to be true
+      end
+    end
+
+    it "shows the partnerships selector to editors" do
+      sign_in editor_user
+
+      get new_admin_article_url(host: admin_host)
+
+      expect(response.body).to include(I18n.t("admin.articles.references.partnerships_hint"))
+    end
+
+    context "on the edit form" do
+      before { sign_in partner_admin }
+
+      it "offers Publish on a draft" do
+        draft = create(:article, partners: [partner], is_draft: true)
+
+        get edit_admin_article_url(draft, host: admin_host)
+
+        expect(response.body).to include(I18n.t("admin.articles.actions.publish"))
+        expect(response.body).not_to include(I18n.t("admin.articles.actions.unpublish"))
+      end
+
+      it "offers Unpublish and a view-live link on a published article" do
+        article = create(:article, partners: [partner])
+
+        get edit_admin_article_url(article, host: admin_host)
+
+        expect(response.body).to include(I18n.t("admin.articles.actions.unpublish"))
+        expect(response.body).to include(I18n.t("admin.articles.actions.view_live"))
+        expect(response.body).to include("/news/#{article.slug}")
+      end
+    end
+  end
+
   describe "POST /admin/articles" do
     context "with bad image upload" do
       before { sign_in root_user }

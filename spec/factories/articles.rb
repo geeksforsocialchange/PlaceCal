@@ -9,7 +9,7 @@
 #  body          :text             not null
 #  body_html     :string
 #  is_draft      :boolean          default(TRUE), not null
-#  published_at  :date
+#  published_at  :datetime
 #  slug          :string
 #  title         :text             not null
 #  created_at    :datetime         not null
@@ -18,8 +18,9 @@
 #
 # Indexes
 #
-#  index_articles_on_author_id  (author_id)
-#  index_articles_on_slug       (slug) UNIQUE
+#  index_articles_on_author_id     (author_id)
+#  index_articles_on_published_at  (published_at)
+#  index_articles_on_slug          (slug) UNIQUE
 #
 # Foreign Keys
 #
