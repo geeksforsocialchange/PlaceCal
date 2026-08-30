@@ -45,9 +45,9 @@ module UsersHelper
       .all
       .collect do |ward|
         if ward.legacy_neighbourhood?
-          ["#{ward.contextual_name} - #{ward.release_date.year}/#{ward.release_date.month}", ward.id]
+          ["#{ward.contextual_fullname} - #{ward.release_date.year}/#{ward.release_date.month}", ward.id]
         else
-          [ward.contextual_name, ward.id]
+          [ward.contextual_fullname, ward.id]
         end
       end
   end
