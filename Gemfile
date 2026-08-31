@@ -33,8 +33,10 @@ gem 'image_processing'            # Image resizing for uploads
 gem 'inline_svg'                  # Inlines SVGs into markup. Used in SvgImagesHelper
 gem 'kramdown'                    # Markdown to HTML rendering
 gem 'literal'                     # Typed properties for Phlex components
+gem 'mini_magick', require: false # ImageMagick backend for CarrierWave uploads (soft dep of image_processing 2)
 gem 'pagy'                        # Lightweight pagination
 gem 'phlex-rails', '~> 2.3'       # Ruby-native view components
+gem 'ruby-vips', require: false   # libvips backend for ActiveStorage variants and OG image rendering (soft dep of image_processing 2)
 gem 'simple_form'                 # Form builder
 gem 'strict_ivars', require: false # Catch undefined instance variable reads
 
