@@ -12,6 +12,15 @@ module CalendarImporter::Parsers
     NAME = ''
     KEY = ''
 
+    # URL detection patterns, declared as data in the shared Ruby/JavaScript
+    # regex subset (^ $ \. [...] (a|b) * + ? {n}) so they can be exported
+    # verbatim to the browser extension via /api/v1/calendar_detection_rules
+    # and compiled with JavaScript's `new RegExp(pattern, flags)`. Ruby-only
+    # constructs (\A \z \h, inline flags, POSIX classes) are rejected by
+    # spec/jobs/calendar_importer/detection_rules_spec.rb.
+    # Each entry is { pattern: String, flags: '' | 'i' }.
+    URL_PATTERNS = [].freeze
+
     # Third-party event sources intermittently return rate-limit (429) and
     # server-error (5xx) responses. These are transient upstream failures, not
     # problems with our request, so they're worth retrying with backoff before
@@ -51,6 +60,27 @@ module CalendarImporter::Parsers
       'image_url' => { '@id' => 'http://schema.org/image', '@type' => '@id' },
       'url' => { '@id' => 'http://schema.org/url', '@type' => '@id' }
     }.freeze
+
+    def self.url_patterns
+      self::URL_PATTERNS
+    end
+
+    def self.allowlist_pattern
+      # Regexp.union of an empty list never matches, so parsers with no URL
+      # patterns (LdJson) correctly fail the URL check.
+      Regexp.union(
+        url_patterns.map do |p|
+          Regexp.new(p[:pattern], p[:flags].include?('i') ? Regexp::IGNORECASE : 0)
+        end
+      )
+    end
+
+    # Set on parsers whose detection needs page content rather than a URL
+    # pattern (:squarespace / :wix / :ld_json). Exported to the browser
+    # extension, which implements the corresponding DOM checks itself.
+    def self.content_detection
+      nil
+    end
 
     def self.handles_url?(calendar)
       calendar.source =~ allowlist_pattern
