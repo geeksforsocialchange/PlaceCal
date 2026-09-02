@@ -11,6 +11,8 @@ class Views::Events::Index < Views::Base
   prop :next_date, _Nilable(::Event), reader: :private
   prop :truncated, _Boolean, reader: :private
   prop :show_monthly, _Boolean, reader: :private, default: true
+  prop :region_tags, Array, reader: :private, default: -> { [] }
+  prop :selected_region, _Nilable(::Tag), reader: :private, default: nil
 
   def view_template
     content_for(:title) { 'Events' }
@@ -37,7 +39,8 @@ class Views::Events::Index < Views::Base
         Breadcrumb(trail: [['Events', events_path]], site_name: site.name) do
           div(class: 'breadcrumb__actions') do
             today = Time.zone.today
-            today_url = "/events/#{today.year}/#{today.month}/#{today.day}?period=#{period}&sort=#{sort}&repeating=#{repeating}#paginator"
+            region_param = selected_region ? "&region=#{selected_region.slug}" : ''
+            today_url = "/events/#{today.year}/#{today.month}/#{today.day}?period=#{period}&sort=#{sort}&repeating=#{repeating}#{region_param}#paginator"
             EventFilter(
               pointer: current_day,
               period: period,
@@ -47,7 +50,9 @@ class Views::Events::Index < Views::Base
               today: current_day == today,
               site: site,
               selected_neighbourhood: selected_neighbourhood,
-              show_monthly: show_monthly
+              show_monthly: show_monthly,
+              region_tags: region_tags,
+              selected_region: selected_region
             )
           end
         end

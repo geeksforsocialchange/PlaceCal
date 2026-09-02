@@ -115,6 +115,7 @@ class EventsController < ApplicationController
     @repeating = params[:repeating] || 'on'
     @sort = params[:sort] || 'time'
     @selected_neighbourhood = params[:neighbourhood] if params[:neighbourhood].present? && Integer(params[:neighbourhood], exception: false)
+    @region = current_region
     @query = EventsQuery.new(site: current_site, day: @current_day)
     @period = params[:period] || default_period
 
@@ -122,7 +123,8 @@ class EventsController < ApplicationController
       period: @period,
       repeating: @repeating,
       sort: @sort,
-      neighbourhood_id: @selected_neighbourhood
+      neighbourhood_id: @selected_neighbourhood,
+      tag_id: @region&.id
     )
     @truncated = @query.truncated
     @next_date = @query.next_event_after(@current_day)
@@ -137,7 +139,8 @@ class EventsController < ApplicationController
             current_day: @current_day, site: @site,
             selected_neighbourhood: @selected_neighbourhood,
             next_date: @next_date, truncated: @truncated,
-            show_monthly: @show_monthly
+            show_monthly: @show_monthly,
+            region_tags: (region_filter? ? region_tags : []), selected_region: @region
           )
         end
       end

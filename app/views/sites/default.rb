@@ -4,6 +4,8 @@ class Views::Sites::Default < Views::Base
   prop :site, Site, reader: :private
   prop :places_to_get_computer_access, ActiveRecord::Relation, reader: :private
   prop :places_with_free_wifi, ActiveRecord::Relation, reader: :private
+  prop :region_tags, Array, reader: :private, default: -> { [] }
+  prop :selected_region, _Nilable(::Tag), reader: :private, default: nil
 
   def view_template
     content_for(:description) { site.og_description }
@@ -15,12 +17,25 @@ class Views::Sites::Default < Views::Base
       alttext: site.hero_alttext
     )
 
+    render_region_filter
     render_mission
     render_about
     render_support
   end
 
   private
+
+  # A site with more than one Partnership tag offers the region filter on its
+  # homepage too (#3368 D7); the choice then travels through the site nav.
+  def render_region_filter
+    return if region_tags.size < 2
+
+    section(class: 'region') do
+      div(class: 'container-public') do
+        RegionFilter(tags: region_tags, selected: selected_region)
+      end
+    end
+  end
 
   def render_mission
     section(class: 'region region__mission') do

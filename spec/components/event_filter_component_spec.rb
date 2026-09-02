@@ -308,4 +308,34 @@ RSpec.describe Components::EventFilter, type: :component do
       end
     end
   end
+
+  describe "region filter" do
+    let(:north) { create(:partnership, name: "North") }
+    let(:south) { create(:partnership, name: "South") }
+
+    it "is hidden when the site has one partnership tag" do
+      render_inline(described_class.new(**base_attrs, region_tags: [north]))
+
+      expect(page).not_to have_css("nav.region-filter")
+    end
+
+    it "is shown when the site has two partnership tags" do
+      render_inline(described_class.new(**base_attrs, region_tags: [north, south]))
+
+      expect(page).to have_css("nav.region-filter")
+      expect(page).to have_link("North")
+    end
+
+    it "carries the selected region through the filter forms" do
+      render_inline(described_class.new(**base_attrs, region_tags: [north, south], selected_region: north))
+
+      expect(page).to have_css("input[type=hidden][name=region][value='#{north.slug}']", visible: :all)
+    end
+
+    it "adds no region field when no region is selected" do
+      render_inline(described_class.new(**base_attrs, region_tags: [north, south]))
+
+      expect(page).to have_no_css("input[name=region]", visible: :all)
+    end
+  end
 end

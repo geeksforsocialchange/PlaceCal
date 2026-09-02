@@ -10,6 +10,8 @@ class Components::EventFilter < Components::Base
   prop :site, _Nilable(::Site), default: nil
   prop :selected_neighbourhood, _Nilable(String), default: nil
   prop :show_monthly, _Boolean, default: true
+  prop :region_tags, Array, default: -> { [] }
+  prop :selected_region, _Nilable(::Tag), default: nil
 
   def after_initialize
     @sort ||= 'time'
@@ -17,6 +19,7 @@ class Components::EventFilter < Components::Base
   end
 
   def view_template
+    RegionFilter(tags: @region_tags, selected: @selected_region) if @region_tags.size > 1
     render_date_picker
     render_neighbourhood_filter if show_neighbourhood_filter?
     render_sort_filter
@@ -51,26 +54,28 @@ class Components::EventFilter < Components::Base
     hidden_field_tag(:period, @period, data: { date_picker_target: 'period' })
     hidden_field_tag(:sort, @sort, data: { date_picker_target: 'sort' })
     hidden_field_tag(:repeating, @repeating, data: { date_picker_target: 'repeating' })
+    hidden_field_tag(:region, @selected_region.slug) if @selected_region
   end
 
   def render_neighbourhood_filter
     div(class: 'filters', data: { controller: 'event-filter' }) do
       raw(view_context.form_tag('', method: :get, class: 'filters__form', enforce_utf8: false, data: { turbo_frame: 'events-browser', turbo_action: 'advance' }) do
         safe_join([
-                    view_context.hidden_field_tag(:period, @period),
-                    view_context.hidden_field_tag(:sort, @sort),
-                    view_context.hidden_field_tag(:repeating, @repeating),
-                    view_context.render(Components::Filter.new(
-                                          name: 'neighbourhood',
-                                          label: 'Neighbourhood',
-                                          items: neighbourhood_items,
-                                          selected_id: @selected_neighbourhood,
-                                          controller: 'event-filter',
-                                          toggle_action: 'toggleNeighbourhood',
-                                          submit_action: 'submitNeighbourhood',
-                                          reset_action: 'resetNeighbourhood'
-                                        ))
-                  ])
+          view_context.hidden_field_tag(:period, @period),
+          view_context.hidden_field_tag(:sort, @sort),
+          view_context.hidden_field_tag(:repeating, @repeating),
+          (@selected_region ? view_context.hidden_field_tag(:region, @selected_region.slug) : nil),
+          view_context.render(Components::Filter.new(
+                                name: 'neighbourhood',
+                                label: 'Neighbourhood',
+                                items: neighbourhood_items,
+                                selected_id: @selected_neighbourhood,
+                                controller: 'event-filter',
+                                toggle_action: 'toggleNeighbourhood',
+                                submit_action: 'submitNeighbourhood',
+                                reset_action: 'resetNeighbourhood'
+                              ))
+        ].compact)
       end)
     end
   end
@@ -84,6 +89,7 @@ class Components::EventFilter < Components::Base
   def build_sort_filter_form
     view_context.form_tag('', method: :get, class: 'filters__form', enforce_utf8: false, data: { turbo_frame: 'events-browser', turbo_action: 'advance', filters_target: 'form', action: 'change->filters#submit' }) do
       buf = ActiveSupport::SafeBuffer.new
+      buf << view_context.hidden_field_tag(:region, @selected_region.slug) if @selected_region
       buf << build_sort_toggle
       buf << build_sort_dropdown
       buf
@@ -148,7 +154,7 @@ class Components::EventFilter < Components::Base
   def neighbourhoods
     return [] unless @site
 
-    @neighbourhoods ||= EventsQuery.new(site: @site).neighbourhoods_with_counts(period: @period)
+    @neighbourhoods ||= EventsQuery.new(site: @site).neighbourhoods_with_counts(period: @period, tag_id: @selected_region&.id)
   end
 
   def neighbourhood_items

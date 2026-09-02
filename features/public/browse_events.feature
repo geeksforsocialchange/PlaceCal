@@ -52,3 +52,19 @@ Feature: Browse Events
     And I click "Go to date"
     And I select the date "2022-11-20"
     Then I should not see "Next 7 days" as active in the paginator
+
+  Scenario: Filtering events by region on a site with two partnerships
+    Given there is a published site called "Two Regions"
+    And the site "Two Regions" has the partnership "North"
+    And the site "Two Regions" has the partnership "South"
+    And there is a partner called "North Partner" in the site "Two Regions" with the partnership "North"
+    And there is an event called "Northern Social" for partner "North Partner"
+    And there is a partner called "South Partner" in the site "Two Regions" with the partnership "South"
+    And there is an event called "Southern Social" for partner "South Partner"
+    When I browse the events page for the site "Two Regions"
+    Then I should see "Northern Social"
+    And I should see "Southern Social"
+    When I filter by the region "North"
+    Then I should see "Northern Social"
+    And I should not see "Southern Social"
+    And the region "North" should be selected
