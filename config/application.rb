@@ -7,6 +7,10 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+# The extension registry must exist before any extension engine's
+# initializers run, and lib/ is not autoloaded, so it is required here.
+require_relative '../lib/placecal/extensions'
+
 module PlaceCal
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
