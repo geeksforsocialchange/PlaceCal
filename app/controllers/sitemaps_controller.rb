@@ -1,5 +1,14 @@
 # frozen_string_literal: true
 
+# Serves sitemaps for the nationwide directory and for each local site.
+#
+# The directory (no Site row) lists everything: all visible partners, all
+# upcoming events, the partnerships index, and the static/news pages.
+#
+# A local site lists only its own content, with every URL built from the site's
+# own base URL (Site#url), so a site's sitemap never points at placecal.org.
+# Unpublished sites are still served rather than 404'd, matching robots.txt:
+# crawl blocking is SiteRobots' job, and an unlinked sitemap costs nothing.
 class SitemapsController < ApplicationController
   CACHE_TTL = 1.day
   MAX_URLS_PER_SITEMAP = 50_000
@@ -9,69 +18,87 @@ class SitemapsController < ApplicationController
   skip_before_action :set_navigation
 
   before_action :set_site
-  before_action :require_directory
 
   def index
-    render xml: cached_xml('sitemap/index') { build_index }
+    render xml: cached_xml('index') { build_index }
   end
 
   def partners
-    render xml: cached_xml('sitemap/partners') { build_partners }
+    render xml: cached_xml('partners') { build_partners }
   end
 
   def events
-    render xml: cached_xml('sitemap/events') { build_events }
+    render xml: cached_xml('events') { build_events }
   end
 
   def partnerships
-    render xml: cached_xml('sitemap/partnerships') { build_partnerships }
+    render xml: cached_xml('partnerships') { build_partnerships }
   end
 
   def pages
-    render xml: cached_xml('sitemap/pages') { build_pages }
+    render xml: cached_xml('pages') { build_pages }
   end
 
   private
 
-  def require_directory
-    head :not_found unless directory_request?
+  # Base URL every entry hangs off: the site's own URL on a site, the
+  # directory's otherwise.
+  def base_url
+    @base_url ||= current_site ? current_site.directory_url.chomp('/') : BASE
   end
 
-  def cached_xml(key, &)
+  def cached_xml(section, &)
     expires_in CACHE_TTL, public: true
-    Rails.cache.fetch(key, expires_in: CACHE_TTL, &)
+    Rails.cache.fetch("sitemap/#{current_site&.slug || 'directory'}/#{section}", expires_in: CACHE_TTL, &)
+  end
+
+  # Partnerships are a directory-only concept (the index of every local site),
+  # so a site's sitemap index omits that section.
+  def index_sections
+    current_site ? %w[partners events pages] : %w[partners events partnerships pages]
   end
 
   def build_index
     xml = +''
     xml << '<?xml version="1.0" encoding="UTF-8"?>'
     xml << '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
-    %w[partners events partnerships pages].each do |section|
-      xml << "<sitemap><loc>#{BASE}/sitemap/#{section}.xml</loc></sitemap>"
+    index_sections.each do |section|
+      xml << "<sitemap><loc>#{base_url}/sitemap/#{section}.xml</loc></sitemap>"
     end
     xml << '</sitemapindex>'
   end
 
+  def partners_scope
+    current_site ? PartnersQuery.new(site: current_site).call.reorder(nil) : Partner.visible
+  end
+
   def build_partners
-    urls = Partner.visible.pluck(:slug, :updated_at).map do |slug, updated_at|
-      url_entry("#{BASE}/partners/#{slug}", updated_at)
+    urls = partners_scope.pluck(:slug, :updated_at).uniq.map do |slug, updated_at|
+      url_entry("#{base_url}/partners/#{slug}", updated_at)
     end
     wrap_urlset(urls)
+  end
+
+  def events_scope
+    current_site ? EventsQuery.new(site: current_site).scope : Event.all
   end
 
   def build_events
     # Only events that aren't over (dtend-aware, matching Event#past?) —
     # past event pages are noindexed, and a sitemap listing noindexed URLs
     # draws "submitted URL marked noindex" warnings in Search Console.
-    urls = Event.where('COALESCE(dtend, dtstart) >= ?', DateTime.current.beginning_of_day)
-                .order(dtstart: :desc)
-                .limit(MAX_URLS_PER_SITEMAP)
-                .pluck(:id, :updated_at)
-                .map { |id, updated_at| url_entry("#{BASE}/events/#{id}", updated_at) }
+    urls = events_scope.where('COALESCE(dtend, dtstart) >= ?', DateTime.current.beginning_of_day)
+                       .reorder(dtstart: :desc)
+                       .limit(MAX_URLS_PER_SITEMAP)
+                       .pluck('events.id', 'events.updated_at')
+                       .uniq
+                       .map { |id, updated_at| url_entry("#{base_url}/events/#{id}", updated_at) }
     wrap_urlset(urls)
   end
 
   def build_partnerships
+    return wrap_urlset([]) if current_site
+
     urls = []
     urls << url_entry("#{BASE}/partnerships")
 
@@ -83,22 +110,43 @@ class SitemapsController < ApplicationController
     wrap_urlset(urls)
   end
 
+  # terms-of-use is directory-only; privacy and get-in-touch resolve on both.
+  def static_page_slugs
+    current_site ? %w[privacy get-in-touch] : %w[privacy terms-of-use get-in-touch]
+  end
+
+  def articles_scope
+    current_site ? Article.for_site(current_site).published : Article.published
+  end
+
   def build_pages
     urls = []
 
-    urls << url_entry(BASE)
-    urls << url_entry("#{BASE}/partners")
-    urls << url_entry("#{BASE}/events")
+    urls << url_entry(base_url)
+    urls << url_entry("#{base_url}/partners")
+    urls << url_entry("#{base_url}/events")
 
-    %w[privacy terms-of-use get-in-touch].each do |page|
-      urls << url_entry("#{BASE}/#{page}")
+    static_page_slugs.each do |page|
+      urls << url_entry("#{base_url}/#{page}")
     end
 
-    Article.published.pluck(:slug, :updated_at).each do |slug, updated_at|
-      urls << url_entry("#{BASE}/news/#{slug}", updated_at)
+    articles_scope.pluck(:slug, :updated_at).uniq.each do |slug, updated_at|
+      urls << url_entry("#{base_url}/news/#{slug}", updated_at)
     end
+
+    urls.concat(site_page_entries)
 
     wrap_urlset(urls)
+  end
+
+  # Editable per-site pages (WP 1.1). Guarded so this stays inert until the
+  # Page model and the Site#pages association land.
+  def site_page_entries
+    return [] unless current_site && defined?(Page) && current_site.respond_to?(:pages)
+
+    current_site.pages.published.pluck(:slug, :updated_at).map do |slug, updated_at|
+      url_entry("#{base_url}/#{slug}", updated_at)
+    end
   end
 
   def url_entry(loc, lastmod = nil)

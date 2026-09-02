@@ -2,7 +2,14 @@
 
 class JoinMailer < ApplicationMailer
   def join_us(join)
-    mail(to: 'support@placecal.org', subject: 'New Join Request') do |format|
+    site = join.site
+    subject = if site
+                t('join_mailer.join_us.subject_with_site', site: site.name)
+              else
+                t('join_mailer.join_us.subject')
+              end
+
+    mail(to: site&.join_recipient || Join::DEFAULT_RECIPIENT, subject: subject) do |format|
       format.html { render Views::Mailers::Join::JoinUs.new(join: join) }
     end
   end
