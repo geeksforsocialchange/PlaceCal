@@ -23,6 +23,19 @@ RSpec.describe "Public Robots", type: :request do
         # Should not have a blanket disallow for all user agents
         expect(response.body).not_to match(%r{^User-agent: \*\nDisallow: /$})
       end
+
+      it "advertises the site's own sitemap, not the directory's" do
+        get "http://#{published_site.slug}.lvh.me/robots.txt"
+        expect(response.body).to include("Sitemap: #{published_site.url.chomp('/')}/sitemap.xml")
+        expect(response.body).not_to include("Sitemap: #{Site::DIRECTORY_URL}/sitemap.xml")
+      end
+    end
+
+    context "on the apex directory" do
+      it "advertises the directory sitemap" do
+        get "http://lvh.me/robots.txt"
+        expect(response.body).to include("Sitemap: #{Site::DIRECTORY_URL}/sitemap.xml")
+      end
     end
   end
 end
