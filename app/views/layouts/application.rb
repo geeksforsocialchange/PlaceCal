@@ -94,6 +94,7 @@ class Views::Layouts::Application < Phlex::HTML
 
     link(rel: 'icon', type: 'image/png', href: image_url('favicon.png'))
     link(rel: 'apple-touch-icon', href: image_url('apple-touch-icon.png'))
+    link(rel: 'manifest', href: '/manifest.webmanifest') if site
     meta(name: 'viewport', content: 'width=device-width, initial-scale=1')
 
     meta(name: 'description', content: description_text)

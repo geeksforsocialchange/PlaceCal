@@ -16,6 +16,7 @@ RSpec.describe PlaceCal::Theme do
     expect(theme.homepage_view).to be_nil
     expect(theme.map_style).to be_nil
     expect(theme.head).to be_nil
+    expect(theme.theme_color).to be_nil
     expect(theme.event_filter_style).to eq(:date_picker)
   end
 
@@ -24,12 +25,14 @@ RSpec.describe PlaceCal::Theme do
     theme.homepage_view "Views::Sites::Default"
     theme.map_style "sample"
     theme.head "Components::Footer"
+    theme.theme_color "#f19089"
     theme.event_filter_style :day_strip
 
     expect(theme.stylesheet).to eq("sample/theme")
     expect(theme.homepage_view).to eq("Views::Sites::Default")
     expect(theme.map_style).to eq("sample")
     expect(theme.head).to eq("Components::Footer")
+    expect(theme.theme_color).to eq("#f19089")
     expect(theme.event_filter_style).to eq(:day_strip)
   end
 
