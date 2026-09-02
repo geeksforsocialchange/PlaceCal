@@ -31,6 +31,7 @@ module PlaceCal
       @homepage_view = nil
       @map_style = nil
       @head = nil
+      @theme_color = nil
       @event_filter_style = :date_picker
     end
 
@@ -67,6 +68,13 @@ module PlaceCal
       return @head if value.nil?
 
       @head = value.to_s
+    end
+
+    # @param value [String, nil] hex colour code for web manifest, e.g. "#f19089"
+    def theme_color(value = nil)
+      return @theme_color if value.nil?
+
+      @theme_color = value.to_s
     end
 
     # @param value [Symbol, nil] one of EVENT_FILTER_STYLES
