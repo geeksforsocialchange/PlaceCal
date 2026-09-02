@@ -102,4 +102,50 @@ RSpec.describe "Public Sites", type: :request do
       expect(response.body).to include("Custom Hero Text")
     end
   end
+
+  describe "region filter" do
+    let(:region_site) { create(:site, slug: "regions", place_name: "Regionshire") }
+    let(:region_ward) { create(:riverside_ward) }
+    let(:north_tag) { create(:partnership, name: "North") }
+    let(:south_tag) { create(:partnership, name: "South") }
+
+    before do
+      region_site.neighbourhoods << region_ward
+      region_site.tags << north_tag
+    end
+
+    context "when the site has one partnership tag" do
+      it "does not show the region control on the homepage" do
+        get "http://regions.lvh.me"
+
+        expect(response).to be_successful
+        expect(response.body).not_to include("region-filter")
+      end
+    end
+
+    context "when the site has two partnership tags" do
+      before { region_site.tags << south_tag }
+
+      it "shows the region control on the homepage" do
+        get "http://regions.lvh.me"
+
+        expect(response.body).to include("region-filter")
+        expect(response.body).to include("South")
+      end
+
+      it "ignores an unknown region slug" do
+        get "http://regions.lvh.me?region=nowhere"
+
+        expect(response).to be_successful
+        expect(response.body).to include("region-filter")
+      end
+
+      it "carries the region on the site navigation links" do
+        get "http://regions.lvh.me?region=#{north_tag.slug}"
+
+        expect(response.body).to include(%(href="/events?region=#{north_tag.slug}"))
+        expect(response.body).to include(%(href="/partners?region=#{north_tag.slug}"))
+      end
+    end
+  end
 end

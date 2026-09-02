@@ -382,4 +382,74 @@ RSpec.describe "Public Events", type: :request do
       expect(response.body).to include(event_path(other))
     end
   end
+
+  describe "region filter" do
+    let(:region_site) { create(:site, slug: "regions") }
+    let(:region_ward) { create(:riverside_ward) }
+    let(:north_tag) { create(:partnership, name: "North") }
+    let(:south_tag) { create(:partnership, name: "South") }
+    let(:north_partner) { create(:partner, name: "North Partner", address: create(:address, neighbourhood: region_ward)) }
+    let(:south_partner) { create(:partner, name: "South Partner", address: create(:address, neighbourhood: region_ward)) }
+
+    before do
+      region_site.neighbourhoods << region_ward
+      region_site.tags << north_tag
+      north_partner.tags << north_tag
+      create(:future_event, organiser: north_partner, summary: "Northern Social")
+    end
+
+    context "when the site has one partnership tag" do
+      it "does not show the region control" do
+        get events_url(host: "regions.lvh.me")
+
+        expect(response).to be_successful
+        expect(response.body).not_to include("region-filter")
+      end
+    end
+
+    context "when the site has two partnership tags" do
+      before do
+        region_site.tags << south_tag
+        south_partner.tags << south_tag
+        create(:future_event, organiser: south_partner, summary: "Southern Social")
+      end
+
+      it "shows the region control" do
+        get events_url(host: "regions.lvh.me")
+
+        expect(response.body).to include("region-filter")
+        expect(response.body).to include("North")
+      end
+
+      it "filters events to the selected region" do
+        get events_url(host: "regions.lvh.me", region: north_tag.slug)
+
+        expect(response.body).to include("Northern Social")
+        expect(response.body).not_to include("Southern Social")
+      end
+
+      it "shows every event when no region is selected" do
+        get events_url(host: "regions.lvh.me")
+
+        expect(response.body).to include("Northern Social")
+        expect(response.body).to include("Southern Social")
+      end
+
+      it "ignores an unknown region slug" do
+        get events_url(host: "regions.lvh.me", region: "nowhere")
+
+        expect(response).to be_successful
+        expect(response.body).to include("Northern Social")
+        expect(response.body).to include("Southern Social")
+      end
+
+      it "carries the region on the site navigation links" do
+        get events_url(host: "regions.lvh.me", region: north_tag.slug)
+
+        expect(response.body).to include(%(href="/?region=#{north_tag.slug}"))
+        expect(response.body).to include(%(href="/events?region=#{north_tag.slug}"))
+        expect(response.body).to include(%(href="/partners?region=#{north_tag.slug}"))
+      end
+    end
+  end
 end

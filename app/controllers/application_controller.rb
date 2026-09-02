@@ -15,6 +15,7 @@ class ApplicationController < ActionController::Base
   before_action :set_appsignal_namespace
 
   include Pundit::Authorization
+  include RegionFilterable
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
   rescue_from ActiveRecord::RecordNotFound, with: :resource_not_found
@@ -277,11 +278,14 @@ class ApplicationController < ActionController::Base
     ]
   end
 
+  # Region is sticky via links, not state (#3368 D20): when a region is
+  # selected the site's own nav links carry it.
   def sub_site_navigation
+    region_params = current_region ? { region: current_region.slug } : {}
     [
-      ['Home', root_path],
-      ['Events', events_path],
-      ['Partners', partners_path]
+      ['Home', root_path(region_params)],
+      ['Events', events_path(region_params)],
+      ['Partners', partners_path(region_params)]
     ]
   end
 end
