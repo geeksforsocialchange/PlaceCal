@@ -107,6 +107,9 @@ class Site < ApplicationRecord
   has_many :sites_supporters, dependent: :destroy
   has_and_belongs_to_many :supporters
 
+  # Static content pages served at /:slug on this site (#3368, D5)
+  has_many :pages, dependent: :destroy
+
   belongs_to :site_admin, class_name: 'User', inverse_of: :sites, optional: true
 
   accepts_nested_attributes_for :sites_neighbourhood
