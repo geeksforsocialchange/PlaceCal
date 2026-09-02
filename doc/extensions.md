@@ -74,7 +74,7 @@ initializer "my_ext.register_theme" do
 end
 ```
 
-All settings are optional. `stylesheet` and `map_style` may receive a block that gets the Site, for dynamic lookups (e.g. by site slug or partner).
+All settings are optional. `stylesheet` and `map_style` may receive a block that gets the Site, for lookups that depend on the record (core's legacy `custom` theme resolves by site slug that way).
 
 ## Locale files
 
@@ -109,7 +109,7 @@ Themes are Tailwind plus CSS custom properties. Create a Tailwind source file in
 }
 ```
 
-Build the CSS with `@tailwindcss/cli` (pinned in core's `package.json`), scanning only the extension's views:
+Build the CSS with `@tailwindcss/cli`, pinned in the extension's own `package.json`, scanning only the extension's views:
 
 ```bash
 tailwindcss -i ./app/tailwind/my_ext_tailwind.css \
@@ -122,18 +122,19 @@ Commit the built `app/assets/builds/my_ext/theme.css` to the engine repo. The en
 
 ## Installation and Gemfile
 
-Extensions live in separate git repos until a private installation package server exists. List each extension in the public repo's `Gemfile` under a clearly labelled `group :extensions do ... end` block:
+Each extension lives in its own git repo. Until a private installation repo exists, placecal.org's installation is the public PlaceCal repo itself, so an extension is listed in the public `Gemfile` under a clearly labelled `group :extensions do ... end` block, with a comment saying it is installation-specific and removable, pinned to a git tag in the extension repo:
 
 ```ruby
+# Installation-specific extensions for placecal.org. Not part of core: a
+# self-hosted PlaceCal can delete this block.
 group :extensions do
-  # Installation-specific themes. Remove any you do not need.
   gem 'placecal-theme-transdimension',
-      git: 'https://github.com/geeksforsocialchange/placecal-theme-transdimension.git',
-      branch: 'main'
+      github: 'geeksforsocialchange/placecal-theme-transdimension',
+      tag: 'v0.1.0'
 end
 ```
 
-Use a single block so removing an extension is one edit. Pin each to a git tag in production deployments.
+Keep it a single block so removing it is one edit. The Dockerfile needs no Node build step for extensions because each engine ships its CSS prebuilt.
 
 ## Engine specs
 
@@ -159,11 +160,10 @@ Require the extension before `Rails.application.initialize!` so that its engine 
 
 ## Build and deploy
 
-The Dockerfile builds extensions automatically as part of `yarn build`:
+Core's Dockerfile is unchanged by extensions:
 
-1. The core `package.json` pins `@tailwindcss/cli`
-2. Each extension's CI fails if its committed CSS is stale (the build task should run before commit)
-3. The Dockerfile runs `yarn build`, which only rebuilds core's CSS; extension CSS is already committed
-4. Propshaft fingerprints all CSS (core and extension) during `assets:precompile`
+1. Each extension's CI fails if its committed CSS is stale (run the build before committing)
+2. The Dockerfile runs core's `yarn build`, which only rebuilds core's CSS; extension CSS is already committed in the gem
+3. Propshaft fingerprints all CSS (core and extension) during `assets:precompile`
 
-No separate Node build step for extensions is needed. The committed CSS and the registry API mean extensions are deploy-ready as soon as they merge to their repo.
+Bumping the tag in the `group :extensions` block and running `bundle lock` is the whole deploy step for an extension change.
