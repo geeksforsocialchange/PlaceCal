@@ -43,18 +43,51 @@ class Components::Footer < Components::Base
 
   def render_nav
     div(class: 'footer__item footer__nav') do
-      h5(class: 'allcaps small') { 'Site Navigation' }
+      h5(class: 'allcaps small') { t('footer.site_navigation') }
       nav(role: 'navigation') do
         ul do
-          li { active_link_to('Home', root_path) }
-          li { active_link_to('Events', events_path) }
-          li { active_link_to('Partners', partners_path) }
-          li { active_link_to('Log in', new_user_session_path) }
-          li { active_link_to('Privacy', privacy_path) }
-          li { active_link_to('Terms', terms_of_use_path) }
+          nav_links.each do |label, path|
+            li { active_link_to(label, path) }
+          end
         end
       end
     end
+  end
+
+  # The footer mirrors the derived site nav (#3368 D6) minus Home, plus the
+  # legal and log-in links the footer has always carried.
+  def nav_links
+    return directory_nav_links if @site.nil?
+
+    links = [
+      [t('navigation.site.events'), events_path],
+      [t('navigation.site.partners'), partners_path]
+    ]
+    links << [t('navigation.site.news'), news_index_path] if @site.news_article_count.positive?
+    links += site_page_links
+    links << [t('navigation.site.privacy'), privacy_path]
+    links << [t('navigation.site.terms'), terms_of_use_path]
+    links << [t('navigation.site.join'), get_in_touch_path] if @site.contact_email.present?
+    links << [t('navigation.site.log_in'), new_user_session_path]
+    links
+  end
+
+  # A site's own `privacy` page is served by privacy_path (see Page's
+  # OVERRIDABLE_ROUTE_SLUGS), so listing it here too would duplicate the link.
+  def site_page_links
+    @site.pages.in_nav.reject { |page| page.slug == 'privacy' }
+         .map { |page| [page.title, "/#{page.slug}"] }
+  end
+
+  def directory_nav_links
+    [
+      [t('navigation.site.home'), root_path],
+      [t('navigation.site.events'), events_path],
+      [t('navigation.site.partners'), partners_path],
+      [t('navigation.site.log_in'), new_user_session_path],
+      [t('navigation.site.privacy'), privacy_path],
+      [t('navigation.site.terms'), terms_of_use_path]
+    ]
   end
 
   def render_site_enquiries
