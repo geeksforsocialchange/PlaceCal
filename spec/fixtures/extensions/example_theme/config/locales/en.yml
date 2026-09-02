@@ -1,0 +1,6 @@
+en:
+  example_theme:
+    home:
+      title: Example theme
+      heading: Example theme fixture homepage
+      no_site: Rendered without a site
