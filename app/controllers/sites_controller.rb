@@ -19,7 +19,8 @@ class SitesController < ApplicationController
     else
       render Views::Sites::Default.new(
         site: @site, places_to_get_computer_access: @places_to_get_computer_access,
-        places_with_free_wifi: @places_with_free_wifi
+        places_with_free_wifi: @places_with_free_wifi,
+        region_tags: (region_filter? ? region_tags : []), selected_region: current_region
       )
     end
   end

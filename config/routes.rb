@@ -157,6 +157,8 @@ Rails.application.routes.draw do
   get '/sitemap/partnerships.xml', to: 'sitemaps#partnerships', defaults: { format: :xml }
   get '/sitemap/pages.xml', to: 'sitemaps#pages', defaults: { format: :xml }
 
+  get '/manifest.webmanifest', to: 'manifests#show', defaults: { format: :webmanifest }
+
   get '/api/v1/graphql', to: 'graphql#execute'
   post '/api/v1/graphql', to: 'graphql#execute'
 

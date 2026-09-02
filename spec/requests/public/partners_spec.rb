@@ -663,4 +663,63 @@ RSpec.describe "Public Partners", type: :request do
       end
     end
   end
+
+  describe "region filter" do
+    let(:region_site) { create(:site, slug: "regions") }
+    let(:region_ward) { create(:riverside_ward) }
+    let(:north_tag) { create(:partnership, name: "North") }
+    let(:south_tag) { create(:partnership, name: "South") }
+    let!(:north_partner) { create(:partner, name: "North Partner", address: create(:address, neighbourhood: region_ward)) }
+    let!(:south_partner) { create(:partner, name: "South Partner", address: create(:address, neighbourhood: region_ward)) }
+
+    before do
+      region_site.neighbourhoods << region_ward
+      region_site.tags << north_tag
+      north_partner.tags << north_tag
+    end
+
+    context "when the site has one partnership tag" do
+      it "does not show the region control" do
+        get partners_url(host: "regions.lvh.me")
+
+        expect(response).to be_successful
+        expect(response.body).not_to include("region-filter")
+      end
+    end
+
+    context "when the site has two partnership tags" do
+      before do
+        region_site.tags << south_tag
+        south_partner.tags << south_tag
+      end
+
+      it "shows the region control" do
+        get partners_url(host: "regions.lvh.me")
+
+        expect(response.body).to include("region-filter")
+      end
+
+      it "filters partners to the selected region" do
+        get partners_url(host: "regions.lvh.me", region: north_tag.slug)
+
+        expect(response.body).to include("North Partner")
+        expect(response.body).not_to include("South Partner")
+      end
+
+      it "ignores an unknown region slug" do
+        get partners_url(host: "regions.lvh.me", region: "nowhere")
+
+        expect(response).to be_successful
+        expect(response.body).to include("North Partner")
+        expect(response.body).to include("South Partner")
+      end
+
+      it "carries the region on the site navigation links" do
+        get partners_url(host: "regions.lvh.me", region: south_tag.slug)
+
+        expect(response.body).to include(%(href="/events?region=#{south_tag.slug}"))
+        expect(response.body).to include(%(href="/partners?region=#{south_tag.slug}"))
+      end
+    end
+  end
 end

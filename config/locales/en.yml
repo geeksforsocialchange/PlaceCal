@@ -31,10 +31,22 @@ en:
   contact:
     email: "support@placecal.org"
 
+  join_mailer:
+    join_us:
+      subject: "New Join Request"
+      subject_with_site: "New Join Request (%{site})"
+
   components:
     details:
       open: "Open to read more"
       close: "Close"
+
+  # Region selector shown on local sites with more than one Partnership tag
+  # (#3368 D7). Labels only: the URL param is always ?region=<tag slug>, so a
+  # theme can relabel the control without changing the param.
+  region_filter:
+    label: "Filter by region"
+    all: "All"
 
   # ===========================================================================
   # DIRECTORY (public placecal.org)
@@ -315,10 +327,31 @@ en:
       gfsc_logo_alt: "Geeks for Social Change"
 
   # ===========================================================================
+  # LOCAL SITES (subdomain sites)
+  # ===========================================================================
+
+  sites:
+    join:
+      hero:
+        title: "Get in touch"
+      intro: "Send a message to the %{site} team. We read every message and will get back to you."
+      email_cta:
+        heading: "Rather just email?"
+        body: "Write to %{site} directly and we'll pick it up from there."
+
+  # ===========================================================================
   # EVENT EXPORTS (shared by local sites and the directory)
   # ===========================================================================
 
   events:
+    # Day strip event filter (D22): the Today / Tomorrow / next five days
+    # navigation rendered for themes with event_filter_style :day_strip.
+    filter:
+      day_strip:
+        label: "Filter events by day"
+        today: "Today"
+        tomorrow: "Tomorrow"
+        all_upcoming: "All upcoming"
     csv_export:
       link: "Download events as CSV"
       # Column headers for the events CSV (app/services/events_csv.rb).
@@ -341,6 +374,8 @@ en:
   date:
     formats:
       datetime: "%b %-d, %Y %l:%M"
+      # Day strip filter buttons, e.g. "Thu 13"
+      day_strip: "%a %-d"
 
   time:
     formats:
@@ -544,6 +579,7 @@ en:
 
       site:
         <<: *default_attrs
+        contact_email: "Contact Email"
         place_name: "Place Name"
         hero_text: "Hero Text"
         hero_image: "Hero Image"

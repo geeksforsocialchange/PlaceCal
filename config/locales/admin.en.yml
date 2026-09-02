@@ -592,6 +592,7 @@ en:
         preview_title: "Site Content Preview"
       fields:
         alt_text_hint: "How should a screen reader describe this image?"
+        contact_email_hint: 'Where "get in touch" enquiries from this site are sent. Setting this also adds the Get in touch link to the site navigation. Leave blank to send to PlaceCal support.'
         hero_handbook_link: "See handbook for guidance"
         hero_image_description: "The large image at the top of your site's homepage."
         hero_text_hint: "Large text for the homepage banner"

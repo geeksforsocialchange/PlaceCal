@@ -293,6 +293,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_02_120000) do
 
   create_table "sites", force: :cascade do |t|
     t.string "badge_zoom_level"
+    t.string "contact_email"
     t.datetime "created_at", precision: nil, null: false
     t.text "description"
     t.string "description_html"

@@ -6,6 +6,8 @@ class Views::Partners::Index < Views::Base
   prop :map, _Nilable(Array), reader: :private
   prop :selected_category, _Nilable(String), reader: :private
   prop :selected_neighbourhood, _Nilable(String), reader: :private
+  prop :region_tags, Array, reader: :private, default: -> { [] }
+  prop :selected_region, _Nilable(::Tag), reader: :private, default: nil
 
   def view_template
     content_for(:title) { 'Partners' }
@@ -18,7 +20,9 @@ class Views::Partners::Index < Views::Base
           PartnerFilter(
             site: site,
             selected_category: selected_category,
-            selected_neighbourhood: selected_neighbourhood
+            selected_neighbourhood: selected_neighbourhood,
+            region_tags: region_tags,
+            selected_region: selected_region
           )
         end
 
