@@ -49,3 +49,9 @@ RSpec.describe "Extension theme homepage", type: :request do
     end
   end
 end
+
+RSpec.describe "Region helpers for theme homepage views", type: :request do
+  it "exposes region_tags, current_region and region_filter? as helper methods" do
+    expect(SitesController.helpers).to respond_to(:region_tags, :current_region, :region_filter?)
+  end
+end

@@ -9,6 +9,12 @@
 module RegionFilterable
   extend ActiveSupport::Concern
 
+  # Exposed to views so theme homepage views (rendered with only `site:`)
+  # can render the region filter without re-deriving the selection.
+  included do
+    helper_method :region_tags, :current_region, :region_filter?
+  end
+
   private
 
   # @return [Array<Tag>] the site's Partnership tags in name order; empty for
