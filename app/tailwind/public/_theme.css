@@ -3,8 +3,8 @@
    OVERRIDE CONTRACT
    Every themeable value (colour, font, radius, shadow) is a plain custom
    property on `:root` below. A theme stylesheet loaded after
-   public_tailwind.css — `app/assets/stylesheets/themes/*.scss`, linked from
-   `Views::Layouts::Application` via `site.stylesheet_link` — retheme the site
+   public_tailwind.css (`app/assets/stylesheets/themes/*.scss`, linked from
+   `Views::Layouts::Application` via `site.stylesheet_link`) retheme the site
    by re-declaring any of these on `:root`; nothing else needs changing.
 
    The `@theme inline` block underneath only maps Tailwind's utility
