@@ -170,6 +170,98 @@ RSpec.describe "Public Pages", type: :request do
     end
   end
 
+  # WP 1.1 (#3368, D5/D14): static per-site content pages served at /:slug.
+  context "with a site content page" do
+    let(:site) { create(:site, slug: "hulme", url: "https://hulme.lvh.me") }
+
+    describe "GET /:slug" do
+      it "renders a published page" do
+        create(:page, site: site, slug: "about", title: "About Hulme", body: "## Who we are\n\nA calendar.")
+
+        get "http://hulme.lvh.me/about"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("About Hulme")
+        expect(response.body).to include("Who we are")
+      end
+
+      it "sets the page title and description" do
+        create(:page, site: site, slug: "about", title: "About Hulme", body: "A friendly local calendar.")
+
+        get "http://hulme.lvh.me/about"
+
+        expect(response.body).to include("<title>About Hulme | #{site.name}</title>")
+        expect(response.body).to include("A friendly local calendar.")
+      end
+
+      it "404s for an unpublished page" do
+        create(:draft_page, site: site, slug: "about")
+
+        get "http://hulme.lvh.me/about"
+
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "404s for an unknown slug" do
+        get "http://hulme.lvh.me/nothing-here"
+
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "does not serve another site's page" do
+        other_site = create(:site, slug: "other", url: "https://other.lvh.me")
+        create(:page, site: other_site, slug: "about", title: "About Other")
+
+        get "http://hulme.lvh.me/about"
+
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "404s on the nationwide directory, which has no site" do
+        create(:page, site: site, slug: "about", title: "About Hulme")
+
+        get "http://lvh.me/about"
+
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "does not shadow a core route" do
+        get "http://hulme.lvh.me/events"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).not_to include("About Hulme")
+      end
+    end
+
+    describe "GET /privacy" do
+      it "prefers the site's own published privacy page (D14)" do
+        create(:page, site: site, slug: "privacy", title: "Hulme Privacy", body: "We keep your data safe.")
+
+        get "http://hulme.lvh.me/privacy"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Hulme Privacy")
+        expect(response.body).to include("We keep your data safe.")
+      end
+
+      it "falls back to the core privacy copy when there is no page" do
+        get "http://hulme.lvh.me/privacy"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to match(/privacy/i)
+      end
+
+      it "falls back when the site's privacy page is a draft" do
+        create(:draft_page, site: site, slug: "privacy", title: "Hulme Privacy")
+
+        get "http://hulme.lvh.me/privacy"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).not_to include("Hulme Privacy")
+      end
+    end
+  end
+
   describe "GET /robots.txt" do
     it "returns robots.txt for a site" do
       get "/robots.txt", headers: { "Host" => "#{site.slug}.lvh.me" }

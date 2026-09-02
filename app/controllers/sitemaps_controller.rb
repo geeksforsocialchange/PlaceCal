@@ -139,10 +139,9 @@ class SitemapsController < ApplicationController
     wrap_urlset(urls)
   end
 
-  # Editable per-site pages (WP 1.1). Guarded so this stays inert until the
-  # Page model and the Site#pages association land.
+  # Editable per-site pages (WP 1.1).
   def site_page_entries
-    return [] unless current_site && defined?(Page) && current_site.respond_to?(:pages)
+    return [] unless current_site
 
     current_site.pages.published.pluck(:slug, :updated_at).map do |slug, updated_at|
       url_entry("#{base_url}/#{slug}", updated_at)

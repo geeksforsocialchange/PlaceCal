@@ -42,6 +42,7 @@ Rails.application.routes.draw do
         delete :clear_address
       end
     end
+    resources :pages
     resources :partnerships
     resources :sites
     resources :supporters
@@ -163,4 +164,17 @@ Rails.application.routes.draw do
 
   mount GraphiQL::Rails::Engine, at: '/graphiql', graphql_path: '/api/v1/graphql' if Rails.env.development?
   # Lookbook auto-mounts at /lookbook in development
+end
+
+# ============================================================
+# Site content pages (#3368, D5) - MUST BE LAST
+# ============================================================
+# Static per-site pages live at the top level (/about) to match PlaceCal's own
+# convention for static pages (D14). This is a catch-all, so it has to lose to
+# every other route, including routes drawn by extension engines. `append`
+# blocks are evaluated once every route file has been loaded, which `draw` here
+# cannot guarantee. Page validates its slug against the reserved first path
+# segments derived from the finished route set.
+Rails.application.routes.append do
+  get '/:slug', to: 'pages#show', as: :site_page, constraints: { slug: /[a-z0-9-]+/ }
 end
