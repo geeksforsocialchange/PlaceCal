@@ -6,6 +6,7 @@
 #
 #  id                :bigint           not null, primary key
 #  badge_zoom_level  :string
+#  contact_email     :string
 #  description       :text
 #  description_html  :string
 #  events_count      :integer          default(0), not null
@@ -54,6 +55,23 @@ RSpec.describe Site, type: :model do
   describe "validations" do
     it { is_expected.to validate_presence_of(:name) }
 
+    describe "contact_email" do
+      it "is valid when blank" do
+        expect(build(:site, contact_email: nil)).to be_valid
+        expect(build(:site, contact_email: "")).to be_valid
+      end
+
+      it "is valid with a well-formed address" do
+        expect(build(:site, contact_email: "hello@example.org")).to be_valid
+      end
+
+      it "is invalid with a malformed address" do
+        site = build(:site, contact_email: "not-an-email")
+        expect(site).not_to be_valid
+        expect(site.errors[:contact_email]).to be_present
+      end
+    end
+
     # NOTE: slug presence is enforced at the model and database level, but a
     # blank slug is auto-generated from the name before validation (see
     # #should_generate_new_friendly_id? and the "FriendlyId" specs below), so
@@ -61,6 +79,18 @@ RSpec.describe Site, type: :model do
 
     # NOTE: FriendlyId handles slug uniqueness at the database level
     # No explicit validates_uniqueness_of on slug in the model
+  end
+
+  describe "#join_recipient" do
+    it "returns the site's own contact email when set" do
+      site = build(:site, contact_email: "hello@example.org")
+      expect(site.join_recipient).to eq("hello@example.org")
+    end
+
+    it "falls back to the default recipient when blank" do
+      expect(build(:site, contact_email: nil).join_recipient).to eq(Join::DEFAULT_RECIPIENT)
+      expect(build(:site, contact_email: "").join_recipient).to eq(Join::DEFAULT_RECIPIENT)
+    end
   end
 
   describe "factories" do

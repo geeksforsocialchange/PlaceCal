@@ -6,6 +6,7 @@
 #
 #  id                :bigint           not null, primary key
 #  badge_zoom_level  :string
+#  contact_email     :string
 #  description       :text
 #  description_html  :string
 #  events_count      :integer          default(0), not null
