@@ -16,6 +16,7 @@ class ApplicationController < ActionController::Base
 
   include Pundit::Authorization
   include RegionFilterable
+  include SiteNavigation
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
   rescue_from ActiveRecord::RecordNotFound, with: :resource_not_found
@@ -267,25 +268,5 @@ class ApplicationController < ActionController::Base
 
   def after_sign_in_path_for(resource_or_scope)
     stored_location_for(resource_or_scope) || admin_root_url(subdomain: Site::ADMIN_SUBDOMAIN)
-  end
-
-  def directory_navigation
-    [
-      ['Home', root_path],
-      ['Partners', partners_path],
-      ['Partnerships', partnerships_path],
-      ['Events', events_path]
-    ]
-  end
-
-  # Region is sticky via links, not state (#3368 D20): when a region is
-  # selected the site's own nav links carry it.
-  def sub_site_navigation
-    region_params = current_region ? { region: current_region.slug } : {}
-    [
-      ['Home', root_path(region_params)],
-      ['Events', events_path(region_params)],
-      ['Partners', partners_path(region_params)]
-    ]
   end
 end

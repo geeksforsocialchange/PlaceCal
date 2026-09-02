@@ -61,7 +61,7 @@ class Views::Directory::Partnerships::Show < Views::Base
   end
 
   def chip(text, icon_name: nil)
-    span(class: 'inline-flex items-center gap-1.5 text-sm font-bold rounded-full px-3 py-1', style: 'background: rgba(255,255,255,0.15); color: var(--color-background)') do
+    span(class: 'inline-flex items-center gap-1.5 text-sm font-bold rounded-full px-3 py-1', style: 'background: var(--color-overlay-light); color: var(--color-background)') do
       raw(view_context.icon(icon_name, size: nil, css_class: 'w-4 h-4')) if icon_name
       plain text
     end
@@ -138,7 +138,7 @@ class Views::Directory::Partnerships::Show < Views::Base
 
     div(class: 'rounded-card overflow-hidden') do
       div(class: 'bg-secondary px-4 py-3') do
-        div(class: 'font-serif text-lg', style: 'color: #43392f') { t('directory.partnerships.show.get_involved') }
+        div(class: 'font-serif text-lg', style: 'color: var(--color-foreground-dark)') { t('directory.partnerships.show.get_involved') }
       end
       div(class: 'bg-home-background-3 px-4 py-3') do
         area_name = @partnership.primary_neighbourhood&.name
