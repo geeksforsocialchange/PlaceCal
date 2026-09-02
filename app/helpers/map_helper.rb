@@ -64,14 +64,10 @@ module MapHelper
     # site can be a Site object or a slug string
     site_record = site.is_a?(Site) ? site : Site.find_by(slug: site)
 
-    style_name = if site_record.nil?
-                   'pink'
-                 elsif site_record.theme.to_s == 'custom'
-                   # Custom themed sites use their slug (e.g., 'mossley')
-                   site_record.slug
-                 else
-                   site_record.theme.to_s
-                 end
+    # The theme definition resolves the style name (the legacy :custom theme
+    # resolves it from the site's slug, e.g. 'mossley'). Sites with no site
+    # record or an unregistered theme fall back to pink.
+    style_name = site_record&.theme_definition&.map_style_for(site_record) || 'pink'
 
     # Fall back to pink if style file doesn't exist
     style_path = Rails.public_path.join('map-styles', "#{style_name}.json")

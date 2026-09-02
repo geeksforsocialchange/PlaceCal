@@ -41,6 +41,17 @@ RSpec.describe MapHelper, type: :helper do
     it "returns pink style for unknown slug string" do
       expect(helper.send(:style_url_for_site, "unknown-slug")).to eq("/map-styles/pink.json")
     end
+
+    it "falls back to pink style for a theme that is not registered" do
+      site = build(:site, theme: "nope")
+      expect(helper.send(:style_url_for_site, site)).to eq("/map-styles/pink.json")
+    end
+
+    it "uses the map style an extension registers", :theme_registry do
+      PlaceCal::Extensions.register_theme(:mapped) { |theme| theme.map_style "blue" }
+      site = build(:site, theme: "mapped")
+      expect(helper.send(:style_url_for_site, site)).to eq("/map-styles/blue.json")
+    end
   end
 
   describe "#center" do

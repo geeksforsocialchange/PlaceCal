@@ -8,7 +8,13 @@ class SitesController < ApplicationController
   before_action :set_places_with_free_wifi, only: [:index]
 
   def index
-    if current_site.slug == 'mossley'
+    # A theme registered by an extension may supply its own homepage view
+    # (#3368, D3); otherwise core's existing behaviour applies.
+    view_class = current_site.theme_definition&.homepage_view_class
+
+    if view_class
+      render view_class.new(site: @site)
+    elsif current_site.slug == 'mossley'
       render Views::Sites::Mossley.new(site: @site, places_to_get_online: @places_to_get_computer_access)
     else
       render Views::Sites::Default.new(
