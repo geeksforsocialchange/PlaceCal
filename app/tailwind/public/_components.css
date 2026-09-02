@@ -46,7 +46,7 @@ a.btn-dark-outline:hover {
 	color: var(--color-background);
 	font-weight: 800;
 	font-size: 0.75rem;
-	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+	box-shadow: var(--shadow-marker);
 }
 .cluster-md {
 	font-size: 0.85rem;
@@ -59,7 +59,7 @@ a.btn-dark-outline:hover {
 	background: var(--color-secondary);
 	border-radius: 50%;
 	border: 2px solid var(--color-background);
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: var(--shadow-dot);
 }
 
 /* Rendered markdown documents (legal pages — privacy, terms of use) */
@@ -144,7 +144,7 @@ a.btn-dark-outline:hover {
 	color: var(--color-foreground);
 	background: var(--color-background);
 	border: 2px solid var(--color-rules-dark);
-	border-radius: 0.65rem;
+	border-radius: var(--radius-field);
 	padding: 0.72rem 0.9rem;
 	outline: none;
 	transition:
@@ -160,8 +160,8 @@ a.btn-dark-outline:hover {
 }
 .join-control:focus {
 	border-color: var(--color-foreground);
-	background: #fff;
-	box-shadow: 0 0 0 3px rgb(91 78 70 / 0.12);
+	background: var(--color-surface);
+	box-shadow: 0 0 0 3px var(--color-focus-ring);
 }
 textarea.join-control {
 	min-height: 132px;
@@ -182,7 +182,7 @@ textarea.join-control {
 	gap: 0.6rem;
 	padding: 0.62rem 1.15rem 0.62rem 0.8rem;
 	border: 2px solid var(--color-rules-dark);
-	border-radius: 9999px;
+	border-radius: var(--radius-pill);
 	background: var(--color-background);
 	cursor: pointer;
 	font-weight: 700;
@@ -206,8 +206,8 @@ textarea.join-control {
 	height: 22px;
 	flex-shrink: 0;
 	border: 2px solid var(--color-rules-dark);
-	border-radius: 6px;
-	background: #fff;
+	border-radius: var(--radius-check);
+	background: var(--color-surface);
 	display: grid;
 	place-items: center;
 	transition:
@@ -235,7 +235,7 @@ textarea.join-control {
 	transform: scale(1);
 }
 .join-choice:has(input:focus-visible) {
-	box-shadow: 0 0 0 3px rgb(91 78 70 / 0.12);
+	box-shadow: 0 0 0 3px var(--color-focus-ring);
 }
 
 /* Submit row */
@@ -255,7 +255,7 @@ textarea.join-control {
 	font-size: 1.02rem;
 	padding: 0.8rem 2.1rem;
 	border: 0;
-	border-radius: 9999px;
+	border-radius: var(--radius-pill);
 	box-shadow: 0 0 0 2px var(--color-foreground);
 	cursor: pointer;
 	transition: 0.2s;
@@ -290,12 +290,12 @@ textarea.join-control {
 	font-weight: 400;
 	font-size: 1.35rem;
 	line-height: 1.15;
-	color: #3d342e;
+	color: var(--color-foreground-darker);
 	margin: 0 0 0.2rem;
 }
 .join-email-cta__body {
 	font-size: 0.95rem;
-	color: #3d342e;
+	color: var(--color-foreground-darker);
 }
 .join-email-link {
 	display: inline-flex;
@@ -308,7 +308,7 @@ textarea.join-control {
 	font-weight: 700;
 	font-size: 1rem;
 	padding: 0.7rem 1.4rem;
-	border-radius: 9999px;
+	border-radius: var(--radius-pill);
 	box-shadow: 0 0 0 2px var(--color-foreground);
 	transition: 0.2s;
 }
