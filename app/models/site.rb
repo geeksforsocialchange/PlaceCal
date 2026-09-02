@@ -183,12 +183,15 @@ class Site < ApplicationRecord
       .flatten
   end
 
+  # Whether a site shows News in its nav is derived from this count (#3368 D6),
+  # so it is asked once per request; memoised per instance.
+  #
   # @return [Integer] published articles count for this site
   def news_article_count
-    Article
-      .for_site(self)
-      .published
-      .count
+    @news_article_count ||= Article
+                            .for_site(self)
+                            .published
+                            .count
   end
 
   # @return [Boolean] whether neighbourhood badges should be shown

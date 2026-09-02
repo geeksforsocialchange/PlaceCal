@@ -41,6 +41,28 @@ en:
       open: "Open to read more"
       close: "Close"
 
+  # Public navigation labels. A site's nav is derived from its own data
+  # (#3368 D6), so these are the only fixed items; Pages contribute their own
+  # titles.
+  navigation:
+    directory:
+      home: "Home"
+      partners: "Partners"
+      partnerships: "Partnerships"
+      events: "Events"
+    site:
+      home: "Home"
+      events: "Events"
+      partners: "Partners"
+      news: "News"
+      join: "Get in touch"
+      privacy: "Privacy"
+      terms: "Terms"
+      log_in: "Log in"
+
+  footer:
+    site_navigation: "Site Navigation"
+
   # Region selector shown on local sites with more than one Partnership tag
   # (#3368 D7). Labels only: the URL param is always ?region=<tag slug>, so a
   # theme can relabel the control without changing the param.
