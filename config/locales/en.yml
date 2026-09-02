@@ -31,6 +31,11 @@ en:
   contact:
     email: "support@placecal.org"
 
+  join_mailer:
+    join_us:
+      subject: "New Join Request"
+      subject_with_site: "New Join Request (%{site})"
+
   components:
     details:
       open: "Open to read more"
@@ -315,6 +320,19 @@ en:
       gfsc_logo_alt: "Geeks for Social Change"
 
   # ===========================================================================
+  # LOCAL SITES (subdomain sites)
+  # ===========================================================================
+
+  sites:
+    join:
+      hero:
+        title: "Get in touch"
+      intro: "Send a message to the %{site} team. We read every message and will get back to you."
+      email_cta:
+        heading: "Rather just email?"
+        body: "Write to %{site} directly and we'll pick it up from there."
+
+  # ===========================================================================
   # EVENT EXPORTS (shared by local sites and the directory)
   # ===========================================================================
 
@@ -541,6 +559,7 @@ en:
 
       site:
         <<: *default_attrs
+        contact_email: "Contact Email"
         place_name: "Place Name"
         hero_text: "Hero Text"
         hero_image: "Hero Image"

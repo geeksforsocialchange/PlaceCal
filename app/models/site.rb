@@ -6,6 +6,7 @@
 #
 #  id                :bigint           not null, primary key
 #  badge_zoom_level  :string
+#  contact_email     :string
 #  description       :text
 #  description_html  :string
 #  events_count      :integer          default(0), not null
@@ -69,6 +70,7 @@ class Site < ApplicationRecord
 
   # ==== Attributes ====
   # Columns marked (nullable) have no NOT NULL constraint in the DB.
+  attribute :contact_email,     :string                          # nullable
   attribute :description,       :text                            # nullable
   attribute :description_html,  :string                          # nullable, populated by HtmlRenderCache
   attribute :events_count,      :integer, default: 0             # NOT NULL
@@ -123,6 +125,7 @@ class Site < ApplicationRecord
   validates :name, :slug, :url, presence: true
   validates :slug, uniqueness: true
   validates :hero_text, length: { maximum: 120 }
+  validates :contact_email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
   # Themes come from the extension registry, not a static list, so an
   # extension can add one without touching this model (#3368, D2).
   validates :theme, inclusion: { in: ->(_site) { PlaceCal::Extensions.theme_names } }
@@ -134,6 +137,14 @@ class Site < ApplicationRecord
 
   def to_s
     "#{id}: #{name}"
+  end
+
+  # Where this site's Join ("get in touch") enquiries are sent. Sites without
+  # their own address fall back to the PlaceCal support inbox (#3368, D13).
+  #
+  # @return [String]
+  def join_recipient
+    contact_email.presence || Join::DEFAULT_RECIPIENT
   end
 
   # The site's public URL, falling back to its conventional placecal.org
