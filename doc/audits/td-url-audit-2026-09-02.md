@@ -9,17 +9,7 @@ Date: 2026-09-02
 | OK              | 104   |
 | MISSING         | 5     |
 | NO ROUTE        | 0     |
-| REDIRECT NEEDED | 1     |
-
-## Analysis
-
-104 out of 114 URLs from TransDimension are available on placecal.org or route correctly to PlaceCal resources. Three news articles that existed on TD's live instance do not exist on PlaceCal and were not seeded. One route difference was found: TD's /join-us should redirect to PlaceCal's /get-in-touch form.
-
-Resolution status:
-
-- /join-us: Added 301 redirect to /get-in-touch (config/routes.rb lines 128-129)
-- /about: No action needed. Page exists as a catch-all route (pages#show). Will be seeded as a Page record during WP 2.6.
-- /news items (3 missing): These articles do not exist in PlaceCal and were not seeded. Not adding data-dependent redirects per design decision D11.
+| REDIRECT NEEDED | 0     |
 
 ## Details
 

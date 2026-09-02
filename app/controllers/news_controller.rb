@@ -36,5 +36,20 @@ class NewsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_article
     @article = Article.published.friendly.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    article = published_article_by_title_slug or raise
+    redirect_to news_path(article), status: :moved_permanently
+  end
+
+  # Sites that consumed PlaceCal news through the API built their own URLs
+  # from the article title (#3368 WP 1.9), which does not always match the
+  # slug stored here. When the requested slug matches a published article's
+  # title-derived slug, send the visitor to the canonical URL instead of a
+  # 404. Generic: keyed on nothing site-specific.
+  #
+  # @return [Article, nil]
+  def published_article_by_title_slug
+    wanted = params[:id].to_s
+    Article.published.find { |a| a.title.to_s.parameterize == wanted }
   end
 end
