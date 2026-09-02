@@ -2,6 +2,19 @@
 # Contains: ActiveRecord models/attributes, site metadata, and shared strings
 
 en:
+  # Theme labels for the admin site form; extensions may add their own
+  # themes.<name>.label (PlaceCal::Theme#label falls back to a titleized name).
+  themes:
+    pink:
+      label: Pink
+    orange:
+      label: Orange
+    green:
+      label: Green
+    blue:
+      label: Blue
+    custom:
+      label: Custom (legacy, per-site stylesheet)
   # ===========================================================================
   # SITE METADATA
   # ===========================================================================

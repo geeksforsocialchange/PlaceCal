@@ -21,5 +21,15 @@ module ExampleTheme
         namespace: ExampleTheme::Components
       )
     end
+
+    # Register the theme (D1). Runs before core's config/initializers, which
+    # is why core requires the registry from config/application.rb.
+    initializer "example_theme.register_theme" do
+      PlaceCal::Extensions.register_theme(:example_theme) do |theme|
+        theme.stylesheet "example_theme/theme"
+        theme.homepage_view "ExampleTheme::Views::Home"
+        theme.head "ExampleTheme::Components::Head"
+      end
+    end
   end
 end
