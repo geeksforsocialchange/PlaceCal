@@ -61,12 +61,7 @@ class Site < ApplicationRecord
   DIRECTORY_URL = Rails.configuration.x.directory_url
 
   # ==== Enums / Enumerize ====
-  # Theme picker
-  enumerize :theme,
-            in: %i[pink orange green blue custom],
-            default: :pink
-  # theme -- managed by enumerize, attribute declaration skipped
-
+  # theme -- no enumerize: validated against the extension registry below (#3368, D2)
   enumerize :badge_zoom_level,
             in: %i[ward district],
             default: :ward
@@ -87,6 +82,7 @@ class Site < ApplicationRecord
   attribute :place_name,        :string                          # nullable
   attribute :slug,              :string                          # NOT NULL
   attribute :tagline,           :string                          # nullable
+  attribute :theme,             :string,  default: 'pink'        # nullable
   attribute :url,               :string                          # NOT NULL
 
   friendly_id :name, use: :slugged
@@ -127,6 +123,9 @@ class Site < ApplicationRecord
   validates :name, :slug, :url, presence: true
   validates :slug, uniqueness: true
   validates :hero_text, length: { maximum: 120 }
+  # Themes come from the extension registry, not a static list, so an
+  # extension can add one without touching this model (#3368, D2).
+  validates :theme, inclusion: { in: ->(_site) { PlaceCal::Extensions.theme_names } }
 
   # ==== Scopes ====
   scope :published, -> { where(is_published: true) }
@@ -229,16 +228,20 @@ class Site < ApplicationRecord
     refresh_events_count!
   end
 
-  # @return [String, nil] asset pipeline stylesheet path for this site's theme,
-  #   or nil when no stylesheet should be linked. For the :custom theme the
-  #   per-site asset (themes/custom/<slug>.css) may not exist in the pipeline;
-  #   in that case we return nil so the page renders with the default styling
-  #   instead of raising Propshaft::MissingAssetError (see issue #2936).
-  def stylesheet_link
-    return "themes/#{theme}" unless theme == :custom
+  # @return [PlaceCal::Theme, nil] the registered theme definition for this
+  #   site, or nil when the theme is blank or not registered. Callers fall
+  #   back to core's default behaviour when it is nil.
+  def theme_definition
+    PlaceCal::Extensions.find_theme(theme)
+  end
 
-    custom_path = "themes/custom/#{slug}"
-    custom_path if asset_present?("#{custom_path}.css")
+  # @return [String, nil] asset pipeline stylesheet path for this site's theme,
+  #   or nil when no stylesheet should be linked. The legacy :custom theme
+  #   resolves the per-site asset (themes/custom/<slug>.css) and returns nil
+  #   when it is missing from the pipeline, so the page renders with the
+  #   default styling instead of raising Propshaft::MissingAssetError (#2936).
+  def stylesheet_link
+    theme_definition&.stylesheet_for(self)
   end
 
   # @return [String, false] Open Graph image URL, or false
@@ -249,17 +252,6 @@ class Site < ApplicationRecord
   # @return [String, false] tagline for OG description, or false
   def og_description
     tagline && tagline.empty? ? false : tagline
-  end
-
-  private
-
-  # @param logical_path [String] asset logical path, e.g. "themes/custom/foo.css"
-  # @return [Boolean] whether the asset resolves in the pipeline. Uses the same
-  #   resolver that stylesheet_link_tag relies on (Propshaft::Helper#compute_asset_path),
-  #   so the guard matches link behaviour in both development (dynamic) and
-  #   production (static manifest) modes.
-  def asset_present?(logical_path)
-    Rails.application.assets&.resolver&.resolve(logical_path).present?
   end
 
   # ==== Class methods ====

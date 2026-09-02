@@ -152,6 +152,59 @@ RSpec.describe Site, type: :model do
       site = build(:site, theme: "pink")
       expect(site.theme).to eq("pink")
     end
+
+    it "defaults to pink" do
+      expect(described_class.new.theme).to eq("pink")
+    end
+
+    it "accepts every theme registered in the extension registry" do
+      PlaceCal::Extensions.theme_names.each do |name|
+        site = build(:site, theme: name)
+        expect(site).to be_valid, "expected theme #{name} to be valid: #{site.errors[:theme].inspect}"
+      end
+    end
+
+    it "rejects a theme that is not registered" do
+      site = build(:site, theme: "nope")
+      expect(site).not_to be_valid
+      expect(site.errors[:theme]).to be_present
+    end
+
+    it "accepts a theme registered by an extension", :theme_registry do
+      PlaceCal::Extensions.register_theme(:late_arrival)
+      expect(build(:site, theme: "late_arrival")).to be_valid
+    end
+
+    describe "#theme_definition" do
+      it "returns the registered theme" do
+        site = build(:site, theme: "orange")
+        expect(site.theme_definition).to eq(PlaceCal::Extensions.fetch_theme("orange"))
+      end
+
+      it "returns nil for an unregistered theme" do
+        expect(build(:site, theme: "nope").theme_definition).to be_nil
+      end
+
+      it "returns nil when the theme is blank" do
+        expect(build(:site, theme: nil).theme_definition).to be_nil
+      end
+    end
+
+    describe "#stylesheet_link" do
+      it "returns the core theme stylesheet" do
+        %w[pink orange green blue].each do |name|
+          expect(build(:site, theme: name).stylesheet_link).to eq("themes/#{name}")
+        end
+      end
+
+      it "returns nil for a custom theme with no per-site stylesheet" do
+        expect(build(:site, theme: "custom", slug: "nosuchsite").stylesheet_link).to be_nil
+      end
+
+      it "returns nil when the theme is not registered" do
+        expect(build(:site, theme: "nope").stylesheet_link).to be_nil
+      end
+    end
   end
 
   describe "configuration" do
