@@ -24,6 +24,7 @@ class Views::Layouts::Application < Phlex::HTML
         stylesheet_link_tag 'home', media: 'all', 'data-turbo-track': 'reload' if content_for?(:home_styles)
         stylesheet_link_tag site.stylesheet_link, media: 'all', 'data-turbo-track': 'reload' if site&.stylesheet_link
         stylesheet_link_tag 'print', media: 'print', 'data-turbo-track': 'reload'
+        render_theme_head
         preload_font('rawline/rawline-500.woff2')
         preload_font('rawline/rawline-700.woff2')
         preload_font('rawline/rawline-800.woff2')
@@ -70,6 +71,18 @@ class Views::Layouts::Application < Phlex::HTML
   end
 
   private
+
+  # Theme head hook (#3368 D1/D3): a theme may register a Phlex component
+  # (`theme.head "Foo::Components::Head"`) rendered here, after the stylesheet
+  # chain, for fonts, manifest links and the like. The component is constructed
+  # with no arguments; one that needs the site can read it from view_context the
+  # way this layout does, or the theme's views can push markup through
+  # content_for(:theme_head), which also works alongside a head component.
+  def render_theme_head
+    head_class = site&.theme_definition&.head_class
+    render head_class.new if head_class
+    raw content_for(:theme_head) if content_for?(:theme_head)
+  end
 
   def render_meta
     title_text = compute_title

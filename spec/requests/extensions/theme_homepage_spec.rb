@@ -27,6 +27,13 @@ RSpec.describe "Extension theme homepage", type: :request do
       get "http://exampled.lvh.me"
       expect(response.body).to match(%r{/assets/example_theme/theme-[0-9a-f]+\.css})
     end
+
+    it "renders the theme's head component in <head> (#3368 D1/D3)" do
+      get "http://exampled.lvh.me"
+      head = response.body[%r{<head>.*?</head>}m]
+      expect(head).to match(%r{<link rel="stylesheet" href="/assets/example_theme/theme-[0-9a-f]+\.css" data-example-theme="head">})
+      expect(head.index("data-example-theme")).to be > head.index("public_tailwind")
+    end
   end
 
   context "with a core theme" do

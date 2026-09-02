@@ -41,7 +41,9 @@ RSpec.describe "Example theme extension engine", type: :request do
     expect(response.body).to include("<title>Example theme | PlaceCal</title>")
     expect(response.body).to include("Example theme fixture homepage")
     expect(response.body).to include("Rendered without a site")
-    expect(response.body).to match(%r{<link rel="stylesheet" href="/assets/example_theme/theme-[0-9a-f]+\.css" data-example-theme="head">})
+    # The theme head component is a layout concern (#3368 D1/D3): this page has
+    # no site, so no theme definition and no head component output.
+    expect(response.body).not_to include("data-example-theme")
     # Core layout chrome is present around the engine view.
     expect(response.body).to include('stylesheet" href="/assets/public_tailwind')
   end

@@ -7,7 +7,6 @@ class ExampleTheme::Views::Home < Views::Base
 
   def view_template
     content_for(:title) { t("example_theme.home.title") }
-    render ExampleTheme::Components::Head.new
     section(class: "example-theme-home") do
       h1 { t("example_theme.home.heading") }
       p { site ? site.name : t("example_theme.home.no_site") }
