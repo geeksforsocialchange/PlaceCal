@@ -24,6 +24,7 @@ When working on this project:
 - Keep models focused with single responsibilities
 - Extract complex business logic to service objects (e.g., `app/queries/`)
 - Ensure proper database indexing for foreign keys and queries
+- For site-specific features: see @doc/extensions.md — extensions are Rails engines with no models or migrations; they register themes (stylesheets, views, components, locales)
 
 ## CRITICAL: Internationalization (i18n)
 
