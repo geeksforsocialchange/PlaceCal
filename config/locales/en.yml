@@ -319,6 +319,14 @@ en:
   # ===========================================================================
 
   events:
+    # Day strip event filter (D22): the Today / Tomorrow / next five days
+    # navigation rendered for themes with event_filter_style :day_strip.
+    filter:
+      day_strip:
+        label: "Filter events by day"
+        today: "Today"
+        tomorrow: "Tomorrow"
+        all_upcoming: "All upcoming"
     csv_export:
       link: "Download events as CSV"
       # Column headers for the events CSV (app/services/events_csv.rb).
@@ -341,6 +349,8 @@ en:
   date:
     formats:
       datetime: "%b %-d, %Y %l:%M"
+      # Day strip filter buttons, e.g. "Thu 13"
+      day_strip: "%a %-d"
 
   time:
     formats:

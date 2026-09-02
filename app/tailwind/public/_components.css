@@ -366,3 +366,14 @@ a.btn-home-outline:hover {
 .marker-cluster-large {
 	background: transparent !important;
 }
+
+/* Day strip event filter (D22). The legacy breadcrumb actions row is a
+   nowrap flex container sized to its content, so the strip would push the
+   sort filter off screen on narrow viewports. Cap it so the strip scrolls
+   inside the row, and let the sort filter wrap under it when space runs out. */
+.breadcrumb__actions:has(.day-strip) {
+	min-width: 0;
+	max-width: 100%;
+	flex-wrap: wrap;
+	row-gap: 0.5rem;
+}

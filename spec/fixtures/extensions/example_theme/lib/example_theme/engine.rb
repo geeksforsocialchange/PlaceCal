@@ -29,6 +29,7 @@ module ExampleTheme
         theme.stylesheet "example_theme/theme"
         theme.homepage_view "ExampleTheme::Views::Home"
         theme.head "ExampleTheme::Components::Head"
+        theme.event_filter_style :day_strip
       end
     end
   end

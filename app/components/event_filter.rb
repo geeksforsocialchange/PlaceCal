@@ -10,6 +10,11 @@ class Components::EventFilter < Components::Base
   prop :site, _Nilable(::Site), default: nil
   prop :selected_neighbourhood, _Nilable(String), default: nil
   prop :show_monthly, _Boolean, default: true
+  # Overrides the style derived from the site's theme (specs and previews).
+  prop :filter_style, _Nilable(Symbol), default: nil
+
+  # Today, tomorrow and five more days (D22).
+  DAY_STRIP_LENGTH = 7
 
   def after_initialize
     @sort ||= 'time'
@@ -17,12 +22,21 @@ class Components::EventFilter < Components::Base
   end
 
   def view_template
-    render_date_picker
+    if filter_style == :day_strip
+      render_day_strip
+    else
+      render_date_picker
+    end
     render_neighbourhood_filter if show_neighbourhood_filter?
     render_sort_filter
   end
 
   private
+
+  # @return [Symbol] :date_picker or :day_strip, from the site's theme (D22)
+  def filter_style
+    @filter_style || @site&.theme_definition&.event_filter_style || :date_picker
+  end
 
   def render_date_picker
     div(class: 'filters__toggle', data: { controller: 'date-picker' }) do
@@ -51,6 +65,74 @@ class Components::EventFilter < Components::Base
     hidden_field_tag(:period, @period, data: { date_picker_target: 'period' })
     hidden_field_tag(:sort, @sort, data: { date_picker_target: 'sort' })
     hidden_field_tag(:repeating, @repeating, data: { date_picker_target: 'repeating' })
+  end
+
+  # D22: Today / Tomorrow / next five days plus "All upcoming", linking to the
+  # existing dated event URLs. No new query parameters; sort and repeating ride
+  # along only when they differ from the controller defaults.
+  def render_day_strip
+    nav(class: 'day-strip min-w-0 overflow-x-auto', aria: { label: t('events.filter.day_strip.label') }) do
+      ul(class: 'flex list-none gap-2 whitespace-nowrap p-0 m-0') do
+        day_strip_dates.each_with_index do |date, index|
+          li(class: 'shrink-0') { render_day_strip_day(date, index) }
+        end
+        li(class: 'shrink-0') { render_day_strip_all_upcoming }
+      end
+    end
+  end
+
+  def render_day_strip_day(date, index)
+    current = @period == 'day' && @pointer == date
+    link_to(day_strip_label(date, index),
+            day_strip_day_url(date),
+            class: day_strip_link_class(current),
+            aria: { current: current ? 'date' : nil },
+            data: { turbo_frame: 'events-browser', turbo_action: 'advance' })
+  end
+
+  def render_day_strip_all_upcoming
+    current = @period == 'future'
+    link_to(t('events.filter.day_strip.all_upcoming'),
+            "#{events_path(**day_strip_params, period: 'future')}#paginator",
+            class: day_strip_link_class(current),
+            aria: { current: current ? 'true' : nil },
+            data: { turbo_frame: 'events-browser', turbo_action: 'advance' })
+  end
+
+  def day_strip_dates
+    today = Time.zone.today
+    (0...DAY_STRIP_LENGTH).map { |offset| today + offset }
+  end
+
+  def day_strip_label(date, index)
+    case index
+    when 0 then t('events.filter.day_strip.today')
+    when 1 then t('events.filter.day_strip.tomorrow')
+    else I18n.l(date, format: :day_strip)
+    end
+  end
+
+  def day_strip_day_url(date)
+    path = events_by_date_path(year: date.year, month: date.month, day: date.day,
+                               period: 'day', **day_strip_params)
+    "#{path}#paginator"
+  end
+
+  def day_strip_params
+    params = {}
+    params[:sort] = @sort if @sort.present? && @sort != 'time'
+    params[:repeating] = @repeating if @repeating.present? && @repeating != 'on'
+    params
+  end
+
+  def day_strip_link_class(current)
+    base = 'day-strip__link with-no-sass inline-flex items-center rounded-sm border-2 px-3 py-1.5 text-sm font-bold no-underline transition-colors'
+    state = if current
+              'bg-foreground text-background border-foreground'
+            else
+              'bg-background text-foreground border-rules hover:border-foreground'
+            end
+    "#{base} #{state}"
   end
 
   def render_neighbourhood_filter
