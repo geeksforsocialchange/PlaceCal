@@ -106,7 +106,15 @@ module Admin
     def update
       authorize @page
 
-      if @page.update(permitted_attributes(@page))
+      attributes = attributes_with_submitted_site(permitted_attributes(@page))
+
+      if attributes.nil?
+        flash.now[:danger] = t('admin.pages.flash.site_not_permitted')
+        return render Views::Admin::Pages::Edit.new(page: @page, sites: sites_for_select),
+                      status: :forbidden
+      end
+
+      if @page.update(attributes)
         flash[:success] = t('admin.pages.flash.updated')
         redirect_to edit_admin_page_path(@page)
       else
@@ -153,6 +161,23 @@ module Admin
       return nil if site_id.blank?
 
       sites_for_select.find_by(id: site_id)
+    end
+
+    # A site admin who administers several sites sees an editable Site select,
+    # but site_id is not a permitted attribute for them, so their choice has to
+    # be resolved here against the sites they administer. Returns nil when they
+    # asked for a site they do not administer, so #update can refuse the change
+    # instead of quietly saving the rest and flashing success.
+    def attributes_with_submitted_site(attributes)
+      return attributes if policy(@page).permitted_attributes.include?(:site_id)
+
+      requested_id = params.dig(:page, :site_id)
+      return attributes if requested_id.blank? || requested_id.to_s == @page.site_id.to_s
+
+      site = sites_for_select.find_by(id: requested_id)
+      return nil if site.nil?
+
+      attributes.merge(site_id: site.id)
     end
 
     def require_root_user

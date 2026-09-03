@@ -475,6 +475,7 @@ en:
         updated: "Page was saved successfully"
         not_updated: "Page was not saved"
         deleted: "Page was deleted"
+        site_not_permitted: "Page was not saved because you do not administer that site"
 
     # -------------------------------------------------------------------------
     # Partners
