@@ -31,7 +31,7 @@ module PlaceCal
     # is no override to apply: when there is a `super`, the call is handed
     # straight to it rather than reimplemented.
     def t(key, **options)
-      theme = Current.site&.theme_definition
+      theme = Current.theme
       overridable = overridable_key?(theme, key)
 
       # No override scope to consult (a lazy '.foo' key, or a request with no
@@ -62,9 +62,11 @@ module PlaceCal
 
     # Whether this key could carry a theme override: an absolute key (a lazy
     # '.foo' key only means anything to the including class's own `t`, which
-    # knows the current scope) on a site whose theme is registered.
+    # knows the current scope) on a request whose theme is registered. The
+    # null theme has no overrides, so short-circuit rather than send every
+    # directory lookup through a `theme_overrides.none.<key>` miss.
     def overridable_key?(theme, key)
-      !theme.nil? && key.is_a?(String) && !key.start_with?('.')
+      !theme.equal?(PlaceCal::Theme::NONE) && key.is_a?(String) && !key.start_with?('.')
     end
 
     # Only reached when there is no `super` to do it (Phlex components), or for

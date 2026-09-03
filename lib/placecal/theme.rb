@@ -287,10 +287,13 @@ module PlaceCal
     # with its default, so callers read theme settings without a nil check.
     NONE = new(:none).freeze
 
+    # The one site-keyed way to a theme. Within a request prefer Current.theme,
+    # which is this call made once by ApplicationController.
+    #
     # @param site [Site, nil]
     # @return [PlaceCal::Theme] the site's theme, or NONE
     def self.for(site)
-      site&.theme_settings || NONE
+      (site && Extensions.find_theme(site.theme)) || NONE
     end
 
     # ---- Resolution

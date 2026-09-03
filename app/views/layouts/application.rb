@@ -233,10 +233,10 @@ class Views::Layouts::Application < Phlex::HTML
     view_context.instance_variable_get(:@navigation)
   end
 
-  # The theme for this request, resolved once. PlaceCal::Theme::NONE stands in
-  # for the directory and for a site with no registered theme, so the settings
-  # above read without a nil check.
+  # The theme for this request. PlaceCal::Theme::NONE stands in for the
+  # directory and for a site with no registered theme, so the settings above
+  # read without a nil check.
   def theme
-    @theme ||= PlaceCal::Theme.for(site)
+    Current.theme
   end
 end

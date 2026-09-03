@@ -125,7 +125,7 @@ class SitemapsController < ApplicationController
   def theme_page_slugs
     return [] unless current_site
 
-    @theme_page_slugs ||= PlaceCal::Theme.for(current_site).pages.keys
+    @theme_page_slugs ||= Current.theme.pages.keys
   end
 
   def articles_scope

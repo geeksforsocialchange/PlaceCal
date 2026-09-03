@@ -245,6 +245,32 @@ RSpec.describe PlaceCal::Theme do
     end
   end
 
+  describe ".for" do
+    it "returns the site's registered theme" do
+      expect(described_class.for(build(:site, theme: "orange")))
+        .to eq(PlaceCal::Extensions.fetch_theme("orange"))
+    end
+
+    it "returns the null theme without a site, or for a blank or unregistered theme" do
+      expect(described_class.for(nil)).to eq(described_class::NONE)
+      expect(described_class.for(build(:site, theme: nil))).to eq(described_class::NONE)
+      expect(described_class.for(build(:site, theme: "nope"))).to eq(described_class::NONE)
+    end
+
+    it "answers every setting with its default through the null theme" do
+      null = described_class.for(nil)
+
+      expect(null.head_class).to be_nil
+      expect(null.footer_class).to be_nil
+      expect(null.homepage_view_class).to be_nil
+      expect(null.theme_color).to be_nil
+      expect(null.icons).to eq({})
+      expect(null.event_filter_style).to eq(:date_picker)
+      expect(null).to be_nav_join
+      expect(null).not_to be_menu_label
+    end
+  end
+
   describe "#label" do
     it "uses the locale label when present" do
       expect(described_class.new(:pink).label).to eq("Pink")

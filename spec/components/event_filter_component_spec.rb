@@ -278,7 +278,9 @@ RSpec.describe Components::EventFilter, type: :component do
   end
 
   describe "day strip filter style (D22)" do
-    let(:day_strip_attrs) { base_attrs.merge(filter_style: :day_strip) }
+    let(:day_strip_attrs) { base_attrs }
+
+    before { use_current_theme(:example_theme) }
 
     it "does not render the date picker chrome" do
       render_inline(described_class.new(**day_strip_attrs))

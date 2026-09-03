@@ -37,7 +37,7 @@ class Views::Partners::Index < Views::Base
         end
       end
       div(id: 'map') do
-        Map(points: map, site: site.slug)
+        Map(points: map)
       end
     end
   end
