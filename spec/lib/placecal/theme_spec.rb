@@ -13,7 +13,7 @@ RSpec.describe PlaceCal::Theme do
 
   # The settings declared with `setting` in PlaceCal::Theme all behave the same
   # way, so they are asserted as a table rather than one example each.
-  string_settings = %i[homepage_view head theme_color footer mask_icon_color background_color]
+  string_settings = %i[homepage_view head theme_color footer background_color]
   boolean_settings = { nav_join: true, menu_label: false }
 
   describe "declared settings" do
@@ -81,9 +81,20 @@ RSpec.describe PlaceCal::Theme do
       expect(theme.icons).to eq(favicon_32: "sample/favicon-32x32.png")
     end
 
+    it "stores the mask icon colour alongside the paths" do
+      theme.icons mask_icon: "sample/safari-pinned-tab.svg", mask_icon_color: "#FF7AA7"
+
+      expect(theme.icons).to eq(mask_icon: "sample/safari-pinned-tab.svg", mask_icon_color: "#FF7AA7")
+    end
+
     it "raises on an unknown key" do
       expect { theme.icons favicon_64: "sample/favicon-64x64.png" }
         .to raise_error(ArgumentError, /favicon_64/)
+    end
+
+    it "raises when the mask icon colour is an asset path rather than a colour" do
+      expect { theme.icons mask_icon_color: "sample/safari-pinned-tab.svg" }
+        .to raise_error(ArgumentError, /invalid mask_icon_color/)
     end
   end
 
@@ -210,18 +221,12 @@ RSpec.describe PlaceCal::Theme do
       expect { theme.page "about/us", "Sample::Views::About" }.to raise_error(ArgumentError, /invalid page slug/)
     end
 
-    # The check runs on the first read of #pages, not at registration: an
-    # engine registers its theme before the route set is drawn.
-    it "rejects a slug that shadows a core route" do
+    # Core routes win over the /:slug catch-all, so a colliding slug is
+    # registered and simply never served.
+    it "accepts a slug a core route already owns" do
       theme.page "events", "Sample::Views::Events"
 
-      expect { theme.pages }.to raise_error(ArgumentError, /reserved by core routes/)
-    end
-
-    it "allows privacy, the one overridable core route" do
-      theme.page "privacy", "Sample::Views::Privacy"
-
-      expect(theme.pages.keys).to eq(%w[privacy])
+      expect(theme.pages.keys).to eq(%w[events])
     end
   end
 
