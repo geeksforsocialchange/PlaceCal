@@ -22,6 +22,7 @@ class Views::Events::Index < Views::Base
                                                 standfirst_detail: t('events.index.standfirst_detail'))
 
     div(class: 'container-public mb-32') do
+      ListHeading(t('events.index.list_heading'))
       turbo_frame_tag 'events-browser', data: { turbo_action: 'advance' } do
         render_paginator
         hr

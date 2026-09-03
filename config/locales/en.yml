@@ -361,6 +361,7 @@ en:
       title: "Our Partners"
       standfirst: ""
       standfirst_detail: ""
+      list_heading: ""
   news:
     show:
       section: ""
@@ -397,6 +398,7 @@ en:
       title: "Events & activities"
       standfirst: ""
       standfirst_detail: ""
+      list_heading: ""
     # Day strip event filter (D22): the Today / Tomorrow / next five days
     # navigation rendered for themes with event_filter_style :day_strip.
     filter:

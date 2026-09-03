@@ -33,6 +33,7 @@ module PlaceCal
       @head = nil
       @theme_color = nil
       @event_filter_style = :date_picker
+      @nav_join = true
     end
 
     def core?
@@ -95,6 +96,21 @@ module PlaceCal
       return @nav_cta if label_key.nil?
 
       @nav_cta = { label_key: label_key.to_s, url: url.to_s }
+    end
+
+    # Whether the derived site nav (SiteNavigation) includes the Join link
+    # when the site takes enquiries. A theme whose footer carries the link
+    # instead sets this to false. Defaults to true.
+    #
+    # @param value [Boolean, nil]
+    def nav_join(value = nil)
+      return @nav_join if value.nil?
+
+      @nav_join = value ? true : false
+    end
+
+    def nav_join?
+      @nav_join
     end
 
     # @param value [Symbol, nil] one of EVENT_FILTER_STYLES
