@@ -120,3 +120,77 @@ RSpec.describe "Theme nav call to action, menu label and map style", type: :requ
     expect(helper.send(:style_url_for_site, plain)).to eq("/map-styles/pink.json")
   end
 end
+
+# Core ships events.index.list_heading and partners.index.list_heading empty,
+# so the heading is a slot only a theme fills (#3368 D19).
+RSpec.describe "Theme list heading slot", type: :request do
+  let(:ward) { create(:riverside_ward) }
+
+  def site_on(theme, slug)
+    site = create(:site, slug: slug, theme: theme, url: "https://#{slug}.lvh.me")
+    site.neighbourhoods << ward
+    site
+  end
+
+  it "renders the theme's list headings on a themed site" do
+    site_on("example_theme", "themed")
+
+    get "http://themed.lvh.me/events"
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to include('class="list-heading">Fixture events list heading</h2>')
+
+    get "http://themed.lvh.me/partners"
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to include('class="list-heading">Fixture partners list heading</h2>')
+  end
+
+  it "renders no list heading on a core theme" do
+    site_on("pink", "plain")
+
+    get "http://plain.lvh.me/events"
+    expect(response).to have_http_status(:ok)
+    expect(response.body).not_to include("list-heading")
+
+    get "http://plain.lvh.me/partners"
+    expect(response).to have_http_status(:ok)
+    expect(response.body).not_to include("list-heading")
+  end
+end
+
+# A theme whose own footer carries the Join link turns the nav one off
+# (PlaceCal::Theme#nav_join, SiteNavigation#join_navigation).
+RSpec.describe "Theme nav_join", :theme_registry, type: :request do
+  let(:ward) { create(:riverside_ward) }
+
+  def site_on(theme, slug)
+    site = create(:site, slug: slug, theme: theme, url: "https://#{slug}.lvh.me",
+                         contact_email: "hello@example.org")
+    site.neighbourhoods << ward
+    site
+  end
+
+  def header_of(body)
+    body[%r{<header.*?</header>}m].to_s
+  end
+
+  it "renders no Join link in the header nav for a theme that opts out" do
+    PlaceCal::Extensions.register_theme(:no_join_theme) { |theme| theme.nav_join false }
+    site_on("no_join_theme", "nojoin")
+
+    get "http://nojoin.lvh.me/events"
+
+    expect(response).to have_http_status(:ok)
+    expect(header_of(response.body)).not_to include(I18n.t("navigation.site.join"))
+    expect(header_of(response.body)).not_to include('href="/get-in-touch"')
+  end
+
+  it "renders it for a core theme on a site that takes enquiries" do
+    site_on("pink", "plain")
+
+    get "http://plain.lvh.me/events"
+
+    expect(response).to have_http_status(:ok)
+    expect(header_of(response.body)).to include(I18n.t("navigation.site.join"))
+    expect(header_of(response.body)).to include('href="/get-in-touch"')
+  end
+end

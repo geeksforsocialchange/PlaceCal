@@ -24,3 +24,7 @@ en:
         index:
           standfirst: Fixture standfirst for events
           standfirst_detail: Fixture detail for events
+          list_heading: Fixture events list heading
+      partners:
+        index:
+          list_heading: Fixture partners list heading
