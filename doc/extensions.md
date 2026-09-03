@@ -78,14 +78,17 @@ All settings are optional. `stylesheet` and `map_style` may receive a block that
 
 ## Locale files
 
-Rails automatically loads an engine's `config/locales/**/*.yml` into the I18n path. An extension's strings should live under its own namespace to avoid collisions (`my_ext.*`). If an extension needs to override a core string, append an override file in `config.after_initialize`:
+Rails automatically loads an engine's `config/locales/**/*.yml` into the I18n path. An extension's own strings live under its own namespace (`my_ext.*`) so they cannot collide with core.
 
-```ruby
-# lib/<ext>/engine.rb
-config.after_initialize do
-  I18n.load_path << root.join('config/locales/overrides.en.yml')
-  I18n.reload!
-end
+To change a core string for sites on your theme only, add the same key under `theme_overrides.<theme name>` in one of the engine's locale files. Core's `t` helper (`PlaceCal::ThemeTranslation`, mixed into views, components and controllers) looks up `theme_overrides.<theme>.<key>` first for the current site's theme and falls back to `<key>`, so other sites are untouched and load order does not matter:
+
+```yaml
+# config/locales/overrides.en.yml
+en:
+  theme_overrides:
+    my_ext:
+      region_filter:
+        all: Everywhere
 ```
 
 ## Stylesheet and CSS build

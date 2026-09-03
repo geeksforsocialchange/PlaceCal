@@ -5,7 +5,7 @@ require "rails_helper"
 RSpec.describe PlaceCal::Extensions do
   describe "boot-time registry" do
     it "contains the built-in themes plus the test fixture extension" do
-      expect(described_class.theme_names).to eq(%w[pink orange green blue custom example_theme])
+      expect(described_class.theme_names).to start_with(%w[pink orange green blue custom]).and include("example_theme")
     end
 
     it "lists built-in themes as core" do
@@ -73,6 +73,6 @@ RSpec.describe PlaceCal::Extensions do
   end
 
   it "restores the registry after a mutating example" do
-    expect(described_class.theme_names).to eq(%w[pink orange green blue custom example_theme])
+    expect(described_class.theme_names).to start_with(%w[pink orange green blue custom]).and include("example_theme")
   end
 end

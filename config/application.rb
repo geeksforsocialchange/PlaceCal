@@ -5,7 +5,9 @@ require 'rails/all'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
-Bundler.require(*Rails.groups)
+# :extensions holds installation-specific engines (see the Gemfile block and
+# doc/extensions.md); it is not an environment group, so it is named here.
+Bundler.require(*Rails.groups, :extensions)
 
 # The extension registry must exist before any extension engine's
 # initializers run, and lib/ is not autoloaded, so it is required here.

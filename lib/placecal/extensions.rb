@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'theme'
+require_relative 'theme_translation'
 
 module PlaceCal
   # Registry that extensions (Rails engines) register into. Core knows
