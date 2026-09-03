@@ -9,6 +9,12 @@ en:
       region_filter:
         all: Anywhere
       events:
+        card:
+          date_format: "%d %b"
+          organiser_prefix: "by "
+        filter:
+          day_strip:
+            date_format: "%a %d %b"
         index:
           standfirst: Fixture standfirst for events
           standfirst_detail: Fixture detail for events
