@@ -6,5 +6,12 @@
 # translations (PlaceCal::ThemeTranslation) can reach it without threading
 # the site through every component.
 class Current < ActiveSupport::CurrentAttributes
-  attribute :site
+  attribute :site, :theme
+
+  # The resolved theme for the request. Never nil: PlaceCal::Theme::NONE stands
+  # in for the directory, for an unthemed site and for code running outside a
+  # request, so callers read theme settings without a nil check.
+  def theme
+    super || PlaceCal::Theme::NONE
+  end
 end

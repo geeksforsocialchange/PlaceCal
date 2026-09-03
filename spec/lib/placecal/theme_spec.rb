@@ -11,23 +11,43 @@ RSpec.describe PlaceCal::Theme do
     expect(theme).not_to be_core
   end
 
-  it "defaults every setting to nil and the date picker filter style" do
+  # The settings declared with `setting` in PlaceCal::Theme all behave the same
+  # way, so they are asserted as a table rather than one example each.
+  string_settings = %i[homepage_view head theme_color footer mask_icon_color background_color]
+  boolean_settings = { nav_join: true, menu_label: false }
+
+  describe "declared settings" do
+    string_settings.each do |name|
+      it "defaults ##{name} to nil and stores what it is given as a string" do
+        expect(theme.public_send(name)).to be_nil
+
+        theme.public_send(name, :"sample-#{name}")
+
+        expect(theme.public_send(name)).to eq("sample-#{name}")
+      end
+    end
+
+    boolean_settings.each do |name, default|
+      it "defaults ##{name} to #{default} and stores the opposite" do
+        expect(theme.public_send(name)).to be(default)
+        expect(theme.public_send(:"#{name}?")).to be(default)
+
+        theme.public_send(name, !default)
+
+        expect(theme.public_send(name)).to be(!default)
+        expect(theme.public_send(:"#{name}?")).to be(!default)
+      end
+    end
+  end
+
+  it "defaults the structured settings to nil and the date picker filter style" do
     expect(theme.stylesheet).to be_nil
-    expect(theme.homepage_view).to be_nil
     expect(theme.map_style).to be_nil
-    expect(theme.head).to be_nil
-    expect(theme.theme_color).to be_nil
-    expect(theme.footer).to be_nil
     expect(theme.nav_cta).to be_nil
-    expect(theme.event_filter_style).to eq(:date_picker)
-    expect(theme).to be_nav_join
-    expect(theme.menu_label).to be(false)
-    expect(theme).not_to be_menu_label
     expect(theme.icons).to eq({})
-    expect(theme.mask_icon_color).to be_nil
-    expect(theme.background_color).to be_nil
-    expect(theme.manifest_background_color).to be_nil
     expect(theme.og_image).to be_nil
+    expect(theme.manifest_background_color).to be_nil
+    expect(theme.event_filter_style).to eq(:date_picker)
   end
 
   describe "#icons" do
@@ -67,14 +87,6 @@ RSpec.describe PlaceCal::Theme do
     end
   end
 
-  describe "#mask_icon_color" do
-    it "stores the colour as a string" do
-      theme.mask_icon_color "#FF7AA7"
-
-      expect(theme.mask_icon_color).to eq("#FF7AA7")
-    end
-  end
-
   describe "#background_color" do
     it "stores the manifest background colour" do
       theme.background_color "#040f39"
@@ -105,33 +117,13 @@ RSpec.describe PlaceCal::Theme do
     end
   end
 
-  it "lets a theme label the mobile menu toggle" do
-    theme.menu_label true
-
-    expect(theme.menu_label).to be(true)
-    expect(theme).to be_menu_label
-  end
-
-  it "lets a theme drop the Join link from the main nav" do
-    theme.nav_join false
-
-    expect(theme.nav_join).to be(false)
-    expect(theme).not_to be_nav_join
-  end
-
-  it "sets and reads values through the DSL" do
+  it "sets and reads the block-capable and validated settings" do
     theme.stylesheet "sample/theme"
-    theme.homepage_view "Views::Sites::Default"
     theme.map_style "sample"
-    theme.head "Components::Footer"
-    theme.theme_color "#f19089"
     theme.event_filter_style :day_strip
 
     expect(theme.stylesheet).to eq("sample/theme")
-    expect(theme.homepage_view).to eq("Views::Sites::Default")
     expect(theme.map_style).to eq("sample")
-    expect(theme.head).to eq("Components::Footer")
-    expect(theme.theme_color).to eq("#f19089")
     expect(theme.event_filter_style).to eq(:day_strip)
   end
 

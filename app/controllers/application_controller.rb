@@ -238,10 +238,11 @@ class ApplicationController < ActionController::Base
     @site = current_site
   end
 
-  # Makes the resolved site available to the view layer for the request
-  # (see Current and PlaceCal::ThemeTranslation).
+  # Makes the resolved site and its theme available to the view layer for the
+  # request (see Current and PlaceCal::ThemeTranslation).
   def set_current_site
     Current.site = current_site
+    Current.theme = PlaceCal::Theme.for(current_site)
   end
 
   def redirect_from_directory

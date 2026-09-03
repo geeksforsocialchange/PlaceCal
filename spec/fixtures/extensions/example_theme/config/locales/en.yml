@@ -10,6 +10,9 @@ en:
     example_theme:
       region_filter:
         all: Anywhere
+      filters:
+        day_strip:
+          date_format: "%a %d %b"
       events:
         show:
           section: Fixture events section
@@ -18,9 +21,6 @@ en:
         card:
           date_format: "%d %b"
           organiser_prefix: "by "
-        filter:
-          day_strip:
-            date_format: "%a %d %b"
         index:
           standfirst: Fixture standfirst for events
           standfirst_detail: Fixture detail for events

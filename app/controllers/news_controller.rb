@@ -42,13 +42,13 @@ class NewsController < ApplicationController
   end
 
   # Sites that consumed PlaceCal news through the API built their own URLs
-  # from the article title (#3368 WP 1.9), which does not always match the
+  # from the article title (#3368), which does not always match the
   # slug stored here. When the requested slug matches a published article's
   # title-derived slug, send the visitor to the canonical URL instead of a
   # 404. Generic: keyed on nothing site-specific.
   #
   # Only slugs and titles are read, and only from the articles this site
-  # publishes, so a 404 never loads every article body (#3368 WP 3.1).
+  # publishes, so a 404 never loads every article body (#3368).
   #
   # @return [String, nil] canonical slug of the matching article
   def published_slug_by_title_slug

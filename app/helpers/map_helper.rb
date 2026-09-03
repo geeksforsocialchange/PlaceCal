@@ -67,7 +67,7 @@ module MapHelper
     # The theme definition resolves the style name (the legacy :custom theme
     # resolves it from the site's slug, e.g. 'mossley'). Sites with no site
     # record or an unregistered theme fall back to pink.
-    style_name = site_record&.theme_definition&.map_style_for(site_record) || 'pink'
+    style_name = PlaceCal::Theme.for(site_record).map_style_for(site_record) || 'pink'
 
     # A style ships either in core's public/map-styles or, for extensions, as
     # an asset at map-styles/<name>.json (e.g. app/assets/builds/map-styles/).

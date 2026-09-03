@@ -52,7 +52,7 @@ module SiteNavigation
 
   def join_navigation
     return [] if current_site&.contact_email.blank?
-    return [] if current_site.theme_definition&.nav_join? == false
+    return [] unless Current.theme.nav_join?
 
     [[t('navigation.site.join'), get_in_touch_path]]
   end

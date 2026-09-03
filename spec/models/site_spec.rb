@@ -232,6 +232,31 @@ RSpec.describe Site, type: :model do
       end
     end
 
+    describe "#theme_settings" do
+      it "returns the registered theme" do
+        site = build(:site, theme: "orange")
+        expect(site.theme_settings).to eq(PlaceCal::Extensions.fetch_theme("orange"))
+      end
+
+      it "returns the null theme when the theme is blank or unregistered" do
+        expect(build(:site, theme: nil).theme_settings).to eq(PlaceCal::Theme::NONE)
+        expect(build(:site, theme: "nope").theme_settings).to eq(PlaceCal::Theme::NONE)
+      end
+
+      it "answers every setting with its default through the null theme" do
+        theme = build(:site, theme: nil).theme_settings
+
+        expect(theme.head_class).to be_nil
+        expect(theme.footer_class).to be_nil
+        expect(theme.homepage_view_class).to be_nil
+        expect(theme.theme_color).to be_nil
+        expect(theme.icons).to eq({})
+        expect(theme.event_filter_style).to eq(:date_picker)
+        expect(theme).to be_nav_join
+        expect(theme).not_to be_menu_label
+      end
+    end
+
     describe "#stylesheet_link" do
       it "returns the core theme stylesheet" do
         %w[pink orange green blue].each do |name|

@@ -19,20 +19,28 @@ module PlaceCal
     # and gets escaped for an `_html` key, as ActionView's `t` does.
     RESERVED_INTERPOLATIONS = %i[count default scope locale raise throw separator].freeze
 
+    # This shadows ActionView's `t` (and the controller's) for the whole
+    # application: the module is included into Components::Base, Views::Base,
+    # Views::Layouts::Application and ApplicationController, which is the
+    # ancestor of Admin::* too. That breadth is deliberate. The fidelity goal
+    # is that any core string may be overridden by a theme without core
+    # growing a conditional or the theme forking a view, and there is no way
+    # to know in advance which of the several hundred strings a theme will
+    # want. The cost is that every `t` call in the app passes through here, so
+    # this method must behave exactly like the `t` it replaces whenever there
+    # is no override to apply: when there is a `super`, the call is handed
+    # straight to it rather than reimplemented.
     def t(key, **options)
       theme = Current.site&.theme_definition
-      options = escape_html_interpolations(key, options)
+      overridable = overridable_key?(theme, key)
 
-      value =
-        if theme && key.is_a?(String) && !key.start_with?('.')
-          theme_scoped_translation(theme, key, **options)
-        elsif defined?(super)
-          # A lazy ('.foo') key only means anything to the including class's
-          # own `t` (controllers, ActionView), which knows the current scope.
-          super
-        else
-          I18n.t(key, **options)
-        end
+      # No override scope to consult (a lazy '.foo' key, or a request with no
+      # theme), so let the `t` this module shadows do the whole job, including
+      # ActionView's `_html` escaping and html_safe marking.
+      return super if defined?(super) && !overridable
+
+      options = escape_html_interpolations(key, options)
+      value = overridable ? theme_scoped_translation(theme, key, **options) : I18n.t(key, **options)
 
       html_key?(key) && value.is_a?(String) ? value.html_safe : value # rubocop:disable Rails/OutputSafety
     end
@@ -52,6 +60,15 @@ module PlaceCal
       raise I18n::MissingTranslationData.new(e.locale, key, e.options)
     end
 
+    # Whether this key could carry a theme override: an absolute key (a lazy
+    # '.foo' key only means anything to the including class's own `t`, which
+    # knows the current scope) on a site whose theme is registered.
+    def overridable_key?(theme, key)
+      !theme.nil? && key.is_a?(String) && !key.start_with?('.')
+    end
+
+    # Only reached when there is no `super` to do it (Phlex components), or for
+    # a key the theme may override, which I18n resolves directly.
     def escape_html_interpolations(key, options)
       return options unless html_key?(key)
 

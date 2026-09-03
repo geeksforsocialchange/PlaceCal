@@ -10,7 +10,7 @@ class SitesController < ApplicationController
   def index
     # A theme registered by an extension may supply its own homepage view
     # (#3368, D3); otherwise core's existing behaviour applies.
-    view_class = current_site.theme_definition&.homepage_view_class
+    view_class = Current.theme.homepage_view_class
 
     if view_class
       render view_class.new(site: @site)
@@ -20,7 +20,7 @@ class SitesController < ApplicationController
       render Views::Sites::Default.new(
         site: @site, places_to_get_computer_access: @places_to_get_computer_access,
         places_with_free_wifi: @places_with_free_wifi,
-        region_tags: (region_filter? ? region_tags : []), selected_region: current_region
+        region_tags: region_tags, selected_region: current_region
       )
     end
   end

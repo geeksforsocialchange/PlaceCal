@@ -24,6 +24,35 @@ module PlaceCal
     # any of these replaces core's favicon and touch icon entirely.
     ICON_KEYS = %i[favicon_32 favicon_16 apple_touch_icon mask_icon icon_192 icon_512].freeze
 
+    # Declared settings. Each `setting` call defines one method that stores a
+    # cast value when called with one and reads the current value when called
+    # with none, and registers the default an instance starts with. Settings
+    # that validate, take structured arguments or accept a block keep their own
+    # bodies below.
+    @settings = {}
+
+    class << self
+      # @return [Hash{Symbol => Object}] declared setting names and their defaults
+      attr_reader :settings
+
+      # @param name [Symbol] setting and method name
+      # @param cast [Symbol] :to_s or :boolean
+      # @param default [Object] the value an instance starts with
+      # @param predicate [Boolean] also define a `name?` reader
+      def setting(name, cast: :to_s, default: nil, predicate: false)
+        settings[name] = default
+        ivar = :"@#{name}"
+
+        define_method(name) do |value = nil|
+          return instance_variable_get(ivar) if value.nil?
+
+          instance_variable_set(ivar, cast == :boolean ? value != false : value.to_s)
+        end
+
+        define_method(:"#{name}?") { instance_variable_get(ivar) } if predicate
+      end
+    end
+
     attr_reader :name
 
     # @param name [Symbol, String]
@@ -32,20 +61,14 @@ module PlaceCal
     def initialize(name, core: false)
       @name = name.to_s
       @core = core
+      self.class.settings.each { |setting, default| instance_variable_set(:"@#{setting}", default) }
+      # Defaults for the settings whose bodies are written out below.
       @stylesheet = nil
-      @homepage_view = nil
       @map_style = nil
-      @head = nil
-      @theme_color = nil
-      @footer = nil
+      @icons = {}
+      @og_image = nil
       @nav_cta = nil
       @event_filter_style = :date_picker
-      @nav_join = true
-      @menu_label = false
-      @icons = {}
-      @mask_icon_color = nil
-      @background_color = nil
-      @og_image = nil
     end
 
     def core?
@@ -63,11 +86,7 @@ module PlaceCal
 
     # @param value [String, nil] Phlex view class name, resolved lazily so
     #   registration can happen before autoloading is set up.
-    def homepage_view(value = nil)
-      return @homepage_view if value.nil?
-
-      @homepage_view = value.to_s
-    end
+    setting :homepage_view
 
     # @param value [String, nil] name of public/map-styles/<name>.json
     def map_style(value = nil, &block)
@@ -77,18 +96,10 @@ module PlaceCal
     end
 
     # @param value [String, nil] Phlex component class name rendered in <head>
-    def head(value = nil)
-      return @head if value.nil?
-
-      @head = value.to_s
-    end
+    setting :head
 
     # @param value [String, nil] hex colour code for web manifest, e.g. "#f19089"
-    def theme_color(value = nil)
-      return @theme_color if value.nil?
-
-      @theme_color = value.to_s
-    end
+    setting :theme_color
 
     # The theme's own favicons, touch icon, Safari mask icon and manifest
     # icons. Given as asset logical paths, resolved with `image_url` at render
@@ -120,21 +131,13 @@ module PlaceCal
     # attribute of `<link rel="mask-icon">`.
     #
     # @param value [String, nil] hex colour code, e.g. "#FF7AA7"
-    def mask_icon_color(value = nil)
-      return @mask_icon_color if value.nil?
-
-      @mask_icon_color = value.to_s
-    end
+    setting :mask_icon_color
 
     # Splash background colour for the web manifest. Distinct from
     # `theme_color`, which colours the browser chrome.
     #
     # @param value [String, nil] hex colour code, e.g. "#040f39"
-    def background_color(value = nil)
-      return @background_color if value.nil?
-
-      @background_color = value.to_s
-    end
+    setting :background_color
 
     # The manifest's background_color, falling back to the theme colour when
     # the theme sets only one of the two.
@@ -161,11 +164,7 @@ module PlaceCal
 
     # @param value [String, nil] Phlex component class name rendered in place
     #   of core's site footer; constructed with `new(site:, navigation:)`
-    def footer(value = nil)
-      return @footer if value.nil?
-
-      @footer = value.to_s
-    end
+    setting :footer
 
     # Optional call-to-action button at the end of the site nav (for example
     # a Donate link). Rendered as a link to `url` labelled by the locale key.
@@ -184,30 +183,14 @@ module PlaceCal
     # instead sets this to false. Defaults to true.
     #
     # @param value [Boolean, nil]
-    def nav_join(value = nil)
-      return @nav_join if value.nil?
-
-      @nav_join = value ? true : false
-    end
-
-    def nav_join?
-      @nav_join
-    end
+    setting :nav_join, cast: :boolean, default: true, predicate: true
 
     # Whether the mobile menu toggle shows a "Menu" text label beside the icon.
     # The nationwide directory always shows it; sites show it only when their
     # theme opts in. Defaults to false.
     #
     # @param value [Boolean, nil]
-    def menu_label(value = nil)
-      return @menu_label if value.nil?
-
-      @menu_label = value ? true : false
-    end
-
-    def menu_label?
-      @menu_label
-    end
+    setting :menu_label, cast: :boolean, default: false, predicate: true
 
     # @param value [Symbol, nil] one of EVENT_FILTER_STYLES
     def event_filter_style(value = nil)
@@ -219,11 +202,22 @@ module PlaceCal
       @event_filter_style = value
     end
 
+    # Null theme for a site whose theme is blank or unregistered, and for the
+    # nationwide directory, which has no site at all. It answers every setting
+    # with its default, so callers read theme settings without a nil check.
+    NONE = new(:none).freeze
+
+    # @param site [Site, nil]
+    # @return [PlaceCal::Theme] the site's theme, or NONE
+    def self.for(site)
+      site&.theme_settings || NONE
+    end
+
     # ---- Resolution
 
     # A theme's stylesheet is only linked when the asset pipeline can resolve
     # it. A renamed or unbuilt engine CSS file would otherwise raise
-    # Propshaft::MissingAssetError on every page of the site (#3368 WP 3.1).
+    # Propshaft::MissingAssetError on every page of the site (#3368).
     #
     # @param site [Site]
     # @return [String, nil] stylesheet logical path for this site, or nil
@@ -282,7 +276,7 @@ module PlaceCal
 
     # A theme names its classes as strings so registration can happen before
     # autoloading is ready. A renamed or removed class must not take the site
-    # down: log it and let core's default render instead (#3368 WP 3.1).
+    # down: log it and let core's default render instead (#3368).
     #
     # @param class_name [String, nil]
     # @param setting [String] which DSL setting is being resolved, for the log

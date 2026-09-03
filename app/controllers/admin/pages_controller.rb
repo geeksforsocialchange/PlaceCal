@@ -2,7 +2,7 @@
 
 module Admin
   # Serves both the admin dashboard (#home, the admin root) and CRUD for a
-  # Site's static content pages (#3368, WP 1.1). The dashboard actions predate
+  # Site's static content pages (#3368, D5). The dashboard actions predate
   # the Page model and are exempt from Pundit's verification callbacks.
   class PagesController < Admin::ApplicationController
     DASHBOARD_ACTIONS = %i[home icons].freeze

@@ -16,7 +16,7 @@ class Components::PartnerFilter < Components::Base
   end
 
   def view_template
-    RegionFilter(tags: @region_tags, selected: @selected_region) if @region_tags.size > 1
+    RegionFilter(tags: @region_tags, selected: @selected_region)
 
     form_with(**form_data, class: 'filters__form') do
       hidden_field_tag(:region, @selected_region.slug) if @selected_region

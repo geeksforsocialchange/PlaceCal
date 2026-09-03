@@ -156,7 +156,7 @@ class SitemapsController < ApplicationController
     wrap_urlset(urls.uniq)
   end
 
-  # Editable per-site pages (WP 1.1).
+  # Editable per-site pages (#3368 D5).
   def site_page_entries
     site_pages.map do |slug, updated_at|
       url_entry("#{base_url}/#{slug}", updated_at)
