@@ -101,6 +101,9 @@ class Components::Event < Components::Base
     div(class: 'event__detail event__organiser') do
       raw(view_context.icon(:partner, size: nil))
       plain ' '
+      # Optional prefix such as "by ", blank in core; themes set it.
+      prefix = t('events.card.organiser_prefix')
+      span(class: 'event__organiser-prefix') { prefix } if prefix.present?
       link_to(organiser.name.truncate(25), partner_path(organiser), data: { turbo_frame: '_top' })
     end
   end
@@ -132,11 +135,13 @@ class Components::Event < Components::Base
     end
   end
 
+  # Formats come from locale keys so a theme can change them (for example a
+  # zero-padded day for a big numeral treatment) through theme_overrides.
   def formatted_date(date)
     if date.year == Time.zone.now.year
-      date.strftime('%e %b')
+      date.strftime(t('events.card.date_format'))
     else
-      date.strftime('%e %b %Y')
+      date.strftime(t('events.card.date_format_with_year'))
     end
   end
 

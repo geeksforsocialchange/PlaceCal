@@ -112,7 +112,7 @@ class Components::EventFilter < Components::Base
     case index
     when 0 then t('events.filter.day_strip.today')
     when 1 then t('events.filter.day_strip.tomorrow')
-    else I18n.l(date, format: :day_strip)
+    else date.strftime(t('events.filter.day_strip.date_format'))
     end
   end
 

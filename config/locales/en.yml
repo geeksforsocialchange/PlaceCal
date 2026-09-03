@@ -396,6 +396,14 @@ en:
         today: "Today"
         tomorrow: "Tomorrow"
         all_upcoming: "All upcoming"
+        # strftime pattern for the other day buttons; themes may override
+        date_format: "%a %-d"
+    card:
+      # strftime patterns for the event list date; themes may override
+      date_format: "%e %b"
+      date_format_with_year: "%e %b %Y"
+      # Text before the organiser link in the event list, blank in core
+      organiser_prefix: ""
     csv_export:
       link: "Download events as CSV"
       # Column headers for the events CSV (app/services/events_csv.rb).
@@ -419,7 +427,6 @@ en:
     formats:
       datetime: "%b %-d, %Y %l:%M"
       # Day strip filter buttons, e.g. "Thu 13"
-      day_strip: "%a %-d"
 
   time:
     formats:

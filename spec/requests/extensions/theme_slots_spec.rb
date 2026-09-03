@@ -39,3 +39,29 @@ RSpec.describe "Theme footer slot and hero standfirst", type: :request do
     expect(response.body).not_to include("hero__standfirst")
   end
 end
+
+RSpec.describe "Theme-overridable event card and day strip formats", type: :request do
+  let(:ward) { create(:riverside_ward) }
+
+  it "applies the theme's date formats and organiser prefix on a themed site" do
+    site = create(:site, slug: "themed", theme: "example_theme", url: "https://themed.lvh.me")
+    site.neighbourhoods << ward
+    organiser = create(:riverside_partner, address: create(:riverside_address, neighbourhood: ward))
+    create(:event, organiser: organiser, address: nil, dtstart: Time.zone.local(2022, 11, 9, 10), dtend: Time.zone.local(2022, 11, 9, 11))
+    get "http://themed.lvh.me/events?period=future"
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to include("09 Nov")
+    expect(response.body).to include('event__organiser-prefix">by </span>')
+    expect(response.body).to include("Thu 10 Nov")
+  end
+
+  it "keeps core's formats on other themes" do
+    site = create(:site, slug: "plain", theme: "pink", url: "https://plain.lvh.me")
+    site.neighbourhoods << ward
+    organiser = create(:riverside_partner, address: create(:riverside_address, neighbourhood: ward))
+    create(:event, organiser: organiser, address: nil, dtstart: Time.zone.local(2022, 11, 9, 10), dtend: Time.zone.local(2022, 11, 9, 11))
+    get "http://plain.lvh.me/events?period=future"
+    expect(response.body).to include(" 9 Nov")
+    expect(response.body).not_to include("event__organiser-prefix")
+  end
+end
