@@ -356,4 +356,44 @@ RSpec.describe Site, type: :model do
       end
     end
   end
+
+  # Derived nav asks for this on every request of every site (#3368 D6).
+  describe "#news_article_count" do
+    let(:site) { create(:site) }
+    let(:cache_key) { ["site", site.id, "news_article_count"] }
+
+    around do |example|
+      original = Rails.cache
+      Rails.cache = ActiveSupport::Cache::MemoryStore.new
+      example.run
+    ensure
+      Rails.cache = original
+    end
+
+    it "stores the computed count" do
+      expect(site.news_article_count).to eq(0)
+      expect(Rails.cache.read(cache_key)).to eq(0)
+    end
+
+    it "serves a later instance from the cache instead of counting again" do
+      Rails.cache.write(cache_key, 7)
+
+      expect(described_class.find(site.id).news_article_count).to eq(7)
+    end
+
+    it "caches for ten minutes rather than forever" do
+      allow(Rails.cache).to receive(:fetch).and_call_original
+
+      site.news_article_count
+
+      expect(Rails.cache).to have_received(:fetch).with(cache_key, expires_in: 10.minutes)
+    end
+
+    it "keys the cache per site" do
+      other = create(:site)
+      Rails.cache.write(cache_key, 7)
+
+      expect(other.news_article_count).to eq(0)
+    end
+  end
 end

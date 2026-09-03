@@ -10,5 +10,10 @@
 # the route name twice. Page validates its slug against the reserved first
 # path segments derived from the finished route set.
 Rails.application.routes.append do
-  get '/:slug', to: 'pages#show', as: :site_page, constraints: { slug: /[a-z0-9-]+/ }
+  # HTML only: without the constraint /about.json served the HTML page under a
+  # JSON content type. The default fills the format in for the extensionless
+  # /about so it still matches.
+  get '/:slug(.:format)', to: 'pages#show', as: :site_page,
+                          constraints: { slug: /[a-z0-9-]+/, format: 'html' },
+                          defaults: { format: :html }
 end

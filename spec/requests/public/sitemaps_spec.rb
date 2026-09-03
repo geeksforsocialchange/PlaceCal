@@ -3,7 +3,10 @@
 require "rails_helper"
 
 RSpec.describe "Public Sitemaps", type: :request do
-  let!(:local_site) { create(:site, slug: "mossley", is_published: true, url: "https://mossley.placecal.org/") }
+  let!(:local_site) do
+    create(:site, slug: "mossley", is_published: true, url: "https://mossley.placecal.org/",
+                  contact_email: "hello@mossley.example.org")
+  end
 
   describe "on the apex (directory)" do
     let(:host) { "lvh.me" }
@@ -176,6 +179,30 @@ RSpec.describe "Public Sitemaps", type: :request do
       it "does not link to the directory" do
         get "/sitemap/pages.xml", headers: { "Host" => host }
         expect(response.body).not_to include("https://placecal.org/")
+      end
+
+      # The site's own privacy page and core's /privacy are the same URL.
+      it "lists /privacy once when the site publishes its own privacy page" do
+        create(:page, site: local_site, slug: "privacy", title: "Privacy")
+
+        get "/sitemap/pages.xml", headers: { "Host" => host }
+
+        expect(response.body.scan("<loc>https://mossley.placecal.org/privacy</loc>").size).to eq(1)
+      end
+
+      it "lists /privacy once when the site has no page of its own" do
+        get "/sitemap/pages.xml", headers: { "Host" => host }
+
+        expect(response.body.scan("<loc>https://mossley.placecal.org/privacy</loc>").size).to eq(1)
+      end
+
+      # Mirrors SiteNavigation#join_navigation: no enquiries address, no Join.
+      it "omits /get-in-touch for a site that takes no enquiries" do
+        local_site.update!(contact_email: nil)
+
+        get "/sitemap/pages.xml", headers: { "Host" => host }
+
+        expect(response.body).not_to include("https://mossley.placecal.org/get-in-touch")
       end
     end
 

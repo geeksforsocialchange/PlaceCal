@@ -8,7 +8,8 @@
 # Each built-in stylesheet is app/assets/stylesheets/themes/<name>.scss,
 # built by dartsass (config/initializers/dartsass.rb), with a matching
 # public/map-styles/<name>.json.
-THEME_COLORS = {
+# A local, not a top-level constant: nothing outside this file needs it.
+theme_colors = {
   pink: '#f19089',
   orange: '#fe9263',
   green: '#afcf5a',
@@ -19,7 +20,7 @@ THEME_COLORS = {
   PlaceCal::Extensions.register_theme(name, core: true) do |theme|
     theme.stylesheet "themes/#{name}"
     theme.map_style name
-    theme.theme_color THEME_COLORS[name.to_sym]
+    theme.theme_color theme_colors[name.to_sym]
   end
 end
 

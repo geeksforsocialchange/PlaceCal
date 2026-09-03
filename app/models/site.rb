@@ -186,14 +186,21 @@ class Site < ApplicationRecord
   end
 
   # Whether a site shows News in its nav is derived from this count (#3368 D6),
-  # so it is asked once per request; memoised per instance.
+  # so every page of every site runs it. Memoised per instance for the request
+  # and cached across requests for ten minutes.
+  #
+  # There is no cheap invalidation hook: an Article belongs to a site only
+  # indirectly, through its partners and tags (Article.for_site), so saving one
+  # article can change the count for any number of sites. Rather than sweep
+  # every site on every article save, the count goes stale for at most the TTL,
+  # which only ever means a News link appearing or leaving the nav a few
+  # minutes late.
   #
   # @return [Integer] published articles count for this site
   def news_article_count
-    @news_article_count ||= Article
-                            .for_site(self)
-                            .published
-                            .count
+    @news_article_count ||= Rails.cache.fetch(['site', id, 'news_article_count'], expires_in: 10.minutes) do
+      Article.for_site(self).published.count
+    end
   end
 
   # @return [Boolean] whether neighbourhood badges should be shown

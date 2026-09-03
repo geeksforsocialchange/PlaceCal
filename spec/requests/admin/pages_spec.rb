@@ -12,6 +12,27 @@ RSpec.describe "Admin::Pages", type: :request do
   let!(:page_record) { create(:page, site: site, slug: "about", title: "About Hulme") }
   let!(:other_page) { create(:page, site: other_site, slug: "about", title: "About Other") }
 
+  # There is no show action: a page is edited in admin and viewed on the public
+  # site, so the route should not exist rather than 500 on a missing template.
+  describe "GET /admin/pages/:id" do
+    before { sign_in root_user }
+
+    it "defines no GET route to the admin show action" do
+      actions = Rails.application.routes.routes
+                     .select { |route| route.defaults[:controller] == "admin/pages" }
+                     .map { |route| route.defaults[:action] }
+
+      expect(actions).not_to include("show")
+    end
+
+    it "does not reach a missing show template" do
+      get "http://#{admin_host}/pages/#{page_record.id}"
+
+      expect(response).to have_http_status(:moved_permanently)
+      expect(response).not_to have_http_status(:internal_server_error)
+    end
+  end
+
   describe "GET /admin/pages" do
     context "as a root user" do
       before { sign_in root_user }
