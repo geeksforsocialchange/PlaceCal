@@ -22,7 +22,7 @@
 #  place_name        :string
 #  slug              :string           not null
 #  tagline           :string
-#  theme             :string
+#  theme             :string           default("pink")
 #  url               :string           not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
@@ -131,7 +131,9 @@ class Site < ApplicationRecord
   validates :contact_email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
   # Themes come from the extension registry, not a static list, so an
   # extension can add one without touching this model (#3368, D2).
-  validates :theme, inclusion: { in: ->(_site) { PlaceCal::Extensions.theme_names } }
+  # allow_blank keeps the enumerize-era behaviour where a site could carry no
+  # theme at all and render core's default styling (#3368 WP 3.1).
+  validates :theme, inclusion: { in: ->(_site) { PlaceCal::Extensions.theme_names } }, allow_blank: true
 
   # ==== Scopes ====
   scope :published, -> { where(is_published: true) }
@@ -253,10 +255,10 @@ class Site < ApplicationRecord
   end
 
   # @return [String, nil] asset pipeline stylesheet path for this site's theme,
-  #   or nil when no stylesheet should be linked. The legacy :custom theme
-  #   resolves the per-site asset (themes/custom/<slug>.css) and returns nil
-  #   when it is missing from the pipeline, so the page renders with the
-  #   default styling instead of raising Propshaft::MissingAssetError (#2936).
+  #   or nil when no stylesheet should be linked. Any theme whose stylesheet is
+  #   missing from the pipeline resolves to nil, so the page renders with the
+  #   default styling instead of raising Propshaft::MissingAssetError
+  #   (#2936, #3368 WP 3.1).
   def stylesheet_link
     theme_definition&.stylesheet_for(self)
   end

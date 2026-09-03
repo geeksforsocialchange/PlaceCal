@@ -22,7 +22,7 @@
 #  place_name        :string
 #  slug              :string           not null
 #  tagline           :string
-#  theme             :string
+#  theme             :string           default("pink")
 #  url               :string           not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
