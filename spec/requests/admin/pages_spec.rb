@@ -134,12 +134,44 @@ RSpec.describe "Admin::Pages", type: :request do
         expect(page_record.reload.title).to eq("About us")
       end
 
+      it "moves a page to another site they administer" do
+        second_site = create(:site, name: "Moss Side", site_admin: site_admin_user)
+
+        patch admin_page_url(page_record, host: admin_host),
+              params: { page: { title: "About us", slug: "about", body: "Updated", site_id: second_site.id } }
+
+        expect(response).to redirect_to(edit_admin_page_path(page_record))
+        expect(page_record.reload.site).to eq(second_site)
+      end
+
+      it "cannot move a page to a site they do not administer" do
+        patch admin_page_url(page_record, host: admin_host),
+              params: { page: { title: "About us", slug: "about", body: "Updated", site_id: other_site.id } }
+
+        expect(response).to have_http_status(:forbidden)
+        expect(response.body).to include("you do not administer that site")
+        expect(page_record.reload.site).to eq(site)
+        expect(page_record.title).to eq("About Hulme")
+      end
+
       it "cannot update another site's page" do
         patch admin_page_url(other_page, host: admin_host),
               params: { page: { title: "Hacked" } }
 
         expect(response).to redirect_to(admin_root_path)
         expect(other_page.reload.title).to eq("About Other")
+      end
+    end
+
+    context "as a root user" do
+      before { sign_in root_user }
+
+      it "moves a page to any site" do
+        patch admin_page_url(page_record, host: admin_host),
+              params: { page: { title: "About us", slug: "about-us", body: "Updated", site_id: other_site.id } }
+
+        expect(response).to redirect_to(edit_admin_page_path(page_record))
+        expect(page_record.reload.site).to eq(other_site)
       end
     end
   end

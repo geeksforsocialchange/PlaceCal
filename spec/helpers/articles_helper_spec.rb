@@ -24,5 +24,33 @@ RSpec.describe ArticlesHelper, type: :helper do
       output = helper.article_summary_text(article)
       expect(output.length).to eq(200)
     end
+
+    # strip_tags re-encodes entities, so without a decode step "&" arrives at
+    # the browser as the literal "&amp;". The excerpt is escaped exactly once.
+    it "escapes an ampersand exactly once" do
+      article = build(:article, body: "Cats & dogs")
+
+      output = helper.article_summary_text(article)
+      expect(output).to eq("Cats &amp; dogs")
+      expect(CGI.unescapeHTML(output)).to eq("Cats & dogs")
+    end
+
+    it "escapes a quoted phrase exactly once" do
+      article = build(:article, body: 'She said "hello" loudly')
+
+      output = helper.article_summary_text(article)
+      expect(output).not_to include("&amp;")
+      # Kramdown turns straight quotes into typographic ones.
+      expect(CGI.unescapeHTML(output)).to eq("She said \u201Chello\u201D loudly")
+    end
+
+    it "strips a script tag from the body" do
+      article = build(:article, body: "Hello <script>alert('xss')</script> world")
+
+      output = helper.article_summary_text(article)
+      expect(output).not_to include("<script>")
+      expect(output).not_to include("alert")
+      expect(CGI.unescapeHTML(output)).to eq("Hello world")
+    end
   end
 end
