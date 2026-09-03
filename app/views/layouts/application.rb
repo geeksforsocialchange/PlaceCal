@@ -70,7 +70,7 @@ class Views::Layouts::Application < Phlex::HTML
             # Theme footer slot (#3368 D1): the theme owns the whole footer.
             render footer_class.new(site: site, navigation: navigation)
           else
-            Footer(site)
+            Footer(site, navigation: navigation)
           end
         end
       end

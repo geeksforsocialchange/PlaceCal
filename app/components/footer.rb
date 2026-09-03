@@ -4,6 +4,8 @@ class Components::Footer < Components::Base
   include Phlex::Rails::Helpers::MailTo
 
   prop :site, _Nilable(::Site), :positional, default: nil
+  # The derived site navigation (SiteNavigation), passed through by the layout.
+  prop :navigation, _Nilable(_Array(_Any)), default: nil
 
   def view_template
     footer(class: 'footer') do
@@ -54,36 +56,24 @@ class Components::Footer < Components::Base
     end
   end
 
-  # The footer mirrors the derived site nav (#3368 D6), plus the legal and
-  # log-in links the footer has always carried.
+  # The footer shows the same derived site nav as the header (#3368 D6), so the
+  # region param, the news link and the theme's nav_join rule all follow from
+  # one place, plus the legal and log-in links the footer has always carried.
   def nav_links
     return directory_nav_links if @site.nil?
 
-    links = [
-      [t('navigation.site.home'), root_path],
-      [t('navigation.site.events'), events_path],
-      [t('navigation.site.partners'), partners_path]
-    ]
-    links << [t('navigation.site.news'), news_index_path] if @site.news_article_count.positive?
-    links += site_page_links
-    links << [privacy_label, privacy_path]
+    links = Array(@navigation).dup
+    links << [privacy_label, privacy_path] unless links.any? { |(_label, path)| path == privacy_path }
     links << [t('navigation.site.terms'), terms_of_use_path]
-    links << [t('navigation.site.join'), get_in_touch_path] if @site.contact_email.present?
     links << [t('navigation.site.log_in'), new_user_session_path]
     links
   end
 
   # When the site publishes its own privacy page, the footer link carries that
-  # page's title so it matches the header nav.
+  # page's title so it matches the header nav. A privacy page that is already in
+  # the nav arrives with the derived links and is not added again.
   def privacy_label
     @site.pages.published.find_by(slug: 'privacy')&.title.presence || t('navigation.site.privacy')
-  end
-
-  # A site's own `privacy` page is served by privacy_path (see Page's
-  # OVERRIDABLE_ROUTE_SLUGS), so listing it here too would duplicate the link.
-  def site_page_links
-    @site.pages.in_nav.reject { |page| page.slug == 'privacy' }
-         .map { |page| [page.title, site_page_path(page.slug)] }
   end
 
   def directory_nav_links
