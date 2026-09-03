@@ -6,13 +6,12 @@ class ManifestsController < ApplicationController
   skip_before_action :set_supporters
   skip_before_action :set_navigation
 
-  before_action :set_site
   before_action :require_site
 
   def show
     manifest_data = {
-      name: site.name,
-      short_name: short_name(site.name),
+      name: current_site.name,
+      short_name: short_name(current_site.name),
       start_url: '/',
       scope: '/',
       display: 'standalone',
@@ -28,10 +27,8 @@ class ManifestsController < ApplicationController
 
   private
 
-  attr_reader :site
-
   def require_site
-    head :not_found if site.nil?
+    head :not_found if current_site.nil?
   end
 
   def theme_color
@@ -41,13 +38,13 @@ class ManifestsController < ApplicationController
   # A theme may set a distinct splash background (#3368 D1); it falls back to
   # the theme colour, which is what core has always used for both.
   def background_color
-    Current.theme.manifest_background_color || theme_color
+    Current.theme.background_color || theme_color
   end
 
   # The site's tagline, when it has one. Site#og_description returns false
   # rather than nil when unset, which `presence` normalises away.
   def description
-    site&.og_description.presence
+    current_site.og_description.presence
   end
 
   def icons
@@ -56,9 +53,9 @@ class ManifestsController < ApplicationController
     # A theme's own manifest icons win over the site logo (#3368 D1).
     if theme_icons[:icon_192] || theme_icons[:icon_512]
       manifest_icons_for(theme_icons)
-    elsif site.logo.present? && site.logo.file&.content_type == 'image/png'
+    elsif current_site.logo.present? && current_site.logo.file&.content_type == 'image/png'
       [{
-        src: site.logo.url,
+        src: current_site.logo.url,
         sizes: 'any',
         type: 'image/png'
       }]

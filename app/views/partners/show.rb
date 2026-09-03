@@ -98,7 +98,7 @@ class Views::Partners::Show < Views::Base
       end
       div(class: 'gi gi__2-5') do
         render_partner_image
-        Map(points: map, site: site.slug, compact: true)
+        Map(points: map, compact: true)
         render_opening_times
       end
     end

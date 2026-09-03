@@ -66,14 +66,12 @@ RSpec.describe PlaceCal::ThemeTranslation do
   end
 
   before do
-    Current.site = themed_site
+    use_current_site(themed_site)
     I18n.backend.store_translations(
       :en,
       theme_overrides: { example_theme: { spec_shim: { greeting_html: "<b>Hello %{name}</b>" } } } # rubocop:disable Style/FormatStringToken
     )
   end
-
-  after { Current.site = nil }
 
   describe "caller-supplied defaults" do
     it "prefers the unscoped core string over the caller's default" do
@@ -123,7 +121,7 @@ RSpec.describe PlaceCal::ThemeTranslation do
     end
 
     it "reports the same key on a site with no theme override scope" do
-      Current.site = nil
+      use_current_site(nil)
 
       expect { component.t("definitely.missing.key", raise: true) }
         .to raise_error(I18n::MissingTranslationData, /definitely\.missing\.key/)

@@ -32,7 +32,7 @@ class Views::Events::Show < Views::Base
         site_tagline: site.tagline
       )
       render_event_details
-      Map(points: map, site: site.slug, style: :multi)
+      Map(points: map, style: :multi)
       render_event_meta
     end
   end
@@ -126,7 +126,7 @@ class Views::Events::Show < Views::Base
         # No style: override — a single point resolves to map--single, whose
         # compact height actually applies (map--multiple's 500px wins the
         # cascade over map--compact). Matches directory/partners/show.
-        Map(points: map, site: site&.slug, compact: true) if map
+        Map(points: map, compact: true) if map
         div do
           div(class: 'font-extra-bold') { event.partner_at_location.name } if event.partner_at_location
           Address(address: event.address, raw_location: event.raw_location_from_source)

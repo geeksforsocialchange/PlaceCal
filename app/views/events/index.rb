@@ -18,11 +18,10 @@ class Views::Events::Index < Views::Base
     content_for(:title) { t('events.index.page_title') }
     content_for(:description) { site.og_description }
 
-    Hero(t('events.index.title'), site.tagline, standfirst: t('events.index.standfirst'),
-                                                standfirst_detail: t('events.index.standfirst_detail'))
+    Hero(t('events.index.title'), site.tagline, standfirst: t('events.index.standfirst'))
 
     div(class: 'container-public mb-32') do
-      ListHeading(t('events.index.list_heading'))
+      list_heading('events.index.list_heading')
       turbo_frame_tag 'events-browser', data: { turbo_action: 'advance' } do
         render_paginator
         hr

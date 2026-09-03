@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
-# Sites carried a nil theme from the enumerize era. The theme registry
-# (#3368) treats a blank theme as "no theme", which renders unstyled, so
-# backfill the historic default and let the database supply it from now on.
+# Sites gained a contact email for their own enquiries (#3368), and carried a
+# nil theme from the enumerize era. The theme registry treats a blank theme as
+# "no theme", which renders unstyled, so backfill the historic default and let
+# the database supply it from now on.
 class BackfillSiteThemeDefault < ActiveRecord::Migration[8.0]
   def up
+    add_column :sites, :contact_email, :string
     change_column_default :sites, :theme, 'pink'
     # sites holds a handful of rows, so a single UPDATE is safe here.
     safety_assured do
@@ -13,6 +15,7 @@ class BackfillSiteThemeDefault < ActiveRecord::Migration[8.0]
   end
 
   def down
+    remove_column :sites, :contact_email
     change_column_default :sites, :theme, nil
   end
 end

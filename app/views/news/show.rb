@@ -10,7 +10,7 @@ class Views::News::Show < Views::Base
     content_for(:title) { article.title }
 
     div(vocab: 'http://schema.org/', typeof: 'Article') do
-      Hero(article.title, site.tagline, 'name', section: t('news.show.section'))
+      Hero(article.title, site.tagline, schema: 'name', section: t('news.show.section'))
       div(class: 'container-public mb-32') do
         Breadcrumb(
           trail: [[t('navigation.site.news'), news_index_path], [article.title, news_path(article)]],

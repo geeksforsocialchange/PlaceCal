@@ -24,25 +24,20 @@ module PlaceCal
     # router would not match.
     PAGE_SLUG_FORMAT = /\A[a-z0-9-]+\z/
 
-    # Path prefixes served outside the Rails router (Propshaft and friends), so
-    # they never appear in `Rails.application.routes` but would still shadow a
-    # theme page.
-    NON_ROUTED_RESERVED_SLUGS = %w[assets packs manifest].freeze
-
-    # `privacy` is deliberately allowed even though core routes `/privacy`.
-    # PagesController#privacy prefers the theme's own privacy page and only
-    # falls back to the directory markdown, so a partnership can supply its own
-    # privacy copy at the conventional URL (#3368 D14). No other core route is
-    # overridable this way.
-    OVERRIDABLE_ROUTE_SLUGS = %w[privacy].freeze
-
     # Returned by #pages for a theme that registers none, including NONE.
     NO_PAGES = {}.freeze
 
     # Icon slots a theme may fill. Each value is an asset logical path
     # (e.g. "transdimension/favicons/favicon-32x32.png"). A theme that sets
     # any of these replaces core's favicon and touch icon entirely.
-    ICON_KEYS = %i[favicon_32 favicon_16 apple_touch_icon mask_icon icon_192 icon_512].freeze
+    ICON_PATH_KEYS = %i[favicon_32 favicon_16 apple_touch_icon mask_icon icon_192 icon_512].freeze
+
+    # `mask_icon_color` sits with the icons rather than on its own because it
+    # is only ever read beside `mask_icon` and means nothing without it.
+    ICON_KEYS = (ICON_PATH_KEYS + %i[mask_icon_color]).freeze
+
+    # A colour, not an asset path: hex, rgb()/rgba(), or a CSS colour keyword.
+    COLOUR_FORMAT = %r{\A(#[0-9a-f]{3,8}|[a-z]+|rgba?\([\d\s.,%/]+\))\z}i
 
     # Declared settings. Each `setting` call defines one method that stores a
     # cast value when called with one and reads the current value when called
@@ -59,36 +54,6 @@ module PlaceCal
       # @param cast [Symbol] :to_s or :boolean
       # @param default [Object] the value an instance starts with
       # @param predicate [Boolean] also define a `name?` reader
-      # Slugs a theme page may not claim, because a core route already owns
-      # that first path segment. Derived from the router so new core routes are
-      # covered automatically.
-      #
-      # Computed lazily and memoised rather than at registration time: an
-      # engine registers its theme from an initializer, long before the route
-      # set is drawn, so the check runs the first time a theme's pages are
-      # read (the first request that renders a nav, a page or a sitemap).
-      #
-      # @return [Array<String>]
-      def reserved_page_slugs
-        @reserved_page_slugs ||= begin
-          routed = Rails.application.routes.routes.filter_map do |route|
-            next if route.constraints[:subdomain] == Site::ADMIN_SUBDOMAIN
-
-            segment = route.path.spec.to_s.split('/')[1].to_s.sub(/\(.*/, '')
-            next if segment.blank? || segment.start_with?('*', ':')
-
-            segment.downcase
-          end
-
-          (routed + NON_ROUTED_RESERVED_SLUGS - OVERRIDABLE_ROUTE_SLUGS).uniq.sort.freeze
-        end
-      end
-
-      # Clears the memoised reserved slug list (tests that redraw routes).
-      def reset_reserved_page_slugs!
-        @reserved_page_slugs = nil
-      end
-
       def setting(name, cast: :to_s, default: nil, predicate: false)
         settings[name] = default
         ivar = :"@#{name}"
@@ -155,11 +120,14 @@ module PlaceCal
     # The theme's own favicons, touch icon, Safari mask icon and manifest
     # icons. Given as asset logical paths, resolved with `image_url` at render
     # time, so an engine ships them under app/assets/images/<extension>/.
+    # `mask_icon_color` is the odd one out: a colour, used as the `color`
+    # attribute of the mask icon's link.
     #
     #   theme.icons favicon_32: "transdimension/favicons/favicon-32x32.png",
     #               favicon_16: "transdimension/favicons/favicon-16x16.png",
     #               apple_touch_icon: "transdimension/favicons/apple-touch-icon.png",
     #               mask_icon: "transdimension/favicons/safari-pinned-tab.svg",
+    #               mask_icon_color: "#FF7AA7",
     #               icon_192: "transdimension/favicons/android-chrome-192x192.png",
     #               icon_512: "transdimension/favicons/android-chrome-512x512.png"
     #
@@ -167,7 +135,8 @@ module PlaceCal
     # core's favicon.png and apple-touch-icon.png. Defaults to {}.
     #
     # @param paths [Hash] any subset of ICON_KEYS
-    # @raise [ArgumentError] on an unknown key
+    # @raise [ArgumentError] on an unknown key, or a mask_icon_color that is
+    #   not a colour (an asset path there is a silently wrong mask icon)
     # @return [Hash] the icon paths when called with no arguments
     def icons(**paths)
       return @icons if paths.empty?
@@ -175,28 +144,16 @@ module PlaceCal
       unknown = paths.keys - ICON_KEYS
       raise ArgumentError, "unknown icon key(s) #{unknown.inspect}, expected any of #{ICON_KEYS.inspect}" if unknown.any?
 
-      @icons = paths.transform_values { |path| path&.to_s.presence }.compact
+      icons = paths.transform_values { |path| path&.to_s.presence }.compact
+      validate_mask_icon_color!(icons[:mask_icon_color])
+      @icons = icons
     end
-
-    # Colour for the Safari pinned-tab mask icon, used as the `color`
-    # attribute of `<link rel="mask-icon">`.
-    #
-    # @param value [String, nil] hex colour code, e.g. "#FF7AA7"
-    setting :mask_icon_color
 
     # Splash background colour for the web manifest. Distinct from
     # `theme_color`, which colours the browser chrome.
     #
     # @param value [String, nil] hex colour code, e.g. "#040f39"
     setting :background_color
-
-    # The manifest's background_color, falling back to the theme colour when
-    # the theme sets only one of the two.
-    #
-    # @return [String, nil]
-    def manifest_background_color
-      @background_color || @theme_color
-    end
 
     # A static Open Graph share image for the theme's sites, replacing core's
     # generated share card.
@@ -251,14 +208,14 @@ module PlaceCal
       self
     end
 
+    # A slug that collides with a core route is harmless: the `/:slug`
+    # catch-all is appended after every other route, so the core route wins and
+    # the theme's page is never served.
+    #
     # @return [Hash{String => Hash}] frozen, in registration order,
     #   `slug => { view:, nav_label_key: }`. Empty for a theme with no pages.
-    # @raise [ArgumentError] when a slug shadows a core route
     def pages
-      return NO_PAGES if @pages.empty?
-
-      reject_reserved_slugs!
-      @pages.dup.freeze
+      @pages.empty? ? NO_PAGES : @pages.dup.freeze
     end
 
     # @param slug [String]
@@ -300,10 +257,13 @@ module PlaceCal
     # with its default, so callers read theme settings without a nil check.
     NONE = new(:none).freeze
 
+    # The one site-keyed way to a theme. Within a request prefer Current.theme,
+    # which is this call made once by ApplicationController.
+    #
     # @param site [Site, nil]
     # @return [PlaceCal::Theme] the site's theme, or NONE
     def self.for(site)
-      site&.theme_settings || NONE
+      (site && Extensions.find_theme(site.theme)) || NONE
     end
 
     # ---- Resolution
@@ -356,13 +316,10 @@ module PlaceCal
 
     private
 
-    # Runs on the first read of #pages, not at registration: see
-    # .reserved_page_slugs for why.
-    def reject_reserved_slugs!
-      reserved = self.class.reserved_page_slugs & @pages.keys
-      return if reserved.empty?
+    def validate_mask_icon_color!(value)
+      return if value.nil? || value.match?(COLOUR_FORMAT)
 
-      raise ArgumentError, "theme #{name}: page slug(s) #{reserved.inspect} are reserved by core routes"
+      raise ArgumentError, "invalid mask_icon_color #{value.inspect}, expected a colour such as \"#FF7AA7\""
     end
 
     def resolve(setting, site)

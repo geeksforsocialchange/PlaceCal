@@ -127,8 +127,8 @@ RSpec.describe Components::Footer, type: :component do
     end
   end
 
-  describe "the directory footer" do
-    it "keeps its own fixed link list" do
+  describe "without a derived navigation" do
+    it "falls back to the links every site nav opens with, plus the fixed tail" do
       render_inline(described_class.new(nil))
 
       expect(page.all(".footer__nav nav ul li a").map(&:text)).to eq(
@@ -136,9 +136,9 @@ RSpec.describe Components::Footer, type: :component do
           I18n.t("navigation.site.home"),
           I18n.t("navigation.site.events"),
           I18n.t("navigation.site.partners"),
-          I18n.t("navigation.site.log_in"),
           I18n.t("navigation.site.privacy"),
-          I18n.t("navigation.site.terms")
+          I18n.t("navigation.site.terms"),
+          I18n.t("navigation.site.log_in")
         ]
       )
     end

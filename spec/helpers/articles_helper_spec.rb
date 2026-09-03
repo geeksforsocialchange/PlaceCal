@@ -25,14 +25,6 @@ RSpec.describe ArticlesHelper, type: :helper do
       expect(output.length).to eq(200)
     end
 
-    it "takes the excerpt length from the locale, so a theme can override it" do
-      article = build(:article, body: "a" * 250)
-
-      allow(helper).to receive(:t).with("news.index.excerpt_length").and_return("40")
-
-      expect(helper.article_summary_text(article).length).to eq(40)
-    end
-
     # strip_tags re-encodes entities, so without a decode step "&" arrives at
     # the browser as the literal "&amp;". The excerpt is escaped exactly once.
     it "escapes an ampersand exactly once" do

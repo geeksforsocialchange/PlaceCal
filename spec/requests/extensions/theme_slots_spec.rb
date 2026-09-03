@@ -94,7 +94,9 @@ RSpec.describe "Theme slots", type: :request do
     get "http://themed.lvh.me/events"
 
     expect(response.body).to include("Fixture standfirst for events")
-    expect(response.body).to include('hero__standfirst-detail">Fixture detail for events')
+
+    get "http://themed.lvh.me/partners"
+    expect(response.body).to include('hero__standfirst-detail">Fixture detail for partners')
   end
 
   it "renders the theme's list headings on the index pages" do

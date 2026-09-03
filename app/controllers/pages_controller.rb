@@ -36,8 +36,8 @@ class PagesController < ApplicationController
 
   def privacy
     # A theme may serve its own privacy copy at the conventional URL (#3368,
-    # D14). `privacy` is therefore the one core route a theme page may shadow;
-    # see PlaceCal::Theme::OVERRIDABLE_ROUTE_SLUGS.
+    # D14). Core routes /privacy, so the theme's `privacy` page is never
+    # reached by the /:slug catch-all; this action looks it up itself.
     theme_page = theme_page_view('privacy')
     return render_theme_page(theme_page) if theme_page
 

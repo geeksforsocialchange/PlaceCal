@@ -178,7 +178,7 @@ class Views::Layouts::Application < Phlex::HTML
     link(rel: 'apple-touch-icon', sizes: '180x180', href: image_url(icons[:apple_touch_icon])) if icons[:apple_touch_icon]
     return unless icons[:mask_icon]
 
-    link(rel: 'mask-icon', href: image_url(icons[:mask_icon]), color: theme.mask_icon_color)
+    link(rel: 'mask-icon', href: image_url(icons[:mask_icon]), color: icons[:mask_icon_color])
   end
 
   def compute_title
@@ -233,10 +233,10 @@ class Views::Layouts::Application < Phlex::HTML
     view_context.instance_variable_get(:@navigation)
   end
 
-  # The theme for this request, resolved once. PlaceCal::Theme::NONE stands in
-  # for the directory and for a site with no registered theme, so the settings
-  # above read without a nil check.
+  # The theme for this request. PlaceCal::Theme::NONE stands in for the
+  # directory and for a site with no registered theme, so the settings above
+  # read without a nil check.
   def theme
-    @theme ||= PlaceCal::Theme.for(site)
+    Current.theme
   end
 end

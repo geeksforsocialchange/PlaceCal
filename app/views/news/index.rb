@@ -11,8 +11,7 @@ class Views::News::Index < Views::Base
   def view_template
     content_for(:title) { t('news.index.page_title') }
 
-    Hero(t('news.index.title'), site.tagline, standfirst: t('news.index.standfirst'),
-                                              standfirst_detail: t('news.index.standfirst_detail'))
+    Hero(t('news.index.title'), site.tagline, standfirst: t('news.index.standfirst'))
 
     div(class: 'articles') do
       articles.each do |article|

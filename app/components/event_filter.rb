@@ -12,8 +12,6 @@ class Components::EventFilter < Components::Base
   prop :show_monthly, _Boolean, default: true
   prop :region_tags, Array, default: -> { [] }
   prop :selected_region, _Nilable(::Tag), default: nil
-  # Overrides the style derived from the site's theme (specs and previews).
-  prop :filter_style, _Nilable(Symbol), default: nil
 
   # Today, tomorrow and five more days (D22).
   DAY_STRIP_LENGTH = 7
@@ -25,7 +23,7 @@ class Components::EventFilter < Components::Base
 
   def view_template
     RegionFilter(tags: @region_tags, selected: @selected_region)
-    if filter_style == :day_strip
+    if Current.theme.event_filter_style == :day_strip
       render_day_strip
     else
       render_date_picker
@@ -35,11 +33,6 @@ class Components::EventFilter < Components::Base
   end
 
   private
-
-  # @return [Symbol] :date_picker or :day_strip, from the site's theme (D22)
-  def filter_style
-    @filter_style || PlaceCal::Theme.for(@site).event_filter_style
-  end
 
   def render_date_picker
     div(class: 'filters__toggle', data: { controller: 'date-picker' }) do

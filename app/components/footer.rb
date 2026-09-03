@@ -61,24 +61,23 @@ class Components::Footer < Components::Base
   # follow from one place, plus the legal and log-in links the footer has
   # always carried. A theme that registers its own `privacy` page arrives with
   # the derived links, so the fixed privacy link is not added twice.
+  #
+  # Rendered without a derived nav (previews and component specs; the layout
+  # always passes one) it falls back to the three links every site nav opens
+  # with, so the footer is never empty.
   def nav_links
-    return directory_nav_links if @site.nil?
-
-    links = Array(@navigation).dup
+    links = Array(@navigation).presence&.dup || core_nav_links
     links << [t('navigation.site.privacy'), privacy_path] unless links.any? { |(_label, path)| path == privacy_path }
     links << [t('navigation.site.terms'), terms_of_use_path]
     links << [t('navigation.site.log_in'), new_user_session_path]
     links
   end
 
-  def directory_nav_links
+  def core_nav_links
     [
       [t('navigation.site.home'), root_path],
       [t('navigation.site.events'), events_path],
-      [t('navigation.site.partners'), partners_path],
-      [t('navigation.site.log_in'), new_user_session_path],
-      [t('navigation.site.privacy'), privacy_path],
-      [t('navigation.site.terms'), terms_of_use_path]
+      [t('navigation.site.partners'), partners_path]
     ]
   end
 

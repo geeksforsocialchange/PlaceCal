@@ -3,59 +3,51 @@
 require "rails_helper"
 
 RSpec.describe MapHelper, type: :helper do
-  describe "#style_url_for_site" do
-    it "returns pink style for nil site" do
-      expect(helper.send(:style_url_for_site, nil)).to eq("/map-styles/pink.json")
+  describe "#map_style_url" do
+    it "returns pink style for the directory, which has no site" do
+      use_current_site(nil)
+      expect(helper.send(:map_style_url)).to eq("/map-styles/pink.json")
     end
 
     it "returns pink style for site with pink theme" do
-      site = create(:site, theme: "pink")
-      expect(helper.send(:style_url_for_site, site)).to eq("/map-styles/pink.json")
+      use_current_site(create(:site, theme: "pink"))
+      expect(helper.send(:map_style_url)).to eq("/map-styles/pink.json")
     end
 
     it "returns blue style for site with blue theme" do
-      site = create(:site, theme: "blue")
-      expect(helper.send(:style_url_for_site, site)).to eq("/map-styles/blue.json")
+      use_current_site(create(:site, theme: "blue"))
+      expect(helper.send(:map_style_url)).to eq("/map-styles/blue.json")
     end
 
     it "returns green style for site with green theme" do
-      site = create(:site, theme: "green")
-      expect(helper.send(:style_url_for_site, site)).to eq("/map-styles/green.json")
+      use_current_site(create(:site, theme: "green"))
+      expect(helper.send(:map_style_url)).to eq("/map-styles/green.json")
     end
 
     it "returns orange style for site with orange theme" do
-      site = create(:site, theme: "orange")
-      expect(helper.send(:style_url_for_site, site)).to eq("/map-styles/orange.json")
+      use_current_site(create(:site, theme: "orange"))
+      expect(helper.send(:map_style_url)).to eq("/map-styles/orange.json")
     end
 
     it "falls back to pink style for non-existent custom theme file" do
-      site = create(:site, theme: "custom", slug: "nonexistent-site")
-      expect(helper.send(:style_url_for_site, site)).to eq("/map-styles/pink.json")
-    end
-
-    it "accepts site slug string and looks up site" do
-      site = create(:site, theme: "blue")
-      expect(helper.send(:style_url_for_site, site.slug)).to eq("/map-styles/blue.json")
-    end
-
-    it "returns pink style for unknown slug string" do
-      expect(helper.send(:style_url_for_site, "unknown-slug")).to eq("/map-styles/pink.json")
+      use_current_site(create(:site, theme: "custom", slug: "nonexistent-site"))
+      expect(helper.send(:map_style_url)).to eq("/map-styles/pink.json")
     end
 
     it "falls back to pink style for a theme that is not registered" do
-      site = build(:site, theme: "nope")
-      expect(helper.send(:style_url_for_site, site)).to eq("/map-styles/pink.json")
+      use_current_site(build(:site, theme: "nope"))
+      expect(helper.send(:map_style_url)).to eq("/map-styles/pink.json")
     end
 
     it "uses the map style an extension registers", :theme_registry do
       PlaceCal::Extensions.register_theme(:mapped) { |theme| theme.map_style "blue" }
-      site = build(:site, theme: "mapped")
-      expect(helper.send(:style_url_for_site, site)).to eq("/map-styles/blue.json")
+      use_current_site(build(:site, theme: "mapped"))
+      expect(helper.send(:map_style_url)).to eq("/map-styles/blue.json")
     end
 
     it "resolves a map style shipped as an engine asset" do
-      site = build(:site, theme: "example_theme")
-      expect(helper.send(:style_url_for_site, site))
+      use_current_site(build(:site, theme: "example_theme"))
+      expect(helper.send(:map_style_url))
         .to match(%r{\A/assets/map-styles/example_theme-[0-9a-f]+\.json\z})
     end
   end
@@ -170,7 +162,8 @@ RSpec.describe MapHelper, type: :helper do
   end
 
   describe "#args_for_map" do
-    let(:site) { create(:site, theme: "pink") }
+    before { use_current_site(create(:site, theme: "pink")) }
+
     let(:map_points) do
       [
         { lat: 53.4668, lon: -2.2339, name: "Test Partner", id: "test-partner" }
@@ -178,12 +171,12 @@ RSpec.describe MapHelper, type: :helper do
     end
 
     it "returns valid JSON" do
-      result = helper.args_for_map(map_points, site, :single, false)
+      result = helper.args_for_map(map_points, :single, false)
       expect { JSON.parse(result) }.not_to raise_error
     end
 
     it "includes required keys in output" do
-      result = JSON.parse(helper.args_for_map(map_points, site, :single, false))
+      result = JSON.parse(helper.args_for_map(map_points, :single, false))
 
       expect(result).to have_key("center")
       expect(result).to have_key("zoom")
@@ -195,12 +188,12 @@ RSpec.describe MapHelper, type: :helper do
     end
 
     it "includes correct styleUrl for site theme" do
-      result = JSON.parse(helper.args_for_map(map_points, site, :single, false))
+      result = JSON.parse(helper.args_for_map(map_points, :single, false))
       expect(result["styleUrl"]).to eq("/map-styles/pink.json")
     end
 
     it "includes marker positions" do
-      result = JSON.parse(helper.args_for_map(map_points, site, :single, false))
+      result = JSON.parse(helper.args_for_map(map_points, :single, false))
       expect(result["markers"].first["position"]).to eq([53.4668, -2.2339])
     end
 
@@ -209,7 +202,7 @@ RSpec.describe MapHelper, type: :helper do
         { lat: 53.4668, lon: -2.2339, name: "Partner A", id: "partner-a" },
         { lat: 53.4668, lon: -2.2339, name: "Partner B", id: "partner-b" }
       ]
-      result = JSON.parse(helper.args_for_map(colocated_points, site, nil, false))
+      result = JSON.parse(helper.args_for_map(colocated_points, nil, false))
       expect(result["markers"].length).to eq(1)
       expect(result["markers"].first["anchor"]).to include("Partner A")
       expect(result["markers"].first["anchor"]).to include("Partner B")
@@ -220,13 +213,13 @@ RSpec.describe MapHelper, type: :helper do
         { lat: 53.4668, lon: -2.2339, name: "Partner A", id: "partner-a" },
         { lat: 53.4668, lon: -2.2339, name: "Partner B", id: "partner-b" }
       ]
-      result = JSON.parse(helper.args_for_map(colocated_points, site, nil, false))
+      result = JSON.parse(helper.args_for_map(colocated_points, nil, false))
       expect(result["styleClass"]).to include("map--multiple")
     end
 
     it "filters out nil map points" do
       points_with_nil = [nil, map_points.first, nil]
-      result = JSON.parse(helper.args_for_map(points_with_nil, site, :single, false))
+      result = JSON.parse(helper.args_for_map(points_with_nil, :single, false))
       expect(result["markers"].length).to eq(1)
     end
   end
