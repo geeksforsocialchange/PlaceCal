@@ -52,6 +52,12 @@ RSpec.describe MapHelper, type: :helper do
       site = build(:site, theme: "mapped")
       expect(helper.send(:style_url_for_site, site)).to eq("/map-styles/blue.json")
     end
+
+    it "resolves a map style shipped as an engine asset" do
+      site = build(:site, theme: "example_theme")
+      expect(helper.send(:style_url_for_site, site))
+        .to match(%r{\A/assets/map-styles/example_theme-[0-9a-f]+\.json\z})
+    end
   end
 
   describe "#center" do
