@@ -63,17 +63,10 @@ class Components::Footer < Components::Base
     return directory_nav_links if @site.nil?
 
     links = Array(@navigation).dup
-    links << [privacy_label, privacy_path] unless links.any? { |(_label, path)| path == privacy_path }
+    links << [t('navigation.site.privacy'), privacy_path] unless links.any? { |(_label, path)| path == privacy_path }
     links << [t('navigation.site.terms'), terms_of_use_path]
     links << [t('navigation.site.log_in'), new_user_session_path]
     links
-  end
-
-  # When the site publishes its own privacy page, the footer link carries that
-  # page's title so it matches the header nav. A privacy page that is already in
-  # the nav arrives with the derived links and is not added again.
-  def privacy_label
-    @site.pages.published.find_by(slug: 'privacy')&.title.presence || t('navigation.site.privacy')
   end
 
   def directory_nav_links

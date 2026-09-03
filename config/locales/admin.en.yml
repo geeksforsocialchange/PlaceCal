@@ -450,33 +450,6 @@ en:
     # -------------------------------------------------------------------------
     # Pages (per-site static content)
     # -------------------------------------------------------------------------
-    pages:
-      index:
-        empty_hint: "Static pages such as About or Privacy appear on your site at their own address."
-      sections:
-        content: "Content"
-        content_description: "The page title, its address and the text shown to visitors."
-        publishing_description: "Control whether this page is visible and where it appears."
-      fields:
-        is_published: "Publish this page"
-        show_in_nav: "Show this page in the site navigation"
-      hints:
-        slug: "Lowercase letters, numbers and hyphens only. The page will be at /your-slug on this site."
-        body: "Written in Markdown. Headings, links and lists are supported."
-        position: "Lower numbers appear first in the navigation."
-      status:
-        draft: "Draft"
-        published: "Published"
-      table:
-        in_nav: "In navigation"
-      flash:
-        created: "Page has been created"
-        not_created: "Page has not been created"
-        updated: "Page was saved successfully"
-        not_updated: "Page was not saved"
-        deleted: "Page was deleted"
-        site_not_permitted: "Page was not saved because you do not administer that site"
-
     # -------------------------------------------------------------------------
     # Partners
     # -------------------------------------------------------------------------

@@ -135,7 +135,6 @@ class Views::Layouts::Admin::Application < Phlex::HTML
       admin_nav_link(human_model_name(Calendar, count: 2), admin_calendars_path, :calendar) if policy(Calendar).index?
       admin_nav_link(human_model_name(User, count: 2), admin_users_path, :users) if policy(User).index?
       admin_nav_link(human_model_name(Site, count: 2), admin_sites_path, :site) if policy(Site).index?
-      admin_nav_link(human_model_name(Page, count: 2), admin_pages_path, :clipboard) if policy(Page).index?
       admin_nav_link(human_model_name(Neighbourhood, count: 2), admin_neighbourhoods_path, :neighbourhood) if policy(Neighbourhood).index?
       admin_nav_link(human_model_name(Partnership, count: 2), admin_partnerships_path, :partnership) if policy(Partnership).index?
     end

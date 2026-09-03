@@ -42,8 +42,6 @@ Rails.application.routes.draw do
         delete :clear_address
       end
     end
-    # No admin show action: pages are edited, and previewed on the public site.
-    resources :pages, except: [:show]
     resources :partnerships
     resources :sites
     resources :supporters

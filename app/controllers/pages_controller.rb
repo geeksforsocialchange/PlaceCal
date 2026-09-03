@@ -35,27 +35,12 @@ class PagesController < ApplicationController
   end
 
   def privacy
-    # A site may publish its own privacy copy at the conventional URL (#3368,
-    # D14). `privacy` is therefore the one core route a Page may shadow; see
-    # Page::OVERRIDABLE_ROUTE_SLUGS.
-    site_page = site_page_for('privacy')
-    return render_site_page(site_page) if site_page
-
     render Views::Directory::MarkdownPage.new(
       slug: 'privacy',
       title: t('directory.pages.privacy.title'),
       breadcrumb_label: t('directory.pages.privacy.breadcrumb'),
       document_title: t('directory.pages.privacy.document_title')
     )
-  end
-
-  # Static per-site content page at /:slug (#3368, D5). The catch-all route is
-  # matched last, so anything core routes never reaches here.
-  def show
-    site_page = site_page_for(params[:slug])
-    raise ActiveRecord::RecordNotFound unless site_page
-
-    render_site_page(site_page)
   end
 
   def our_story
@@ -111,18 +96,6 @@ class PagesController < ApplicationController
   ].freeze
 
   private
-
-  # @return [Page, nil] the current site's published page with this slug.
-  #   The nationwide directory has no Site, so it never has pages.
-  def site_page_for(slug)
-    return nil if current_site.nil?
-
-    current_site.pages.published.find_by(slug: slug)
-  end
-
-  def render_site_page(site_page)
-    render Views::Sites::Pages::Show.new(page: site_page)
-  end
 
   def render_directory_home
     @stats = Rails.cache.fetch('directory/stats', expires_in: DIRECTORY_CACHE_TTL) do

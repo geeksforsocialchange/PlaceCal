@@ -15,18 +15,17 @@ RSpec.describe "Public site navigation", type: :request do
     Nokogiri::HTML(response.body).css("nav.header__menu ul li a").map { |a| a.text.strip }
   end
 
-  context "with news, an in-nav page and a contact email" do
+  context "with news and a contact email" do
     let(:address) { create(:address, neighbourhood: ward) }
     let(:partner) { create(:partner, address: address) }
 
     before do
       article = create(:article, is_draft: false)
       article.partners << partner
-      create(:nav_page, site: site, title: "About", slug: "about")
       site.update!(contact_email: "hello@example.com")
     end
 
-    it "derives Home, Events, Partners, News, the page and the join link" do
+    it "derives Home, Events, Partners, News and the join link" do
       get "http://navsite.lvh.me"
 
       expect(response).to be_successful
@@ -36,14 +35,13 @@ RSpec.describe "Public site navigation", type: :request do
           I18n.t("navigation.site.events"),
           I18n.t("navigation.site.partners"),
           I18n.t("navigation.site.news"),
-          "About",
           I18n.t("navigation.site.join")
         ]
       )
     end
   end
 
-  context "with no news, no pages and no contact email" do
+  context "with no news, no theme pages and no contact email" do
     it "renders only the core links" do
       get "http://navsite.lvh.me"
 
@@ -58,16 +56,6 @@ RSpec.describe "Public site navigation", type: :request do
     end
   end
 
-  context "when a page is published but not in the nav" do
-    before { create(:page, site: site, title: "Hidden", slug: "hidden") }
-
-    it "leaves it out" do
-      get "http://navsite.lvh.me"
-
-      expect(nav_labels).not_to include("Hidden")
-    end
-  end
-
   context "when a region is selected" do
     let(:north) { create(:partnership, name: "North") }
     let(:south) { create(:partnership, name: "South") }
@@ -75,7 +63,6 @@ RSpec.describe "Public site navigation", type: :request do
     before do
       site.tags << north
       site.tags << south
-      create(:nav_page, site: site, title: "About", slug: "about")
       site.update!(contact_email: "hello@example.com")
     end
 
@@ -91,7 +78,6 @@ RSpec.describe "Public site navigation", type: :request do
           "/?region=#{north.slug}",
           "/events?region=#{north.slug}",
           "/partners?region=#{north.slug}",
-          "/about",
           get_in_touch_path
         ]
       )

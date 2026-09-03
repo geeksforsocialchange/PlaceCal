@@ -112,24 +112,11 @@ class SitemapsController < ApplicationController
 
   # terms-of-use is directory-only; privacy and get-in-touch resolve on both.
   # A site that takes no enquiries has no Join link (SiteNavigation#join_navigation),
-  # so /get-in-touch should not be advertised for it either. A slug the site
-  # publishes as its own page is dropped here and emitted once, with a lastmod,
-  # by #site_page_entries.
+  # so /get-in-touch should not be advertised for it either.
   def static_page_slugs
     slugs = current_site ? %w[privacy get-in-touch] : %w[privacy terms-of-use get-in-touch]
     slugs -= %w[get-in-touch] if current_site && current_site.contact_email.blank?
-    slugs - site_page_slugs
-  end
-
-  # @return [Array<String>] slugs of the current site's published pages
-  def site_page_slugs
-    site_pages.map(&:first)
-  end
-
-  def site_pages
-    return [] unless current_site
-
-    @site_pages ||= current_site.pages.published.pluck(:slug, :updated_at)
+    slugs
   end
 
   def articles_scope
@@ -151,16 +138,7 @@ class SitemapsController < ApplicationController
       urls << url_entry("#{base_url}/news/#{slug}", updated_at)
     end
 
-    urls.concat(site_page_entries)
-
     wrap_urlset(urls.uniq)
-  end
-
-  # Editable per-site pages (#3368 D5).
-  def site_page_entries
-    site_pages.map do |slug, updated_at|
-      url_entry("#{base_url}/#{slug}", updated_at)
-    end
   end
 
   def url_entry(loc, lastmod = nil)

@@ -1,16 +1,15 @@
 # frozen_string_literal: true
 
 module Admin
-  # Serves both the admin dashboard (#home, the admin root) and CRUD for a
-  # Site's static content pages (#3368, D5). The dashboard actions predate
-  # the Page model and are exempt from Pundit's verification callbacks.
+  # The admin dashboard (#home, the admin root) and the icon gallery. Both are
+  # exempt from Pundit's verification callbacks: they authorize nothing of
+  # their own, and #home scopes everything it lists through policy_scope.
   class PagesController < Admin::ApplicationController
     DASHBOARD_ACTIONS = %i[home icons].freeze
 
     skip_after_action :verify_authorized, only: DASHBOARD_ACTIONS
     skip_after_action :verify_policy_scoped, only: DASHBOARD_ACTIONS
     before_action :require_root_user, only: [:icons]
-    before_action :set_page, only: %i[edit update destroy]
 
     def home
       @user = current_user
@@ -71,114 +70,7 @@ module Admin
       render Views::Admin::Pages::Icons.new(icons: @icons)
     end
 
-    def index
-      @pages = policy_scope(Page).includes(:site).order('sites.name': :asc, position: :asc, title: :asc)
-      authorize @pages
-      render Views::Admin::Pages::Index.new(pages: @pages)
-    end
-
-    def new
-      @page = Page.new(site: default_site)
-      authorize @page
-      render Views::Admin::Pages::New.new(page: @page, sites: sites_for_select)
-    end
-
-    def edit
-      authorize @page
-      render Views::Admin::Pages::Edit.new(page: @page, sites: sites_for_select)
-    end
-
-    def create
-      @page = Page.new(permitted_attributes(Page))
-      @page.site ||= submitted_site || default_site
-      authorize @page
-
-      if @page.save
-        flash[:success] = t('admin.pages.flash.created')
-        redirect_to edit_admin_page_path(@page)
-      else
-        flash.now[:danger] = t('admin.pages.flash.not_created')
-        render Views::Admin::Pages::New.new(page: @page, sites: sites_for_select),
-               status: :unprocessable_content
-      end
-    end
-
-    def update
-      authorize @page
-
-      attributes = attributes_with_submitted_site(permitted_attributes(@page))
-
-      if attributes.nil?
-        flash.now[:danger] = t('admin.pages.flash.site_not_permitted')
-        return render Views::Admin::Pages::Edit.new(page: @page, sites: sites_for_select),
-                      status: :forbidden
-      end
-
-      if @page.update(attributes)
-        flash[:success] = t('admin.pages.flash.updated')
-        redirect_to edit_admin_page_path(@page)
-      else
-        flash.now[:danger] = t('admin.pages.flash.not_updated')
-        render Views::Admin::Pages::Edit.new(page: @page, sites: sites_for_select),
-               status: :unprocessable_content
-      end
-    end
-
-    def destroy
-      authorize @page
-      @page.destroy
-      flash[:success] = t('admin.pages.flash.deleted')
-      redirect_to admin_pages_url
-    end
-
     private
-
-    def set_page
-      @page = Page.find(params[:id])
-    end
-
-    # Sites the current user may attach a page to. Root and editors see them
-    # all; a site admin only their own (SitePolicy::Scope excludes editors, who
-    # may still manage every page).
-    def sites_for_select
-      @sites_for_select ||=
-        if current_user.root? || current_user.editor?
-          Site.order(:name)
-        else
-          Site.where(site_admin: current_user).order(:name)
-        end
-    end
-
-    # Site admins usually only have one site, so preselect it.
-    def default_site
-      sites_for_select.one? ? sites_for_select.first : nil
-    end
-
-    # site_id is not a permitted attribute for site admins, so resolve their
-    # submitted choice against the sites they actually administer.
-    def submitted_site
-      site_id = params.dig(:page, :site_id)
-      return nil if site_id.blank?
-
-      sites_for_select.find_by(id: site_id)
-    end
-
-    # A site admin who administers several sites sees an editable Site select,
-    # but site_id is not a permitted attribute for them, so their choice has to
-    # be resolved here against the sites they administer. Returns nil when they
-    # asked for a site they do not administer, so #update can refuse the change
-    # instead of quietly saving the rest and flashing success.
-    def attributes_with_submitted_site(attributes)
-      return attributes if policy(@page).permitted_attributes.include?(:site_id)
-
-      requested_id = params.dig(:page, :site_id)
-      return attributes if requested_id.blank? || requested_id.to_s == @page.site_id.to_s
-
-      site = sites_for_select.find_by(id: requested_id)
-      return nil if site.nil?
-
-      attributes.merge(site_id: site.id)
-    end
 
     def require_root_user
       return if current_user&.root?
