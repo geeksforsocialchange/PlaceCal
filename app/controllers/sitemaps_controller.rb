@@ -112,11 +112,20 @@ class SitemapsController < ApplicationController
 
   # terms-of-use is directory-only; privacy and get-in-touch resolve on both.
   # A site that takes no enquiries has no Join link (SiteNavigation#join_navigation),
-  # so /get-in-touch should not be advertised for it either.
+  # so /get-in-touch should not be advertised for it either. A slug the theme
+  # serves as its own page is dropped here and emitted once by #theme_page_entries.
   def static_page_slugs
     slugs = current_site ? %w[privacy get-in-touch] : %w[privacy terms-of-use get-in-touch]
     slugs -= %w[get-in-touch] if current_site && current_site.contact_email.blank?
-    slugs
+    slugs - theme_page_slugs
+  end
+
+  # @return [Array<String>] slugs of the pages the site's theme serves. The
+  #   directory has no site, so it has none.
+  def theme_page_slugs
+    return [] unless current_site
+
+    @theme_page_slugs ||= PlaceCal::Theme.for(current_site).pages.keys
   end
 
   def articles_scope
@@ -138,7 +147,15 @@ class SitemapsController < ApplicationController
       urls << url_entry("#{base_url}/news/#{slug}", updated_at)
     end
 
+    urls.concat(theme_page_entries)
+
     wrap_urlset(urls.uniq)
+  end
+
+  # Static pages the site's theme serves at /:slug (#3368). The content lives
+  # in the theme's views, not in the database, so there is no lastmod.
+  def theme_page_entries
+    theme_page_slugs.map { |slug| url_entry("#{base_url}/#{slug}") }
   end
 
   def url_entry(loc, lastmod = nil)

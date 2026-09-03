@@ -57,8 +57,10 @@ class Components::Footer < Components::Base
   end
 
   # The footer shows the same derived site nav as the header (#3368 D6), so the
-  # region param, the news link and the theme's nav_join rule all follow from
-  # one place, plus the legal and log-in links the footer has always carried.
+  # region param, the news link, the theme's pages and its nav_join rule all
+  # follow from one place, plus the legal and log-in links the footer has
+  # always carried. A theme that registers its own `privacy` page arrives with
+  # the derived links, so the fixed privacy link is not added twice.
   def nav_links
     return directory_nav_links if @site.nil?
 

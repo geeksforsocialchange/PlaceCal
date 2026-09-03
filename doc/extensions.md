@@ -23,7 +23,7 @@ Extensions are Rails engines generated with `rails plugin new --full` (NOT `--mo
     locales/en.yml        # Locale strings (loaded automatically by Rails)
 ```
 
-An extension normally has no controllers: core's controllers serve every page and the extension supplies views, components and copy. An engine _may_ draw routes in its own `config/routes.rb` (they load after core's `config/routes.rb`, so they win over core's `/:slug` site-page catch-all, which is appended last by `config/initializers/site_page_routes.rb`), but a theme that needs new routes is usually a sign the feature belongs in core. Core's fixture engine under `spec/` has both, for testing.
+An extension normally has no controllers: core's controllers serve every page and the extension supplies views, components and copy. An engine _may_ draw routes in its own `config/routes.rb` (they load after core's `config/routes.rb`, so they win over core's `/:slug` theme-page catch-all, which is appended last by `config/initializers/site_page_routes.rb`), but a theme that needs new routes is usually a sign the feature belongs in core. Core's fixture engine under `spec/` has both, for testing.
 
 ## Phlex namespaces
 
@@ -106,10 +106,28 @@ Every setting is optional, and the full list is defined in `lib/placecal/theme.r
 | `nav_join`           | boolean                                                                                            | `true`               | Whether the derived nav includes the Join link when the site takes enquiries. Set `false` when the theme's own footer carries it.                                                                                                                   |
 | `event_filter_style` | `:date_picker` or `:day_strip`                                                                     | `:date_picker`       | Which date control the events filter renders.                                                                                                                                                                                                       |
 | `menu_label`         | boolean                                                                                            | `false`              | Whether the mobile menu toggle shows a "Menu" text label next to the icon.                                                                                                                                                                          |
+| `page`               | slug, Phlex view class name, optional `nav_label_key:`                                             | none                 | A static content page served at `/<slug>`. Repeatable; see "Theme pages" below.                                                                                                                                                                     |
 
 Class names are given as strings and resolved lazily, so registration can run before autoloading is ready; a name that no longer resolves is logged and core's default renders instead.
 
 `stylesheet` and `map_style` may receive a block that gets the Site, for lookups that depend on the record (core's legacy `custom` theme resolves by site slug that way).
+
+## Theme pages
+
+Static copy (About, Get involved, a privacy notice) belongs to the theme, not to core: core stores no page content and has no page editor. A theme declares which paths it serves and which Phlex view renders each one.
+
+```ruby
+theme.page "about", "MyExt::Views::About", nav_label_key: "my_ext.nav.about"
+theme.page "privacy", "MyExt::Views::Privacy"
+```
+
+- The page is served at `/about` on every site using the theme, by core's `/:slug` catch-all. HTML only: `/about.json` does not route.
+- The view is constructed with `new(site:)` and inherits `Views::Base` like any other theme view. Everything about the page, including its wrapper element and any `page page--about` style classes, is the view's own business.
+- `nav_label_key` is a locale key. A page that has one is listed in the derived site nav and footer nav under `t(key)`, in registration order, after the News link. A page without one is served but not linked.
+- Every registered page is listed in the site's sitemap (no `lastmod`, since there is no record to date).
+- Slugs are lowercase letters, numbers and hyphens; anything else raises `ArgumentError` at registration.
+- A slug that shadows a core route (`events`, `partners`, `news`, and so on) raises `ArgumentError` the first time the theme's pages are read. The check cannot run at registration because an engine registers its theme long before the route set is drawn. `privacy` is the one exception: core's `/privacy` prefers the theme's page when it registers one and falls back to core's own copy otherwise.
+- Class names are strings, resolved lazily. A name that no longer resolves is logged and the page 404s, rather than taking the site down.
 
 ## Map styles
 

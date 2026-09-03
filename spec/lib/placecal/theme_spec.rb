@@ -197,6 +197,62 @@ RSpec.describe PlaceCal::Theme do
     end
   end
 
+  describe "#page" do
+    it "defaults to no pages, and NONE answers the same" do
+      expect(theme.pages).to eq({})
+      expect(described_class::NONE.pages).to eq({})
+    end
+
+    it "records pages in registration order, frozen" do
+      theme.page "about", "Sample::Views::About", nav_label_key: "sample.nav.about"
+      theme.page :contact, "Sample::Views::Contact"
+
+      expect(theme.pages).to be_frozen
+      expect(theme.pages.keys).to eq(%w[about contact])
+      expect(theme.pages["about"]).to eq(view: "Sample::Views::About", nav_label_key: "sample.nav.about")
+      expect(theme.pages["contact"]).to eq(view: "Sample::Views::Contact", nav_label_key: nil)
+    end
+
+    it "rejects a malformed slug" do
+      expect { theme.page "About Us", "Sample::Views::About" }.to raise_error(ArgumentError, /invalid page slug/)
+      expect { theme.page "about/us", "Sample::Views::About" }.to raise_error(ArgumentError, /invalid page slug/)
+    end
+
+    # The check runs on the first read of #pages, not at registration: an
+    # engine registers its theme before the route set is drawn.
+    it "rejects a slug that shadows a core route" do
+      theme.page "events", "Sample::Views::Events"
+
+      expect { theme.pages }.to raise_error(ArgumentError, /reserved by core routes/)
+    end
+
+    it "allows privacy, the one overridable core route" do
+      theme.page "privacy", "Sample::Views::Privacy"
+
+      expect(theme.pages.keys).to eq(%w[privacy])
+    end
+  end
+
+  describe "#page_view_class" do
+    it "constantizes the registered class name" do
+      theme.page "about", "Components::Footer"
+
+      expect(theme.page_view_class("about")).to eq(Components::Footer)
+    end
+
+    it "returns nil for a slug the theme does not register" do
+      expect(theme.page_view_class("about")).to be_nil
+    end
+
+    it "returns nil and logs when the class name no longer resolves" do
+      theme.page "about", "Nope::Views::About"
+      allow(Rails.logger).to receive(:error)
+
+      expect(theme.page_view_class("about")).to be_nil
+      expect(Rails.logger).to have_received(:error).with(/page about class Nope::Views::About/)
+    end
+  end
+
   describe "#label" do
     it "uses the locale label when present" do
       expect(described_class.new(:pink).label).to eq("Pink")

@@ -35,12 +35,28 @@ class PagesController < ApplicationController
   end
 
   def privacy
+    # A theme may serve its own privacy copy at the conventional URL (#3368,
+    # D14). `privacy` is therefore the one core route a theme page may shadow;
+    # see PlaceCal::Theme::OVERRIDABLE_ROUTE_SLUGS.
+    theme_page = theme_page_view('privacy')
+    return render_theme_page(theme_page) if theme_page
+
     render Views::Directory::MarkdownPage.new(
       slug: 'privacy',
       title: t('directory.pages.privacy.title'),
       breadcrumb_label: t('directory.pages.privacy.breadcrumb'),
       document_title: t('directory.pages.privacy.document_title')
     )
+  end
+
+  # Static content page served by the site's theme at /:slug (#3368). The
+  # catch-all route is matched last, so anything core routes never reaches
+  # here. Core holds no page content: the theme's view supplies all of it.
+  def show
+    theme_page = theme_page_view(params[:slug])
+    raise ActiveRecord::RecordNotFound unless theme_page
+
+    render_theme_page(theme_page)
   end
 
   def our_story
@@ -96,6 +112,19 @@ class PagesController < ApplicationController
   ].freeze
 
   private
+
+  # @return [Class, nil] the theme view for this slug. The nationwide directory
+  #   has no Site and so no theme pages; an unregistered slug, or a view class
+  #   that no longer resolves, both give nil.
+  def theme_page_view(slug)
+    return nil if current_site.nil?
+
+    Current.theme.page_view_class(slug)
+  end
+
+  def render_theme_page(view_class)
+    render view_class.new(site: current_site)
+  end
 
   def render_directory_home
     @stats = Rails.cache.fetch('directory/stats', expires_in: DIRECTORY_CACHE_TTL) do

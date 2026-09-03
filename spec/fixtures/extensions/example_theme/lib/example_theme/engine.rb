@@ -44,6 +44,7 @@ module ExampleTheme
                     icon_512: "example_theme/icons/icon-512.png"
         theme.mask_icon_color "#FF7AA7"
         theme.og_image "example_theme/icons/og.png", width: 1200, height: 675
+        theme.page "proof", "ExampleTheme::Views::Proof", nav_label_key: "example_theme.nav.proof"
       end
     end
   end

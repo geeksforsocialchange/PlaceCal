@@ -42,7 +42,8 @@ en:
       close: "Close"
 
   # Public navigation labels. A site's nav is derived from its own data
-  # (#3368 D6), so these are the only fixed items.
+  # (#3368 D6), so these are the only fixed items; a theme's registered pages
+  # contribute their own labels.
   navigation:
     menu: "Menu"
     directory:

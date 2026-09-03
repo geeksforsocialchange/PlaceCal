@@ -3,8 +3,8 @@
 # Public navigation for the nationwide directory and for a local site.
 #
 # A site's nav is *derived*, never configured (#3368 D6): it follows from the
-# site's own data (does it have news? an enquiries address?), so there is no
-# nav editor to keep in sync.
+# site's own data (does it have news? an enquiries address?) and from the pages
+# its theme registers, so there is no nav editor to keep in sync.
 module SiteNavigation
   extend ActiveSupport::Concern
 
@@ -20,9 +20,10 @@ module SiteNavigation
   end
 
   # Home, Events, Partners, then News (when the site has published articles),
-  # and a Join link when the site takes its own enquiries (D13).
+  # the theme's in-nav pages, and a Join link when the site takes its own
+  # enquiries (D13).
   def sub_site_navigation
-    core_navigation + news_navigation + join_navigation
+    core_navigation + news_navigation + page_navigation + join_navigation
   end
 
   # Region is sticky via links, not state (D20): when a region is selected only
@@ -40,6 +41,15 @@ module SiteNavigation
     return [] unless current_site&.news_article_count&.positive?
 
     [[t('navigation.site.news'), news_index_path]]
+  end
+
+  # The theme's registered pages that carry a nav label, in registration order.
+  def page_navigation
+    return [] if current_site.nil?
+
+    Current.theme.pages.filter_map do |slug, page|
+      [t(page[:nav_label_key]), site_page_path(slug)] if page[:nav_label_key]
+    end
   end
 
   def join_navigation
