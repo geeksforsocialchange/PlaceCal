@@ -19,13 +19,3 @@ Then("the site {string} should have a page at {string}") do |site_name, slug|
   site = Site.find_by(name: site_name)
   expect(site.pages.find_by(slug: slug)).to be_present
 end
-
-# Visits the new page form on the current (admin) host directly. The
-# "Add Page" click is Turbo-driven and occasionally fails to navigate under
-# full-suite load; the reserved slug scenario is about validation, not the
-# click, so it goes straight to the form.
-When("I open the new page form") do
-  uri = URI(page.current_url)
-  visit "#{uri.scheme}://#{uri.host}:#{uri.port}/pages/new"
-  expect(page).to have_content("New Page")
-end
