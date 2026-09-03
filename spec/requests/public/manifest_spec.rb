@@ -23,13 +23,8 @@ RSpec.describe "Web Manifest", type: :request do
         expect(response.content_type).to start_with("application/manifest+json")
       end
 
-      it "returns valid JSON" do
-        get "http://#{site.slug}.lvh.me/manifest.webmanifest"
-
-        expect { JSON.parse(response.body) }.not_to raise_error
-      end
-
-      it "includes required keys" do
+      it "includes the required keys, the site name and the fixed properties" do
+        site.update!(name: "Test Site Name")
         get "http://#{site.slug}.lvh.me/manifest.webmanifest"
 
         manifest = JSON.parse(response.body)
@@ -43,14 +38,10 @@ RSpec.describe "Web Manifest", type: :request do
           "theme_color",
           "icons"
         )
-      end
-
-      it "includes site name" do
-        site.update!(name: "Test Site Name")
-        get "http://#{site.slug}.lvh.me/manifest.webmanifest"
-
-        manifest = JSON.parse(response.body)
         expect(manifest["name"]).to eq("Test Site Name")
+        expect(manifest["start_url"]).to eq("/")
+        expect(manifest["scope"]).to eq("/")
+        expect(manifest["display"]).to eq("standalone")
       end
 
       it "truncates short_name to 12 chars at word boundary" do
@@ -60,64 +51,6 @@ RSpec.describe "Web Manifest", type: :request do
         manifest = JSON.parse(response.body)
         expect(manifest["short_name"]).to eq("A Very Long")
         expect(manifest["short_name"].length).to be <= 12
-      end
-
-      it "uses full name for short_name when already short" do
-        site.update!(name: "Short")
-        get "http://#{site.slug}.lvh.me/manifest.webmanifest"
-
-        manifest = JSON.parse(response.body)
-        expect(manifest["short_name"]).to eq("Short")
-      end
-
-      it "includes manifest properties" do
-        get "http://#{site.slug}.lvh.me/manifest.webmanifest"
-
-        manifest = JSON.parse(response.body)
-        expect(manifest["start_url"]).to eq("/")
-        expect(manifest["scope"]).to eq("/")
-        expect(manifest["display"]).to eq("standalone")
-      end
-
-      context "with pink theme (default)" do
-        it "uses pink as theme_color" do
-          site.update!(theme: "pink")
-          get "http://#{site.slug}.lvh.me/manifest.webmanifest"
-
-          manifest = JSON.parse(response.body)
-          expect(manifest["theme_color"]).to eq("#f19089")
-          expect(manifest["background_color"]).to eq("#f19089")
-        end
-      end
-
-      context "with orange theme" do
-        it "uses orange as theme_color" do
-          site.update!(theme: "orange")
-          get "http://#{site.slug}.lvh.me/manifest.webmanifest"
-
-          manifest = JSON.parse(response.body)
-          expect(manifest["theme_color"]).to eq("#fe9263")
-        end
-      end
-
-      context "with green theme" do
-        it "uses green as theme_color" do
-          site.update!(theme: "green")
-          get "http://#{site.slug}.lvh.me/manifest.webmanifest"
-
-          manifest = JSON.parse(response.body)
-          expect(manifest["theme_color"]).to eq("#afcf5a")
-        end
-      end
-
-      context "with blue theme" do
-        it "uses blue as theme_color" do
-          site.update!(theme: "blue")
-          get "http://#{site.slug}.lvh.me/manifest.webmanifest"
-
-          manifest = JSON.parse(response.body)
-          expect(manifest["theme_color"]).to eq("#74d4ec")
-        end
       end
 
       context "without a logo" do

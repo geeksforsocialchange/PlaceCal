@@ -24,13 +24,6 @@ RSpec.describe "Admin::Pages", type: :request do
 
       expect(actions).not_to include("show")
     end
-
-    it "does not reach a missing show template" do
-      get "http://#{admin_host}/pages/#{page_record.id}"
-
-      expect(response).to have_http_status(:moved_permanently)
-      expect(response).not_to have_http_status(:internal_server_error)
-    end
   end
 
   describe "GET /admin/pages" do

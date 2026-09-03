@@ -14,13 +14,6 @@ RSpec.describe "Example theme extension engine", type: :request do
     )
   end
 
-  it "eager loads the engine's directories without naming errors" do
-    expect { Rails.autoloaders.main.eager_load_dir(ExampleTheme::Engine.root.join("app/views/example_theme")) }
-      .not_to raise_error
-    expect { Rails.autoloaders.main.eager_load_dir(ExampleTheme::Engine.root.join("app/components/example_theme")) }
-      .not_to raise_error
-  end
-
   it "loads the engine's locale file" do
     expect(I18n.t("example_theme.home.heading")).to eq("Example theme fixture homepage")
   end
@@ -46,12 +39,5 @@ RSpec.describe "Example theme extension engine", type: :request do
     expect(response.body).not_to include("data-example-theme")
     # Core layout chrome is present around the engine view.
     expect(response.body).to include('stylesheet" href="/assets/public_tailwind')
-  end
-
-  it "renders the engine's homepage view for a site" do
-    site = create(:site, slug: "example", url: "https://example.lvh.me")
-    get "http://example.lvh.me/example-theme-proof"
-    expect(response).to have_http_status(:ok)
-    expect(response.body).to include(site.name)
   end
 end

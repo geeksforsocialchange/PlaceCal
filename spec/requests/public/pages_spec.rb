@@ -175,7 +175,7 @@ RSpec.describe "Public Pages", type: :request do
     let(:site) { create(:site, slug: "hulme", url: "https://hulme.lvh.me") }
 
     describe "GET /:slug" do
-      it "renders a published page" do
+      it "renders a published page, as HTML only" do
         create(:page, site: site, slug: "about", title: "About Hulme", body: "## Who we are\n\nA calendar.")
 
         get "http://hulme.lvh.me/about"
@@ -183,6 +183,9 @@ RSpec.describe "Public Pages", type: :request do
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("About Hulme")
         expect(response.body).to include("Who we are")
+
+        expect { get "http://hulme.lvh.me/about.json" }
+          .to raise_error(ActionController::RoutingError)
       end
 
       it "sets the page title and description" do
@@ -194,22 +197,22 @@ RSpec.describe "Public Pages", type: :request do
         expect(response.body).to include("A friendly local calendar.")
       end
 
+      it "wraps the page in a slug class and data attribute for themes" do
+        create(:page, site: site, slug: "about", title: "About Hulme", body: "Hello")
+
+        get "http://hulme.lvh.me/about"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("page page--about")
+        expect(response.body).to include('data-page-slug="about"')
+      end
+
       it "404s for an unpublished page" do
         create(:draft_page, site: site, slug: "about")
 
         get "http://hulme.lvh.me/about"
 
         expect(response).to have_http_status(:not_found)
-      end
-
-      it "serves the page as HTML only, not as JSON" do
-        create(:page, site: site, slug: "about", title: "About Hulme")
-
-        get "http://hulme.lvh.me/about"
-        expect(response).to have_http_status(:ok)
-
-        expect { get "http://hulme.lvh.me/about.json" }
-          .to raise_error(ActionController::RoutingError)
       end
 
       it "404s for an unknown slug" do
@@ -285,18 +288,5 @@ RSpec.describe "Public Pages", type: :request do
       expect(response.body).to include("User-agent: *")
       expect(response.body).to include("Disallow: /")
     end
-  end
-end
-
-RSpec.describe "Site page wrapper", type: :request do
-  it "carries the page slug as a class and data attribute for themes" do
-    ward = create(:riverside_ward)
-    site = create(:site, slug: "wrap", url: "https://wrap.lvh.me")
-    site.neighbourhoods << ward
-    create(:page, site: site, slug: "about", title: "About", body: "Hello", is_published: true)
-    get "http://wrap.lvh.me/about"
-    expect(response).to have_http_status(:ok)
-    expect(response.body).to include("page page--about")
-    expect(response.body).to include('data-page-slug="about"')
   end
 end

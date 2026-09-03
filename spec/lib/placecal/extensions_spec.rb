@@ -21,6 +21,14 @@ RSpec.describe PlaceCal::Extensions do
       expect(pink.homepage_view_class).to be_nil
     end
 
+    it "gives each built-in theme its brand colour" do
+      colors = { "pink" => "#f19089", "orange" => "#fe9263", "green" => "#afcf5a", "blue" => "#74d4ec" }
+      colors.each do |name, hex|
+        expect(described_class.find_theme(name).theme_color).to eq(hex)
+      end
+      expect(described_class.find_theme(:custom).theme_color).to be_nil
+    end
+
     it "resolves the legacy custom theme by site slug" do
       custom = described_class.find_theme(:custom)
       site = build(:site, slug: "mossley")

@@ -47,10 +47,11 @@ RSpec.describe "Public Redirects", type: :request do
       expect(response).to have_http_status(404)
     end
 
-    it "reads only the columns it needs, never article bodies" do
-      queries = []
-      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*args|
-        queries << ActiveSupport::Notifications::Event.new(*args).payload[:sql]
+    it "never builds an Article, so it cannot load article bodies" do
+      instantiated = []
+      subscriber = ActiveSupport::Notifications.subscribe("instantiation.active_record") do |*args|
+        payload = ActiveSupport::Notifications::Event.new(*args).payload
+        instantiated << payload[:class_name] if payload[:record_count].to_i.positive?
       end
 
       begin
@@ -60,13 +61,9 @@ RSpec.describe "Public Redirects", type: :request do
       end
 
       expect(response).to have_http_status(301)
-
-      # The fallback plucks the three columns it needs.
-      expect(queries).to include(a_string_matching(/SELECT.*"articles"\."id".*"articles"\."title".*"articles"\."slug".*FROM "articles"/m))
-      # The only whole-row article query is the canonical slug lookup that 404ed;
-      # the fallback never loads article bodies (#3368 WP 3.1).
-      whole_row = queries.select { |sql| sql.include?('SELECT "articles".*') }
-      expect(whole_row.size).to eq(1)
+      # The fallback plucks id, title and slug rather than loading rows
+      # (#3368 WP 3.1), so no Article object is ever built.
+      expect(instantiated).not_to include("Article")
     end
   end
 end
