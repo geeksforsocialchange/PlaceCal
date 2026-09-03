@@ -38,7 +38,7 @@ class Components::EventFilter < Components::Base
 
   # @return [Symbol] :date_picker or :day_strip, from the site's theme (D22)
   def filter_style
-    @filter_style || @site&.theme_definition&.event_filter_style || :date_picker
+    @filter_style || PlaceCal::Theme.for(@site).event_filter_style
   end
 
   def render_date_picker

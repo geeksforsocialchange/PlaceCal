@@ -34,18 +34,14 @@ class ManifestsController < ApplicationController
     head :not_found if site.nil?
   end
 
-  def theme_definition
-    site&.theme_definition
-  end
-
   def theme_color
-    theme_definition&.theme_color || '#f19089'
+    Current.theme.theme_color || '#f19089'
   end
 
-  # A theme may set a distinct splash background (#3368 WP 3.9); it falls
-  # back to the theme colour, which is what core has always used for both.
+  # A theme may set a distinct splash background (#3368 D1); it falls back to
+  # the theme colour, which is what core has always used for both.
   def background_color
-    theme_definition&.manifest_background_color || theme_color
+    Current.theme.manifest_background_color || theme_color
   end
 
   # The site's tagline, when it has one. Site#og_description returns false
@@ -55,9 +51,9 @@ class ManifestsController < ApplicationController
   end
 
   def icons
-    theme_icons = theme_definition&.icons || {}
+    theme_icons = Current.theme.icons
 
-    # A theme's own manifest icons win over the site logo (#3368 WP 3.9).
+    # A theme's own manifest icons win over the site logo (#3368 D1).
     if theme_icons[:icon_192] || theme_icons[:icon_512]
       manifest_icons_for(theme_icons)
     elsif site.logo.present? && site.logo.file&.content_type == 'image/png'

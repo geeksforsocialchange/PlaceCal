@@ -66,7 +66,7 @@ class Views::Layouts::Application < Phlex::HTML
           end
           if site.nil?
             Directory::Footer()
-          elsif (footer_class = site.theme_definition&.footer_class)
+          elsif (footer_class = theme.footer_class)
             # Theme footer slot (#3368 D1): the theme owns the whole footer.
             render footer_class.new(site: site, navigation: navigation)
           else
@@ -86,7 +86,7 @@ class Views::Layouts::Application < Phlex::HTML
   # way this layout does, or the theme's views can push markup through
   # content_for(:theme_head), which also works alongside a head component.
   def render_theme_head
-    head_class = site&.theme_definition&.head_class
+    head_class = theme.head_class
     render head_class.new if head_class
     raw content_for(:theme_head) if content_for?(:theme_head)
   end
@@ -102,7 +102,7 @@ class Views::Layouts::Application < Phlex::HTML
     render_icon_links
     link(rel: 'manifest', href: '/manifest.webmanifest') if site
     meta(name: 'viewport', content: 'width=device-width, initial-scale=1')
-    theme_color = site&.theme_definition&.theme_color
+    theme_color = theme.theme_color
     meta(name: 'theme-color', content: theme_color) if theme_color
 
     meta(name: 'description', content: description_text)
@@ -141,8 +141,8 @@ class Views::Layouts::Application < Phlex::HTML
     if content_for?(:image)
       meta(property: 'og:image', content: image_url(content_for(:image)))
       meta(property: 'og:image:alt', content: content_for(:image_alt)) if content_for?(:image_alt)
-    elsif site && (theme_og = site.theme_definition&.og_image)
-      # A theme may ship its own static share image (#3368 WP 3.9)
+    elsif site && (theme_og = theme.og_image)
+      # A theme may ship its own static share image (#3368 D1)
       meta(property: 'og:image', content: image_url(theme_og[:path]))
       meta(property: 'og:image:alt', content: t('og_image.alt.site', name: site.name))
       meta(property: 'og:image:width', content: theme_og[:width].to_s) if theme_og[:width]
@@ -162,11 +162,10 @@ class Views::Layouts::Application < Phlex::HTML
   end
 
   # A theme may supply its own favicons, touch icon and Safari mask icon
-  # (#3368 WP 3.9). When it does, its icons replace core's two entirely;
+  # (#3368 D1). When it does, its icons replace core's two entirely;
   # otherwise core's favicon and touch icon link as before.
   def render_icon_links
-    theme = site&.theme_definition
-    icons = theme&.icons || {}
+    icons = theme.icons
 
     if icons.empty?
       link(rel: 'icon', type: 'image/png', href: image_url('favicon.png'))
@@ -232,5 +231,12 @@ class Views::Layouts::Application < Phlex::HTML
 
   def navigation
     view_context.instance_variable_get(:@navigation)
+  end
+
+  # The theme for this request, resolved once. PlaceCal::Theme::NONE stands in
+  # for the directory and for a site with no registered theme, so the settings
+  # above read without a nil check.
+  def theme
+    @theme ||= PlaceCal::Theme.for(site)
   end
 end

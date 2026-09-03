@@ -86,7 +86,7 @@ class Components::Navigation < Components::Base
   # Theme call-to-action (#3368 D1): a theme may register `nav_cta`, for
   # example a Donate link; core renders it as the last nav item.
   def theme_cta
-    @theme_cta ||= @site&.theme_definition&.nav_cta
+    @theme_cta ||= PlaceCal::Theme.for(@site).nav_cta
   end
 
   def render_theme_cta
@@ -175,7 +175,7 @@ class Components::Navigation < Components::Base
   # The directory always labels its menu toggle; a site does so only when its
   # theme opts in with `menu_label true` (#3368 D1).
   def show_menu_label?
-    @site.nil? || @site.theme_definition&.menu_label? || false
+    @site.nil? || PlaceCal::Theme.for(@site).menu_label?
   end
 
   def render_toggle

@@ -202,6 +202,17 @@ module PlaceCal
       @event_filter_style = value
     end
 
+    # Null theme for a site whose theme is blank or unregistered, and for the
+    # nationwide directory, which has no site at all. It answers every setting
+    # with its default, so callers read theme settings without a nil check.
+    NONE = new(:none).freeze
+
+    # @param site [Site, nil]
+    # @return [PlaceCal::Theme] the site's theme, or NONE
+    def self.for(site)
+      site&.theme_settings || NONE
+    end
+
     # ---- Resolution
 
     # A theme's stylesheet is only linked when the asset pipeline can resolve

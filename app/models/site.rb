@@ -261,13 +261,20 @@ class Site < ApplicationRecord
     PlaceCal::Extensions.find_theme(theme)
   end
 
+  # @return [PlaceCal::Theme] the site's theme, or the null theme
+  #   (PlaceCal::Theme::NONE) when it has none or names an unregistered one.
+  #   Callers read settings from this without a nil check.
+  def theme_settings
+    theme_definition || PlaceCal::Theme::NONE
+  end
+
   # @return [String, nil] asset pipeline stylesheet path for this site's theme,
   #   or nil when no stylesheet should be linked. Any theme whose stylesheet is
   #   missing from the pipeline resolves to nil, so the page renders with the
   #   default styling instead of raising Propshaft::MissingAssetError
   #   (#2936, #3368 WP 3.1).
   def stylesheet_link
-    theme_definition&.stylesheet_for(self)
+    theme_settings.stylesheet_for(self)
   end
 
   # @return [String, false] Open Graph image URL, or false
