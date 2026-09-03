@@ -15,10 +15,10 @@ class Views::Events::Index < Views::Base
   prop :selected_region, _Nilable(::Tag), reader: :private, default: nil
 
   def view_template
-    content_for(:title) { 'Events' }
+    content_for(:title) { t('events.index.page_title') }
     content_for(:description) { site.og_description }
 
-    Hero('Events & activities', site.tagline)
+    Hero(t('events.index.title'), site.tagline, standfirst: t('events.index.standfirst'))
 
     div(class: 'container-public mb-32') do
       turbo_frame_tag 'events-browser', data: { turbo_action: 'advance' } do

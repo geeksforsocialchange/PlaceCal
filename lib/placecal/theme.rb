@@ -77,6 +77,14 @@ module PlaceCal
       @theme_color = value.to_s
     end
 
+    # @param value [String, nil] Phlex component class name rendered in place
+    #   of core's site footer; constructed with `new(site:, navigation:)`
+    def footer(value = nil)
+      return @footer if value.nil?
+
+      @footer = value.to_s
+    end
+
     # @param value [Symbol, nil] one of EVENT_FILTER_STYLES
     def event_filter_style(value = nil)
       return @event_filter_style if value.nil?
@@ -110,6 +118,11 @@ module PlaceCal
     # @return [Class, nil] the head Phlex component class, or nil
     def head_class
       @head&.constantize
+    end
+
+    # @return [Class, nil] the footer Phlex component class, or nil
+    def footer_class
+      @footer&.constantize
     end
 
     # Human label for admin selects. Themes may translate `themes.<name>.label`.

@@ -69,6 +69,7 @@ initializer "my_ext.register_theme" do
     theme.homepage_view "MyExt::Views::Home"     # Phlex view class name
     theme.map_style     "my_ext"                 # name of public/map-styles/<name>.json
     theme.head          "MyExt::Components::Head" # Phlex component rendered in <head>
+    theme.footer        "MyExt::Components::Footer" # replaces core's site footer; new(site:, navigation:)
     theme.event_filter_style :day_strip          # :date_picker (default) or :day_strip
   end
 end
