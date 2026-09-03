@@ -4,6 +4,8 @@ class Components::Hero < Components::Base
   prop :title, String, :positional
   prop :subtitle, _Nilable(String), :positional, default: ''
   prop :schema, _Nilable(String), :positional, default: nil
+  # Optional lead paragraph under the title; themes fill it via locale keys.
+  prop :standfirst, _Nilable(String), default: nil
 
   def after_initialize
     @title = clean_title(@title)
@@ -21,6 +23,7 @@ class Components::Hero < Components::Base
         else
           h1 { safe(@title) }
         end
+        p(class: 'hero__standfirst') { @standfirst } if @standfirst.present?
       end
     end
   end

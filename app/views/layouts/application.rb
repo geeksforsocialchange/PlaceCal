@@ -62,6 +62,9 @@ class Views::Layouts::Application < Phlex::HTML
           end
           if site.nil?
             Directory::Footer()
+          elsif (footer_class = site.theme_definition&.footer_class)
+            # Theme footer slot (#3368 D1): the theme owns the whole footer.
+            render footer_class.new(site: site, navigation: navigation)
           else
             Footer(site)
           end

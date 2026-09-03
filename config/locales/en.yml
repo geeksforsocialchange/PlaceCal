@@ -349,6 +349,21 @@ en:
       gfsc_logo_alt: "Geeks for Social Change"
 
   # ===========================================================================
+  # LOCAL SITE LISTING PAGES (heroes; themes override via theme_overrides.*)
+  # ===========================================================================
+
+  partners:
+    index:
+      page_title: "Partners"
+      title: "Our Partners"
+      standfirst: ""
+  news:
+    index:
+      page_title: "News from your area"
+      title: "News from your area"
+      standfirst: ""
+
+  # ===========================================================================
   # LOCAL SITES (subdomain sites)
   # ===========================================================================
 
@@ -366,6 +381,10 @@ en:
   # ===========================================================================
 
   events:
+    index:
+      page_title: "Events"
+      title: "Events & activities"
+      standfirst: ""
     # Day strip event filter (D22): the Today / Tomorrow / next five days
     # navigation rendered for themes with event_filter_style :day_strip.
     filter:

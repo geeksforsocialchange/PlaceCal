@@ -9,9 +9,9 @@ class Views::News::Index < Views::Base
   prop :next_offset, _Nilable(Integer), reader: :private
 
   def view_template
-    content_for(:title) { 'News from your area' }
+    content_for(:title) { t('news.index.page_title') }
 
-    Hero('News from your area', site.tagline)
+    Hero(t('news.index.title'), site.tagline, standfirst: t('news.index.standfirst'))
 
     div(class: 'articles') do
       articles.each do |article|

@@ -10,10 +10,10 @@ class Views::Partners::Index < Views::Base
   prop :selected_region, _Nilable(::Tag), reader: :private, default: nil
 
   def view_template
-    content_for(:title) { 'Partners' }
+    content_for(:title) { t('partners.index.page_title') }
     content_for(:description) { site.og_description }
 
-    Hero('Our Partners', site.tagline)
+    Hero(t('partners.index.title'), site.tagline, standfirst: t('partners.index.standfirst'))
     turbo_frame_tag 'partner_previews' do
       div(class: 'container-public mb-32') do
         Breadcrumb(trail: [['Partners', partners_path]], site_name: site.name) do

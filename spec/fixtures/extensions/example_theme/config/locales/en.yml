@@ -8,3 +8,6 @@ en:
     example_theme:
       region_filter:
         all: Anywhere
+      events:
+        index:
+          standfirst: Fixture standfirst for events
