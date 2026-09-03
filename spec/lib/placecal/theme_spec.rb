@@ -23,6 +23,86 @@ RSpec.describe PlaceCal::Theme do
     expect(theme).to be_nav_join
     expect(theme.menu_label).to be(false)
     expect(theme).not_to be_menu_label
+    expect(theme.icons).to eq({})
+    expect(theme.mask_icon_color).to be_nil
+    expect(theme.background_color).to be_nil
+    expect(theme.manifest_background_color).to be_nil
+    expect(theme.og_image).to be_nil
+  end
+
+  describe "#icons" do
+    it "stores the permitted icon paths" do
+      theme.icons favicon_32: "sample/favicon-32x32.png",
+                  favicon_16: "sample/favicon-16x16.png",
+                  apple_touch_icon: "sample/apple-touch-icon.png",
+                  mask_icon: "sample/safari-pinned-tab.svg",
+                  icon_192: "sample/icon-192.png",
+                  icon_512: "sample/icon-512.png"
+
+      expect(theme.icons).to eq(
+        favicon_32: "sample/favicon-32x32.png",
+        favicon_16: "sample/favicon-16x16.png",
+        apple_touch_icon: "sample/apple-touch-icon.png",
+        mask_icon: "sample/safari-pinned-tab.svg",
+        icon_192: "sample/icon-192.png",
+        icon_512: "sample/icon-512.png"
+      )
+    end
+
+    it "accepts a subset of the keys" do
+      theme.icons favicon_32: "sample/favicon-32x32.png"
+
+      expect(theme.icons).to eq(favicon_32: "sample/favicon-32x32.png")
+    end
+
+    it "drops blank paths" do
+      theme.icons favicon_32: "sample/favicon-32x32.png", favicon_16: nil
+
+      expect(theme.icons).to eq(favicon_32: "sample/favicon-32x32.png")
+    end
+
+    it "raises on an unknown key" do
+      expect { theme.icons favicon_64: "sample/favicon-64x64.png" }
+        .to raise_error(ArgumentError, /favicon_64/)
+    end
+  end
+
+  describe "#mask_icon_color" do
+    it "stores the colour as a string" do
+      theme.mask_icon_color "#FF7AA7"
+
+      expect(theme.mask_icon_color).to eq("#FF7AA7")
+    end
+  end
+
+  describe "#background_color" do
+    it "stores the manifest background colour" do
+      theme.background_color "#040f39"
+
+      expect(theme.background_color).to eq("#040f39")
+      expect(theme.manifest_background_color).to eq("#040f39")
+    end
+
+    it "falls back to the theme colour when unset" do
+      theme.theme_color "#ff7aa7"
+
+      expect(theme.background_color).to be_nil
+      expect(theme.manifest_background_color).to eq("#ff7aa7")
+    end
+  end
+
+  describe "#og_image" do
+    it "stores the path with its dimensions" do
+      theme.og_image "sample/og.png", width: 1200, height: 675
+
+      expect(theme.og_image).to eq(path: "sample/og.png", width: 1200, height: 675)
+    end
+
+    it "allows dimensions to be omitted" do
+      theme.og_image "sample/og.png"
+
+      expect(theme.og_image).to eq(path: "sample/og.png", width: nil, height: nil)
+    end
   end
 
   it "lets a theme label the mobile menu toggle" do

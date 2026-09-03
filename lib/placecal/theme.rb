@@ -19,6 +19,11 @@ module PlaceCal
   class Theme
     EVENT_FILTER_STYLES = %i[date_picker day_strip].freeze
 
+    # Icon slots a theme may fill. Each value is an asset logical path
+    # (e.g. "transdimension/favicons/favicon-32x32.png"). A theme that sets
+    # any of these replaces core's favicon and touch icon entirely.
+    ICON_KEYS = %i[favicon_32 favicon_16 apple_touch_icon mask_icon icon_192 icon_512].freeze
+
     attr_reader :name
 
     # @param name [Symbol, String]
@@ -37,6 +42,10 @@ module PlaceCal
       @event_filter_style = :date_picker
       @nav_join = true
       @menu_label = false
+      @icons = {}
+      @mask_icon_color = nil
+      @background_color = nil
+      @og_image = nil
     end
 
     def core?
@@ -79,6 +88,75 @@ module PlaceCal
       return @theme_color if value.nil?
 
       @theme_color = value.to_s
+    end
+
+    # The theme's own favicons, touch icon, Safari mask icon and manifest
+    # icons. Given as asset logical paths, resolved with `image_url` at render
+    # time, so an engine ships them under app/assets/images/<extension>/.
+    #
+    #   theme.icons favicon_32: "transdimension/favicons/favicon-32x32.png",
+    #               favicon_16: "transdimension/favicons/favicon-16x16.png",
+    #               apple_touch_icon: "transdimension/favicons/apple-touch-icon.png",
+    #               mask_icon: "transdimension/favicons/safari-pinned-tab.svg",
+    #               icon_192: "transdimension/favicons/android-chrome-192x192.png",
+    #               icon_512: "transdimension/favicons/android-chrome-512x512.png"
+    #
+    # When any icon is set the layout links the theme's icons in place of
+    # core's favicon.png and apple-touch-icon.png. Defaults to {}.
+    #
+    # @param paths [Hash] any subset of ICON_KEYS
+    # @raise [ArgumentError] on an unknown key
+    # @return [Hash] the icon paths when called with no arguments
+    def icons(**paths)
+      return @icons if paths.empty?
+
+      unknown = paths.keys - ICON_KEYS
+      raise ArgumentError, "unknown icon key(s) #{unknown.inspect}, expected any of #{ICON_KEYS.inspect}" if unknown.any?
+
+      @icons = paths.transform_values { |path| path&.to_s.presence }.compact
+    end
+
+    # Colour for the Safari pinned-tab mask icon, used as the `color`
+    # attribute of `<link rel="mask-icon">`.
+    #
+    # @param value [String, nil] hex colour code, e.g. "#FF7AA7"
+    def mask_icon_color(value = nil)
+      return @mask_icon_color if value.nil?
+
+      @mask_icon_color = value.to_s
+    end
+
+    # Splash background colour for the web manifest. Distinct from
+    # `theme_color`, which colours the browser chrome.
+    #
+    # @param value [String, nil] hex colour code, e.g. "#040f39"
+    def background_color(value = nil)
+      return @background_color if value.nil?
+
+      @background_color = value.to_s
+    end
+
+    # The manifest's background_color, falling back to the theme colour when
+    # the theme sets only one of the two.
+    #
+    # @return [String, nil]
+    def manifest_background_color
+      @background_color || @theme_color
+    end
+
+    # A static Open Graph share image for the theme's sites, replacing core's
+    # generated share card.
+    #
+    #   theme.og_image "transdimension/og.png", width: 1200, height: 675
+    #
+    # @param path [String, nil] asset logical path
+    # @param width [Integer, nil]
+    # @param height [Integer, nil]
+    # @return [Hash, nil] { path:, width:, height: } when called with no arguments
+    def og_image(path = nil, width: nil, height: nil)
+      return @og_image if path.nil?
+
+      @og_image = { path: path.to_s, width: width, height: height }
     end
 
     # @param value [String, nil] Phlex component class name rendered in place
