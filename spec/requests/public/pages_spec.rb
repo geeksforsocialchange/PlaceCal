@@ -202,6 +202,16 @@ RSpec.describe "Public Pages", type: :request do
         expect(response).to have_http_status(:not_found)
       end
 
+      it "serves the page as HTML only, not as JSON" do
+        create(:page, site: site, slug: "about", title: "About Hulme")
+
+        get "http://hulme.lvh.me/about"
+        expect(response).to have_http_status(:ok)
+
+        expect { get "http://hulme.lvh.me/about.json" }
+          .to raise_error(ActionController::RoutingError)
+      end
+
       it "404s for an unknown slug" do
         get "http://hulme.lvh.me/nothing-here"
 
