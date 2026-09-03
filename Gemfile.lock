@@ -1,3 +1,11 @@
+GIT
+  remote: https://github.com/geeksforsocialchange/placecal-theme-transdimension.git
+  revision: b4c29b7f0182a99ac77d26b2faa2ffb669266ae2
+  tag: v0.1.0
+  specs:
+    placecal-theme-transdimension (0.1.0)
+      rails (>= 8.0)
+
 GEM
   remote: https://gem.coop/
   specs:
@@ -798,6 +806,7 @@ DEPENDENCIES
   paper_trail
   pg
   phlex-rails (~> 2.3)
+  placecal-theme-transdimension!
   propshaft
   puma
   pundit
