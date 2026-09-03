@@ -13,7 +13,9 @@ module ArticlesHelper
   end
 
   # Plain-text excerpt: the body is markdown, so render it and strip the tags
-  # rather than showing raw syntax in listings.
+  # rather than showing raw syntax in listings. The length is a locale key so a
+  # theme whose card layout wants a shorter or longer lead-in can override it
+  # through theme_overrides rather than forking the view.
   #
   # Take the text through Nokogiri rather than strip_tags: strip_tags returns
   # entity-encoded text, which truncate then escapes a second time, so an "&"
@@ -24,6 +26,6 @@ module ArticlesHelper
     html = Kramdown::Document.new(article.body.to_s).to_html
     fragment = Nokogiri::HTML5.fragment(html)
     fragment.css('script, style').each(&:remove)
-    truncate fragment.text.squish, length: 200, separator: ' '
+    truncate fragment.text.squish, length: t('news.index.excerpt_length').to_i, separator: ' '
   end
 end

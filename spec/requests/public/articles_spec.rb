@@ -29,6 +29,15 @@ RSpec.describe "Public Articles (News)", type: :request do
         expect(response.body).to include(partner1.name)
         expect(response.body).to include(partner2.name)
       end
+
+      it "renders the byline as links, with no trailing full stop" do
+        get news_index_url(host: "#{site.slug}.lvh.me")
+
+        byline = Nokogiri::HTML(response.body).at_css(".articles__partners")
+
+        expect(byline.css("a").map(&:text)).to contain_exactly(partner1.name, partner2.name)
+        expect(byline.text.strip).not_to end_with(".")
+      end
     end
 
     context "with articles not linked to partners" do
