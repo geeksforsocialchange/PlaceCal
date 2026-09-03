@@ -59,10 +59,27 @@ RSpec.describe PlaceCal::Theme do
     end
 
     it "calls a block with the site when one was given" do
+      mossley = build(:site, slug: "mossley")
       theme.stylesheet { |s| "themes/custom/#{s.slug}" }
       theme.map_style(&:slug)
-      expect(theme.stylesheet_for(site)).to eq("themes/custom/hulme")
+      expect(theme.stylesheet_for(mossley)).to eq("themes/custom/mossley")
       expect(theme.map_style_for(site)).to eq("hulme")
+    end
+
+    it "returns nil and logs when the stylesheet is missing from the pipeline" do
+      allow(Rails.logger).to receive(:error)
+      theme.stylesheet "themes/no-such-theme"
+
+      expect(theme.stylesheet_for(site)).to be_nil
+      expect(Rails.logger).to have_received(:error).with(%r{themes/no-such-theme\.css})
+    end
+
+    it "returns nil and logs when a block resolves to a missing stylesheet" do
+      allow(Rails.logger).to receive(:error)
+      theme.stylesheet { |s| "themes/custom/#{s.slug}" }
+
+      expect(theme.stylesheet_for(site)).to be_nil
+      expect(Rails.logger).to have_received(:error).with(%r{themes/custom/hulme\.css})
     end
 
     it "returns nil when nothing is set or the block returns nil" do
@@ -78,6 +95,22 @@ RSpec.describe PlaceCal::Theme do
       theme.head "Components::Footer"
       expect(theme.homepage_view_class).to eq(Views::Sites::Default)
       expect(theme.head_class).to eq(Components::Footer)
+    end
+
+    it "returns nil and logs when a class name no longer resolves" do
+      theme.homepage_view "Nope::Views::Home"
+      theme.head "Nope::Components::Head"
+      theme.footer "Nope::Components::Footer"
+
+      allow(Rails.logger).to receive(:error)
+
+      expect(theme.homepage_view_class).to be_nil
+      expect(theme.head_class).to be_nil
+      expect(theme.footer_class).to be_nil
+
+      expect(Rails.logger).to have_received(:error).with(/homepage_view class Nope::Views::Home/)
+      expect(Rails.logger).to have_received(:error).with(/head class Nope::Components::Head/)
+      expect(Rails.logger).to have_received(:error).with(/footer class Nope::Components::Footer/)
     end
   end
 
