@@ -23,8 +23,10 @@ module RegionFilterable
     @region_tags ||= current_site ? current_site.tags.where(type: 'Partnership').order(:name).to_a : []
   end
 
-  # Only worth offering the filter when there is more than one region to
-  # choose between; sites with zero or one Partnership tag see no change.
+  # Whether the filter is worth offering: only when there is more than one
+  # region to choose between. Components::RegionFilter applies this rule itself,
+  # so callers pass region_tags unconditionally; this predicate is for views
+  # that wrap the filter in their own markup and need to know first.
   #
   # @return [Boolean]
   def region_filter?

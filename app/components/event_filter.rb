@@ -24,7 +24,7 @@ class Components::EventFilter < Components::Base
   end
 
   def view_template
-    RegionFilter(tags: @region_tags, selected: @selected_region) if @region_tags.size > 1
+    RegionFilter(tags: @region_tags, selected: @selected_region)
     if filter_style == :day_strip
       render_day_strip
     else
