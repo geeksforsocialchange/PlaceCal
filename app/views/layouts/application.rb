@@ -11,6 +11,10 @@ class Views::Layouts::Application < Phlex::HTML
   include Phlex::Rails::Helpers::Request
   include Components
 
+  # I18n translate helper, theme-aware (PlaceCal::ThemeTranslation), so a theme
+  # can override page metadata strings for its own sites (#3368 D19).
+  include PlaceCal::ThemeTranslation
+
   def view_template
     doctype
     html(lang: 'en') do
@@ -113,7 +117,7 @@ class Views::Layouts::Application < Phlex::HTML
     elsif site
       # Generated share card for site homepages and other site pages (#2077)
       meta(property: 'og:image', content: og_image_url)
-      meta(property: 'og:image:alt', content: I18n.t('og_image.alt.site', name: site.name))
+      meta(property: 'og:image:alt', content: t('og_image.alt.site', name: site.name))
       meta(property: 'og:image:width', content: '1200')
       meta(property: 'og:image:height', content: '630')
     else
@@ -163,7 +167,7 @@ class Views::Layouts::Application < Phlex::HTML
     if content_for?(:description)
       content_for(:description).to_s
     else
-      I18n.t('meta.description', site: site&.name)
+      t('meta.description', site: site&.name)
     end
   end
 
