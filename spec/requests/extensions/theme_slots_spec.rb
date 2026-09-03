@@ -160,6 +160,25 @@ RSpec.describe "Theme slots", type: :request do
     expect(response.body).to include("9th November 2022")
   end
 
+  # The theme's registered page (theme.page): served at its slug, listed in the
+  # derived nav under its locale label, and listed in the site's sitemap.
+  it "serves the theme's page, links it in the nav and lists it in the sitemap" do
+    get "http://themed.lvh.me/proof"
+
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to include("Example theme fixture proof page")
+    expect(response.body).to include(themed_site.name)
+
+    nav_labels = Nokogiri::HTML(response.body).css("nav.header__menu ul li a").map { |a| a.text.strip }
+    expect(nav_labels).to include(I18n.t("example_theme.nav.proof"))
+    expect(response.body).to include('href="/proof"')
+
+    get "http://themed.lvh.me/sitemap/pages.xml"
+
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to include("<loc>#{themed_site.directory_url.chomp('/')}/proof</loc>")
+  end
+
   # One negative for every slot at once: this catches a slot leaking onto core
   # sites regardless of which slot it is.
   it "renders none of the theme slots on a core site" do
@@ -203,6 +222,11 @@ RSpec.describe "Theme slots", type: :request do
 
       get "http://plain.lvh.me/partners"
       expect(response.body).not_to include("list-heading")
+    end
+
+    aggregate_failures "theme page" do
+      get "http://plain.lvh.me/proof"
+      expect(response).to have_http_status(:not_found)
     end
   end
 end

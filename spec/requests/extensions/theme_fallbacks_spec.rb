@@ -89,6 +89,54 @@ RSpec.describe "Theme fallbacks", :theme_registry, type: :request do
     end
   end
 
+  # Theme pages (theme.page): core serves /:slug only when the current site's
+  # theme registers that slug and its view class resolves.
+  context "with theme pages" do
+    before do
+      site_on("example_theme", "themed")
+      site_on("pink", "plain")
+    end
+
+    it "404s for a slug the theme does not register" do
+      get "http://themed.lvh.me/nothing-here"
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "404s for a theme page slug on a site whose theme is core's" do
+      get "http://plain.lvh.me/proof"
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "404s on the nationwide directory, which has no site and so no theme" do
+      get "http://lvh.me/proof"
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "404s when the registered view class no longer resolves" do
+      PlaceCal::Extensions.register_theme(:pagey) do |theme|
+        theme.page "about", "Nope::Views::About"
+      end
+      site_on("pagey", "pagey")
+      allow(Rails.logger).to receive(:error)
+
+      get "http://pagey.lvh.me/about"
+
+      expect(response).to have_http_status(:not_found)
+      expect(Rails.logger).to have_received(:error).with(/page about class Nope::Views::About/)
+    end
+
+    it "falls back to core's privacy page when the theme registers none" do
+      get "http://themed.lvh.me/privacy"
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to match(/privacy/i)
+      expect(response.body).not_to include("Example theme fixture proof page")
+    end
+  end
+
   context "with a theme that pushes head markup through content_for" do
     it "renders the pushed markup inside <head>" do
       PlaceCal::Extensions.register_theme(:head_fallback) do |theme|

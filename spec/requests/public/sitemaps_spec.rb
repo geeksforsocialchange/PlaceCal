@@ -181,16 +181,7 @@ RSpec.describe "Public Sitemaps", type: :request do
         expect(response.body).not_to include("https://placecal.org/")
       end
 
-      # The site's own privacy page and core's /privacy are the same URL.
-      it "lists /privacy once when the site publishes its own privacy page" do
-        create(:page, site: local_site, slug: "privacy", title: "Privacy")
-
-        get "/sitemap/pages.xml", headers: { "Host" => host }
-
-        expect(response.body.scan("<loc>https://mossley.placecal.org/privacy</loc>").size).to eq(1)
-      end
-
-      it "lists /privacy once when the site has no page of its own" do
+      it "lists /privacy once" do
         get "/sitemap/pages.xml", headers: { "Host" => host }
 
         expect(response.body.scan("<loc>https://mossley.placecal.org/privacy</loc>").size).to eq(1)

@@ -2,6 +2,10 @@ en:
   example_theme:
     nav:
       donate: Donate to the fixture
+      proof: Proof page
+    proof:
+      title: Proof
+      heading: Example theme fixture proof page
     home:
       title: Example theme
       heading: Example theme fixture homepage

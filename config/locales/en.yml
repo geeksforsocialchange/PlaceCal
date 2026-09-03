@@ -42,8 +42,8 @@ en:
       close: "Close"
 
   # Public navigation labels. A site's nav is derived from its own data
-  # (#3368 D6), so these are the only fixed items; Pages contribute their own
-  # titles.
+  # (#3368 D6), so these are the only fixed items; a theme's registered pages
+  # contribute their own labels.
   navigation:
     menu: "Menu"
     directory:
@@ -395,6 +395,8 @@ en:
       older: "Older news items"
       # strftime pattern for the article card date; themes may override
       date_format: "%B %Y"
+      # characters of body text shown as the card excerpt; themes may override
+      excerpt_length: "200"
       title: "News from your area"
       standfirst: ""
       standfirst_detail: ""
@@ -559,9 +561,6 @@ en:
       partner:
         one: "Partner"
         other: "Partners"
-      page:
-        one: "Page"
-        other: "Pages"
       partnership:
         one: "Partnership"
         other: "Partnerships"
@@ -637,16 +636,6 @@ en:
         unit_code_key: "Unit Code Key"
         unit_code_value: "Unit Code Value"
 
-      page:
-        <<: *default_attrs
-        title: "Title"
-        body: "Body"
-        position: "Position"
-        show_in_nav: "Show in navigation"
-        is_published: "Published"
-        site: "Site"
-        site_id: "Site"
-
       partner:
         <<: *default_attrs
         tag_ids: ""
@@ -692,11 +681,6 @@ en:
           one: "%{count} error prohibited this %{model} from being saved"
           other: "%{count} errors prohibited this %{model} from being saved"
       models:
-        page:
-          attributes:
-            slug:
-              invalid_page_slug: "may only contain lowercase letters, numbers and hyphens"
-              reserved_page_slug: "is reserved by PlaceCal and cannot be used for a page"
         partner:
           attributes:
             tag_ids:

@@ -114,12 +114,10 @@ RSpec.describe Components::Footer, type: :component do
       end
     end
 
-    context "when the site has its own privacy page in the nav" do
-      before { create(:nav_page, site: site, title: "Privacy notice", slug: "privacy") }
-
+    context "when the derived nav already carries a privacy link" do
       let(:navigation) { core_navigation + [["Privacy notice", "/privacy"]] }
 
-      it "lists it once, under the page's own title, at /privacy" do
+      it "lists /privacy once, under the label the nav gave it" do
         labels = footer_nav_labels(navigation)
 
         expect(labels.count("Privacy notice")).to eq(1)

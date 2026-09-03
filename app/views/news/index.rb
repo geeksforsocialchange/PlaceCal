@@ -38,12 +38,7 @@ class Views::News::Index < Views::Base
       div(class: 'gi gi__4-5 articles__main') do
         h2(class: 'articles__title') { link_to article.title, news_path(article) }
 
-        if article.partners.present?
-          p(class: 'articles__partners') do
-            article_partner_links(article)
-            plain '.'
-          end
-        end
+        p(class: 'articles__partners') { article_partner_links(article) } if article.partners.present?
 
         div(class: 'g articles__content') do
           div(class: 'gi articles__body') do

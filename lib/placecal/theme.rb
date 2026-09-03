@@ -19,6 +19,26 @@ module PlaceCal
   class Theme
     EVENT_FILTER_STYLES = %i[date_picker day_strip].freeze
 
+    # Slug format for a theme page (`theme.page`). Same shape as the URLs core
+    # already serves, so a theme page cannot introduce a path segment the
+    # router would not match.
+    PAGE_SLUG_FORMAT = /\A[a-z0-9-]+\z/
+
+    # Path prefixes served outside the Rails router (Propshaft and friends), so
+    # they never appear in `Rails.application.routes` but would still shadow a
+    # theme page.
+    NON_ROUTED_RESERVED_SLUGS = %w[assets packs manifest].freeze
+
+    # `privacy` is deliberately allowed even though core routes `/privacy`.
+    # PagesController#privacy prefers the theme's own privacy page and only
+    # falls back to the directory markdown, so a partnership can supply its own
+    # privacy copy at the conventional URL (#3368 D14). No other core route is
+    # overridable this way.
+    OVERRIDABLE_ROUTE_SLUGS = %w[privacy].freeze
+
+    # Returned by #pages for a theme that registers none, including NONE.
+    NO_PAGES = {}.freeze
+
     # Icon slots a theme may fill. Each value is an asset logical path
     # (e.g. "transdimension/favicons/favicon-32x32.png"). A theme that sets
     # any of these replaces core's favicon and touch icon entirely.
@@ -39,6 +59,36 @@ module PlaceCal
       # @param cast [Symbol] :to_s or :boolean
       # @param default [Object] the value an instance starts with
       # @param predicate [Boolean] also define a `name?` reader
+      # Slugs a theme page may not claim, because a core route already owns
+      # that first path segment. Derived from the router so new core routes are
+      # covered automatically.
+      #
+      # Computed lazily and memoised rather than at registration time: an
+      # engine registers its theme from an initializer, long before the route
+      # set is drawn, so the check runs the first time a theme's pages are
+      # read (the first request that renders a nav, a page or a sitemap).
+      #
+      # @return [Array<String>]
+      def reserved_page_slugs
+        @reserved_page_slugs ||= begin
+          routed = Rails.application.routes.routes.filter_map do |route|
+            next if route.constraints[:subdomain] == Site::ADMIN_SUBDOMAIN
+
+            segment = route.path.spec.to_s.split('/')[1].to_s.sub(/\(.*/, '')
+            next if segment.blank? || segment.start_with?('*', ':')
+
+            segment.downcase
+          end
+
+          (routed + NON_ROUTED_RESERVED_SLUGS - OVERRIDABLE_ROUTE_SLUGS).uniq.sort.freeze
+        end
+      end
+
+      # Clears the memoised reserved slug list (tests that redraw routes).
+      def reset_reserved_page_slugs!
+        @reserved_page_slugs = nil
+      end
+
       def setting(name, cast: :to_s, default: nil, predicate: false)
         settings[name] = default
         ivar = :"@#{name}"
@@ -68,6 +118,7 @@ module PlaceCal
       @icons = {}
       @og_image = nil
       @nav_cta = nil
+      @pages = {}
       @event_filter_style = :date_picker
     end
 
@@ -178,6 +229,48 @@ module PlaceCal
       @nav_cta = { label_key: label_key.to_s, url: url.to_s }
     end
 
+    # A static content page the theme serves at `/<slug>` on its sites.
+    # Core keeps no page content of its own: the copy lives in the theme's
+    # own Phlex view, which is constructed with `new(site:)`.
+    #
+    #   theme.page 'about', 'MyExt::Views::About', nav_label_key: 'my_ext.nav.about'
+    #
+    # Repeatable; pages keep their registration order, which is the order they
+    # appear in the site nav. A page with no `nav_label_key` is served but not
+    # linked from the nav.
+    #
+    # @param slug [String, Symbol] first path segment, lowercase letters, numbers and hyphens
+    # @param view_class_name [String] Phlex view class name, resolved lazily
+    # @param nav_label_key [String, nil] locale key for the nav label
+    # @raise [ArgumentError] on a malformed slug
+    def page(slug, view_class_name, nav_label_key: nil)
+      slug = slug.to_s
+      raise ArgumentError, "invalid page slug #{slug.inspect}, expected lowercase letters, numbers and hyphens" unless slug.match?(PAGE_SLUG_FORMAT)
+
+      @pages[slug] = { view: view_class_name.to_s, nav_label_key: nav_label_key&.to_s }
+      self
+    end
+
+    # @return [Hash{String => Hash}] frozen, in registration order,
+    #   `slug => { view:, nav_label_key: }`. Empty for a theme with no pages.
+    # @raise [ArgumentError] when a slug shadows a core route
+    def pages
+      return NO_PAGES if @pages.empty?
+
+      reject_reserved_slugs!
+      @pages.dup.freeze
+    end
+
+    # @param slug [String]
+    # @return [Class, nil] the page's Phlex view class, or nil when the theme
+    #   has no such page or the class no longer resolves
+    def page_view_class(slug)
+      entry = pages[slug.to_s]
+      return nil if entry.nil?
+
+      constant_for(entry[:view], "page #{slug}")
+    end
+
     # Whether the derived site nav (SiteNavigation) includes the Join link
     # when the site takes enquiries. A theme whose footer carries the link
     # instead sets this to false. Defaults to true.
@@ -262,6 +355,15 @@ module PlaceCal
     end
 
     private
+
+    # Runs on the first read of #pages, not at registration: see
+    # .reserved_page_slugs for why.
+    def reject_reserved_slugs!
+      reserved = self.class.reserved_page_slugs & @pages.keys
+      return if reserved.empty?
+
+      raise ArgumentError, "theme #{name}: page slug(s) #{reserved.inspect} are reserved by core routes"
+    end
 
     def resolve(setting, site)
       value = setting.respond_to?(:call) ? setting.call(site) : setting
