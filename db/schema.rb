@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_10_090000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_02_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -203,6 +203,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_10_090000) do
     t.string "verb", null: false
     t.index ["partner_object_id"], name: "index_organisation_relationships_on_partner_object_id"
     t.index ["partner_subject_id", "verb", "partner_object_id"], name: "unique_organisation_relationship_row", unique: true
+  end
+
+  create_table "pages", force: :cascade do |t|
+    t.text "body"
+    t.text "body_html"
+    t.datetime "created_at", null: false
+    t.boolean "is_published", default: false, null: false
+    t.integer "position", default: 0, null: false
+    t.boolean "show_in_nav", default: false, null: false
+    t.bigint "site_id", null: false
+    t.string "slug", null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.index ["site_id", "slug"], name: "index_pages_on_site_id_and_slug", unique: true
   end
 
   create_table "partner_tags", force: :cascade do |t|
@@ -421,6 +435,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_10_090000) do
   add_foreign_key "neighbourhoods_users", "users"
   add_foreign_key "organisation_relationships", "partners", column: "partner_object_id"
   add_foreign_key "organisation_relationships", "partners", column: "partner_subject_id"
+  add_foreign_key "pages", "sites"
   add_foreign_key "partner_tags", "partners"
   add_foreign_key "partner_tags", "tags"
   add_foreign_key "partners", "addresses"

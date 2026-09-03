@@ -98,6 +98,8 @@ class Site < ApplicationRecord
                                     where(sites_neighbourhoods: { relation_type: 'Primary' })
                                   }, source: :neighbourhood, through: :sites_neighbourhood
 
+  # Static content pages served at /:slug on this site (#3368, D5)
+  has_many :pages, dependent: :destroy
   has_many :sites_neighbourhoods, dependent: :destroy
   has_many :secondary_neighbourhoods, lambda {
                                         where(sites_neighbourhoods: { relation_type: 'Secondary' })

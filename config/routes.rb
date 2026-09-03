@@ -44,6 +44,8 @@ Rails.application.routes.draw do
     end
     resources :partnerships
     resources :sites
+    # No admin show action: pages are edited, and previewed on the public site.
+    resources :pages, except: [:show]
     resources :supporters
     resources :tags
     resources :users, except: [:show] do
