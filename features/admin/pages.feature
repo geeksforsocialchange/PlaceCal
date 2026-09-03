@@ -25,10 +25,8 @@ Feature: Site Page Management
     And the site "Riverside Calendar" should have a page at "about"
 
   Scenario: A reserved slug is rejected
-    When I go to the "Pages" admin section
-    And I click "Add Page"
-    Then I should see "New Page"
-    When I fill in "Title" with "Events"
+    When I open the new page form
+    And I fill in "Title" with "Events"
     And I fill in "Slug" with "events"
     And I click "Save"
     Then I should see "reserved by PlaceCal"
