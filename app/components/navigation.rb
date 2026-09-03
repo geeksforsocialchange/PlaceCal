@@ -78,7 +78,22 @@ class Components::Navigation < Components::Base
           li(class: menu_li_classes) { active_link_to(link_text, link_path, data: { turbolinks: false }, base_css_class: menu_link_classes, active_css_class: menu_active_classes) }
         end
         render_join_button if @site.nil?
+        render_theme_cta if theme_cta
       end
+    end
+  end
+
+  # Theme call-to-action (#3368 D1): a theme may register `nav_cta`, for
+  # example a Donate link; core renders it as the last nav item.
+  def theme_cta
+    @theme_cta ||= @site&.theme_definition&.nav_cta
+  end
+
+  def render_theme_cta
+    li(class: 'text-center max-md:py-3 header__cta') do
+      link_to(t(theme_cta[:label_key]), theme_cta[:url],
+              class: 'header__cta-link inline-flex items-center rounded-sm bg-background px-4 py-1.5 text-detail font-bold no-underline',
+              target: '_blank', rel: 'noopener')
     end
   end
 
@@ -168,7 +183,7 @@ class Components::Navigation < Components::Base
                  ['md:hidden']
                end)
            ], data: { action: 'click->mobile-menu#toggle', turbo: 'false' }) do
-      span(class: 'text-base font-semibold') { 'Menu' } if @site.nil?
+      span(class: 'text-base font-semibold header__toggle-label') { t('navigation.menu') }
       raw(view_context.icon(:misc_menu, size: nil, css_class: 'size-8 fill-secondary'))
     end
   end

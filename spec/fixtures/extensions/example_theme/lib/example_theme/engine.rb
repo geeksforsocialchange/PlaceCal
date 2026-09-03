@@ -30,6 +30,8 @@ module ExampleTheme
         theme.homepage_view "ExampleTheme::Views::Home"
         theme.head "ExampleTheme::Components::Head"
         theme.footer "ExampleTheme::Components::Footer"
+        theme.nav_cta "example_theme.nav.donate", "https://example.org/donate"
+        theme.map_style "example_theme"
         theme.event_filter_style :day_strip
       end
     end

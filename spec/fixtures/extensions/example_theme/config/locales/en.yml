@@ -1,5 +1,7 @@
 en:
   example_theme:
+    nav:
+      donate: Donate to the fixture
     home:
       title: Example theme
       heading: Example theme fixture homepage

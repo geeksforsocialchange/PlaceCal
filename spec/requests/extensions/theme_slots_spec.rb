@@ -90,3 +90,33 @@ RSpec.describe "Show page section name and page date format", type: :request do
     expect(response.body).to include(" 2 Nov")
   end
 end
+
+RSpec.describe "Theme nav call to action, menu label and map style", type: :request do
+  let(:ward) { create(:riverside_ward) }
+
+  it "renders the theme's nav call to action and the menu label on a themed site" do
+    site = create(:site, slug: "themed", theme: "example_theme", url: "https://themed.lvh.me")
+    site.neighbourhoods << ward
+    get "http://themed.lvh.me/events"
+    expect(response.body).to include('href="https://example.org/donate"')
+    expect(response.body).to include("Donate to the fixture")
+    expect(response.body).to include('header__toggle-label">Menu<')
+  end
+
+  it "renders no call to action on other themes" do
+    site = create(:site, slug: "plain", theme: "pink", url: "https://plain.lvh.me")
+    site.neighbourhoods << ward
+    get "http://plain.lvh.me/events"
+    expect(response.body).not_to include("header__cta")
+    expect(response.body).to include('header__toggle-label">Menu<')
+  end
+
+  it "resolves a theme map style shipped as an engine asset" do
+    site = create(:site, slug: "themed", theme: "example_theme", url: "https://themed.lvh.me")
+    helper = Class.new { include MapHelper }.new
+    expect(helper.send(:style_url_for_site, site))
+      .to match(%r{\A/assets/map-styles/example_theme-[0-9a-f]+\.json\z})
+    plain = create(:site, slug: "plain", theme: "pink", url: "https://plain.lvh.me")
+    expect(helper.send(:style_url_for_site, plain)).to eq("/map-styles/pink.json")
+  end
+end

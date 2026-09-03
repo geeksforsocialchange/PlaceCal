@@ -85,6 +85,18 @@ module PlaceCal
       @footer = value.to_s
     end
 
+    # Optional call-to-action button at the end of the site nav (for example
+    # a Donate link). Rendered as a link to `url` labelled by the locale key.
+    #
+    # @param label_key [String, nil] locale key for the label
+    # @param url [String, nil]
+    # @return [Hash, nil] { label_key:, url: }
+    def nav_cta(label_key = nil, url = nil)
+      return @nav_cta if label_key.nil?
+
+      @nav_cta = { label_key: label_key.to_s, url: url.to_s }
+    end
+
     # @param value [Symbol, nil] one of EVENT_FILTER_STYLES
     def event_filter_style(value = nil)
       return @event_filter_style if value.nil?
