@@ -212,22 +212,28 @@ class EventsQuery
         .or(base.where(addresses: { neighbourhood_id: site_neighbourhood_ids }))
   end
 
-  # For sites with tags: must load partners for legacy name/postcode address matching
+  # For sites with tags: events organised by, or hosted at, a partner in the
+  # site scope, plus the legacy venue match. The partner set stays in the
+  # database as a subquery, so a tag-only site does not load every partner
+  # row on every events request (#3368).
   def events_for_tagged_site(partners_scope)
-    partner_records = partners_scope.includes(:address).load
-    partner_names = partner_records.map { |p| p.name.downcase }
-    partner_postcodes = partner_records.filter_map(&:address).map { |a| a.postcode.downcase }
+    partner_subquery = partners_scope.select(:id)
+    base = Event.left_joins(:address)
+    base.where(organiser_id: partner_subquery)
+        .or(base.where(place_id: partner_subquery))
+        .or(base.where(legacy_venue_match_sql(partner_subquery)))
+  end
 
-    Event
-      .left_joins(:address)
-      .where(
-        'organiser_id IN (:partner_ids) OR ' \
-        '(lower(addresses.street_address) IN (:partner_names) AND ' \
-        'lower(addresses.postcode) IN (:partner_postcodes))',
-        partner_ids: partner_records.map(&:id),
-        partner_names: partner_names,
-        partner_postcodes: partner_postcodes
-      )
+  # Legacy venue matching, from 2024 (commit 5b90f19), for events whose place
+  # was never set: an event counts as happening at a partner when its address
+  # street line is the partner's name and the postcodes agree.
+  def legacy_venue_match_sql(partner_subquery)
+    <<~SQL.squish
+      EXISTS (SELECT 1 FROM partners venue_partners
+        INNER JOIN addresses venue_addresses ON venue_addresses.id = venue_partners.address_id
+        WHERE venue_partners.id IN (#{partner_subquery.to_sql})
+        AND lower(venue_partners.name) = lower(addresses.street_address) AND lower(venue_addresses.postcode) = lower(addresses.postcode))
+    SQL
   end
 
   # ===================

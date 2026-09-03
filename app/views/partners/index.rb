@@ -15,7 +15,7 @@ class Views::Partners::Index < Views::Base
 
     Hero(t('partners.index.title'), site.tagline, standfirst: t('partners.index.standfirst'),
                                                   standfirst_detail: t('partners.index.standfirst_detail'))
-    turbo_frame_tag 'partner_previews' do
+    turbo_frame_tag 'partner_previews', data: { turbo_action: 'advance' } do
       div(class: 'container-public mb-32') do
         ListHeading(t('partners.index.list_heading'))
         Breadcrumb(trail: [['Partners', partners_path]], site_name: site.name) do

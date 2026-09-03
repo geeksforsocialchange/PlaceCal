@@ -714,6 +714,15 @@ RSpec.describe "Public Partners", type: :request do
         expect(response.body).to include("South Partner")
       end
 
+      it "advances the URL when the partner list frame is swapped" do
+        get partners_url(host: "regions.lvh.me")
+
+        frame = response.body[/<turbo-frame[^>]*id="partner_previews"[^>]*>/]
+
+        expect(frame).to be_present
+        expect(frame).to include('data-turbo-action="advance"')
+      end
+
       it "carries the region on the site navigation links" do
         get partners_url(host: "regions.lvh.me", region: south_tag.slug)
 
