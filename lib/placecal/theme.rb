@@ -125,10 +125,19 @@ module PlaceCal
 
     # ---- Resolution
 
+    # A theme's stylesheet is only linked when the asset pipeline can resolve
+    # it. A renamed or unbuilt engine CSS file would otherwise raise
+    # Propshaft::MissingAssetError on every page of the site (#3368 WP 3.1).
+    #
     # @param site [Site]
     # @return [String, nil] stylesheet logical path for this site, or nil
     def stylesheet_for(site)
-      resolve(@stylesheet, site)
+      path = resolve(@stylesheet, site)
+      return nil if path.nil?
+      return path if asset_resolves?("#{path}.css")
+
+      Rails.logger.error("PlaceCal theme #{name}: stylesheet #{path}.css does not resolve in the asset pipeline; rendering without it")
+      nil
     end
 
     # @param site [Site]
@@ -140,17 +149,17 @@ module PlaceCal
     # @return [Class, nil] the homepage Phlex view class, or nil when the
     #   theme uses core's default homepage
     def homepage_view_class
-      @homepage_view&.constantize
+      constant_for(@homepage_view, 'homepage_view')
     end
 
     # @return [Class, nil] the head Phlex component class, or nil
     def head_class
-      @head&.constantize
+      constant_for(@head, 'head')
     end
 
     # @return [Class, nil] the footer Phlex component class, or nil
     def footer_class
-      @footer&.constantize
+      constant_for(@footer, 'footer')
     end
 
     # Human label for admin selects. Themes may translate `themes.<name>.label`.
@@ -167,6 +176,28 @@ module PlaceCal
     def resolve(setting, site)
       value = setting.respond_to?(:call) ? setting.call(site) : setting
       value&.to_s.presence
+    end
+
+    # @param logical_path [String] asset path including extension
+    # @return [Boolean] whether Propshaft can serve the asset
+    def asset_resolves?(logical_path)
+      Rails.application.assets&.load_path&.find(logical_path).present?
+    end
+
+    # A theme names its classes as strings so registration can happen before
+    # autoloading is ready. A renamed or removed class must not take the site
+    # down: log it and let core's default render instead (#3368 WP 3.1).
+    #
+    # @param class_name [String, nil]
+    # @param setting [String] which DSL setting is being resolved, for the log
+    # @return [Class, nil]
+    def constant_for(class_name, setting)
+      return nil if class_name.nil?
+
+      class_name.constantize
+    rescue NameError
+      Rails.logger.error("PlaceCal theme #{name}: #{setting} class #{class_name} could not be resolved; falling back to core")
+      nil
     end
   end
 end
