@@ -140,6 +140,43 @@ RSpec.describe "Public Sites", type: :request do
         expect(response.body).to include("region-filter")
       end
 
+      # The control is only worth having if the lists below it obey it (D7).
+      context "when the homepage help cards list partners" do
+        let(:computers) { create(:tag, name: "Computers", slug: "computers", type: "Facility") }
+
+        def partner_in(region_tag, name)
+          partner = create(:partner, name: name, address: create(:address, neighbourhood: region_ward))
+          partner.tags << [region_tag, computers]
+          partner
+        end
+
+        before do
+          partner_in(north_tag, "Northern Library")
+          partner_in(south_tag, "Southern Library")
+        end
+
+        it "lists every region's partners with no region selected" do
+          get "http://regions.lvh.me"
+
+          expect(response.body).to include("Northern Library")
+          expect(response.body).to include("Southern Library")
+        end
+
+        it "lists only the selected region's partners" do
+          get "http://regions.lvh.me?region=#{north_tag.slug}"
+
+          expect(response.body).to include("Northern Library")
+          expect(response.body).not_to include("Southern Library")
+        end
+
+        it "ignores an unknown region slug and lists everything" do
+          get "http://regions.lvh.me?region=nowhere"
+
+          expect(response.body).to include("Northern Library")
+          expect(response.body).to include("Southern Library")
+        end
+      end
+
       it "carries the region on the site navigation links" do
         get "http://regions.lvh.me?region=#{north_tag.slug}"
 
