@@ -54,12 +54,13 @@ class Components::Footer < Components::Base
     end
   end
 
-  # The footer mirrors the derived site nav (#3368 D6) minus Home, plus the
-  # legal and log-in links the footer has always carried.
+  # The footer mirrors the derived site nav (#3368 D6), plus the legal and
+  # log-in links the footer has always carried.
   def nav_links
     return directory_nav_links if @site.nil?
 
     links = [
+      [t('navigation.site.home'), root_path],
       [t('navigation.site.events'), events_path],
       [t('navigation.site.partners'), partners_path]
     ]
@@ -76,7 +77,7 @@ class Components::Footer < Components::Base
   # OVERRIDABLE_ROUTE_SLUGS), so listing it here too would duplicate the link.
   def site_page_links
     @site.pages.in_nav.reject { |page| page.slug == 'privacy' }
-         .map { |page| [page.title, "/#{page.slug}"] }
+         .map { |page| [page.title, site_page_path(page.slug)] }
   end
 
   def directory_nav_links
