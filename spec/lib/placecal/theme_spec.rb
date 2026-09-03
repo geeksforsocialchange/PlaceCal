@@ -17,8 +17,19 @@ RSpec.describe PlaceCal::Theme do
     expect(theme.map_style).to be_nil
     expect(theme.head).to be_nil
     expect(theme.theme_color).to be_nil
+    expect(theme.footer).to be_nil
+    expect(theme.nav_cta).to be_nil
     expect(theme.event_filter_style).to eq(:date_picker)
     expect(theme).to be_nav_join
+    expect(theme.menu_label).to be(false)
+    expect(theme).not_to be_menu_label
+  end
+
+  it "lets a theme label the mobile menu toggle" do
+    theme.menu_label true
+
+    expect(theme.menu_label).to be(true)
+    expect(theme).to be_menu_label
   end
 
   it "lets a theme drop the Join link from the main nav" do

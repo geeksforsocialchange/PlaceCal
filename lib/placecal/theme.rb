@@ -32,8 +32,11 @@ module PlaceCal
       @map_style = nil
       @head = nil
       @theme_color = nil
+      @footer = nil
+      @nav_cta = nil
       @event_filter_style = :date_picker
       @nav_join = true
+      @menu_label = false
     end
 
     def core?
@@ -111,6 +114,21 @@ module PlaceCal
 
     def nav_join?
       @nav_join
+    end
+
+    # Whether the mobile menu toggle shows a "Menu" text label beside the icon.
+    # The nationwide directory always shows it; sites show it only when their
+    # theme opts in. Defaults to false.
+    #
+    # @param value [Boolean, nil]
+    def menu_label(value = nil)
+      return @menu_label if value.nil?
+
+      @menu_label = value ? true : false
+    end
+
+    def menu_label?
+      @menu_label
     end
 
     # @param value [Symbol, nil] one of EVENT_FILTER_STYLES

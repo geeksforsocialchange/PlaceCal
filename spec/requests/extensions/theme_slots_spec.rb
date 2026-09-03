@@ -103,12 +103,12 @@ RSpec.describe "Theme nav call to action, menu label and map style", type: :requ
     expect(response.body).to include('header__toggle-label">Menu<')
   end
 
-  it "renders no call to action on other themes" do
+  it "renders no call to action and no menu label on other themes" do
     site = create(:site, slug: "plain", theme: "pink", url: "https://plain.lvh.me")
     site.neighbourhoods << ward
     get "http://plain.lvh.me/events"
     expect(response.body).not_to include("header__cta")
-    expect(response.body).to include('header__toggle-label">Menu<')
+    expect(response.body).not_to include("header__toggle-label")
   end
 
   it "resolves a theme map style shipped as an engine asset" do
