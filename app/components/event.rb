@@ -137,8 +137,6 @@ class Components::Event < Components::Base
 
   # Formats come from locale keys so a theme can change them (for example a
   # zero-padded day for a big numeral treatment) through theme_overrides.
-  # Formats come from locale keys so a theme can change them (for example a
-  # zero-padded day for a big numeral treatment) through theme_overrides.
   # The page layout has its own keys. `%o` stands for the ordinal day (2nd).
   def formatted_date(date)
     scope = page? ? 'events.page' : 'events.card'

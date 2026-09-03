@@ -83,9 +83,10 @@ RSpec.describe Components::Footer, type: :component do
     context "when the site has its own privacy page in the nav" do
       before { create(:nav_page, site: site, title: "Privacy notice", slug: "privacy") }
 
-      it "does not list it twice: /privacy already serves it" do
-        expect(footer_nav_labels).not_to include("Privacy notice")
-        expect(footer_nav_labels.count(I18n.t("navigation.site.privacy"))).to eq(1)
+      it "lists it once, under the page's own title, at /privacy" do
+        expect(footer_nav_labels.count("Privacy notice")).to eq(1)
+        expect(footer_nav_labels).not_to include(I18n.t("navigation.site.privacy"))
+        expect(page).to have_css(".footer__nav nav a[href='/privacy']", text: "Privacy notice")
       end
     end
   end

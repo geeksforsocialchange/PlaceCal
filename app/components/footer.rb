@@ -66,11 +66,17 @@ class Components::Footer < Components::Base
     ]
     links << [t('navigation.site.news'), news_index_path] if @site.news_article_count.positive?
     links += site_page_links
-    links << [t('navigation.site.privacy'), privacy_path]
+    links << [privacy_label, privacy_path]
     links << [t('navigation.site.terms'), terms_of_use_path]
     links << [t('navigation.site.join'), get_in_touch_path] if @site.contact_email.present?
     links << [t('navigation.site.log_in'), new_user_session_path]
     links
+  end
+
+  # When the site publishes its own privacy page, the footer link carries that
+  # page's title so it matches the header nav.
+  def privacy_label
+    @site.pages.published.find_by(slug: 'privacy')&.title.presence || t('navigation.site.privacy')
   end
 
   # A site's own `privacy` page is served by privacy_path (see Page's
