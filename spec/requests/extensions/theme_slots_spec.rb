@@ -65,3 +65,28 @@ RSpec.describe "Theme-overridable event card and day strip formats", type: :requ
     expect(response.body).not_to include("event__organiser-prefix")
   end
 end
+
+RSpec.describe "Show page section name and page date format", type: :request do
+  let(:ward) { create(:riverside_ward) }
+
+  it "renders the theme's section name and ordinal page date on an event page" do
+    site = create(:site, slug: "themed", theme: "example_theme", url: "https://themed.lvh.me")
+    site.neighbourhoods << ward
+    organiser = create(:riverside_partner, address: create(:riverside_address, neighbourhood: ward))
+    event = create(:event, organiser: organiser, address: nil, dtstart: Time.zone.local(2022, 11, 2, 10), dtend: Time.zone.local(2022, 11, 2, 11))
+    get "http://themed.lvh.me/events/#{event.id}"
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to include('hero__section">Fixture events section</p>')
+    expect(response.body).to include("2nd November 2022")
+  end
+
+  it "renders no section name on other themes" do
+    site = create(:site, slug: "plain", theme: "pink", url: "https://plain.lvh.me")
+    site.neighbourhoods << ward
+    organiser = create(:riverside_partner, address: create(:riverside_address, neighbourhood: ward))
+    event = create(:event, organiser: organiser, address: nil, dtstart: Time.zone.local(2022, 11, 2, 10), dtend: Time.zone.local(2022, 11, 2, 11))
+    get "http://plain.lvh.me/events/#{event.id}"
+    expect(response.body).not_to include("hero__section")
+    expect(response.body).to include(" 2 Nov")
+  end
+end

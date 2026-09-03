@@ -9,6 +9,10 @@ en:
       region_filter:
         all: Anywhere
       events:
+        show:
+          section: Fixture events section
+        page:
+          date_format: "%o %B %Y"
         card:
           date_format: "%d %b"
           organiser_prefix: "by "

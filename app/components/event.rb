@@ -20,7 +20,7 @@ class Components::Event < Components::Base
   private
 
   def render_page_layout
-    Hero(summary, @site_tagline)
+    Hero(summary, @site_tagline, section: t('events.show.section'))
     a(class: 'p-name u-url', href: event_path(id), hidden: true) { summary }
     div(class: 'container-public') { render_event_details }
   end
@@ -137,12 +137,13 @@ class Components::Event < Components::Base
 
   # Formats come from locale keys so a theme can change them (for example a
   # zero-padded day for a big numeral treatment) through theme_overrides.
+  # Formats come from locale keys so a theme can change them (for example a
+  # zero-padded day for a big numeral treatment) through theme_overrides.
+  # The page layout has its own keys. `%o` stands for the ordinal day (2nd).
   def formatted_date(date)
-    if date.year == Time.zone.now.year
-      date.strftime(t('events.card.date_format'))
-    else
-      date.strftime(t('events.card.date_format_with_year'))
-    end
+    scope = page? ? 'events.page' : 'events.card'
+    key = date.year == Time.zone.now.year ? 'date_format' : 'date_format_with_year'
+    date.strftime(t("#{scope}.#{key}").gsub('%o', date.day.ordinalize))
   end
 
   def date

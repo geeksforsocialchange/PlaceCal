@@ -75,7 +75,7 @@ class Views::Partners::Show < Views::Base
 
   def render_local_layout
     div do
-      Hero(partner.name, site.tagline)
+      Hero(partner.name, site.tagline, section: t('partners.show.section'))
 
       div(class: 'container-public mb-32') do
         Breadcrumb(
