@@ -21,7 +21,7 @@ class Components::PartnerFilter < Components::Base
     form_with(**form_data, class: 'filters__form') do
       hidden_field_tag(:region, @selected_region.slug) if @selected_region
       div(class: 'breadcrumb__element breadcrumb__element--last') do
-        span { 'Filter by:' }
+        span { t('filters.filter_by') }
         render_category_filter if show_category_filter?
         render_neighbourhood_filter if show_neighbourhood_filter?
         render_reset_link if any_filter_active?
@@ -45,7 +45,7 @@ class Components::PartnerFilter < Components::Base
     div(class: 'breadcrumb__filters filters') do
       Filter(
         name: 'category',
-        label: 'Category',
+        label: t('filters.category'),
         items: category_items,
         selected_id: @selected_category,
         controller: 'partner-filter-component',
@@ -60,7 +60,7 @@ class Components::PartnerFilter < Components::Base
     div(class: 'breadcrumb__filters filters') do
       Filter(
         name: 'neighbourhood',
-        label: 'Neighbourhood',
+        label: t('filters.neighbourhood'),
         items: neighbourhood_items,
         selected_id: @selected_neighbourhood,
         controller: 'partner-filter-component',
@@ -73,7 +73,7 @@ class Components::PartnerFilter < Components::Base
 
   def render_reset_link
     div(class: 'breadcrumb__filters') do
-      link_to('Reset filters', partners_path(@selected_region ? { region: @selected_region.slug } : {}), class: 'filters__link', data: { turbo_frame: 'partner_previews' })
+      link_to(t('filters.reset'), partners_path(@selected_region ? { region: @selected_region.slug } : {}), class: 'filters__link', data: { turbo_frame: 'partner_previews' })
     end
   end
 

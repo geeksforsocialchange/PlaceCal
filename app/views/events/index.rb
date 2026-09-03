@@ -38,7 +38,7 @@ class Views::Events::Index < Views::Base
   def render_paginator
     div(class: 'paginator', id: 'paginator') do
       div(class: 'paginator__context') do
-        Breadcrumb(trail: [['Events', events_path]], site_name: site.name) do
+        Breadcrumb(trail: [[t('navigation.site.events'), events_path]], site_name: site.name) do
           div(class: 'breadcrumb__actions') do
             today = Time.zone.today
             region_param = selected_region ? "&region=#{selected_region.slug}" : ''

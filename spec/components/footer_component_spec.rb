@@ -51,6 +51,7 @@ RSpec.describe Components::Footer, type: :component do
       it "renders the derived nav in order" do
         expect(footer_nav_labels).to eq(
           [
+            I18n.t("navigation.site.home"),
             I18n.t("navigation.site.events"),
             I18n.t("navigation.site.partners"),
             I18n.t("navigation.site.news"),
@@ -68,6 +69,7 @@ RSpec.describe Components::Footer, type: :component do
       it "renders only the core links" do
         expect(footer_nav_labels).to eq(
           [
+            I18n.t("navigation.site.home"),
             I18n.t("navigation.site.events"),
             I18n.t("navigation.site.partners"),
             I18n.t("navigation.site.privacy"),

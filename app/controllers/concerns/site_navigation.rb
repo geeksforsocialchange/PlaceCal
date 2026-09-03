@@ -47,7 +47,7 @@ module SiteNavigation
   def page_navigation
     return [] if current_site.nil?
 
-    current_site.pages.in_nav.map { |page| [page.title, "/#{page.slug}"] }
+    current_site.pages.in_nav.map { |page| [page.title, site_page_path(page.slug)] }
   end
 
   def join_navigation

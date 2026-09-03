@@ -91,6 +91,7 @@ module ApplicationHelper
   # "Events" stays underlined on an event page. The root link only matches
   # itself, otherwise it would be current everywhere.
   def current_section?(current_path, link_path)
+    return false if link_path.blank?
     return current_path.match(%r{^/?(\?.*)?$}).present? if link_path == '/'
 
     current_path.match(%r{^#{Regexp.escape(link_path)}(/.*)?(\?.*)?$}).present?

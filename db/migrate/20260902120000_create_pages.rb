@@ -6,7 +6,7 @@
 class CreatePages < ActiveRecord::Migration[8.0]
   def change
     create_table :pages do |t|
-      t.references :site, null: false, foreign_key: true, index: true
+      t.references :site, null: false, foreign_key: true, index: false
       t.string :slug, null: false
       t.string :title, null: false
       t.text :body

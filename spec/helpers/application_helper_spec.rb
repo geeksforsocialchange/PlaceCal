@@ -24,5 +24,10 @@ RSpec.describe ApplicationHelper do
       expect(helper.current_section?("/?region=london", "/")).to be(true)
       expect(helper.current_section?("/events", "/")).to be(false)
     end
+
+    it "is never current when the link has no path" do
+      expect(helper.current_section?("/events", nil)).to be(false)
+      expect(helper.current_section?("/events", "")).to be(false)
+    end
   end
 end

@@ -13,7 +13,7 @@ class Views::News::Show < Views::Base
       Hero(article.title, site.tagline, 'name', section: t('news.show.section'))
       div(class: 'container-public mb-32') do
         Breadcrumb(
-          trail: [['News', news_index_path], [article.title, news_path(article)]],
+          trail: [[t('navigation.site.news'), news_index_path], [article.title, news_path(article)]],
           site_name: site.name
         )
         hr
