@@ -37,8 +37,8 @@ class NewsController < ApplicationController
   def set_article
     @article = Article.published.friendly.find(params[:id])
   rescue ActiveRecord::RecordNotFound
-    article = published_article_by_title_slug or raise
-    redirect_to news_path(article), status: :moved_permanently
+    slug = published_slug_by_title_slug or raise
+    redirect_to news_path(slug), status: :moved_permanently
   end
 
   # Sites that consumed PlaceCal news through the API built their own URLs
@@ -47,9 +47,18 @@ class NewsController < ApplicationController
   # title-derived slug, send the visitor to the canonical URL instead of a
   # 404. Generic: keyed on nothing site-specific.
   #
-  # @return [Article, nil]
-  def published_article_by_title_slug
+  # Only slugs and titles are read, and only from the articles this site
+  # publishes, so a 404 never loads every article body (#3368 WP 3.1).
+  #
+  # @return [String, nil] canonical slug of the matching article
+  def published_slug_by_title_slug
     wanted = params[:id].to_s
-    Article.published.find { |a| a.title.to_s.parameterize == wanted }
+    return nil if wanted.blank?
+
+    scope = current_site ? Article.for_site(current_site) : Article.all
+    row = scope.published.pluck(:id, :title, :slug).find do |(_id, title, _slug)|
+      title.to_s.parameterize == wanted
+    end
+    row && (row[2].presence || row[0].to_s)
   end
 end
