@@ -23,7 +23,7 @@ Extensions are Rails engines generated with `rails plugin new --full` (NOT `--mo
     locales/en.yml        # Locale strings (loaded automatically by Rails)
 ```
 
-The engine's `app/controllers` and `config/routes.rb` exist only in core's fixture engine (for testing); real extensions have neither.
+An extension normally has no controllers: core's controllers serve every page and the extension supplies views, components and copy. An engine _may_ draw routes in its own `config/routes.rb` (they load after core's `config/routes.rb`, so they win over core's `/:slug` site-page catch-all, which is appended last by `config/initializers/site_page_routes.rb`), but a theme that needs new routes is usually a sign the feature belongs in core. Core's fixture engine under `spec/` has both, for testing.
 
 ## Phlex namespaces
 
@@ -65,17 +65,42 @@ The engine registers a theme during initialization (before core's `config/initia
 ```ruby
 initializer "my_ext.register_theme" do
   PlaceCal::Extensions.register_theme(:my_ext) do |theme|
-    theme.stylesheet    "my_ext/theme"           # logical path, see CSS build below
-    theme.homepage_view "MyExt::Views::Home"     # Phlex view class name
-    theme.map_style     "my_ext"                 # name of public/map-styles/<name>.json
-    theme.head          "MyExt::Components::Head" # Phlex component rendered in <head>
-    theme.footer        "MyExt::Components::Footer" # replaces core's site footer; new(site:, navigation:)
-    theme.event_filter_style :day_strip          # :date_picker (default) or :day_strip
+    theme.stylesheet    "my_ext/theme"
+    theme.homepage_view "MyExt::Views::Home"
+    theme.map_style     "my_ext"
+    theme.head          "MyExt::Components::Head"
+    theme.footer        "MyExt::Components::Footer"
+    theme.theme_color   "#f19089"
+    theme.nav_cta       "my_ext.nav.donate", "https://example.org/donate"
+    theme.nav_join      false
+    theme.menu_label    true
+    theme.event_filter_style :day_strip
   end
 end
 ```
 
-All settings are optional. `stylesheet` and `map_style` may receive a block that gets the Site, for lookups that depend on the record (core's legacy `custom` theme resolves by site slug that way).
+Every setting is optional, and the full list is defined in `lib/placecal/theme.rb`:
+
+| Setting              | Value                                                                | Default              | What it does                                                                                                                                             |
+| -------------------- | -------------------------------------------------------------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `stylesheet`         | asset logical path without the extension, or a block taking the Site | none                 | Linked in `<head>` after core's stylesheets. Skipped with an error in the log if the asset does not resolve, so a stale build cannot take the site down. |
+| `homepage_view`      | Phlex view class name (String)                                       | core's site homepage | Renders the site's homepage.                                                                                                                             |
+| `map_style`          | MapLibre style name, or a block taking the Site                      | `pink`               | See "Map styles" below.                                                                                                                                  |
+| `head`               | Phlex component class name                                           | none                 | Rendered inside `<head>`, for fonts, meta tags and the like.                                                                                             |
+| `footer`             | Phlex component class name                                           | core's footer        | Replaces core's site footer. Constructed with `new(site:, navigation:)`.                                                                                 |
+| `theme_color`        | hex colour, e.g. `"#f19089"`                                         | none                 | `theme-color` value in the web manifest.                                                                                                                 |
+| `nav_cta`            | locale key and URL                                                   | none                 | A call-to-action link (for example Donate) rendered as the last item in the site nav.                                                                    |
+| `nav_join`           | boolean                                                              | `true`               | Whether the derived nav includes the Join link when the site takes enquiries. Set `false` when the theme's own footer carries it.                        |
+| `event_filter_style` | `:date_picker` or `:day_strip`                                       | `:date_picker`       | Which date control the events filter renders.                                                                                                            |
+| `menu_label`         | boolean                                                              | `false`              | Whether the mobile menu toggle shows a "Menu" text label next to the icon.                                                                               |
+
+Class names are given as strings and resolved lazily, so registration can run before autoloading is ready; a name that no longer resolves is logged and core's default renders instead.
+
+`stylesheet` and `map_style` may receive a block that gets the Site, for lookups that depend on the record (core's legacy `custom` theme resolves by site slug that way).
+
+## Map styles
+
+`map_style` names a MapLibre style JSON. Core's own styles live in `public/map-styles/<name>.json`; an extension ships its style as an engine asset at `app/assets/builds/map-styles/<name>.json`, which Propshaft picks up and serves at the same logical path. `MapHelper#style_url_for_site` checks core's public directory first, then the asset pipeline, and falls back to `pink.json` if neither has it.
 
 ## Locale files
 
@@ -90,6 +115,19 @@ en:
     my_ext:
       region_filter:
         all: Everywhere
+```
+
+Keep the overrides in their own file (`config/locales/overrides.en.yml` by convention) so it is obvious which strings the theme rewrites and which are its own.
+
+Some core strings exist only as override slots: core ships them empty so nothing renders, and a theme fills them in. The listing pages carry one such slot, `<ns>.index.list_heading` (`partners.index.list_heading`, `events.index.list_heading`), which `Components::ListHeading` renders as an `h2` between the hero and the filters when it is not blank:
+
+```yaml
+en:
+  theme_overrides:
+    my_ext:
+      partners:
+        index:
+          list_heading: All partners
 ```
 
 ## Stylesheet and CSS build
