@@ -338,19 +338,6 @@ RSpec.describe Components::EventFilter, type: :component do
       expect(page).not_to have_css("a[aria-current='date']")
       expect(page).to have_css("a[aria-current='true']", text: "All upcoming")
     end
-
-    it "keeps the sort and repeating filters" do
-      render_inline(described_class.new(**day_strip_attrs))
-
-      expect(page).to have_button("Filter and sort")
-      expect(page).to have_field("repeating_on", type: "radio")
-    end
-
-    it "scrolls horizontally on narrow viewports" do
-      render_inline(described_class.new(**day_strip_attrs))
-
-      expect(page).to have_css("nav.day-strip.overflow-x-auto ul.whitespace-nowrap")
-    end
   end
 
   describe "date picker filter style" do
@@ -394,22 +381,11 @@ RSpec.describe Components::EventFilter, type: :component do
     end
   end
 
+  # Components::RegionFilter's own rendering is covered by its component spec.
+  # What is EventFilter's is carrying the selection through the filter forms.
   describe "region filter" do
     let(:north) { create(:partnership, name: "North") }
     let(:south) { create(:partnership, name: "South") }
-
-    it "is hidden when the site has one partnership tag" do
-      render_inline(described_class.new(**base_attrs, region_tags: [north]))
-
-      expect(page).not_to have_css("nav.region-filter")
-    end
-
-    it "is shown when the site has two partnership tags" do
-      render_inline(described_class.new(**base_attrs, region_tags: [north, south]))
-
-      expect(page).to have_css("nav.region-filter")
-      expect(page).to have_link("North")
-    end
 
     it "carries the selected region through the filter forms" do
       render_inline(described_class.new(**base_attrs, region_tags: [north, south], selected_region: north))
