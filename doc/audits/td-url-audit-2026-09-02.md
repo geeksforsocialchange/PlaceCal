@@ -1,5 +1,7 @@
 # TransDimension URL Audit
 
+Superseded: this is the pre-fix run. See [td-url-audit-2026-09-03.md](td-url-audit-2026-09-03.md) for the post-fix audit.
+
 Date: 2026-09-02
 
 ## Summary
