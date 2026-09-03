@@ -33,6 +33,7 @@ RSpec.describe "Theme footer slot and hero standfirst", type: :request do
     site_on("example_theme", "themed")
     get "http://themed.lvh.me/events"
     expect(response.body).to include("Fixture standfirst for events")
+    expect(response.body).to include('hero__standfirst-detail">Fixture detail for events')
     site_on("pink", "plain")
     get "http://plain.lvh.me/events"
     expect(response.body).not_to include("hero__standfirst")

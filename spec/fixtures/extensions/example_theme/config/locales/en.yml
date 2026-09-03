@@ -11,3 +11,4 @@ en:
       events:
         index:
           standfirst: Fixture standfirst for events
+          standfirst_detail: Fixture detail for events
