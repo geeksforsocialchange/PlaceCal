@@ -277,3 +277,16 @@ RSpec.describe "Public Pages", type: :request do
     end
   end
 end
+
+RSpec.describe "Site page wrapper", type: :request do
+  it "carries the page slug as a class and data attribute for themes" do
+    ward = create(:riverside_ward)
+    site = create(:site, slug: "wrap", url: "https://wrap.lvh.me")
+    site.neighbourhoods << ward
+    create(:page, site: site, slug: "about", title: "About", body: "Hello", is_published: true)
+    get "http://wrap.lvh.me/about"
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to include("page page--about")
+    expect(response.body).to include('data-page-slug="about"')
+  end
+end
