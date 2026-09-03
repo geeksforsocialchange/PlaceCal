@@ -69,10 +69,12 @@ module MapHelper
     # record or an unregistered theme fall back to pink.
     style_name = site_record&.theme_definition&.map_style_for(site_record) || 'pink'
 
-    # Fall back to pink if style file doesn't exist
-    style_path = Rails.public_path.join('map-styles', "#{style_name}.json")
-    style_name = 'pink' unless File.exist?(style_path)
+    # A style ships either in core's public/map-styles or, for extensions, as
+    # an asset at map-styles/<name>.json (e.g. app/assets/builds/map-styles/).
+    # Fall back to pink if neither exists.
+    return "/map-styles/#{style_name}.json" if Rails.public_path.join('map-styles', "#{style_name}.json").exist?
 
-    "/map-styles/#{style_name}.json"
+    asset = Rails.application.assets&.resolver&.resolve("map-styles/#{style_name}.json")
+    asset || '/map-styles/pink.json'
   end
 end

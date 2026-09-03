@@ -45,6 +45,7 @@ en:
   # (#3368 D6), so these are the only fixed items; Pages contribute their own
   # titles.
   navigation:
+    menu: "Menu"
     directory:
       home: "Home"
       partners: "Partners"
