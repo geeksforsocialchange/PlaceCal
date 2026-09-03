@@ -84,11 +84,6 @@ module PlaceCal
         end
       end
 
-      # Clears the memoised reserved slug list (tests that redraw routes).
-      def reset_reserved_page_slugs!
-        @reserved_page_slugs = nil
-      end
-
       def setting(name, cast: :to_s, default: nil, predicate: false)
         settings[name] = default
         ivar = :"@#{name}"
@@ -189,14 +184,6 @@ module PlaceCal
     #
     # @param value [String, nil] hex colour code, e.g. "#040f39"
     setting :background_color
-
-    # The manifest's background_color, falling back to the theme colour when
-    # the theme sets only one of the two.
-    #
-    # @return [String, nil]
-    def manifest_background_color
-      @background_color || @theme_color
-    end
 
     # A static Open Graph share image for the theme's sites, replacing core's
     # generated share card.

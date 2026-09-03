@@ -12,7 +12,7 @@ module RegionFilterable
   # Exposed to views so theme homepage views (rendered with only `site:`)
   # can render the region filter without re-deriving the selection.
   included do
-    helper_method :region_tags, :current_region, :region_filter?
+    helper_method :region_tags, :current_region
   end
 
   private
@@ -21,16 +21,6 @@ module RegionFilterable
   #   the nationwide directory, which has no Site
   def region_tags
     @region_tags ||= current_site ? current_site.tags.where(type: 'Partnership').order(:name).to_a : []
-  end
-
-  # Whether the filter is worth offering: only when there is more than one
-  # region to choose between. Components::RegionFilter applies this rule itself,
-  # so callers pass region_tags unconditionally; this predicate is for views
-  # that wrap the filter in their own markup and need to know first.
-  #
-  # @return [Boolean]
-  def region_filter?
-    region_tags.size > 1
   end
 
   # The Partnership tag named by ?region=<slug>. An unknown slug is ignored

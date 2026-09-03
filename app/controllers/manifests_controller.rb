@@ -41,7 +41,7 @@ class ManifestsController < ApplicationController
   # A theme may set a distinct splash background (#3368 D1); it falls back to
   # the theme colour, which is what core has always used for both.
   def background_color
-    Current.theme.manifest_background_color || theme_color
+    Current.theme.background_color || theme_color
   end
 
   # The site's tagline, when it has one. Site#og_description returns false

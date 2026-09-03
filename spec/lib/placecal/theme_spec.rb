@@ -46,7 +46,7 @@ RSpec.describe PlaceCal::Theme do
     expect(theme.nav_cta).to be_nil
     expect(theme.icons).to eq({})
     expect(theme.og_image).to be_nil
-    expect(theme.manifest_background_color).to be_nil
+    expect(theme.background_color).to be_nil
     expect(theme.event_filter_style).to eq(:date_picker)
   end
 
@@ -92,14 +92,6 @@ RSpec.describe PlaceCal::Theme do
       theme.background_color "#040f39"
 
       expect(theme.background_color).to eq("#040f39")
-      expect(theme.manifest_background_color).to eq("#040f39")
-    end
-
-    it "falls back to the theme colour when unset" do
-      theme.theme_color "#ff7aa7"
-
-      expect(theme.background_color).to be_nil
-      expect(theme.manifest_background_color).to eq("#ff7aa7")
     end
   end
 
