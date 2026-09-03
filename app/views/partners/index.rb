@@ -13,7 +13,8 @@ class Views::Partners::Index < Views::Base
     content_for(:title) { t('partners.index.page_title') }
     content_for(:description) { site.og_description }
 
-    Hero(t('partners.index.title'), site.tagline, standfirst: t('partners.index.standfirst'))
+    Hero(t('partners.index.title'), site.tagline, standfirst: t('partners.index.standfirst'),
+                                                  standfirst_detail: t('partners.index.standfirst_detail'))
     turbo_frame_tag 'partner_previews' do
       div(class: 'container-public mb-32') do
         Breadcrumb(trail: [['Partners', partners_path]], site_name: site.name) do

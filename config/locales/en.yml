@@ -357,11 +357,13 @@ en:
       page_title: "Partners"
       title: "Our Partners"
       standfirst: ""
+      standfirst_detail: ""
   news:
     index:
       page_title: "News from your area"
       title: "News from your area"
       standfirst: ""
+      standfirst_detail: ""
 
   # ===========================================================================
   # LOCAL SITES (subdomain sites)
@@ -385,6 +387,7 @@ en:
       page_title: "Events"
       title: "Events & activities"
       standfirst: ""
+      standfirst_detail: ""
     # Day strip event filter (D22): the Today / Tomorrow / next five days
     # navigation rendered for themes with event_filter_style :day_strip.
     filter:
