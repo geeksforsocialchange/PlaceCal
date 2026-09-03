@@ -122,10 +122,13 @@ class Components::EventFilter < Components::Base
     "#{path}#paginator"
   end
 
+  # The selected region is sticky across the day strip, so it rides along on
+  # every day link and on "All upcoming" (#3368 D20).
   def day_strip_params
     params = {}
     params[:sort] = @sort if @sort.present? && @sort != 'time'
     params[:repeating] = @repeating if @repeating.present? && @repeating != 'on'
+    params[:region] = @selected_region.slug if @selected_region
     params
   end
 

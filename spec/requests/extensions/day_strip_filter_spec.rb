@@ -35,6 +35,30 @@ RSpec.describe "Day strip event filter", type: :request do
     end
   end
 
+  context "with two partnership tags and a selected region" do
+    let(:site) do
+      create(:site, slug: "exampled", theme: "example_theme", url: "https://exampled.lvh.me")
+    end
+    let(:north_tag) { create(:partnership, name: "North") }
+    let(:south_tag) { create(:partnership, name: "South") }
+
+    before do
+      site.tags << north_tag
+      site.tags << south_tag
+    end
+
+    it "keeps the region on the day links and on All upcoming" do
+      get "http://exampled.lvh.me/events?region=#{south_tag.slug}"
+
+      today = Time.zone.today
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(
+        "/events/#{today.year}/#{today.month}/#{today.day}?period=day&amp;region=#{south_tag.slug}#paginator"
+      )
+      expect(response.body).to include("/events?period=future&amp;region=#{south_tag.slug}#paginator")
+    end
+  end
+
   context "with a core theme" do
     let(:site) do
       create(:site, slug: "corely", theme: "pink", url: "https://corely.lvh.me")
