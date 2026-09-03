@@ -21,7 +21,7 @@ class Views::News::Index < Views::Base
     end
 
     p(class: 'articles__pagination') do
-      link_to 'Older news items', "?offset=#{next_offset}" if articles.count == NewsController::ARTICLES_PER_PAGE
+      link_to t('news.index.older'), "?offset=#{next_offset}" if articles.count == NewsController::ARTICLES_PER_PAGE
     end
   end
 
@@ -31,7 +31,7 @@ class Views::News::Index < Views::Base
     div(class: 'articles__article-card g') do
       div(class: 'gi gi__1-5 articles__aside') do
         p(class: 'articles__published', title: article.published_at.to_s) do
-          plain article.published_at.strftime('%B %Y')
+          plain article.published_at.strftime(t('news.index.date_format'))
         end
       end
 
@@ -57,7 +57,7 @@ class Views::News::Index < Views::Base
           end
         end
 
-        p { link_to 'Find out more', news_path(article), class: 'btn btn--alt btn--mt' }
+        p { link_to t('news.index.read_more'), news_path(article), class: 'btn btn--alt btn--mt' }
       end
     end
   end
