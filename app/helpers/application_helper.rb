@@ -77,7 +77,7 @@ module ApplicationHelper
   def active_link_to(title, url, data: Hash, base_css_class: '', active_css_class: 'active')
     current_path = request.original_fullpath
     link_path = Addressable::URI.parse(url).path
-    is_current_path = current_path.match(%r{^#{Regexp.escape(link_path)}/?(\?.*)?$}).present?
+    is_current_path = current_section?(current_path, link_path)
 
     options = {}
     options[:data] = data if data.present?
@@ -85,6 +85,15 @@ module ApplicationHelper
     options['aria-current'] = 'page' if is_current_path
 
     link_to(title, url, options).html_safe
+  end
+
+  # A nav link is current on its own page and on every page beneath it, so
+  # "Events" stays underlined on an event page. The root link only matches
+  # itself, otherwise it would be current everywhere.
+  def current_section?(current_path, link_path)
+    return current_path.match(%r{^/?(\?.*)?$}).present? if link_path == '/'
+
+    current_path.match(%r{^#{Regexp.escape(link_path)}(/.*)?(\?.*)?$}).present?
   end
 
   # Convenience wrapper for humanized model names

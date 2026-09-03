@@ -18,6 +18,14 @@ RSpec.describe PlaceCal::Theme do
     expect(theme.head).to be_nil
     expect(theme.theme_color).to be_nil
     expect(theme.event_filter_style).to eq(:date_picker)
+    expect(theme).to be_nav_join
+  end
+
+  it "lets a theme drop the Join link from the main nav" do
+    theme.nav_join false
+
+    expect(theme.nav_join).to be(false)
+    expect(theme).not_to be_nav_join
   end
 
   it "sets and reads values through the DSL" do
