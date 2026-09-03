@@ -27,6 +27,7 @@ Feature: Site Page Management
   Scenario: A reserved slug is rejected
     When I go to the "Pages" admin section
     And I click "Add Page"
+    Then I should see "New Page"
     When I fill in "Title" with "Events"
     And I fill in "Slug" with "events"
     And I click "Save"
