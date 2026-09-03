@@ -4,3 +4,7 @@ en:
       title: Example theme
       heading: Example theme fixture homepage
       no_site: Rendered without a site
+  theme_overrides:
+    example_theme:
+      region_filter:
+        all: Anywhere

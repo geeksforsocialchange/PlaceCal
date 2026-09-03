@@ -35,10 +35,8 @@ class Views::Base < Phlex::HTML
   register_value_helper :current_user
   register_value_helper :policy
 
-  # I18n translate helper
-  def t(key, **)
-    I18n.t(key, **)
-  end
+  # I18n translate helper, theme-aware (PlaceCal::ThemeTranslation)
+  include PlaceCal::ThemeTranslation
 
   # Directory sidebar-card heading, mirroring Components::Base#sidebar_heading
   # so views composing sidebar cards inline use the identical treatment.

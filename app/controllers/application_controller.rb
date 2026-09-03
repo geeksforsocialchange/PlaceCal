@@ -10,11 +10,14 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   before_action :discard_stale_auth_flash, unless: :devise_controller?
   before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :set_current_site
   before_action :set_supporters
   before_action :set_navigation
   before_action :set_appsignal_namespace
 
   include Pundit::Authorization
+  # Theme-scoped strings for nav labels and flashes built in controllers.
+  include PlaceCal::ThemeTranslation
   include RegionFilterable
   include SiteNavigation
 
@@ -233,6 +236,12 @@ class ApplicationController < ActionController::Base
 
   def set_site
     @site = current_site
+  end
+
+  # Makes the resolved site available to the view layer for the request
+  # (see Current and PlaceCal::ThemeTranslation).
+  def set_current_site
+    Current.site = current_site
   end
 
   def redirect_from_directory
