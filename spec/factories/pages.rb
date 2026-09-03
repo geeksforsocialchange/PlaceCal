@@ -18,7 +18,6 @@
 #
 # Indexes
 #
-#  index_pages_on_site_id           (site_id)
 #  index_pages_on_site_id_and_slug  (site_id,slug) UNIQUE
 #
 # Foreign Keys
