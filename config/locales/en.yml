@@ -365,6 +365,10 @@ en:
       section: ""
     index:
       page_title: "News from your area"
+      read_more: "Find out more"
+      older: "Older news items"
+      # strftime pattern for the article card date; themes may override
+      date_format: "%B %Y"
       title: "News from your area"
       standfirst: ""
       standfirst_detail: ""
