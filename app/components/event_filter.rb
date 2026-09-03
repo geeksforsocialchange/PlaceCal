@@ -152,7 +152,7 @@ class Components::EventFilter < Components::Base
           (@selected_region ? view_context.hidden_field_tag(:region, @selected_region.slug) : nil),
           view_context.render(Components::Filter.new(
                                 name: 'neighbourhood',
-                                label: 'Neighbourhood',
+                                label: t('filters.neighbourhood'),
                                 items: neighbourhood_items,
                                 selected_id: @selected_neighbourhood,
                                 controller: 'event-filter',

@@ -18,7 +18,7 @@ class Views::Partners::Index < Views::Base
     turbo_frame_tag 'partner_previews', data: { turbo_action: 'advance' } do
       div(class: 'container-public mb-32') do
         ListHeading(t('partners.index.list_heading'))
-        Breadcrumb(trail: [['Partners', partners_path]], site_name: site.name) do
+        Breadcrumb(trail: [[t('navigation.site.partners'), partners_path]], site_name: site.name) do
           PartnerFilter(
             site: site,
             selected_category: selected_category,

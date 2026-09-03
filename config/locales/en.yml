@@ -51,6 +51,7 @@ en:
       partners: "Partners"
       partnerships: "Partnerships"
       events: "Events"
+      join: "Join us"
     site:
       home: "Home"
       events: "Events"
@@ -63,6 +64,14 @@ en:
 
   footer:
     site_navigation: "Site Navigation"
+
+  # Labels for the partner and event listing filters on a site (the nationwide
+  # directory has its own set under directory.filters).
+  filters:
+    filter_by: "Filter by:"
+    category: "Category"
+    neighbourhood: "Neighbourhood"
+    reset: "Reset filters"
 
   # Region selector shown on local sites with more than one Partnership tag
   # (#3368 D7). Labels only: the URL param is always ?region=<tag slug>, so a

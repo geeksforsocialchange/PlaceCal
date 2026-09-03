@@ -100,7 +100,7 @@ class Components::Navigation < Components::Base
   # TODO: Change to join.placecal.org once the join flow is live
   def render_join_button
     li(class: 'text-center max-md:py-3') do
-      link_to('Join us', get_in_touch_path, class: 'inline-flex items-center rounded-full bg-secondary px-4 py-1.5 text-detail font-bold no-underline hover:brightness-110 transition-all', style: 'color: #43392f')
+      link_to(t('navigation.directory.join'), get_in_touch_path, class: 'inline-flex items-center rounded-full bg-secondary px-4 py-1.5 text-detail font-bold no-underline hover:brightness-110 transition-all', style: 'color: #43392f')
     end
   end
 
@@ -172,6 +172,12 @@ class Components::Navigation < Components::Base
     ]
   end
 
+  # The directory always labels its menu toggle; a site does so only when its
+  # theme opts in with `menu_label true` (#3368 D1).
+  def show_menu_label?
+    @site.nil? || @site.theme_definition&.menu_label? || false
+  end
+
   def render_toggle
     button(type: 'button', class: [
              'header__toggle row-start-1 col-start-2 flex gap-2 ms-auto me-1.5 items-center',
@@ -183,7 +189,7 @@ class Components::Navigation < Components::Base
                  ['md:hidden']
                end)
            ], data: { action: 'click->mobile-menu#toggle', turbo: 'false' }) do
-      span(class: 'text-base font-semibold header__toggle-label') { t('navigation.menu') }
+      span(class: 'text-base font-semibold header__toggle-label') { t('navigation.menu') } if show_menu_label?
       raw(view_context.icon(:misc_menu, size: nil, css_class: 'size-8 fill-secondary'))
     end
   end
