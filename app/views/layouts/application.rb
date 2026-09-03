@@ -99,33 +99,16 @@ class Views::Layouts::Application < Phlex::HTML
     meta(property: 'og:title', content: title_text)
     meta(property: 'og:site_name', content: site&.name || 'PlaceCal')
 
-    link(rel: 'icon', type: 'image/png', href: image_url('favicon.png'))
-    link(rel: 'apple-touch-icon', href: image_url('apple-touch-icon.png'))
+    render_icon_links
     link(rel: 'manifest', href: '/manifest.webmanifest') if site
     meta(name: 'viewport', content: 'width=device-width, initial-scale=1')
+    theme_color = site&.theme_definition&.theme_color
+    meta(name: 'theme-color', content: theme_color) if theme_color
 
     meta(name: 'description', content: description_text)
     meta(property: 'og:description', content: description_text)
 
-    # Admin and Devise pages get no og:image — shared admin URLs redirect to
-    # the login page, and link previews of those are just clutter (#2077).
-    if request.subdomain == 'admin' || devise_page?
-      # no og:image
-    elsif content_for?(:image)
-      meta(property: 'og:image', content: image_url(content_for(:image)))
-      meta(property: 'og:image:alt', content: content_for(:image_alt)) if content_for?(:image_alt)
-    elsif site
-      # Generated share card for site homepages and other site pages (#2077)
-      meta(property: 'og:image', content: og_image_url)
-      meta(property: 'og:image:alt', content: t('og_image.alt.site', name: site.name))
-      meta(property: 'og:image:width', content: '1200')
-      meta(property: 'og:image:height', content: '630')
-    else
-      meta(property: 'og:image', content: image_url('og/wide.png'))
-      meta(property: 'og:image:alt', content: 'PlaceCal logo')
-      meta(property: 'og:image:width', content: '1920')
-      meta(property: 'og:image:height', content: '1080')
-    end
+    render_og_image
 
     meta(property: 'og:type', content: 'website')
     meta(name: 'twitter:card', content: 'summary_large_image')
@@ -148,6 +131,55 @@ class Views::Layouts::Application < Phlex::HTML
     return unless content_for?(:json_ld)
 
     script(type: 'application/ld+json') { raw safe(content_for(:json_ld)) }
+  end
+
+  # Admin and Devise pages get no og:image — shared admin URLs redirect to
+  # the login page, and link previews of those are just clutter (#2077).
+  def render_og_image
+    return if request.subdomain == 'admin' || devise_page?
+
+    if content_for?(:image)
+      meta(property: 'og:image', content: image_url(content_for(:image)))
+      meta(property: 'og:image:alt', content: content_for(:image_alt)) if content_for?(:image_alt)
+    elsif site && (theme_og = site.theme_definition&.og_image)
+      # A theme may ship its own static share image (#3368 WP 3.9)
+      meta(property: 'og:image', content: image_url(theme_og[:path]))
+      meta(property: 'og:image:alt', content: t('og_image.alt.site', name: site.name))
+      meta(property: 'og:image:width', content: theme_og[:width].to_s) if theme_og[:width]
+      meta(property: 'og:image:height', content: theme_og[:height].to_s) if theme_og[:height]
+    elsif site
+      # Generated share card for site homepages and other site pages (#2077)
+      meta(property: 'og:image', content: og_image_url)
+      meta(property: 'og:image:alt', content: t('og_image.alt.site', name: site.name))
+      meta(property: 'og:image:width', content: '1200')
+      meta(property: 'og:image:height', content: '630')
+    else
+      meta(property: 'og:image', content: image_url('og/wide.png'))
+      meta(property: 'og:image:alt', content: 'PlaceCal logo')
+      meta(property: 'og:image:width', content: '1920')
+      meta(property: 'og:image:height', content: '1080')
+    end
+  end
+
+  # A theme may supply its own favicons, touch icon and Safari mask icon
+  # (#3368 WP 3.9). When it does, its icons replace core's two entirely;
+  # otherwise core's favicon and touch icon link as before.
+  def render_icon_links
+    theme = site&.theme_definition
+    icons = theme&.icons || {}
+
+    if icons.empty?
+      link(rel: 'icon', type: 'image/png', href: image_url('favicon.png'))
+      link(rel: 'apple-touch-icon', href: image_url('apple-touch-icon.png'))
+      return
+    end
+
+    link(rel: 'icon', type: 'image/png', sizes: '32x32', href: image_url(icons[:favicon_32])) if icons[:favicon_32]
+    link(rel: 'icon', type: 'image/png', sizes: '16x16', href: image_url(icons[:favicon_16])) if icons[:favicon_16]
+    link(rel: 'apple-touch-icon', sizes: '180x180', href: image_url(icons[:apple_touch_icon])) if icons[:apple_touch_icon]
+    return unless icons[:mask_icon]
+
+    link(rel: 'mask-icon', href: image_url(icons[:mask_icon]), color: theme.mask_icon_color)
   end
 
   def compute_title

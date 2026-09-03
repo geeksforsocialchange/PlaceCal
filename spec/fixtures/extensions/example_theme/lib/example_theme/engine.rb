@@ -34,6 +34,16 @@ module ExampleTheme
         theme.map_style "example_theme"
         theme.menu_label true
         theme.event_filter_style :day_strip
+        theme.theme_color "#ff7aa7"
+        theme.background_color "#040f39"
+        theme.icons favicon_32: "example_theme/icons/favicon-32x32.png",
+                    favicon_16: "example_theme/icons/favicon-16x16.png",
+                    apple_touch_icon: "example_theme/icons/apple-touch-icon.png",
+                    mask_icon: "example_theme/icons/mask-icon.svg",
+                    icon_192: "example_theme/icons/icon-192.png",
+                    icon_512: "example_theme/icons/icon-512.png"
+        theme.mask_icon_color "#FF7AA7"
+        theme.og_image "example_theme/icons/og.png", width: 1200, height: 675
       end
     end
   end
