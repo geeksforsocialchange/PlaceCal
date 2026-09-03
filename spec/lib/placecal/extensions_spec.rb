@@ -66,6 +66,34 @@ RSpec.describe PlaceCal::Extensions do
       expect { described_class.fetch_theme(:nope) }.to raise_error(PlaceCal::Extensions::UnknownTheme, /nope/)
     end
 
+    it "warns when a name is re-registered outside the test environment" do
+      described_class.register_theme(:sample)
+      allow(Rails.env).to receive(:test?).and_return(false)
+      allow(Rails.logger).to receive(:warn)
+
+      described_class.register_theme(:sample)
+
+      expect(Rails.logger).to have_received(:warn).with(/"sample" was already registered/)
+    end
+
+    it "stays quiet for a first registration, and in the test environment" do
+      allow(Rails.logger).to receive(:warn)
+      allow(Rails.env).to receive(:test?).and_return(false)
+      described_class.register_theme(:brand_new)
+      allow(Rails.env).to receive(:test?).and_return(true)
+      described_class.register_theme(:brand_new)
+
+      expect(Rails.logger).not_to have_received(:warn)
+    end
+
+    it "snapshots each theme so reconfiguring a registered one cannot leak" do
+      state = described_class.snapshot
+      described_class.find_theme(:pink).map_style "hijacked"
+      described_class.restore(state)
+
+      expect(described_class.find_theme(:pink).map_style).to eq("pink")
+    end
+
     it "reset! empties the registry" do
       described_class.reset!
       expect(described_class.theme_names).to be_empty

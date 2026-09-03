@@ -24,9 +24,24 @@ module PlaceCal
     def register_theme(name, core: false)
       theme = Theme.new(name, core: core)
       yield theme if block_given?
+      warn_on_reregistration(theme.name)
       registry[theme.name] = theme
       theme
     end
+
+    # Two extensions claiming the same theme name is a silent hijack: the last
+    # one to boot wins and the other extension's sites change appearance. Say
+    # so in the log. Specs replace registrations deliberately, so stay quiet
+    # there.
+    def warn_on_reregistration(name)
+      return if Rails.env.test?
+      return unless registry.key?(name)
+
+      Rails.logger.warn(
+        "PlaceCal::Extensions: theme #{name.inspect} was already registered; the previous definition has been replaced"
+      )
+    end
+    private_class_method :warn_on_reregistration
 
     # @return [Array<PlaceCal::Theme>] core themes first, then extension
     #   themes, each group in registration order
@@ -60,9 +75,11 @@ module PlaceCal
       registry.clear
     end
 
-    # @return [Hash] a copy of the registry state, for #restore
+    # @return [Hash] a copy of the registry state, for #restore. Each theme is
+    #   duplicated too, so a spec that reconfigures a registered theme in place
+    #   cannot leak that change into later examples.
     def snapshot
-      registry.dup
+      registry.transform_values(&:dup)
     end
 
     # @param state [Hash] a value from #snapshot
