@@ -132,6 +132,8 @@ en:
 
 Keep the overrides in their own file (`config/locales/overrides.en.yml` by convention) so it is obvious which strings the theme rewrites and which are its own.
 
+A blank value in core's own `config/locales/en.yml` is the idiom for a slot a theme may fill. Where a piece of copy is optional (a standfirst, a section name, a heading above a list, a prefix before an organiser name), core declares the key with an empty string rather than leaving it out. Core then renders nothing for it, because every one of those views skips a blank value, while the key still exists for a theme to override. It means core needs no conditional for theme-only copy, the theme needs no forked view, and the full set of fillable slots can be read off core's locale file. If you want a slot that does not exist yet, adding the blank key to core is a one-line change; see the note above the "local site listing pages" block in `config/locales/en.yml`.
+
 Some core strings exist only as override slots: core ships them empty so nothing renders, and a theme fills them in. The listing pages carry one such slot, `<ns>.index.list_heading` (`partners.index.list_heading`, `events.index.list_heading`), which `Components::ListHeading` renders as an `h2` between the hero and the filters when it is not blank:
 
 ```yaml

@@ -217,7 +217,7 @@ module PlaceCal
 
     # A theme's stylesheet is only linked when the asset pipeline can resolve
     # it. A renamed or unbuilt engine CSS file would otherwise raise
-    # Propshaft::MissingAssetError on every page of the site (#3368 WP 3.1).
+    # Propshaft::MissingAssetError on every page of the site (#3368).
     #
     # @param site [Site]
     # @return [String, nil] stylesheet logical path for this site, or nil
@@ -276,7 +276,7 @@ module PlaceCal
 
     # A theme names its classes as strings so registration can happen before
     # autoloading is ready. A renamed or removed class must not take the site
-    # down: log it and let core's default render instead (#3368 WP 3.1).
+    # down: log it and let core's default render instead (#3368).
     #
     # @param class_name [String, nil]
     # @param setting [String] which DSL setting is being resolved, for the log

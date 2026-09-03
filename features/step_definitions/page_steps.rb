@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Step definitions for site content pages (#3368, WP 1.1)
+# Step definitions for site content pages (#3368, D5)
 
 Given("I am a site admin for {string}") do |site_name|
   site = Site.find_by(name: site_name) ||

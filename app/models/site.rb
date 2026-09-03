@@ -132,7 +132,7 @@ class Site < ApplicationRecord
   # Themes come from the extension registry, not a static list, so an
   # extension can add one without touching this model (#3368, D2).
   # allow_blank keeps the enumerize-era behaviour where a site could carry no
-  # theme at all and render core's default styling (#3368 WP 3.1).
+  # theme at all and render core's default styling (#3368).
   validates :theme, inclusion: { in: ->(_site) { PlaceCal::Extensions.theme_names } }, allow_blank: true
 
   # ==== Scopes ====
@@ -272,7 +272,7 @@ class Site < ApplicationRecord
   #   or nil when no stylesheet should be linked. Any theme whose stylesheet is
   #   missing from the pipeline resolves to nil, so the page renders with the
   #   default styling instead of raising Propshaft::MissingAssetError
-  #   (#2936, #3368 WP 3.1).
+  #   (#2936, #3368).
   def stylesheet_link
     theme_settings.stylesheet_for(self)
   end

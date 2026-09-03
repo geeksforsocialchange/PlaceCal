@@ -75,7 +75,7 @@ class Components::EventFilter < Components::Base
   # existing dated event URLs. No new query parameters; sort and repeating ride
   # along only when they differ from the controller defaults.
   def render_day_strip
-    nav(class: 'day-strip min-w-0 overflow-x-auto', aria: { label: t('events.filter.day_strip.label') }) do
+    nav(class: 'day-strip min-w-0 overflow-x-auto', aria: { label: t('filters.day_strip.label') }) do
       ul(class: 'flex list-none gap-2 whitespace-nowrap p-0 m-0') do
         day_strip_dates.each_with_index do |date, index|
           li(class: 'shrink-0') { render_day_strip_day(date, index) }
@@ -96,7 +96,7 @@ class Components::EventFilter < Components::Base
 
   def render_day_strip_all_upcoming
     current = @period == 'future'
-    link_to(t('events.filter.day_strip.all_upcoming'),
+    link_to(t('filters.day_strip.all_upcoming'),
             "#{events_path(**day_strip_params, period: 'future')}#paginator",
             class: day_strip_link_class(current),
             aria: { current: current ? 'true' : nil },
@@ -110,9 +110,9 @@ class Components::EventFilter < Components::Base
 
   def day_strip_label(date, index)
     case index
-    when 0 then t('events.filter.day_strip.today')
-    when 1 then t('events.filter.day_strip.tomorrow')
-    else date.strftime(t('events.filter.day_strip.date_format'))
+    when 0 then t('filters.day_strip.today')
+    when 1 then t('filters.day_strip.tomorrow')
+    else date.strftime(t('filters.day_strip.date_format'))
     end
   end
 
