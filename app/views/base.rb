@@ -38,6 +38,14 @@ class Views::Base < Phlex::HTML
   # I18n translate helper, theme-aware (PlaceCal::ThemeTranslation)
   include PlaceCal::ThemeTranslation
 
+  # Optional heading between a listing page's hero and its filters, for example
+  # "All partners" (#3368). Core ships the locale key empty, so nothing renders
+  # unless a theme overrides `<ns>.index.list_heading`.
+  def list_heading(key)
+    text = t(key)
+    h2(class: 'list-heading') { text } if text.present?
+  end
+
   # Directory sidebar-card heading, mirroring Components::Base#sidebar_heading
   # so views composing sidebar cards inline use the identical treatment.
   def sidebar_heading(text)

@@ -3,7 +3,8 @@
 class Components::Hero < Components::Base
   prop :title, String, :positional
   prop :subtitle, _Nilable(String), :positional, default: ''
-  prop :schema, _Nilable(String), :positional, default: nil
+  # RDFa property name for the h1, when the page wraps the hero in a vocab.
+  prop :schema, _Nilable(String), default: nil
   # Optional lead paragraph under the title; themes fill it via locale keys.
   prop :standfirst, _Nilable(String), default: nil
   # Optional second, smaller paragraph after the standfirst.
