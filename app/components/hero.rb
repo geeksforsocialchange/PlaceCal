@@ -8,6 +8,8 @@ class Components::Hero < Components::Base
   prop :standfirst, _Nilable(String), default: nil
   # Optional second, smaller paragraph after the standfirst.
   prop :standfirst_detail, _Nilable(String), default: nil
+  # Optional section name shown above the hero (e.g. "Events" on an event page).
+  prop :section, _Nilable(String), default: nil
 
   def after_initialize
     @title = clean_title(@title)
@@ -16,6 +18,7 @@ class Components::Hero < Components::Base
   def view_template
     div(class: 'hero') do
       div(class: 'container-public') do
+        p(class: 'hero__section') { @section } if @section.present?
         if @subtitle
           h4(class: 'allcaps') { @subtitle }
           div(role: 'presentation', class: 'hero__divider')

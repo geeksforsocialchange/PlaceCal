@@ -353,12 +353,16 @@ en:
   # ===========================================================================
 
   partners:
+    show:
+      section: ""
     index:
       page_title: "Partners"
       title: "Our Partners"
       standfirst: ""
       standfirst_detail: ""
   news:
+    show:
+      section: ""
     index:
       page_title: "News from your area"
       title: "News from your area"
@@ -404,6 +408,13 @@ en:
       date_format_with_year: "%e %b %Y"
       # Text before the organiser link in the event list, blank in core
       organiser_prefix: ""
+    page:
+      # strftime patterns for the event page date; %o is the ordinal day
+      date_format: "%e %b"
+      date_format_with_year: "%e %b %Y"
+    show:
+      # Section name above the event page title, blank in core
+      section: ""
     csv_export:
       link: "Download events as CSV"
       # Column headers for the events CSV (app/services/events_csv.rb).
