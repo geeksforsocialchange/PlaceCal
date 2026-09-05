@@ -13,8 +13,6 @@ en:
       label: Green
     blue:
       label: Blue
-    custom:
-      label: Custom (legacy, per-site stylesheet)
   # ===========================================================================
   # SITE METADATA
   # ===========================================================================
@@ -72,15 +70,6 @@ en:
 
   footer:
     site_navigation: "Site Navigation"
-    site_enquiries: "%{site} Enquiries"
-    general_enquiries: "General Enquiries"
-    get_in_touch: "Get in touch!"
-    # Abbreviated labels before a phone number and an email address
-    phone_label: "T:"
-    email_label: "E:"
-    site_supporters: " PlaceCal %{site} Supporters"
-    global_supporters: "PlaceCal Supporters"
-    build: "Build: "
     site_enquiries: "%{site} Enquiries"
     general_enquiries: "General Enquiries"
     get_in_touch: "Get in touch!"
