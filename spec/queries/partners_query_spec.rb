@@ -143,6 +143,33 @@ RSpec.describe PartnersQuery do
         expect(results).to be_empty
       end
     end
+
+    context "with a tag-only site (partnership tags, no neighbourhoods)" do
+      let(:tag_only_site) { create(:site) }
+      let(:partnership) { create(:partnership) }
+      let!(:tagged_partner) { create(:partner, name: "Tagged") }
+      let!(:tagged_elsewhere) { create(:partner, name: "Tagged elsewhere") }
+      let!(:untagged_partner) { create(:partner, name: "Untagged") }
+
+      before do
+        tag_only_site.tags << partnership
+        tagged_partner.tags << partnership
+        tagged_elsewhere.tags << partnership
+      end
+
+      it "scopes by tag alone, wherever the partner is" do
+        results = described_class.new(site: tag_only_site).call
+
+        expect(results).to contain_exactly(tagged_partner, tagged_elsewhere)
+      end
+
+      it "still requires the neighbourhood when the site has both" do
+        tag_only_site.neighbourhoods << create(:neighbourhood)
+        results = described_class.new(site: tag_only_site).call
+
+        expect(results).to be_empty
+      end
+    end
   end
 
   describe "#neighbourhoods_with_counts" do

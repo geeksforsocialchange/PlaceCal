@@ -683,4 +683,93 @@ RSpec.describe EventsQuery do
       expect(described_class.upcoming_counts_by_partner([partner.id])).to eq({})
     end
   end
+
+  describe "#call with tag_id (region filter)" do
+    let(:region_site) { create(:site, slug: "two-region-site") }
+    let(:ward) { create(:riverside_ward) }
+    let(:north_tag) { create(:partnership, name: "North") }
+    let(:south_tag) { create(:partnership, name: "South") }
+    let(:north_partner) { create(:partner, name: "North Partner", address: create(:address, neighbourhood: ward)) }
+    let(:south_partner) { create(:partner, name: "South Partner", address: create(:address, neighbourhood: ward)) }
+
+    before do
+      region_site.neighbourhoods << ward
+      region_site.tags << north_tag
+      region_site.tags << south_tag
+      north_partner.tags << north_tag
+      south_partner.tags << south_tag
+      create(:future_event, organiser: north_partner, summary: "Northern Social")
+      create(:future_event, organiser: south_partner, summary: "Southern Social")
+    end
+
+    it "returns every event when no tag is given" do
+      result = described_class.new(site: region_site, day: today).call(period: "future")
+
+      expect(result.values.flatten.map(&:summary)).to contain_exactly("Northern Social", "Southern Social")
+    end
+
+    it "restricts events to partners carrying the tag" do
+      result = described_class.new(site: region_site, day: today).call(period: "future", tag_id: north_tag.id)
+
+      expect(result.values.flatten.map(&:summary)).to eq(["Northern Social"])
+    end
+
+    it "matches events hosted at a tagged partner as well as organised by one" do
+      create(:future_event, organiser: south_partner, place: north_partner, summary: "Hosted Up North")
+
+      result = described_class.new(site: region_site, day: today).call(period: "future", tag_id: north_tag.id)
+
+      expect(result.values.flatten.map(&:summary)).to contain_exactly("Northern Social", "Hosted Up North")
+    end
+  end
+
+  describe "site scoping for a tag-only site" do
+    let(:tag_only_site) { create(:site, slug: "tag-only-site") }
+    let(:ward) { create(:riverside_ward) }
+    let(:tag) { create(:partnership, name: "Tagged") }
+    let(:tagged_partner) { create(:partner, name: "Tagged Partner", address: create(:address, neighbourhood: ward)) }
+    let(:untagged_partner) { create(:partner, name: "Untagged Partner", address: create(:address, neighbourhood: ward)) }
+
+    before do
+      tag_only_site.tags << tag
+      tagged_partner.tags << tag
+      create(:future_event, organiser: tagged_partner, summary: "Tagged Social")
+      create(:future_event, organiser: untagged_partner, summary: "Untagged Social")
+    end
+
+    it "returns only events from partners carrying the site tag" do
+      result = described_class.new(site: tag_only_site, day: today).call(period: "future")
+
+      expect(result.values.flatten.map(&:summary)).to eq(["Tagged Social"])
+    end
+
+    it "includes events hosted at a tagged partner" do
+      create(:future_event, organiser: untagged_partner, place: tagged_partner, summary: "Hosted At Tagged")
+
+      result = described_class.new(site: tag_only_site, day: today).call(period: "future")
+
+      expect(result.values.flatten.map(&:summary)).to contain_exactly("Tagged Social", "Hosted At Tagged")
+    end
+
+    it "keeps the partner set in SQL rather than loading partner rows" do
+      queries = []
+      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*, payload|
+        queries << payload[:sql]
+      end
+
+      begin
+        described_class.new(site: tag_only_site, day: today).call(period: "future")
+      ensure
+        ActiveSupport::Notifications.unsubscribe(subscriber)
+      end
+
+      # Preloading the organiser and place of the events we return fetches
+      # partner rows by primary key, which is fine. What must not happen is a
+      # query that pulls the whole site partner set into memory.
+      partner_set_queries = queries.select { |sql| sql.include?('"partners".*') }
+                                   .grep_v(/"partners"\."id" (?:=|IN \()/)
+
+      expect(partner_set_queries).to be_empty
+    end
+  end
 end
