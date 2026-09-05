@@ -265,7 +265,7 @@ class Views::Events::Show < Views::Base
   def render_contact_info
     div(class: 'gi gi__1-3') do
       if event.organiser
-        h3(class: 'h4 udl') { 'Contact information' }
+        h2(class: 'h4 udl') { 'Contact information' }
         div(class: 'small') do
           ContactDetails(partner: event.organiser)
         end
@@ -275,7 +275,7 @@ class Views::Events::Show < Views::Base
 
   def render_event_address
     div(class: 'gi gi__1-3') do
-      h3(class: 'h4 udl') { 'Event address' }
+      h2(class: 'h4 udl') { 'Event address' }
       div(class: 'small') do
         Address(address: event.address, raw_location: event.raw_location_from_source)
       end
@@ -284,7 +284,7 @@ class Views::Events::Show < Views::Base
 
   def render_event_organiser
     div(class: 'gi gi__1-3') do
-      h3(class: 'h4 udl') { 'Event organiser' }
+      h2(class: 'h4 udl') { 'Event organiser' }
       div(class: 'small') do
         span { link_to event.organiser, event.organiser }
       end
@@ -297,7 +297,7 @@ class Views::Events::Show < Views::Base
 
   def render_event_venue
     div(class: 'gi gi__1-3') do
-      h3(class: 'h4 udl') { 'Venue' }
+      h2(class: 'h4 udl') { 'Venue' }
       div(class: 'small') do
         span { link_to event.place, event.place }
       end
