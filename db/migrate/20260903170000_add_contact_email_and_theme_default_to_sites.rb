@@ -4,7 +4,7 @@
 # nil theme from the enumerize era. The theme registry treats a blank theme as
 # "no theme", which renders unstyled, so backfill the historic default and let
 # the database supply it from now on.
-class BackfillSiteThemeDefault < ActiveRecord::Migration[8.0]
+class AddContactEmailAndThemeDefaultToSites < ActiveRecord::Migration[8.0]
   def up
     add_column :sites, :contact_email, :string
     change_column_default :sites, :theme, 'pink'
