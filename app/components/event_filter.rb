@@ -45,14 +45,14 @@ class Components::EventFilter < Components::Base
   def render_today_link
     return if @today
 
-    link_to('Today', @today_url, class: 'filters__link filters__link--today', data: { turbo_frame: 'events-browser', turbo_action: 'advance' })
+    link_to(t('filters.today'), @today_url, class: 'filters__link filters__link--today', data: { turbo_frame: 'events-browser', turbo_action: 'advance' })
   end
 
   def render_goto_date_button
     button(type: 'button', data: { action: 'click->date-picker#open' }) do
       raw(view_context.icon(:triangle_down, size: nil))
       plain ' '
-      span(class: 'filters__link') { 'Go to date' }
+      span(class: 'filters__link') { t('filters.go_to_date') }
     end
   end
 
@@ -177,7 +177,7 @@ class Components::EventFilter < Components::Base
   def build_sort_toggle
     view_context.content_tag(:div, class: 'filters__toggle') do
       view_context.content_tag(:button, type: 'button', data: { action: 'click->filters#toggle' }) do
-        safe_join([view_context.icon(:triangle_down, size: nil), ' ', view_context.content_tag(:span, 'Filter and sort', class: 'filters__link')])
+        safe_join([view_context.icon(:triangle_down, size: nil), ' ', view_context.content_tag(:span, t('filters.filter_and_sort'), class: 'filters__link')])
       end
     end
   end
@@ -200,25 +200,25 @@ class Components::EventFilter < Components::Base
 
   def render_sort_group
     view_context.content_tag(:div, class: 'filters__group') do
-      render_radio('sort', 'time', @sort == 'time', 'Sort by date') +
-        render_radio('sort', 'summary', @sort == 'summary', 'Sort by name')
+      render_radio('sort', 'time', @sort == 'time', t('filters.sort.time')) +
+        render_radio('sort', 'summary', @sort == 'summary', t('filters.sort.summary'))
     end
   end
 
   def render_period_group
     view_context.content_tag(:div, class: 'filters__group') do
-      buf = render_radio('period', 'day', @period == 'day', 'Daily view') +
-            render_radio('period', 'week', @period == 'week', 'Weekly view')
-      buf += render_radio('period', 'month', @period == 'month', 'Monthly view') if @show_monthly
-      buf + render_radio('period', 'future', @period == 'future', 'Show all')
+      buf = render_radio('period', 'day', @period == 'day', t('filters.period.day')) +
+            render_radio('period', 'week', @period == 'week', t('filters.period.week'))
+      buf += render_radio('period', 'month', @period == 'month', t('filters.period.month')) if @show_monthly
+      buf + render_radio('period', 'future', @period == 'future', t('filters.period.future'))
     end
   end
 
   def render_repeating_group
     view_context.content_tag(:div, class: 'filters__group') do
-      render_radio('repeating', 'on', @repeating == 'on', 'Show repeats') +
-        render_radio('repeating', 'last', @repeating == 'last', 'Show repeats last') +
-        render_radio('repeating', 'off', @repeating == 'off', 'Hide repeats')
+      render_radio('repeating', 'on', @repeating == 'on', t('filters.repeating.on')) +
+        render_radio('repeating', 'last', @repeating == 'last', t('filters.repeating.last')) +
+        render_radio('repeating', 'off', @repeating == 'off', t('filters.repeating.off'))
     end
   end
 

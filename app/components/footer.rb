@@ -83,7 +83,7 @@ class Components::Footer < Components::Base
 
   def render_site_enquiries
     div(class: 'footer__item footer__enquiries footer__enquiries--regional') do
-      h5(class: 'allcaps small') { "#{@site.name} Enquiries" }
+      h5(class: 'allcaps small') { t('footer.site_enquiries', site: @site.name) }
       p { @site.site_admin.full_name }
       p { render_site_contact_info }
     end
@@ -91,21 +91,21 @@ class Components::Footer < Components::Base
 
   def render_site_contact_info
     if @site.site_admin.phone&.length&.positive?
-      strong { 'T:' }
+      strong { t('footer.phone_label') }
       plain " #{@site.site_admin.phone}"
       br
     end
-    strong { 'E:' }
+    strong { t('footer.email_label') }
     plain ' '
     mail_to(@site.site_admin.email)
   end
 
   def render_general_enquiries
     div(class: 'footer__item footer__enquiries footer__enquiries--general') do
-      h5(class: 'allcaps small') { 'General Enquiries' }
-      p { 'Get in touch!' }
+      h5(class: 'allcaps small') { t('footer.general_enquiries') }
+      p { t('footer.get_in_touch') }
       p do
-        strong { 'E:' }
+        strong { t('footer.email_label') }
         plain ' '
         mail_to('support@placecal.org')
       end
@@ -115,7 +115,7 @@ class Components::Footer < Components::Base
   def render_site_supporters
     hr(class: 'footer__item footer__hr')
     div(class: 'footer__item footer__supporters') do
-      h5(class: 'allcaps small') { " PlaceCal #{@site.name} Supporters" }
+      h5(class: 'allcaps small') { t('footer.site_supporters', site: @site.name) }
       ul do
         @site.supporters&.each do |supporter|
           li(class: "footer__supporter footer__supporter--#{supporter.name.parameterize}") do
@@ -131,7 +131,7 @@ class Components::Footer < Components::Base
 
     global_supporters = view_context.instance_variable_get(:@global_supporters)
     div(class: 'footer__item footer__supporters') do
-      h5(class: 'allcaps small') { 'PlaceCal Supporters' }
+      h5(class: 'allcaps small') { t('footer.global_supporters') }
       ul do
         global_supporters&.each do |supporter|
           li(class: "footer__supporter footer__supporter--#{supporter.name.parameterize}") do
@@ -152,7 +152,7 @@ class Components::Footer < Components::Base
         plain t('colophon.address')
       end
       p do
-        plain 'Build: '
+        plain t('footer.build')
         tag.tt do
           link_to(AppVersion.label(fallback: 'main'), AppVersion.url)
         end

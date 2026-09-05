@@ -28,14 +28,14 @@ class Views::News::Show < Views::Base
     div(class: 'g article') do
       div(class: 'gi gi__1-5 article__aside') do
         p(class: 'article__published', title: article.published_at.to_s) do
-          plain article.published_at.strftime('%B %Y')
+          plain article.published_at.strftime(t('news.show.date_format'))
         end
       end
 
       div(class: 'gi gi__4-5 article__main') do
         if article.author&.full_name.present?
           h3(class: 'article__author') do
-            plain 'By '
+            plain t('news.show.by')
             em { article.author.full_name }
           end
         end
@@ -50,7 +50,6 @@ class Views::News::Show < Views::Base
         if article.article_image.present?
           div(class: 'article__image') do
             image_tag article.article_image.url, class: 'border'
-            p(class: 'article__image-attribute') { 'Image credit and/or title' }
           end
         end
 
@@ -59,7 +58,7 @@ class Views::News::Show < Views::Base
         end
 
         div(class: 'article__back') do
-          link_to 'Back to news', news_path
+          link_to t('news.show.back'), news_path
         end
       end
     end

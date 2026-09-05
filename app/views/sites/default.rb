@@ -41,11 +41,11 @@ class Views::Sites::Default < Views::Base
     section(class: 'region region__mission') do
       div(class: 'container-narrow') do
         p do
-          plain "We're working with "
-          link_to 'local organisations', partners_path
-          plain " to create a great calendar of everything that's on in #{site.place_name}."
+          raw(t('sites.home.mission_html',
+                link: view_context.link_to(t('sites.home.mission_link'), partners_path),
+                place: site.place_name))
         end
-        link_to "See what's on", events_path, class: 'btn btn--lg btn--alt btn--mt'
+        link_to t('sites.home.whats_on'), events_path, class: 'btn btn--lg btn--alt btn--mt'
       end
     end
   end
@@ -53,7 +53,7 @@ class Views::Sites::Default < Views::Base
   def render_about
     section(class: 'region region__management') do
       div(class: 'title-strip') do
-        h2(class: 'h2--alt') { 'About Us' }
+        h2(class: 'h2--alt') { t('sites.home.about_us') }
       end
       div(class: 'container-narrow first-ele-h3-serif') do
         raw safe(site.description_html.to_s)
