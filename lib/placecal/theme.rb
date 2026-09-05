@@ -217,6 +217,9 @@ module PlaceCal
       raise ArgumentError, "invalid page slug #{slug.inspect}, expected lowercase letters, numbers and hyphens" unless slug.match?(PAGE_SLUG_FORMAT)
 
       @pages[slug] = { view: view_class_name.to_s, nav_label_key: nav_label_key&.to_s }
+      # The /:slug route constraint is built from every theme's slugs, and a
+      # theme may gain a page after it was registered.
+      Extensions.invalidate_page_slugs!
       self
     end
 

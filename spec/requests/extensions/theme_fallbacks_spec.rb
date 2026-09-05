@@ -97,10 +97,22 @@ RSpec.describe "Theme fallbacks", :theme_registry, type: :request do
       site_on("pink", "plain")
     end
 
-    it "404s for a slug the theme does not register" do
-      get "http://themed.lvh.me/nothing-here"
+    # The catch-all is constrained to slugs some registered theme serves
+    # (PlaceCal::Extensions::ThemePage), so an unknown path is a routing 404
+    # rather than a fully rendered one: nothing runs the public filter chain
+    # for a scanner walking /wp-login and friends.
+    it "does not route a slug no registered theme serves" do
+      expect { get "http://themed.lvh.me/nothing-here" }
+        .to raise_error(ActionController::RoutingError)
+    end
 
-      expect(response).to have_http_status(:not_found)
+    # Bare paths only: an explicit format would otherwise serve the HTML page
+    # under the wrong content type.
+    it "does not route a theme page with an explicit format" do
+      expect { get "http://themed.lvh.me/proof.json" }
+        .to raise_error(ActionController::RoutingError)
+      expect { get "http://themed.lvh.me/proof.html" }
+        .to raise_error(ActionController::RoutingError)
     end
 
     it "404s for a theme page slug on a site whose theme is core's" do

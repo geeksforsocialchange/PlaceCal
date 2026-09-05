@@ -120,7 +120,7 @@ theme.page "about", "MyExt::Views::About", nav_label_key: "my_ext.nav.about"
 theme.page "privacy", "MyExt::Views::Privacy"
 ```
 
-- The page is served at `/about` on every site using the theme, by core's `/:slug` catch-all. HTML only: `/about.json` does not route.
+- The page is served at `/about` on every site using the theme, by core's `/:slug` catch-all. The bare path only: `/about.json` and `/about.html` do not route. The catch-all is constrained to the slugs registered themes serve, so any other single-segment path is a routing 404 that never reaches a controller.
 - The view is constructed with `new(site:)` and inherits `Views::Base` like any other theme view. Everything about the page, including its wrapper element and any `page page--about` style classes, is the view's own business.
 - `nav_label_key` is a locale key. A page that has one is listed in the derived site nav and footer nav under `t(key)`, in registration order, after the News link. A page without one is served but not linked.
 - Every registered page is listed in the site's sitemap (no `lastmod`, since there is no record to date).

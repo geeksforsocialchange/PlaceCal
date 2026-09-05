@@ -13,6 +13,21 @@ module PlaceCal
   module Extensions
     class UnknownTheme < KeyError; end
 
+    # Route constraint for the `/:slug` theme-page catch-all
+    # (config/initializers/site_page_routes.rb). Without it every unknown
+    # single-segment path becomes a fully rendered 404: the whole public
+    # before_action chain runs, the layout is built, and a scanner walking
+    # /wp-login, /backup and the rest pays for all of it. With it, only a slug
+    # some registered theme actually serves is recognised; everything else
+    # stays a routing 404 that never reaches a controller.
+    module ThemePage
+      # @param request [ActionDispatch::Request]
+      # @return [Boolean]
+      def self.matches?(request)
+        Extensions.page_slugs.include?(request.path_parameters[:slug])
+      end
+    end
+
     module_function
 
     # Register (or replace) a theme definition.
@@ -26,7 +41,23 @@ module PlaceCal
       yield theme if block_given?
       warn_on_reregistration(theme.name)
       registry[theme.name] = theme
+      invalidate_page_slugs!
       theme
+    end
+
+    # Every page slug any registered theme serves, across all themes: the
+    # router has one route for all of them and cannot know the site until the
+    # request is in a controller. Computed from the registry and recomputed
+    # whenever it changes, so the constraint costs a Set lookup per request.
+    #
+    # @return [Set<String>]
+    def page_slugs
+      @page_slugs ||= registry.each_value.flat_map { |theme| theme.pages.keys }.to_set
+    end
+
+    # Called from Theme#page and from every registry mutation.
+    def invalidate_page_slugs!
+      @page_slugs = nil
     end
 
     # Two extensions claiming the same theme name is a silent hijack: the last
@@ -73,6 +104,7 @@ module PlaceCal
     # Empty the registry. For specs; pair with #snapshot / #restore.
     def reset!
       registry.clear
+      invalidate_page_slugs!
     end
 
     # @return [Hash] a copy of the registry state, for #restore. Each theme is
@@ -85,6 +117,7 @@ module PlaceCal
     # @param state [Hash] a value from #snapshot
     def restore(state)
       registry.replace(state)
+      invalidate_page_slugs!
     end
 
     def registry

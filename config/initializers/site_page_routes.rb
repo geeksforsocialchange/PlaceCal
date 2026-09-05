@@ -8,13 +8,19 @@
 # on each draw. Registered here, in an initializer, rather than in
 # config/routes.rb: an append block registered inside a routes file is
 # registered again on every reload of that file, which then defines the route
-# name twice. PlaceCal::Theme checks a registered slug against the reserved
-# first path segments derived from the finished route set.
+# name twice.
 Rails.application.routes.append do
-  # HTML only: without the constraint /about.json served the HTML page under a
-  # JSON content type. The default fills the format in for the extensionless
-  # /about so it still matches.
-  get '/:slug', to: 'pages#show', as: :site_page,
-                constraints: { slug: /[a-z0-9-]+/, format: 'html' },
-                defaults: { format: :html }
+  # Only a slug some registered theme actually serves is recognised
+  # (PlaceCal::Extensions::ThemePage). Anything else stays a routing 404
+  # rather than entering PagesController and running the whole public filter
+  # chain to render a 404 page. Which theme serves the slug is still the
+  # controller's business: the router cannot know the site.
+  constraints(PlaceCal::Extensions::ThemePage) do
+    # Bare paths only: `format: false` drops the optional .:format segment, so
+    # /about.json and /about.html do not route at all rather than serving the
+    # HTML page under the wrong content type.
+    get '/:slug', to: 'pages#show', as: :site_page,
+                  format: false,
+                  constraints: { slug: /[a-z0-9-]+/ }
+  end
 end
