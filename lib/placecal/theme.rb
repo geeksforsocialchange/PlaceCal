@@ -77,6 +77,7 @@ module PlaceCal
       self.class.settings.each { |setting, default| instance_variable_set(:"@#{setting}", default) }
       # Defaults for the settings whose bodies are written out below.
       @icons = {}
+      @font_stylesheet = nil
       @og_image = nil
       @nav_cta = nil
       @pages = {}
@@ -114,6 +115,26 @@ module PlaceCal
 
     # @param value [String, nil] Phlex component class name rendered in <head>
     setting :head
+
+    # A webfont stylesheet the theme's sites load, with the origins worth
+    # preconnecting to. Rendered in <head> as those preconnects, a preload and
+    # the stylesheet link, which is the whole of what a theme's head component
+    # used to exist for.
+    #
+    #   theme.font_stylesheet 'https://use.typekit.net/qwi3qrw.css',
+    #                         preconnect: %w[https://use.typekit.net https://p.typekit.net]
+    #
+    # `theme.head` stays the escape hatch for anything genuinely bespoke.
+    #
+    # @param url [String, nil]
+    # @param preconnect [Array<String>] origins to preconnect to, normally the
+    #   font host and wherever it serves the font files from
+    # @return [Hash, nil] { url:, preconnect: } when called with no arguments
+    def font_stylesheet(url = nil, preconnect: [])
+      return @font_stylesheet if url.nil?
+
+      @font_stylesheet = { url: url.to_s, preconnect: Array(preconnect).map(&:to_s) }
+    end
 
     # @param value [String, nil] hex colour code for web manifest, e.g. "#f19089"
     setting :theme_color

@@ -15,7 +15,7 @@ module ExampleTheme
     # Every theme DSL setting this engine uses. The fixture exercises the whole
     # slot surface, so the list is the whole slot surface.
     required_settings %i[
-      stylesheet homepage_view head footer nav_cta map_style menu_label
+      stylesheet homepage_view head font_stylesheet footer nav_cta map_style menu_label
       event_filter_style theme_color background_color icons og_image page
     ]
 
@@ -23,6 +23,8 @@ module ExampleTheme
       theme.stylesheet "example_theme/theme"
       theme.homepage_view "ExampleTheme::Views::Home"
       theme.head "ExampleTheme::Components::Head"
+      theme.font_stylesheet "https://fonts.example.org/fixture.css",
+                            preconnect: %w[https://fonts.example.org https://f.example.net]
       theme.footer "ExampleTheme::Components::Footer"
       theme.nav_cta "example_theme.nav.donate", "https://example.org/donate"
       theme.map_style "example_theme"

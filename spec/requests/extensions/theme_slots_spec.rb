@@ -47,6 +47,20 @@ RSpec.describe "Theme slots", type: :request do
     expect(head.index("data-example-theme")).to be > head.index('media="print"')
   end
 
+  # theme.font_stylesheet: the preconnects, the preload and the stylesheet link
+  # a hosted webfont wants, which is all most themes needed a head component
+  # for.
+  it "links the theme's font stylesheet, its preload and its preconnects" do
+    get "http://themed.lvh.me"
+
+    head = head_html
+    expect(head).to include('<link rel="preconnect" href="https://fonts.example.org" crossorigin>')
+    expect(head).to include('<link rel="preconnect" href="https://f.example.net" crossorigin>')
+    expect(head).to include('<link rel="preload" as="style" href="https://fonts.example.org/fixture.css">')
+    expect(head).to include('<link rel="stylesheet" href="https://fonts.example.org/fixture.css">')
+    expect(head.index("preconnect")).to be < head.index('rel="preload"')
+  end
+
   it "links the theme's icons and theme-color in place of core's" do
     get "http://themed.lvh.me"
 
@@ -233,6 +247,7 @@ RSpec.describe "Theme slots", type: :request do
 
       head = head_html
       expect(head).not_to include("data-example-theme")
+      expect(head).not_to include("fonts.example.org")
       expect(head).not_to include("example_theme/icons")
       expect(head).not_to include("mask-icon")
       expect(head).to match(%r{<link rel="icon" type="image/png" href="[^"]*/assets/favicon-[0-9a-f]+\.png">})
