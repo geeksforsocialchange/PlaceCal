@@ -262,10 +262,10 @@ Each extension lives in its own git repo. Until a private installation repo exis
 group :extensions do
   gem 'placecal-theme-transdimension',
       github: 'geeksforsocialchange/placecal-theme-transdimension',
-      tag: 'v0.3.10'
+      tag: 'v0.3.11'
   gem 'placecal-theme-mossley',
       github: 'geeksforsocialchange/placecal-theme-mossley',
-      tag: 'v0.1.0'
+      tag: 'v0.1.1'
 end
 ```
 
@@ -342,6 +342,21 @@ jobs:
 - `chrome` installs headless Chrome, and defaults to `false`, so an extension with no system specs does not grow a browser it never uses.
 
 Linting comes from core too. The extension's whole `.rubocop.yml` is `inherit_from: ../PlaceCal/config/rubocop/extension.yml`: the workflow checks core out at `./PlaceCal`, and locally the extension's RuboCop already runs with `BUNDLE_GEMFILE` pointed at a core checkout, so core is always beside it.
+
+## Releasing an extension
+
+The convention is the same for every extension, and it lives here rather than in each extension's README. An extension's own README should link this section rather than restate it: both theme READMEs used to reproduce core's `group :extensions` block, and one of the copies was already naming a version behind the one core pinned.
+
+1. **The version lives in `lib/<module_dir>/version.rb`** as `<Module>::VERSION`, and `package.json` mirrors it. Bump both in one commit.
+2. **The tag is `v<version>`.** The reusable workflow checks a pushed tag against `VERSION` before it does anything else, so a mistagged release fails in seconds rather than shipping a build claiming a version it is not.
+3. **The release note is the tag.** No extension keeps a CHANGELOG; the commits between two tags are the change.
+4. **Core pins the new tag.** From a core checkout:
+
+   ```bash
+   rake "placecal:extension:bump[placecal-theme-mossley,0.1.2]"
+   ```
+
+   That rewrites just that gem's `tag:` in the `group :extensions` block and runs `bundle lock --update` for it, so the diff is the one gem and its locked commit. Commit the `Gemfile` and `Gemfile.lock` together: as the next section says, that is the whole deploy step. The task refuses a version that is not a release number, a gem the `Gemfile` does not have, and a gem that is not pinned by tag, because pinning by tag is rule 2 of the Trust section above.
 
 ## Build and deploy
 
