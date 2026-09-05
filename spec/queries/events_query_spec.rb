@@ -721,6 +721,41 @@ RSpec.describe EventsQuery do
 
       expect(result.values.flatten.map(&:summary)).to contain_exactly("Northern Social", "Hosted Up North")
     end
+
+    describe "counts and next event" do
+      # Time is frozen at 2022-11-08, so every date below is inside November.
+      before do
+        create_list(:future_event, 4, organiser: south_partner, dtstart: 2.days.from_now)
+        create(:future_event, organiser: north_partner, dtstart: 3.days.from_now, summary: "Soon North")
+      end
+
+      it "counts only the region's future events" do
+        query = described_class.new(site: region_site, day: today)
+
+        expect(query.future_count).to eq(7)
+        expect(query.future_count(tag_id: north_tag.id)).to eq(2)
+      end
+
+      it "counts only the region's events in the next 7 days" do
+        query = described_class.new(site: region_site, day: today)
+
+        expect(query.next_7_days_count).to eq(5)
+        expect(query.next_7_days_count(tag_id: north_tag.id)).to eq(1)
+      end
+
+      it "counts only the region's events in the month" do
+        query = described_class.new(site: region_site, day: today)
+
+        expect(query.monthly_count).to eq(7)
+        expect(query.monthly_count(tag_id: north_tag.id)).to eq(2)
+      end
+
+      it "finds the next event inside the region" do
+        query = described_class.new(site: region_site, day: today)
+
+        expect(query.next_event_after(today, tag_id: north_tag.id).organiser).to eq(north_partner)
+      end
+    end
   end
 
   describe "site scoping for a tag-only site" do

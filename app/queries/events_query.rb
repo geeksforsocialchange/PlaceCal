@@ -89,11 +89,7 @@ class EventsQuery
   # @param period [String] 'day', 'week', 'month', or 'future'
   # @return [ActiveRecord::Relation<Event>]
   def flat_call(period:)
-    events = build_filtered_scope(
-      organiser: nil, place: nil,
-      organiser_or_place: nil, neighbourhood_id: nil, tag_id: nil, repeating: 'on'
-    )
-    apply_period(events, period).distinct.sort_by_time
+    apply_period(build_filtered_scope(repeating: 'on'), period).distinct.sort_by_time
   end
 
   # Returns events as a flat relation for iCal feeds (no grouping)
@@ -109,25 +105,32 @@ class EventsQuery
     apply_period(base_scope, period).count
   end
 
-  # Count methods for determining default period
-  def future_count
-    base_scope.future(@day).count
+  # Count methods for determining default period.
+  #
+  # Each takes the same optional tag_id as #call, so a region-filtered listing
+  # picks its period, its monthly toggle and its next-event link from the
+  # region's own events rather than the whole site's (#3368 D7).
+  #
+  # @param tag_id [Integer, nil] restrict to events whose organiser or place
+  #   carries this tag
+  def future_count(tag_id: nil)
+    filter_by_tag(base_scope, tag_id).future(@day).count
   end
 
-  def next_7_days_count
-    base_scope.find_next_7_days(@day).count
+  def next_7_days_count(tag_id: nil)
+    filter_by_tag(base_scope, tag_id).find_next_7_days(@day).count
   end
 
-  def monthly_count
-    base_scope.for_month(@day).count
+  def monthly_count(tag_id: nil)
+    filter_by_tag(base_scope, tag_id).for_month(@day).count
   end
 
-  def show_monthly?
-    monthly_count <= FUTURE_LIMIT
+  def show_monthly?(tag_id: nil)
+    monthly_count(tag_id: tag_id) <= FUTURE_LIMIT
   end
 
-  def next_event_after(day)
-    base_scope.future(day).first
+  def next_event_after(day, tag_id: nil)
+    filter_by_tag(base_scope, tag_id).future(day).first
   end
 
   # Returns neighbourhoods that have events, with counts for the given period
@@ -146,7 +149,7 @@ class EventsQuery
     all_descendants = @site.neighbourhoods.flat_map { |n| n.descendants.to_a }
     return [] if all_descendants.empty?
 
-    events = apply_period(tag_id.present? ? filter_by_tag(base_scope, tag_id) : base_scope, period)
+    events = apply_period(filter_by_tag(base_scope, tag_id), period)
 
     # Count events per leaf neighbourhood (single query)
     raw_counts = events
@@ -241,10 +244,11 @@ class EventsQuery
   # ===================
 
   # rubocop:disable Metrics/ParameterLists
-  def build_filtered_scope(organiser:, place:, organiser_or_place:, neighbourhood_id:, tag_id:, repeating:)
+  def build_filtered_scope(repeating:, organiser: nil, place: nil, organiser_or_place: nil,
+                           neighbourhood_id: nil, tag_id: nil)
     # rubocop:enable Metrics/ParameterLists
     events = base_scope
-    events = filter_by_tag(events, tag_id) if tag_id.present?
+    events = filter_by_tag(events, tag_id)
     events = events.by_organiser(organiser) if organiser
     events = events.in_place(place) if place
     events = events.by_organiser_or_place(organiser_or_place) if organiser_or_place
@@ -255,7 +259,10 @@ class EventsQuery
   # Restrict to events whose organiser or place carries the tag. Mirrors
   # PartnersQuery#filter_by_tag: the region filter is a partnership-tag filter,
   # and an event belongs to a region when the partner behind it does.
+  # A blank tag_id means no region is selected, so the scope passes through.
   def filter_by_tag(events, tag_id)
+    return events if tag_id.blank?
+
     partner_ids = PartnerTag.where(tag_id: tag_id).select(:partner_id)
     events.where(organiser_id: partner_ids).or(events.where(place_id: partner_ids))
   end

@@ -443,6 +443,18 @@ RSpec.describe "Public Events", type: :request do
         expect(response.body).to include("Southern Social")
       end
 
+      it "auto-selects the period from the selected region, not the whole site" do
+        # The site as a whole is busy enough to be forced into the day view,
+        # while the northern region has a single event three weeks out (#3368 D7).
+        25.times { |n| create(:event, organiser: south_partner, dtstart: (n % 6).days.from_now.at_noon, summary: "Busy South #{n}") }
+        create(:event, organiser: north_partner, dtstart: 20.days.from_now.at_noon, summary: "Distant Northern Social")
+
+        get events_url(host: "regions.lvh.me", region: north_tag.slug)
+
+        expect(response).to be_successful
+        expect(response.body).to include("Distant Northern Social")
+      end
+
       it "carries the region on the site navigation links" do
         get events_url(host: "regions.lvh.me", region: north_tag.slug)
 
