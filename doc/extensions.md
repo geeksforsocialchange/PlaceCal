@@ -277,6 +277,22 @@ It is opt-in so an extension without system specs does not need a browser in its
 
 The signature is a compatibility surface: an extension pinned to a core tag may run its suite against core's `main`, so `boot!` keeps its keywords stable and core's own specs exercise it against the fixture engine.
 
+### Running an extension's suite
+
+The suite needs core's gem bundle, and core's `Gemfile` pins the extension to a released tag, so a development run needs a Gemfile that takes the extension from your checkout instead. Core's `bin/extension-dev-gemfile` writes one:
+
+```bash
+# from the core checkout
+bin/extension-dev-gemfile placecal-theme-transdimension=../placecal-theme-transdimension
+
+# from the extension checkout
+PLACECAL_CORE_PATH=../PlaceCal \
+  BUNDLE_GEMFILE=../PlaceCal/Gemfile.extensions-dev \
+  RAILS_ENV=test bundle exec rspec
+```
+
+It takes `<gem>=<path>` pairs, and the paths are resolved as core sees them, from beside core's `Gemfile`. Every extension you do not name stays exactly as core pins it, so one boot still loads all of them: two engines registering two themes in one process is a property core has to keep working, and a dev Gemfile that dropped the sibling extension would hide a regression in it. The generated `Gemfile.extensions-dev` is local to the core checkout and gitignored there.
+
 ## Continuous integration
 
 An extension's suite boots core, so its CI is core's CI plus the extension: check out both, point core's bundle at the extension checkout, build core's assets, then run the extension's own linting and specs. Core owns that as a reusable workflow, `.github/workflows/extension-test.yml`, and the extension's whole workflow is:
