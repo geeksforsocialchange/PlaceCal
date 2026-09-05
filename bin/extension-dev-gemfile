@@ -1,8 +1,6 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'pathname'
-
 # Writes <core>/Gemfile.extensions-dev: core's own Gemfile with one or more
 # extension gems taken from a path checkout instead of the pinned git tag, so
 # `bundle exec rspec` and `bundle exec rubocop` run against the working tree.
