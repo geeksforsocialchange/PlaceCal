@@ -821,5 +821,19 @@ RSpec.describe EventsQuery do
 
       expect(partner_set_queries).to be_empty
     end
+
+    # The legacy venue clause is raw SQL, so it interpolates the partner scope
+    # with to_sql. PartnersQuery#call carries includes; if a future where
+    # clause ever referenced an included table Rails would switch to eager
+    # loading and emit a multi-column SELECT, which an IN (...) cannot take.
+    it "interpolates a single-column partner subquery even from an eager-loading scope" do
+      scope = PartnersQuery.new(site: tag_only_site).call.references(:addresses)
+      expect(scope).to be_eager_loading
+
+      sql = described_class.new(site: tag_only_site, day: today).send(:legacy_venue_match_sql, scope)
+
+      expect(sql).to include('IN (SELECT DISTINCT "partners"."id" FROM')
+      expect(sql).not_to include('"addresses"."id" AS')
+    end
   end
 end

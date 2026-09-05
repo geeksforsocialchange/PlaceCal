@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class NewsController < ApplicationController
+  # Bounds what a scanner walking /news/<anything> can make one 404 cost.
+  FALLBACK_SCAN_LIMIT = 2_000
+
   ARTICLES_PER_PAGE = 20
 
   before_action :set_site
@@ -54,6 +57,14 @@ class NewsController < ApplicationController
   # there is nothing site-specific to rescue, so the directory does no work at
   # all rather than scanning every published article platform-wide.
   #
+  # The match is String#parameterize, which has no SQL equivalent worth
+  # writing, so it happens in Ruby. Article.for_site joins through partner tags
+  # with no DISTINCT, so the row count is articles times tag matches rather
+  # than articles: distinct collapses that, and the limit bounds what a scanner
+  # walking /news/wp-admin, /news/backup and the rest can make one 404 cost. A
+  # site with more published articles than the limit loses the rescue on the
+  # oldest of them, which is the right thing to lose.
+  #
   # @return [String, nil] canonical slug of the matching article
   def published_slug_by_title_slug
     return nil if current_site.nil?
@@ -61,9 +72,8 @@ class NewsController < ApplicationController
     wanted = params[:id].to_s
     return nil if wanted.blank?
 
-    row = Article.for_site(current_site).published.pluck(:id, :title, :slug).find do |(_id, title, _slug)|
-      title.to_s.parameterize == wanted
-    end
+    rows = Article.for_site(current_site).published.distinct.limit(FALLBACK_SCAN_LIMIT).pluck(:id, :title, :slug)
+    row = rows.find { |(_id, title, _slug)| title.to_s.parameterize == wanted }
     row && (row[2].presence || row[0].to_s)
   end
 end

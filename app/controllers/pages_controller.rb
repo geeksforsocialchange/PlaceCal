@@ -88,6 +88,10 @@ class PagesController < ApplicationController
   end
 
   def robots
+    # One path, a different body per host, the same as the sitemap and the
+    # manifest: a shared cache keying on the path alone would hand one site's
+    # robots.txt to another.
+    response.headers['Vary'] = 'Host'
     if current_site
       render plain: current_site.robots
     elsif directory_request?
