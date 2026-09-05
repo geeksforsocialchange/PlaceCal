@@ -194,6 +194,21 @@ RSpec.describe EventsQuery do
       query = described_class.new(site: site, day: today)
       expect(query.next_event_after(10.days.from_now)).to be_nil
     end
+
+    # Insertion order is the reverse of chronological order here, so an
+    # unordered query returns the wrong event.
+    context "when the events were created out of chronological order" do
+      let!(:latest) { create(:future_event, organiser: partner, dtstart: 9.days.from_now) }
+      let!(:soonest) { create(:future_event, organiser: partner, dtstart: 1.day.from_now) }
+
+      it "returns the soonest event, not whichever row comes back first" do
+        query = described_class.new(site: site, day: today)
+
+        expect(query.next_event_after(today)).to eq(soonest)
+        expect(query.next_event_after(2.days.from_now)).to eq(event1)
+        expect(query.next_event_after(6.days.from_now)).to eq(latest)
+      end
+    end
   end
 
   describe "period: 'month'" do

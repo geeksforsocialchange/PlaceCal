@@ -80,6 +80,21 @@ RSpec.describe "Public Articles (News)", type: :request do
       end
     end
 
+    context "with the back link" do
+      let!(:article) { create(:article, is_draft: false) }
+
+      # `news_path` with no argument takes the id from the current request, so
+      # the back link used to point at the article the reader was already on.
+      it "points at the news index, not at the article itself" do
+        get news_url(article, host: "#{site.slug}.lvh.me")
+
+        back = Nokogiri::HTML(response.body).at_css(".article__back a")
+
+        expect(back).to be_present
+        expect(back[:href]).to eq(news_index_path)
+      end
+    end
+
     context "with author name" do
       let!(:article) { create(:article, is_draft: false, author: author) }
 
