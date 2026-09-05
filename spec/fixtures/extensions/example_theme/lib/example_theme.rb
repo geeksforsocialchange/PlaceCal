@@ -17,4 +17,10 @@ module ExampleTheme
   end
 end
 
+# The two-line host guard every extension keeps (see doc/extensions.md): an
+# older core has no PlaceCal::Extension, and the engine below would fail with a
+# bare NameError from the middle of a class body instead of saying what is
+# missing.
+abort("example_theme needs a PlaceCal with PlaceCal::Extension; see doc/extensions.md.") unless defined?(PlaceCal::Extension) # rubocop:disable Rails/Exit
+
 require_relative "example_theme/engine"

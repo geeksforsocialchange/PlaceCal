@@ -42,68 +42,88 @@ If you want a theme that genuinely cannot run code, that is a different mechanis
 
 An extension normally has no controllers: core's controllers serve every page and the extension supplies views, components and copy. An engine _may_ draw routes in its own `config/routes.rb` (they load after core's `config/routes.rb`, so they win over core's `/:slug` theme-page catch-all, which is appended last by `config/initializers/site_page_routes.rb`), but a theme that needs new routes is usually a sign the feature belongs in core. Core's fixture engine under `spec/` has both, for testing.
 
-## Phlex namespaces
+## The engine
 
-Create a module namespace in `lib/<ext>.rb` and register Phlex kits in the engine initializer:
+An extension's engine is an ordinary Rails engine that includes `PlaceCal::Extension`. That one include carries everything every extension used to copy: the Zeitwerk directories for its Phlex namespaces, the host and theme guards, and theme registration.
 
 ```ruby
-# lib/<ext>.rb
+# lib/my_ext.rb
 module MyExt
+  # Phlex namespaces. Core owns Views and Components; an extension owns
+  # <Extension>::Views and <Extension>::Components.
   module Views; end
+
   module Components
     extend Phlex::Kit
   end
 end
+
+# Two lines, so an installation whose core predates the shared engine
+# infrastructure fails by name rather than with a NameError from a class body.
+abort('placecal-theme-my-ext needs a PlaceCal with PlaceCal::Extension; see "Minimum core" in README.md.') unless defined?(PlaceCal::Extension)
+
+require_relative "my_ext/version"
 require_relative "my_ext/engine"
 
-# lib/<ext>/engine.rb
+# lib/my_ext/engine.rb
 module MyExt
   class Engine < ::Rails::Engine
-    initializer "my_ext.phlex_namespaces", before: :set_autoload_paths do
-      Rails.autoloaders.main.push_dir(
-        root.join("app/views/my_ext"),
-        namespace: MyExt::Views
-      )
-      Rails.autoloaders.main.push_dir(
-        root.join("app/components/my_ext"),
-        namespace: MyExt::Components
-      )
+    # Not isolate_namespace: an extension plugs into the host app's routes,
+    # helpers and layout rather than living behind a mount point.
+    include PlaceCal::Extension
+
+    required_settings %i[stylesheet homepage_view map_style]
+
+    theme :my_ext do |theme|
+      theme.stylesheet    "my_ext/theme"
+      theme.homepage_view "MyExt::Views::Home"
+      theme.map_style     "my_ext"
     end
   end
 end
 ```
 
-Views inherit `Views::Base` to get Rails helpers, `t()` translations, and the core `Components` kit. Components inherit `Components::Base`.
+`include PlaceCal::Extension` derives the extension's name from the engine's own namespace (`MyExt` gives `my_ext`) and gives the engine:
+
+- **Phlex autoloading.** `app/views/my_ext` is pushed onto Zeitwerk under `MyExt::Views` and `app/components/my_ext` under `MyExt::Components`. Rails does not autoload `app/views`, and it autoloads `app/components` under the top-level namespace, so the directories need pushing with explicit namespaces; core does the same for its own `Views` and `Components` in `config/initializers/phlex.rb`. Only directories the extension actually ships are pushed, so an extension built entirely from core's components ships no `app/components` and needs no configuration for that.
+- **The host guard.** `required_settings` is the list of theme DSL settings the engine uses. Before registering, the engine checks that the host has `PlaceCal::Extensions.register_theme` and that `PlaceCal::Theme` answers every listed setting, and raises `PlaceCal::Extension::UnsupportedHost` naming what is missing. Without it an old core fails with a bare `NoMethodError` from inside an initializer, which says nothing about what the installation needs.
+- **Registration.** The `theme` block is applied to the `PlaceCal::Theme` at boot. It is also callable on its own as `MyExt::Engine.configure_theme(PlaceCal::Theme.new(:throwaway))`, which is how an extension's own contract spec asserts what it registers without booting twice.
+
+### Minimum core
+
+`PlaceCal::Extension` is required by core's `config/application.rb` before Bundler requires the extension gems, so on a core new enough to have it the constant is defined by the time an engine's class body runs. On an older core it is not defined at all, and `include PlaceCal::Extension` would raise a `NameError` from the middle of a class body. Keep the two-line `defined?(PlaceCal::Extension)` guard in `lib/<ext>.rb` shown above: it turns that into one sentence naming the gem and the requirement, and it is the reason the guard survives moving the machinery into core. Say which core version the theme needs in a "Minimum core" section of the extension's README.
 
 ## Theme registration
 
-The engine registers a theme during initialization (before core's `config/initializers` run):
+The `theme` block receives the `PlaceCal::Theme` and fills in the slots the theme uses:
 
 ```ruby
-initializer "my_ext.register_theme" do
-  PlaceCal::Extensions.register_theme(:my_ext) do |theme|
-    theme.stylesheet    "my_ext/theme"
-    theme.homepage_view "MyExt::Views::Home"
-    theme.map_style     "my_ext"
-    theme.head          "MyExt::Components::Head"
-    theme.footer        "MyExt::Components::Footer"
-    theme.theme_color   "#f19089"
-    theme.background_color "#040f39"
-    theme.icons         favicon_32: "my_ext/favicons/favicon-32x32.png",
-                        favicon_16: "my_ext/favicons/favicon-16x16.png",
-                        apple_touch_icon: "my_ext/favicons/apple-touch-icon.png",
-                        mask_icon: "my_ext/favicons/safari-pinned-tab.svg",
-                        mask_icon_color: "#FF7AA7",
-                        icon_192: "my_ext/favicons/android-chrome-192x192.png",
-                        icon_512: "my_ext/favicons/android-chrome-512x512.png"
-    theme.og_image      "my_ext/og.png", width: 1200, height: 675
-    theme.nav_cta       "my_ext.nav.donate", "https://example.org/donate"
-    theme.nav_join      false
-    theme.menu_label    true
-    theme.event_filter_style :day_strip
-  end
+theme :my_ext do |theme|
+  theme.stylesheet    "my_ext/theme"
+  theme.homepage_view "MyExt::Views::Home"
+  theme.map_style     "my_ext"
+  theme.head          "MyExt::Components::Head"
+  theme.footer        "MyExt::Components::Footer"
+  theme.font_stylesheet "https://use.typekit.net/abcdefg.css",
+                        preconnect: %w[https://use.typekit.net https://p.typekit.net]
+  theme.theme_color   "#f19089"
+  theme.background_color "#040f39"
+  theme.icons         favicon_32: "my_ext/favicons/favicon-32x32.png",
+                      favicon_16: "my_ext/favicons/favicon-16x16.png",
+                      apple_touch_icon: "my_ext/favicons/apple-touch-icon.png",
+                      mask_icon: "my_ext/favicons/safari-pinned-tab.svg",
+                      mask_icon_color: "#FF7AA7",
+                      icon_192: "my_ext/favicons/android-chrome-192x192.png",
+                      icon_512: "my_ext/favicons/android-chrome-512x512.png"
+  theme.og_image      "my_ext/og.png", width: 1200, height: 675
+  theme.nav_cta       "my_ext.nav.donate", "https://example.org/donate"
+  theme.nav_join      false
+  theme.menu_label    true
+  theme.event_filter_style :day_strip
 end
 ```
+
+Views inherit `Views::Base` to get Rails helpers, `t()` translations, and the core `Components` kit. Components inherit `Components::Base`.
 
 Every setting is optional, and the full list is defined in `lib/placecal/theme.rb`:
 
