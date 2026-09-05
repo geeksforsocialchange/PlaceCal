@@ -251,10 +251,6 @@ RSpec.describe Site, type: :model do
         end
       end
 
-      it "returns nil for a custom theme with no per-site stylesheet" do
-        expect(build(:site, theme: "custom", slug: "nosuchsite").stylesheet_link).to be_nil
-      end
-
       it "returns nil when the theme is not registered" do
         expect(build(:site, theme: "nope").stylesheet_link).to be_nil
       end

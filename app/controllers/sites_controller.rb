@@ -14,8 +14,6 @@ class SitesController < ApplicationController
 
     if view_class
       render view_class.new(site: @site)
-    elsif current_site.slug == 'mossley'
-      render Views::Sites::Mossley.new(site: @site, places_to_get_online: @places_to_get_computer_access)
     else
       render Views::Sites::Default.new(
         site: @site, places_to_get_computer_access: @places_to_get_computer_access,
