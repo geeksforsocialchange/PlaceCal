@@ -130,7 +130,15 @@ class Site < ApplicationRecord
   # extension can add one without touching this model (#3368, D2).
   # allow_blank keeps the enumerize-era behaviour where a site could carry no
   # theme at all and render core's default styling (#3368).
-  validates :theme, inclusion: { in: ->(_site) { PlaceCal::Extensions.theme_names } }, allow_blank: true
+  #
+  # Only checked when the theme is being changed. A registry is not a fixed
+  # list: uninstalling an extension (doc/extensions.md tells self-hosters they
+  # may delete the `group :extensions` block) would otherwise leave every site
+  # on that theme permanently unsavable from admin, over a value nobody
+  # touched. Rendering already degrades to PlaceCal::Theme::NONE, so the row
+  # stays editable and the site keeps working on core's default styling.
+  validates :theme, inclusion: { in: ->(_site) { PlaceCal::Extensions.theme_names } },
+                    allow_blank: true, if: :theme_changed?
 
   # ==== Scopes ====
   scope :published, -> { where(is_published: true) }

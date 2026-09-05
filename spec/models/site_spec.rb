@@ -216,6 +216,34 @@ RSpec.describe Site, type: :model do
       expect(build(:site, theme: "")).to be_valid
     end
 
+    # Uninstalling an extension must not strand every site that used its theme
+    # (doc/extensions.md invites self-hosters to delete the extensions group).
+    context "when the site's theme is no longer registered", :theme_registry do
+      let(:orphan) do
+        PlaceCal::Extensions.register_theme(:doomed)
+        site = create(:site, theme: "doomed")
+        PlaceCal::Extensions.reset!
+        site.reload
+      end
+
+      it "stays valid and savable" do
+        expect(orphan).to be_valid
+        expect(orphan.update(name: "Renamed")).to be true
+        expect(orphan.reload.theme).to eq("doomed")
+      end
+
+      it "still rejects a change to another unregistered theme" do
+        orphan.theme = "also-gone"
+
+        expect(orphan).not_to be_valid
+        expect(orphan.errors[:theme]).to be_present
+      end
+
+      it "degrades to the null theme at render" do
+        expect(PlaceCal::Theme.for(orphan)).to eq(PlaceCal::Theme::NONE)
+      end
+    end
+
     describe "#stylesheet_link" do
       it "returns the core theme stylesheet" do
         %w[pink orange green blue].each do |name|
