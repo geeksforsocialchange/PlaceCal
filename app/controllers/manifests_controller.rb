@@ -2,6 +2,9 @@
 
 class ManifestsController < ApplicationController
   CACHE_TTL = 1.day
+  # Home-screen labels are clipped by the launcher well before this, so the
+  # manifest picks its own cap rather than shipping the full site name.
+  SHORT_NAME_LIMIT = 12
 
   skip_before_action :set_supporters
   skip_before_action :set_navigation
@@ -22,6 +25,9 @@ class ManifestsController < ApplicationController
     manifest_data[:description] = description if description.present?
 
     expires_in CACHE_TTL, public: true
+    # The same path serves a different manifest per host, so a shared cache
+    # that keys on the path alone would hand one site's manifest to another.
+    response.headers['Vary'] = 'Host'
     render json: manifest_data, content_type: 'application/manifest+json'
   end
 
@@ -87,17 +93,24 @@ class ManifestsController < ApplicationController
     end
   end
 
+  # As many whole words as fit inside SHORT_NAME_LIMIT.
+  #
+  # @param name [String] the site's full name
+  # @return [String] at most SHORT_NAME_LIMIT characters
   def short_name(name)
     words = name.split
     result = +''
 
     words.each do |word|
       test = result.empty? ? word : "#{result} #{word}"
-      break if test.length > 12
+      break if test.length > SHORT_NAME_LIMIT
 
       result = test
     end
+    return result if result.present?
 
-    result.presence || name
+    # A first word longer than the cap leaves the loop with nothing, so cut it
+    # rather than returning the whole untruncated name.
+    words.first&.truncate(SHORT_NAME_LIMIT, omission: '') || name
   end
 end

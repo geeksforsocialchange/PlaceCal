@@ -64,6 +64,24 @@ en:
 
   footer:
     site_navigation: "Site Navigation"
+    site_enquiries: "%{site} Enquiries"
+    general_enquiries: "General Enquiries"
+    get_in_touch: "Get in touch!"
+    # Abbreviated labels before a phone number and an email address
+    phone_label: "T:"
+    email_label: "E:"
+    site_supporters: " PlaceCal %{site} Supporters"
+    global_supporters: "PlaceCal Supporters"
+    build: "Build: "
+    site_enquiries: "%{site} Enquiries"
+    general_enquiries: "General Enquiries"
+    get_in_touch: "Get in touch!"
+    # Abbreviated labels before a phone number and an email address
+    phone_label: "T:"
+    email_label: "E:"
+    site_supporters: " PlaceCal %{site} Supporters"
+    global_supporters: "PlaceCal Supporters"
+    build: "Build: "
 
   # Labels for the partner and event listing filters on a site (the nationwide
   # directory has its own set under directory.filters).
@@ -73,6 +91,23 @@ en:
     category: "Category"
     neighbourhood: "Neighbourhood"
     reset: "Reset filters"
+    today: "Today"
+    go_to_date: "Go to date"
+    filter_and_sort: "Filter and sort"
+    # Radio labels in the sort/period/repeats dropdown, grouped as they appear
+    sort:
+      time: "Sort by date"
+      summary: "Sort by name"
+    period:
+      day: "Daily view"
+      week: "Weekly view"
+      month: "Monthly view"
+      future: "Show all"
+    # "on"/"off" are quoted: YAML would otherwise read them as booleans
+    repeating:
+      "on": "Show repeats"
+      "last": "Show repeats last"
+      "off": "Hide repeats"
     # Day strip event filter (D22): the Today / Tomorrow / next five days
     # navigation rendered for themes with event_filter_style :day_strip.
     day_strip:
@@ -89,6 +124,25 @@ en:
   region_filter:
     label: "Filter by region"
     all: "All"
+
+  # Support cards on a site homepage (app/components/help_card.rb). Keyed by
+  # variant so a theme can override a single card's copy.
+  help_card:
+    email_now: "Email now"
+    computer_access:
+      title: "Computer access"
+      description: "Places with computers you can use"
+      empty_message: "Information about getting online coming soon."
+    free_wifi:
+      title: "Public Wifi"
+      empty_message: "Information about getting public wifi coming soon."
+    getting_help:
+      title: "PlaceCal Support"
+      description: "You can find out more about how PlaceCal works in our handbook."
+      link: "Handbook"
+    adding_events:
+      title: "Adding Your Events"
+      description: "Want to add your organisation's events? Something on we should know about?"
 
   # ===========================================================================
   # DIRECTORY (public placecal.org)
@@ -380,6 +434,11 @@ en:
   partners:
     show:
       section: ""
+      # Empty states for the partner page's event list, one per period
+      no_events_day: "No events this day."
+      no_events_week: "No events this week."
+      no_events_month: "No events this month."
+      no_events_upcoming: "No upcoming events."
     index:
       page_title: "Partners"
       title: "Our Partners"
@@ -389,6 +448,10 @@ en:
   news:
     show:
       section: ""
+      # strftime pattern for the article's published date; themes may override
+      date_format: "%B %Y"
+      by: "By "
+      back: "Back to news"
     index:
       page_title: "News from your area"
       read_more: "Find out more"
@@ -403,6 +466,12 @@ en:
   # ===========================================================================
 
   sites:
+    home:
+      # %{link} is the "local organisations" link, %{place} the site's place name
+      mission_html: "We're working with %{link} to create a great calendar of everything that's on in %{place}."
+      mission_link: "local organisations"
+      whats_on: "See what's on"
+      about_us: "About Us"
     join:
       hero:
         title: "Get in touch"
@@ -427,6 +496,19 @@ en:
       date_format_with_year: "%e %b %Y"
       # Text before the organiser link in the event list, blank in core
       organiser_prefix: ""
+      online: "Online"
+      duration_hours:
+        one: "%{count} hour"
+        other: "%{count} hours"
+      duration_minutes:
+        one: "%{count} min"
+        other: "%{count} mins"
+      # RFC 5545 FREQ values as they arrive from a calendar feed
+      frequency:
+        daily: "Daily"
+        weekly: "Weekly"
+        monthly: "Monthly"
+        yearly: "Yearly"
     page:
       # strftime patterns for the event page date; %o is the ordinal day
       date_format: "%e %b"

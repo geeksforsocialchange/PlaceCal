@@ -135,6 +135,13 @@ RSpec.describe "Public Sitemaps", type: :request do
         expect(response.body).not_to include("https://placecal.org/")
         expect(response.body).not_to include("partnerships")
       end
+
+      it "varies on Host, since the same path serves a different sitemap per site" do
+        get "/sitemap.xml", headers: { "Host" => host }
+
+        expect(response.headers["Cache-Control"]).to include("public")
+        expect(response.headers["Vary"]).to include("Host")
+      end
     end
 
     describe "GET /sitemap/partners.xml" do

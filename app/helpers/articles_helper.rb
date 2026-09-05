@@ -12,16 +12,16 @@ module ArticlesHelper
     end.join(' | ').html_safe
   end
 
-  # Plain-text excerpt: the body is markdown, so render it and strip the tags
-  # rather than showing raw syntax in listings. The length is a locale key so a
-  # theme whose card layout wants a shorter or longer lead-in can override it
-  # through theme_overrides rather than forking the view.
+  # Plain-text excerpt of an article body for listings: the body is markdown,
+  # so render it and strip the tags rather than showing raw syntax. Cut to a
+  # fixed 200 characters on a word boundary.
   #
   # Take the text through Nokogiri rather than strip_tags: strip_tags returns
-  # entity-encoded text, which truncate then escapes a second time, so an "&"
-  # in the body reached the page as a literal "&amp;". Nokogiri decodes the
-  # entities once and lets us drop script and style content entirely. truncate
-  # does the single escape, so no markup from the body reaches the page as HTML.
+  # entity-encoded text, which truncate would then escape a second time, so an
+  # "&" in the body would reach the page as a literal "&amp;". Nokogiri decodes
+  # the entities once and lets us drop script and style content entirely.
+  # truncate does the single escape, so no markup from the body reaches the
+  # page as HTML.
   def article_summary_text(article)
     html = Kramdown::Document.new(article.body.to_s).to_html
     fragment = Nokogiri::HTML5.fragment(html)

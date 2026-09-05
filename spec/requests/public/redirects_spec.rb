@@ -65,5 +65,34 @@ RSpec.describe "Public Redirects", type: :request do
       # (#3368 WP 3.1), so no Article object is ever built.
       expect(instantiated).not_to include("Article")
     end
+
+    context "on the nationwide directory" do
+      it "redirects to /find-placecal without querying the articles table" do
+        article_queries = []
+        instantiated = []
+
+        sql_subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*args|
+          payload = ActiveSupport::Notifications::Event.new(*args).payload
+          article_queries << payload[:sql] if payload[:sql].to_s.include?("\"articles\"")
+        end
+        instantiation_subscriber = ActiveSupport::Notifications.subscribe("instantiation.active_record") do |*args|
+          payload = ActiveSupport::Notifications::Event.new(*args).payload
+          instantiated << payload[:class_name] if payload[:record_count].to_i.positive?
+        end
+
+        begin
+          get "/news/no-such-article", headers: { "Host" => "lvh.me" }
+        ensure
+          ActiveSupport::Notifications.unsubscribe(sql_subscriber)
+          ActiveSupport::Notifications.unsubscribe(instantiation_subscriber)
+        end
+
+        expect(response).to redirect_to("/find-placecal")
+        # The directory has no site to rescue a slug for, so the title-slug
+        # fallback must not scan every published article platform-wide (#3368).
+        expect(article_queries).to be_empty
+        expect(instantiated).not_to include("Article")
+      end
+    end
   end
 end

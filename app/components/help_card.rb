@@ -3,30 +3,17 @@
 class Components::HelpCard < Components::Base
   include Phlex::Rails::Helpers::MailTo
 
+  # Copy lives under help_card.<variant>.* in config/locales/en.yml so a theme
+  # can override it; only the structure is held here.
   VARIANTS = {
-    computer_access: {
-      css_class: 'help__computer_access',
-      title: 'Computer access',
-      description: 'Places with computers you can use',
-      empty_message: 'Information about getting online coming soon.'
-    },
-    free_wifi: {
-      css_class: 'help__free_public_wifi',
-      title: 'Public Wifi',
-      description: nil,
-      empty_message: 'Information about getting public wifi coming soon.'
-    },
+    computer_access: { css_class: 'help__computer_access', description: true },
+    free_wifi: { css_class: 'help__free_public_wifi', description: false },
     getting_help: {
       css_class: 'help__getting_help',
-      title: 'PlaceCal Support',
-      description: 'You can find out more about how PlaceCal works in our handbook.',
-      link: { text: 'Handbook', url: 'https://handbook.placecal.org' }
+      description: true,
+      link_url: 'https://handbook.placecal.org'
     },
-    adding_events: {
-      css_class: 'help__adding_events',
-      title: 'Adding Your Events',
-      description: "Want to add your organisation's events? Something on we should know about?"
-    }
+    adding_events: { css_class: 'help__adding_events', description: true }
   }.freeze
 
   COMPUTER_SVG = <<~SVG
@@ -110,20 +97,26 @@ class Components::HelpCard < Components::Base
     div(class: "help #{config[:css_class]}") do
       raw(safe(SVGS.fetch(@variant)))
 
-      h3(class: 'h2--alt') { span { config[:title] } }
-      p { config[:description] } if config[:description]
+      h3(class: 'h2--alt') { span { variant_t(:title) } }
+      p { variant_t(:description) } if config[:description]
 
       if @variant == :adding_events
-        mail_to(@site.site_admin.email, 'Email now', class: 'btn btn--lg')
-      elsif config[:link]
-        link_to(config[:link][:text], config[:link][:url], class: 'btn btn--lg')
+        mail_to(@site.site_admin.email, t('help_card.email_now'), class: 'btn btn--lg')
+      elsif config[:link_url]
+        link_to(variant_t(:link), config[:link_url], class: 'btn btn--lg')
       elsif @places
-        render_places_list(config[:empty_message])
+        render_places_list(variant_t(:empty_message))
       end
     end
   end
 
   private
+
+  # @param name [Symbol] the copy slot to look up for this variant
+  # @return [String]
+  def variant_t(name)
+    t("help_card.#{@variant}.#{name}")
+  end
 
   def render_places_list(empty_message)
     if @places.any?

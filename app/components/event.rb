@@ -48,7 +48,7 @@ class Components::Event < Components::Base
       render_detail('event__duration', :event_duration, duration) if duration
       render_date_detail
       render_detail('event__repeats', :event_repeats, repeats) if repeats
-      render_detail('event__repeats', :event_online, 'Online') if online?
+      render_detail('event__repeats', :event_online, t('events.card.online')) if online?
       render_organiser if show_organiser?
       render_place if show_place?
     end
@@ -127,8 +127,8 @@ class Components::Event < Components::Base
     hours = mins / 60
 
     if hours < 25
-      mins_str = (mins % 60).positive? ? "#{mins % 60} mins" : ''
-      hours_str = hours.positive? ? pluralize(hours, 'hour') : ''
+      mins_str = (mins % 60).positive? ? t('events.card.duration_minutes', count: mins % 60) : ''
+      hours_str = hours.positive? ? t('events.card.duration_hours', count: hours) : ''
       [hours_str, mins_str].reject(&:empty?).join(' ')
     else
       distance_of_time_in_words(@event.dtend - @event.dtstart)
@@ -162,8 +162,13 @@ class Components::Event < Components::Base
     @event.address&.street_address&.delete('\\')
   end
 
+  # The frequency comes from the calendar feed (RFC 5545 FREQ), so an
+  # unmapped value falls back to the raw word rather than a missing key.
   def repeats
-    @event.rrule.present? ? @event.rrule[0]['table']['frequency'].titleize : false
+    return false if @event.rrule.blank?
+
+    frequency = @event.rrule[0]['table']['frequency'].to_s
+    t("events.card.frequency.#{frequency.downcase}", default: frequency.titleize)
   end
 
   def neighbourhood_name

@@ -79,7 +79,7 @@ class Views::Partners::Show < Views::Base
 
       div(class: 'container-public mb-32') do
         Breadcrumb(
-          trail: [['Partners', partners_path], [partner.name, partner_path(partner)]],
+          trail: [[t('navigation.site.partners'), partners_path], [partner.name, partner_path(partner)]],
           site_name: site.name
         )
 
@@ -229,10 +229,10 @@ class Views::Partners::Show < Views::Base
 
   def empty_period_message
     case period
-    when 'day' then 'No events this day.'
-    when 'week' then 'No events this week.'
-    when 'month' then 'No events this month.'
-    else 'No upcoming events.'
+    when 'day' then t('partners.show.no_events_day')
+    when 'week' then t('partners.show.no_events_week')
+    when 'month' then t('partners.show.no_events_month')
+    else t('partners.show.no_events_upcoming')
     end
   end
 
