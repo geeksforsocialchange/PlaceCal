@@ -69,8 +69,42 @@ RSpec.describe PlaceCal::ThemeTranslation do
     use_current_site(themed_site)
     I18n.backend.store_translations(
       :en,
-      theme_overrides: { example_theme: { spec_shim: { greeting_html: "<b>Hello %{name}</b>" } } } # rubocop:disable Style/FormatStringToken
+      spec_shim: { scoped: "Core scoped", symbolic: "Core symbolic" },
+      theme_overrides: {
+        example_theme: {
+          spec_shim: {
+            greeting_html: "<b>Hello %{name}</b>", # rubocop:disable Style/FormatStringToken
+            scoped: "Override scoped",
+            symbolic: "Override symbolic"
+          }
+        }
+      }
     )
+  end
+
+  describe "scope:" do
+    it "applies the override for the key the scope names" do
+      expect(component.t("scoped", scope: "spec_shim")).to eq("Override scoped")
+    end
+
+    it "accepts an array scope" do
+      expect(component.t("scoped", scope: %i[spec_shim])).to eq("Override scoped")
+    end
+
+    it "still finds the core string when the theme overrides nothing there" do
+      expect(component.t("symbolic", scope: "spec_shim", default: "Caller default")).to eq("Override symbolic")
+      expect(component.t("nothing_here", scope: "spec_shim", default: "Caller default")).to eq("Caller default")
+    end
+  end
+
+  describe "symbol keys" do
+    it "applies the override" do
+      expect(component.t(:"spec_shim.symbolic")).to eq("Override symbolic")
+    end
+
+    it "hands a lazy symbol key to the including class's own t" do
+      expect(with_super.t(:".some_key")).to eq("super:.some_key")
+    end
   end
 
   describe "caller-supplied defaults" do
@@ -125,6 +159,15 @@ RSpec.describe PlaceCal::ThemeTranslation do
 
       expect { component.t("definitely.missing.key", raise: true) }
         .to raise_error(I18n::MissingTranslationData, /definitely\.missing\.key/)
+    end
+
+    # Without raise:, I18n returns the message as a string, which is rendered
+    # to the reader. It must never name the internal theme_overrides path.
+    it "never names the theme_overrides path in the returned message" do
+      result = component.t("definitely.missing.key")
+
+      expect(result).to include("definitely.missing.key")
+      expect(result).not_to include("theme_overrides")
     end
   end
 end
