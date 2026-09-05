@@ -1,4 +1,12 @@
 GIT
+  remote: https://github.com/geeksforsocialchange/placecal-theme-mossley.git
+  revision: 1e49ee9729f127ee1806c5c70dd32e0636203226
+  tag: v0.1.0
+  specs:
+    placecal-theme-mossley (0.1.0)
+      rails (>= 8.0)
+
+GIT
   remote: https://github.com/geeksforsocialchange/placecal-theme-transdimension.git
   revision: 4e5782bc45eaf030dac569236920225987facf55
   tag: v0.3.10
@@ -806,6 +814,7 @@ DEPENDENCIES
   paper_trail
   pg
   phlex-rails (~> 2.3)
+  placecal-theme-mossley!
   placecal-theme-transdimension!
   propshaft
   puma

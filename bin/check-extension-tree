@@ -28,6 +28,7 @@ ALLOWED_TREES = %w[
   app/components
   app/assets
   app/tailwind
+  app/scss
   content
   doc
   bin
