@@ -280,8 +280,11 @@ RSpec.describe "Theme slots", type: :request do
       expect(response.body).not_to include("hero__section")
       expect(response.body).to include(" 9 Nov")
 
+      # Core sites carry their own partners heading (the outline would skip a
+      # level without it); what must not leak is the fixture theme's wording.
       get "http://plain.lvh.me/partners"
-      expect(response.body).not_to include("list-heading")
+      expect(response.body).to include('class="list-heading">All partners</h2>')
+      expect(response.body).not_to include("Fixture partners list heading")
     end
 
     aggregate_failures "theme page" do
