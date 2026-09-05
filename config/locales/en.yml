@@ -2,6 +2,19 @@
 # Contains: ActiveRecord models/attributes, site metadata, and shared strings
 
 en:
+  # Theme labels for the admin site form; extensions may add their own
+  # themes.<name>.label (PlaceCal::Theme#label falls back to a titleized name).
+  themes:
+    pink:
+      label: Pink
+    orange:
+      label: Orange
+    green:
+      label: Green
+    blue:
+      label: Blue
+    custom:
+      label: Custom (legacy, per-site stylesheet)
   # ===========================================================================
   # SITE METADATA
   # ===========================================================================
@@ -18,10 +31,118 @@ en:
   contact:
     email: "support@placecal.org"
 
+  join_mailer:
+    join_us:
+      subject: "New Join Request"
+      subject_with_site: "New Join Request (%{site})"
+
   components:
     details:
       open: "Open to read more"
       close: "Close"
+
+  # Public navigation labels. A site's nav is derived from its own data
+  # (#3368 D6), so these are the only fixed items; a theme's registered pages
+  # contribute their own labels.
+  navigation:
+    menu: "Menu"
+    directory:
+      home: "Home"
+      partners: "Partners"
+      partnerships: "Partnerships"
+      events: "Events"
+      join: "Join us"
+    site:
+      home: "Home"
+      events: "Events"
+      partners: "Partners"
+      news: "News"
+      join: "Get in touch"
+      privacy: "Privacy"
+      terms: "Terms"
+      log_in: "Log in"
+
+  footer:
+    site_navigation: "Site Navigation"
+    site_enquiries: "%{site} Enquiries"
+    general_enquiries: "General Enquiries"
+    get_in_touch: "Get in touch!"
+    # Abbreviated labels before a phone number and an email address
+    phone_label: "T:"
+    email_label: "E:"
+    site_supporters: " PlaceCal %{site} Supporters"
+    global_supporters: "PlaceCal Supporters"
+    build: "Build: "
+    site_enquiries: "%{site} Enquiries"
+    general_enquiries: "General Enquiries"
+    get_in_touch: "Get in touch!"
+    # Abbreviated labels before a phone number and an email address
+    phone_label: "T:"
+    email_label: "E:"
+    site_supporters: " PlaceCal %{site} Supporters"
+    global_supporters: "PlaceCal Supporters"
+    build: "Build: "
+
+  # Labels for the partner and event listing filters on a site (the nationwide
+  # directory has its own set under directory.filters).
+  # All public listing-filter copy lives here, whichever listing renders it.
+  filters:
+    filter_by: "Filter by:"
+    category: "Category"
+    neighbourhood: "Neighbourhood"
+    reset: "Reset filters"
+    today: "Today"
+    go_to_date: "Go to date"
+    filter_and_sort: "Filter and sort"
+    # Radio labels in the sort/period/repeats dropdown, grouped as they appear
+    sort:
+      time: "Sort by date"
+      summary: "Sort by name"
+    period:
+      day: "Daily view"
+      week: "Weekly view"
+      month: "Monthly view"
+      future: "Show all"
+    # "on"/"off" are quoted: YAML would otherwise read them as booleans
+    repeating:
+      "on": "Show repeats"
+      "last": "Show repeats last"
+      "off": "Hide repeats"
+    # Day strip event filter (D22): the Today / Tomorrow / next five days
+    # navigation rendered for themes with event_filter_style :day_strip.
+    day_strip:
+      label: "Filter events by day"
+      today: "Today"
+      tomorrow: "Tomorrow"
+      all_upcoming: "All upcoming"
+      # strftime pattern for the other day buttons; themes may override
+      date_format: "%a %-d"
+
+  # Region selector shown on local sites with more than one Partnership tag
+  # (#3368 D7). Labels only: the URL param is always ?region=<tag slug>, so a
+  # theme can relabel the control without changing the param.
+  region_filter:
+    label: "Filter by region"
+    all: "All"
+
+  # Support cards on a site homepage (app/components/help_card.rb). Keyed by
+  # variant so a theme can override a single card's copy.
+  help_card:
+    email_now: "Email now"
+    computer_access:
+      title: "Computer access"
+      description: "Places with computers you can use"
+      empty_message: "Information about getting online coming soon."
+    free_wifi:
+      title: "Public Wifi"
+      empty_message: "Information about getting public wifi coming soon."
+    getting_help:
+      title: "PlaceCal Support"
+      description: "You can find out more about how PlaceCal works in our handbook."
+      link: "Handbook"
+    adding_events:
+      title: "Adding Your Events"
+      description: "Want to add your organisation's events? Something on we should know about?"
 
   # ===========================================================================
   # DIRECTORY (public placecal.org)
@@ -302,10 +423,99 @@ en:
       gfsc_logo_alt: "Geeks for Social Change"
 
   # ===========================================================================
+  # LOCAL SITE LISTING PAGES (heroes; themes override via theme_overrides.*)
+  # ===========================================================================
+  #
+  # Several keys below are deliberately blank. A blank core key is the idiom
+  # for a slot a theme may fill: core renders nothing for it, and a theme
+  # supplies copy through theme_overrides.<theme>.<key> without core needing a
+  # conditional or the theme forking the view. See doc/extensions.md.
+
+  partners:
+    show:
+      section: ""
+      # Empty states for the partner page's event list, one per period
+      no_events_day: "No events this day."
+      no_events_week: "No events this week."
+      no_events_month: "No events this month."
+      no_events_upcoming: "No upcoming events."
+    index:
+      page_title: "Partners"
+      title: "Our Partners"
+      standfirst: ""
+      standfirst_detail: ""
+      list_heading: ""
+  news:
+    show:
+      section: ""
+      # strftime pattern for the article's published date; themes may override
+      date_format: "%B %Y"
+      by: "By "
+      back: "Back to news"
+    index:
+      page_title: "News from your area"
+      read_more: "Find out more"
+      older: "Older news items"
+      # strftime pattern for the article card date; themes may override
+      date_format: "%B %Y"
+      title: "News from your area"
+      standfirst: ""
+
+  # ===========================================================================
+  # LOCAL SITES (subdomain sites)
+  # ===========================================================================
+
+  sites:
+    home:
+      # %{link} is the "local organisations" link, %{place} the site's place name
+      mission_html: "We're working with %{link} to create a great calendar of everything that's on in %{place}."
+      mission_link: "local organisations"
+      whats_on: "See what's on"
+      about_us: "About Us"
+    join:
+      hero:
+        title: "Get in touch"
+      intro: "Send a message to the %{site} team. We read every message and will get back to you."
+      email_cta:
+        heading: "Rather just email?"
+        body: "Write to %{site} directly and we'll pick it up from there."
+
+  # ===========================================================================
   # EVENT EXPORTS (shared by local sites and the directory)
   # ===========================================================================
 
   events:
+    index:
+      page_title: "Events"
+      title: "Events & activities"
+      standfirst: ""
+      list_heading: ""
+    card:
+      # strftime patterns for the event list date; themes may override
+      date_format: "%e %b"
+      date_format_with_year: "%e %b %Y"
+      # Text before the organiser link in the event list, blank in core
+      organiser_prefix: ""
+      online: "Online"
+      duration_hours:
+        one: "%{count} hour"
+        other: "%{count} hours"
+      duration_minutes:
+        one: "%{count} min"
+        other: "%{count} mins"
+      # RFC 5545 FREQ values as they arrive from a calendar feed
+      frequency:
+        daily: "Daily"
+        weekly: "Weekly"
+        monthly: "Monthly"
+        yearly: "Yearly"
+    page:
+      # strftime patterns for the event page date; %o is the ordinal day
+      date_format: "%e %b"
+      date_format_with_year: "%e %b %Y"
+    show:
+      # Section name above the event page title, blank in core
+      section: ""
     csv_export:
       link: "Download events as CSV"
       # Column headers for the events CSV (app/services/events_csv.rb).
@@ -518,6 +728,7 @@ en:
 
       site:
         <<: *default_attrs
+        contact_email: "Contact Email"
         place_name: "Place Name"
         hero_text: "Hero Text"
         hero_image: "Hero Image"

@@ -239,22 +239,24 @@ RSpec.describe "Public Events", type: :request do
       expect(response.body).to include("Community Workshop")
     end
 
+    # h2, not h3: these are the first headings under the page h1, so an h3
+    # here skips a level and axe reports heading-order.
     it "shows contact information section with consistent heading level" do
       get event_url(event, host: "#{site.slug}.lvh.me")
       expect(response.body).to include("Contact information")
-      expect(response.body).to match(%r{<h3[^>]*>Contact information</h3>})
+      expect(response.body).to match(%r{<h2[^>]*>Contact information</h2>})
     end
 
     it "shows event address with consistent heading level" do
       get event_url(event, host: "#{site.slug}.lvh.me")
       expect(response.body).to include("Event address")
-      expect(response.body).to match(%r{<h3[^>]*>Event address</h3>})
+      expect(response.body).to match(%r{<h2[^>]*>Event address</h2>})
     end
 
     it "shows event organiser with consistent heading level" do
       get event_url(event, host: "#{site.slug}.lvh.me")
       expect(response.body).to include("Event organiser")
-      expect(response.body).to match(%r{<h3[^>]*>Event organiser</h3>})
+      expect(response.body).to match(%r{<h2[^>]*>Event organiser</h2>})
     end
 
     it "includes Event JSON-LD structured data" do
@@ -380,6 +382,88 @@ RSpec.describe "Public Events", type: :request do
       get event_url(event, host: "lvh.me")
       expect(response.body).to include("Another Organiser Event")
       expect(response.body).to include(event_path(other))
+    end
+  end
+
+  describe "region filter" do
+    let(:region_site) { create(:site, slug: "regions") }
+    let(:region_ward) { create(:riverside_ward) }
+    let(:north_tag) { create(:partnership, name: "North") }
+    let(:south_tag) { create(:partnership, name: "South") }
+    let(:north_partner) { create(:partner, name: "North Partner", address: create(:address, neighbourhood: region_ward)) }
+    let(:south_partner) { create(:partner, name: "South Partner", address: create(:address, neighbourhood: region_ward)) }
+
+    before do
+      region_site.neighbourhoods << region_ward
+      region_site.tags << north_tag
+      north_partner.tags << north_tag
+      create(:future_event, organiser: north_partner, summary: "Northern Social")
+    end
+
+    context "when the site has one partnership tag" do
+      it "does not show the region control" do
+        get events_url(host: "regions.lvh.me")
+
+        expect(response).to be_successful
+        expect(response.body).not_to include("region-filter")
+      end
+    end
+
+    context "when the site has two partnership tags" do
+      before do
+        region_site.tags << south_tag
+        south_partner.tags << south_tag
+        create(:future_event, organiser: south_partner, summary: "Southern Social")
+      end
+
+      it "shows the region control" do
+        get events_url(host: "regions.lvh.me")
+
+        expect(response.body).to include("region-filter")
+        expect(response.body).to include("North")
+      end
+
+      it "filters events to the selected region" do
+        get events_url(host: "regions.lvh.me", region: north_tag.slug)
+
+        expect(response.body).to include("Northern Social")
+        expect(response.body).not_to include("Southern Social")
+      end
+
+      it "shows every event when no region is selected" do
+        get events_url(host: "regions.lvh.me")
+
+        expect(response.body).to include("Northern Social")
+        expect(response.body).to include("Southern Social")
+      end
+
+      it "ignores an unknown region slug" do
+        get events_url(host: "regions.lvh.me", region: "nowhere")
+
+        expect(response).to be_successful
+        expect(response.body).to include("Northern Social")
+        expect(response.body).to include("Southern Social")
+      end
+
+      it "auto-selects the period from the selected region, not the whole site" do
+        # The site as a whole is busy enough to be forced into the day view,
+        # while the northern region has a single event three weeks out (#3368 D7).
+        25.times { |n| create(:event, organiser: south_partner, dtstart: (n % 6).days.from_now.at_noon, summary: "Busy South #{n}") }
+        create(:event, organiser: north_partner, dtstart: 20.days.from_now.at_noon, summary: "Distant Northern Social")
+
+        get events_url(host: "regions.lvh.me", region: north_tag.slug)
+
+        expect(response).to be_successful
+        expect(response.body).to include("Distant Northern Social")
+      end
+
+      it "carries the region on the site navigation links" do
+        get events_url(host: "regions.lvh.me", region: north_tag.slug)
+
+        expect(response.body).to include(%(href="/?region=#{north_tag.slug}"))
+        expect(response.body).to include(%(href="/events?region=#{north_tag.slug}"))
+        expect(response.body).to include(%(href="/partners?region=#{north_tag.slug}"))
+      end
     end
   end
 end

@@ -10,11 +10,16 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   before_action :discard_stale_auth_flash, unless: :devise_controller?
   before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :set_current_site
   before_action :set_supporters
   before_action :set_navigation
   before_action :set_appsignal_namespace
 
   include Pundit::Authorization
+  # Theme-scoped strings for nav labels and flashes built in controllers.
+  include PlaceCal::ThemeTranslation
+  include RegionFilterable
+  include SiteNavigation
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
   rescue_from ActiveRecord::RecordNotFound, with: :resource_not_found
@@ -233,6 +238,13 @@ class ApplicationController < ActionController::Base
     @site = current_site
   end
 
+  # Makes the resolved site and its theme available to the view layer for the
+  # request (see Current and PlaceCal::ThemeTranslation).
+  def set_current_site
+    Current.site = current_site
+    Current.theme = PlaceCal::Theme.for(current_site)
+  end
+
   def redirect_from_directory
     redirect_to '/find-placecal' if directory_request?
   end
@@ -266,22 +278,5 @@ class ApplicationController < ActionController::Base
 
   def after_sign_in_path_for(resource_or_scope)
     stored_location_for(resource_or_scope) || admin_root_url(subdomain: Site::ADMIN_SUBDOMAIN)
-  end
-
-  def directory_navigation
-    [
-      ['Home', root_path],
-      ['Partners', partners_path],
-      ['Partnerships', partnerships_path],
-      ['Events', events_path]
-    ]
-  end
-
-  def sub_site_navigation
-    [
-      ['Home', root_path],
-      ['Events', events_path],
-      ['Partners', partners_path]
-    ]
   end
 end

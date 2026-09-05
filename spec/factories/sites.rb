@@ -6,6 +6,7 @@
 #
 #  id                :bigint           not null, primary key
 #  badge_zoom_level  :string
+#  contact_email     :string
 #  description       :text
 #  description_html  :string
 #  events_count      :integer          default(0), not null
@@ -21,7 +22,7 @@
 #  place_name        :string
 #  slug              :string           not null
 #  tagline           :string
-#  theme             :string
+#  theme             :string           default("pink")
 #  url               :string           not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null

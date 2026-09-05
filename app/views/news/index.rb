@@ -9,9 +9,9 @@ class Views::News::Index < Views::Base
   prop :next_offset, _Nilable(Integer), reader: :private
 
   def view_template
-    content_for(:title) { 'News from your area' }
+    content_for(:title) { t('news.index.page_title') }
 
-    Hero('News from your area', site.tagline)
+    Hero(t('news.index.title'), site.tagline, standfirst: t('news.index.standfirst'))
 
     div(class: 'articles') do
       articles.each do |article|
@@ -20,7 +20,7 @@ class Views::News::Index < Views::Base
     end
 
     p(class: 'articles__pagination') do
-      link_to 'Older news items', "?offset=#{next_offset}" if articles.count == NewsController::ARTICLES_PER_PAGE
+      link_to t('news.index.older'), "?offset=#{next_offset}" if articles.count == NewsController::ARTICLES_PER_PAGE
     end
   end
 
@@ -30,19 +30,14 @@ class Views::News::Index < Views::Base
     div(class: 'articles__article-card g') do
       div(class: 'gi gi__1-5 articles__aside') do
         p(class: 'articles__published', title: article.published_at.to_s) do
-          plain article.published_at.strftime('%B %Y')
+          plain article.published_at.strftime(t('news.index.date_format'))
         end
       end
 
       div(class: 'gi gi__4-5 articles__main') do
         h2(class: 'articles__title') { link_to article.title, news_path(article) }
 
-        if article.partners.present?
-          p(class: 'articles__partners') do
-            article_partner_links(article)
-            plain '.'
-          end
-        end
+        p(class: 'articles__partners') { article_partner_links(article) } if article.partners.present?
 
         div(class: 'g articles__content') do
           div(class: 'gi articles__body') do
@@ -56,7 +51,7 @@ class Views::News::Index < Views::Base
           end
         end
 
-        p { link_to 'Find out more', news_path(article), class: 'btn btn--alt btn--mt' }
+        p { link_to t('news.index.read_more'), news_path(article), class: 'btn btn--alt btn--mt' }
       end
     end
   end

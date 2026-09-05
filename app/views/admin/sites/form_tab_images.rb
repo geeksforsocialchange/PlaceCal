@@ -24,7 +24,8 @@ class Views::Admin::Sites::FormTabImages < Views::Admin::Base
     fieldset(class: 'fieldset max-w-xs mb-8') do
       legend(class: 'fieldset-legend') { attr_label(:site, :theme) }
       raw form.input_field(:theme, as: :select,
-                                   collection: Site.theme.values.map { |v| [v.to_s.titleize, v] },
+                                   collection: policy(site).permitted_themes.map { |theme| [theme.label, theme.name] },
+                                   include_blank: false,
                                    class: 'select select-bordered w-full')
     end
   end

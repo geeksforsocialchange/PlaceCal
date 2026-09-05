@@ -11,6 +11,10 @@ class Views::Layouts::Application < Phlex::HTML
   include Phlex::Rails::Helpers::Request
   include Components
 
+  # I18n translate helper, theme-aware (PlaceCal::ThemeTranslation), so a theme
+  # can override page metadata strings for its own sites (#3368 D19).
+  include PlaceCal::ThemeTranslation
+
   def view_template
     doctype
     html(lang: 'en') do
@@ -24,6 +28,7 @@ class Views::Layouts::Application < Phlex::HTML
         stylesheet_link_tag 'home', media: 'all', 'data-turbo-track': 'reload' if content_for?(:home_styles)
         stylesheet_link_tag site.stylesheet_link, media: 'all', 'data-turbo-track': 'reload' if site&.stylesheet_link
         stylesheet_link_tag 'print', media: 'print', 'data-turbo-track': 'reload'
+        render_theme_head
         preload_font('rawline/rawline-500.woff2')
         preload_font('rawline/rawline-700.woff2')
         preload_font('rawline/rawline-800.woff2')
@@ -61,8 +66,11 @@ class Views::Layouts::Application < Phlex::HTML
           end
           if site.nil?
             Directory::Footer()
+          elsif (footer_class = theme.footer_class)
+            # Theme footer slot (#3368 D1): the theme owns the whole footer.
+            render footer_class.new(site: site, navigation: navigation)
           else
-            Footer(site)
+            Footer(site, navigation: navigation)
           end
         end
       end
@@ -70,6 +78,31 @@ class Views::Layouts::Application < Phlex::HTML
   end
 
   private
+
+  # Theme head hook (#3368 D1/D3): a theme may register a Phlex component
+  # (`theme.head "Foo::Components::Head"`) rendered here, after the stylesheet
+  # chain, for fonts, manifest links and the like. The component is constructed
+  # with no arguments; one that needs the site can read it from view_context the
+  # way this layout does, or the theme's views can push markup through
+  # content_for(:theme_head), which also works alongside a head component.
+  def render_theme_head
+    render_font_stylesheet
+    head_class = theme.head_class
+    render head_class.new if head_class
+    raw content_for(:theme_head) if content_for?(:theme_head)
+  end
+
+  # Theme webfont slot (#3368 D1): `theme.font_stylesheet url, preconnect: [...]`
+  # renders as the preconnects, the preload and the stylesheet link a hosted
+  # font wants, which is all most themes needed a head component for.
+  def render_font_stylesheet
+    font = theme.font_stylesheet
+    return if font.nil?
+
+    font[:preconnect].each { |origin| link(rel: 'preconnect', href: origin, crossorigin: true) }
+    link(rel: 'preload', as: 'style', href: font[:url])
+    link(rel: 'stylesheet', href: font[:url])
+  end
 
   def render_meta
     title_text = compute_title
@@ -79,32 +112,16 @@ class Views::Layouts::Application < Phlex::HTML
     meta(property: 'og:title', content: title_text)
     meta(property: 'og:site_name', content: site&.name || 'PlaceCal')
 
-    link(rel: 'icon', type: 'image/png', href: image_url('favicon.png'))
-    link(rel: 'apple-touch-icon', href: image_url('apple-touch-icon.png'))
+    render_icon_links
+    link(rel: 'manifest', href: '/manifest.webmanifest') if site
     meta(name: 'viewport', content: 'width=device-width, initial-scale=1')
+    theme_color = theme.theme_color
+    meta(name: 'theme-color', content: theme_color) if theme_color
 
     meta(name: 'description', content: description_text)
     meta(property: 'og:description', content: description_text)
 
-    # Admin and Devise pages get no og:image — shared admin URLs redirect to
-    # the login page, and link previews of those are just clutter (#2077).
-    if request.subdomain == 'admin' || devise_page?
-      # no og:image
-    elsif content_for?(:image)
-      meta(property: 'og:image', content: image_url(content_for(:image)))
-      meta(property: 'og:image:alt', content: content_for(:image_alt)) if content_for?(:image_alt)
-    elsif site
-      # Generated share card for site homepages and other site pages (#2077)
-      meta(property: 'og:image', content: og_image_url)
-      meta(property: 'og:image:alt', content: I18n.t('og_image.alt.site', name: site.name))
-      meta(property: 'og:image:width', content: '1200')
-      meta(property: 'og:image:height', content: '630')
-    else
-      meta(property: 'og:image', content: image_url('og/wide.png'))
-      meta(property: 'og:image:alt', content: 'PlaceCal logo')
-      meta(property: 'og:image:width', content: '1920')
-      meta(property: 'og:image:height', content: '1080')
-    end
+    render_og_image
 
     meta(property: 'og:type', content: 'website')
     meta(name: 'twitter:card', content: 'summary_large_image')
@@ -129,6 +146,54 @@ class Views::Layouts::Application < Phlex::HTML
     script(type: 'application/ld+json') { raw safe(content_for(:json_ld)) }
   end
 
+  # Admin and Devise pages get no og:image — shared admin URLs redirect to
+  # the login page, and link previews of those are just clutter (#2077).
+  def render_og_image
+    return if request.subdomain == 'admin' || devise_page?
+
+    if content_for?(:image)
+      meta(property: 'og:image', content: image_url(content_for(:image)))
+      meta(property: 'og:image:alt', content: content_for(:image_alt)) if content_for?(:image_alt)
+    elsif site && (theme_og = theme.og_image_for_render)
+      # A theme may ship its own static share image (#3368 D1)
+      meta(property: 'og:image', content: image_url(theme_og[:path]))
+      meta(property: 'og:image:alt', content: t('og_image.alt.site', name: site.name))
+      meta(property: 'og:image:width', content: theme_og[:width].to_s) if theme_og[:width]
+      meta(property: 'og:image:height', content: theme_og[:height].to_s) if theme_og[:height]
+    elsif site
+      # Generated share card for site homepages and other site pages (#2077)
+      meta(property: 'og:image', content: og_image_url)
+      meta(property: 'og:image:alt', content: t('og_image.alt.site', name: site.name))
+      meta(property: 'og:image:width', content: '1200')
+      meta(property: 'og:image:height', content: '630')
+    else
+      meta(property: 'og:image', content: image_url('og/wide.png'))
+      meta(property: 'og:image:alt', content: 'PlaceCal logo')
+      meta(property: 'og:image:width', content: '1920')
+      meta(property: 'og:image:height', content: '1080')
+    end
+  end
+
+  # A theme may supply its own favicons, touch icon and Safari mask icon
+  # (#3368 D1). When it does, its icons replace core's two entirely;
+  # otherwise core's favicon and touch icon link as before.
+  def render_icon_links
+    icons = theme.icons_for_render
+
+    if icons.empty?
+      link(rel: 'icon', type: 'image/png', href: image_url('favicon.png'))
+      link(rel: 'apple-touch-icon', href: image_url('apple-touch-icon.png'))
+      return
+    end
+
+    link(rel: 'icon', type: 'image/png', sizes: '32x32', href: image_url(icons[:favicon_32])) if icons[:favicon_32]
+    link(rel: 'icon', type: 'image/png', sizes: '16x16', href: image_url(icons[:favicon_16])) if icons[:favicon_16]
+    link(rel: 'apple-touch-icon', sizes: '180x180', href: image_url(icons[:apple_touch_icon])) if icons[:apple_touch_icon]
+    return unless icons[:mask_icon]
+
+    link(rel: 'mask-icon', href: image_url(icons[:mask_icon]), color: icons[:mask_icon_color])
+  end
+
   def compute_title
     return 'PlaceCal | The Community Calendar' if current_page?(root_url) && site.nil?
     return "#{content_for(:title)} | #{site.name}" if content_for?(:title) && site&.name
@@ -146,7 +211,7 @@ class Views::Layouts::Application < Phlex::HTML
     if content_for?(:description)
       content_for(:description).to_s
     else
-      I18n.t('meta.description', site: site&.name)
+      t('meta.description', site: site&.name)
     end
   end
 
@@ -173,11 +238,23 @@ class Views::Layouts::Application < Phlex::HTML
     JS
   end
 
+  # The site this request is for. Current.site is set for every request by
+  # ApplicationController, while @site is opt-in per controller, and the theme
+  # below is keyed off Current: reading Current first means the site half of
+  # this layout (stylesheet, manifest link, footer) and the theme half (head
+  # component, icons, theme-color, og:image) can never disagree.
   def site
-    view_context.instance_variable_get(:@site)
+    Current.site || view_context.instance_variable_get(:@site)
   end
 
   def navigation
     view_context.instance_variable_get(:@navigation)
+  end
+
+  # The theme for this request. PlaceCal::Theme::NONE stands in for the
+  # directory and for a site with no registered theme, so the settings above
+  # read without a nil check.
+  def theme
+    Current.theme
   end
 end

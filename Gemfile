@@ -67,6 +67,16 @@ gem 'invisible_captcha'           # Spam protection on contact form
 gem 'paper_trail'                 # Event version tracking and audit log
 gem 'strong_migrations'           # Catch unsafe migrations before they reach production
 
+# Installation-specific extensions for placecal.org (see doc/extensions.md).
+# Not part of core: a self-hosted PlaceCal can delete this whole block. Each
+# extension is a Rails engine that registers a theme; it ships its CSS
+# prebuilt, so the Dockerfile needs no extra build step. Bump the tag to
+# release a new version of an extension.
+group :extensions do
+  gem 'placecal-theme-mossley', github: 'geeksforsocialchange/placecal-theme-mossley', tag: 'v0.1.2'
+  gem 'placecal-theme-transdimension', github: 'geeksforsocialchange/placecal-theme-transdimension', tag: 'v0.3.12'
+end
+
 group :development, :test do
   gem 'byebug'                    # Debugger
   gem 'dotenv-rails'              # Load .env files

@@ -74,17 +74,35 @@ module ApplicationHelper
 
   # ported from https://github.com/comfy/active_link_to/blob/master/lib/active_link_to/active_link_to.rb
   # FIXME: I don't know how to include Literal so I can use _Nilable[String]
-  def active_link_to(title, url, data: Hash, base_css_class: '', active_css_class: 'active')
+  def active_link_to(title, url, data: {}, base_css_class: '', active_css_class: 'active')
     current_path = request.original_fullpath
     link_path = Addressable::URI.parse(url).path
-    is_current_path = current_path.match(%r{^#{Regexp.escape(link_path)}/?(\?.*)?$}).present?
+    is_current_path = current_section?(current_path, link_path)
 
     options = {}
     options[:data] = data if data.present?
     options[:class] = "#{base_css_class} #{active_css_class if is_current_path}"
-    options['aria-current'] = 'page' if is_current_path
+    # "page" means this link points at the page being rendered. An ancestor
+    # ("Events", underlined while an event page is open) is aria-current="true".
+    options['aria-current'] = current_page_path?(current_path, link_path) ? 'page' : 'true' if is_current_path
 
     link_to(title, url, options).html_safe
+  end
+
+  # A nav link is current on its own page and on every page beneath it, so
+  # "Events" stays underlined on an event page. The root link only matches
+  # itself, otherwise it would be current everywhere.
+  def current_section?(current_path, link_path)
+    return false if link_path.blank?
+    return current_path.match(%r{^/?(\?.*)?$}).present? if link_path == '/'
+
+    current_path.match(%r{^#{Regexp.escape(link_path)}(/.*)?(\?.*)?$}).present?
+  end
+
+  # @return [Boolean] whether the link points at the page being rendered rather
+  #   than at one of its ancestors
+  def current_page_path?(current_path, link_path)
+    current_path.match(%r{^#{Regexp.escape(link_path)}/?(\?.*)?$}).present?
   end
 
   # Convenience wrapper for humanized model names

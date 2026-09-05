@@ -75,11 +75,11 @@ class Views::Partners::Show < Views::Base
 
   def render_local_layout
     div do
-      Hero(partner.name, site.tagline)
+      Hero(partner.name, site.tagline, section: t('partners.show.section'))
 
       div(class: 'container-public mb-32') do
         Breadcrumb(
-          trail: [['Partners', partners_path], [partner.name, partner_path(partner)]],
+          trail: [[t('navigation.site.partners'), partners_path], [partner.name, partner_path(partner)]],
           site_name: site.name
         )
 
@@ -98,17 +98,17 @@ class Views::Partners::Show < Views::Base
       end
       div(class: 'gi gi__2-5') do
         render_partner_image
-        Map(points: map, site: site.slug, compact: true)
+        Map(points: map, compact: true)
         render_opening_times
       end
     end
   end
 
   def render_contact_and_address
-    h3(class: 'udl udl--fw allcaps h4') { 'Get in touch' }
+    h2(class: 'udl udl--fw allcaps h4') { 'Get in touch' }
     ContactDetails(partner: partner)
 
-    h3(class: 'udl udl--fw allcaps h4') { 'Address' }
+    h2(class: 'udl udl--fw allcaps h4') { 'Address' }
     p { "We operate in #{partner_service_area_text(partner)}." } if partner.has_service_areas?
 
     Address(address: partner.address)
@@ -142,7 +142,7 @@ class Views::Partners::Show < Views::Base
     return unless times.any?
 
     br
-    h3(class: 'udl udl--fw allcaps h4') { 'Opening times' }
+    h2(class: 'udl udl--fw allcaps h4') { 'Opening times' }
     ul(class: 'opening_times reset') do
       times.each do |slot|
         li { slot }
@@ -229,10 +229,10 @@ class Views::Partners::Show < Views::Base
 
   def empty_period_message
     case period
-    when 'day' then 'No events this day.'
-    when 'week' then 'No events this week.'
-    when 'month' then 'No events this month.'
-    else 'No upcoming events.'
+    when 'day' then t('partners.show.no_events_day')
+    when 'week' then t('partners.show.no_events_week')
+    when 'month' then t('partners.show.no_events_month')
+    else t('partners.show.no_events_upcoming')
     end
   end
 

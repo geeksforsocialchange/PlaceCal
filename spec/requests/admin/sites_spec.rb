@@ -241,3 +241,76 @@ RSpec.describe "Admin::Sites", type: :request do
     end
   end
 end
+
+# Extension themes swap in an engine's views and copy, and only exist on
+# installations that ship that gem, so they are root's to set (#3368, WP 4.5).
+# Site admins keep the core themes and the fields they already had.
+RSpec.describe "Admin::Sites theme and contact authorisation", type: :request do
+  let!(:themed_site) { create(:site, slug: "themed-site", theme: "pink", site_admin: site_admin) }
+  let(:site_admin) { create(:citizen_user) }
+  let(:root_user) { create(:root_user) }
+
+  def put_site(attributes)
+    put admin_site_url(themed_site, host: admin_host), params: { site: attributes }
+  end
+
+  context "as a site admin" do
+    before { sign_in site_admin }
+
+    it "cannot move the site onto an extension theme" do
+      put_site(theme: "example_theme")
+
+      expect(response).to redirect_to(admin_root_path)
+      expect(themed_site.reload.theme).to eq("pink")
+    end
+
+    it "can still pick a core theme" do
+      put_site(theme: "blue")
+
+      expect(themed_site.reload.theme).to eq("blue")
+    end
+
+    it "is offered core themes only in the theme select" do
+      get edit_admin_site_url(themed_site, host: admin_host)
+
+      options = Nokogiri::HTML(response.body).css("select#site_theme option").map { |o| o["value"] }
+      expect(options).to include("pink", "blue")
+      expect(options).not_to include("example_theme")
+      expect(options).not_to include("")
+    end
+
+    it "can set the site's contact email" do
+      put_site(contact_email: "hello@example.org")
+
+      expect(themed_site.reload.contact_email).to eq("hello@example.org")
+    end
+  end
+
+  context "as a root user" do
+    before { sign_in root_user }
+
+    it "can move the site onto an extension theme" do
+      put_site(theme: "example_theme")
+
+      expect(themed_site.reload.theme).to eq("example_theme")
+    end
+
+    it "is offered extension themes in the theme select" do
+      get edit_admin_site_url(themed_site, host: admin_host)
+
+      options = Nokogiri::HTML(response.body).css("select#site_theme option").map { |o| o["value"] }
+      expect(options).to include("example_theme")
+    end
+  end
+
+  context "as a citizen who administers nothing" do
+    before { sign_in create(:citizen_user) }
+
+    it "cannot set the site's contact email" do
+      put_site(contact_email: "hello@example.org")
+
+      expect(response).to redirect_to(admin_root_path)
+      expect(themed_site.reload.contact_email).to be_blank
+    end
+  end
+end

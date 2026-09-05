@@ -102,4 +102,87 @@ RSpec.describe "Public Sites", type: :request do
       expect(response.body).to include("Custom Hero Text")
     end
   end
+
+  describe "region filter" do
+    let(:region_site) { create(:site, slug: "regions", place_name: "Regionshire") }
+    let(:region_ward) { create(:riverside_ward) }
+    let(:north_tag) { create(:partnership, name: "North") }
+    let(:south_tag) { create(:partnership, name: "South") }
+
+    before do
+      region_site.neighbourhoods << region_ward
+      region_site.tags << north_tag
+    end
+
+    context "when the site has one partnership tag" do
+      it "does not show the region control on the homepage" do
+        get "http://regions.lvh.me"
+
+        expect(response).to be_successful
+        expect(response.body).not_to include("region-filter")
+      end
+    end
+
+    context "when the site has two partnership tags" do
+      before { region_site.tags << south_tag }
+
+      it "shows the region control on the homepage" do
+        get "http://regions.lvh.me"
+
+        expect(response.body).to include("region-filter")
+        expect(response.body).to include("South")
+      end
+
+      it "ignores an unknown region slug" do
+        get "http://regions.lvh.me?region=nowhere"
+
+        expect(response).to be_successful
+        expect(response.body).to include("region-filter")
+      end
+
+      # The control is only worth having if the lists below it obey it (D7).
+      context "when the homepage help cards list partners" do
+        let(:computers) { create(:tag, name: "Computers", slug: "computers", type: "Facility") }
+
+        def partner_in(region_tag, name)
+          partner = create(:partner, name: name, address: create(:address, neighbourhood: region_ward))
+          partner.tags << [region_tag, computers]
+          partner
+        end
+
+        before do
+          partner_in(north_tag, "Northern Library")
+          partner_in(south_tag, "Southern Library")
+        end
+
+        it "lists every region's partners with no region selected" do
+          get "http://regions.lvh.me"
+
+          expect(response.body).to include("Northern Library")
+          expect(response.body).to include("Southern Library")
+        end
+
+        it "lists only the selected region's partners" do
+          get "http://regions.lvh.me?region=#{north_tag.slug}"
+
+          expect(response.body).to include("Northern Library")
+          expect(response.body).not_to include("Southern Library")
+        end
+
+        it "ignores an unknown region slug and lists everything" do
+          get "http://regions.lvh.me?region=nowhere"
+
+          expect(response.body).to include("Northern Library")
+          expect(response.body).to include("Southern Library")
+        end
+      end
+
+      it "carries the region on the site navigation links" do
+        get "http://regions.lvh.me?region=#{north_tag.slug}"
+
+        expect(response.body).to include(%(href="/events?region=#{north_tag.slug}"))
+        expect(response.body).to include(%(href="/partners?region=#{north_tag.slug}"))
+      end
+    end
+  end
 end
