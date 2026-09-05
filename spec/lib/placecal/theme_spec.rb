@@ -134,44 +134,25 @@ RSpec.describe PlaceCal::Theme do
     expect { theme.event_filter_style :carousel }.to raise_error(ArgumentError, /carousel/)
   end
 
-  describe "resolution against a site" do
-    let(:site) { build(:site, slug: "hulme") }
-
-    it "returns static stylesheet and map style values" do
+  describe "resolution" do
+    it "returns the stylesheet and map style it was given" do
       theme.stylesheet "themes/pink"
       theme.map_style "pink"
-      expect(theme.stylesheet_for(site)).to eq("themes/pink")
-      expect(theme.map_style_for(site)).to eq("pink")
-    end
-
-    it "calls a block with the site when one was given" do
-      mossley = build(:site, slug: "mossley")
-      theme.stylesheet { |s| "themes/custom/#{s.slug}" }
-      theme.map_style(&:slug)
-      expect(theme.stylesheet_for(mossley)).to eq("themes/custom/mossley")
-      expect(theme.map_style_for(site)).to eq("hulme")
+      expect(theme.stylesheet_path).to eq("themes/pink")
+      expect(theme.map_style_name).to eq("pink")
     end
 
     it "returns nil and logs when the stylesheet is missing from the pipeline" do
       allow(Rails.logger).to receive(:warn)
       theme.stylesheet "themes/no-such-theme"
 
-      expect(theme.stylesheet_for(site)).to be_nil
+      expect(theme.stylesheet_path).to be_nil
       expect(Rails.logger).to have_received(:warn).with(%r{themes/no-such-theme\.css})
     end
 
-    it "returns nil and logs when a block resolves to a missing stylesheet" do
-      allow(Rails.logger).to receive(:warn)
-      theme.stylesheet { |s| "themes/custom/#{s.slug}" }
-
-      expect(theme.stylesheet_for(site)).to be_nil
-      expect(Rails.logger).to have_received(:warn).with(%r{themes/custom/hulme\.css})
-    end
-
-    it "returns nil when nothing is set or the block returns nil" do
-      expect(theme.stylesheet_for(site)).to be_nil
-      theme.stylesheet { |_s| nil }
-      expect(theme.stylesheet_for(site)).to be_nil
+    it "returns nil when nothing is set" do
+      expect(theme.stylesheet_path).to be_nil
+      expect(theme.map_style_name).to be_nil
     end
 
     it "resolves view class names lazily" do

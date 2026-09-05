@@ -61,10 +61,9 @@ module MapHelper
   # Returns the URL to a themed MapLibre style JSON file
   # Uses OpenFreeMap vector tiles with custom colors matching site themes
   def map_style_url
-    # The request's theme resolves the style name (the legacy :custom theme
-    # resolves it from the site's slug, e.g. 'mossley'). The directory and
-    # sites with an unregistered theme fall back to pink.
-    style_name = Current.theme.map_style_for(Current.site) || 'pink'
+    # The request's theme resolves the style name. The directory and sites
+    # with an unregistered theme fall back to pink.
+    style_name = Current.theme.map_style_name || 'pink'
 
     # A style ships either in core's public/map-styles or, for extensions, as
     # an asset at map-styles/<name>.json (e.g. app/assets/builds/map-styles/).

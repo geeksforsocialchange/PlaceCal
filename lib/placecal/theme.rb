@@ -13,9 +13,7 @@ module PlaceCal
   #     theme.event_filter_style :day_strip
   #   end
   #
-  # Each setting is optional. `stylesheet` and `map_style` may also be given
-  # a block that receives the Site, for lookups that depend on the record
-  # (the legacy :custom theme resolves by site slug that way).
+  # Each setting is optional.
   class Theme
     EVENT_FILTER_STYLES = %i[date_picker day_strip].freeze
 
@@ -78,8 +76,6 @@ module PlaceCal
       @core = core
       self.class.settings.each { |setting, default| instance_variable_set(:"@#{setting}", default) }
       # Defaults for the settings whose bodies are written out below.
-      @stylesheet = nil
-      @map_style = nil
       @icons = {}
       @og_image = nil
       @nav_cta = nil
@@ -103,25 +99,18 @@ module PlaceCal
       @core
     end
 
-    # ---- DSL: each method sets when given a value or block, reads otherwise.
+    # ---- DSL: each method sets when given a value, reads otherwise.
 
     # @param value [String, nil] asset logical path without extension, e.g. "themes/pink"
-    def stylesheet(value = nil, &block)
-      return @stylesheet if value.nil? && block.nil?
-
-      @stylesheet = block || value.to_s
-    end
+    setting :stylesheet
 
     # @param value [String, nil] Phlex view class name, resolved lazily so
     #   registration can happen before autoloading is set up.
     setting :homepage_view
 
-    # @param value [String, nil] name of public/map-styles/<name>.json
-    def map_style(value = nil, &block)
-      return @map_style if value.nil? && block.nil?
-
-      @map_style = block || value.to_s
-    end
+    # @param value [String, nil] name of public/map-styles/<name>.json, or of
+    #   an extension asset at map-styles/<name>.json
+    setting :map_style
 
     # @param value [String, nil] Phlex component class name rendered in <head>
     setting :head
@@ -297,10 +286,9 @@ module PlaceCal
     # it. A renamed or unbuilt engine CSS file would otherwise raise
     # Propshaft::MissingAssetError on every page of the site (#3368).
     #
-    # @param site [Site]
-    # @return [String, nil] stylesheet logical path for this site, or nil
-    def stylesheet_for(site)
-      path = resolve(@stylesheet, site)
+    # @return [String, nil] stylesheet logical path, or nil
+    def stylesheet_path
+      path = @stylesheet.presence
       return nil if path.nil?
       return path if asset_resolves?("#{path}.css")
 
@@ -311,7 +299,7 @@ module PlaceCal
     # The theme's icons, minus any whose asset the pipeline cannot resolve. A
     # renamed or dropped engine image would otherwise raise
     # Propshaft::MissingAssetError from `image_url` on every page of every site
-    # on the theme, which is the failure `stylesheet_for` already guards
+    # on the theme, which is the failure `stylesheet_path` already guards
     # against (#3368). Callers rendering icons read this, not #icons.
     #
     # @return [Hash] icon paths that resolve, plus mask_icon_color when its
@@ -342,10 +330,9 @@ module PlaceCal
       nil
     end
 
-    # @param site [Site]
-    # @return [String, nil] map style name for this site, or nil
-    def map_style_for(site)
-      resolve(@map_style, site)
+    # @return [String, nil] map style name, or nil
+    def map_style_name
+      @map_style.presence
     end
 
     # @return [Class, nil] the homepage Phlex view class, or nil when the
@@ -379,11 +366,6 @@ module PlaceCal
       return if value.nil? || value.match?(COLOUR_FORMAT)
 
       raise ArgumentError, "invalid mask_icon_color #{value.inspect}, expected a colour such as \"#FF7AA7\""
-    end
-
-    def resolve(setting, site)
-      value = setting.respond_to?(:call) ? setting.call(site) : setting
-      value&.to_s.presence
     end
 
     def asset_resolves?(logical_path)

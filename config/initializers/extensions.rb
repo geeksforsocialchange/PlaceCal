@@ -23,18 +23,3 @@ theme_colors = {
     theme.theme_color theme_colors[name.to_sym]
   end
 end
-
-# Legacy per-site theme: the stylesheet and map style are looked up by the
-# site's slug (themes/custom/<slug>.css, public/map-styles/<slug>.json).
-# Only Mossley uses it. Kept so existing sites work untouched; new bespoke
-# sites should be extensions instead.
-PlaceCal::Extensions.register_theme(:custom, core: true) do |theme|
-  theme.stylesheet do |site|
-    path = "themes/custom/#{site.slug}"
-    # The per-site asset may not exist in the pipeline (#2936): link nothing
-    # rather than raise Propshaft::MissingAssetError. Same check the theme's
-    # own guards use, so the two cannot drift.
-    path if PlaceCal::Theme.asset_resolves?("#{path}.css")
-  end
-  theme.map_style(&:slug)
-end

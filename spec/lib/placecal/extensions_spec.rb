@@ -5,19 +5,18 @@ require "rails_helper"
 RSpec.describe PlaceCal::Extensions do
   describe "boot-time registry" do
     it "contains the built-in themes plus the test fixture extension" do
-      expect(described_class.theme_names).to start_with(%w[pink orange green blue custom]).and include("example_theme")
+      expect(described_class.theme_names).to start_with(%w[pink orange green blue]).and include("example_theme")
     end
 
     it "lists built-in themes as core" do
-      expect(described_class.themes.select(&:core?).map(&:name)).to eq(%w[pink orange green blue custom])
+      expect(described_class.themes.select(&:core?).map(&:name)).to eq(%w[pink orange green blue])
       expect(described_class.find_theme(:example_theme)).not_to be_core
     end
 
     it "resolves built-in stylesheets and map styles" do
-      site = build(:site, slug: "hulme")
       pink = described_class.find_theme(:pink)
-      expect(pink.stylesheet_for(site)).to eq("themes/pink")
-      expect(pink.map_style_for(site)).to eq("pink")
+      expect(pink.stylesheet_path).to eq("themes/pink")
+      expect(pink.map_style_name).to eq("pink")
       expect(pink.homepage_view_class).to be_nil
     end
 
@@ -26,18 +25,10 @@ RSpec.describe PlaceCal::Extensions do
       colors.each do |name, hex|
         expect(described_class.find_theme(name).theme_color).to eq(hex)
       end
-      expect(described_class.find_theme(:custom).theme_color).to be_nil
     end
 
-    it "resolves the legacy custom theme by site slug" do
-      custom = described_class.find_theme(:custom)
-      site = build(:site, slug: "mossley")
-      expect(custom.map_style_for(site)).to eq("mossley")
-      resolver = Rails.application.assets.resolver
-      allow(resolver).to receive(:resolve).with("themes/custom/mossley.css").and_return("/assets/themes/custom/mossley-abc.css")
-      expect(custom.stylesheet_for(site)).to eq("themes/custom/mossley")
-      allow(resolver).to receive(:resolve).with("themes/custom/mossley.css").and_return(nil)
-      expect(custom.stylesheet_for(site)).to be_nil
+    it "has no per-site theme left: every bespoke site is an extension" do
+      expect(described_class.theme_names).not_to include("custom")
     end
   end
 
@@ -153,6 +144,6 @@ RSpec.describe PlaceCal::Extensions do
   end
 
   it "restores the registry after a mutating example" do
-    expect(described_class.theme_names).to start_with(%w[pink orange green blue custom]).and include("example_theme")
+    expect(described_class.theme_names).to start_with(%w[pink orange green blue]).and include("example_theme")
   end
 end

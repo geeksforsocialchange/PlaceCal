@@ -29,11 +29,6 @@ RSpec.describe MapHelper, type: :helper do
       expect(helper.send(:map_style_url)).to eq("/map-styles/orange.json")
     end
 
-    it "falls back to pink style for non-existent custom theme file" do
-      use_current_site(create(:site, theme: "custom", slug: "nonexistent-site"))
-      expect(helper.send(:map_style_url)).to eq("/map-styles/pink.json")
-    end
-
     it "falls back to pink style for a theme that is not registered" do
       use_current_site(build(:site, theme: "nope"))
       expect(helper.send(:map_style_url)).to eq("/map-styles/pink.json")

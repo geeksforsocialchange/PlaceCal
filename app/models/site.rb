@@ -270,7 +270,7 @@ class Site < ApplicationRecord
   #   default styling instead of raising Propshaft::MissingAssetError
   #   (#2936, #3368).
   def stylesheet_link
-    PlaceCal::Theme.for(self).stylesheet_for(self)
+    PlaceCal::Theme.for(self).stylesheet_path
   end
 
   # @return [String, false] Open Graph image URL, or false
