@@ -42,7 +42,7 @@ RSpec.describe "Theme fallbacks", :theme_registry, type: :request do
         theme.head "Brokenly::Components::Head"
         theme.footer "Brokenly::Components::Footer"
       end
-      allow(Rails.logger).to receive(:error)
+      allow(Rails.logger).to receive(:warn)
       # The theme must be registered before the site is validated.
       site
     end
@@ -53,14 +53,14 @@ RSpec.describe "Theme fallbacks", :theme_registry, type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).not_to include("brokenly/theme")
       expect(response.body).to include(site.description)
-      expect(Rails.logger).to have_received(:error).with(%r{brokenly/theme\.css})
+      expect(Rails.logger).to have_received(:warn).with(%r{brokenly/theme\.css})
     end
 
     it "renders an inner page without the missing head and footer components" do
       get "http://brokenly.lvh.me/news"
 
       expect(response).to have_http_status(:ok)
-      expect(Rails.logger).to have_received(:error).with(/head class Brokenly::Components::Head/)
+      expect(Rails.logger).to have_received(:warn).with(/head class Brokenly::Components::Head/)
     end
   end
 
@@ -97,10 +97,22 @@ RSpec.describe "Theme fallbacks", :theme_registry, type: :request do
       site_on("pink", "plain")
     end
 
-    it "404s for a slug the theme does not register" do
-      get "http://themed.lvh.me/nothing-here"
+    # The catch-all is constrained to slugs some registered theme serves
+    # (PlaceCal::Extensions::ThemePage), so an unknown path is a routing 404
+    # rather than a fully rendered one: nothing runs the public filter chain
+    # for a scanner walking /wp-login and friends.
+    it "does not route a slug no registered theme serves" do
+      expect { get "http://themed.lvh.me/nothing-here" }
+        .to raise_error(ActionController::RoutingError)
+    end
 
-      expect(response).to have_http_status(:not_found)
+    # Bare paths only: an explicit format would otherwise serve the HTML page
+    # under the wrong content type.
+    it "does not route a theme page with an explicit format" do
+      expect { get "http://themed.lvh.me/proof.json" }
+        .to raise_error(ActionController::RoutingError)
+      expect { get "http://themed.lvh.me/proof.html" }
+        .to raise_error(ActionController::RoutingError)
     end
 
     it "404s for a theme page slug on a site whose theme is core's" do
@@ -120,12 +132,12 @@ RSpec.describe "Theme fallbacks", :theme_registry, type: :request do
         theme.page "about", "Nope::Views::About"
       end
       site_on("pagey", "pagey")
-      allow(Rails.logger).to receive(:error)
+      allow(Rails.logger).to receive(:warn)
 
       get "http://pagey.lvh.me/about"
 
       expect(response).to have_http_status(:not_found)
-      expect(Rails.logger).to have_received(:error).with(/page about class Nope::Views::About/)
+      expect(Rails.logger).to have_received(:warn).with(/page about class Nope::Views::About/)
     end
 
     it "falls back to core's privacy page when the theme registers none" do
@@ -134,6 +146,42 @@ RSpec.describe "Theme fallbacks", :theme_registry, type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).to match(/privacy/i)
       expect(response.body).not_to include("Example theme fixture proof page")
+    end
+  end
+
+  # A theme's icon and share-image paths are asset logical paths resolved with
+  # image_url, which raises when the asset is gone. A bumped engine gem that
+  # renamed one must not take every page of every site on the theme down.
+  context "with a theme whose icon and share-image assets are gone" do
+    before do
+      PlaceCal::Extensions.register_theme(:stale_assets) do |theme|
+        theme.icons favicon_32: "stale_assets/gone-32.png",
+                    icon_192: "stale_assets/gone-192.png"
+        theme.og_image "stale_assets/gone-og.png", width: 1200, height: 675
+      end
+      site_on("stale_assets", "stale")
+      allow(Rails.logger).to receive(:warn)
+    end
+
+    it "renders the site homepage with core's icons and share card instead" do
+      get "http://stale.lvh.me"
+
+      expect(response).to have_http_status(:ok)
+      head = head_html
+      expect(head).not_to include("gone-32")
+      expect(head).not_to include("gone-og")
+      expect(head).to match(%r{<link rel="icon" type="image/png" href="[^"]*/assets/favicon-[0-9a-f]+\.png">})
+      expect(Rails.logger).to have_received(:warn).with(/gone-32\.png/)
+      expect(Rails.logger).to have_received(:warn).with(/gone-og\.png/)
+    end
+
+    it "omits the icon from the web manifest rather than raising" do
+      get "http://stale.lvh.me/manifest.webmanifest"
+
+      expect(response).to have_http_status(:ok)
+      manifest = JSON.parse(response.body)
+      expect(manifest["icons"].map { |icon| icon["src"] }.join).not_to include("gone-192")
+      expect(manifest["icons"].map { |icon| icon["sizes"] }).to eq(%w[64x64 180x180])
     end
   end
 

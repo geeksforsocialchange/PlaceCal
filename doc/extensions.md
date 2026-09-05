@@ -120,7 +120,7 @@ theme.page "about", "MyExt::Views::About", nav_label_key: "my_ext.nav.about"
 theme.page "privacy", "MyExt::Views::Privacy"
 ```
 
-- The page is served at `/about` on every site using the theme, by core's `/:slug` catch-all. HTML only: `/about.json` does not route.
+- The page is served at `/about` on every site using the theme, by core's `/:slug` catch-all. The bare path only: `/about.json` and `/about.html` do not route. The catch-all is constrained to the slugs registered themes serve, so any other single-segment path is a routing 404 that never reaches a controller.
 - The view is constructed with `new(site:)` and inherits `Views::Base` like any other theme view. Everything about the page, including its wrapper element and any `page page--about` style classes, is the view's own business.
 - `nav_label_key` is a locale key. A page that has one is listed in the derived site nav and footer nav under `t(key)`, in registration order, after the News link. A page without one is served but not linked.
 - Every registered page is listed in the site's sitemap (no `lastmod`, since there is no record to date).
@@ -130,7 +130,7 @@ theme.page "privacy", "MyExt::Views::Privacy"
 
 ## Map styles
 
-`map_style` names a MapLibre style JSON. Core's own styles live in `public/map-styles/<name>.json`; an extension ships its style as an engine asset at `app/assets/builds/map-styles/<name>.json`, which Propshaft picks up and serves at the same logical path. `MapHelper#style_url_for_site` checks core's public directory first, then the asset pipeline, and falls back to `pink.json` if neither has it.
+`map_style` names a MapLibre style JSON. Core's own styles live in `public/map-styles/<name>.json`; an extension ships its style as an engine asset at `app/assets/builds/map-styles/<name>.json`, which Propshaft picks up and serves at the same logical path. `MapHelper#map_style_url` resolves the name from the request's theme (`Current.theme`), so it takes no arguments. It checks core's public directory first, then the asset pipeline, and falls back to `pink.json` if neither has it.
 
 ## Locale files
 
@@ -149,9 +149,11 @@ en:
 
 Keep the overrides in their own file (`config/locales/overrides.en.yml` by convention) so it is obvious which strings the theme rewrites and which are its own.
 
+Two things to know about which calls an override can reach. The key must be a String or a Symbol written out in full (`t("region_filter.all")` or `t(:"region_filter.all")`); a lazy key (`t(".all")`, which only the calling view can expand) is never overridable, so a core view using one has to be changed to an absolute key before a theme can rewrite it. And `scope:` is honoured: `t("all", scope: "region_filter")` looks up `theme_overrides.<theme>.region_filter.all`, the same place the absolute key does.
+
 A blank value in core's own `config/locales/en.yml` is the idiom for a slot a theme may fill. Where a piece of copy is optional (a standfirst, a section name, a heading above a list, a prefix before an organiser name), core declares the key with an empty string rather than leaving it out. Core then renders nothing for it, because every one of those views skips a blank value, while the key still exists for a theme to override. It means core needs no conditional for theme-only copy, the theme needs no forked view, and the full set of fillable slots can be read off core's locale file. If you want a slot that does not exist yet, adding the blank key to core is a one-line change; see the note above the "local site listing pages" block in `config/locales/en.yml`.
 
-Some core strings exist only as override slots: core ships them empty so nothing renders, and a theme fills them in. The listing pages carry one such slot, `<ns>.index.list_heading` (`partners.index.list_heading`, `events.index.list_heading`), which `Components::ListHeading` renders as an `h2` between the hero and the filters when it is not blank:
+Some core strings exist only as override slots: core ships them empty so nothing renders, and a theme fills them in. The listing pages carry one such slot, `<ns>.index.list_heading` (`partners.index.list_heading`, `events.index.list_heading`), which `Views::Base#list_heading` renders as an `h2` between the hero and the filters when it is not blank:
 
 ```yaml
 en:
@@ -208,7 +210,9 @@ group :extensions do
 end
 ```
 
-Keep it a single block so removing it is one edit. The Dockerfile needs no Node build step for extensions because each engine ships its CSS prebuilt.
+Keep it a single block so removing it is one edit. Delete it rather than excluding the group: `config/application.rb` calls `Bundler.require(*Rails.groups, :extensions)`, so `BUNDLE_WITHOUT=extensions` leaves the gems uninstalled but still required and the app raises `LoadError` at boot. Deleting the block is the supported way to run without extensions, and sites already on an uninstalled theme keep working: they degrade to core's default styling and stay editable in admin.
+
+The Dockerfile needs no Node build step for extensions because each engine ships its CSS prebuilt.
 
 ## Engine specs
 

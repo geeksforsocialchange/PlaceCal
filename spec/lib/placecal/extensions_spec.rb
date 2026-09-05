@@ -108,6 +108,50 @@ RSpec.describe PlaceCal::Extensions do
     end
   end
 
+  # The /:slug catch-all constrains on this set, so it has to follow the
+  # registry rather than be computed once at boot.
+  describe ".page_slugs", :theme_registry do
+    it "collects the slugs of every registered theme" do
+      described_class.reset!
+      described_class.register_theme(:one) { |theme| theme.page "alpha", "Sample::Views::Alpha" }
+      described_class.register_theme(:two) { |theme| theme.page "beta", "Sample::Views::Beta" }
+
+      expect(described_class.page_slugs).to eq(Set["alpha", "beta"])
+    end
+
+    it "picks up a page added after the theme was registered" do
+      described_class.reset!
+      described_class.register_theme(:one)
+      expect(described_class.page_slugs).to be_empty
+
+      described_class.fetch_theme(:one).page "gamma", "Sample::Views::Gamma"
+
+      expect(described_class.page_slugs).to eq(Set["gamma"])
+    end
+
+    it "forgets slugs from a registry that has been reset or restored" do
+      state = described_class.snapshot
+      described_class.register_theme(:one) { |theme| theme.page "delta", "Sample::Views::Delta" }
+      expect(described_class.page_slugs).to include("delta")
+
+      described_class.restore(state)
+
+      expect(described_class.page_slugs).not_to include("delta")
+    end
+  end
+
+  describe PlaceCal::Extensions::ThemePage do
+    it "matches only a slug some registered theme serves" do
+      request = instance_double(ActionDispatch::Request, path_parameters: { slug: "proof" })
+      expect(described_class.matches?(request)).to be true
+    end
+
+    it "does not match anything else" do
+      request = instance_double(ActionDispatch::Request, path_parameters: { slug: "wp-login" })
+      expect(described_class.matches?(request)).to be false
+    end
+  end
+
   it "restores the registry after a mutating example" do
     expect(described_class.theme_names).to start_with(%w[pink orange green blue custom]).and include("example_theme")
   end

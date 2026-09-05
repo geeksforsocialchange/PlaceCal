@@ -31,42 +31,49 @@ module PlaceCal
     # is no override to apply: when there is a `super`, the call is handed
     # straight to it rather than reimplemented.
     def t(key, **options)
-      theme = Current.theme
-      overridable = overridable_key?(theme, key)
+      override = override_key(Current.theme, key, options)
 
-      # No override scope to consult (a lazy '.foo' key, or a request with no
-      # theme), so let the `t` this module shadows do the whole job, including
-      # ActionView's `_html` escaping and html_safe marking.
-      return super if defined?(super) && !overridable
+      # No override to apply (no theme, a lazy '.foo' key, or simply a key
+      # this theme does not rewrite), so let the `t` this module shadows do
+      # the whole job, including ActionView's `_html` escaping, its html_safe
+      # marking and its missing-translation reporting.
+      return super if override.nil? && defined?(super)
 
       options = escape_html_interpolations(key, options)
-      value = overridable ? theme_scoped_translation(theme, key, **options) : I18n.t(key, **options)
+      # `scope:` has already been folded into the override key; passing it on
+      # would send I18n looking under the scope for the absolute key.
+      value = override ? I18n.t(override, **options.except(:scope)) : I18n.t(key, **options)
 
       html_key?(key) && value.is_a?(String) ? value.html_safe : value # rubocop:disable Rails/OutputSafety
     end
 
     private
 
-    # Try the theme's override first, then the key the caller asked for, then
-    # whatever defaults the caller supplied.
-    def theme_scoped_translation(theme, key, **options)
-      scoped = "#{OVERRIDE_SCOPE}.#{theme.name}.#{key}"
-      # The scoped key is absolute, so there is nothing the including class's
-      # own `t` would add here; go straight to I18n.
-      I18n.t(scoped, **options, default: [key.to_sym, *Array(options[:default])])
-    rescue I18n::MissingTranslationData => e
-      # Report the key the caller wrote, not the theme_overrides path they
-      # have never heard of.
-      raise I18n::MissingTranslationData.new(e.locale, key, e.options)
-    end
+    # The theme_overrides key that exists for this call, or nil when there is
+    # nothing to override. Looking first rather than relying on I18n's default
+    # chain matters: a miss down that chain returns a "Translation missing"
+    # string naming the internal theme_overrides path, which is not a phrase
+    # the caller has ever heard of and would be rendered to the reader.
+    #
+    # A lazy ('.foo') key is left alone: it only means anything to the
+    # including class's own `t`, which knows the current scope. The null theme
+    # has no overrides, so short-circuit rather than send every directory
+    # lookup through a `theme_overrides.none.<key>` miss.
+    #
+    # @param theme [PlaceCal::Theme]
+    # @param key [String, Symbol]
+    # @param options [Hash] the caller's `t` options; `scope:` and `locale:`
+    #   are honoured, since both change which key the caller means
+    # @return [String, nil]
+    def override_key(theme, key, options)
+      return nil if theme.equal?(PlaceCal::Theme::NONE)
+      return nil unless key.is_a?(String) || key.is_a?(Symbol)
 
-    # Whether this key could carry a theme override: an absolute key (a lazy
-    # '.foo' key only means anything to the including class's own `t`, which
-    # knows the current scope) on a request whose theme is registered. The
-    # null theme has no overrides, so short-circuit rather than send every
-    # directory lookup through a `theme_overrides.none.<key>` miss.
-    def overridable_key?(theme, key)
-      !theme.equal?(PlaceCal::Theme::NONE) && key.is_a?(String) && !key.start_with?('.')
+      key = key.to_s
+      return nil if key.start_with?('.')
+
+      scoped = "#{OVERRIDE_SCOPE}.#{theme.name}.#{[*options[:scope], key].join('.')}"
+      scoped if I18n.exists?(scoped, options[:locale] || I18n.locale)
     end
 
     # Only reached when there is no `super` to do it (Phlex components), or for

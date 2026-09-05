@@ -19,7 +19,7 @@ class Components::PartnerFilter < Components::Base
     RegionFilter(tags: @region_tags, selected: @selected_region)
 
     form_with(**form_data, class: 'filters__form') do
-      hidden_field_tag(:region, @selected_region.slug) if @selected_region
+      hidden_field_tag(:region, @selected_region.slug, id: nil) if @selected_region
       div(class: 'breadcrumb__element breadcrumb__element--last') do
         span { t('filters.filter_by') }
         render_category_filter if show_category_filter?

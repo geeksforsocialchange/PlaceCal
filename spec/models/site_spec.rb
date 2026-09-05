@@ -216,6 +216,34 @@ RSpec.describe Site, type: :model do
       expect(build(:site, theme: "")).to be_valid
     end
 
+    # Uninstalling an extension must not strand every site that used its theme
+    # (doc/extensions.md invites self-hosters to delete the extensions group).
+    context "when the site's theme is no longer registered", :theme_registry do
+      let(:orphan) do
+        PlaceCal::Extensions.register_theme(:doomed)
+        site = create(:site, theme: "doomed")
+        PlaceCal::Extensions.reset!
+        site.reload
+      end
+
+      it "stays valid and savable" do
+        expect(orphan).to be_valid
+        expect(orphan.update(name: "Renamed")).to be true
+        expect(orphan.reload.theme).to eq("doomed")
+      end
+
+      it "still rejects a change to another unregistered theme" do
+        orphan.theme = "also-gone"
+
+        expect(orphan).not_to be_valid
+        expect(orphan.errors[:theme]).to be_present
+      end
+
+      it "degrades to the null theme at render" do
+        expect(PlaceCal::Theme.for(orphan)).to eq(PlaceCal::Theme::NONE)
+      end
+    end
+
     describe "#stylesheet_link" do
       it "returns the core theme stylesheet" do
         %w[pink orange green blue].each do |name|
@@ -233,10 +261,10 @@ RSpec.describe Site, type: :model do
 
       it "returns nil and logs when the theme's stylesheet is missing from the pipeline", :theme_registry do
         PlaceCal::Extensions.register_theme(:ghost) { |theme| theme.stylesheet "ghost/theme" }
-        allow(Rails.logger).to receive(:error)
+        allow(Rails.logger).to receive(:warn)
 
         expect(build(:site, theme: "ghost").stylesheet_link).to be_nil
-        expect(Rails.logger).to have_received(:error).with(%r{ghost/theme\.css})
+        expect(Rails.logger).to have_received(:warn).with(%r{ghost/theme\.css})
       end
     end
   end

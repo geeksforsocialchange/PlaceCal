@@ -141,7 +141,7 @@ class Views::Layouts::Application < Phlex::HTML
     if content_for?(:image)
       meta(property: 'og:image', content: image_url(content_for(:image)))
       meta(property: 'og:image:alt', content: content_for(:image_alt)) if content_for?(:image_alt)
-    elsif site && (theme_og = theme.og_image)
+    elsif site && (theme_og = theme.og_image_for_render)
       # A theme may ship its own static share image (#3368 D1)
       meta(property: 'og:image', content: image_url(theme_og[:path]))
       meta(property: 'og:image:alt', content: t('og_image.alt.site', name: site.name))
@@ -165,7 +165,7 @@ class Views::Layouts::Application < Phlex::HTML
   # (#3368 D1). When it does, its icons replace core's two entirely;
   # otherwise core's favicon and touch icon link as before.
   def render_icon_links
-    icons = theme.icons
+    icons = theme.icons_for_render
 
     if icons.empty?
       link(rel: 'icon', type: 'image/png', href: image_url('favicon.png'))
@@ -225,8 +225,13 @@ class Views::Layouts::Application < Phlex::HTML
     JS
   end
 
+  # The site this request is for. Current.site is set for every request by
+  # ApplicationController, while @site is opt-in per controller, and the theme
+  # below is keyed off Current: reading Current first means the site half of
+  # this layout (stylesheet, manifest link, footer) and the theme half (head
+  # component, icons, theme-color, og:image) can never disagree.
   def site
-    view_context.instance_variable_get(:@site)
+    Current.site || view_context.instance_variable_get(:@site)
   end
 
   def navigation

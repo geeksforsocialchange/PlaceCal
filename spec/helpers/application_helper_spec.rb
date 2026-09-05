@@ -30,4 +30,47 @@ RSpec.describe ApplicationHelper do
       expect(helper.current_section?("/events", "")).to be(false)
     end
   end
+
+  describe "#current_page_path?" do
+    it "is true only for the page the link points at" do
+      expect(helper.current_page_path?("/events", "/events")).to be(true)
+      expect(helper.current_page_path?("/events/", "/events")).to be(true)
+      expect(helper.current_page_path?("/events?period=week", "/events")).to be(true)
+      expect(helper.current_page_path?("/", "/")).to be(true)
+    end
+
+    it "is false for a page beneath the link" do
+      expect(helper.current_page_path?("/events/123", "/events")).to be(false)
+    end
+  end
+
+  describe "#active_link_to" do
+    # aria-current="page" names the page being rendered; an ancestor section
+    # link is aria-current="true".
+    it "marks the link to this page as the current page" do
+      allow(helper.request).to receive(:original_fullpath).and_return("/events")
+
+      expect(helper.active_link_to("Events", "/events")).to include('aria-current="page"')
+    end
+
+    it "marks an ancestor section link as current, but not as the page" do
+      allow(helper.request).to receive(:original_fullpath).and_return("/events/123")
+      link = helper.active_link_to("Events", "/events")
+
+      expect(link).to include('aria-current="true"')
+      expect(link).not_to include('aria-current="page"')
+    end
+
+    it "sets no aria-current on a link that is not current" do
+      allow(helper.request).to receive(:original_fullpath).and_return("/news")
+
+      expect(helper.active_link_to("Events", "/events")).not_to include("aria-current")
+    end
+
+    it "emits no data attribute when none was given" do
+      allow(helper.request).to receive(:original_fullpath).and_return("/news")
+
+      expect(helper.active_link_to("Events", "/events")).not_to include("data=")
+    end
+  end
 end

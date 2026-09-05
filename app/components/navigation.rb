@@ -29,6 +29,7 @@ class Components::Navigation < Components::Base
     link_to(root_path, class: [
               'header__branding row-start-1 col-start-1 ',
               ("header__branding--#{@site.slug}" if @site&.slug.presence),
+              ("header__branding--theme-#{branding_theme_name}" if branding_theme_name),
               # svg/img classes are here because partner svgs are inlined with File.read
               '[&>svg,&>img]:object-contain [&>svg,&>img]:max-w-full [&>svg,&>img]:max-h-full',
               *(if @site.nil?
@@ -40,6 +41,19 @@ class Components::Navigation < Components::Base
       render_logo
       render_site_name
     end
+  end
+
+  # A theme's own branding CSS hooks onto this rather than onto the slug class
+  # above: the slug is admin-editable, so a rename would silently drop the
+  # theme's styling (#3368).
+  #
+  # @return [String, nil] the registered theme's name, or nil for a site with
+  #   no theme and for the nationwide directory
+  def branding_theme_name
+    return @branding_theme_name if defined?(@branding_theme_name)
+
+    theme = Current.theme
+    @branding_theme_name = (theme.name unless @site.nil? || theme.equal?(PlaceCal::Theme::NONE))
   end
 
   def render_logo
@@ -86,15 +100,34 @@ class Components::Navigation < Components::Base
   # Theme call-to-action (#3368 D1): a theme may register `nav_cta`, for
   # example a Donate link; core renders it as the last nav item.
   def theme_cta
-    @theme_cta ||= Current.theme.nav_cta
+    return @theme_cta if defined?(@theme_cta)
+
+    @theme_cta = Current.theme.nav_cta
   end
 
   def render_theme_cta
-    li(class: 'text-center max-md:py-3 header__cta') do
-      link_to(t(theme_cta[:label_key]), theme_cta[:url],
-              class: 'header__cta-link inline-flex items-center rounded-sm bg-background px-4 py-1.5 text-detail font-bold no-underline',
-              target: '_blank', rel: 'noopener')
+    options = {
+      class: 'header__cta-link inline-flex items-center rounded-sm bg-background px-4 py-1.5 text-detail font-bold no-underline'
+    }
+    # A CTA off to another site (a donation platform, say) opens in a new tab;
+    # one pointing at a page of this site must not.
+    if external_url?(theme_cta[:url])
+      options[:target] = '_blank'
+      options[:rel] = 'noopener'
     end
+
+    li(class: 'text-center max-md:py-3 header__cta') do
+      link_to(t(theme_cta[:label_key]), theme_cta[:url], **options)
+    end
+  end
+
+  # @param url [String]
+  # @return [Boolean] whether the URL names a host other than this request's
+  def external_url?(url)
+    host = Addressable::URI.parse(url.to_s).host
+    host.present? && host != request.host
+  rescue Addressable::URI::InvalidURIError
+    false
   end
 
   # TODO: Change to join.placecal.org once the join flow is live
@@ -188,7 +221,10 @@ class Components::Navigation < Components::Base
                else
                  ['md:hidden']
                end)
-           ], data: { action: 'click->mobile-menu#toggle', turbo: 'false' }) do
+           ], aria_label: t('navigation.menu'),
+           data: { action: 'click->mobile-menu#toggle', turbo: 'false' }) do
+      # The accessible name is always there; the visible label beside the icon
+      # is what a theme opts into.
       span(class: 'text-base font-semibold header__toggle-label') { t('navigation.menu') } if show_menu_label?
       raw(view_context.icon(:misc_menu, size: nil, css_class: 'size-8 fill-secondary'))
     end

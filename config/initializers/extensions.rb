@@ -32,8 +32,9 @@ PlaceCal::Extensions.register_theme(:custom, core: true) do |theme|
   theme.stylesheet do |site|
     path = "themes/custom/#{site.slug}"
     # The per-site asset may not exist in the pipeline (#2936): link nothing
-    # rather than raise Propshaft::MissingAssetError.
-    path if Rails.application.assets&.resolver&.resolve("#{path}.css").present?
+    # rather than raise Propshaft::MissingAssetError. Same check the theme's
+    # own guards use, so the two cannot drift.
+    path if PlaceCal::Theme.asset_resolves?("#{path}.css")
   end
   theme.map_style(&:slug)
 end

@@ -115,6 +115,38 @@ RSpec.describe "Theme slots", type: :request do
     expect(response.body).to include('header__toggle-label">Menu<')
   end
 
+  it "opens an off-site call to action in a new tab" do
+    get "http://themed.lvh.me/events"
+
+    cta = Nokogiri::HTML(response.body).at_css("a.header__cta-link")
+    expect(cta["target"]).to eq("_blank")
+    expect(cta["rel"]).to eq("noopener")
+  end
+
+  # A CTA pointing at a page of this site is an ordinary nav link.
+  it "keeps an on-site call to action in the same tab", :theme_registry do
+    PlaceCal::Extensions.register_theme(:homely) do |theme|
+      theme.nav_cta "example_theme.nav.donate", "/proof"
+    end
+    site_on("homely", "homely")
+
+    get "http://homely.lvh.me/events"
+
+    cta = Nokogiri::HTML(response.body).at_css("a.header__cta-link")
+    expect(cta["href"]).to eq("/proof")
+    expect(cta["target"]).to be_nil
+    expect(cta["rel"]).to be_nil
+  end
+
+  # The visible "Menu" label is a theme opt-in; the accessible name is not.
+  it "names the menu toggle even on a site whose theme does not label it" do
+    get "http://plain.lvh.me/events"
+
+    toggle = Nokogiri::HTML(response.body).at_css("button.header__toggle")
+    expect(toggle["aria-label"]).to eq(I18n.t("navigation.menu"))
+    expect(toggle.at_css(".header__toggle-label")).to be_nil
+  end
+
   it "renders the day strip in place of the date picker, linking dated event URLs" do
     get "http://themed.lvh.me/events"
 
@@ -181,6 +213,15 @@ RSpec.describe "Theme slots", type: :request do
     expect(response.body).to include("<loc>#{themed_site.directory_url.chomp('/')}/proof</loc>")
   end
 
+  # A theme's branding CSS needs a hook that does not move when an admin
+  # renames the site (#3368).
+  it "marks the branding with the theme name as well as the site slug" do
+    get "http://themed.lvh.me"
+
+    branding = Nokogiri::HTML(response.body).at_css("a.header__branding")
+    expect(branding["class"].split).to include("header__branding--themed", "header__branding--theme-example_theme")
+  end
+
   # One negative for every slot at once: this catches a slot leaking onto core
   # sites regardless of which slot it is.
   it "renders none of the theme slots on a core site" do
@@ -211,6 +252,8 @@ RSpec.describe "Theme slots", type: :request do
       expect(response.body).not_to include("list-heading")
       expect(response.body).not_to include("header__cta")
       expect(response.body).not_to include("header__toggle-label")
+      expect(response.body).not_to include("header__branding--theme-example_theme")
+      expect(response.body).to include("header__branding--theme-pink")
       expect(response.body).to include("Go to date")
       expect(response.body).not_to include("day-strip")
       expect(response.body).to include(" 9 Nov")
