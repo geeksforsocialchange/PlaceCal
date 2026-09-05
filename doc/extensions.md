@@ -277,6 +277,35 @@ It is opt-in so an extension without system specs does not need a browser in its
 
 The signature is a compatibility surface: an extension pinned to a core tag may run its suite against core's `main`, so `boot!` keeps its keywords stable and core's own specs exercise it against the fixture engine.
 
+## Continuous integration
+
+An extension's suite boots core, so its CI is core's CI plus the extension: check out both, point core's bundle at the extension checkout, build core's assets, then run the extension's own linting and specs. Core owns that as a reusable workflow, `.github/workflows/extension-test.yml`, and the extension's whole workflow is:
+
+```yaml
+name: Test
+
+on:
+  push:
+    branches: ["main"]
+    tags: ["v*"]
+  pull_request:
+
+jobs:
+  test:
+    uses: geeksforsocialchange/PlaceCal/.github/workflows/extension-test.yml@main
+    with:
+      engine: placecal-theme-transdimension
+      module_dir: transdimension
+      chrome: true
+```
+
+- `engine` is the gem name, as it appears in core's `Gemfile`. It is what the generated dev Gemfile swaps for a `path:` entry.
+- `module_dir` is the directory under `lib/` holding `version.rb`, so the tag-versus-`VERSION` check can load it. It runs first, before any checkout or build, so a mistagged release fails in seconds.
+- `placecal_ref` is the core ref to build against; it defaults to `main`. A reusable workflow is resolved at the ref the caller names, so `@main` couples the extension's CI to core's `main`: name the same ref in both places so the two move together.
+- `chrome` installs headless Chrome, and defaults to `false`, so an extension with no system specs does not grow a browser it never uses.
+
+Linting comes from core too. The extension's whole `.rubocop.yml` is `inherit_from: ../PlaceCal/config/rubocop/extension.yml`: the workflow checks core out at `./PlaceCal`, and locally the extension's RuboCop already runs with `BUNDLE_GEMFILE` pointed at a core checkout, so core is always beside it.
+
 ## Build and deploy
 
 Core's Dockerfile is unchanged by extensions:
