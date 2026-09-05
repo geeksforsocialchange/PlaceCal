@@ -28,7 +28,10 @@ namespace :placecal do
       # Only this gem's entry moves: a full `bundle install` here would also
       # pick up unrelated updates and put them in the same commit.
       puts "Running bundle lock --update #{name}"
-      abort 'placecal:extension:bump: bundle lock failed.' unless system('bundle', 'lock', '--update', name)
+      # Rails has this process bundled already; bundler refuses to re-resolve
+      # from inside that environment, so run it in a clean one.
+      locked = Bundler.with_unbundled_env { system('bundle', 'lock', '--update', name) }
+      abort 'placecal:extension:bump: bundle lock failed.' unless locked
 
       puts 'Done. Commit the Gemfile and Gemfile.lock together: that is the deploy.'
     end

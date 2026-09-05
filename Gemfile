@@ -73,7 +73,7 @@ gem 'strong_migrations'           # Catch unsafe migrations before they reach pr
 # prebuilt, so the Dockerfile needs no extra build step. Bump the tag to
 # release a new version of an extension.
 group :extensions do
-  gem 'placecal-theme-mossley', github: 'geeksforsocialchange/placecal-theme-mossley', tag: 'v0.1.1'
+  gem 'placecal-theme-mossley', github: 'geeksforsocialchange/placecal-theme-mossley', tag: 'v0.1.2'
   gem 'placecal-theme-transdimension', github: 'geeksforsocialchange/placecal-theme-transdimension', tag: 'v0.3.11'
 end
 
