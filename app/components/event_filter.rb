@@ -61,7 +61,7 @@ class Components::EventFilter < Components::Base
     hidden_field_tag(:period, @period, data: { date_picker_target: 'period' })
     hidden_field_tag(:sort, @sort, data: { date_picker_target: 'sort' })
     hidden_field_tag(:repeating, @repeating, data: { date_picker_target: 'repeating' })
-    hidden_field_tag(:region, @selected_region.slug) if @selected_region
+    hidden_field_tag(:region, @selected_region.slug, id: nil) if @selected_region
   end
 
   # D22: Today / Tomorrow / next five days plus "All upcoming", linking to the
@@ -142,7 +142,7 @@ class Components::EventFilter < Components::Base
           view_context.hidden_field_tag(:period, @period),
           view_context.hidden_field_tag(:sort, @sort),
           view_context.hidden_field_tag(:repeating, @repeating),
-          (@selected_region ? view_context.hidden_field_tag(:region, @selected_region.slug) : nil),
+          (@selected_region ? view_context.hidden_field_tag(:region, @selected_region.slug, id: nil) : nil),
           view_context.render(Components::Filter.new(
                                 name: 'neighbourhood',
                                 label: t('filters.neighbourhood'),
@@ -167,7 +167,7 @@ class Components::EventFilter < Components::Base
   def build_sort_filter_form
     view_context.form_tag('', method: :get, class: 'filters__form', enforce_utf8: false, data: { turbo_frame: 'events-browser', turbo_action: 'advance', filters_target: 'form', action: 'change->filters#submit' }) do
       buf = ActiveSupport::SafeBuffer.new
-      buf << view_context.hidden_field_tag(:region, @selected_region.slug) if @selected_region
+      buf << view_context.hidden_field_tag(:region, @selected_region.slug, id: nil) if @selected_region
       buf << build_sort_toggle
       buf << build_sort_dropdown
       buf
