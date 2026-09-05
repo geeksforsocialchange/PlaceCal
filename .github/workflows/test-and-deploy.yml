@@ -63,8 +63,25 @@ jobs:
       - name: Run Brakeman
         run: bundle exec brakeman --no-pager
 
+      # npm's advisory endpoint periodically drops or 503s requests. Retry, and
+      # if npm still cannot answer, warn rather than fail: a registry outage is
+      # not a vulnerability. Real findings still fail the job.
       - name: Audit JavaScript dependencies (importmap)
-        run: bin/importmap audit
+        run: |
+          for attempt in 1 2 3; do
+            if output=$(bin/importmap audit 2>&1); then
+              echo "$output"
+              exit 0
+            fi
+            echo "$output"
+            if ! echo "$output" | grep -qE "Importmap::Npm::HTTPError|transport error|Unexpected error response 5"; then
+              echo "::error::importmap audit reported vulnerable packages"
+              exit 1
+            fi
+            echo "npm advisory endpoint unavailable (attempt $attempt of 3)"
+            sleep $((attempt * 30))
+          done
+          echo "::warning::importmap audit skipped: npm advisory endpoint unavailable after 3 attempts"
 
   test:
     runs-on: ubuntu-latest
