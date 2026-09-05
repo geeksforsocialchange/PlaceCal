@@ -77,6 +77,23 @@ RSpec.describe "bin/check-extension-tree" do
     end
   end
 
+  # CI checks the gem out under a directory called `theme`, so the name has to
+  # come from the gemspec or the gem's own entry file counts as stray lib code.
+  it "names an explicit root after its gemspec, not its directory" do
+    Dir.mktmpdir do |dir|
+      root = File.join(dir, "theme")
+      # The real shape: gem placecal-theme-foo, module foo, so the entry file
+      # is only allowed once the guard knows the gem's name.
+      build_tree(root, contract_abiding - ["foo.gemspec", "lib/foo.rb"] +
+                       ["placecal-theme-foo.gemspec", "lib/placecal-theme-foo.rb"])
+
+      stdout, stderr, status = run(root)
+
+      expect(status).to be_success, stderr
+      expect(stdout).to include("placecal-theme-foo: #{contract_abiding.length} files checked")
+    end
+  end
+
   it "fails on models, controllers, migrations, routes, initializers and stray lib code" do
     Dir.mktmpdir do |dir|
       root = File.join(dir, "foo")
