@@ -23,6 +23,13 @@ RSpec.describe "Web Manifest", type: :request do
         expect(response.content_type).to start_with("application/manifest+json")
       end
 
+      it "varies on Host, since the same path serves a different manifest per site" do
+        get "http://#{site.slug}.lvh.me/manifest.webmanifest"
+
+        expect(response.headers["Cache-Control"]).to include("public")
+        expect(response.headers["Vary"]).to include("Host")
+      end
+
       it "includes the required keys, the site name and the fixed properties" do
         site.update!(name: "Test Site Name")
         get "http://#{site.slug}.lvh.me/manifest.webmanifest"

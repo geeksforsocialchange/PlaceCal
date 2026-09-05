@@ -22,6 +22,9 @@ class ManifestsController < ApplicationController
     manifest_data[:description] = description if description.present?
 
     expires_in CACHE_TTL, public: true
+    # The same path serves a different manifest per host, so a shared cache
+    # that keys on the path alone would hand one site's manifest to another.
+    response.headers['Vary'] = 'Host'
     render json: manifest_data, content_type: 'application/manifest+json'
   end
 

@@ -7,6 +7,11 @@
 #
 # A local site lists only its own content, with every URL built from the site's
 # own base URL (Site#url), so a site's sitemap never points at placecal.org.
+# Site#url must therefore be the site's canonical apex, with no path: a search
+# engine ignores a sitemap whose URLs are on a host it was not fetched from, so
+# a site reachable at more than one hostname should set the one it wants
+# indexed. The request host is deliberately not used, so that an alias host
+# still advertises the canonical URLs rather than its own.
 # Unpublished sites are still served rather than 404'd, matching robots.txt:
 # crawl blocking is SiteRobots' job, and an unlinked sitemap costs nothing.
 class SitemapsController < ApplicationController
@@ -49,6 +54,9 @@ class SitemapsController < ApplicationController
 
   def cached_xml(section, &)
     expires_in CACHE_TTL, public: true
+    # The same path serves a different document per host, so a shared cache
+    # that keys on the path alone would hand one site's sitemap to another.
+    response.headers['Vary'] = 'Host'
     Rails.cache.fetch("sitemap/#{current_site&.slug || 'directory'}/#{section}", expires_in: CACHE_TTL, &)
   end
 

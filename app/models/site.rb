@@ -152,6 +152,11 @@ class Site < ApplicationRecord
   # The site's public URL, falling back to its conventional placecal.org
   # subdomain when no explicit url is set.
   #
+  # This is the site's canonical base: robots.txt advertises its sitemap from
+  # here and every sitemap URL hangs off it, so it must be the apex the site
+  # should be indexed under, with no path. A site reachable at more than one
+  # hostname still advertises this one.
+  #
   # @return [String]
   def directory_url
     url.presence || "https://#{slug}.placecal.org"
