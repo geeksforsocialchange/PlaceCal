@@ -239,22 +239,24 @@ RSpec.describe "Public Events", type: :request do
       expect(response.body).to include("Community Workshop")
     end
 
+    # h2, not h3: these are the first headings under the page h1, so an h3
+    # here skips a level and axe reports heading-order.
     it "shows contact information section with consistent heading level" do
       get event_url(event, host: "#{site.slug}.lvh.me")
       expect(response.body).to include("Contact information")
-      expect(response.body).to match(%r{<h3[^>]*>Contact information</h3>})
+      expect(response.body).to match(%r{<h2[^>]*>Contact information</h2>})
     end
 
     it "shows event address with consistent heading level" do
       get event_url(event, host: "#{site.slug}.lvh.me")
       expect(response.body).to include("Event address")
-      expect(response.body).to match(%r{<h3[^>]*>Event address</h3>})
+      expect(response.body).to match(%r{<h2[^>]*>Event address</h2>})
     end
 
     it "shows event organiser with consistent heading level" do
       get event_url(event, host: "#{site.slug}.lvh.me")
       expect(response.body).to include("Event organiser")
-      expect(response.body).to match(%r{<h3[^>]*>Event organiser</h3>})
+      expect(response.body).to match(%r{<h2[^>]*>Event organiser</h2>})
     end
 
     it "includes Event JSON-LD structured data" do

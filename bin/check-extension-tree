@@ -1,0 +1,151 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Guards the extension contract described in doc/extensions.md.
+#
+# A theme gem is a Rails engine loaded into the application process, so it can
+# run any Ruby it ships with the application's privileges. The contract is that
+# it ships views, components, assets, locales, content and rake tasks, and no
+# models, controllers, routes, migrations or initializers. Review is the first
+# line of that; this script is the mechanical backstop, run in CI's lint job.
+#
+# It walks every gem in the Gemfile's :extensions group, lists the files the gem
+# actually ships, and fails if any path falls outside the allowlist below. It
+# checks where a theme may put code, not what that code does.
+#
+# Usage: bin/check-extension-tree [gem root ...]
+#
+# With no arguments it checks the gems in the :extensions group. Given one or
+# more directories it checks those instead, which is how its spec exercises it.
+
+require 'bundler'
+
+EXTENSION_GROUP = :extensions
+
+# Directory trees an extension may ship in full.
+ALLOWED_TREES = %w[
+  app/views
+  app/components
+  app/assets
+  app/tailwind
+  content
+  doc
+  bin
+  spec
+  goldens
+  .github
+].freeze
+
+# Top-level files an extension may ship, plus any top-level dotfile
+# (.gitignore, .rubocop.yml, .node-version and the like).
+ALLOWED_ROOT_FILES = [
+  /\AREADME(\.\w+)?\z/i,
+  /\ALICEN[CS]E(\.\w+)?\z/i,
+  /\A[\w.-]+\.gemspec\z/,
+  /\AGemfile(\.lock)?\z/,
+  /\ARakefile\z/,
+  /\Apackage\.json\z/,
+  /\Ayarn\.lock\z/,
+  /\A\.[\w.-]+\z/
+].freeze
+
+# Gems in the Gemfile's :extensions group, as [name, root Pathname] pairs.
+def extension_gems
+  definition = Bundler.definition
+  names = definition.dependencies.select { |dep| dep.groups.include?(EXTENSION_GROUP) }.map(&:name)
+  specs = definition.specs.to_a
+
+  names.map do |name|
+    spec = specs.find { |candidate| candidate.name == name }
+    path = spec ? spec.full_gem_path : gem_path_from_bundle_show(name)
+    abort "check-extension-tree: cannot locate the #{name} gem. Run bundle install first." if path.nil?
+
+    [name, Pathname.new(path)]
+  end
+end
+
+# Fallback for when the resolved spec is not in the definition (a gem installed
+# but not yet resolved in this process).
+def gem_path_from_bundle_show(name)
+  path = `bundle show #{name} 2>/dev/null`.strip
+  path.empty? ? nil : path
+end
+
+# Files the gem ships, relative to its root, ignoring its own git metadata.
+def shipped_files(root)
+  root.find.filter_map do |entry|
+    next if entry.directory?
+
+    relative = entry.relative_path_from(root).to_s
+    next if relative.start_with?('.git/')
+
+    relative
+  end.sort
+end
+
+# The engine's module directory, taken from wherever engine.rb lives. Only one
+# lib subdirectory may hold an engine, and only engine.rb and version.rb may
+# live in it, so an extension cannot hide Ruby under a second lib directory.
+def engine_module_dir(root)
+  engine = root.glob('lib/*/engine.rb').first
+  return nil if engine.nil?
+
+  engine.parent.basename.to_s
+end
+
+def allowed_lib_paths(gem_name, module_dir)
+  paths = ["lib/#{gem_name}.rb"]
+  paths += ["lib/#{module_dir}.rb", "lib/#{module_dir}/engine.rb", "lib/#{module_dir}/version.rb"] if module_dir
+  paths
+end
+
+def allowed?(path, allowed_lib)
+  return true if ALLOWED_TREES.any? { |tree| path.start_with?("#{tree}/") }
+  return true if path.start_with?('config/locales/') && path.count('/') == 2 && path.end_with?('.yml')
+  return true if allowed_lib.include?(path)
+  return true if path.start_with?('lib/tasks/') && path.count('/') == 2 && path.end_with?('.rake')
+  return true if path.count('/').zero? && ALLOWED_ROOT_FILES.any? { |pattern| pattern.match?(path) }
+
+  false
+end
+
+# Explicit roots on the command line, named after their directory.
+def roots_from_argv(argv)
+  argv.map do |arg|
+    root = Pathname.new(arg).expand_path
+    abort "check-extension-tree: #{arg} is not a directory" unless root.directory?
+
+    [root.basename.to_s, root]
+  end
+end
+
+failures = {}
+targets = ARGV.empty? ? extension_gems : roots_from_argv(ARGV)
+
+targets.each do |name, root|
+  module_dir = engine_module_dir(root)
+  allowed_lib = allowed_lib_paths(name, module_dir)
+  files = shipped_files(root)
+  offenders = files.reject { |path| allowed?(path, allowed_lib) }
+
+  puts "#{name}: #{files.length} files checked in #{root}"
+  failures[name] = offenders if offenders.any?
+end
+
+if failures.empty?
+  puts 'check-extension-tree: every extension stays inside the contract.'
+  exit 0
+end
+
+$stdout.flush
+warn ''
+warn 'check-extension-tree: extensions may only ship views, components, assets,'
+warn 'locales, content, docs and rake tasks. See the Trust section of'
+warn 'doc/extensions.md. These paths are outside the contract:'
+failures.each do |name, offenders|
+  warn ''
+  warn "  #{name}:"
+  offenders.each { |path| warn "    #{path}" }
+end
+warn ''
+exit 1

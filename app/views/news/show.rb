@@ -58,7 +58,7 @@ class Views::News::Show < Views::Base
         end
 
         div(class: 'article__back') do
-          link_to t('news.show.back'), news_path
+          link_to t('news.show.back'), news_index_path
         end
       end
     end

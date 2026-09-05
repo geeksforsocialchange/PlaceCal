@@ -21,7 +21,10 @@ class Components::Hero < Components::Base
       div(class: 'container-public') do
         p(class: 'hero__section') { @section } if @section.present?
         if @subtitle
-          h4(class: 'allcaps') { @subtitle }
+          # The tagline is a strapline, not a section title. It used to be an h4
+          # sitting between the navigation's h2 site name and the page h1, which
+          # skipped a heading level and failed axe's heading-order rule.
+          p(class: 'allcaps') { @subtitle }
           div(role: 'presentation', class: 'hero__divider')
         end
         if @schema

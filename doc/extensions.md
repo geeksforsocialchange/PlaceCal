@@ -10,6 +10,21 @@ Two extensions exist today and core loads both at once: the Trans Dimension and 
 
 Extensions are Rails engines generated with `rails plugin new --full` (NOT `--mountable`: the engine must not isolate its namespace or routes, it plugs into the host app) and trimmed to the layout below.
 
+## Trust
+
+An extension is a Rails engine loaded into the same process as the application. Nothing sandboxes it: its `lib/` is on the load path, its initializers run at boot, and any Ruby it ships runs with the application's full privileges, including the database, the credentials and the network. A theme is therefore a code dependency, not content, and it is reviewed the way any other gem in the `Gemfile` is reviewed.
+
+That gives four rules:
+
+1. A theme is added or bumped only by a maintainer, through a change to core's `Gemfile`. There is no upload path, no admin screen and no runtime install. Adding or moving a theme is a pull request against core, reviewed and merged like any other.
+2. A theme is pinned by git tag, never by branch, and `Gemfile.lock` records the exact commit the tag pointed at. A retagged release changes the lockfile, so a substituted release shows up in the diff instead of arriving silently.
+3. A theme comes from a repository owned by GFSC with branch protection on its default branch, so the code behind a tag has been through review in its own repo too.
+4. A theme stays inside the extension contract: views, components, assets, locales, content and rake tasks only, and no models, migrations, controllers, routes or business logic.
+
+Rule 4 is enforced twice. Reviewers check it on the pull request that adds or bumps the gem, and `bin/check-extension-tree` checks it mechanically in CI: it walks every gem in the `Gemfile`'s `:extensions` group, lists the files the gem ships, and fails the `lint` job if any of them falls outside the allowlist. Anything under `app/models`, `app/controllers`, `db/`, `config/routes.rb` or `config/initializers`, and any Ruby under `lib/` beyond the engine's own entry point, engine and version files, fails the build. The guard is a backstop for review, not a replacement for it: it constrains where a theme may put code, not what that code does.
+
+If you want a theme that genuinely cannot run code, that is a different mechanism from a Rails engine, and it is tracked in [issue #3489](https://github.com/geeksforsocialchange/PlaceCal/issues/3489). Until it exists, treat every theme as trusted code.
+
 ## Layout
 
 ```
