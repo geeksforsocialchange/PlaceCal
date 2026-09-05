@@ -254,25 +254,28 @@ The Dockerfile needs no Node build step for extensions because each engine ships
 
 ## Engine specs
 
-An extension's own test suite requires core's Rails environment. In `spec/rails_helper.rb`, boot core by requiring its `config/application` and `config/environment` (using an env var for the core path, defaulting to `../PlaceCal`):
+An extension's test suite runs core's suite infrastructure: it boots core's Rails application with the engine loaded, and reuses core's spec support files, factories and fixtures. All of that is core's knowledge, so core ships it as `spec/extension_helper.rb` and the extension's `spec/rails_helper.rb` is four lines:
 
 ```ruby
 # spec/rails_helper.rb (in the extension gem)
-require 'spec_helper'
+require "spec_helper"
 
-# Bootstrap core's Rails app
-PLACECAL_CORE = ENV.fetch('PLACECAL_CORE_PATH', '../PlaceCal')
-require File.expand_path('config/application', PLACECAL_CORE)
-require 'rspec/rails'
-
-# Require the engine (this file's directory goes on the load path)
-require File.expand_path('../../lib/<ext>', __FILE__)
-
-# Finish loading core's environment
-Rails.application.initialize! unless Rails.application.initialized?
+PLACECAL_CORE = Pathname(ENV.fetch("PLACECAL_CORE_PATH", File.expand_path("../../PlaceCal", __dir__))).expand_path
+require PLACECAL_CORE.join("spec/extension_helper").to_s
+PlaceCal::ExtensionSpec.boot!(engine: "my_ext")
 ```
 
-Require the extension before `Rails.application.initialize!` so that its engine initializers run and register the theme. The extension's `spec/` directory is part of the engine repo and may have factories, fixtures and helper modules shared with core's tests.
+`boot!` takes the extension's module name in snake case, which is both `lib/<engine>.rb` and `<Engine>::Engine`. It requires core's `config/application`, then the engine (so its initializers run and the theme is registered), then core's `config/environment`; aborts if the environment is production; asserts that the engine Rails loaded is the checkout under test, naming the gem to put a `path:` entry on if it is not; globs core's `spec/support`, points FactoryBot at core's factories, checks for pending migrations, installs a raising I18n exception handler so a missing key fails at the point of use, and configures RSpec the way core does, including the time freeze core's shared factories assume.
+
+Pass `system_specs: true` for an extension that has system specs, which adds the DatabaseCleaner strategy and the headless Chrome driver core uses:
+
+```ruby
+PlaceCal::ExtensionSpec.boot!(engine: "my_ext", system_specs: true)
+```
+
+It is opt-in so an extension without system specs does not need a browser in its CI. `root:` overrides the checkout the working-tree assertion expects; it defaults to the parent of the calling file's directory, which is the extension root when the caller is its `spec/rails_helper.rb`.
+
+The signature is a compatibility surface: an extension pinned to a core tag may run its suite against core's `main`, so `boot!` keeps its keywords stable and core's own specs exercise it against the fixture engine.
 
 ## Build and deploy
 
