@@ -40,6 +40,18 @@ h1.sans {
 	letter-spacing: $title-letter-spacing;
 }
 
+// Section headings on the partner and event show pages. They are h2 because
+// they are the first headings under the page h1 and an h3 there skips a level,
+// but they are drawn at the size they had as h3s: browser default h3 metrics,
+// restated so the promotion is only a change of outline, not of look. Scoped
+// to these two blocks so the managed-place headings, which have always been
+// h2s at h2 size, are left alone.
+.g--partner h2.h4,
+.event__fullinfo h2.h4 {
+	font-size: 1.17em;
+	margin-block: 1em;
+}
+
 .title-strip {
 	background-color: $base-rules;
 	background-color: var(--base-rules);

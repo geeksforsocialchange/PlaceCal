@@ -50,6 +50,9 @@ jobs:
           bin/yarn run format:check
           bundle exec rubocop
 
+      - name: Check extensions stay inside the contract
+        run: bundle exec bin/check-extension-tree
+
   security:
     runs-on: ubuntu-latest
     steps:

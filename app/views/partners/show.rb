@@ -105,10 +105,10 @@ class Views::Partners::Show < Views::Base
   end
 
   def render_contact_and_address
-    h3(class: 'udl udl--fw allcaps h4') { 'Get in touch' }
+    h2(class: 'udl udl--fw allcaps h4') { 'Get in touch' }
     ContactDetails(partner: partner)
 
-    h3(class: 'udl udl--fw allcaps h4') { 'Address' }
+    h2(class: 'udl udl--fw allcaps h4') { 'Address' }
     p { "We operate in #{partner_service_area_text(partner)}." } if partner.has_service_areas?
 
     Address(address: partner.address)
@@ -142,7 +142,7 @@ class Views::Partners::Show < Views::Base
     return unless times.any?
 
     br
-    h3(class: 'udl udl--fw allcaps h4') { 'Opening times' }
+    h2(class: 'udl udl--fw allcaps h4') { 'Opening times' }
     ul(class: 'opening_times reset') do
       times.each do |slot|
         li { slot }

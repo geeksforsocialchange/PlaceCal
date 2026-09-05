@@ -129,8 +129,10 @@ class EventsQuery
     monthly_count(tag_id: tag_id) <= FUTURE_LIMIT
   end
 
+  # The soonest event on or after `day`. `future` only filters, so without an
+  # explicit order this took whatever row the database returned first.
   def next_event_after(day, tag_id: nil)
-    filter_by_tag(base_scope, tag_id).future(day).first
+    filter_by_tag(base_scope, tag_id).future(day).reorder(dtstart: :asc).first
   end
 
   # Returns neighbourhoods that have events, with counts for the given period
