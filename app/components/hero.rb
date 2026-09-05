@@ -13,7 +13,7 @@ class Components::Hero < Components::Base
   prop :section, _Nilable(String), default: nil
 
   def after_initialize
-    @title = clean_title(@title)
+    @title_lines = title_lines(@title)
   end
 
   def view_template
@@ -25,9 +25,9 @@ class Components::Hero < Components::Base
           div(role: 'presentation', class: 'hero__divider')
         end
         if @schema
-          h1(property: @schema) { safe(@title) }
+          h1(property: @schema) { render_title }
         else
-          h1 { safe(@title) }
+          h1 { render_title }
         end
         p(class: 'hero__standfirst') { @standfirst } if @standfirst.present?
         p(class: 'hero__standfirst-detail') { @standfirst_detail } if @standfirst_detail.present?
@@ -37,11 +37,22 @@ class Components::Hero < Components::Base
 
   private
 
-  def clean_title(title)
-    if title.length > 32
-      title.split.in_groups(2, false).map { |g| g.join(' ') }.join('<br> ')
-    else
-      title
+  # The title is user or feed supplied (partner names, event summaries, article
+  # titles), so it is rendered as text and the long-title line break is a real
+  # element rather than markup spliced into the string.
+  def render_title
+    @title_lines.each_with_index do |line, index|
+      if index.positive?
+        br
+        plain ' '
+      end
+      plain line
     end
+  end
+
+  def title_lines(title)
+    return [title] if title.length <= 32
+
+    title.split.in_groups(2, false).map { |group| group.join(' ') }
   end
 end
