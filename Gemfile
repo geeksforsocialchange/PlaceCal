@@ -74,6 +74,8 @@ gem 'strong_migrations'           # Catch unsafe migrations before they reach pr
 # release a new version of an extension.
 group :extensions do
   gem 'placecal-theme-transdimension', github: 'geeksforsocialchange/placecal-theme-transdimension', tag: 'v0.3.10'
+  # Enable once the repository exists.
+  # gem 'placecal-theme-mossley', github: 'geeksforsocialchange/placecal-theme-mossley', tag: 'v0.1.0'
 end
 
 group :development, :test do

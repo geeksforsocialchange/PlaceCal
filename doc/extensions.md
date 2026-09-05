@@ -6,6 +6,8 @@ PlaceCal extensions are Rails engines that plug into the core application withou
 
 If a second partnership could want it, it is a core feature and gets built generically. If only this site wants it, it is views, CSS, assets and copy in an extension. Extensions contain no models, no migrations, no business logic.
 
+Two extensions exist today and core loads both at once: the Trans Dimension and Marvellous Mossley. Mossley used to be the one site core knew by name, served by a `custom` theme that resolved its stylesheet and map style from the site slug, a homepage view in `app/views/sites/`, and a branch in `SitesController`. All of it is now `placecal-theme-mossley`, and core has no per-site special cases left. A bespoke site is an extension; there is no other route.
+
 Extensions are Rails engines generated with `rails plugin new --full` (NOT `--mountable`: the engine must not isolate its namespace or routes, it plugs into the host app) and trimmed to the layout below.
 
 ## Layout
@@ -92,9 +94,9 @@ Every setting is optional, and the full list is defined in `lib/placecal/theme.r
 
 | Setting              | Value                                                                                                                      | Default              | What it does                                                                                                                                                                                                                                                                                                                                                                                           |
 | -------------------- | -------------------------------------------------------------------------------------------------------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `stylesheet`         | asset logical path without the extension, or a block taking the Site                                                       | none                 | Linked in `<head>` after core's stylesheets. Skipped with an error in the log if the asset does not resolve, so a stale build cannot take the site down.                                                                                                                                                                                                                                               |
+| `stylesheet`         | asset logical path without the extension                                                                                   | none                 | Linked in `<head>` after core's stylesheets. Skipped with an error in the log if the asset does not resolve, so a stale build cannot take the site down.                                                                                                                                                                                                                                               |
 | `homepage_view`      | Phlex view class name (String)                                                                                             | core's site homepage | Renders the site's homepage.                                                                                                                                                                                                                                                                                                                                                                           |
-| `map_style`          | MapLibre style name, or a block taking the Site                                                                            | `pink`               | See "Map styles" below.                                                                                                                                                                                                                                                                                                                                                                                |
+| `map_style`          | MapLibre style name                                                                                                        | `pink`               | See "Map styles" below.                                                                                                                                                                                                                                                                                                                                                                                |
 | `head`               | Phlex component class name                                                                                                 | none                 | Rendered inside `<head>`, for fonts, meta tags and the like.                                                                                                                                                                                                                                                                                                                                           |
 | `footer`             | Phlex component class name                                                                                                 | core's footer        | Replaces core's site footer. Constructed with `new(site:, navigation:)`.                                                                                                                                                                                                                                                                                                                               |
 | `theme_color`        | hex colour, e.g. `"#f19089"`                                                                                               | none                 | `theme-color` value in the web manifest, and the `<meta name="theme-color">` on the site's pages.                                                                                                                                                                                                                                                                                                      |
@@ -108,8 +110,6 @@ Every setting is optional, and the full list is defined in `lib/placecal/theme.r
 | `page`               | slug, Phlex view class name, optional `nav_label_key:`                                                                     | none                 | A static content page served at `/<slug>`. Repeatable; see "Theme pages" below.                                                                                                                                                                                                                                                                                                                        |
 
 Class names are given as strings and resolved lazily, so registration can run before autoloading is ready; a name that no longer resolves is logged and core's default renders instead.
-
-`stylesheet` and `map_style` may receive a block that gets the Site, for lookups that depend on the record (core's legacy `custom` theme resolves by site slug that way).
 
 ## Theme pages
 
@@ -130,7 +130,7 @@ theme.page "privacy", "MyExt::Views::Privacy"
 
 ## Map styles
 
-`map_style` names a MapLibre style JSON. Core's own styles live in `public/map-styles/<name>.json`; an extension ships its style as an engine asset at `app/assets/builds/map-styles/<name>.json`, which Propshaft picks up and serves at the same logical path. `MapHelper#map_style_url` resolves the name from the request's theme (`Current.theme`), so it takes no arguments. It checks core's public directory first, then the asset pipeline, and falls back to `pink.json` if neither has it.
+`map_style` names a MapLibre style JSON. Core's own styles live in `public/map-styles/<name>.json`; an extension ships its style as an engine asset at `app/assets/builds/map-styles/<name>.json`, which Propshaft picks up and serves at the same logical path. Mossley's is the worked example: it moved out of `public/map-styles/` into the theme engine and nothing else changed. `MapHelper#map_style_url` resolves the name from the request's theme (`Current.theme`), so it takes no arguments. It checks core's public directory first, then the asset pipeline, and falls back to `pink.json` if neither has it.
 
 ## Locale files
 
@@ -206,6 +206,9 @@ Each extension lives in its own git repo. Until a private installation repo exis
 group :extensions do
   gem 'placecal-theme-transdimension',
       github: 'geeksforsocialchange/placecal-theme-transdimension',
+      tag: 'v0.3.10'
+  gem 'placecal-theme-mossley',
+      github: 'geeksforsocialchange/placecal-theme-mossley',
       tag: 'v0.1.0'
 end
 ```
