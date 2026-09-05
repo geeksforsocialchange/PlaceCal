@@ -181,6 +181,15 @@ RSpec.describe "Theme slots", type: :request do
     expect(response.body).to include("<loc>#{themed_site.directory_url.chomp('/')}/proof</loc>")
   end
 
+  # A theme's branding CSS needs a hook that does not move when an admin
+  # renames the site (#3368).
+  it "marks the branding with the theme name as well as the site slug" do
+    get "http://themed.lvh.me"
+
+    branding = Nokogiri::HTML(response.body).at_css("a.header__branding")
+    expect(branding["class"].split).to include("header__branding--themed", "header__branding--theme-example_theme")
+  end
+
   # One negative for every slot at once: this catches a slot leaking onto core
   # sites regardless of which slot it is.
   it "renders none of the theme slots on a core site" do
@@ -211,6 +220,8 @@ RSpec.describe "Theme slots", type: :request do
       expect(response.body).not_to include("list-heading")
       expect(response.body).not_to include("header__cta")
       expect(response.body).not_to include("header__toggle-label")
+      expect(response.body).not_to include("header__branding--theme-example_theme")
+      expect(response.body).to include("header__branding--theme-pink")
       expect(response.body).to include("Go to date")
       expect(response.body).not_to include("day-strip")
       expect(response.body).to include(" 9 Nov")

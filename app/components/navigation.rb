@@ -29,6 +29,7 @@ class Components::Navigation < Components::Base
     link_to(root_path, class: [
               'header__branding row-start-1 col-start-1 ',
               ("header__branding--#{@site.slug}" if @site&.slug.presence),
+              ("header__branding--theme-#{branding_theme_name}" if branding_theme_name),
               # svg/img classes are here because partner svgs are inlined with File.read
               '[&>svg,&>img]:object-contain [&>svg,&>img]:max-w-full [&>svg,&>img]:max-h-full',
               *(if @site.nil?
@@ -40,6 +41,19 @@ class Components::Navigation < Components::Base
       render_logo
       render_site_name
     end
+  end
+
+  # A theme's own branding CSS hooks onto this rather than onto the slug class
+  # above: the slug is admin-editable, so a rename would silently drop the
+  # theme's styling (#3368).
+  #
+  # @return [String, nil] the registered theme's name, or nil for a site with
+  #   no theme and for the nationwide directory
+  def branding_theme_name
+    return @branding_theme_name if defined?(@branding_theme_name)
+
+    theme = Current.theme
+    @branding_theme_name = (theme.name unless @site.nil? || theme.equal?(PlaceCal::Theme::NONE))
   end
 
   def render_logo
