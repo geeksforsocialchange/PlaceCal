@@ -136,7 +136,7 @@ RSpec.describe PlaceCal::Extension do
       expect(theme.stylesheet).to eq("example_theme/theme")
       expect(theme.homepage_view).to eq("ExampleTheme::Views::Home")
       expect(theme.event_filter_style).to eq(:day_strip)
-      expect(theme.pages.keys).to eq(%w[proof])
+      expect(theme.pages.keys).to eq(%w[proof fixture-content])
     end
 
     it "runs the theme guard before the block" do

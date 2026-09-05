@@ -163,6 +163,26 @@ theme.page "privacy", "MyExt::Views::Privacy"
 - A slug matching a core route (`events`, `partners`, `news`, and so on) is never served: the `/:slug` catch-all is appended after every other route, so the core route wins and the theme's page is simply unreachable. Pick a slug core does not already own. `privacy` is the exception worth knowing: core's `/privacy` prefers the theme's page when it registers one and falls back to core's own copy otherwise.
 - Class names are strings, resolved lazily. A name that no longer resolves is logged and the page 404s, rather than taking the site down.
 
+### Markdown content pages
+
+A page whose content is markdown files in the extension's `content/` directory subclasses core's `Views::ThemeContentPage` and declares a content root, a slug, a title and the files:
+
+```ruby
+class MyExt::Views::About < Views::ThemeContentPage
+  content_root MyExt::Engine.root.join("content")
+  slug         "about"
+  title        "my_ext.about.title"
+  description  "my_ext.site.description"
+
+  markdown "about/main.md"
+  markdown "about/accessibility.md", heading: "my_ext.about.accessibility"
+end
+```
+
+That renders the `page page--<slug>` wrapper with `data-page-slug`, an `h1` and a `.markdown-content` column, and each file in declaration order under its heading. Headings are locale keys, so section names stay translatable while the body stays markdown. Every declaration is inherited, so an extension with several pages can put `content_root` on a base class of its own and each page declares only what is its own; a page that needs more than headings and blocks overrides `page_body` and calls `markdown "file.md"` itself.
+
+Markdown goes through Kramdown and `Rails::HTML5::SafeListSanitizer`, and each file's rendered HTML is cached: in development the cache key carries the file's mtime, so an edit is picked up without a restart, and elsewhere it is the path alone, so no request pays for a `stat`. A file that has gone missing is logged and skipped rather than taking the page down with a 500.
+
 ## Map styles
 
 `map_style` names a MapLibre style JSON. Core's own styles live in `public/map-styles/<name>.json`; an extension ships its style as an engine asset at `app/assets/builds/map-styles/<name>.json`, which Propshaft picks up and serves at the same logical path. Mossley's is the worked example: it moved out of `public/map-styles/` into the theme engine and nothing else changed. `MapHelper#map_style_url` resolves the name from the request's theme (`Current.theme`), so it takes no arguments. It checks core's public directory first, then the asset pipeline, and falls back to `pink.json` if neither has it.
