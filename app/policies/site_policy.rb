@@ -43,11 +43,17 @@ class SitePolicy < ApplicationPolicy
     themes | [PlaceCal::Extensions.find_theme(current_theme_name)].compact
   end
 
+  # Blank is a change like any other. Clearing the theme takes the site off
+  # the engine's views and stylesheet entirely, which is the outcome the
+  # root-only rule exists to prevent, so it is permitted only when the stored
+  # theme is already blank. The select ships include_blank: false, so no
+  # legitimate submission sends "" on a themed site.
+  #
   # @param name [String, nil] a submitted theme name
   # @return [Boolean] whether this user may set the site to it
   def permitted_theme?(name)
     name = name.to_s
-    return true if name.blank? || name == current_theme_name
+    return true if name == current_theme_name
 
     permitted_themes.any? { |theme| theme.name == name }
   end

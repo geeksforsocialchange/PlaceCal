@@ -226,13 +226,20 @@ class EventsQuery
     base = Event.left_joins(:address)
     base.where(organiser_id: partner_subquery)
         .or(base.where(place_id: partner_subquery))
-        .or(base.where(legacy_venue_match_sql(partner_subquery)))
+        .or(base.where(legacy_venue_match_sql(partners_scope)))
   end
 
   # Legacy venue matching, from 2024 (commit 5b90f19), for events whose place
   # was never set: an event counts as happening at a partner when its address
   # street line is the partner's name and the postcodes agree.
-  def legacy_venue_match_sql(partner_subquery)
+  #
+  # This one interpolates the partner scope as raw SQL, so it strips the
+  # preloads and the ordering first: with `includes` still on the relation, a
+  # future `where` referencing an included table would flip Rails into eager
+  # loading and emit a multi-column SELECT, which an IN (...) cannot take. A
+  # subquery wants neither preloads nor an ORDER BY anyway.
+  def legacy_venue_match_sql(partners_scope)
+    partner_subquery = partners_scope.except(:includes, :order).select(:id)
     <<~SQL.squish
       EXISTS (SELECT 1 FROM partners venue_partners
         INNER JOIN addresses venue_addresses ON venue_addresses.id = venue_partners.address_id

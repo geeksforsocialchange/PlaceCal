@@ -50,9 +50,18 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    # A reusable workflow inherits the calling repository's token scope, and a
+    # theme repo whose default workflow permissions are read-write would hand
+    # that scope to every step here. Nothing in this job writes anything.
+    permissions:
+      contents: read
+
     services:
+      # Core's own test job (test-and-deploy.yml). The extension suite loads
+      # core's db/schema.rb, so a version behind core turns a core migration
+      # into a red build in both theme repos.
       postgres:
-        image: postgres:16
+        image: postgres:18
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -72,8 +81,11 @@ jobs:
       BUNDLE_GEMFILE: ${{ github.workspace }}/PlaceCal/Gemfile.extensions-dev
 
     steps:
+      # Every action is pinned by SHA, the same SHAs core's own
+      # test-and-deploy.yml pins: doc/extensions.md sells this pipeline as the
+      # trust boundary, so a floating tag here is a hole in it.
       - name: Checkout the extension
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           path: theme
 
@@ -100,11 +112,21 @@ jobs:
           echo "Tag $GITHUB_REF_NAME matches VERSION $version."
 
       - name: Checkout PlaceCal core
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: geeksforsocialchange/PlaceCal
           ref: ${{ inputs.placecal_ref }}
           path: PlaceCal
+
+      # The contract guard (doc/extensions.md, Trust) needs nothing but a Ruby
+      # and the two checkouts, so it runs before the bundle: an extension that
+      # ships a model or an initializer should fail here in seconds rather than
+      # after an install and a core asset build. Until now it ran only in
+      # core's own lint job, so a violation surfaced in the core PR that bumped
+      # the tag rather than in the PR that added it.
+      - name: Check this extension stays inside the contract
+        working-directory: PlaceCal
+        run: bin/check-extension-tree ../theme
 
       # Core's Gemfile pins the extension to a released tag. CI has to test the
       # checkout under review instead, so swap that one pin for a path entry
@@ -113,18 +135,19 @@ jobs:
       - name: Point core's bundle at this checkout
         run: PlaceCal/bin/extension-dev-gemfile "${{ inputs.engine }}=../theme"
 
-      # Core's image processing needs libvips at boot, the same as core's own CI
-      - name: Install libvips
+      # Core's image processing needs libvips at boot and imagemagick behind
+      # CarrierWave, the same pair core's own CI installs.
+      - name: Install Imagemagick and libvips
         run: |
           sudo apt-get update
-          sudo apt-get install -y libvips-dev
+          sudo apt-get install -y imagemagick libvips-dev
 
       - name: Read core's Ruby version
         id: ruby
         run: echo "version=$(cat PlaceCal/.ruby-version)" >> "$GITHUB_OUTPUT"
 
       - name: Set up Ruby (version from core's .ruby-version)
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
         with:
           ruby-version: ${{ steps.ruby.outputs.version }}
           bundler-cache: true
@@ -133,7 +156,7 @@ jobs:
       # The request specs render core's layout, which links core's built CSS,
       # so core's assets have to be built the way core's own CI builds them.
       - name: Set up Node for core
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: PlaceCal/.node-version
           cache: yarn
@@ -149,12 +172,13 @@ jobs:
           bin/yarn run build:all
           bin/rails dartsass:build
 
+      # No yarn cache here: the post-job save would collide with the key the
+      # core step above already saved under, and log a cache warning for
+      # nothing. Core's node_modules is the bigger of the two.
       - name: Set up Node for the extension
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: theme/package.json
-          cache: yarn
-          cache-dependency-path: theme/yarn.lock
 
       - name: Install the extension's JS dependencies
         working-directory: theme

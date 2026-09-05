@@ -233,9 +233,14 @@ module PlaceCal
       self
     end
 
-    # A slug that collides with a core route is harmless: the `/:slug`
-    # catch-all is appended after every other route, so the core route wins and
-    # the theme's page is never served.
+    # A slug that collides with a core route is harmless rather than an error:
+    # the `/:slug` catch-all is appended after every other route, so the core
+    # route wins and the page is not served at that URL. `privacy` is the one
+    # exception, and it is deliberate: core routes /privacy and
+    # PagesController#privacy looks the theme's page up itself, giving the
+    # theme first refusal at the conventional URL (#3368 D14). Registering any
+    # other core path is a quiet no-op, so a theme that finds its page missing
+    # should check `bin/rails routes` before anything else.
     #
     # @return [Hash{String => Hash}] frozen, in registration order,
     #   `slug => { view:, nav_label_key: }`. Empty for a theme with no pages.

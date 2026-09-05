@@ -23,6 +23,7 @@ class SitemapsController < ApplicationController
   skip_before_action :set_navigation
 
   before_action :set_site
+  before_action :require_site_or_directory
 
   def index
     render xml: cached_xml('index') { build_index }
@@ -45,6 +46,15 @@ class SitemapsController < ApplicationController
   end
 
   private
+
+  # A sitemap belongs to a site or to the nationwide directory, and nothing
+  # else has one. #base_url otherwise falls back to the directory's URL for any
+  # host at all, so the controller states its own precondition rather than
+  # relying on the catch-all redirect in config/routes.rb, which is what
+  # currently keeps the site-less admin host away from here.
+  def require_site_or_directory
+    head :not_found unless current_site || directory_request?
+  end
 
   # Base URL every entry hangs off: the site's own URL on a site, the
   # directory's otherwise.
@@ -119,13 +129,20 @@ class SitemapsController < ApplicationController
   end
 
   # terms-of-use is directory-only; privacy and get-in-touch resolve on both.
-  # A site that takes no enquiries has no Join link (SiteNavigation#join_navigation),
-  # so /get-in-touch should not be advertised for it either. A slug the theme
-  # serves as its own page is dropped here and emitted once by #theme_page_entries.
+  # A site with no Join link should not advertise /get-in-touch either, and
+  # SiteNavigation#join_navigation has two conditions for that link, not one:
+  # the site takes enquiries, and the theme has not moved the link into its own
+  # footer (PlaceCal::Theme#nav_join). A slug the theme serves as its own page
+  # is dropped here and emitted once by #theme_page_entries.
   def static_page_slugs
     slugs = current_site ? %w[privacy get-in-touch] : %w[privacy terms-of-use get-in-touch]
-    slugs -= %w[get-in-touch] if current_site && current_site.contact_email.blank?
+    slugs -= %w[get-in-touch] if current_site && !join_link?
     slugs - theme_page_slugs
+  end
+
+  # @return [Boolean] mirrors SiteNavigation#join_navigation
+  def join_link?
+    current_site.contact_email.present? && Current.theme.nav_join?
   end
 
   # @return [Array<String>] slugs of the pages the site's theme serves. The

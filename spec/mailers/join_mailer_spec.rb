@@ -72,12 +72,24 @@ RSpec.describe JoinMailer, type: :mailer do
       mail = described_class.join_us(Join.new(site: themed_site, **join_attrs))
 
       expect(mail.subject).to eq("Fixture join request (Themed)")
-      expect(Current.site).to eq(themed_site)
     end
 
-    it "leaves the null theme for a join with no site" do
-      described_class.join_us(Join.new(**join_attrs)).body
+    # Current.set, not assignment: a deliver_now inside a request, or a rake
+    # task looping over deliveries, must get its own Current back rather than
+    # inheriting this join's site for everything that follows.
+    it "puts Current back the way it found it" do
+      caller_site = use_current_site(build(:site, name: "Someone else", theme: "pink"))
 
+      described_class.join_us(Join.new(site: themed_site, **join_attrs)).subject
+
+      expect(Current.site).to eq(caller_site)
+      expect(Current.theme.name).to eq("pink")
+    end
+
+    it "uses the null theme's copy for a join with no site" do
+      mail = described_class.join_us(Join.new(**join_attrs))
+
+      expect(mail.subject).to eq(I18n.t("join_mailer.join_us.subject"))
       expect(Current.theme).to eq(PlaceCal::Theme::NONE)
     end
   end

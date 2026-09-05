@@ -270,6 +270,16 @@ RSpec.describe "Admin::Sites theme and contact authorisation", type: :request do
       expect(themed_site.reload.theme).to eq("blue")
     end
 
+    # Blanking is how a forged param takes a site off its theme without naming
+    # another one: the row saves (Site validates theme only on change, with
+    # allow_blank) and the site renders with no stylesheet at all.
+    it "cannot strip the theme with a blank" do
+      put_site(theme: "")
+
+      expect(response).to redirect_to(admin_root_path)
+      expect(themed_site.reload.theme).to eq("pink")
+    end
+
     it "is offered core themes only in the theme select" do
       get edit_admin_site_url(themed_site, host: admin_host)
 

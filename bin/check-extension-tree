@@ -16,9 +16,16 @@
 # Usage: bin/check-extension-tree [gem root ...]
 #
 # With no arguments it checks the gems in the :extensions group. Given one or
-# more directories it checks those instead, which is how its spec exercises it.
+# more directories it checks those instead: that is how its spec exercises it,
+# and how an extension's own CI checks its checkout before anything is bundled.
+# Bundler is loaded only on the first path, so the second needs nothing but a
+# Ruby.
 
-require 'bundler'
+# The reusable CI workflow runs this under the runner's own Ruby, before any
+# bundle, so nothing here may assume a loaded application.
+require 'English'
+require 'pathname' # rubocop:disable Lint/RedundantRequireStatement
+require 'shellwords'
 
 EXTENSION_GROUP = :extensions
 
@@ -42,6 +49,7 @@ ALLOWED_TREES = %w[
 ALLOWED_ROOT_FILES = [
   /\AREADME(\.\w+)?\z/i,
   /\ALICEN[CS]E(\.\w+)?\z/i,
+  /\ANOTICE(\.\w+)?\z/i,
   /\A[\w.-]+\.gemspec\z/,
   /\AGemfile(\.lock)?\z/,
   /\ARakefile\z/,
@@ -52,6 +60,7 @@ ALLOWED_ROOT_FILES = [
 
 # Gems in the Gemfile's :extensions group, as [name, root Pathname] pairs.
 def extension_gems
+  require 'bundler'
   definition = Bundler.definition
   names = definition.dependencies.select { |dep| dep.groups.include?(EXTENSION_GROUP) }.map(&:name)
   specs = definition.specs.to_a
@@ -72,13 +81,38 @@ def gem_path_from_bundle_show(name)
   path.empty? ? nil : path
 end
 
-# Files the gem ships, relative to its root, ignoring its own git metadata.
+# Build output and dependencies, which a working checkout has and a released
+# gem does not. Skipped when the walk is all we have.
+IGNORED_TREES = %w[tmp node_modules coverage vendor].freeze
+
+# Files the gem ships, relative to its root.
+#
+# In a git work tree that is exactly the tracked files: a developer running
+# this against their theme checkout has node_modules/ and tmp/ in it, and a
+# gem does not ship either, so a filesystem walk would bury the real answer in
+# hundreds of false offenders. A bundler git checkout with its .git stripped
+# (the Dockerfile does that) falls back to the walk.
 def shipped_files(root)
+  git_files(root) || walked_files(root)
+end
+
+# @return [Array<String>, nil] tracked files, or nil when root is not a git
+#   work tree
+def git_files(root)
+  listing = `git -C #{root.to_s.shellescape} ls-files -z 2>/dev/null`
+  return nil unless $CHILD_STATUS&.success?
+
+  files = listing.split("\0").reject(&:empty?)
+  files.empty? ? nil : files.sort
+end
+
+def walked_files(root)
   root.find.filter_map do |entry|
     next if entry.directory?
 
     relative = entry.relative_path_from(root).to_s
     next if relative.start_with?('.git/')
+    next if IGNORED_TREES.any? { |tree| relative.start_with?("#{tree}/") }
 
     relative
   end.sort
@@ -140,9 +174,14 @@ end
 
 $stdout.flush
 warn ''
-warn 'check-extension-tree: extensions may only ship views, components, assets,'
-warn 'locales, content, docs and rake tasks. See the Trust section of'
-warn 'doc/extensions.md. These paths are outside the contract:'
+warn 'check-extension-tree: an extension may ship these trees in full:'
+warn "  #{ALLOWED_TREES.join(', ')}"
+warn 'plus config/locales/*.yml, lib/tasks/*.rake, its own lib/<gem>.rb and'
+warn 'lib/<module>/{engine,version}.rb, a README, a LICENCE, a NOTICE, a'
+warn 'gemspec, a Gemfile, a Rakefile, package.json, yarn.lock and top-level'
+warn 'dotfiles.'
+warn 'It may not ship models, controllers, routes, migrations or initializers.'
+warn 'See the Trust section of doc/extensions.md. These paths are outside it:'
 failures.each do |name, offenders|
   warn ''
   warn "  #{name}:"

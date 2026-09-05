@@ -18,7 +18,11 @@ class MoveMossleyToTheExtensionTheme < ActiveRecord::Migration[8.0]
     safety_assured { execute("UPDATE sites SET theme = 'mossley' WHERE theme = 'custom'") }
   end
 
+  # Narrowed to the one row `up` moved. Root can put any site on the mossley
+  # theme from the admin select once this has run, and rolling back should not
+  # sweep those onto `custom`, which nothing registers any more: they would
+  # render unstyled and could not be changed to another unregistered value.
   def down
-    safety_assured { execute("UPDATE sites SET theme = 'custom' WHERE theme = 'mossley'") }
+    safety_assured { execute("UPDATE sites SET theme = 'custom' WHERE theme = 'mossley' AND slug = 'mossley'") }
   end
 end

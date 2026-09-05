@@ -40,7 +40,7 @@ If you want a theme that genuinely cannot run code, that is a different mechanis
     locales/en.yml        # Locale strings (loaded automatically by Rails)
 ```
 
-An extension normally has no controllers: core's controllers serve every page and the extension supplies views, components and copy. An engine _may_ draw routes in its own `config/routes.rb` (they load after core's `config/routes.rb`, so they win over core's `/:slug` theme-page catch-all, which is appended last by `config/initializers/site_page_routes.rb`), but a theme that needs new routes is usually a sign the feature belongs in core. Core's fixture engine under `spec/` has both, for testing.
+An extension has no controllers and no routes: core's controllers serve every page and the extension supplies views, components and copy. `config/routes.rb` is one of the paths `bin/check-extension-tree` rejects (Trust, rule 4), so a shipped extension cannot draw its own; a theme that needs a new route is a sign the feature belongs in core. Core's fixture engine under `spec/` draws one, because core's own suite has to prove that the `/:slug` theme-page catch-all in `config/initializers/site_page_routes.rb` is appended last and loses to everything, including an engine's routes.
 
 ## The engine
 
@@ -88,6 +88,12 @@ end
 - **Phlex autoloading.** `app/views/my_ext` is pushed onto Zeitwerk under `MyExt::Views` and `app/components/my_ext` under `MyExt::Components`. Rails does not autoload `app/views`, and it autoloads `app/components` under the top-level namespace, so the directories need pushing with explicit namespaces; core does the same for its own `Views` and `Components` in `config/initializers/phlex.rb`. Only directories the extension actually ships are pushed, so an extension built entirely from core's components ships no `app/components` and needs no configuration for that.
 - **The host guard.** `required_settings` is the list of theme DSL settings the engine uses. Before registering, the engine checks that the host has `PlaceCal::Extensions.register_theme` and that `PlaceCal::Theme` answers every listed setting, and raises `PlaceCal::Extension::UnsupportedHost` naming what is missing. Without it an old core fails with a bare `NoMethodError` from inside an initializer, which says nothing about what the installation needs.
 - **Registration.** The `theme` block is applied to the `PlaceCal::Theme` at boot. It is also callable on its own as `MyExt::Engine.configure_theme(PlaceCal::Theme.new(:throwaway))`, which is how an extension's own contract spec asserts what it registers without booting twice.
+
+### What the guards do and do not catch
+
+`required_settings` is a list of names, so the host guard catches a setting core does not have at all. It does not catch a setting whose _signature_ changed: an older core whose `font_stylesheet` takes no `preconnect:` keyword still answers `respond_to?(:font_stylesheet)`, the guard passes, and the call raises a bare `ArgumentError` from inside an initializer, which is the failure the guard exists to replace. Closing that would mean an extension declaring which keywords of which setting it uses, which changes the `required_settings` contract every extension already ships against, so it is written down here instead.
+
+What does catch it, one step earlier, is `MyExt::Engine.configure_theme(PlaceCal::Theme.new(:throwaway))` in the extension's own contract spec: it makes every call the engine makes against a real `PlaceCal::Theme`, so a changed signature in core fails in the extension's CI rather than on the next boot. Every extension should have that spec.
 
 ### Minimum core
 
@@ -180,7 +186,7 @@ class MyExt::Views::About < Views::ThemeContentPage
 end
 ```
 
-That renders the `page page--<slug>` wrapper with `data-page-slug`, an `h1` and a `.markdown-content` column, and each file in declaration order under its heading. Headings are locale keys, so section names stay translatable while the body stays markdown. Every declaration is inherited, so an extension with several pages can put `content_root` on a base class of its own and each page declares only what is its own; a page that needs more than headings and blocks overrides `page_body` and calls `markdown "file.md"` itself.
+That renders the `page page--<slug>` wrapper with `data-page-slug`, an `h1` and a `.markdown-content` column, and each file in declaration order under its heading. Headings are locale keys, so section names stay translatable while the body stays markdown. A heading renders as an `h2` unless the declaration says otherwise with `heading_level:`, which takes `:h2` to `:h6`; `:h1` is refused, because the page renders its own and a second one is a heading-order failure. An unknown level is an `ArgumentError` at declaration rather than a 500 the first time the page is asked for. Every declaration is inherited, so an extension with several pages can put `content_root` on a base class of its own and each page declares only what is its own; a page that needs more than headings and blocks overrides `page_body` and calls `markdown "file.md"` itself.
 
 Markdown goes through Kramdown and `Rails::HTML5::SafeListSanitizer`, and each file's rendered HTML is cached: in development the cache key carries the file's mtime, so an edit is picked up without a restart, and elsewhere it is the path alone, so no request pays for a `stat`. A file that has gone missing is logged and skipped rather than taking the page down with a 500.
 
@@ -262,10 +268,10 @@ Each extension lives in its own git repo. Until a private installation repo exis
 group :extensions do
   gem 'placecal-theme-transdimension',
       github: 'geeksforsocialchange/placecal-theme-transdimension',
-      tag: 'v0.3.11'
+      tag: 'v0.3.12'
   gem 'placecal-theme-mossley',
       github: 'geeksforsocialchange/placecal-theme-mossley',
-      tag: 'v0.1.1'
+      tag: 'v0.1.2'
 end
 ```
 

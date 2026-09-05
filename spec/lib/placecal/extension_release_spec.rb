@@ -43,6 +43,50 @@ RSpec.describe PlaceCal::ExtensionRelease do
     expect(described_class.bump(wrapped, "placecal-theme-mossley", "0.2.0")).to include("tag: 'v0.2.0'")
   end
 
+  # bin/extension-dev-gemfile takes an extension out of core's Gemfile so it can
+  # re-add it as a path entry. It used to do that with its own one-line regex,
+  # which left the orphaned github:/tag: lines of a wrapped entry behind and
+  # turned the generated Gemfile into a syntax error.
+  describe ".strip_entry" do
+    it "removes the named gem and leaves the rest of the Gemfile alone" do
+      stripped = described_class.strip_entry(gemfile, "placecal-theme-mossley")
+
+      expect(stripped).not_to include("placecal-theme-mossley")
+      expect(stripped).to include("gem 'placecal-theme-transdimension'")
+      expect(stripped).to include("group :extensions do")
+    end
+
+    it "removes every line of an entry that wraps" do
+      wrapped = <<~RUBY
+        group :extensions do
+          gem 'placecal-theme-mossley',
+              github: 'geeksforsocialchange/placecal-theme-mossley',
+              tag: 'v0.1.1'
+          gem 'other'
+        end
+      RUBY
+
+      stripped = described_class.strip_entry(wrapped, "placecal-theme-mossley")
+
+      expect(stripped).not_to include("github:")
+      expect(stripped).not_to include("tag:")
+      expect(stripped).to include("gem 'other'")
+      expect { RubyVM::InstructionSequence.compile(stripped) }.not_to raise_error
+    end
+
+    it "leaves a Gemfile without that gem untouched" do
+      expect(described_class.strip_entry(gemfile, "placecal-theme-nowhere")).to eq(gemfile)
+    end
+
+    # Prefix collisions: stripping mossley must not take the transdimension
+    # entry, and vice versa.
+    it "matches the whole gem name" do
+      stripped = described_class.strip_entry(gemfile, "placecal-theme")
+
+      expect(stripped).to eq(gemfile)
+    end
+  end
+
   describe "when it cannot do what was asked" do
     it "refuses a version that is not a release number" do
       expect { described_class.bump(gemfile, "placecal-theme-mossley", "0.1") }

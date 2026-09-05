@@ -31,6 +31,37 @@
 class Views::ThemeContentPage < Views::Base
   prop :site, ::Site, reader: :private
 
+  # What a markdown content page may render. The sanitiser's own default list
+  # has no table elements in it at all, so a markdown table arrived as loose
+  # whitespace-separated words, and it drops `id`, so kramdown's auto heading
+  # anchors -- the normal way to link within a long privacy policy -- did not
+  # work. Both are ordinary things for a theme's About or Privacy copy to use,
+  # so the list is explicit rather than inherited.
+  #
+  # Nothing here executes or loads: no script, style, iframe, object, embed or
+  # form. href and src are still scrubbed for their protocol by the sanitiser.
+  MARKDOWN_TAGS = %w[
+    h1 h2 h3 h4 h5 h6
+    p br hr div span
+    strong em b i u s del ins mark small sub sup abbr code pre kbd samp var
+    a img figure figcaption
+    ul ol li dl dt dd
+    blockquote cite q
+    table caption colgroup col thead tbody tfoot tr th td
+  ].freeze
+
+  MARKDOWN_ATTRIBUTES = %w[
+    href src alt title id class lang dir
+    colspan rowspan scope headers
+    start reversed value
+    width height loading
+    datetime cite
+  ].freeze
+
+  # Which heading elements a section may declare. Not h1: the page renders its
+  # own, and a second one is a heading-order failure.
+  HEADING_LEVELS = %i[h2 h3 h4 h5 h6].freeze
+
   # Rendered HTML per markdown file, shared by every page of every theme.
   # Initialised here rather than with `||=` at the first call, so two threads
   # racing the first request cannot each build a Hash and lose one's writes.
@@ -80,6 +111,13 @@ class Views::ThemeContentPage < Views::Base
     # @param heading [String, nil] locale key for a heading before the block
     # @param heading_level [Symbol] which heading element to render it as
     def markdown(relative_path, heading: nil, heading_level: :h2)
+      # Caught at declaration, which is boot, rather than as a NoMethodError
+      # 500 the first time someone asks for the page.
+      unless HEADING_LEVELS.include?(heading_level)
+        raise ArgumentError,
+              "heading_level #{heading_level.inspect} is not one of #{HEADING_LEVELS.join(', ')}"
+      end
+
       sections << { path: relative_path.to_s, heading: heading&.to_s, heading_level: heading_level }
     end
 
@@ -88,32 +126,52 @@ class Views::ThemeContentPage < Views::Base
       @sections ||= inherited_setting(:sections)&.dup || []
     end
 
-    # Rendered HTML for one markdown file. In development the cache key carries
-    # the file's mtime, so a content edit is picked up without a restart;
-    # elsewhere the answer never changes, so the key is the path alone and no
-    # request pays for a stat. A superseded entry is left behind rather than
-    # evicted, which is bounded by the edits in one dev session.
+    # Rendered HTML for one markdown file. A superseded entry is left behind
+    # rather than evicted, which is bounded by the edits in one dev session.
     #
     # A content file can go missing between releases (renamed, or added and not
     # committed). One absent block must not take the whole page down with a
-    # 500, so log it and render nothing for that block.
+    # 500, so log it and render nothing for that block. The empty result is
+    # cached like any other, so a permanently missing file logs once rather
+    # than on every request for that page.
     #
     # @param content_root [Pathname]
     # @param relative_path [String]
     # @return [String]
     def markdown_html(content_root, relative_path)
       path = Pathname(content_root).join(relative_path)
-      key = Rails.env.local? ? [path.to_s, File.mtime(path)] : path.to_s
-      Views::ThemeContentPage.markdown_cache[key] ||= render_markdown(path.read)
-    rescue Errno::ENOENT
-      Rails.logger.warn("Theme content file missing, skipping block: #{path}")
-      ''
+      cache = Views::ThemeContentPage.markdown_cache
+      key = cache_key(path)
+      return cache[key] if cache.key?(key)
+
+      cache[key] = begin
+        render_markdown(path.read)
+      rescue Errno::ENOENT
+        Rails.logger.warn("Theme content file missing, skipping block: #{path}")
+        ''
+      end
     end
 
     private
 
+    # In development the key carries the file's mtime, so a content edit is
+    # picked up without a restart; elsewhere the answer never changes, so the
+    # key is the path alone and no request pays for a stat. A file that is not
+    # there has no mtime, so it keys on its path until it appears.
+    def cache_key(path)
+      return path.to_s unless Rails.env.local?
+
+      [path.to_s, File.mtime(path)]
+    rescue Errno::ENOENT
+      path.to_s
+    end
+
     def render_markdown(markdown)
-      Rails::HTML5::SafeListSanitizer.new.sanitize(Kramdown::Document.new(markdown).to_html)
+      Rails::HTML5::SafeListSanitizer.new.sanitize(
+        Kramdown::Document.new(markdown).to_html,
+        tags: MARKDOWN_TAGS,
+        attributes: MARKDOWN_ATTRIBUTES
+      )
     end
 
     # A theme may put content_root (or a shared section list) on a base class

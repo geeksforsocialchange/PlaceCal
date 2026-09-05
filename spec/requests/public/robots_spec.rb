@@ -31,6 +31,14 @@ RSpec.describe "Public Robots", type: :request do
       end
     end
 
+    # One path, a different body per host, the same as the sitemap and the
+    # manifest.
+    it "varies on Host" do
+      get "http://#{published_site.slug}.lvh.me/robots.txt"
+
+      expect(response.headers["Vary"]).to include("Host")
+    end
+
     context "on the apex directory" do
       it "advertises the directory sitemap" do
         get "http://lvh.me/robots.txt"

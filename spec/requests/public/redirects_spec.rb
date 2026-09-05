@@ -66,6 +66,28 @@ RSpec.describe "Public Redirects", type: :request do
       expect(instantiated).not_to include("Article")
     end
 
+    # Article.for_site joins through partner tags with no DISTINCT, so the row
+    # count is articles times tag matches rather than articles. A scanner
+    # walking /news/wp-admin, /news/backup and the rest runs this once per
+    # request, so it is bounded on both counts.
+    it "reads a bounded, deduplicated set of rows" do
+      queries = []
+      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*args|
+        payload = ActiveSupport::Notifications::Event.new(*args).payload
+        queries << [payload[:sql], Array(payload[:type_casted_binds])]
+      end
+
+      begin
+        get "/news/no-such-article", headers: { "Host" => "#{site.slug}.lvh.me" }
+      ensure
+        ActiveSupport::Notifications.unsubscribe(subscriber)
+      end
+
+      sql, binds = queries.find { |(query, _binds)| query.include?('"articles"."title"') && query.include?("LIMIT") }
+      expect(sql).to include("SELECT DISTINCT")
+      expect(binds).to include(NewsController::FALLBACK_SCAN_LIMIT)
+    end
+
     context "on the nationwide directory" do
       it "redirects to /find-placecal without querying the articles table" do
         article_queries = []

@@ -8,6 +8,28 @@ RSpec.describe "Public Sitemaps", type: :request do
                   contact_email: "hello@mossley.example.org")
   end
 
+  # A sitemap belongs to a site or to the directory, and the admin subdomain is
+  # neither. The router bounces it to the apex before the controller sees it;
+  # SitemapsController#require_site_or_directory is the controller saying the
+  # same thing for itself, so #base_url's fallback to the directory URL can
+  # never serve the nationwide sitemap under some other host.
+  describe "on the admin subdomain" do
+    it "never serves a sitemap" do
+      get "/sitemap.xml", headers: { "Host" => "admin.lvh.me" }
+
+      expect(response.body).not_to include("sitemapindex")
+      expect(response).to have_http_status(:moved_permanently)
+    end
+
+    it "404s when the request reaches the controller anyway" do
+      allow_any_instance_of(SitemapsController).to receive(:directory_request?).and_return(false) # rubocop:disable RSpec/AnyInstance
+
+      get "/sitemap.xml", headers: { "Host" => "lvh.me" }
+
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
   describe "on the apex (directory)" do
     let(:host) { "lvh.me" }
 
@@ -201,6 +223,20 @@ RSpec.describe "Public Sitemaps", type: :request do
         get "/sitemap/pages.xml", headers: { "Host" => host }
 
         expect(response.body).not_to include("https://mossley.placecal.org/get-in-touch")
+      end
+
+      # The other half of that method: a theme whose own footer carries the
+      # link turns the nav one off, and the sitemap should not advertise a page
+      # the site does not link to either.
+      it "omits /get-in-touch for a theme that opts out of the nav Join link", :theme_registry do
+        PlaceCal::Extensions.register_theme(:no_join_sitemap_theme) { |theme| theme.nav_join false }
+        local_site.update!(theme: "no_join_sitemap_theme")
+
+        get "/sitemap/pages.xml", headers: { "Host" => host }
+
+        expect(response).to be_successful
+        expect(response.body).not_to include("https://mossley.placecal.org/get-in-touch")
+        expect(response.body).to include("https://mossley.placecal.org/privacy")
       end
     end
 

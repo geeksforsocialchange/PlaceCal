@@ -95,6 +95,61 @@ RSpec.describe Views::ThemeContentPage, type: :component do
     end
   end
 
+  # The sanitiser's default allowlist has no table elements in it and drops
+  # `id`, both of which an About or Privacy page reasonably uses.
+  describe "the markdown pipeline" do
+    def render(markdown) = described_class.send(:render_markdown, markdown)
+
+    it "keeps a markdown table as a table" do
+      html = Nokogiri::HTML.fragment(render("| a | b |\n|---|---|\n| 1 | 2 |\n"))
+
+      expect(html.css("table thead th").map(&:text)).to eq(%w[a b])
+      expect(html.css("table tbody td").map(&:text)).to eq(%w[1 2])
+    end
+
+    # kramdown's auto_ids are how a long policy page links to its own sections.
+    it "keeps the heading anchors kramdown generates" do
+      html = Nokogiri::HTML.fragment(render("## A section heading\n"))
+
+      expect(html.at_css("h2")["id"]).to eq("a-section-heading")
+    end
+
+    it "still removes anything that executes or loads" do
+      html = render(<<~MD)
+        <script>alert(1)</script>
+        <iframe src="https://evil.example"></iframe>
+        [bad](javascript:alert%281%29) and [ok](https://example.org)
+      MD
+
+      expect(html).not_to include("<script")
+      expect(html).not_to include("<iframe")
+      expect(html).not_to include("javascript:")
+      expect(html).to include('href="https://example.org"')
+    end
+  end
+
+  # A page renders its own h1, so a section heading is h2 or smaller. A typo
+  # used to be a NoMethodError 500 the first time the page was asked for.
+  describe "heading_level" do
+    it "takes any of h2 to h6" do
+      expect do
+        Class.new(Views::ThemeContentPage) { markdown "intro.md", heading: "k", heading_level: :h4 }
+      end.not_to raise_error
+    end
+
+    it "refuses one that is not a heading element" do
+      expect do
+        Class.new(Views::ThemeContentPage) { markdown "intro.md", heading: "k", heading_level: :h7 }
+      end.to raise_error(ArgumentError, /:h7 is not one of h2, h3, h4, h5, h6/)
+    end
+
+    it "refuses h1, which the page renders itself" do
+      expect do
+        Class.new(Views::ThemeContentPage) { markdown "intro.md", heading: "k", heading_level: :h1 }
+      end.to raise_error(ArgumentError, /is not one of/)
+    end
+  end
+
   describe "the markdown cache" do
     it "renders one file once" do
       root = ExampleTheme::Engine.root.join("content")
@@ -135,11 +190,25 @@ RSpec.describe Views::ThemeContentPage, type: :component do
       markdown "intro.md"
     end
     allow(Rails.logger).to receive(:warn)
+    described_class.markdown_cache.clear
 
     render_inline(page.new(site: site))
 
     expect(Rails.logger).to have_received(:warn).with(/content file missing, skipping block/)
     expect(self.page).to have_css(".page--gappy .markdown-content", text: "Fixture markdown intro paragraph.")
+  end
+
+  # A file that is permanently missing used to log on every request for the
+  # page, because the empty result was the one answer never cached.
+  it "logs a missing content file once, not once per request" do
+    root = ExampleTheme::Engine.root.join("content")
+    described_class.markdown_cache.clear
+    allow(Rails.logger).to receive(:warn)
+
+    3.times { described_class.markdown_html(root, "not-committed.md") }
+
+    expect(Rails.logger).to have_received(:warn).once
+    expect(described_class.markdown_html(root, "not-committed.md")).to eq("")
   end
 
   it "says which declaration a page is missing" do

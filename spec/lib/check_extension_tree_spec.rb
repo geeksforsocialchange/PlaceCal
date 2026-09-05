@@ -16,6 +16,18 @@ RSpec.describe "bin/check-extension-tree" do
     Open3.capture3("bundle", "exec", SCRIPT, *roots, chdir: APP_ROOT)
   end
 
+  # The reusable extension workflow runs the guard before it bundles anything,
+  # so an extension that ships a model fails in seconds rather than after an
+  # install and a core asset build.
+  def run_unbundled(*roots)
+    Open3.capture3({ "RUBYOPT" => nil, "BUNDLE_GEMFILE" => nil }, "ruby", SCRIPT, *roots, chdir: APP_ROOT)
+  end
+
+  def git_init(root)
+    Open3.capture3("git", "init", "-q", root)
+    Open3.capture3("git", "-C", root, "add", "-A")
+  end
+
   def build_tree(root, paths)
     paths.each do |path|
       full = File.join(root, path)
@@ -88,6 +100,79 @@ RSpec.describe "bin/check-extension-tree" do
       expect(stderr).to include("config/initializers/boot.rb")
       expect(stderr).to include("lib/foo/sneaky.rb")
       expect(stderr).to include("lib/elsewhere/payload.rb")
+    end
+  end
+
+  it "runs against an explicit root with no bundle at all" do
+    Dir.mktmpdir do |dir|
+      root = File.join(dir, "foo")
+      build_tree(root, contract_abiding)
+
+      stdout, stderr, status = run_unbundled(root)
+
+      expect(status).to be_success, stderr
+      expect(stdout).to include("every extension stays inside the contract")
+    end
+  end
+
+  # A developer's theme checkout has node_modules/ and tmp/ in it and a
+  # released gem does not, so a filesystem walk buried the real answer in
+  # hundreds of false offenders. In a git work tree the files the gem ships
+  # are exactly the tracked ones.
+  it "lists tracked files only when the root is a git work tree" do
+    Dir.mktmpdir do |dir|
+      root = File.join(dir, "foo")
+      build_tree(root, contract_abiding)
+      git_init(root)
+      build_tree(root, ["node_modules/left-pad/index.js", "tmp/theme-check.css", "app/models/untracked.rb"])
+
+      stdout, stderr, status = run(root)
+
+      expect(status).to be_success, stderr
+      expect(stdout).to include("every extension stays inside the contract")
+    end
+  end
+
+  it "skips build output and dependencies when there is no git metadata to go on" do
+    Dir.mktmpdir do |dir|
+      root = File.join(dir, "foo")
+      build_tree(root, contract_abiding + [
+        "node_modules/left-pad/index.js",
+        "tmp/theme-check.css",
+        "coverage/index.html",
+        "vendor/bundle/thing.rb"
+      ])
+
+      stdout, stderr, status = run(root)
+
+      expect(status).to be_success, stderr
+      expect(stdout).to include("every extension stays inside the contract")
+    end
+  end
+
+  it "names the whole allowlist when it fails, not a shorter version of it" do
+    Dir.mktmpdir do |dir|
+      root = File.join(dir, "foo")
+      build_tree(root, contract_abiding + ["app/models/thing.rb"])
+
+      _stdout, stderr, _status = run(root)
+
+      expect(stderr).to include("bin", "spec", "goldens", ".github", "app/tailwind", "app/scss")
+      expect(stderr).to include("lib/tasks/*.rake")
+      expect(stderr).to include("may not ship models, controllers, routes, migrations or initializers")
+    end
+  end
+
+  # Both theme repos ship one beside their LICENCE, recording the carve-out for
+  # the assets the gem does not license under its own terms.
+  it "allows a NOTICE beside the LICENCE" do
+    Dir.mktmpdir do |dir|
+      root = File.join(dir, "foo")
+      build_tree(root, contract_abiding + ["NOTICE"])
+
+      _stdout, _stderr, status = run(root)
+
+      expect(status).to be_success
     end
   end
 

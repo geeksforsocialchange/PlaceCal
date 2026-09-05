@@ -132,9 +132,14 @@ module PlaceCal
           config.filter_rails_from_backtrace!
 
           config.include FactoryBot::Syntax::Methods
-          # Core's helper for rendering a Phlex view or component on its own.
+          # Core's helper for rendering a Phlex view or component on its own,
+          # with the have_css / have_text matchers core's own component specs
+          # are written against (spec/rails_helper.rb there).
           config.include PhlexTestHelper, type: :component
+          config.include Capybara::RSpecMatchers, type: :component
           config.include Devise::Test::IntegrationHelpers, type: :request
+          # An extension's system spec signs in the same way core's does.
+          config.include Devise::Test::IntegrationHelpers, type: :system
 
           # Core freezes time in its own suite; match it so shared factories
           # behave the same way here.
