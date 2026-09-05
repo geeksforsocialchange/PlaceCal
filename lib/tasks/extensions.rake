@@ -12,13 +12,14 @@ namespace :placecal do
       abort 'Usage: rake "placecal:extension:bump[<gem>,<version>]"' if name.blank? || version.blank?
 
       gemfile = Rails.root.join('Gemfile')
+      original = gemfile.read
       begin
-        bumped = PlaceCal::ExtensionRelease.bump(gemfile.read, name, version)
+        bumped = PlaceCal::ExtensionRelease.bump(original, name, version)
       rescue ArgumentError => e
         abort "placecal:extension:bump: #{e.message}"
       end
 
-      if bumped == gemfile.read
+      if bumped == original
         puts "#{name} is already at #{PlaceCal::ExtensionRelease.normalize_version(version)}."
       else
         gemfile.write(bumped)
@@ -31,7 +32,14 @@ namespace :placecal do
       # Rails has this process bundled already; bundler refuses to re-resolve
       # from inside that environment, so run it in a clean one.
       locked = Bundler.with_unbundled_env { system('bundle', 'lock', '--update', name) }
-      abort 'placecal:extension:bump: bundle lock failed.' unless locked
+      unless locked
+        # An unreachable tag, a resolution conflict or a dropped network leaves
+        # a bumped Gemfile beside a stale Gemfile.lock, which is exactly the
+        # pair this task's closing line says must be committed together. Put
+        # the Gemfile back so the working tree matches the lock again.
+        gemfile.write(original)
+        abort "placecal:extension:bump: bundle lock failed. #{gemfile} has been put back as it was."
+      end
 
       puts 'Done. Commit the Gemfile and Gemfile.lock together: that is the deploy.'
     end

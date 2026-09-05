@@ -43,20 +43,38 @@ RSpec.describe "bin/extension-dev-gemfile" do
 
   # Evaluate the generated Gemfile the way Bundler would, recording what it
   # asks for. Anything less than this tests the string, not the behaviour.
-  def resolved_gems
+  def recorder_result
     recorder = Class.new do
-      attr_reader :gems
+      attr_reader :gems, :groups
 
-      def initialize = @gems = {}
+      def initialize
+        @gems = {}
+        @groups = {}
+        @current = []
+      end
+
       def source(*) = nil
-      def group(*) = yield
-      def gem(name, *_args, **options) = @gems[name] = options
+
+      def group(*names)
+        @current = names
+        yield
+      ensure
+        @current = []
+      end
+
+      def gem(name, *_args, **options)
+        @gems[name] = options
+        @groups[name] = @current
+      end
     end.new
 
     path = File.join(core, "Gemfile.extensions-dev")
     recorder.instance_eval(File.read(path), path, 1)
-    recorder.gems
+    recorder
   end
+
+  def resolved_gems = recorder_result.gems
+  def resolved_groups = recorder_result.groups
 
   it "writes the generated Gemfile beside core's own" do
     _out, _err, status = run("placecal-theme-transdimension=../placecal-theme-transdimension")
@@ -81,6 +99,46 @@ RSpec.describe "bin/extension-dev-gemfile" do
     expect(resolved_gems.keys).to contain_exactly(
       "rails", "placecal-theme-mossley", "placecal-theme-transdimension"
     )
+  end
+
+  # bin/check-extension-tree finds what to check by the :extensions group, so a
+  # path entry outside it leaves the gem under test unchecked while its
+  # sibling, still at its tag, passes and the run reports green.
+  it "puts the path entry back in the :extensions group" do
+    run("placecal-theme-transdimension=../placecal-theme-transdimension")
+
+    expect(resolved_groups["placecal-theme-transdimension"]).to eq([:extensions])
+    expect(resolved_groups["placecal-theme-mossley"]).to eq([:extensions])
+    expect(resolved_groups["rails"]).to eq([])
+  end
+
+  # doc/extensions.md prints the entry wrapped over three lines, and a real
+  # Gemfile may be reformatted that way. A one-line strip left the orphaned
+  # github:/tag: lines behind and the generated Gemfile did not parse.
+  it "strips an entry that wraps over several lines" do
+    File.write(File.join(core, "Gemfile"), <<~RUBY)
+      source 'https://rubygems.org'
+
+      gem 'rails'
+
+      group :extensions do
+        gem 'placecal-theme-transdimension',
+            github: 'geeksforsocialchange/placecal-theme-transdimension',
+            tag: 'v0.3.11'
+      end
+    RUBY
+
+    run("placecal-theme-transdimension=../td")
+
+    expect(resolved_gems["placecal-theme-transdimension"]).to eq(path: "../td")
+    expect(resolved_gems.keys).to contain_exactly("rails", "placecal-theme-transdimension")
+  end
+
+  # The path comes off a command line, so it is not the generator's to trust.
+  it "escapes the name and the path it writes" do
+    run("placecal-theme-mossley=../it's here")
+
+    expect(resolved_gems["placecal-theme-mossley"]).to eq(path: "../it's here")
   end
 
   it "takes more than one extension from a path at once" do

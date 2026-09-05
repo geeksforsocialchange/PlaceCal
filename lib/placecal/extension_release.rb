@@ -40,6 +40,24 @@ module PlaceCal
       "v#{number}"
     end
 
+    # Remove a gem's entry from a Gemfile, however many lines it wraps over.
+    # bin/extension-dev-gemfile takes an extension out of core's Gemfile so it
+    # can re-add it as a path entry; #bump rewrites the tag in place. Both need
+    # the same idea of where an entry starts and ends, so both come here.
+    #
+    # @param source [String] core's Gemfile
+    # @param name [String] gem name, as it appears in the Gemfile
+    # @return [String] the Gemfile without that gem's entry, unchanged when it
+    #   has no such entry
+    def strip_entry(source, name)
+      lines = source.lines
+      range = entry_range(lines, name)
+      return source if range.nil?
+
+      lines[range] = []
+      lines.join
+    end
+
     # A Gemfile entry may wrap over several lines, with the tag on one of its
     # own. A line ending in a comma continues onto the next.
     #

@@ -106,6 +106,16 @@ jobs:
           ref: ${{ inputs.placecal_ref }}
           path: PlaceCal
 
+      # The contract guard (doc/extensions.md, Trust) needs nothing but a Ruby
+      # and the two checkouts, so it runs before the bundle: an extension that
+      # ships a model or an initializer should fail here in seconds rather than
+      # after an install and a core asset build. Until now it ran only in
+      # core's own lint job, so a violation surfaced in the core PR that bumped
+      # the tag rather than in the PR that added it.
+      - name: Check this extension stays inside the contract
+        working-directory: PlaceCal
+        run: bin/check-extension-tree ../theme
+
       # Core's Gemfile pins the extension to a released tag. CI has to test the
       # checkout under review instead, so swap that one pin for a path entry
       # with core's own generator, leaving every other extension at its tag.
