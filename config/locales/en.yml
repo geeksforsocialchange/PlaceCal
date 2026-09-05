@@ -464,7 +464,9 @@ en:
       title: "Our Partners"
       standfirst: ""
       standfirst_detail: ""
-      list_heading: ""
+      # Real text, not blank: it is the h2 between the hero h1 and the h3 of
+      # each partner card, and without it the page skips a heading level.
+      list_heading: "All partners"
   news:
     show:
       section: ""
@@ -509,6 +511,8 @@ en:
       page_title: "Events"
       title: "Events & activities"
       standfirst: ""
+      # Blank by design: the event list opens with an h2 per day, so there is
+      # no heading level to bridge here and a theme may still add one.
       list_heading: ""
       subscribe_ical: "Subscribe to %{name} with iCal"
     card:

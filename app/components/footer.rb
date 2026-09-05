@@ -45,8 +45,10 @@ class Components::Footer < Components::Base
 
   def render_nav
     div(class: 'footer__item footer__nav') do
-      h5(class: 'allcaps small') { t('footer.site_navigation') }
-      nav(role: 'navigation') do
+      h5(class: 'allcaps small', id: 'footer-nav-heading') { t('footer.site_navigation') }
+      # Named, so a screen reader's landmark menu distinguishes this nav from
+      # the header's rather than listing "navigation" twice.
+      nav(role: 'navigation', aria_labelledby: 'footer-nav-heading') do
         ul do
           nav_links.each do |label, path|
             li { active_link_to(label, path) }
