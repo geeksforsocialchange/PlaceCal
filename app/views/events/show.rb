@@ -265,7 +265,7 @@ class Views::Events::Show < Views::Base
   def render_contact_info
     div(class: 'gi gi__1-3') do
       if event.organiser
-        h2(class: 'h4 udl') { 'Contact information' }
+        h2(class: 'h4 udl') { t('events.show.contact_heading') }
         div(class: 'small') do
           ContactDetails(partner: event.organiser)
         end
@@ -275,7 +275,7 @@ class Views::Events::Show < Views::Base
 
   def render_event_address
     div(class: 'gi gi__1-3') do
-      h2(class: 'h4 udl') { 'Event address' }
+      h2(class: 'h4 udl') { t('events.show.address_heading') }
       div(class: 'small') do
         Address(address: event.address, raw_location: event.raw_location_from_source)
       end
@@ -284,7 +284,7 @@ class Views::Events::Show < Views::Base
 
   def render_event_organiser
     div(class: 'gi gi__1-3') do
-      h2(class: 'h4 udl') { 'Event organiser' }
+      h2(class: 'h4 udl') { t('events.show.organiser_heading') }
       div(class: 'small') do
         span { link_to event.organiser, event.organiser }
       end
@@ -297,7 +297,7 @@ class Views::Events::Show < Views::Base
 
   def render_event_venue
     div(class: 'gi gi__1-3') do
-      h2(class: 'h4 udl') { 'Venue' }
+      h2(class: 'h4 udl') { t('events.show.venue_heading') }
       div(class: 'small') do
         span { link_to event.place, event.place }
       end
@@ -310,10 +310,11 @@ class Views::Events::Show < Views::Base
         contact = event.calendar&.contact_information
         if contact
           div(class: 'contact_information') do
-            plain 'Problem with this listing? '
+            plain t('events.show.problem_prompt')
             mail_to contact[0],
-                    'Let us know.',
-                    subject: "I think there's a problem with PlaceCal event http://placecal.org#{event_path(event)}",
+                    t('events.show.problem_link'),
+                    subject: t('events.show.problem_subject',
+                               url: "http://placecal.org#{event_path(event)}"),
                     cc: 'support@placecal.org'
           end
         end

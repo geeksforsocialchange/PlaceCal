@@ -168,7 +168,7 @@ class Views::Layouts::Application < Phlex::HTML
       meta(property: 'og:image:height', content: '630')
     else
       meta(property: 'og:image', content: image_url('og/wide.png'))
-      meta(property: 'og:image:alt', content: 'PlaceCal logo')
+      meta(property: 'og:image:alt', content: t('og_image.alt.directory'))
       meta(property: 'og:image:width', content: '1920')
       meta(property: 'og:image:height', content: '1080')
     end
@@ -195,13 +195,13 @@ class Views::Layouts::Application < Phlex::HTML
   end
 
   def compute_title
-    return 'PlaceCal | The Community Calendar' if current_page?(root_url) && site.nil?
+    return t('site.title_default') if current_page?(root_url) && site.nil?
 
     page_title = captured_title
     return "#{page_title} | #{site.name}" if page_title && site&.name
     return "#{page_title} | PlaceCal" if page_title
 
-    site&.name || 'PlaceCal | The Community Calendar'
+    site&.name || t('site.title_default')
   end
 
   # `content_for(:title)` comes back as an already-escaped SafeBuffer, because

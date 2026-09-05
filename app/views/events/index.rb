@@ -84,7 +84,7 @@ class Views::Events::Index < Views::Base
   def render_meta_section
     Meta('/hello/world') do |component|
       component.with_link do
-        link_to "Subscribe to #{site.name} with iCal", events_url(protocol: :webcal, format: :ics)
+        link_to t('events.index.subscribe_ical', name: site.name), events_url(protocol: :webcal, format: :ics)
       end
     end
   end

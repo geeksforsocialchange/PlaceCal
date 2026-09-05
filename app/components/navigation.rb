@@ -81,7 +81,10 @@ class Components::Navigation < Components::Base
       end
     else
       h2(class: 'sr-only') { @site&.name }
-      p(class: 'sr-only') { 'The Community Calendar' }
+      # Blank in core, so most sites announce just their name; a theme may
+      # give itself a strapline through theme_overrides.
+      strapline = t('navigation.site.strapline')
+      p(class: 'sr-only') { strapline } if strapline.present?
     end
   end
 

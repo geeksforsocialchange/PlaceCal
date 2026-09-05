@@ -64,7 +64,7 @@ class Views::Partners::Show < Views::Base
 
   def render_accessibility_details(summary_class: nil)
     details(id: 'accessibility-info') do
-      summary(class: summary_class) { 'Accessibility information' }
+      summary(class: summary_class) { t('partners.show.accessibility_heading') }
       div(class: 'mt-2 text-sm text-foreground') do
         raw safe(partner.accessibility_info_html.to_s)
       end
@@ -105,11 +105,11 @@ class Views::Partners::Show < Views::Base
   end
 
   def render_contact_and_address
-    h2(class: 'udl udl--fw allcaps h4') { 'Get in touch' }
+    h2(class: 'udl udl--fw allcaps h4') { t('partners.show.contact_heading') }
     ContactDetails(partner: partner)
 
-    h2(class: 'udl udl--fw allcaps h4') { 'Address' }
-    p { "We operate in #{partner_service_area_text(partner)}." } if partner.has_service_areas?
+    h2(class: 'udl udl--fw allcaps h4') { t('partners.show.address_heading') }
+    p { raw(t('partners.show.service_area_html', areas: partner_service_area_text(partner))) } if partner.has_service_areas?
 
     Address(address: partner.address)
 
@@ -117,10 +117,13 @@ class Views::Partners::Show < Views::Base
 
     return unless partner.managees.any?
 
+    # view_context.link_to, not the registered output helper: the helper
+    # writes straight to the buffer, so building the list as an interpolation
+    # argument would emit the links ahead of the sentence that contains them.
+    places = safe_join(partner.managees.map { |place| view_context.link_to(place.name, place) }, ', ')
+
     p(class: 'small') do
-      plain "#{partner.name} manage "
-      raw safe_join(partner.managees.map { |place| link_to place.name, place }, ', ')
-      plain '.'
+      raw(t('partners.show.managed_by_html', name: partner.name, places: places))
     end
   end
 
@@ -131,7 +134,7 @@ class Views::Partners::Show < Views::Base
       img(
         src: partner.image.standard.url,
         srcset: "#{partner.image.standard.url} 1x, #{partner.image.retina.url} 2x",
-        alt: "Image for #{partner.name}",
+        alt: t('partners.show.image_alt', name: partner.name),
         class: 'map--single'
       )
     end
@@ -142,7 +145,7 @@ class Views::Partners::Show < Views::Base
     return unless times.any?
 
     br
-    h2(class: 'udl udl--fw allcaps h4') { 'Opening times' }
+    h2(class: 'udl udl--fw allcaps h4') { t('partners.show.opening_times_heading') }
     ul(class: 'opening_times reset') do
       times.each do |slot|
         li { slot }
@@ -160,11 +163,11 @@ class Views::Partners::Show < Views::Base
           raw safe(place.summary_html.to_s) if place.summary_html.present?
         end
         div(class: 'gi gi__1-2') do
-          h2(class: 'udl udl--fw allcaps h4') { 'Address' }
+          h2(class: 'udl udl--fw allcaps h4') { t('partners.show.address_heading') }
           div(class: 'small') do
             Address(address: place.address)
           end
-          h2(class: 'udl udl--fw allcaps h4') { 'Contact' }
+          h2(class: 'udl udl--fw allcaps h4') { t('partners.show.place_contact_heading') }
           div(class: 'small') do
             ContactDetails(
               partner: partner,
@@ -239,7 +242,8 @@ class Views::Partners::Show < Views::Base
   def render_meta_section
     Meta("/partners/#{partner.id}") do |component|
       component.with_link do
-        link_to "Subscribe to #{partner}'s events with iCal", partner_url(partner, protocol: :webcal, format: :ics)
+        link_to t('partners.show.subscribe_ical', name: partner.name),
+                partner_url(partner, protocol: :webcal, format: :ics)
         if events.any?
           whitespace
           link_to t('events.csv_export.link'), partner_url(partner, format: :csv)
