@@ -81,12 +81,16 @@ class Components::Navigation < Components::Base
       end
     else
       h2(class: 'sr-only') { @site&.name }
-      p(class: 'sr-only') { 'The Community Calendar' }
+      # Blank in core, so most sites announce just their name; a theme may
+      # give itself a strapline through theme_overrides.
+      strapline = t('navigation.site.strapline')
+      p(class: 'sr-only') { strapline } if strapline.present?
     end
   end
 
   def render_menu
-    nav(class: menu_nav_classes, data: { mobile_menu_target: 'menu' }) do
+    nav(id: 'site-menu', class: menu_nav_classes, aria_label: t('navigation.primary'),
+        data: { mobile_menu_target: 'menu' }) do
       ul(class: 'contents') do
         @navigation.each do |link_text, link_path|
           li(class: menu_li_classes) { active_link_to(link_text, link_path, data: { turbolinks: false }, base_css_class: menu_link_classes, active_css_class: menu_active_classes) }
@@ -190,13 +194,16 @@ class Components::Navigation < Components::Base
             'pt-4 gap-0.5  lg:row-start-1 lg:col-start-2 lg:col-span-1',
             'md:flex-row md:gap-8 md:pt-3 md:pb-4 md:mt-6',
             'md:max-lg:[&:is(.is-hidden)]:py-0 md:max-lg:[&:is(.is-hidden)]:mt-4.5 md:max-lg:bg-home-background',
-            'max-lg:[&:is(.is-hidden)]:h-0',
+            # invisible alongside h-0 so the collapsed menu's links leave the
+            # tab order instead of being reachable but off-screen.
+            'max-lg:[&:is(.is-hidden)]:h-0 max-lg:[&:is(.is-hidden)]:invisible',
             'lg:justify-end lg:items-baseline lg:mx-0 lg:mt-1.5 lg:py-0'
           ]
         else
           [
             '-mx-6 gap-1 mt-4',
             'max-md:pb-1 max-md:bg-tertiary max-md:[&:is(.is-hidden)]:h-0 max-md:[&:is(.is-hidden)]:pb-0',
+            'max-md:[&:is(.is-hidden)]:invisible',
             'md:-mx-6',
             'md:max-lg:px-2 md:max-lg:bg-foreground',
             'lg:row-start-1 lg:col-start-2 lg:col-span-1 lg:gap-8 lg:m-0'
@@ -222,7 +229,8 @@ class Components::Navigation < Components::Base
                  ['md:hidden']
                end)
            ], aria_label: t('navigation.menu'),
-           data: { action: 'click->mobile-menu#toggle', turbo: 'false' }) do
+           aria_expanded: 'false', aria_controls: 'site-menu',
+           data: { mobile_menu_target: 'toggle', action: 'click->mobile-menu#toggle', turbo: 'false' }) do
       # The accessible name is always there; the visible label beside the icon
       # is what a theme opts into.
       span(class: 'text-base font-semibold header__toggle-label') { t('navigation.menu') } if show_menu_label?

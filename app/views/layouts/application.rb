@@ -168,7 +168,7 @@ class Views::Layouts::Application < Phlex::HTML
       meta(property: 'og:image:height', content: '630')
     else
       meta(property: 'og:image', content: image_url('og/wide.png'))
-      meta(property: 'og:image:alt', content: 'PlaceCal logo')
+      meta(property: 'og:image:alt', content: t('og_image.alt.directory'))
       meta(property: 'og:image:width', content: '1920')
       meta(property: 'og:image:height', content: '1080')
     end
@@ -195,11 +195,25 @@ class Views::Layouts::Application < Phlex::HTML
   end
 
   def compute_title
-    return 'PlaceCal | The Community Calendar' if current_page?(root_url) && site.nil?
-    return "#{content_for(:title)} | #{site.name}" if content_for?(:title) && site&.name
-    return "#{content_for(:title)} | PlaceCal" if content_for?(:title)
+    return t('site.title_default') if current_page?(root_url) && site.nil?
 
-    site&.name || 'PlaceCal | The Community Calendar'
+    page_title = captured_title
+    return "#{page_title} | #{site.name}" if page_title && site&.name
+    return "#{page_title} | PlaceCal" if page_title
+
+    site&.name || t('site.title_default')
+  end
+
+  # `content_for(:title)` comes back as an already-escaped SafeBuffer, because
+  # the block was captured through Phlex. Interpolating it into a plain String
+  # drops the safe flag and the <title> element then escapes it a second time,
+  # so "Children's Storytime" reaches the browser tab as "Children&#39;s".
+  # Unescape the captured buffer first and let the single escape happen on the
+  # way out, in both <title> and og:title.
+  def captured_title
+    return nil unless content_for?(:title)
+
+    CGI.unescapeHTML(content_for(:title).to_s)
   end
 
   def devise_page?

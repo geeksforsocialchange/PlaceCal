@@ -34,7 +34,9 @@ class Views::News::Show < Views::Base
 
       div(class: 'gi gi__4-5 article__main') do
         if article.author&.full_name.present?
-          h3(class: 'article__author') do
+          # A byline, not a section heading: as an h3 straight after the
+          # hero h1 it failed axe's heading-order rule on every article.
+          p(class: 'article__author') do
             plain t('news.show.by')
             em { article.author.full_name }
           end

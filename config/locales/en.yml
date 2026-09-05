@@ -13,14 +13,16 @@ en:
       label: Green
     blue:
       label: Blue
-    custom:
-      label: Custom (legacy, per-site stylesheet)
   # ===========================================================================
   # SITE METADATA
   # ===========================================================================
 
   meta:
     description: "%{site} is a community events calendar where you can find out everything that's happening, all in one place."
+
+  site:
+    # <title> for the nationwide directory, which has no Site record to name
+    title_default: "PlaceCal | The Community Calendar"
 
   colophon:
     year: "© 2019-%{year}"
@@ -52,6 +54,7 @@ en:
       partnerships: "Partnerships"
       events: "Events"
       join: "Join us"
+    primary: "Main navigation"
     site:
       home: "Home"
       events: "Events"
@@ -61,18 +64,12 @@ en:
       privacy: "Privacy"
       terms: "Terms"
       log_in: "Log in"
+      # Screen-reader-only line under the site name. Blank in core so a themed
+      # site is not told it is "The Community Calendar"; a theme may set its own.
+      strapline: ""
 
   footer:
     site_navigation: "Site Navigation"
-    site_enquiries: "%{site} Enquiries"
-    general_enquiries: "General Enquiries"
-    get_in_touch: "Get in touch!"
-    # Abbreviated labels before a phone number and an email address
-    phone_label: "T:"
-    email_label: "E:"
-    site_supporters: " PlaceCal %{site} Supporters"
-    global_supporters: "PlaceCal Supporters"
-    build: "Build: "
     site_enquiries: "%{site} Enquiries"
     general_enquiries: "General Enquiries"
     get_in_touch: "Get in touch!"
@@ -434,6 +431,18 @@ en:
   partners:
     show:
       section: ""
+      accessibility_heading: "Accessibility information"
+      contact_heading: "Get in touch"
+      address_heading: "Address"
+      opening_times_heading: "Opening times"
+      # Headings in a managed place's block, which repeats the partner's own
+      place_contact_heading: "Contact"
+      # %{areas} is the rendered list of service areas, already escaped
+      service_area_html: "We operate in %{areas}."
+      # %{places} is the rendered list of links to the places this partner runs
+      managed_by_html: "%{name} manage %{places}."
+      image_alt: "Image for %{name}"
+      subscribe_ical: "Subscribe to %{name}'s events with iCal"
       # Empty states for the partner page's event list, one per period
       no_events_day: "No events this day."
       no_events_week: "No events this week."
@@ -444,7 +453,9 @@ en:
       title: "Our Partners"
       standfirst: ""
       standfirst_detail: ""
-      list_heading: ""
+      # Real text, not blank: it is the h2 between the hero h1 and the h3 of
+      # each partner card, and without it the page skips a heading level.
+      list_heading: "All partners"
   news:
     show:
       section: ""
@@ -489,7 +500,10 @@ en:
       page_title: "Events"
       title: "Events & activities"
       standfirst: ""
+      # Blank by design: the event list opens with an h2 per day, so there is
+      # no heading level to bridge here and a theme may still add one.
       list_heading: ""
+      subscribe_ical: "Subscribe to %{name} with iCal"
     card:
       # strftime patterns for the event list date; themes may override
       date_format: "%e %b"
@@ -516,6 +530,14 @@ en:
     show:
       # Section name above the event page title, blank in core
       section: ""
+      contact_heading: "Contact information"
+      address_heading: "Event address"
+      organiser_heading: "Event organiser"
+      venue_heading: "Venue"
+      # Prompt and link inviting a reader to report a bad listing
+      problem_prompt: "Problem with this listing? "
+      problem_link: "Let us know."
+      problem_subject: "I think there's a problem with PlaceCal event %{url}"
     csv_export:
       link: "Download events as CSV"
       # Column headers for the events CSV (app/services/events_csv.rb).
@@ -571,6 +593,7 @@ en:
       partner: "Details for the partner %{name} on PlaceCal"
       partnership: "Details for the partnership %{name} on PlaceCal"
       site: "%{name}, powered by PlaceCal"
+      directory: "PlaceCal logo"
 
   # ===========================================================================
   # ENUMERIZE (Calendar types)
