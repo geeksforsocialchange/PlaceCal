@@ -3,6 +3,10 @@ en:
     nav:
       donate: Donate to the fixture
       proof: Proof page
+    content:
+      title: Fixture content page
+      description: Fixture content page description
+      detail: Fixture content detail heading
     proof:
       title: Proof
       heading: Example theme fixture proof page

@@ -1,0 +1,190 @@
+name: Extension test
+
+# The test job every PlaceCal extension runs (#3368 WP 5.2). An extension's
+# suite boots core, so its CI is core's CI plus the extension: check out both,
+# point core's bundle at the extension checkout, build core's assets, then run
+# the extension's own linting and specs. All of that is core's knowledge, so it
+# lives here and an extension's own workflow is a dozen lines calling it:
+#
+#   name: Test
+#   on:
+#     push:
+#       branches: ["main"]
+#       tags: ["v*"]
+#     pull_request:
+#   jobs:
+#     test:
+#       uses: geeksforsocialchange/PlaceCal/.github/workflows/extension-test.yml@main
+#       with:
+#         engine: placecal-theme-transdimension
+#         module_dir: transdimension
+#         chrome: true
+#
+# A reusable workflow is resolved at the ref the caller names, so `@main`
+# couples an extension's CI to core's main. Name the same ref the extension
+# builds against (`placecal_ref`) so the two move together.
+
+on:
+  workflow_call:
+    inputs:
+      engine:
+        description: "Gem name of the extension, as it appears in core's Gemfile"
+        required: true
+        type: string
+      module_dir:
+        description: "Directory under lib/ holding version.rb, e.g. transdimension"
+        required: true
+        type: string
+      placecal_ref:
+        description: "Ref of geeksforsocialchange/PlaceCal to build against"
+        required: false
+        type: string
+        default: main
+      chrome:
+        description: "Install headless Chrome, for an extension with system specs"
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: placecal_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      RAILS_ENV: test
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/placecal_test
+      PLACECAL_CORE_PATH: ${{ github.workspace }}/PlaceCal
+      BUNDLE_GEMFILE: ${{ github.workspace }}/PlaceCal/Gemfile.extensions-dev
+
+    steps:
+      - name: Checkout the extension
+        uses: actions/checkout@v4
+        with:
+          path: theme
+
+      # First real step: it depends on nothing but this checkout, and a
+      # mistagged release should fail in seconds rather than after a core
+      # checkout, a bundle install and a core asset build. A PlaceCal
+      # installation pins the extension by tag, so a tag that disagrees with
+      # VERSION would ship a build claiming a version it is not. No-op on
+      # branch pushes and pull requests.
+      - name: Fail if a pushed tag disagrees with VERSION
+        working-directory: theme
+        env:
+          MODULE_DIR: ${{ inputs.module_dir }}
+        run: |
+          if [ "$GITHUB_REF_TYPE" != "tag" ]; then
+            echo "Not a tag push, nothing to check."
+            exit 0
+          fi
+          version=$(ruby -e 'dir = ENV.fetch("MODULE_DIR"); require "./lib/#{dir}/version"; print Object.const_get(dir.split("_").map(&:capitalize).join)::VERSION')
+          if [ "$GITHUB_REF_NAME" != "v$version" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match VERSION $version (expected v$version)."
+            exit 1
+          fi
+          echo "Tag $GITHUB_REF_NAME matches VERSION $version."
+
+      - name: Checkout PlaceCal core
+        uses: actions/checkout@v4
+        with:
+          repository: geeksforsocialchange/PlaceCal
+          ref: ${{ inputs.placecal_ref }}
+          path: PlaceCal
+
+      # Core's Gemfile pins the extension to a released tag. CI has to test the
+      # checkout under review instead, so swap that one pin for a path entry
+      # with core's own generator, leaving every other extension at its tag.
+      # spec/extension_helper.rb aborts if this is ever wrong.
+      - name: Point core's bundle at this checkout
+        run: PlaceCal/bin/extension-dev-gemfile "${{ inputs.engine }}=../theme"
+
+      # Core's image processing needs libvips at boot, the same as core's own CI
+      - name: Install libvips
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libvips-dev
+
+      - name: Read core's Ruby version
+        id: ruby
+        run: echo "version=$(cat PlaceCal/.ruby-version)" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Ruby (version from core's .ruby-version)
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ steps.ruby.outputs.version }}
+          bundler-cache: true
+          working-directory: PlaceCal
+
+      # The request specs render core's layout, which links core's built CSS,
+      # so core's assets have to be built the way core's own CI builds them.
+      - name: Set up Node for core
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: PlaceCal/.node-version
+          cache: yarn
+          cache-dependency-path: PlaceCal/yarn.lock
+
+      - name: Install core JS dependencies
+        working-directory: PlaceCal
+        run: yarn install --frozen-lockfile
+
+      - name: Build core assets
+        working-directory: PlaceCal
+        run: |
+          bin/yarn run build:all
+          bin/rails dartsass:build
+
+      - name: Set up Node for the extension
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: theme/package.json
+          cache: yarn
+          cache-dependency-path: theme/yarn.lock
+
+      - name: Install the extension's JS dependencies
+        working-directory: theme
+        run: yarn install --frozen-lockfile
+
+      # An extension ships its CSS prebuilt, so the Dockerfile needs no build
+      # step for it. That only holds if the committed build is current.
+      - name: Fail if the committed CSS build is stale
+        working-directory: theme
+        run: yarn run css-check
+
+      # Only for an extension with system specs, which drive headless Chrome
+      # through Selenium the way core's system suite does.
+      - name: Install Chrome for the system specs
+        if: inputs.chrome
+        id: setup-chrome
+        uses: browser-actions/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4 # latest
+        with:
+          chrome-version: stable
+
+      - name: RuboCop
+        working-directory: theme
+        run: bundle exec rubocop
+
+      - name: Prepare core's test database
+        working-directory: PlaceCal
+        run: bin/rails db:schema:load
+
+      - name: RSpec
+        working-directory: theme
+        run: bundle exec rspec
+        env:
+          BROWSER_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}

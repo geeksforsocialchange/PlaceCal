@@ -86,9 +86,22 @@ class Views::Layouts::Application < Phlex::HTML
   # way this layout does, or the theme's views can push markup through
   # content_for(:theme_head), which also works alongside a head component.
   def render_theme_head
+    render_font_stylesheet
     head_class = theme.head_class
     render head_class.new if head_class
     raw content_for(:theme_head) if content_for?(:theme_head)
+  end
+
+  # Theme webfont slot (#3368 D1): `theme.font_stylesheet url, preconnect: [...]`
+  # renders as the preconnects, the preload and the stylesheet link a hosted
+  # font wants, which is all most themes needed a head component for.
+  def render_font_stylesheet
+    font = theme.font_stylesheet
+    return if font.nil?
+
+    font[:preconnect].each { |origin| link(rel: 'preconnect', href: origin, crossorigin: true) }
+    link(rel: 'preload', as: 'style', href: font[:url])
+    link(rel: 'stylesheet', href: font[:url])
   end
 
   def render_meta
