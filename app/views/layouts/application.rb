@@ -225,8 +225,13 @@ class Views::Layouts::Application < Phlex::HTML
     JS
   end
 
+  # The site this request is for. Current.site is set for every request by
+  # ApplicationController, while @site is opt-in per controller, and the theme
+  # below is keyed off Current: reading Current first means the site half of
+  # this layout (stylesheet, manifest link, footer) and the theme half (head
+  # component, icons, theme-color, og:image) can never disagree.
   def site
-    view_context.instance_variable_get(:@site)
+    Current.site || view_context.instance_variable_get(:@site)
   end
 
   def navigation

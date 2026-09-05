@@ -40,4 +40,45 @@ RSpec.describe JoinMailer, type: :mailer do
       expect(mail.to).to eq([Join::DEFAULT_RECIPIENT])
     end
   end
+
+  # The mail is rendered from the request today and from a job tomorrow, and
+  # Current is reset between the two, so the mailer sets it from the join's own
+  # site rather than trusting whatever the caller left behind (#3368 D19).
+  describe "theme-scoped copy" do
+    let(:themed_site) { build(:site, name: "Themed", theme: "example_theme", contact_email: "hello@example.org") }
+
+    before do
+      I18n.backend.store_translations(
+        :en,
+        theme_overrides: {
+          example_theme: {
+            join_mailer: { join_us: { subject_with_site: "Fixture join request (%{site})" } } # rubocop:disable Style/FormatStringToken
+          }
+        }
+      )
+      Current.reset
+    end
+
+    it "uses the theme's override with no request to have set Current" do
+      mail = described_class.join_us(Join.new(site: themed_site, **join_attrs))
+
+      expect(mail.subject).to eq("Fixture join request (Themed)")
+      expect(mail.body.encoded).to include("Test User")
+    end
+
+    it "renders under the join's own site, not whatever Current was left on" do
+      use_current_site(build(:site, name: "Someone else", theme: "pink"))
+
+      mail = described_class.join_us(Join.new(site: themed_site, **join_attrs))
+
+      expect(mail.subject).to eq("Fixture join request (Themed)")
+      expect(Current.site).to eq(themed_site)
+    end
+
+    it "leaves the null theme for a join with no site" do
+      described_class.join_us(Join.new(**join_attrs)).body
+
+      expect(Current.theme).to eq(PlaceCal::Theme::NONE)
+    end
+  end
 end
