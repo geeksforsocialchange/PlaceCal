@@ -89,6 +89,12 @@ end
 - **The host guard.** `required_settings` is the list of theme DSL settings the engine uses. Before registering, the engine checks that the host has `PlaceCal::Extensions.register_theme` and that `PlaceCal::Theme` answers every listed setting, and raises `PlaceCal::Extension::UnsupportedHost` naming what is missing. Without it an old core fails with a bare `NoMethodError` from inside an initializer, which says nothing about what the installation needs.
 - **Registration.** The `theme` block is applied to the `PlaceCal::Theme` at boot. It is also callable on its own as `MyExt::Engine.configure_theme(PlaceCal::Theme.new(:throwaway))`, which is how an extension's own contract spec asserts what it registers without booting twice.
 
+### What the guards do and do not catch
+
+`required_settings` is a list of names, so the host guard catches a setting core does not have at all. It does not catch a setting whose _signature_ changed: an older core whose `font_stylesheet` takes no `preconnect:` keyword still answers `respond_to?(:font_stylesheet)`, the guard passes, and the call raises a bare `ArgumentError` from inside an initializer, which is the failure the guard exists to replace. Closing that would mean an extension declaring which keywords of which setting it uses, which changes the `required_settings` contract every extension already ships against, so it is written down here instead.
+
+What does catch it, one step earlier, is `MyExt::Engine.configure_theme(PlaceCal::Theme.new(:throwaway))` in the extension's own contract spec: it makes every call the engine makes against a real `PlaceCal::Theme`, so a changed signature in core fails in the extension's CI rather than on the next boot. Every extension should have that spec.
+
 ### Minimum core
 
 `PlaceCal::Extension` is required by core's `config/application.rb` before Bundler requires the extension gems, so on a core new enough to have it the constant is defined by the time an engine's class body runs. On an older core it is not defined at all, and `include PlaceCal::Extension` would raise a `NameError` from the middle of a class body. Keep the two-line `defined?(PlaceCal::Extension)` guard in `lib/<ext>.rb` shown above: it turns that into one sentence naming the gem and the requirement, and it is the reason the guard survives moving the machinery into core. Say which core version the theme needs in a "Minimum core" section of the extension's README.

@@ -134,6 +134,19 @@ module PlaceCal
               'with the extension theme registry (see "Minimum core" in the engine README).'
       end
 
+      # Names, not signatures. An older core whose `font_stylesheet` took no
+      # `preconnect:` keyword still answers respond_to?(:font_stylesheet), so
+      # this guard passes and the call raises a bare ArgumentError from inside
+      # the initializer: exactly what the guard exists to replace, one release
+      # narrower. Checking the keywords too would mean an extension declaring
+      # which keywords of which setting it uses, which is a change to the
+      # `required_settings` contract every extension already ships against, so
+      # the limit is documented (doc/extensions.md, "What the guards do and do
+      # not catch") rather than closed. The escape hatch in the meantime is
+      # PlaceCal::Extension.configure_theme, which an extension's own contract
+      # spec runs against a real Theme: a changed signature fails there, in the
+      # extension's CI, rather than on the next boot.
+      #
       # @param theme [PlaceCal::Theme]
       # @raise [UnsupportedHost]
       def verify_theme!(theme)
