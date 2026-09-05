@@ -153,19 +153,19 @@ RSpec.describe PlaceCal::Theme do
     end
 
     it "returns nil and logs when the stylesheet is missing from the pipeline" do
-      allow(Rails.logger).to receive(:error)
+      allow(Rails.logger).to receive(:warn)
       theme.stylesheet "themes/no-such-theme"
 
       expect(theme.stylesheet_for(site)).to be_nil
-      expect(Rails.logger).to have_received(:error).with(%r{themes/no-such-theme\.css})
+      expect(Rails.logger).to have_received(:warn).with(%r{themes/no-such-theme\.css})
     end
 
     it "returns nil and logs when a block resolves to a missing stylesheet" do
-      allow(Rails.logger).to receive(:error)
+      allow(Rails.logger).to receive(:warn)
       theme.stylesheet { |s| "themes/custom/#{s.slug}" }
 
       expect(theme.stylesheet_for(site)).to be_nil
-      expect(Rails.logger).to have_received(:error).with(%r{themes/custom/hulme\.css})
+      expect(Rails.logger).to have_received(:warn).with(%r{themes/custom/hulme\.css})
     end
 
     it "returns nil when nothing is set or the block returns nil" do
@@ -188,15 +188,15 @@ RSpec.describe PlaceCal::Theme do
       theme.head "Nope::Components::Head"
       theme.footer "Nope::Components::Footer"
 
-      allow(Rails.logger).to receive(:error)
+      allow(Rails.logger).to receive(:warn)
 
       expect(theme.homepage_view_class).to be_nil
       expect(theme.head_class).to be_nil
       expect(theme.footer_class).to be_nil
 
-      expect(Rails.logger).to have_received(:error).with(/homepage_view class Nope::Views::Home/)
-      expect(Rails.logger).to have_received(:error).with(/head class Nope::Components::Head/)
-      expect(Rails.logger).to have_received(:error).with(/footer class Nope::Components::Footer/)
+      expect(Rails.logger).to have_received(:warn).with(/homepage_view class Nope::Views::Home/)
+      expect(Rails.logger).to have_received(:warn).with(/head class Nope::Components::Head/)
+      expect(Rails.logger).to have_received(:warn).with(/footer class Nope::Components::Footer/)
     end
   end
 
@@ -243,10 +243,10 @@ RSpec.describe PlaceCal::Theme do
 
     it "returns nil and logs when the class name no longer resolves" do
       theme.page "about", "Nope::Views::About"
-      allow(Rails.logger).to receive(:error)
+      allow(Rails.logger).to receive(:warn)
 
       expect(theme.page_view_class("about")).to be_nil
-      expect(Rails.logger).to have_received(:error).with(/page about class Nope::Views::About/)
+      expect(Rails.logger).to have_received(:warn).with(/page about class Nope::Views::About/)
     end
   end
 

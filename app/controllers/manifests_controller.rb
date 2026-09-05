@@ -48,7 +48,7 @@ class ManifestsController < ApplicationController
   end
 
   def icons
-    theme_icons = Current.theme.icons
+    theme_icons = Current.theme.icons_for_render
 
     # A theme's own manifest icons win over the site logo (#3368 D1).
     if theme_icons[:icon_192] || theme_icons[:icon_512]

@@ -85,6 +85,18 @@ module PlaceCal
       @nav_cta = nil
       @pages = {}
       @event_filter_style = :date_picker
+      @warned = Set.new
+    end
+
+    # Registry snapshots (PlaceCal::Extensions.snapshot) dup every theme so a
+    # spec that reconfigures one in place cannot leak the change into later
+    # examples. A shallow dup would share the mutable containers, so dup them
+    # too.
+    def initialize_copy(other)
+      super
+      @pages = other.pages.dup
+      @icons = other.icons.dup
+      @warned = Set.new
     end
 
     def core?
@@ -266,6 +278,16 @@ module PlaceCal
       (site && Extensions.find_theme(site.theme)) || NONE
     end
 
+    # The one answer to "will the asset helpers find this?". `resolve` is what
+    # stylesheet_link_tag and image_url call, so asking it is the only check
+    # that cannot drift from what they do.
+    #
+    # @param logical_path [String] asset path including its extension
+    # @return [Boolean]
+    def self.asset_resolves?(logical_path)
+      Rails.application.assets&.resolver&.resolve(logical_path).present?
+    end
+
     # ---- Resolution
 
     # A theme's stylesheet is only linked when the asset pipeline can resolve
@@ -279,7 +301,41 @@ module PlaceCal
       return nil if path.nil?
       return path if asset_resolves?("#{path}.css")
 
-      Rails.logger.error("PlaceCal theme #{name}: stylesheet #{path}.css does not resolve in the asset pipeline; rendering without it")
+      warn_once(:stylesheet, "stylesheet #{path}.css does not resolve in the asset pipeline; rendering without it")
+      nil
+    end
+
+    # The theme's icons, minus any whose asset the pipeline cannot resolve. A
+    # renamed or dropped engine image would otherwise raise
+    # Propshaft::MissingAssetError from `image_url` on every page of every site
+    # on the theme, which is the failure `stylesheet_for` already guards
+    # against (#3368). Callers rendering icons read this, not #icons.
+    #
+    # @return [Hash] icon paths that resolve, plus mask_icon_color when its
+    #   mask icon survived. Empty when none resolve, so core's icons render.
+    def icons_for_render
+      return @icons if @icons.empty?
+
+      resolved = @icons.select do |key, path|
+        next false unless ICON_PATH_KEYS.include?(key)
+        next true if asset_resolves?(path)
+
+        warn_once(:"icon_#{key}", "icon #{key} #{path} does not resolve in the asset pipeline; omitting it")
+        false
+      end
+      return {} if resolved.empty?
+
+      resolved[:mask_icon_color] = @icons[:mask_icon_color] if resolved[:mask_icon] && @icons[:mask_icon_color]
+      resolved
+    end
+
+    # @return [Hash, nil] the share image, or nil when its asset does not
+    #   resolve, in which case core's generated share card renders instead.
+    def og_image_for_render
+      return nil if @og_image.nil?
+      return @og_image if asset_resolves?(@og_image[:path])
+
+      warn_once(:og_image, "og_image #{@og_image[:path]} does not resolve in the asset pipeline; falling back to core's share card")
       nil
     end
 
@@ -327,10 +383,8 @@ module PlaceCal
       value&.to_s.presence
     end
 
-    # @param logical_path [String] asset path including extension
-    # @return [Boolean] whether Propshaft can serve the asset
     def asset_resolves?(logical_path)
-      Rails.application.assets&.load_path&.find(logical_path).present?
+      self.class.asset_resolves?(logical_path)
     end
 
     # A theme names its classes as strings so registration can happen before
@@ -345,8 +399,20 @@ module PlaceCal
 
       class_name.constantize
     rescue NameError
-      Rails.logger.error("PlaceCal theme #{name}: #{setting} class #{class_name} could not be resolved; falling back to core")
+      warn_once(:"class_#{setting}", "#{setting} class #{class_name} could not be resolved; falling back to core")
       nil
+    end
+
+    # A stale path or class name is a per-theme configuration fault, not a
+    # per-request one: logging it on every render of every page would flood the
+    # log stream. Say it once per setting, per theme, per boot.
+    #
+    # @param setting [Symbol] which setting is at fault
+    # @param message [String]
+    def warn_once(setting, message)
+      return unless @warned.add?(setting)
+
+      Rails.logger.warn("PlaceCal theme #{name}: #{message}")
     end
   end
 end

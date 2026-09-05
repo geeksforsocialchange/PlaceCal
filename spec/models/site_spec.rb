@@ -233,10 +233,10 @@ RSpec.describe Site, type: :model do
 
       it "returns nil and logs when the theme's stylesheet is missing from the pipeline", :theme_registry do
         PlaceCal::Extensions.register_theme(:ghost) { |theme| theme.stylesheet "ghost/theme" }
-        allow(Rails.logger).to receive(:error)
+        allow(Rails.logger).to receive(:warn)
 
         expect(build(:site, theme: "ghost").stylesheet_link).to be_nil
-        expect(Rails.logger).to have_received(:error).with(%r{ghost/theme\.css})
+        expect(Rails.logger).to have_received(:warn).with(%r{ghost/theme\.css})
       end
     end
   end
