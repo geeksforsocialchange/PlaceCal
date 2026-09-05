@@ -10,8 +10,9 @@ require "tmpdir"
 # semantics here are the surviving ones, and this is what pins them: only the
 # named gems move to a path, everything else stays as core pins it.
 RSpec.describe "bin/extension-dev-gemfile" do
-  SCRIPT = File.expand_path("../../bin/extension-dev-gemfile", __dir__)
-
+  # A local, not a top-level constant: check_extension_tree_spec.rb defines its
+  # own SCRIPT, and RSpec example groups share Object for constants.
+  let(:script) { File.expand_path("../../bin/extension-dev-gemfile", __dir__) }
   let(:core) { Dir.mktmpdir }
 
   let(:gemfile) do
@@ -33,7 +34,7 @@ RSpec.describe "bin/extension-dev-gemfile" do
   after { FileUtils.remove_entry(core) }
 
   def run(*pairs)
-    Open3.capture3("ruby", SCRIPT, "--core", core, *pairs)
+    Open3.capture3("ruby", script, "--core", core, *pairs)
   end
 
   def generated
