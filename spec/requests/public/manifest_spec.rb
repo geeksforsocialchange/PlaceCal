@@ -60,6 +60,14 @@ RSpec.describe "Web Manifest", type: :request do
         expect(manifest["short_name"].length).to be <= 12
       end
 
+      it "truncates a first word that is longer than the cap on its own" do
+        site.update!(name: "Northamptonshire PlaceCal")
+        get "http://#{site.slug}.lvh.me/manifest.webmanifest"
+
+        manifest = JSON.parse(response.body)
+        expect(manifest["short_name"]).to eq("Northamptons")
+      end
+
       context "without a logo" do
         it "includes core icons" do
           get "http://#{site.slug}.lvh.me/manifest.webmanifest"
