@@ -262,6 +262,9 @@ class Views::Events::Show < Views::Base
     end
   end
 
+  # h2, not h3: these are the first headings under the page h1, and Tailwind's
+  # preflight flattens every heading to the inherited size with no margin, so
+  # the promotion changes the outline and not the look.
   def render_contact_info
     div(class: 'gi gi__1-3') do
       if event.organiser
