@@ -1,6 +1,11 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+# The reusable CI workflow runs this under the runner's own Ruby, where
+# Pathname is not preloaded (it is on Ruby 4, which is why RuboCop calls the
+# require redundant).
+require 'pathname' # rubocop:disable Lint/RedundantRequireStatement
+
 # Writes <core>/Gemfile.extensions-dev: core's own Gemfile with one or more
 # extension gems taken from a path checkout instead of the pinned git tag, so
 # `bundle exec rspec` and `bundle exec rubocop` run against the working tree.
