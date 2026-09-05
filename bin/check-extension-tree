@@ -144,14 +144,22 @@ def allowed?(path, allowed_lib)
   false
 end
 
-# Explicit roots on the command line, named after their directory.
+# Explicit roots on the command line, named after their gemspec. The directory
+# name is no guide: the extension workflow checks the gem out as `theme`, and
+# `lib/<gem>.rb` is one of the few lib files the contract allows, so a name
+# taken from the directory would flag every extension's own entry file.
 def roots_from_argv(argv)
   argv.map do |arg|
     root = Pathname.new(arg).expand_path
     abort "check-extension-tree: #{arg} is not a directory" unless root.directory?
 
-    [root.basename.to_s, root]
+    [gem_name_for(root), root]
   end
+end
+
+def gem_name_for(root)
+  gemspec = root.glob('*.gemspec').first
+  gemspec ? gemspec.basename('.gemspec').to_s : root.basename.to_s
 end
 
 failures = {}
