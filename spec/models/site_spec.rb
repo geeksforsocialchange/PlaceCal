@@ -326,6 +326,49 @@ RSpec.describe Site, type: :model do
 
       expect(described_class.sites_that_contain_partner(partner)).to contain_exactly(published)
     end
+
+    context "with a tag-only site" do
+      let(:partnership) { create(:partnership) }
+      let!(:tag_only_site) { create(:site, is_published: true).tap { |s| s.tags << partnership } }
+
+      it "includes the site when the partner carries its tag" do
+        partner.tags << partnership
+
+        expect(described_class.sites_that_contain_partner(partner)).to include(tag_only_site)
+      end
+
+      it "excludes the site when the partner does not carry its tag" do
+        expect(described_class.sites_that_contain_partner(partner)).not_to include(tag_only_site)
+      end
+
+      it "includes the site for a partner with no neighbourhood at all" do
+        placeless = create(:partner, address: create(:address, neighbourhood: nil))
+        placeless.tags << partnership
+
+        expect(described_class.sites_that_contain_partner(placeless)).to contain_exactly(tag_only_site)
+      end
+    end
+
+    context "with a site that has both tags and neighbourhoods" do
+      let(:partnership) { create(:partnership) }
+      let!(:both_site) do
+        create(:site, is_published: true, neighbourhoods: [neighbourhood]).tap { |s| s.tags << partnership }
+      end
+
+      it "includes the site only when the partner matches the tag as well as the neighbourhood" do
+        expect(described_class.sites_that_contain_partner(partner)).not_to include(both_site)
+
+        partner.tags << partnership
+        expect(described_class.sites_that_contain_partner(partner)).to include(both_site)
+      end
+
+      it "excludes the site for a tagged partner outside its neighbourhoods" do
+        elsewhere = create(:partner, address: create(:address, neighbourhood: create(:neighbourhood)))
+        elsewhere.tags << partnership
+
+        expect(described_class.sites_that_contain_partner(elsewhere)).not_to include(both_site)
+      end
+    end
   end
 
   describe "scopes" do

@@ -320,13 +320,51 @@ class Site < ApplicationRecord
       Site.find_by(slug: site_slug)
     end
 
-    # Get a list of Sites whose neighbourhood subtree and tags
-    # match the given partner (i.e. where the partner would appear).
+    # Get a list of Sites where the given partner would appear.
+    #
+    # Mirrors PartnersQuery#build_base_scope: a site scopes its partners by its
+    # neighbourhoods, by its tags, or by both (tag AND neighbourhood). A tagged
+    # site with no neighbourhoods is tag-only, so a partnership site such as
+    # The Trans Dimension contains every partner carrying one of its tags
+    # wherever that partner lives (#3368 D7, D24).
     #
     # @param partner [Partner]
     # @return [Array<Site>]
     def sites_that_contain_partner(partner)
-      # Collect all neighbourhood IDs the partner is associated with
+      neighbourhood_site_ids = site_ids_covering_partner_neighbourhoods(partner)
+      tag_site_ids = SitesTag.where(tag_id: partner.tag_ids).distinct.pluck(:site_id)
+
+      candidate_ids = neighbourhood_site_ids | tag_site_ids
+      return [] if candidate_ids.empty?
+
+      # Only published sites are live on the public directory, so a partner can
+      # only "appear" on a published site.
+      sites = Site.published
+                  .where(id: candidate_ids)
+                  .includes(:tags, :neighbourhoods)
+                  .order(:name)
+
+      sites.select do |site|
+        tagged = site.tags.any?
+        placed = site.neighbourhoods.any?
+
+        next false unless tagged || placed
+        next false if tagged && tag_site_ids.exclude?(site.id)
+        next false if placed && neighbourhood_site_ids.exclude?(site.id)
+
+        true
+      end
+    end
+
+    private
+
+    # Sites with at least one neighbourhood covering the partner's address or
+    # service areas. A partner's neighbourhood is in a site's subtree when the
+    # site's neighbourhood is an ancestor of (or equal to) the partner's.
+    #
+    # @param partner [Partner]
+    # @return [Array<Integer>] site ids
+    def site_ids_covering_partner_neighbourhoods(partner)
       partner_neighbourhood_ids = []
       partner_neighbourhood_ids << partner.address.neighbourhood_id if partner.address&.neighbourhood_id
       partner_neighbourhood_ids += partner.service_areas.pluck(:neighbourhood_id)
@@ -334,30 +372,15 @@ class Site < ApplicationRecord
 
       return [] if partner_neighbourhood_ids.empty?
 
-      # A partner's neighbourhood is in a site's subtree when the site's
-      # neighbourhood is an ancestor of (or equal to) the partner's neighbourhood.
       matching_neighbourhood_ids = Neighbourhood.where(id: partner_neighbourhood_ids)
                                                 .flat_map(&:path_ids)
                                                 .uniq
 
       return [] if matching_neighbourhood_ids.empty?
 
-      site_ids = SitesNeighbourhood.where(neighbourhood_id: matching_neighbourhood_ids)
-                                   .distinct
-                                   .pluck(:site_id)
-
-      return [] if site_ids.empty?
-
-      # Only published sites are live on the public directory, so a partner can
-      # only "appear" on a published site.
-      sites = Site.published.where(id: site_ids).includes(:tags).order(:name)
-
-      # Sites with tags only match if the partner has at least one of those tags
-      partner_tag_ids = partner.tag_ids.to_set
-
-      sites.select do |site|
-        site.tags.empty? || site.tags.any? { |tag| partner_tag_ids.include?(tag.id) }
-      end
+      SitesNeighbourhood.where(neighbourhood_id: matching_neighbourhood_ids)
+                        .distinct
+                        .pluck(:site_id)
     end
   end
 end
