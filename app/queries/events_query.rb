@@ -194,9 +194,12 @@ class EventsQuery
                     end
   end
 
-  # Inline of Event.for_site - finds events belonging to partners in this site
-  # When site has tags: only events from tagged partners (no address fallback)
-  # When site has no tags: events from site partners OR events with address in site neighbourhoods
+  # Inline of Event.for_site: the events that belong on this site. Both site
+  # shapes take events organised by, or hosted at, one of the site's partners;
+  # a neighbourhood site also takes any event whose address is in its area,
+  # and a tagged site adds the legacy venue match. The hosted-at rule reaches
+  # an event a site partner puts on somewhere else, which is how the partner
+  # page and the tag filter already count it.
   def events_for_site
     partners_scope = PartnersQuery.new(site: @site).call.reorder(nil)
 
@@ -214,6 +217,7 @@ class EventsQuery
 
     base = Event.left_joins(:address)
     base.where(organiser_id: partner_subquery)
+        .or(base.where(place_id: partner_subquery))
         .or(base.where(addresses: { neighbourhood_id: site_neighbourhood_ids }))
   end
 

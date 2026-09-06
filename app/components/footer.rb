@@ -45,7 +45,7 @@ class Components::Footer < Components::Base
 
   def render_nav
     div(class: 'footer__item footer__nav') do
-      h5(class: 'allcaps small', id: 'footer-nav-heading') { t('footer.site_navigation') }
+      h2(class: 'footer__heading allcaps small', id: 'footer-nav-heading') { t('footer.site_navigation') }
       # Named, so a screen reader's landmark menu distinguishes this nav from
       # the header's rather than listing "navigation" twice.
       nav(role: 'navigation', aria_labelledby: 'footer-nav-heading') do
@@ -85,7 +85,7 @@ class Components::Footer < Components::Base
 
   def render_site_enquiries
     div(class: 'footer__item footer__enquiries footer__enquiries--regional') do
-      h5(class: 'allcaps small') { t('footer.site_enquiries', site: @site.name) }
+      h2(class: 'footer__heading allcaps small') { t('footer.site_enquiries', site: @site.name) }
       p { @site.site_admin.full_name }
       p { render_site_contact_info }
     end
@@ -104,7 +104,7 @@ class Components::Footer < Components::Base
 
   def render_general_enquiries
     div(class: 'footer__item footer__enquiries footer__enquiries--general') do
-      h5(class: 'allcaps small') { t('footer.general_enquiries') }
+      h2(class: 'footer__heading allcaps small') { t('footer.general_enquiries') }
       p { t('footer.get_in_touch') }
       p do
         strong { t('footer.email_label') }
@@ -117,7 +117,7 @@ class Components::Footer < Components::Base
   def render_site_supporters
     hr(class: 'footer__item footer__hr')
     div(class: 'footer__item footer__supporters') do
-      h5(class: 'allcaps small') { t('footer.site_supporters', site: @site.name) }
+      h2(class: 'footer__heading allcaps small') { t('footer.site_supporters', site: @site.name) }
       ul do
         @site.supporters&.each do |supporter|
           li(class: "footer__supporter footer__supporter--#{supporter.name.parameterize}") do
@@ -133,7 +133,7 @@ class Components::Footer < Components::Base
 
     global_supporters = view_context.instance_variable_get(:@global_supporters)
     div(class: 'footer__item footer__supporters') do
-      h5(class: 'allcaps small') { t('footer.global_supporters') }
+      h2(class: 'footer__heading allcaps small') { t('footer.global_supporters') }
       ul do
         global_supporters&.each do |supporter|
           li(class: "footer__supporter footer__supporter--#{supporter.name.parameterize}") do

@@ -773,6 +773,31 @@ RSpec.describe EventsQuery do
     end
   end
 
+  describe "site scoping for a neighbourhood site" do
+    let(:neighbourhood_site) { create(:site, slug: "neighbourhood-site") }
+    let(:ward) { create(:riverside_ward) }
+    let(:other_ward) { create(:cliffside_ward) }
+    let(:site_partner) { create(:partner, name: "Site Partner", address: create(:riverside_address, neighbourhood: ward)) }
+    let(:outside_partner) { create(:partner, name: "Outside Partner", address: create(:cliffside_address, neighbourhood: other_ward)) }
+
+    before do
+      neighbourhood_site.neighbourhoods << ward
+      create(:future_event, organiser: site_partner, summary: "Organised Here")
+      create(:future_event, organiser: outside_partner, address: create(:cliffside_address, neighbourhood: other_ward), summary: "Outside")
+    end
+
+    # The same rule as a tagged site: an event a site partner hosts belongs on
+    # the site even when the event's own address is outside its area.
+    it "includes events hosted at a site partner as well as organised by one" do
+      create(:future_event, organiser: outside_partner, place: site_partner,
+                            address: create(:cliffside_address, neighbourhood: other_ward), summary: "Hosted Here")
+
+      result = described_class.new(site: neighbourhood_site, day: today).call(period: "future")
+
+      expect(result.values.flatten.map(&:summary)).to contain_exactly("Organised Here", "Hosted Here")
+    end
+  end
+
   describe "site scoping for a tag-only site" do
     let(:tag_only_site) { create(:site, slug: "tag-only-site") }
     let(:ward) { create(:riverside_ward) }
