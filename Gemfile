@@ -88,7 +88,7 @@ group :development do
   gem 'rack-mini-profiler'        # In-page performance profiler (?pp=help in dev)
   gem 'rails-erd'                 # Entity-relationship diagrams
   gem 'rdoc'                      # Documentation generator
-  gem 'rubocop', '1.89.0', require: false
+  gem 'rubocop', '1.90.0', require: false
   gem 'rubocop-graphql', '1.8.0', require: false
   gem 'rubocop-performance', '1.27.0', require: false
   gem 'rubocop-rails', '2.37.0', require: false
