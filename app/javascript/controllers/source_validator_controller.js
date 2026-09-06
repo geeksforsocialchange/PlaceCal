@@ -23,12 +23,15 @@ export default class extends Controller {
 		"testButtonText",
 		"importerModeSection",
 		"importerModeSelect",
+		"apiTokenSection",
+		"apiTokenInput",
 	];
 
 	static values = {
 		testUrl: String,
 		valid: { type: Boolean, default: false },
 		detectedFormat: { type: String, default: "" },
+		apiTokenParsers: { type: Array, default: [] },
 	};
 
 	connect() {
@@ -38,6 +41,36 @@ export default class extends Controller {
 		if (this.hasInputTarget && this.inputTarget.value.trim()) {
 			// Mark as provisionally valid for existing calendars
 			this.validValue = true;
+		}
+
+		this.updateApiTokenVisibility();
+	}
+
+	// Importers that require an API token (driven by server-side parser config)
+	get requiresApiToken() {
+		if (!this.hasImporterModeSelectTarget) return false;
+		return this.apiTokenParsersValue.includes(
+			this.importerModeSelectTarget.value,
+		);
+	}
+
+	// Called when the user picks a calendar type
+	importerModeChanged() {
+		this.updateApiTokenVisibility();
+	}
+
+	// Show or hide the API token field based on the selected importer.
+	// A token that is already saved keeps the field visible so it can be edited.
+	updateApiTokenVisibility() {
+		if (!this.hasApiTokenSectionTarget) return;
+
+		const hasToken =
+			this.hasApiTokenInputTarget && this.apiTokenInputTarget.value.trim();
+
+		if (this.requiresApiToken || hasToken) {
+			this.apiTokenSectionTarget.classList.remove("hidden");
+		} else {
+			this.apiTokenSectionTarget.classList.add("hidden");
 		}
 	}
 
@@ -108,6 +141,8 @@ export default class extends Controller {
 					}
 					this.detectedFormatValue = data.importer_name;
 				}
+
+				this.updateApiTokenVisibility();
 
 				this.dispatch("validated", {
 					detail: {

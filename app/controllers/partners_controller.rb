@@ -2,6 +2,7 @@
 
 class PartnersController < ApplicationController
   include MapMarkers
+  include OffsiteRedirect
   include Pagy::Offset::Method
 
   before_action :set_partner, only: %i[show embed]
@@ -26,6 +27,9 @@ class PartnersController < ApplicationController
   # GET /partners/1.json
   def show
     return redirect_to root_path if @partner.hidden
+
+    redirect_offsite_to_permalink(PartnersQuery.new(site: current_site), @partner)
+    return if performed?
 
     upcoming_count = Event.by_organiser_or_place(@partner).upcoming.count
     if upcoming_count.zero?
@@ -171,10 +175,12 @@ class PartnersController < ApplicationController
     @selected_category = params[:category] if params[:category].present? && Integer(params[:category], exception: false)
     @selected_neighbourhood = params[:neighbourhood] if params[:neighbourhood].present? && Integer(params[:neighbourhood], exception: false)
 
+    @region = current_region
     query = PartnersQuery.new(site: current_site)
     @partners = query.call(
       neighbourhood_id: @selected_neighbourhood,
-      tag_id: @selected_category
+      tag_id: @selected_category,
+      partnership_id: @region&.id
     )
 
     @map = get_map_markers(@partners) if @partners.detect(&:address)
@@ -182,7 +188,8 @@ class PartnersController < ApplicationController
     render Views::Sites::Partners::Index.new(
       partners: @partners, site: @site,
       map: @map, selected_category: @selected_category,
-      selected_neighbourhood: @selected_neighbourhood
+      selected_neighbourhood: @selected_neighbourhood,
+      region_tags: region_tags, selected_region: @region
     )
   end
 end

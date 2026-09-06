@@ -20,8 +20,8 @@ class Components::Join::Header < Components::Join::Base
   def render_band
     nav(class: 'bg-secondary', aria_label: t('join.band.aria_label')) do
       div(class: 'container-public py-2 flex items-center justify-between gap-4 flex-wrap') do
-        span(class: 'allcaps-label text-secondary-ink') { t('join.band.host') }
-        a(href: apex_url, class: 'with-no-sass allcaps-label text-secondary-ink no-underline hover:underline') do
+        span(class: 'allcaps-label text-foreground-dark') { t('join.band.host') }
+        a(href: apex_url, class: 'with-no-sass allcaps-label text-foreground-dark no-underline hover:underline') do
           plain "← #{t('join.band.directory_link')}"
         end
       end

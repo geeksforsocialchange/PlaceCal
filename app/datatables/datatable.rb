@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Rails/OutputSafety
+# rubocop:disable-next Rails/OutputSafety
 class Datatable < AjaxDatatablesRails::ActiveRecord
   extend Forwardable
 
@@ -137,4 +137,3 @@ class Datatable < AjaxDatatablesRails::ActiveRecord
     }.fetch(status.to_sym, { icon: :x, color: 'text-gray-500', tooltip: 'Unknown' })
   end
 end
-# rubocop:enable Rails/OutputSafety

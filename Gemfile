@@ -33,8 +33,10 @@ gem 'image_processing'            # Image resizing for uploads
 gem 'inline_svg'                  # Inlines SVGs into markup. Used in SvgImagesHelper
 gem 'kramdown'                    # Markdown to HTML rendering
 gem 'literal'                     # Typed properties for Phlex components
+gem 'mini_magick', require: false # ImageMagick backend for CarrierWave uploads (soft dep of image_processing 2)
 gem 'pagy'                        # Lightweight pagination
 gem 'phlex-rails', '~> 2.3'       # Ruby-native view components
+gem 'ruby-vips', require: false   # libvips backend for ActiveStorage variants and OG image rendering (soft dep of image_processing 2)
 gem 'simple_form'                 # Form builder
 gem 'strict_ivars', require: false # Catch undefined instance variable reads
 
@@ -65,6 +67,16 @@ gem 'invisible_captcha'           # Spam protection on contact form
 gem 'paper_trail'                 # Event version tracking and audit log
 gem 'strong_migrations'           # Catch unsafe migrations before they reach production
 
+# Installation-specific extensions for placecal.org (see doc/extensions.md).
+# Not part of core: a self-hosted PlaceCal can delete this whole block. Each
+# extension is a Rails engine that registers a theme; it ships its CSS
+# prebuilt, so the Dockerfile needs no extra build step. Bump the tag to
+# release a new version of an extension.
+group :extensions do
+  gem 'placecal-theme-mossley', github: 'geeksforsocialchange/placecal-theme-mossley', tag: 'v0.1.4'
+  gem 'placecal-theme-transdimension', github: 'geeksforsocialchange/placecal-theme-transdimension', tag: 'v0.3.14'
+end
+
 group :development, :test do
   gem 'byebug'                    # Debugger
   gem 'dotenv-rails'              # Load .env files
@@ -86,10 +98,10 @@ group :development do
   gem 'rack-mini-profiler'        # In-page performance profiler (?pp=help in dev)
   gem 'rails-erd'                 # Entity-relationship diagrams
   gem 'rdoc'                      # Documentation generator
-  gem 'rubocop', '1.88.1', require: false
-  gem 'rubocop-graphql', '1.6.0', require: false
-  gem 'rubocop-performance', '1.26.1', require: false
-  gem 'rubocop-rails', '2.35.5', require: false
+  gem 'rubocop', '1.90.0', require: false
+  gem 'rubocop-graphql', '1.8.0', require: false
+  gem 'rubocop-performance', '1.27.0', require: false
+  gem 'rubocop-rails', '2.37.0', require: false
   gem 'rubocop-rake', require: false
   gem 'rubocop-rspec', require: false
   gem 'ruby-lsp', require: false   # Ruby language server (IDE support)

@@ -149,6 +149,20 @@ RSpec.describe "Directory Partners", type: :request do
       expect(response.body).not_to include("#{site.slug}.placecal.org")
     end
 
+    it "lists a tag-only partnership site the partner belongs to" do
+      partnership = create(:partnership)
+      tag_only_site = create(:site, is_published: true, name: "Tag Only Partnership")
+      tag_only_site.tags << partnership
+      partner.tags << partnership
+
+      get partner_url(partner, host: "lvh.me")
+
+      # A partnership site picks its partners by tag alone (#3368 D7, D24), so
+      # it has no neighbourhoods to be found through.
+      expect(tag_only_site.neighbourhoods).to be_empty
+      expect(response.body).to include("Tag Only Partnership")
+    end
+
     it "displays partner name in hero" do
       get partner_url(partner, host: "lvh.me")
       expect(response.body).to include(partner.name)

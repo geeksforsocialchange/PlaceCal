@@ -6,13 +6,17 @@ class Components::Directory::PageHero < Components::Directory::Base
   prop :subtitle, _Nilable(String), default: nil
   prop :breadcrumb_label, _Nilable(String), default: nil
   prop :breadcrumb_path, _Nilable(String), default: nil
+  # Multi-level trail rendered after the root crumb: [{ label:, path: }, ...].
+  # Items without a path render as plain text. Takes precedence over the
+  # single breadcrumb_label/breadcrumb_path pair.
+  prop :breadcrumbs, _Nilable(Array), default: nil
   prop :background_image_url, _Nilable(String), default: nil
 
   def view_template(&block)
     section(class: 'bg-foreground pt-6 pb-4 relative overflow-hidden', style: 'color: var(--color-background)') do
       render_background_image if @background_image_url
       div(class: 'container-public relative z-10') do
-        render_breadcrumb if @breadcrumb_label
+        render_breadcrumb if @breadcrumb_label || @breadcrumbs
         render_kicker if @kicker
         h1(class: 'hero-title') { @title }
         render_subtitle if @subtitle
@@ -37,16 +41,22 @@ class Components::Directory::PageHero < Components::Directory::Base
   def render_breadcrumb
     nav(class: 'text-sm mb-2', style: 'color: var(--color-background)', aria_label: t('directory.aria.breadcrumb')) do
       # root_path is host-relative, so on the join site the trail starts at
-      # the join homepage — label it accordingly.
+      # the join homepage: label it accordingly.
       root_label = join_site_request? ? t('join.breadcrumbs.root') : t('directory.breadcrumbs.root')
       a(href: root_path, class: 'no-underline hover:underline', style: 'color: inherit') { root_label }
-      span(class: 'mx-1.5 opacity-60') { safe('›') }
-      if @breadcrumb_path
-        a(href: @breadcrumb_path, class: 'no-underline hover:underline opacity-80', style: 'color: inherit') { @breadcrumb_label }
-      else
-        span(class: 'opacity-80') { @breadcrumb_label }
+      crumb_items.each do |item|
+        span(class: 'mx-1.5 opacity-60') { safe('›') }
+        if item[:path]
+          a(href: item[:path], class: 'no-underline hover:underline opacity-80', style: 'color: inherit') { item[:label] }
+        else
+          span(class: 'opacity-80') { item[:label] }
+        end
       end
     end
+  end
+
+  def crumb_items
+    @breadcrumbs || [{ label: @breadcrumb_label, path: @breadcrumb_path }]
   end
 
   def render_kicker

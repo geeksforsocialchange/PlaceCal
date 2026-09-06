@@ -9,7 +9,9 @@ Capybara.disable_animation = true
 
 # Configure default host for system tests
 Capybara.configure do |config|
-  config.default_max_wait_time = 5
+  # CI runs the JS-heavy system suite on 2-core runners where waits that are
+  # comfortable locally get missed under load (issue #3341).
+  config.default_max_wait_time = ENV["CI"] ? 10 : 5
   config.server = :puma, { Silent: true }
   config.always_include_port = true
 end

@@ -16,7 +16,7 @@ module SvgIconsHelper
   GLOBE_PATH = 'M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9'
   MAP_PIN_PATH = 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z'
 
-  # rubocop:disable Layout/LineLength
+  # rubocop:disable-next Layout/LineLength
   ICONS = {
     # Actions
     bell: 'M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9',
@@ -160,7 +160,6 @@ module SvgIconsHelper
     home_minus: { path: 'M0,9 h24 v6 h-24 v-6 Z', stroke: 'none', fill: 'currentColor' },
     home_plus: { path: 'M0,9 h9 v-9 h6 v9 h9 v6 h-9 v9 h-6 v-9 h-9 z', stroke: 'none', fill: 'currentColor' }
   }.freeze
-  # rubocop:enable Layout/LineLength
 
   SIZE_CLASSES = {
     '3' => 'size-3',

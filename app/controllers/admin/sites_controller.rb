@@ -43,8 +43,10 @@ module Admin
     end
 
     def create
-      @site = Site.new(permitted_attributes(Site))
+      attributes = permitted_attributes(Site)
+      @site = Site.new(attributes)
       authorize @site
+      authorize_theme!(attributes)
       if @site.save
         flash[:success] = 'Site has been created'
         redirect_to admin_sites_path
@@ -58,7 +60,9 @@ module Admin
 
     def update
       authorize @site
-      if @site.update(permitted_attributes(@site))
+      attributes = permitted_attributes(@site)
+      authorize_theme!(attributes)
+      if @site.update(attributes)
         flash[:success] = 'Site was saved successfully'
         redirect_to edit_admin_site_path(@site)
 
@@ -83,6 +87,21 @@ module Admin
     end
 
     private
+
+    # Extension themes are root's to set (SitePolicy#permitted_themes). The
+    # select never offers one to a site admin, so a submitted one is a forged
+    # param: reject it rather than let strong params drop it silently and save
+    # the rest of the form as if nothing had happened.
+    #
+    # Takes the whole attribute hash rather than the value, because a submitted
+    # blank is a change (it strips the theme) while an absent key is not: a
+    # form that edits only the contact email must not have to resend the theme.
+    def authorize_theme!(attributes)
+      return unless attributes.key?(:theme)
+      return if policy(@site).permitted_theme?(attributes[:theme])
+
+      raise Pundit::NotAuthorizedError.new(query: :update?, record: @site, policy: policy(@site))
+    end
 
     def build_site_admin_options
       site_admin_ids = Site.where.not(site_admin_id: nil).distinct.pluck(:site_admin_id)
@@ -114,7 +133,7 @@ module Admin
         # Make a dictionary of { neighbourhood_id => sites_neighbourhood_id }
         @sites_neighbourhoods_ids =
           @site.sites_neighbourhoods.map { |sn| { sn.neighbourhood_id => sn.id } }
-                                    .reduce({}, :merge)
+               .reduce({}, :merge)
       end
     end
   end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Serving event data as downloadable feeds: building iCal calendars and
-# tracking iCal/CSV downloads in AppSignal and Plausible.
+# tracking iCal/CSV downloads in AppSignal and Matomo.
 module EventFeeds
   extend ActiveSupport::Concern
 
@@ -52,9 +52,10 @@ module EventFeeds
         .gsub('\\\\', '\\')
   end
 
-  # Track iCal feed downloads in AppSignal and Plausible.
-  # Sets a distinct AppSignal action name and sends a server-side pageview
-  # to Plausible (iCal clients don't execute JavaScript).
+  # Track iCal feed downloads in AppSignal and Matomo.
+  # Sets a distinct AppSignal action name and sends a server-side hit to
+  # Matomo (iCal clients don't execute JavaScript, so the JS tracker never
+  # sees these requests).
   def track_ical_download
     track_file_download('ical_feed')
   end
@@ -69,17 +70,19 @@ module EventFeeds
 
     return unless Rails.env.production?
 
+    token = ENV.fetch('MATOMO_TOKEN_AUTH', nil)
+    return if token.blank?
+
+    # Request state is read before the thread spawns: the request object is
+    # not safe to touch once the response is sent. cip/ua are only honoured
+    # with a valid token_auth, else every download records as the app server.
+    params = { idsite: '1', rec: '1', apiv: '1', token_auth: token,
+               url: request.original_url, download: request.original_url,
+               ua: request.user_agent.to_s, cip: request.remote_ip }
     Thread.new do
-      uri = URI('https://plausible.io/api/event')
-      Net::HTTP.post(
-        uri,
-        { name: 'pageview', url: request.original_url, domain: 'placecal.org' }.to_json,
-        'Content-Type' => 'application/json',
-        'User-Agent' => request.user_agent.to_s,
-        'X-Forwarded-For' => request.remote_ip
-      )
+      Net::HTTP.post_form(URI('https://stats.gfsc.community/matomo.php'), params)
     rescue StandardError => e
-      Rails.logger.warn("Plausible tracking failed: #{e.message}")
+      Rails.logger.warn("Matomo tracking failed: #{e.message}")
     end
   end
 end

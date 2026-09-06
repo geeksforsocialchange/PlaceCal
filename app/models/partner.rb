@@ -158,7 +158,14 @@ class Partner < ApplicationRecord
      c[:street_address3]].all?(&:blank?)
   }
 
-  accepts_nested_attributes_for :service_areas, allow_destroy: true
+  # An untouched "New Service Area" picker row submits a blank neighbourhood_id;
+  # without reject_if it becomes an invalid ServiceArea that also fails
+  # check_neighbourhood_access for non-root admins (issue #3356).
+  # NB: the form always submits _destroy ("false" for kept rows), so the flag
+  # must be cast, not blank?-checked
+  accepts_nested_attributes_for :service_areas, allow_destroy: true, reject_if: lambda { |sa|
+    sa[:neighbourhood_id].blank? && !ActiveRecord::Type::Boolean.new.cast(sa[:_destroy])
+  }
 
   # ==== Uploaders ====
   mount_uploader :image, ImageUploader
@@ -405,6 +412,12 @@ class Partner < ApplicationRecord
     end
 
     errors.blank?
+  end
+
+  # @return [Boolean] whether any public contact method is present
+  def contactable?
+    public_email.present? || public_phone.present? || url.present? ||
+      facebook_link.present? || twitter_handle.present? || instagram_handle.present?
   end
 
   # @return [Boolean] whether name passes format/length validation

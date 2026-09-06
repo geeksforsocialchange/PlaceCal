@@ -44,10 +44,10 @@ class Views::Join::Home < Views::Join::Base
 
   def stat_tile(value, label)
     div(class: 'bg-secondary rounded-card p-5') do
-      div(class: 'font-serif text-[2.4rem] leading-none text-secondary-ink') do
+      div(class: 'font-serif text-[2.4rem] leading-none text-foreground-dark') do
         plain value.is_a?(Numeric) ? value.to_fs(:delimited) : value.to_s
       end
-      div(class: 'allcaps-label text-secondary-ink mt-1.5') { label }
+      div(class: 'allcaps-label text-foreground-dark mt-1.5') { label }
     end
   end
 
@@ -124,8 +124,8 @@ class Views::Join::Home < Views::Join::Base
   def render_cta
     section(class: 'py-12 bg-secondary') do
       div(class: 'container-narrow text-center') do
-        h2(class: 'font-serif font-regular text-[2.2rem] leading-tight text-secondary-ink m-0 mb-3') { t('join.home.cta.heading') }
-        p(class: 'text-base leading-relaxed text-secondary-ink mt-0 mb-6') { t('join.home.cta.body') }
+        h2(class: 'font-serif font-regular text-[2.2rem] leading-tight text-foreground-dark m-0 mb-3') { t('join.home.cta.heading') }
+        p(class: 'text-base leading-relaxed text-foreground-dark mt-0 mb-6') { t('join.home.cta.body') }
         a(href: join_demo_path, class: 'btn-dark') { t('join.home.cta.button') }
       end
     end

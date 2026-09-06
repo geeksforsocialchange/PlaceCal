@@ -74,7 +74,6 @@ module SeedCalendarsAndEvents
     event_count = 0
 
     Partner.find_each.with_index do |partner, partner_idx|
-      # Skip if this partner already has a calendar
       next if Calendar.exists?(organiser: partner)
 
       calendar = Calendar.new(
@@ -101,11 +100,11 @@ module SeedCalendarsAndEvents
         time = EVENT_TIMES[(partner_idx + i) % EVENT_TIMES.length]
         title = EVENT_TITLES[(partner_idx + i) % EVENT_TITLES.length]
 
+        start = (today + day_offset.days).to_datetime.change(hour: time[:hour], min: time[:min])
         Event.create!(
-          uid: "seed_event_#{partner.id}_#{i}",
-          summary: title,
+          uid: "seed_event_#{partner.id}_#{i}", summary: title,
           description: "#{title} at #{partner.name}. Everyone welcome!",
-          dtstart: (today + day_offset.days).to_datetime.change(hour: time[:hour], min: time[:min]),
+          dtstart: start, dtend: start + 90.minutes,
           organiser: partner,
           calendar: calendar,
           address: partner.address

@@ -12,6 +12,7 @@
 CI.run do
   step 'Style: JS/CSS format', 'bin/yarn run format:check'
   step 'Style: Ruby', 'bundle exec rubocop'
+  step 'Extensions: contract', 'bundle exec bin/check-extension-tree'
 
   step 'Security: Brakeman', 'bundle exec brakeman --no-pager'
   step 'Security: Importmap audit', 'bin/importmap audit'

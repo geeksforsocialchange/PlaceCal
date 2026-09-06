@@ -79,6 +79,18 @@ RSpec.describe CalendarImporter::Parsers::Eventbrite do
           .exactly(max_retries + 1).times
       end
 
+      it "treats connection-level failures as transient (AppSignal incident #279)" do
+        # A dropped connection (e.g. ECONNRESET during SSL_connect) never gets
+        # an HTTP status, so it must be retried and degraded like a 5xx rather
+        # than crashing the whole import.
+        allow(EventbriteSDK::Organizer).to receive(:retrieve)
+          .and_raise(Errno::ECONNRESET, "Connection reset by peer - SSL_connect")
+
+        expect(parser.download_calendar).to eq([])
+        expect(EventbriteSDK::Organizer).to have_received(:retrieve)
+          .exactly(max_retries + 1).times
+      end
+
       it "does not retry or swallow non-transient errors" do
         allow(EventbriteSDK::Organizer).to receive(:retrieve)
           .and_raise(RestClient::Unauthorized)
@@ -90,6 +102,17 @@ RSpec.describe CalendarImporter::Parsers::Eventbrite do
       describe "#fetch_event_description" do
         it "skips the description (returns nil) when one event keeps failing" do
           allow(parser).to receive(:get_event_description).and_raise(RestClient::InternalServerError)
+
+          expect(parser.fetch_event_description("123")).to be_nil
+          expect(parser).to have_received(:get_event_description)
+            .exactly(max_retries + 1).times
+        end
+
+        it "skips the description when the connection keeps dropping" do
+          # The description endpoint is where incident #279's ECONNRESET was
+          # actually raised — a flaky connection must not lose the whole event.
+          allow(parser).to receive(:get_event_description)
+            .and_raise(Errno::ECONNRESET, "Connection reset by peer - SSL_connect")
 
           expect(parser.fetch_event_description("123")).to be_nil
           expect(parser).to have_received(:get_event_description)

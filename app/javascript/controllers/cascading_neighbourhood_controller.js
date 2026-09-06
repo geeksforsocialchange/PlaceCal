@@ -153,7 +153,13 @@ export default class extends Controller {
 				// descendants of the auto-selected item (e.g., Manchester is a direct
 				// child of North West, not Lancashire, but Lancashire is auto-selected
 				// as the only county).
-				await this.loadLevel(level - 1, parentId);
+				//
+				// At the top level there is no parent scope (parentId is null): the
+				// children endpoint would then return top-level roots instead of the
+				// auto-selected country's children, dead-ending every level below it.
+				// Fall back to the auto-selected id so the cascade can continue — this
+				// is what left the picker unusable whenever there was a single country.
+				await this.loadLevel(level - 1, parentId || data[0].id);
 			} else {
 				// Multiple options: show the dropdown
 				this.showSelect(target);

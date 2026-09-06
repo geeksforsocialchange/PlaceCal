@@ -145,6 +145,16 @@ class PartnersQuery
       .map { |tag| { category: tag, count: tag.partner_count } }
   end
 
+  # Whether the given partner appears on this site — same rules as the
+  # partner listing (address or service area in the site's neighbourhoods,
+  # matching tag on tagged sites).
+  #
+  # @param partner [Partner]
+  # @return [Boolean]
+  def include?(partner)
+    base_scope.exists?(partner.id)
+  end
+
   private
 
   # ===================
@@ -243,16 +253,19 @@ class PartnersQuery
     @base_scope ||= build_base_scope
   end
 
+  # A site scopes its partners by its neighbourhoods, by its tags, or by both
+  # (tag AND neighbourhood). A tagged site with no neighbourhoods is tag-only:
+  # partnership sites such as The Trans Dimension span cities and pick their
+  # partners by Partnership tag alone (#3368 D7, D24). A site with neither
+  # has no partners.
   def build_base_scope
     return Partner.visible if @site.nil?
-    return Partner.none if site_neighbourhood_ids.empty?
+    return Partner.none if site_neighbourhood_ids.empty? && site_tag_ids.empty?
 
     scope = Partner.visible
     scope = scope.joins(:tags).where(tags: { id: site_tag_ids }) if site_tag_ids.any?
-    scope
-      .left_joins(:address, :service_areas)
-      .where(in_site_neighbourhoods_sql)
-      .distinct
+    scope = scope.left_joins(:address, :service_areas).where(in_site_neighbourhoods_sql) if site_neighbourhood_ids.any?
+    scope.distinct
   end
 
   # ===================

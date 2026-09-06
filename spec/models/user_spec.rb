@@ -145,6 +145,36 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe "#display_name" do
+    let(:user) { build(:user, email: "test@example.com") }
+
+    it "returns name with email in parens" do
+      user.first_name = "Joan"
+      user.last_name = "Jones"
+      expect(user.display_name).to eq("Joan Jones (test@example.com)")
+    end
+
+    it "falls back to the email prefix when name is blank" do
+      user.first_name = ""
+      user.last_name = ""
+      expect(user.display_name).to eq("test (test@example.com)")
+    end
+
+    # Regression for #3241: a blank email must not render as "Name ()"
+    it "returns just the name when email is blank" do
+      user.first_name = "Joan"
+      user.last_name = "Jones"
+      user.email = ""
+      expect(user.display_name).to eq("Joan Jones")
+    end
+
+    it "falls back to a model label when name and email are both blank" do
+      user = create(:user, first_name: "", last_name: "")
+      user.email = nil
+      expect(user.display_name).to eq("User ##{user.id}")
+    end
+  end
+
   describe "role predicates" do
     it "#root? returns true for root role" do
       user = build(:user, role: :root)

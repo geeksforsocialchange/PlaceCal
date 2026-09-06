@@ -72,6 +72,34 @@ RSpec.describe "Public Events", type: :request do
     end
   end
 
+  describe "GET /events/:id for an event not on this site" do
+    # Organised by a partner in a ward the site does not own (issue #1722)
+    let(:offsite_address) { create(:address, neighbourhood: create(:oldtown_ward)) }
+    let(:offsite_partner) { create(:partner, address: offsite_address) }
+    let(:offsite_event) do
+      create(:event,
+             organiser: offsite_partner,
+             dtstart: 1.day.from_now,
+             address: offsite_address)
+    end
+
+    it "301-redirects to the canonical directory URL" do
+      get event_url(offsite_event, host: "#{site.slug}.lvh.me")
+      expect(response).to redirect_to("https://placecal.org/events/#{offsite_event.id}")
+      expect(response).to have_http_status(:moved_permanently)
+    end
+
+    it "still renders on the directory apex" do
+      get event_url(offsite_event, host: "lvh.me")
+      expect(response).to be_successful
+    end
+
+    it "preserves the format so ics feed subscriptions keep working" do
+      get event_url(offsite_event, host: "#{site.slug}.lvh.me", format: :ics)
+      expect(response).to redirect_to("https://placecal.org/events/#{offsite_event.id}.ics")
+    end
+  end
+
   describe "GET /events with date filter" do
     let!(:today_event) do
       create(:event,
@@ -211,22 +239,24 @@ RSpec.describe "Public Events", type: :request do
       expect(response.body).to include("Community Workshop")
     end
 
+    # h2, not h3: these are the first headings under the page h1, so an h3
+    # here skips a level and axe reports heading-order.
     it "shows contact information section with consistent heading level" do
       get event_url(event, host: "#{site.slug}.lvh.me")
       expect(response.body).to include("Contact information")
-      expect(response.body).to match(%r{<h3[^>]*>Contact information</h3>})
+      expect(response.body).to match(%r{<h2[^>]*>Contact information</h2>})
     end
 
     it "shows event address with consistent heading level" do
       get event_url(event, host: "#{site.slug}.lvh.me")
       expect(response.body).to include("Event address")
-      expect(response.body).to match(%r{<h3[^>]*>Event address</h3>})
+      expect(response.body).to match(%r{<h2[^>]*>Event address</h2>})
     end
 
     it "shows event organiser with consistent heading level" do
       get event_url(event, host: "#{site.slug}.lvh.me")
       expect(response.body).to include("Event organiser")
-      expect(response.body).to match(%r{<h3[^>]*>Event organiser</h3>})
+      expect(response.body).to match(%r{<h2[^>]*>Event organiser</h2>})
     end
 
     it "includes Event JSON-LD structured data" do
@@ -273,6 +303,167 @@ RSpec.describe "Public Events", type: :request do
       event = create(:event, organiser: partner, dtstart: 1.day.from_now, address: address)
       get event_url(event, host: "lvh.me")
       expect(response).to be_successful
+    end
+
+    it "shows the event date and time in the hero (issue: apex dropped when)" do
+      event = create(:event,
+                     organiser: partner,
+                     dtstart: 1.day.from_now.change(hour: 16, min: 0),
+                     dtend: 1.day.from_now.change(hour: 17, min: 0),
+                     address: address)
+      get event_url(event, host: "lvh.me")
+      expect(response).to be_successful
+
+      # Assert on the visible hero, not the og_title <meta>/<title> which also
+      # carries the date/time — those masked the missing on-page "when".
+      # Date and time render as hero chips per the directory design handoff.
+      hero = Nokogiri::HTML(response.body).at_css("section.bg-foreground")
+      expect(hero).to be_present
+      expect(hero.text).to include(event.dtstart.strftime("%a %-e %b"))
+      expect(hero.text).to include("16:00 – 17:00")
+    end
+
+    it "shows the event information card with date, time and neighbourhood" do
+      event = create(:event,
+                     organiser: partner,
+                     dtstart: 1.day.from_now.change(hour: 16, min: 0),
+                     dtend: 1.day.from_now.change(hour: 17, min: 0),
+                     address: address)
+      get event_url(event, host: "lvh.me")
+      expect(response.body).to include("Event information")
+      expect(response.body).to include(event.dtstart.strftime("%a %-e %b %Y"))
+      expect(response.body).to include(ward.shortname)
+    end
+
+    it "shows the venue in the event information card, linked to the venue partner" do
+      venue = create(:partner, name: "The Venue", address: address)
+      event = create(:event, organiser: partner, place: venue, dtstart: 1.day.from_now, address: address)
+      get event_url(event, host: "lvh.me")
+
+      info = Nokogiri::HTML(response.body).css(".rounded-card").find { |c| c.text.include?("Event information") }
+      expect(info).to be_present
+      venue_link = info.at_css(%(a[href="#{partner_path(venue)}"]))
+      expect(venue_link).to be_present
+      expect(venue_link.text).to include("The Venue")
+    end
+
+    it "shows the organised-by card with a link to the organiser" do
+      event = create(:event, organiser: partner, dtstart: 1.day.from_now, address: address)
+      get event_url(event, host: "lvh.me")
+      expect(response.body).to include("Organised by")
+      expect(response.body).to include(partner_path(partner))
+    end
+
+    it "still titles the organiser card when the organiser has no contact details" do
+      organiser = create(:partner, name: "Contactless Org", address: address,
+                                   public_email: nil, public_phone: nil, url: nil,
+                                   facebook_link: nil, twitter_handle: nil, instagram_handle: nil)
+      event = create(:event, organiser: organiser, dtstart: 1.day.from_now, address: address)
+      get event_url(event, host: "lvh.me")
+      expect(response).to be_successful
+      expect(response.body).to include("Organised by")
+      expect(response.body).to include("Contactless Org")
+    end
+
+    it "shows the share card with the canonical URL and iCal link" do
+      event = create(:event, organiser: partner, dtstart: 1.day.from_now, address: address)
+      get event_url(event, host: "lvh.me")
+      expect(response.body).to include("placecal.org/events/#{event.id}")
+      expect(response.body).to include("Subscribe via iCal")
+    end
+
+    it "shows other upcoming events from the same organiser" do
+      event = create(:event, organiser: partner, dtstart: 1.day.from_now, address: address)
+      other = create(:event,
+                     organiser: partner,
+                     summary: "Another Organiser Event",
+                     dtstart: 3.days.from_now,
+                     address: address)
+      get event_url(event, host: "lvh.me")
+      expect(response.body).to include("Another Organiser Event")
+      expect(response.body).to include(event_path(other))
+    end
+  end
+
+  describe "region filter" do
+    let(:region_site) { create(:site, slug: "regions") }
+    let(:region_ward) { create(:riverside_ward) }
+    let(:north_tag) { create(:partnership, name: "North") }
+    let(:south_tag) { create(:partnership, name: "South") }
+    let(:north_partner) { create(:partner, name: "North Partner", address: create(:address, neighbourhood: region_ward)) }
+    let(:south_partner) { create(:partner, name: "South Partner", address: create(:address, neighbourhood: region_ward)) }
+
+    before do
+      region_site.neighbourhoods << region_ward
+      region_site.tags << north_tag
+      north_partner.tags << north_tag
+      create(:future_event, organiser: north_partner, summary: "Northern Social")
+    end
+
+    context "when the site has one partnership tag" do
+      it "does not show the region control" do
+        get events_url(host: "regions.lvh.me")
+
+        expect(response).to be_successful
+        expect(response.body).not_to include("region-filter")
+      end
+    end
+
+    context "when the site has two partnership tags" do
+      before do
+        region_site.tags << south_tag
+        south_partner.tags << south_tag
+        create(:future_event, organiser: south_partner, summary: "Southern Social")
+      end
+
+      it "shows the region control" do
+        get events_url(host: "regions.lvh.me")
+
+        expect(response.body).to include("region-filter")
+        expect(response.body).to include("North")
+      end
+
+      it "filters events to the selected region" do
+        get events_url(host: "regions.lvh.me", region: north_tag.slug)
+
+        expect(response.body).to include("Northern Social")
+        expect(response.body).not_to include("Southern Social")
+      end
+
+      it "shows every event when no region is selected" do
+        get events_url(host: "regions.lvh.me")
+
+        expect(response.body).to include("Northern Social")
+        expect(response.body).to include("Southern Social")
+      end
+
+      it "ignores an unknown region slug" do
+        get events_url(host: "regions.lvh.me", region: "nowhere")
+
+        expect(response).to be_successful
+        expect(response.body).to include("Northern Social")
+        expect(response.body).to include("Southern Social")
+      end
+
+      it "auto-selects the period from the selected region, not the whole site" do
+        # The site as a whole is busy enough to be forced into the day view,
+        # while the northern region has a single event three weeks out (#3368 D7).
+        25.times { |n| create(:event, organiser: south_partner, dtstart: (n % 6).days.from_now.at_noon, summary: "Busy South #{n}") }
+        create(:event, organiser: north_partner, dtstart: 20.days.from_now.at_noon, summary: "Distant Northern Social")
+
+        get events_url(host: "regions.lvh.me", region: north_tag.slug)
+
+        expect(response).to be_successful
+        expect(response.body).to include("Distant Northern Social")
+      end
+
+      it "carries the region on the site navigation links" do
+        get events_url(host: "regions.lvh.me", region: north_tag.slug)
+
+        expect(response.body).to include(%(href="/?region=#{north_tag.slug}"))
+        expect(response.body).to include(%(href="/events?region=#{north_tag.slug}"))
+        expect(response.body).to include(%(href="/partners?region=#{north_tag.slug}"))
+      end
     end
   end
 end

@@ -13,6 +13,7 @@ class Views::Admin::Sites::SitesNeighbourhoodFields < Views::Admin::Base
         show_remove: true,
         form: form
       )
+      raw(form.hidden_field(:relation_type))
     else
       CascadingNeighbourhoodFields(
         form: form,

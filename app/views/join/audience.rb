@@ -24,11 +24,11 @@ class Views::Join::Audience < Views::Join::Base
     section(class: 'bg-secondary py-10') do
       div(class: 'container-public') do
         breadcrumb([t('join.breadcrumbs.audiences'), join_audiences_path], [t("#{prefix}.title")], on_secondary: true)
-        div(class: 'allcaps-label text-secondary-ink mb-2') do
+        div(class: 'allcaps-label text-foreground-dark mb-2') do
           t('join.audiences.for_kicker', audience: t("#{prefix}.title").downcase)
         end
         h1(class: 'join-headline max-w-(--width-prose-lg) m-0 mb-4') { t("#{prefix}.hero") }
-        p(class: 'text-base leading-relaxed text-secondary-ink max-w-(--width-prose) mt-0 mb-6') { t("#{prefix}.subhero") }
+        p(class: 'text-base leading-relaxed text-foreground-dark max-w-(--width-prose) mt-0 mb-6') { t("#{prefix}.subhero") }
         div(class: 'flex gap-2.5 flex-wrap items-center') do
           a(href: join_demo_path, class: 'btn-dark') { t('join.audiences.cta_demo') }
           a(href: join_features_path, class: 'btn-primary-outline') { t('join.audiences.cta_features') }
@@ -54,8 +54,8 @@ class Views::Join::Audience < Views::Join::Base
   end
 
   def render_rollout
-    aside(class: 'bg-secondary rounded-card p-5 text-secondary-ink') do
-      h2(class: 'font-serif font-regular text-card text-secondary-ink m-0') { t('join.rollout.heading') }
+    aside(class: 'bg-secondary rounded-card p-5 text-foreground-dark') do
+      h2(class: 'font-serif font-regular text-card text-foreground-dark m-0') { t('join.rollout.heading') }
       steps = t('join.rollout.steps')
       steps.each_with_index do |step, index|
         last = index == steps.length - 1

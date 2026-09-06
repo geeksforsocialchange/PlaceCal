@@ -18,6 +18,12 @@ Rails.application.configure do
 
   # Settings specified here will take precedence over those in config/application.rb.
 
+  # Pin the directory apex (Site::DIRECTORY_URL) to the production URL so
+  # specs assert the real canonical/redirect contract search engines see.
+  # See config/initializers/directory_url.rb for how other environments
+  # derive it.
+  config.x.directory_url = 'https://placecal.org'
+
   config.cache_classes = false
 
   # Do not eager load code on boot. This avoids loading your whole application

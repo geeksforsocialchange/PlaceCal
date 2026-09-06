@@ -3,6 +3,7 @@
 # app/controllers/events_controller.rb
 class EventsController < ApplicationController
   include MapMarkers
+  include OffsiteRedirect
   include Pagy::Offset::Method
 
   before_action :set_event, only: %i[show]
@@ -25,16 +26,24 @@ class EventsController < ApplicationController
   # GET /events/1
   # GET /events/1.json
   def show
+    redirect_offsite_to_permalink(EventsQuery.new(site: current_site), @event)
+    return if performed?
+
     if @event.partner_at_location
       @map = get_map_markers([@event.partner_at_location])
     elsif @event.address
       @map = get_map_markers([@event.address])
     end
-    @containing_sites = Site.sites_that_contain_partner(@event.organiser) if directory_request? && @event.organiser
+    if directory_request? && @event.organiser
+      @more_from_organiser = Event.by_organiser_or_place(@event.organiser)
+                                  .upcoming.sort_by_time
+                                  .where.not(id: @event.id)
+                                  .limit(4)
+    end
     respond_to do |format|
       format.html do
         render Views::Sites::Events::Show.new(
-          event: @event, site: @site, map: @map, containing_sites: @containing_sites
+          event: @event, site: @site, map: @map, more_from_organiser: @more_from_organiser
         )
       end
       format.ics do
@@ -63,13 +72,16 @@ class EventsController < ApplicationController
   # - Few events total: show all (future)
   # - Moderate density: show week view
   # - High density: show day view
+  #
+  # Counts the selected region's events, not the whole site's, so a sparse
+  # region is not given the day view a busy site would pick (#3368 D7).
   def default_period
     return params[:period] if params[:period].present?
 
-    future_count = @query.future_count
+    future_count = @query.future_count(tag_id: @region&.id)
     return 'future' if future_count < 20
 
-    week_count = @query.next_7_days_count
+    week_count = @query.next_7_days_count(tag_id: @region&.id)
     week_count > 20 ? 'day' : 'week'
   end
 
@@ -106,6 +118,7 @@ class EventsController < ApplicationController
     @repeating = params[:repeating] || 'on'
     @sort = params[:sort] || 'time'
     @selected_neighbourhood = params[:neighbourhood] if params[:neighbourhood].present? && Integer(params[:neighbourhood], exception: false)
+    @region = current_region
     @query = EventsQuery.new(site: current_site, day: @current_day)
     @period = params[:period] || default_period
 
@@ -113,11 +126,12 @@ class EventsController < ApplicationController
       period: @period,
       repeating: @repeating,
       sort: @sort,
-      neighbourhood_id: @selected_neighbourhood
+      neighbourhood_id: @selected_neighbourhood,
+      tag_id: @region&.id
     )
     @truncated = @query.truncated
-    @next_date = @query.next_event_after(@current_day)
-    @show_monthly = @query.show_monthly?
+    @next_date = @query.next_event_after(@current_day, tag_id: @region&.id)
+    @show_monthly = @query.show_monthly?(tag_id: @region&.id)
     respond_to do |format|
       format.html do
         if params[:simple].present?
@@ -128,7 +142,8 @@ class EventsController < ApplicationController
             current_day: @current_day, site: @site,
             selected_neighbourhood: @selected_neighbourhood,
             next_date: @next_date, truncated: @truncated,
-            show_monthly: @show_monthly
+            show_monthly: @show_monthly,
+            region_tags: region_tags, selected_region: @region
           )
         end
       end

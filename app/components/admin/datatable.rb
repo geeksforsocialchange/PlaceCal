@@ -264,7 +264,9 @@ class Components::Admin::Datatable < Components::Admin::Base
     align_class = col_config&.dig(:align) == :center ? 'text-center' : 'text-left'
     sort_default_dir = col_config&.dig(:sort_default)
 
-    attrs = { data_column: @columns[index],
+    # to_s matters: Phlex dasherizes Symbol attribute values, and the JS
+    # compares data-column against the underscored names in columns_json
+    attrs = { data_column: @columns[index].to_s,
               class: "px-4 py-3 #{align_class} text-xs font-semibold text-gray-600 uppercase tracking-wider " \
                      "#{width_class} #{'cursor-pointer hover:bg-gray-100 select-none' if sortable}" }
     attrs[:data_action] = 'click->admin-table#sort' if sortable
@@ -286,7 +288,7 @@ class Components::Admin::Datatable < Components::Admin::Base
   def render_sort_icon(index)
     span(class: 'text-gray-400 opacity-0 group-hover:opacity-100',
          data_admin_table_target: 'sortIcon',
-         data_column: @columns[index]) do
+         data_column: @columns[index].to_s) do
       icon(:arrow_up_down, size: nil)
     end
   end

@@ -32,14 +32,14 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: ruby/setup-ruby@d45b1a4e94b71acab930e56e79c6aa188764e7f9 # v1.316.0
+      - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
         with:
           bundler-cache: true
           cache-version: 3
 
-      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: ".node-version"
           cache: yarn
@@ -50,12 +50,15 @@ jobs:
           bin/yarn run format:check
           bundle exec rubocop
 
+      - name: Check extensions stay inside the contract
+        run: bundle exec bin/check-extension-tree
+
   security:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: ruby/setup-ruby@d45b1a4e94b71acab930e56e79c6aa188764e7f9 # v1.316.0
+      - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
         with:
           bundler-cache: true
           cache-version: 3
@@ -63,8 +66,25 @@ jobs:
       - name: Run Brakeman
         run: bundle exec brakeman --no-pager
 
+      # npm's advisory endpoint periodically drops or 503s requests. Retry, and
+      # if npm still cannot answer, warn rather than fail: a registry outage is
+      # not a vulnerability. Real findings still fail the job.
       - name: Audit JavaScript dependencies (importmap)
-        run: bin/importmap audit
+        run: |
+          for attempt in 1 2 3; do
+            if output=$(bin/importmap audit 2>&1); then
+              echo "$output"
+              exit 0
+            fi
+            echo "$output"
+            if ! echo "$output" | grep -qE "Importmap::Npm::HTTPError|transport error|Unexpected error response 5"; then
+              echo "::error::importmap audit reported vulnerable packages"
+              exit 1
+            fi
+            echo "npm advisory endpoint unavailable (attempt $attempt of 3)"
+            sleep $((attempt * 30))
+          done
+          echo "::warning::importmap audit skipped: npm advisory endpoint unavailable after 3 attempts"
 
   test:
     runs-on: ubuntu-latest
@@ -99,11 +119,11 @@ jobs:
       CI: true
 
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
 
-      - uses: ruby/setup-ruby@d45b1a4e94b71acab930e56e79c6aa188764e7f9 # v1.316.0
+      - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
         with:
           bundler-cache: true
           cache-version: 3
@@ -115,12 +135,12 @@ jobs:
 
       - name: Install Chrome for browser tests
         if: matrix.suite == 'system' || startsWith(matrix.suite, 'cucumber')
-        uses: browser-actions/setup-chrome@2e1d749697dd1612b833dba4a722266286fbefcd # latest
+        uses: browser-actions/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4 # latest
         id: setup-chrome
         with:
           chrome-version: stable
 
-      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: ".node-version"
           cache: yarn
@@ -225,7 +245,7 @@ jobs:
       REGISTRY: ghcr.io
 
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set deploy destination
         id: dest
@@ -239,13 +259,13 @@ jobs:
           fi
 
       - name: Log in to GitHub Container Registry
-        uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0 # v4.4.0
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.repository_owner }}
           password: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
 
-      - uses: ruby/setup-ruby@d45b1a4e94b71acab930e56e79c6aa188764e7f9 # v1.316.0
+      - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
         with:
           bundler-cache: true
           cache-version: 3
@@ -282,6 +302,7 @@ jobs:
           MAILERSEND_PASSWORD: ${{ secrets.MAILERSEND_PASSWORD }}
           APPSIGNAL_PUSH_API_KEY: ${{ secrets.APPSIGNAL_PUSH_API_KEY }}
           EVENTBRITE_TOKEN: ${{ secrets.EVENTBRITE_TOKEN }}
+          MATOMO_TOKEN_AUTH: ${{ secrets.MATOMO_TOKEN_AUTH }}
           # SSL (Cloudflare Origin CA certificate — per-destination)
           SSL_CERTIFICATE_PEM: ${{ steps.dest.outputs.destination == 'production' && secrets.PRODUCTION_SSL_CERTIFICATE_PEM || secrets.STAGING_SSL_CERTIFICATE_PEM }}
           SSL_PRIVATE_KEY_PEM: ${{ steps.dest.outputs.destination == 'production' && secrets.PRODUCTION_SSL_PRIVATE_KEY_PEM || secrets.STAGING_SSL_PRIVATE_KEY_PEM }}

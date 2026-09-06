@@ -43,7 +43,7 @@ RSpec.describe "Public Partners", type: :request do
   end
 
   describe "GET /partners/:id" do
-    let(:partner) { create(:riverside_partner) }
+    let(:partner) { create(:riverside_partner, address: create(:riverside_address, neighbourhood: ward)) }
 
     it "shows the partner details" do
       get partner_url(partner, host: "#{site.slug}.lvh.me")
@@ -128,6 +128,36 @@ RSpec.describe "Public Partners", type: :request do
         get partner_url(partner, host: "#{site.slug}.lvh.me")
         expect(response.body).to include("does not list events")
       end
+    end
+  end
+
+  describe "GET /partners/:id for a partner not on this site" do
+    # A separate ward the site does not own — the partner is real but
+    # belongs to a different part of the country (issue #1722).
+    let(:offsite_partner) do
+      create(:partner, address: create(:address, neighbourhood: create(:oldtown_ward)))
+    end
+
+    it "301-redirects to the canonical directory URL" do
+      get partner_url(offsite_partner, host: "#{site.slug}.lvh.me")
+      expect(response).to redirect_to("https://placecal.org/partners/#{offsite_partner.slug}")
+      expect(response).to have_http_status(:moved_permanently)
+    end
+
+    it "still renders on the directory apex" do
+      get partner_url(offsite_partner, host: "lvh.me")
+      expect(response).to be_successful
+    end
+
+    it "preserves the format so ics feed subscriptions keep working" do
+      get partner_url(offsite_partner, host: "#{site.slug}.lvh.me", format: :ics)
+      expect(response).to redirect_to("https://placecal.org/partners/#{offsite_partner.slug}.ics")
+    end
+
+    it "renders when the partner has a service area in the site" do
+      offsite_partner.service_areas.create!(neighbourhood: ward)
+      get partner_url(offsite_partner, host: "#{site.slug}.lvh.me")
+      expect(response).to be_successful
     end
   end
 
@@ -225,7 +255,7 @@ RSpec.describe "Public Partners", type: :request do
   end
 
   describe "GET /partners/:id with paginated events" do
-    let(:partner) { create(:riverside_partner) }
+    let(:partner) { create(:riverside_partner, address: create(:riverside_address, neighbourhood: ward)) }
     let(:calendar) { create(:calendar, organiser: partner) }
 
     before do
@@ -256,7 +286,7 @@ RSpec.describe "Public Partners", type: :request do
   end
 
   describe "GET /partners/:id period defaulting" do
-    let(:partner) { create(:riverside_partner) }
+    let(:partner) { create(:riverside_partner, address: create(:riverside_address, neighbourhood: ward)) }
     let(:calendar) { create(:calendar, organiser: partner) }
 
     context "with many events" do
@@ -395,7 +425,7 @@ RSpec.describe "Public Partners", type: :request do
 
   describe "directory partner show page" do
     context "with full contact details" do
-      let(:partner) { create(:riverside_partner) }
+      let(:partner) { create(:riverside_partner, address: create(:riverside_address, neighbourhood: ward)) }
 
       it "shows contact card with all fields" do
         get partner_url(partner, host: "lvh.me")
@@ -452,7 +482,7 @@ RSpec.describe "Public Partners", type: :request do
     end
 
     context "with neighbourhood" do
-      let(:partner) { create(:riverside_partner) }
+      let(:partner) { create(:riverside_partner, address: create(:riverside_address, neighbourhood: ward)) }
 
       it "shows neighbourhood breadcrumb" do
         get partner_url(partner, host: "lvh.me")
@@ -542,7 +572,7 @@ RSpec.describe "Public Partners", type: :request do
     end
 
     context "with few events (under overflow threshold)" do
-      let(:partner) { create(:riverside_partner) }
+      let(:partner) { create(:riverside_partner, address: create(:riverside_address, neighbourhood: ward)) }
       let(:calendar) { create(:calendar, organiser: partner) }
 
       before do
@@ -563,7 +593,7 @@ RSpec.describe "Public Partners", type: :request do
     end
 
     context "with many events (over overflow threshold)" do
-      let(:partner) { create(:riverside_partner) }
+      let(:partner) { create(:riverside_partner, address: create(:riverside_address, neighbourhood: ward)) }
       let(:calendar) { create(:calendar, organiser: partner) }
 
       before do
@@ -595,7 +625,7 @@ RSpec.describe "Public Partners", type: :request do
     end
 
     context "with containing sites (partnerships)" do
-      let(:partner) { create(:riverside_partner) }
+      let(:partner) { create(:riverside_partner, address: create(:riverside_address, neighbourhood: ward)) }
       let(:partnership_site) { create(:site, slug: "test-partnership", name: "Test Partnership", is_published: true) }
 
       before do
@@ -630,6 +660,74 @@ RSpec.describe "Public Partners", type: :request do
         expect(response.body).not_to include("Upcoming events")
         expect(response.body).not_to include("Categories")
         expect(response.body).to include("Share &amp; subscribe")
+      end
+    end
+  end
+
+  describe "region filter" do
+    let(:region_site) { create(:site, slug: "regions") }
+    let(:region_ward) { create(:riverside_ward) }
+    let(:north_tag) { create(:partnership, name: "North") }
+    let(:south_tag) { create(:partnership, name: "South") }
+    let!(:north_partner) { create(:partner, name: "North Partner", address: create(:address, neighbourhood: region_ward)) }
+    let!(:south_partner) { create(:partner, name: "South Partner", address: create(:address, neighbourhood: region_ward)) }
+
+    before do
+      region_site.neighbourhoods << region_ward
+      region_site.tags << north_tag
+      north_partner.tags << north_tag
+    end
+
+    context "when the site has one partnership tag" do
+      it "does not show the region control" do
+        get partners_url(host: "regions.lvh.me")
+
+        expect(response).to be_successful
+        expect(response.body).not_to include("region-filter")
+      end
+    end
+
+    context "when the site has two partnership tags" do
+      before do
+        region_site.tags << south_tag
+        south_partner.tags << south_tag
+      end
+
+      it "shows the region control" do
+        get partners_url(host: "regions.lvh.me")
+
+        expect(response.body).to include("region-filter")
+      end
+
+      it "filters partners to the selected region" do
+        get partners_url(host: "regions.lvh.me", region: north_tag.slug)
+
+        expect(response.body).to include("North Partner")
+        expect(response.body).not_to include("South Partner")
+      end
+
+      it "ignores an unknown region slug" do
+        get partners_url(host: "regions.lvh.me", region: "nowhere")
+
+        expect(response).to be_successful
+        expect(response.body).to include("North Partner")
+        expect(response.body).to include("South Partner")
+      end
+
+      it "advances the URL when the partner list frame is swapped" do
+        get partners_url(host: "regions.lvh.me")
+
+        frame = response.body[/<turbo-frame[^>]*id="partner_previews"[^>]*>/]
+
+        expect(frame).to be_present
+        expect(frame).to include('data-turbo-action="advance"')
+      end
+
+      it "carries the region on the site navigation links" do
+        get partners_url(host: "regions.lvh.me", region: south_tag.slug)
+
+        expect(response.body).to include(%(href="/events?region=#{south_tag.slug}"))
+        expect(response.body).to include(%(href="/partners?region=#{south_tag.slug}"))
       end
     end
   end

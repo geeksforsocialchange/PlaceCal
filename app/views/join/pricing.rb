@@ -34,7 +34,7 @@ class Views::Join::Pricing < Views::Join::Base
         breadcrumb([t('join.nav.pricing')], on_secondary: true)
         div(class: 'flex items-center justify-between gap-8') do
           div do
-            div(class: 'allcaps-label text-secondary-ink mb-2') { t('join.pricing.eyebrow') }
+            div(class: 'allcaps-label text-foreground-dark mb-2') { t('join.pricing.eyebrow') }
             h1(class: 'join-headline m-0') { t('join.pricing.title') }
           end
           image_tag('home/our_story/collective_ownership.png', alt: '',
@@ -254,7 +254,7 @@ class Views::Join::Pricing < Views::Join::Base
                'before:content-[""] before:absolute before:top-0 before:bottom-0 before:left-[23px] min-[680px]:before:left-[31px] before:w-[2px] before:bg-rules ' \
                'first:before:top-1/2 last:before:bottom-1/2') do
       div(class: 'relative self-stretch row-span-2 min-[680px]:row-span-1 flex justify-center') do
-        div(class: 'relative z-1 self-center w-11 h-11 min-[680px]:w-14 min-[680px]:h-14 rounded-full bg-secondary text-secondary-ink grid place-items-center font-serif text-[1.2rem] min-[680px]:text-2xl') do
+        div(class: 'relative z-1 self-center w-11 h-11 min-[680px]:w-14 min-[680px]:h-14 rounded-full bg-secondary text-foreground-dark grid place-items-center font-serif text-[1.2rem] min-[680px]:text-2xl') do
           plain (index + 1).to_s
         end
       end

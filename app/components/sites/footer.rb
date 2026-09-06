@@ -4,6 +4,8 @@ class Components::Sites::Footer < Components::Base
   include Phlex::Rails::Helpers::MailTo
 
   prop :site, _Nilable(::Site), :positional, default: nil
+  # The derived site navigation (SiteNavigation), passed through by the layout.
+  prop :navigation, _Nilable(_Array(_Any)), default: nil
 
   def view_template
     footer(class: 'footer') do
@@ -34,32 +36,56 @@ class Components::Sites::Footer < Components::Base
   def render_logo
     div(class: 'footer__item footer__logo') do
       if @site&.footer_logo.present?
-        image_tag(@site.footer_logo.url) if @site.footer_logo.url
+        image_tag(@site.footer_logo.url, alt: @site.name) if @site.footer_logo.url
       else
-        image_tag('logo-footer.svg')
+        image_tag('logo-footer.svg', alt: t('footer.logo_alt'))
       end
     end
   end
 
   def render_nav
     div(class: 'footer__item footer__nav') do
-      h5(class: 'allcaps small') { 'Site Navigation' }
-      nav(role: 'navigation') do
+      h2(class: 'footer__heading allcaps small', id: 'footer-nav-heading') { t('footer.site_navigation') }
+      # Named, so a screen reader's landmark menu distinguishes this nav from
+      # the header's rather than listing "navigation" twice.
+      nav(role: 'navigation', aria_labelledby: 'footer-nav-heading') do
         ul do
-          li { active_link_to('Home', root_path) }
-          li { active_link_to('Events', events_path) }
-          li { active_link_to('Partners', partners_path) }
-          li { active_link_to('Log in', new_user_session_path) }
-          li { active_link_to('Privacy', privacy_path) }
-          li { active_link_to('Terms', terms_of_use_path) }
+          nav_links.each do |label, path|
+            li { active_link_to(label, path) }
+          end
         end
       end
     end
   end
 
+  # The footer shows the same derived site nav as the header (#3368 D6), so the
+  # region param, the news link, the theme's pages and its nav_join rule all
+  # follow from one place, plus the legal and log-in links the footer has
+  # always carried. A theme that registers its own `privacy` page arrives with
+  # the derived links, so the fixed privacy link is not added twice.
+  #
+  # Rendered without a derived nav (previews and component specs; the layout
+  # always passes one) it falls back to the three links every site nav opens
+  # with, so the footer is never empty.
+  def nav_links
+    links = Array(@navigation).presence&.dup || core_nav_links
+    links << [t('navigation.site.privacy'), privacy_path] unless links.any? { |(_label, path)| path == privacy_path }
+    links << [t('navigation.site.terms'), terms_of_use_path]
+    links << [t('navigation.site.log_in'), new_user_session_path]
+    links
+  end
+
+  def core_nav_links
+    [
+      [t('navigation.site.home'), root_path],
+      [t('navigation.site.events'), events_path],
+      [t('navigation.site.partners'), partners_path]
+    ]
+  end
+
   def render_site_enquiries
     div(class: 'footer__item footer__enquiries footer__enquiries--regional') do
-      h5(class: 'allcaps small') { "#{@site.name} Enquiries" }
+      h2(class: 'footer__heading allcaps small') { t('footer.site_enquiries', site: @site.name) }
       p { @site.site_admin.full_name }
       p { render_site_contact_info }
     end
@@ -67,21 +93,21 @@ class Components::Sites::Footer < Components::Base
 
   def render_site_contact_info
     if @site.site_admin.phone&.length&.positive?
-      strong { 'T:' }
+      strong { t('footer.phone_label') }
       plain " #{@site.site_admin.phone}"
       br
     end
-    strong { 'E:' }
+    strong { t('footer.email_label') }
     plain ' '
     mail_to(@site.site_admin.email)
   end
 
   def render_general_enquiries
     div(class: 'footer__item footer__enquiries footer__enquiries--general') do
-      h5(class: 'allcaps small') { 'General Enquiries' }
-      p { 'Get in touch!' }
+      h2(class: 'footer__heading allcaps small') { t('footer.general_enquiries') }
+      p { t('footer.get_in_touch') }
       p do
-        strong { 'E:' }
+        strong { t('footer.email_label') }
         plain ' '
         mail_to('support@placecal.org')
       end
@@ -91,11 +117,11 @@ class Components::Sites::Footer < Components::Base
   def render_site_supporters
     hr(class: 'footer__item footer__hr')
     div(class: 'footer__item footer__supporters') do
-      h5(class: 'allcaps small') { " PlaceCal #{@site.name} Supporters" }
+      h2(class: 'footer__heading allcaps small') { t('footer.site_supporters', site: @site.name) }
       ul do
         @site.supporters&.each do |supporter|
           li(class: "footer__supporter footer__supporter--#{supporter.name.parameterize}") do
-            link_to(supporter.url) { image_tag(supporter.logo.url) }
+            link_to(supporter.url) { image_tag(supporter.logo.url, alt: supporter.name) }
           end
         end
       end
@@ -107,7 +133,7 @@ class Components::Sites::Footer < Components::Base
 
     global_supporters = view_context.instance_variable_get(:@global_supporters)
     div(class: 'footer__item footer__supporters') do
-      h5(class: 'allcaps small') { 'PlaceCal Supporters' }
+      h2(class: 'footer__heading allcaps small') { t('footer.global_supporters') }
       ul do
         global_supporters&.each do |supporter|
           li(class: "footer__supporter footer__supporter--#{supporter.name.parameterize}") do

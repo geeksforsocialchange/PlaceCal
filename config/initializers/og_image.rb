@@ -24,3 +24,8 @@ XML
 # On macOS pango defaults to the CoreText backend, which ignores fontconfig.
 ENV['PANGOCAIRO_BACKEND'] ||= 'fontconfig'
 ENV['FONTCONFIG_FILE'] ||= conf_path.to_s
+
+# Rails 8.1.3.1 (CVE-2026-66066) disables libvips's "unfuzzed" loaders at boot,
+# SVG among them. Our OG cards render from SVG we generate, so re-enable that one.
+# Uploads are unaffected (CarrierWave + MiniMagick, not vips).
+Vips.block('VipsForeignLoadSvg', false) if defined?(Vips) && Vips.respond_to?(:block)

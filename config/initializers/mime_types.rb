@@ -11,3 +11,4 @@ Mime::Type.register 'application/x-font-otf', :otf
 Mime::Type.register 'application/font-woff', :woff
 Mime::Type.register 'application/font-woff2', :woff2
 Mime::Type.register 'application/vnd.ms-fontobject', :eot
+Mime::Type.register 'application/manifest+json', :webmanifest

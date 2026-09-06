@@ -16,7 +16,7 @@ class Views::Join::Base < Views::Base
   # or the AA-safe ink on salmon heroes (taupe only reaches 2.4:1 there).
   # Pass [label] for the current page, or [label, path] pairs for links.
   def breadcrumb(*crumbs, on_secondary: false)
-    tone = on_secondary ? 'text-secondary-ink' : 'text-tertiary'
+    tone = on_secondary ? 'text-foreground-dark' : 'text-tertiary'
     nav(class: "text-xs #{tone} mb-3", aria_label: t('join.aria.breadcrumb')) do
       a(href: join_root_path, class: "with-no-sass #{tone} no-underline hover:underline") { t('join.breadcrumbs.root') }
       crumbs.each do |label, path|
