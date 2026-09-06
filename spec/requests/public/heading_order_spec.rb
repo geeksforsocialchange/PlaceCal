@@ -40,10 +40,17 @@ RSpec.describe "Site page heading order", type: :request do
       expect(before_h1).to eq(["h2"])
     end
 
-    # The shared footer has its own long-standing level jump, so the body of
-    # the page is what this checks.
-    it "never skips a heading level in the page body" do
-      expect(skipped_levels(headings("main"))).to be_empty
+    it "never skips a heading level anywhere on the page" do
+      expect(skipped_levels(headings)).to be_empty
+    end
+
+    # The footer's section headings used to be h5s straight after the page
+    # body, a level jump on every site; they are h2s that keep the h5 look.
+    it "puts the footer's section headings at h2" do
+      footer_headings = document.css("footer h1, footer h2, footer h3, footer h4, footer h5, footer h6")
+
+      expect(footer_headings.map(&:name).uniq).to eq(["h2"])
+      expect(footer_headings.map { |h| h["class"] }).to all(include("footer__heading"))
     end
   end
 
@@ -56,7 +63,7 @@ RSpec.describe "Site page heading order", type: :request do
 
     it "never skips a heading level in the page body" do
       expect(response).to be_successful
-      expect(skipped_levels(headings("main"))).to be_empty
+      expect(skipped_levels(headings)).to be_empty
     end
   end
 
@@ -93,7 +100,7 @@ RSpec.describe "Site page heading order", type: :request do
         end
 
         it "never skips a heading level in the page body" do
-          expect(skipped_levels(headings("main"))).to be_empty
+          expect(skipped_levels(headings)).to be_empty
         end
 
         it "names every navigation landmark" do
@@ -116,7 +123,7 @@ RSpec.describe "Site page heading order", type: :request do
       end
 
       it "never skips a heading level in the page body" do
-        expect(skipped_levels(headings("main"))).to be_empty
+        expect(skipped_levels(headings)).to be_empty
       end
     end
   end
