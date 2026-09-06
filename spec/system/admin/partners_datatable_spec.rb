@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-# rubocop:disable Rails/SkipsModelValidations
+# rubocop:disable-next Rails/SkipsModelValidations
 RSpec.describe "Admin Partners Datatable", :slow, type: :system do
   include_context "admin login"
 
@@ -462,4 +462,3 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     end
   end
 end
-# rubocop:enable Rails/SkipsModelValidations

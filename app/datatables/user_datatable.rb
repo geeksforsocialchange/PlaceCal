@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety
+# rubocop:disable-next Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety
 class UserDatatable < Datatable
   def view_columns
     # NOTE: name searchable is false because we override filter_records to search
@@ -188,4 +188,3 @@ class UserDatatable < Datatable
     HTML
   end
 end
-# rubocop:enable Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety
