@@ -7,14 +7,13 @@ class DropPlaceTables < ActiveRecord::Migration[7.1]
   end
 
   def down
-    # rubocop:disable Rails/CreateTableWithTimestamps
+    # rubocop:disable-next Rails/CreateTableWithTimestamps
     create_table 'partners_places', id: :serial, force: :cascade do |t|
       t.integer 'partner_id'
       t.integer 'place_id'
       t.index ['partner_id'], name: 'index_partners_places_on_partner_id'
       t.index ['place_id'], name: 'index_partners_places_on_place_id'
     end
-    # rubocop:enable Rails/CreateTableWithTimestamps
 
     create_table 'places', id: :serial, force: :cascade do |t|
       t.string 'name'

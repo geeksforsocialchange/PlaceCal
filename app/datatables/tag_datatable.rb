@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety
+# rubocop:disable-next Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety
 class TagDatatable < Datatable
   def view_columns
     @view_columns ||= {
@@ -134,4 +134,3 @@ class TagDatatable < Datatable
     end
   end
 end
-# rubocop:enable Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety

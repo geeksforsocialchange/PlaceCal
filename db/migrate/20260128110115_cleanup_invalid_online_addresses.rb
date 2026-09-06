@@ -12,9 +12,8 @@ class CleanupInvalidOnlineAddresses < ActiveRecord::Migration[8.1]
       say "Found #{invalid_ids.count} invalid OnlineAddress records: #{invalid_online_addresses.pluck(:url).join(', ')}"
 
       # Clear the online_address_id from any events referencing these invalid records
-      # rubocop:disable Rails/SkipsModelValidations
+      # rubocop:disable-next Rails/SkipsModelValidations
       events_updated = Event.where(online_address_id: invalid_ids).update_all(online_address_id: nil)
-      # rubocop:enable Rails/SkipsModelValidations
       say "Cleared online_address_id from #{events_updated} events"
 
       # Delete the invalid OnlineAddress records

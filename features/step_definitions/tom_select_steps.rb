@@ -147,11 +147,10 @@ module TomSelectHelpers
   end
 
   # Check if a Tom Select has a specific selection - returns a custom matcher
-  # rubocop:disable Naming/PredicatePrefix
+  # rubocop:disable-next Naming/PredicatePrefix
   def have_tom_select_selection(field, option)
     HaveTomSelectSelection.new(field, option)
   end
-  # rubocop:enable Naming/PredicatePrefix
 end
 
 # Custom RSpec matcher for Tom Select selections

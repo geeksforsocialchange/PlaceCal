@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-# rubocop:disable Rails/SkipsModelValidations
+# rubocop:disable-next Rails/SkipsModelValidations
 RSpec.describe PartnerDatatable do
   # Create a view context with access to URL helpers using a real controller
   let(:view_context) do
@@ -612,4 +612,3 @@ RSpec.describe PartnerDatatable do
     end
   end
 end
-# rubocop:enable Rails/SkipsModelValidations
