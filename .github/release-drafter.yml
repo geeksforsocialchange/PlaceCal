@@ -24,7 +24,9 @@ categories:
 # Anything not matched by the categories above still shows under this heading.
 change-template: "- $TITLE (#$NUMBER) @$AUTHOR"
 change-title-escapes: '\<*_&'
-exclude-labels: [duplicate, "won't fix"]
+# `internal` marks work packages merged into a feature branch first: the
+# feature PR that lands them on main is the release note, not each package.
+exclude-labels: [duplicate, "won't fix", internal]
 
 version-resolver:
   major:
@@ -36,6 +38,9 @@ version-resolver:
   default: patch
 
 autolabeler:
+  - label: internal
+    title: ["/^WP \\d/i"]
+    branch: ["/^wp\\//i"]
   - label: enhancement
     title: ["/^feat/i", "/^feature/i", "/^add/i"]
     branch: ["/^feat/i", "/^feature/i", "/^add/i"]
