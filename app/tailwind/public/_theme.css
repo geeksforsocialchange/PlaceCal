@@ -1,7 +1,29 @@
+/* Public site theme tokens.
+
+   OVERRIDE CONTRACT
+   Every themeable value (colour, font, radius, shadow) is a plain custom
+   property on `:root` below. A theme stylesheet loaded after
+   public_tailwind.css (`app/assets/stylesheets/themes/*.scss`, linked from
+   `Views::Layouts::Application` via `site.stylesheet_link`) retheme the site
+   by re-declaring any of these on `:root`; nothing else needs changing.
+
+   The `@theme inline` block underneath only maps Tailwind's utility
+   namespaces onto those properties. Because it is `inline`, Tailwind
+   substitutes the declared value into each utility verbatim, so
+   `--color-primary: var(--color-primary)` makes `.bg-primary` compile to
+   `background-color: var(--color-primary)` and resolve at runtime rather than
+   baking in the default hex. Anything declared with a literal value in
+   `@theme inline` is NOT overridable at runtime. Breakpoints and containers
+   have to stay literal because they are used in media queries; the remaining
+   literals are fixed layout metrics (spacing step, avatar sizes, content
+   measures, map heights) which are not part of a theme's surface.
+*/
 :root {
 	/* app/assets/stylesheets/base/typography.scss */
-	font-size: 18px;
-	line-height: 1.5;
+	--root-font-size: 18px;
+	--root-line-height: 1.5;
+	font-size: var(--root-font-size);
+	line-height: var(--root-line-height);
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 
@@ -11,64 +33,10 @@
 	/* transition discrete properties (i.e. `display`) at the start/end of transition rather than at 50% */
 	transition-behavior: allow-discrete;
 
-	/* Colours */
-
-	/* app/assets/stylesheets/variables/colours.scss and app/assets/stylesheets/application.scss */
-	/* Main site colour */
-	--color-primary: #afcf5a;
-	--color-primary-light: #c3db83;
-	/* Main page background */
-	--color-background: #fffcf0;
-	/* Main copy colour */
-	--color-foreground: #5b4e46;
-	/* Horizontal lines, for example around events */
-	--color-rules: #f1e9da;
-	/* Currently just used on breadcrumb */
-	--color-rules-dark: #decbba;
-	/* Contrast colours */
-	--color-secondary: #f19089;
-	--color-secondary-light: #f4a6a1;
-	/* Deeper salmon for small text / numerals that need contrast on cream */
-	--color-secondary-deep: #e66f67;
-	/* Used for top map stripe and navigation in some states */
-	--color-tertiary: #786551;
-	/* Bottom of the double line on the map */
-	--color-map-stripe-second: #c7b299;
-	/* Print stylesheet greyscale for borders */
-	--color-print-grey: #dadada;
-
-	/* Default-site
-   some of these reuse colours from above
-   FIXME: pink is here twice
-   */
-	/* this was originally #fffbef (0, -1, +1 from --color-background). i'm assuming it was a mistake */
-	--color-home-background: #fffcf0;
-	--color-home-background-2: #f19089;
-	--color-home-background-3: #f0e9da;
-	--color-home-blue: #74d4ec;
-	--color-home-blue-soft: #97dff1;
-	--color-home-pink: #f19089;
-	--color-home-pink-soft: #f4a6a1;
-	--color-home-green: #afcf5a;
-	--color-home-green-soft: #c3db83;
-
-	/* TODO: define other theme vars up here too so they can be overriden at run time */
-}
-
-/* base theme
-https://tailwindcss.com/docs/theme
-https://tailwindcss.com/docs/theme#default-theme-variable-reference
-*/
-@theme inline {
-	/* our root element size is 18px rather than the usual 16, but the sizes and spacing are based on a mix of both, and also percentages, and also base10
-   that means that there is not a good value to put here
-   app/assets/stylesheets/base/typography.scss#L2
-	 large FIXME: normalise sizing
-   */
-	--spacing: 0.25rem;
+	/* Fonts */
 
 	/* app/assets/stylesheets/variables/typography.scss (we do not have Raleway so I have removed it) */
-	/* TODO: preload */
+	/* preloaded in Views::Layouts::Application#view_template */
 	--font-sans: Rawline, sans-serif;
 	--font-serif: Trocchi, Georgia, serif;
 	--font-weight-extra-bold: 800;
@@ -76,6 +44,9 @@ https://tailwindcss.com/docs/theme#default-theme-variable-reference
 	--font-weight-regular: 500;
 	/* this one only from app/assets/stylesheets/components/navigation_component.scss */
 	--font-weight-semibold: 600;
+
+	/* Type scale */
+
 	/* allcaps kickers, tiny badges, micro labels */
 	--text-2xs: 0.72rem;
 	/* meta text, secondary info */
@@ -103,6 +74,127 @@ https://tailwindcss.com/docs/theme#default-theme-variable-reference
 	/* hero responsive title */
 	--text-hero: clamp(2rem, 4vw, 2.8rem);
 
+	/* app/assets/stylesheets/variables/typography.scss */
+	--tracking-wide: 0.16667rem;
+	--leading-hero: 1.05;
+
+	/* Border radii */
+	--radius-card: 1rem;
+	--radius-sm: 0.5rem;
+	/* form controls */
+	--radius-field: 0.65rem;
+	/* custom checkbox box */
+	--radius-check: 6px;
+	/* pills: buttons, chips, badges */
+	--radius-pill: 9999px;
+
+	/* Colours */
+
+	/* app/assets/stylesheets/variables/colours.scss and app/assets/stylesheets/application.scss */
+	/* Main site colour */
+	--color-primary: #afcf5a;
+	--color-primary-light: #c3db83;
+	/* Main page background */
+	--color-background: #fffcf0;
+	/* Main copy colour */
+	--color-foreground: #5b4e46;
+	/* Darker browns for copy sitting on a tinted panel, where --color-foreground
+	   does not clear WCAG AA */
+	--color-foreground-dark: #43392f;
+	--color-foreground-darker: #3d342e;
+	/* Horizontal lines, for example around events */
+	--color-rules: #f1e9da;
+	/* Currently just used on breadcrumb */
+	--color-rules-dark: #decbba;
+	/* Contrast colours */
+	--color-secondary: #f19089;
+	--color-secondary-light: #f4a6a1;
+	/* Deeper salmon for small text / numerals that need contrast on cream */
+	--color-secondary-deep: #e66f67;
+	/* Deepest salmon: large display numerals on cream */
+	--color-secondary-dark: #d65a52;
+	/* Used for top map stripe and navigation in some states */
+	--color-tertiary: #786551;
+	/* Bottom of the double line on the map */
+	--color-map-stripe-second: #c7b299;
+	/* Print stylesheet greyscale for borders */
+	--color-print-grey: #dadada;
+	/* Plain white surfaces: focused inputs, unchecked checkbox boxes */
+	--color-surface: #fff;
+	/* Translucent white over a dark/branded panel */
+	--color-overlay-light: rgb(255 255 255 / 0.15);
+	/* Focus ring tint (--color-foreground at 12%) */
+	--color-focus-ring: rgb(91 78 70 / 0.12);
+	/* Map marker drop shadows */
+	--color-marker-shadow: rgb(0 0 0 / 0.25);
+	--color-dot-shadow: rgb(0 0 0 / 0.3);
+
+	/* Default-site
+   some of these reuse colours from above
+   FIXME: pink is here twice
+   */
+	/* this was originally #fffbef (0, -1, +1 from --color-background). i'm assuming it was a mistake */
+	--color-home-background: #fffcf0;
+	--color-home-background-2: #f19089;
+	--color-home-background-3: #f0e9da;
+	--color-home-blue: #74d4ec;
+	--color-home-blue-soft: #97dff1;
+	--color-home-pink: #f19089;
+	--color-home-pink-soft: #f4a6a1;
+	--color-home-green: #afcf5a;
+	--color-home-green-soft: #c3db83;
+
+	/* Shadows */
+
+	/* halo around the directory hero search field */
+	--shadow-hero-search: 0 0 0 2px rgb(255 255 255 / 0.2);
+	/* map cluster bubbles and partner dots */
+	--shadow-marker: 0 2px 6px var(--color-marker-shadow);
+	--shadow-dot: 0 1px 3px var(--color-dot-shadow);
+}
+
+/* base theme
+https://tailwindcss.com/docs/theme
+https://tailwindcss.com/docs/theme#default-theme-variable-reference
+
+Every themeable entry below is `var(--x)` so the utility resolves against the
+`:root` declaration above at runtime (see the override contract at the top of
+this file).
+*/
+@theme inline {
+	/* our root element size is 18px rather than the usual 16, but the sizes and spacing are based on a mix of both, and also percentages, and also base10
+   that means that there is not a good value to put here
+   app/assets/stylesheets/base/typography.scss#L2
+	 large FIXME: normalise sizing
+   */
+	--spacing: 0.25rem;
+
+	/* Fonts */
+	--font-sans: var(--font-sans);
+	--font-serif: var(--font-serif);
+	--font-weight-extra-bold: var(--font-weight-extra-bold);
+	--font-weight-bold: var(--font-weight-bold);
+	--font-weight-regular: var(--font-weight-regular);
+	--font-weight-semibold: var(--font-weight-semibold);
+
+	/* Type scale */
+	--text-2xs: var(--text-2xs);
+	--text-xs: var(--text-xs);
+	--text-sm: var(--text-sm);
+	--text-detail: var(--text-detail);
+	--text-base: var(--text-base);
+	--text-card: var(--text-card);
+	--text-lg: var(--text-lg);
+	--text-xl: var(--text-xl);
+	--text-section: var(--text-section);
+	--text-2xl: var(--text-2xl);
+	--text-stat: var(--text-stat);
+	--text-3xl: var(--text-3xl);
+	--text-hero: var(--text-hero);
+
+	--tracking-wide: var(--tracking-wide);
+	--leading-hero: var(--leading-hero);
+
 	/* Avatar sizes */
 	--size-avatar-sm: 44px;
 	--size-avatar-md: 52px;
@@ -123,11 +215,11 @@ https://tailwindcss.com/docs/theme#default-theme-variable-reference
 	--height-map-lg: 360px;
 
 	/* Border radii */
-	--radius-card: 1rem;
-	--radius-sm: 0.5rem;
-
-	/* Line heights */
-	--leading-hero: 1.05;
+	--radius-card: var(--radius-card);
+	--radius-sm: var(--radius-sm);
+	--radius-field: var(--radius-field);
+	--radius-check: var(--radius-check);
+	--radius-pill: var(--radius-pill);
 
 	/* Colours */
 
@@ -138,6 +230,8 @@ https://tailwindcss.com/docs/theme#default-theme-variable-reference
 	--color-background: var(--color-background);
 	/* Main copy colour */
 	--color-foreground: var(--color-foreground);
+	--color-foreground-dark: var(--color-foreground-dark);
+	--color-foreground-darker: var(--color-foreground-darker);
 	/* Horizontal lines, for example around events */
 	--color-rules: var(--color-rules);
 	/* Currently just used on breadcrumb */
@@ -146,12 +240,18 @@ https://tailwindcss.com/docs/theme#default-theme-variable-reference
 	--color-secondary: var(--color-secondary);
 	--color-secondary-light: var(--color-secondary-light);
 	--color-secondary-deep: var(--color-secondary-deep);
+	--color-secondary-dark: var(--color-secondary-dark);
 	/* Used for top map stripe and navigation in some states */
 	--color-tertiary: var(--color-tertiary);
 	/* Bottom of the double line on the map */
 	--color-map-stripe-second: var(--color-map-stripe-second);
 	/* Print stylesheet greyscale for borders */
 	--color-print-grey: var(--color-print-grey);
+	--color-surface: var(--color-surface);
+	--color-overlay-light: var(--color-overlay-light);
+	--color-focus-ring: var(--color-focus-ring);
+	--color-marker-shadow: var(--color-marker-shadow);
+	--color-dot-shadow: var(--color-dot-shadow);
 
 	/* Default-site */
 	--color-home-background: var(--color-home-background);
@@ -164,8 +264,14 @@ https://tailwindcss.com/docs/theme#default-theme-variable-reference
 	--color-home-green: var(--color-home-green);
 	--color-home-green-soft: var(--color-home-green-soft);
 
+	/* Shadows */
+	--shadow-hero-search: var(--shadow-hero-search);
+	--shadow-marker: var(--shadow-marker);
+	--shadow-dot: var(--shadow-dot);
+
 	/* app/assets/stylesheets/modules/breakpoints.scss
 		tablet portrait, landscape, desktop
+		literal: used in media queries, cannot be a runtime var
 	*/
 	--breakpoint-md: 600px;
 	--breakpoint-lg: 900px;
@@ -180,7 +286,4 @@ https://tailwindcss.com/docs/theme#default-theme-variable-reference
 	--container-xl: var(--breakpoint-xl);
 	/* app/assets/stylesheets/home/pages/_index.scss */
 	--container-home: var(--breakpoint-home);
-
-	/* app/assets/stylesheets/variables/typography.scss */
-	--tracking-wide: 0.16667rem;
 }

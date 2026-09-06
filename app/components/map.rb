@@ -4,7 +4,6 @@ class Components::Map < Components::Base
   register_value_helper :args_for_map
 
   prop :points, _Nilable(Array)
-  prop :site, _Nilable(String), default: nil
   prop :style, _Nilable(Symbol), default: nil
   prop :compact, _Boolean, default: false
 
@@ -14,7 +13,7 @@ class Components::Map < Components::Base
     div(
       class: @compact ? 'min-h-[330px]' : 'min-h-[500px]',
       data_controller: 'leaflet',
-      data_leaflet_args_value: args_for_map(@points, @site, @style, @compact)
+      data_leaflet_args_value: args_for_map(@points, @style, @compact)
     )
   end
 end

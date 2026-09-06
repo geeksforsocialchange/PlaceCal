@@ -31,7 +31,7 @@ class Components::Directory::Hero < Components::Directory::Base
 
   def render_search
     form(action: @search_path, method: 'get',
-         class: 'flex items-center bg-background rounded-full p-1 pl-2 max-w-(--width-search-hero) shadow-[0_0_0_2px_rgba(255,255,255,0.2)]') do
+         class: 'flex items-center bg-background rounded-full p-1 pl-2 max-w-(--width-search-hero) shadow-hero-search') do
       div(class: 'px-2 text-tertiary') do
         raw(view_context.icon(:search, size: nil, css_class: 'w-[18px] h-[18px]'))
       end

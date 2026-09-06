@@ -277,6 +277,80 @@ RSpec.describe Components::EventFilter, type: :component do
     end
   end
 
+  describe "day strip filter style (D22)" do
+    let(:day_strip_attrs) { base_attrs }
+
+    before { use_current_theme(:example_theme) }
+
+    it "does not render the date picker chrome" do
+      render_inline(described_class.new(**day_strip_attrs))
+
+      expect(page).not_to have_button("Go to date")
+      expect(page).not_to have_css("[data-controller='date-picker']")
+    end
+
+    it "renders seven day links plus All upcoming" do
+      render_inline(described_class.new(**day_strip_attrs))
+
+      expect(page).to have_css("nav.day-strip a", count: 8)
+      expect(page).to have_link("Today")
+      expect(page).to have_link("Tomorrow")
+      expect(page).to have_link("All upcoming")
+    end
+
+    it "labels the remaining days with weekday and day number" do
+      render_inline(described_class.new(**day_strip_attrs))
+
+      expect(page).to have_link("Thu 10")
+      expect(page).to have_link("Mon 14")
+    end
+
+    it "links each day to its dated events URL" do
+      render_inline(described_class.new(**day_strip_attrs))
+
+      expect(page).to have_link("Today", href: "/events/2022/11/8?period=day#paginator")
+      expect(page).to have_link("Tomorrow", href: "/events/2022/11/9?period=day#paginator")
+      expect(page).to have_link("All upcoming", href: "/events?period=future#paginator")
+    end
+
+    it "carries non-default sort and repeating in the links" do
+      render_inline(described_class.new(**day_strip_attrs, sort: "summary", repeating: "off"))
+
+      expect(page).to have_link("Today", href: "/events/2022/11/8?period=day&repeating=off&sort=summary#paginator")
+      expect(page).to have_link("All upcoming", href: "/events?period=future&repeating=off&sort=summary#paginator")
+    end
+
+    it "highlights the current day" do
+      render_inline(described_class.new(**day_strip_attrs))
+
+      expect(page).to have_css("a[aria-current='date']", count: 1)
+      expect(page).to have_css("a[aria-current='date']", text: "Today")
+    end
+
+    it "highlights a navigated day rather than today" do
+      render_inline(described_class.new(**day_strip_attrs, pointer: today + 2))
+
+      expect(page).to have_css("a[aria-current='date']", text: "Thu 10")
+      expect(page).not_to have_css("a[aria-current='date']", text: "Today")
+    end
+
+    it "highlights All upcoming when the period is future" do
+      render_inline(described_class.new(**day_strip_attrs, period: "future"))
+
+      expect(page).not_to have_css("a[aria-current='date']")
+      expect(page).to have_css("a[aria-current='true']", text: "All upcoming")
+    end
+  end
+
+  describe "date picker filter style" do
+    it "is the default when no theme asks for the day strip" do
+      render_inline(described_class.new(**base_attrs))
+
+      expect(page).not_to have_css("nav.day-strip")
+      expect(page).to have_button("Go to date")
+    end
+  end
+
   describe "with different parameter values" do
     context "with week period" do
       let(:attrs) { base_attrs.merge(period: "week") }
@@ -306,6 +380,25 @@ RSpec.describe Components::EventFilter, type: :component do
 
         expect(page).to have_checked_field("repeating_off")
       end
+    end
+  end
+
+  # Components::RegionFilter's own rendering is covered by its component spec.
+  # What is EventFilter's is carrying the selection through the filter forms.
+  describe "region filter" do
+    let(:north) { create(:partnership, name: "North") }
+    let(:south) { create(:partnership, name: "South") }
+
+    it "carries the selected region through the filter forms" do
+      render_inline(described_class.new(**base_attrs, region_tags: [north, south], selected_region: north))
+
+      expect(page).to have_css("input[type=hidden][name=region][value='#{north.slug}']", visible: :all)
+    end
+
+    it "adds no region field when no region is selected" do
+      render_inline(described_class.new(**base_attrs, region_tags: [north, south]))
+
+      expect(page).to have_no_css("input[name=region]", visible: :all)
     end
   end
 end
