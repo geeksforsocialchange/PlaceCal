@@ -57,7 +57,10 @@ class Components::EventFilter < Components::Base
   end
 
   def render_date_picker_fields
-    date_field_tag(:date, @pointer, class: 'filters__date-input', data: { date_picker_target: 'input', action: 'change->date-picker#submit' })
+    # The field has no visible label: the Go to date button opens it. The
+    # aria-label gives it the same name for assistive tech (axe: label).
+    date_field_tag(:date, @pointer, class: 'filters__date-input', aria: { label: t('filters.go_to_date') },
+                                    data: { date_picker_target: 'input', action: 'change->date-picker#submit' })
     # id: nil throughout: the neighbourhood and sort filters carry the same
     # three fields, so the default ids appeared twice on /events (axe
     # duplicate-id). The date picker reaches them by Stimulus target.

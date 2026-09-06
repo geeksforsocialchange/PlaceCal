@@ -69,6 +69,8 @@ en:
       strapline: ""
 
   footer:
+    # Alt text for the PlaceCal logo in the footer of sites without their own
+    logo_alt: "PlaceCal"
     site_navigation: "Site Navigation"
     site_enquiries: "%{site} Enquiries"
     general_enquiries: "General Enquiries"

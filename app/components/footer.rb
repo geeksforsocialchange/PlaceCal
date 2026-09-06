@@ -36,9 +36,9 @@ class Components::Footer < Components::Base
   def render_logo
     div(class: 'footer__item footer__logo') do
       if @site&.footer_logo.present?
-        image_tag(@site.footer_logo.url) if @site.footer_logo.url
+        image_tag(@site.footer_logo.url, alt: @site.name) if @site.footer_logo.url
       else
-        image_tag('logo-footer.svg')
+        image_tag('logo-footer.svg', alt: t('footer.logo_alt'))
       end
     end
   end
@@ -121,7 +121,7 @@ class Components::Footer < Components::Base
       ul do
         @site.supporters&.each do |supporter|
           li(class: "footer__supporter footer__supporter--#{supporter.name.parameterize}") do
-            link_to(supporter.url) { image_tag(supporter.logo.url) }
+            link_to(supporter.url) { image_tag(supporter.logo.url, alt: supporter.name) }
           end
         end
       end
