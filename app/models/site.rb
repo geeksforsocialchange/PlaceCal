@@ -6,6 +6,7 @@
 #
 #  id                :bigint           not null, primary key
 #  badge_zoom_level  :string
+#  contact_email     :string
 #  description       :text
 #  description_html  :string
 #  events_count      :integer          default(0), not null
@@ -21,7 +22,7 @@
 #  place_name        :string
 #  slug              :string           not null
 #  tagline           :string
-#  theme             :string
+#  theme             :string           default("pink")
 #  url               :string           not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
@@ -61,12 +62,7 @@ class Site < ApplicationRecord
   DIRECTORY_URL = Rails.configuration.x.directory_url
 
   # ==== Enums / Enumerize ====
-  # Theme picker
-  enumerize :theme,
-            in: %i[pink orange green blue custom],
-            default: :pink
-  # theme -- managed by enumerize, attribute declaration skipped
-
+  # theme -- no enumerize: validated against the extension registry below (#3368, D2)
   enumerize :badge_zoom_level,
             in: %i[ward district],
             default: :ward
@@ -74,6 +70,7 @@ class Site < ApplicationRecord
 
   # ==== Attributes ====
   # Columns marked (nullable) have no NOT NULL constraint in the DB.
+  attribute :contact_email,     :string                          # nullable
   attribute :description,       :text                            # nullable
   attribute :description_html,  :string                          # nullable, populated by HtmlRenderCache
   attribute :events_count,      :integer, default: 0             # NOT NULL
@@ -87,6 +84,7 @@ class Site < ApplicationRecord
   attribute :place_name,        :string                          # nullable
   attribute :slug,              :string                          # NOT NULL
   attribute :tagline,           :string                          # nullable
+  attribute :theme,             :string,  default: 'pink'        # nullable
   attribute :url,               :string                          # NOT NULL
 
   friendly_id :name, use: :slugged
@@ -127,6 +125,20 @@ class Site < ApplicationRecord
   validates :name, :slug, :url, presence: true
   validates :slug, uniqueness: true
   validates :hero_text, length: { maximum: 120 }
+  validates :contact_email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
+  # Themes come from the extension registry, not a static list, so an
+  # extension can add one without touching this model (#3368, D2).
+  # allow_blank keeps the enumerize-era behaviour where a site could carry no
+  # theme at all and render core's default styling (#3368).
+  #
+  # Only checked when the theme is being changed. A registry is not a fixed
+  # list: uninstalling an extension (doc/extensions.md tells self-hosters they
+  # may delete the `group :extensions` block) would otherwise leave every site
+  # on that theme permanently unsavable from admin, over a value nobody
+  # touched. Rendering already degrades to PlaceCal::Theme::NONE, so the row
+  # stays editable and the site keeps working on core's default styling.
+  validates :theme, inclusion: { in: ->(_site) { PlaceCal::Extensions.theme_names } },
+                    allow_blank: true, if: :theme_changed?
 
   # ==== Scopes ====
   scope :published, -> { where(is_published: true) }
@@ -137,8 +149,21 @@ class Site < ApplicationRecord
     "#{id}: #{name}"
   end
 
+  # Where this site's Join ("get in touch") enquiries are sent. Sites without
+  # their own address fall back to the PlaceCal support inbox (#3368, D13).
+  #
+  # @return [String]
+  def join_recipient
+    contact_email.presence || Join::DEFAULT_RECIPIENT
+  end
+
   # The site's public URL, falling back to its conventional placecal.org
   # subdomain when no explicit url is set.
+  #
+  # This is the site's canonical base: robots.txt advertises its sitemap from
+  # here and every sitemap URL hangs off it, so it must be the apex the site
+  # should be indexed under, with no path. A site reachable at more than one
+  # hostname still advertises this one.
   #
   # @return [String]
   def directory_url
@@ -170,12 +195,22 @@ class Site < ApplicationRecord
       .flatten
   end
 
+  # Whether a site shows News in its nav is derived from this count (#3368 D6),
+  # so every page of every site runs it. Memoised per instance for the request
+  # and cached across requests for ten minutes.
+  #
+  # There is no cheap invalidation hook: an Article belongs to a site only
+  # indirectly, through its partners and tags (Article.for_site), so saving one
+  # article can change the count for any number of sites. Rather than sweep
+  # every site on every article save, the count goes stale for at most the TTL,
+  # which only ever means a News link appearing or leaving the nav a few
+  # minutes late.
+  #
   # @return [Integer] published articles count for this site
   def news_article_count
-    Article
-      .for_site(self)
-      .published
-      .count
+    @news_article_count ||= Rails.cache.fetch(['site', id, 'news_article_count'], expires_in: 10.minutes) do
+      Article.for_site(self).published.count
+    end
   end
 
   # @return [Boolean] whether neighbourhood badges should be shown
@@ -230,15 +265,12 @@ class Site < ApplicationRecord
   end
 
   # @return [String, nil] asset pipeline stylesheet path for this site's theme,
-  #   or nil when no stylesheet should be linked. For the :custom theme the
-  #   per-site asset (themes/custom/<slug>.css) may not exist in the pipeline;
-  #   in that case we return nil so the page renders with the default styling
-  #   instead of raising Propshaft::MissingAssetError (see issue #2936).
+  #   or nil when no stylesheet should be linked. Any theme whose stylesheet is
+  #   missing from the pipeline resolves to nil, so the page renders with the
+  #   default styling instead of raising Propshaft::MissingAssetError
+  #   (#2936, #3368).
   def stylesheet_link
-    return "themes/#{theme}" unless theme == :custom
-
-    custom_path = "themes/custom/#{slug}"
-    custom_path if asset_present?("#{custom_path}.css")
+    PlaceCal::Theme.for(self).stylesheet_path
   end
 
   # @return [String, false] Open Graph image URL, or false
@@ -249,17 +281,6 @@ class Site < ApplicationRecord
   # @return [String, false] tagline for OG description, or false
   def og_description
     tagline && tagline.empty? ? false : tagline
-  end
-
-  private
-
-  # @param logical_path [String] asset logical path, e.g. "themes/custom/foo.css"
-  # @return [Boolean] whether the asset resolves in the pipeline. Uses the same
-  #   resolver that stylesheet_link_tag relies on (Propshaft::Helper#compute_asset_path),
-  #   so the guard matches link behaviour in both development (dynamic) and
-  #   production (static manifest) modes.
-  def asset_present?(logical_path)
-    Rails.application.assets&.resolver&.resolve(logical_path).present?
   end
 
   # ==== Class methods ====
@@ -312,13 +333,51 @@ class Site < ApplicationRecord
       Site.find_by(slug: site_slug)
     end
 
-    # Get a list of Sites whose neighbourhood subtree and tags
-    # match the given partner (i.e. where the partner would appear).
+    # Get a list of Sites where the given partner would appear.
+    #
+    # Mirrors PartnersQuery#build_base_scope: a site scopes its partners by its
+    # neighbourhoods, by its tags, or by both (tag AND neighbourhood). A tagged
+    # site with no neighbourhoods is tag-only, so a partnership site such as
+    # The Trans Dimension contains every partner carrying one of its tags
+    # wherever that partner lives (#3368 D7, D24).
     #
     # @param partner [Partner]
     # @return [Array<Site>]
     def sites_that_contain_partner(partner)
-      # Collect all neighbourhood IDs the partner is associated with
+      neighbourhood_site_ids = site_ids_covering_partner_neighbourhoods(partner)
+      tag_site_ids = SitesTag.where(tag_id: partner.tag_ids).distinct.pluck(:site_id)
+
+      candidate_ids = neighbourhood_site_ids | tag_site_ids
+      return [] if candidate_ids.empty?
+
+      # Only published sites are live on the public directory, so a partner can
+      # only "appear" on a published site.
+      sites = Site.published
+                  .where(id: candidate_ids)
+                  .includes(:tags, :neighbourhoods)
+                  .order(:name)
+
+      sites.select do |site|
+        tagged = site.tags.any?
+        placed = site.neighbourhoods.any?
+
+        next false unless tagged || placed
+        next false if tagged && tag_site_ids.exclude?(site.id)
+        next false if placed && neighbourhood_site_ids.exclude?(site.id)
+
+        true
+      end
+    end
+
+    private
+
+    # Sites with at least one neighbourhood covering the partner's address or
+    # service areas. A partner's neighbourhood is in a site's subtree when the
+    # site's neighbourhood is an ancestor of (or equal to) the partner's.
+    #
+    # @param partner [Partner]
+    # @return [Array<Integer>] site ids
+    def site_ids_covering_partner_neighbourhoods(partner)
       partner_neighbourhood_ids = []
       partner_neighbourhood_ids << partner.address.neighbourhood_id if partner.address&.neighbourhood_id
       partner_neighbourhood_ids += partner.service_areas.pluck(:neighbourhood_id)
@@ -326,30 +385,15 @@ class Site < ApplicationRecord
 
       return [] if partner_neighbourhood_ids.empty?
 
-      # A partner's neighbourhood is in a site's subtree when the site's
-      # neighbourhood is an ancestor of (or equal to) the partner's neighbourhood.
       matching_neighbourhood_ids = Neighbourhood.where(id: partner_neighbourhood_ids)
                                                 .flat_map(&:path_ids)
                                                 .uniq
 
       return [] if matching_neighbourhood_ids.empty?
 
-      site_ids = SitesNeighbourhood.where(neighbourhood_id: matching_neighbourhood_ids)
-                                   .distinct
-                                   .pluck(:site_id)
-
-      return [] if site_ids.empty?
-
-      # Only published sites are live on the public directory, so a partner can
-      # only "appear" on a published site.
-      sites = Site.published.where(id: site_ids).includes(:tags).order(:name)
-
-      # Sites with tags only match if the partner has at least one of those tags
-      partner_tag_ids = partner.tag_ids.to_set
-
-      sites.select do |site|
-        site.tags.empty? || site.tags.any? { |tag| partner_tag_ids.include?(tag.id) }
-      end
+      SitesNeighbourhood.where(neighbourhood_id: matching_neighbourhood_ids)
+                        .distinct
+                        .pluck(:site_id)
     end
   end
 end

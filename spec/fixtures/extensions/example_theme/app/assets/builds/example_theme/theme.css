@@ -1,0 +1,7 @@
+/* Committed, prebuilt stylesheet for the fixture extension (D4). */
+:root {
+	--color-primary: #123456;
+}
+.example-theme-home {
+	border: 1px solid var(--color-primary);
+}

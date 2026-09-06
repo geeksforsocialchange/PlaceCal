@@ -59,3 +59,38 @@ When("I visit the news page for {string}") do |site_name|
   port = Capybara.current_session.server.port
   visit "http://#{site.slug}.lvh.me:#{port}/news"
 end
+
+# Region filter: a "region" is a Partnership tag on the site (#3368 D7)
+
+Given("the site {string} has the partnership {string}") do |site_name, partnership_name|
+  site = Site.find_by(name: site_name)
+  partnership = Partnership.find_by(name: partnership_name) ||
+                create(:partnership, name: partnership_name)
+  site.tags << partnership unless site.tags.include?(partnership)
+end
+
+Given("there is a partner called {string} in the site {string} with the partnership {string}") do |partner_name, site_name, partnership_name|
+  site = Site.find_by(name: site_name)
+  neighbourhood = site.neighbourhoods.first
+  partnership = Partnership.find_by(name: partnership_name) ||
+                create(:partnership, name: partnership_name)
+  @partner = create(:partner, name: partner_name, address: create(:address, neighbourhood: neighbourhood))
+  @partner.tags << partnership
+end
+
+# Server-rendered visit that works under the rack_test driver (no Capybara
+# server running, so the port-based site steps above cannot be used).
+When("I browse the events page for the site {string}") do |site_name|
+  site = Site.find_by(name: site_name)
+  visit "http://#{site.slug}.lvh.me/events"
+end
+
+When("I filter by the region {string}") do |region_name|
+  within(".region-filter") { click_link(region_name) }
+end
+
+Then("the region {string} should be selected") do |region_name|
+  within(".region-filter") do
+    expect(page).to have_css('a[aria-current="page"]', text: region_name)
+  end
+end

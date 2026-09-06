@@ -3,9 +3,18 @@
 require_relative 'boot'
 require 'rails/all'
 
+# The extension contract has to exist before Bundler requires the extension
+# engines: an engine's class body calls `include PlaceCal::Extension` while it
+# is being required, and its initializers register into PlaceCal::Extensions at
+# boot. lib/ is not autoloaded, so it is required here (extension.rb requires
+# the registry itself).
+require_relative '../lib/placecal/extension'
+
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
-Bundler.require(*Rails.groups)
+# :extensions holds installation-specific engines (see the Gemfile block and
+# doc/extensions.md); it is not an environment group, so it is named here.
+Bundler.require(*Rails.groups, :extensions)
 
 module PlaceCal
   class Application < Rails::Application

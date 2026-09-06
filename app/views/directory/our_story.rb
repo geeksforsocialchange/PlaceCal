@@ -119,7 +119,7 @@ class Views::Directory::OurStory < Views::Base
       div do
         div(class: 'flex items-baseline gap-2.5 mb-2') do
           # Deepened coral (vs --color-secondary-deep) so the large numeral clears WCAG AA (3:1) on cream.
-          span(class: 'font-serif text-[1.9rem] leading-none -tracking-[0.02em]', style: 'color: #d65a52') { feature[:num] } if feature[:num]
+          span(class: 'font-serif text-[1.9rem] leading-none -tracking-[0.02em]', style: 'color: var(--color-secondary-dark)') { feature[:num] } if feature[:num]
           span(class: 'allcaps-label text-tertiary') { t("#{base}.kicker") }
         end
         h3(class: 'mt-0 mb-2 text-[1.45rem] leading-[1.15] font-bold text-foreground') { t("#{base}.title") }
@@ -134,8 +134,8 @@ class Views::Directory::OurStory < Views::Base
         h2(class: 'mx-auto mt-0 mb-4 max-w-[760px] font-serif font-regular text-[clamp(1.9rem,3.8vw,2.6rem)] leading-[1.12] text-foreground text-balance') do
           t("#{T}.turning.heading")
         end
-        # #43392f (the design's text-on-colour brown) clears WCAG AA on the pink panel; the prior opacity-85 brown did not.
-        p(class: 'mx-auto my-0 max-w-[560px] text-[1.05rem] leading-[1.55]', style: 'color: #43392f') do
+        # --color-foreground-dark (the design's text-on-colour brown) clears WCAG AA on the pink panel; the prior opacity-85 brown did not.
+        p(class: 'mx-auto my-0 max-w-[560px] text-[1.05rem] leading-[1.55]', style: 'color: var(--color-foreground-dark)') do
           t("#{T}.turning.body")
         end
         image_tag "#{IMAGE_BASE}/logo_onpink.svg", alt: t("#{T}.turning.logo_alt"), class: 'inline h-[46px] mt-7'

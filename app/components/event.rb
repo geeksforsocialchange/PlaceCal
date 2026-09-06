@@ -20,7 +20,7 @@ class Components::Event < Components::Base
   private
 
   def render_page_layout
-    Hero(summary, @site_tagline)
+    Hero(summary, @site_tagline, section: t('events.show.section'))
     a(class: 'p-name u-url', href: event_path(id), hidden: true) { summary }
     div(class: 'container-public') { render_event_details }
   end
@@ -48,7 +48,7 @@ class Components::Event < Components::Base
       render_detail('event__duration', :event_duration, duration) if duration
       render_date_detail
       render_detail('event__repeats', :event_repeats, repeats) if repeats
-      render_detail('event__repeats', :event_online, 'Online') if online?
+      render_detail('event__repeats', :event_online, t('events.card.online')) if online?
       render_organiser if show_organiser?
       render_place if show_place?
     end
@@ -101,6 +101,9 @@ class Components::Event < Components::Base
     div(class: 'event__detail event__organiser') do
       raw(view_context.icon(:partner, size: nil))
       plain ' '
+      # Optional prefix such as "by ", blank in core; themes set it.
+      prefix = t('events.card.organiser_prefix')
+      span(class: 'event__organiser-prefix') { prefix } if prefix.present?
       link_to(organiser.name.truncate(25), partner_path(organiser), data: { turbo_frame: '_top' })
     end
   end
@@ -124,20 +127,21 @@ class Components::Event < Components::Base
     hours = mins / 60
 
     if hours < 25
-      mins_str = (mins % 60).positive? ? "#{mins % 60} mins" : ''
-      hours_str = hours.positive? ? pluralize(hours, 'hour') : ''
+      mins_str = (mins % 60).positive? ? t('events.card.duration_minutes', count: mins % 60) : ''
+      hours_str = hours.positive? ? t('events.card.duration_hours', count: hours) : ''
       [hours_str, mins_str].reject(&:empty?).join(' ')
     else
       distance_of_time_in_words(@event.dtend - @event.dtstart)
     end
   end
 
+  # Formats come from locale keys so a theme can change them (for example a
+  # zero-padded day for a big numeral treatment) through theme_overrides.
+  # The page layout has its own keys. `%o` stands for the ordinal day (2nd).
   def formatted_date(date)
-    if date.year == Time.zone.now.year
-      date.strftime('%e %b')
-    else
-      date.strftime('%e %b %Y')
-    end
+    scope = page? ? 'events.page' : 'events.card'
+    key = date.year == Time.zone.now.year ? 'date_format' : 'date_format_with_year'
+    date.strftime(t("#{scope}.#{key}").gsub('%o', date.day.ordinalize))
   end
 
   def date
@@ -158,8 +162,13 @@ class Components::Event < Components::Base
     @event.address&.street_address&.delete('\\')
   end
 
+  # The frequency comes from the calendar feed (RFC 5545 FREQ), so an
+  # unmapped value falls back to the raw word rather than a missing key.
   def repeats
-    @event.rrule.present? ? @event.rrule[0]['table']['frequency'].titleize : false
+    return false if @event.rrule.blank?
+
+    frequency = @event.rrule[0]['table']['frequency'].to_s
+    t("events.card.frequency.#{frequency.downcase}", default: frequency.titleize)
   end
 
   def neighbourhood_name

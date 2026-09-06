@@ -15,6 +15,7 @@ class Views::Admin::Sites::FormTabBasic < Views::Admin::Base
       render_name_field
       render_site_admin_field(site)
       render_place_name_field
+      render_contact_email_field
       render_tagline_field
       render_hero_text_field
       render_description_field
@@ -68,6 +69,14 @@ class Views::Admin::Sites::FormTabBasic < Views::Admin::Base
       raw form.label(:place_name, attr_label(:site, :place_name), class: 'fieldset-legend')
       raw form.input_field(:place_name, class: 'input input-bordered w-full')
       p(class: 'fieldset-label') { t('admin.sites.fields.place_name_hint') }
+    end
+  end
+
+  def render_contact_email_field
+    fieldset(class: 'fieldset') do
+      raw form.label(:contact_email, attr_label(:site, :contact_email), class: 'fieldset-legend')
+      raw form.input_field(:contact_email, as: :email, class: 'input input-bordered w-full')
+      p(class: 'fieldset-label') { t('admin.sites.fields.contact_email_hint') }
     end
   end
 

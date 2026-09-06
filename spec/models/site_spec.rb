@@ -6,6 +6,7 @@
 #
 #  id                :bigint           not null, primary key
 #  badge_zoom_level  :string
+#  contact_email     :string
 #  description       :text
 #  description_html  :string
 #  events_count      :integer          default(0), not null
@@ -21,7 +22,7 @@
 #  place_name        :string
 #  slug              :string           not null
 #  tagline           :string
-#  theme             :string
+#  theme             :string           default("pink")
 #  url               :string           not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
@@ -54,6 +55,23 @@ RSpec.describe Site, type: :model do
   describe "validations" do
     it { is_expected.to validate_presence_of(:name) }
 
+    describe "contact_email" do
+      it "is valid when blank" do
+        expect(build(:site, contact_email: nil)).to be_valid
+        expect(build(:site, contact_email: "")).to be_valid
+      end
+
+      it "is valid with a well-formed address" do
+        expect(build(:site, contact_email: "hello@example.org")).to be_valid
+      end
+
+      it "is invalid with a malformed address" do
+        site = build(:site, contact_email: "not-an-email")
+        expect(site).not_to be_valid
+        expect(site.errors[:contact_email]).to be_present
+      end
+    end
+
     # NOTE: slug presence is enforced at the model and database level, but a
     # blank slug is auto-generated from the name before validation (see
     # #should_generate_new_friendly_id? and the "FriendlyId" specs below), so
@@ -61,6 +79,18 @@ RSpec.describe Site, type: :model do
 
     # NOTE: FriendlyId handles slug uniqueness at the database level
     # No explicit validates_uniqueness_of on slug in the model
+  end
+
+  describe "#join_recipient" do
+    it "returns the site's own contact email when set" do
+      site = build(:site, contact_email: "hello@example.org")
+      expect(site.join_recipient).to eq("hello@example.org")
+    end
+
+    it "falls back to the default recipient when blank" do
+      expect(build(:site, contact_email: nil).join_recipient).to eq(Join::DEFAULT_RECIPIENT)
+      expect(build(:site, contact_email: "").join_recipient).to eq(Join::DEFAULT_RECIPIENT)
+    end
   end
 
   describe "factories" do
@@ -152,6 +182,87 @@ RSpec.describe Site, type: :model do
       site = build(:site, theme: "pink")
       expect(site.theme).to eq("pink")
     end
+
+    it "defaults to pink" do
+      expect(described_class.new.theme).to eq("pink")
+    end
+
+    it "accepts every theme registered in the extension registry" do
+      PlaceCal::Extensions.theme_names.each do |name|
+        site = build(:site, theme: name)
+        expect(site).to be_valid, "expected theme #{name} to be valid: #{site.errors[:theme].inspect}"
+      end
+    end
+
+    it "rejects a theme that is not registered" do
+      site = build(:site, theme: "nope")
+      expect(site).not_to be_valid
+      expect(site.errors[:theme]).to be_present
+    end
+
+    it "accepts a theme registered by an extension", :theme_registry do
+      PlaceCal::Extensions.register_theme(:late_arrival)
+      expect(build(:site, theme: "late_arrival")).to be_valid
+    end
+
+    it "allows a blank theme, as the enumerize-era column did" do
+      site = create(:site, theme: nil)
+      expect(site).to be_valid
+      expect(site.reload.theme).to be_nil
+      expect(site.stylesheet_link).to be_nil
+    end
+
+    it "allows an empty string theme" do
+      expect(build(:site, theme: "")).to be_valid
+    end
+
+    # Uninstalling an extension must not strand every site that used its theme
+    # (doc/extensions.md invites self-hosters to delete the extensions group).
+    context "when the site's theme is no longer registered", :theme_registry do
+      let(:orphan) do
+        PlaceCal::Extensions.register_theme(:doomed)
+        site = create(:site, theme: "doomed")
+        PlaceCal::Extensions.reset!
+        site.reload
+      end
+
+      it "stays valid and savable" do
+        expect(orphan).to be_valid
+        expect(orphan.update(name: "Renamed")).to be true
+        expect(orphan.reload.theme).to eq("doomed")
+      end
+
+      it "still rejects a change to another unregistered theme" do
+        orphan.theme = "also-gone"
+
+        expect(orphan).not_to be_valid
+        expect(orphan.errors[:theme]).to be_present
+      end
+
+      it "degrades to the null theme at render" do
+        expect(PlaceCal::Theme.for(orphan)).to eq(PlaceCal::Theme::NONE)
+      end
+    end
+
+    describe "#stylesheet_link" do
+      it "returns the core theme stylesheet" do
+        %w[pink orange green blue].each do |name|
+          expect(build(:site, theme: name).stylesheet_link).to eq("themes/#{name}")
+        end
+      end
+
+      it "returns nil when the theme is not registered" do
+        expect(build(:site, theme: "nope").stylesheet_link).to be_nil
+      end
+
+      it "returns nil and logs when the theme's stylesheet is missing from the pipeline", :theme_registry do
+        PlaceCal::Extensions.register_theme(:ghost) { |theme| theme.stylesheet "ghost/theme" }
+        allow(Rails.logger).to receive(:warn)
+
+        expect(build(:site, theme: "ghost").stylesheet_link).to be_nil
+        expect(Rails.logger).to have_received(:warn).with(%r{ghost/theme\.css})
+      end
+    end
   end
 
   describe "configuration" do
@@ -239,6 +350,49 @@ RSpec.describe Site, type: :model do
 
       expect(described_class.sites_that_contain_partner(partner)).to contain_exactly(published)
     end
+
+    context "with a tag-only site" do
+      let(:partnership) { create(:partnership) }
+      let!(:tag_only_site) { create(:site, is_published: true).tap { |s| s.tags << partnership } }
+
+      it "includes the site when the partner carries its tag" do
+        partner.tags << partnership
+
+        expect(described_class.sites_that_contain_partner(partner)).to include(tag_only_site)
+      end
+
+      it "excludes the site when the partner does not carry its tag" do
+        expect(described_class.sites_that_contain_partner(partner)).not_to include(tag_only_site)
+      end
+
+      it "includes the site for a partner with no neighbourhood at all" do
+        placeless = create(:partner, address: create(:address, neighbourhood: nil))
+        placeless.tags << partnership
+
+        expect(described_class.sites_that_contain_partner(placeless)).to contain_exactly(tag_only_site)
+      end
+    end
+
+    context "with a site that has both tags and neighbourhoods" do
+      let(:partnership) { create(:partnership) }
+      let!(:both_site) do
+        create(:site, is_published: true, neighbourhoods: [neighbourhood]).tap { |s| s.tags << partnership }
+      end
+
+      it "includes the site only when the partner matches the tag as well as the neighbourhood" do
+        expect(described_class.sites_that_contain_partner(partner)).not_to include(both_site)
+
+        partner.tags << partnership
+        expect(described_class.sites_that_contain_partner(partner)).to include(both_site)
+      end
+
+      it "excludes the site for a tagged partner outside its neighbourhoods" do
+        elsewhere = create(:partner, address: create(:address, neighbourhood: create(:neighbourhood)))
+        elsewhere.tags << partnership
+
+        expect(described_class.sites_that_contain_partner(elsewhere)).not_to include(both_site)
+      end
+    end
   end
 
   describe "scopes" do
@@ -251,6 +405,46 @@ RSpec.describe Site, type: :model do
         expect(result.first).to eq(site_a)
         expect(result.last).to eq(site_z)
       end
+    end
+  end
+
+  # Derived nav asks for this on every request of every site (#3368 D6).
+  describe "#news_article_count" do
+    let(:site) { create(:site) }
+    let(:cache_key) { ["site", site.id, "news_article_count"] }
+
+    around do |example|
+      original = Rails.cache
+      Rails.cache = ActiveSupport::Cache::MemoryStore.new
+      example.run
+    ensure
+      Rails.cache = original
+    end
+
+    it "stores the computed count" do
+      expect(site.news_article_count).to eq(0)
+      expect(Rails.cache.read(cache_key)).to eq(0)
+    end
+
+    it "serves a later instance from the cache instead of counting again" do
+      Rails.cache.write(cache_key, 7)
+
+      expect(described_class.find(site.id).news_article_count).to eq(7)
+    end
+
+    it "caches for ten minutes rather than forever" do
+      allow(Rails.cache).to receive(:fetch).and_call_original
+
+      site.news_article_count
+
+      expect(Rails.cache).to have_received(:fetch).with(cache_key, expires_in: 10.minutes)
+    end
+
+    it "keys the cache per site" do
+      other = create(:site)
+      Rails.cache.write(cache_key, 7)
+
+      expect(other.news_article_count).to eq(0)
     end
   end
 end
