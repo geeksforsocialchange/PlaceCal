@@ -211,6 +211,55 @@ end
 - Keyboard navigation and visible focus states
 - Sufficient colour contrast (WCAG AA — the suite has `axe-core-rspec` coverage)
 
-Remember: views are clean, typed, semantic Phlex focused on presentation.
-Business logic belongs in models, query objects (`app/queries/`), or services —
-not in views.
+## Rules that must hold
+
+Stated as forbidden/allowed pairs from this codebase, because "keep views thin"
+matches nothing.
+
+### No business rules in a view or component
+
+```ruby
+# ❌ never: site scoping or visibility rebuilt inside view_template
+def view_template
+  partners = Partner.joins(:address).where(addresses: { neighbourhood_id: site.neighbourhood_ids })
+  partners.each { |p| PartnerCard(p) }
+end
+
+# ✅ always: the query object owns the rule; the view receives the result as a prop
+prop :partners, ActiveRecord::Relation, reader: :private   # from PartnersQuery.new(site:).call
+def view_template
+  partners.each { |p| PartnerCard(p) }
+end
+```
+
+Business logic belongs in models, query objects (`app/queries/`), or services.
+A `where`, a date window, or a permission check inside `app/views/` or
+`app/components/` is a violation.
+
+### No user-facing string literals
+
+```ruby
+# ❌ never
+h2 { 'Upcoming events' }
+button { 'Clear filters' }
+
+# ✅ always
+h2 { t('directory.partners.show.upcoming_events') }
+button { t('admin.actions.clear_filters') }
+```
+
+### `safe()` is only ever the last expression in a block
+
+```ruby
+# ❌ never: the SafeValue is silently discarded
+div do
+  safe(SVG_ICON)
+  span { label }
+end
+
+# ✅ always: raw() writes to the buffer wherever it sits
+div do
+  raw safe(SVG_ICON)
+  span { label }
+end
+```

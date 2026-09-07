@@ -13,10 +13,11 @@ stale.
 
 ## What's here
 
-| Plugin                 | Type  | What it does                                                                                                                                                                                           | When it triggers                                       |
-| ---------------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------ |
-| `rails-hotwire-driver` | skill | Drive the running dev server from the terminal — log in via Devise, submit forms (CSRF handled), inspect Turbo Streams, read `development.log` by request id. The runtime half of the **verify loop**. | Verifying a server-rendered change actually works      |
-| `better-stimulus`      | agent | Opinionated StimulusJS best practices (Values API, mixins, late binding, Turbo teardown), adapted to PlaceCal's native-JS / importmap / `controllers/mixins/` setup.                                   | Writing, reviewing, or debugging a Stimulus controller |
+| Plugin                 | Type  | What it does                                                                                                                                                                                                                                                                   | When it triggers                                         |
+| ---------------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------- |
+| `rails-hotwire-driver` | skill | Drive the running dev server from the terminal — log in via Devise, submit forms (CSRF handled), inspect Turbo Streams, read `development.log` by request id. The runtime half of the **verify loop**.                                                                         | Verifying a server-rendered change actually works        |
+| `judge-arch`           | skill | Fresh-context architectural review of a diff against the four questions (boundary placement, data ownership, dependency direction, error handling) and PlaceCal's own layer rules, with a grep-test for web concerns leaking into domain code. Findings only, PASS when clean. | Before calling a non-trivial change done or opening a PR |
+| `better-stimulus`      | agent | Opinionated StimulusJS best practices (Values API, mixins, late binding, Turbo teardown), adapted to PlaceCal's native-JS / importmap / `controllers/mixins/` setup.                                                                                                           | Writing, reviewing, or debugging a Stimulus controller   |
 
 ## Provenance
 
@@ -33,6 +34,17 @@ we already have. Notably we skipped `rails-security-auditor` because Brakeman
 cover that ground, and `rails-simplifier` because its safe rules duplicate
 `/code-review` + `/simplify` while its opinionated refactors fight a mature
 codebase.
+
+`judge-arch` is adapted from Tech Fleet's
+[enterprise-software-AI-skills](https://github.com/techfleetworks/enterprise-software-AI-skills)
+(MIT). We took the review rubric and the fresh-context stance and rewrote the
+examples for Rails/Phlex; the mechanical gate script and its React/Supabase
+presets were left out because Brakeman, RuboCop, `strong_migrations` and the
+skill's grep-test already cover PlaceCal's layer rules. The rest of that
+collection (OWASP, test pyramid, ADRs, release safety, SRE, compliance, WCAG,
+browser support, usability) restates things PlaceCal already enforces
+specifically, so it was not adopted; the vendoring PR maps each one to where
+we already do it.
 
 ## Install
 
