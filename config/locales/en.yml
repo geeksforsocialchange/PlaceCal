@@ -441,6 +441,19 @@ en:
       contact_heading: "Get in touch"
       address_heading: "Address"
       opening_times_heading: "Opening times"
+      # Events browser header (app/views/partners/show.rb#render_events_header)
+      upcoming_events: "Upcoming events"
+      events_count_events:
+        one: "%{count} event"
+        other: "%{count} events"
+      # Composed after events_count_events, e.g. "23 events" + "across 20 days"
+      events_count_days:
+        one: "across %{count} day"
+        other: "across %{count} days"
+      show_label: "Show"
+      show_more_days:
+        one: "Show %{count} more day"
+        other: "Show %{count} more days"
       # Headings in a managed place's block, which repeats the partner's own
       place_contact_heading: "Contact"
       # %{areas} is the rendered list of service areas, already escaped

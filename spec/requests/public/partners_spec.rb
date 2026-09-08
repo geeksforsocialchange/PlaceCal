@@ -285,6 +285,91 @@ RSpec.describe "Public Partners", type: :request do
     end
   end
 
+  describe "GET /partners/:id events browser" do
+    let(:partner) { create(:riverside_partner, address: create(:riverside_address, neighbourhood: ward)) }
+    let(:calendar) { create(:calendar, organiser: partner) }
+
+    # The full page body also carries a JSON-LD block listing every upcoming
+    # event (unrelated to the day-windowed browser), so assertions on what's
+    # actually shown are scoped to the events-browser turbo frame itself.
+    def events_browser_html
+      response.body[%r{<turbo-frame[^>]*id="events-browser"[^>]*>.*?</turbo-frame>}m]
+    end
+
+    context "with a handful of events across several days (flat branch)" do
+      before do
+        10.times do |i|
+          create(:event,
+                 organiser: partner,
+                 calendar: calendar,
+                 summary: "Day #{i} Event",
+                 dtstart: (i + 1).days.from_now.at_beginning_of_hour,
+                 dtend: (i + 1).days.from_now.at_beginning_of_hour + 1.hour)
+        end
+      end
+
+      it "shows the heading and the total event/day count, before the days limit" do
+        get partner_url(partner, host: "#{site.slug}.lvh.me")
+
+        expect(response.body).to include("Upcoming events")
+        expect(response.body).to include("10 events")
+        expect(response.body).to include("across 10 days")
+      end
+
+      it "shows only the first 4 days by default, with a show-more-days link" do
+        get partner_url(partner, host: "#{site.slug}.lvh.me")
+        html = events_browser_html
+
+        expect(html).to include("Day 0 Event")
+        expect(html).to include("Day 3 Event")
+        expect(html).not_to include("Day 4 Event")
+
+        expect(html).to include("Show 4 more days")
+        expect(html).to include(%(class="partner-events__more"))
+        expect(html).to include("days=8")
+        expect(html).to include(%(data-turbo-frame="events-browser"))
+      end
+
+      it "appends the next days when days is requested explicitly" do
+        get partner_url(partner, host: "#{site.slug}.lvh.me", params: { days: 8 })
+        html = events_browser_html
+
+        expect(html).to include("Day 0 Event")
+        expect(html).to include("Day 7 Event")
+        expect(html).not_to include("Day 8 Event")
+        expect(html).to include("Show 2 more days")
+      end
+
+      it "shows a repeating select with the filters.repeating options" do
+        get partner_url(partner, host: "#{site.slug}.lvh.me")
+
+        expect(response.body).to include(%(class="partner-events__repeating"))
+        expect(response.body).to include("Show repeats")
+        expect(response.body).to include("Hide repeats")
+      end
+    end
+
+    context "with many events (paginated branch, default upcoming period)" do
+      before do
+        31.times do |i|
+          create(:event,
+                 organiser: partner,
+                 calendar: calendar,
+                 dtstart: (i + 1).days.from_now.at_beginning_of_hour,
+                 dtend: (i + 1).days.from_now.at_beginning_of_hour + 1.hour)
+        end
+      end
+
+      it "still shows the heading and total count, windowed by day" do
+        get partner_url(partner, host: "#{site.slug}.lvh.me")
+
+        expect(response.body).to include("Upcoming events")
+        expect(response.body).to include("across")
+        expect(response.body).to include("Show 4 more days")
+      end
+    end
+  end
+
   describe "GET /partners/:id period defaulting" do
     let(:partner) { create(:riverside_partner, address: create(:riverside_address, neighbourhood: ward)) }
     let(:calendar) { create(:calendar, organiser: partner) }
