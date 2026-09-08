@@ -101,5 +101,19 @@ core.join(GENERATED).write(<<~RUBY)
   end
 RUBY
 
+# Seed the generated Gemfile's lockfile from core's own, so Bundler resolves
+# only the path entries above and keeps every other gem at the version core
+# pins. Without a lockfile Bundler resolves the whole tree afresh, and a gem
+# that has cut a new major since core last locked (json 3.0 broke
+# Partner#opening_times_is_json_or_nil this way in the theme CI) lands in the
+# extension's test run but nowhere else. An existing lockfile is left alone:
+# it is a developer's own working state, and `bundle lock` keeps it current.
+lockfile = core.join("#{GENERATED}.lock")
+core_lock = core.join('Gemfile.lock')
+if !lockfile.file? && core_lock.file?
+  lockfile.write(core_lock.read)
+  puts "Seeded #{lockfile} from #{core_lock}"
+end
+
 puts "Wrote #{core.join(GENERATED)}"
 entries.each { |name, path| puts "  #{name} -> #{path}" }
