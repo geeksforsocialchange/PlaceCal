@@ -163,6 +163,38 @@ RSpec.describe Site, type: :model do
     end
   end
 
+  describe "#show_neighbourhoods? and #join_word" do
+    let(:district) { create(:millbrook_district) }
+    let(:ward) { create(:riverside_ward, parent: district) }
+
+    it "is false for a site with a single leaf neighbourhood" do
+      site = create(:site, neighbourhoods: [ward])
+      expect(site.show_neighbourhoods?).to be(false)
+      expect(site.join_word).to eq("in")
+    end
+
+    it "is true for a site whose single neighbourhood has descendants" do
+      ward
+      site = create(:site, neighbourhoods: [district])
+      expect(site.show_neighbourhoods?).to be(true)
+      expect(site.join_word).to eq("near")
+    end
+
+    it "is true for a site with more than one neighbourhood" do
+      site = create(:site, neighbourhoods: [ward, create(:oldtown_ward)])
+      expect(site.show_neighbourhoods?).to be(true)
+    end
+
+    it "does not build the whole neighbourhood id list" do
+      site = create(:site, neighbourhoods: [district])
+      allow(site).to receive(:owned_neighbourhood_ids).and_call_original
+
+      site.show_neighbourhoods?
+
+      expect(site).not_to have_received(:owned_neighbourhood_ids)
+    end
+  end
+
   describe "#owned_neighbourhood_ids" do
     let(:site) { create(:site) }
     let(:ward) { create(:riverside_ward) }
