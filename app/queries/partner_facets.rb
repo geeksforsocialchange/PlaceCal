@@ -2,51 +2,33 @@
 
 # Filter-dropdown facet counts for a site's (or the directory's) partners:
 # neighbourhoods, the cascading neighbourhood tree, partnerships and
-# categories, each with a distinct-partner count. Extracted from PartnersQuery
-# so that object stays focused on selecting partners (app/queries, single
-# responsibility); PartnersQuery delegates its facet methods here.
-#
-# Every method takes an optional +scope+ (a partners relation) and falls back
-# to the default scope the facets were built with, so callers can cross-filter
-# the counts on the other active filters.
+# categories, each with a distinct-partner count. Every method takes an
+# optional +scope+ and falls back to the default the facets were built with,
+# so callers can cross-filter the counts on the other active filters.
 class PartnerFacets
-  # @param default_scope [ActiveRecord::Relation<Partner>] the site's partners,
-  #   used when a method is called without an explicit scope
   def initialize(default_scope:)
     @default_scope = default_scope
   end
 
-  # Neighbourhoods that have partners, with counts. Used for filter dropdowns.
-  #
-  # @return [Array<Hash>] array of { neighbourhood: Neighbourhood, count: Integer }
+  # @return [Array<Hash>] { neighbourhood:, count: }
   def neighbourhoods_with_counts(scope: nil)
     pairs = neighbourhood_partner_pairs(scope: scope)
     return [] if pairs.empty?
 
     direct_ids = pairs.map { |r| r['neighbourhood_id'] }.uniq
     neighbourhoods = Neighbourhood.where(id: direct_ids).order(:name).to_a
-
-    # Roll each partner up to its neighbourhood and all listed ancestors, so an
-    # area-level neighbourhood's count matches what filtering by it returns (its
-    # whole subtree) and the dropdown stays consistent with the results.
     counts = rollup_partner_counts(pairs, neighbourhoods.index_by(&:id))
 
     neighbourhoods.map { |n| { neighbourhood: n, count: counts[n.id] } }
   end
 
-  # The full geographic hierarchy of neighbourhoods that have partners, as a
-  # nested tree for the directory's cascading neighbourhood filter.
+  # The nested neighbourhood hierarchy for the directory's cascading filter:
+  # every assigned neighbourhood plus its ancestors, each node counting the
+  # distinct partners in its subtree. The country level is dropped and its
+  # children become roots.
   #
-  # Every neighbourhood a partner is assigned to is included along with all of
-  # its ancestors, so the cascade can be drilled region > county > district >
-  # ward. Each node's count is the number of distinct partners in its subtree,
-  # matching what filtering by that node returns. The country level is dropped
-  # (it filters to everything, same as no filter) and its children become roots.
-  #
-  # @param selected_id [Integer, String, nil] keep this neighbourhood in the
-  #   tree even when the current scope leaves it with no partners, so the picker
-  #   still reflects the active selection
-  # @return [Array<Hash>] nested nodes of { id:, name:, unit:, count:, children: }
+  # @param selected_id keeps that neighbourhood in the tree even when the scope
+  #   leaves it empty, so the picker still reflects the active selection
   def neighbourhood_tree(scope: nil, selected_id: nil)
     pairs = neighbourhood_partner_pairs(scope: scope)
     direct = Neighbourhood.where(id: pairs.map { |r| r['neighbourhood_id'] }.uniq).to_a
@@ -64,39 +46,30 @@ class PartnerFacets
     build_neighbourhood_tree(nodes, by_id, counts)
   end
 
-  # Partnerships that have partners, with counts. Directory filter dropdown.
-  #
-  # @return [Array<Hash>] array of { partnership: Partnership, count: Integer }
+  # @return [Array<Hash>] { partnership:, count: }
   def partnerships_with_counts(scope: nil)
-    Tag
-      .joins(:partner_tags)
-      .where(partner_tags: { partner_id: (scope || @default_scope).reorder(nil).select(:id) }, type: 'Partnership')
-      .group(:id, :name)
-      .order(:name)
-      .select('tags.*, COUNT(partner_tags.partner_id) as partner_count')
-      .map { |tag| { partnership: tag, count: tag.partner_count } }
+    tags_with_counts('Partnership', scope).map { |tag| { partnership: tag, count: tag.partner_count } }
   end
 
-  # Categories that have partners, with counts. Used for filter dropdowns.
-  #
-  # @return [Array<Hash>] array of { category: Tag, count: Integer }
+  # @return [Array<Hash>] { category:, count: }
   def categories_with_counts(scope: nil)
-    Tag
-      .joins(:partner_tags)
-      .where(partner_tags: { partner_id: (scope || @default_scope).reorder(nil).select(:id) }, type: 'Category')
-      .group(:id, :name)
-      .order(:name)
-      .select('tags.*, COUNT(partner_tags.partner_id) as partner_count')
-      .map { |tag| { category: tag, count: tag.partner_count } }
+    tags_with_counts('Category', scope).map { |tag| { category: tag, count: tag.partner_count } }
   end
 
   private
 
-  # Distinct (neighbourhood_id, partner_id) pairs for partners in the scope,
-  # via either their address or a service area. Shared by the dropdown count
-  # and the cascade tree so both reflect the same set of partners.
-  #
-  # @return [Array<Hash>] rows with 'neighbourhood_id' and 'partner_id'
+  def tags_with_counts(type, scope)
+    Tag
+      .joins(:partner_tags)
+      .where(partner_tags: { partner_id: (scope || @default_scope).reorder(nil).select(:id) }, type: type)
+      .group(:id, :name)
+      .order(:name)
+      .select('tags.*, COUNT(partner_tags.partner_id) as partner_count')
+  end
+
+  # Distinct (neighbourhood_id, partner_id) pairs for partners in the scope, via
+  # address or service area. Shared by the dropdown and the tree so both reflect
+  # the same partners.
   def neighbourhood_partner_pairs(scope: nil)
     partner_ids = (scope || @default_scope).reorder(nil).select(:id)
 
@@ -117,11 +90,7 @@ class PartnerFacets
   end
 
   # Credit each partner to its neighbourhood and every ancestor present in
-  # +by_id+, so an area-level node's count matches its whole subtree.
-  #
-  # @param pairs [Array<Hash>] neighbourhood/partner rows
-  # @param by_id [Hash{Integer => Neighbourhood}] nodes to credit
-  # @return [Hash{Integer => Integer}] neighbourhood id => distinct partner count
+  # +by_id+, so an area-level node's count spans its whole subtree.
   def rollup_partner_counts(pairs, by_id)
     partner_sets = Hash.new { |hash, key| hash[key] = Set.new }
     pairs.each do |row|
@@ -135,10 +104,8 @@ class PartnerFacets
     partner_sets.transform_values(&:size)
   end
 
-  # Assemble +nodes+ into a nested tree, dropping the country level and
-  # re-rooting its children. Children are sorted by name at every level.
-  #
-  # @return [Array<Hash>] root nodes of { id:, name:, unit:, count:, children: }
+  # Nest +nodes+ into a tree, dropping the country level and re-rooting its
+  # children, sorted by name at every level.
   def build_neighbourhood_tree(nodes, by_id, counts)
     children_of = Hash.new { |hash, key| hash[key] = [] }
     roots = []
@@ -167,8 +134,7 @@ class PartnerFacets
     roots.sort_by { |n| n.shortname.downcase }.map(&build)
   end
 
-  # @return [Boolean] whether the node is country-level (the unit attribute is
-  #   the canonical level marker; the numeric `level` column is often unset)
+  # unit is the canonical level marker; the numeric `level` column is often unset.
   def country?(node)
     node.unit.to_s == 'country'
   end
