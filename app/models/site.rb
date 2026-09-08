@@ -234,17 +234,21 @@ class Site < ApplicationRecord
   end
 
   # @return [Boolean] whether neighbourhood badges should be shown
+  # Whether the site spans more than one neighbourhood, asked once per partner
+  # card. It needs a yes/no, not the id list: building the whole subtree (~13,000
+  # rows for a country-anchored site) just to call .many? cost ~100ms. A site
+  # spans more than one neighbourhood when it has more than one, or its single
+  # one has any descendant.
   def show_neighbourhoods?
-    owned_neighbourhood_ids.many?
+    return @show_neighbourhoods if defined?(@show_neighbourhoods)
+
+    hoods = neighbourhoods.limit(2).to_a
+    @show_neighbourhoods = hoods.many? || hoods.first&.has_children? || false
   end
 
   # @return [String] "near" for multi-neighbourhood sites, "in" otherwise
   def join_word
-    if owned_neighbourhoods.many?
-      'near'
-    else
-      'in'
-    end
+    show_neighbourhoods? ? 'near' : 'in'
   end
 
   # @return [EventsQuery]
