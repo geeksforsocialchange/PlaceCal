@@ -33,10 +33,36 @@ class NewsController < ApplicationController
   end
 
   def show
-    render Views::News::Show.new(article: @article, site: @site)
+    previous_article, next_article = adjacent_articles
+    render Views::News::Show.new(article: @article, site: @site,
+                                 previous_article: previous_article, next_article: next_article)
   end
 
   private
+
+  # The article immediately newer ("previous") and immediately older ("next")
+  # than @article, within this site's own published articles, ordered the
+  # same way the index page lists them (by_publish_date: newest first).
+  #
+  # Article.for_site builds its own joins and calls `.distinct` (see the
+  # model), so a plain `pluck(:id)` here would ask Postgres to ORDER BY
+  # published_at while only selecting id - "for SELECT DISTINCT, ORDER BY
+  # expressions must appear in select list". Plucking published_at alongside
+  # id keeps the order column in the select list and sidesteps that
+  # altogether, without loading full records just to find two neighbours.
+  #
+  # @return [Array(Article, nil), Array(nil, Article), Array(nil, nil)]
+  def adjacent_articles
+    return [nil, nil] if current_site.nil?
+
+    ids = Article.for_site(current_site).published.by_publish_date.pluck(:id, :published_at).map(&:first)
+    index = ids.index(@article.id)
+    return [nil, nil] if index.nil?
+
+    previous_article = index.positive? ? Article.find(ids[index - 1]) : nil
+    next_article = index < ids.size - 1 ? Article.find(ids[index + 1]) : nil
+    [previous_article, next_article]
+  end
 
   # Use callbacks to share common setup or constraints between actions.
   def set_article

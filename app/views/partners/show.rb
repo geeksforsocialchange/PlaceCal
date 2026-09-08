@@ -20,6 +20,7 @@ class Views::Partners::Show < Views::Base
   def view_template
     set_content_for_tags
     render_local_layout
+    render_page_actions
     render_meta_section
   end
 
@@ -75,7 +76,8 @@ class Views::Partners::Show < Views::Base
 
   def render_local_layout
     div do
-      Hero(partner.name, site.tagline, section: t('partners.show.section'))
+      Hero(partner.name, site.tagline, section: t('partners.show.section'),
+                                       back: [t('partners.show.back_to_index'), partners_path])
 
       div(class: 'container-public mb-32') do
         Breadcrumb(
@@ -241,6 +243,12 @@ class Views::Partners::Show < Views::Base
     when 'month' then t('partners.show.no_events_month')
     else t('partners.show.no_events_upcoming')
     end
+  end
+
+  # Page actions row (Components::PageActions, #3368): just the back link
+  # here - the partner page has nothing else generic to offer.
+  def render_page_actions
+    PageActions(links: [[t('partners.show.go_back'), partners_path]])
   end
 
   def render_meta_section

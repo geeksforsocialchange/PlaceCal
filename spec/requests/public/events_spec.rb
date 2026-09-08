@@ -70,6 +70,44 @@ RSpec.describe "Public Events", type: :request do
       expect(response).to be_successful
       expect(response.body).to include(%(<meta name="robots" content="noindex, noarchive">))
     end
+
+    # Page actions row (Components::PageActions, #3368): organiser's other
+    # events, add to calendar, back to the events index.
+    describe "the page actions row" do
+      def page_actions
+        Nokogiri::HTML(response.body).at_css("nav.page-actions")
+      end
+
+      it "links to the organiser's own page, add-to-calendar and the events index" do
+        get event_url(event, host: "#{site.slug}.lvh.me")
+
+        links = page_actions.css("a.page-actions__link")
+        expect(links.map(&:text)).to contain_exactly(
+          I18n.t("events.show.organiser_events", name: partner.name),
+          I18n.t("events.show.add_to_calendar"),
+          I18n.t("events.show.go_back")
+        )
+        expect(links.find { |a| a.text == I18n.t("events.show.add_to_calendar") }[:href])
+          .to eq(event_url(event, host: "#{site.slug}.lvh.me", protocol: :webcal, format: :ics))
+        expect(links.find { |a| a.text == I18n.t("events.show.go_back") }[:href]).to eq(events_path)
+      end
+
+      # `organiser_id` is NOT NULL at the database level (see db/schema.rb),
+      # so a real event can never actually reach the "no organiser" branch of
+      # render_page_actions; the `if event.organiser` guard exists purely
+      # for parity with the other organiser checks already in this file
+      # (hero_breadcrumbs, render_organiser_contact_card), which have the
+      # same guard and the same lack of a "no organiser" spec for it.
+    end
+
+    # Hero back link (#3368): "All events" above the event page hero.
+    it "links the hero back link to the events index" do
+      get event_url(event, host: "#{site.slug}.lvh.me")
+
+      back = Nokogiri::HTML(response.body).at_css("a.hero__back")
+      expect(back.text).to eq(I18n.t("events.show.back"))
+      expect(back[:href]).to eq(events_path)
+    end
   end
 
   describe "GET /events/:id for an event not on this site" do

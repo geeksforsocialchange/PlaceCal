@@ -124,6 +124,11 @@ en:
     label: "Filter by region"
     all: "All"
 
+  # Secondary actions row below a page's content (Components::PageActions,
+  # #3368): back-to-index, add-to-calendar, organiser/previous/next links.
+  page_actions:
+    label: "Page actions"
+
   # Support cards on a site homepage (app/components/help_card.rb). Keyed by
   # variant so a theme can override a single card's copy.
   help_card:
@@ -433,6 +438,10 @@ en:
   partners:
     show:
       section: ""
+      # Hero back link (#3368), above the section name and title.
+      back_to_index: "All partners"
+      # Page actions row back link (Components::PageActions, #3368).
+      go_back: "Back to partners"
       accessibility_heading: "Accessibility information"
       contact_heading: "Get in touch"
       address_heading: "Address"
@@ -461,10 +470,18 @@ en:
   news:
     show:
       section: ""
+      # Hero back link (#3368), above the section name and title.
+      back_to_index: "All news"
       # strftime pattern for the article's published date; themes may override
       date_format: "%B %Y"
       by: "By "
       back: "Back to news"
+      # Page actions row (Components::PageActions, #3368): previous/next by
+      # publish date, and back to the index. Distinct from `back` above, which
+      # labels the article's own inline back link.
+      previous: "Previous article"
+      next: "Next article"
+      go_back: "Back to news"
     index:
       page_title: "News from your area"
       read_more: "Find out more"
@@ -532,6 +549,8 @@ en:
     show:
       # Section name above the event page title, blank in core
       section: ""
+      # Hero back link (#3368), above the section name and title.
+      back: "All events"
       contact_heading: "Contact information"
       address_heading: "Event address"
       organiser_heading: "Event organiser"
@@ -540,6 +559,10 @@ en:
       problem_prompt: "Problem with this listing? "
       problem_link: "Let us know."
       problem_subject: "I think there's a problem with PlaceCal event %{url}"
+      # Page actions row (Components::PageActions, #3368).
+      organiser_events: "More from %{name}"
+      add_to_calendar: "Add to calendar"
+      go_back: "Back to events"
     csv_export:
       link: "Download events as CSV"
       # Column headers for the events CSV (app/services/events_csv.rb).

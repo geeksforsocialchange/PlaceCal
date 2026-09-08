@@ -89,6 +89,24 @@ RSpec.describe "Public Partners", type: :request do
       expect(response.body).to include("<title>#{partner.name} | #{site.name}</title>")
     end
 
+    # Hero back link (#3368): "All partners" above the partner page hero.
+    it "links the hero back link to the partners index" do
+      get partner_url(partner, host: "#{site.slug}.lvh.me")
+
+      back = Nokogiri::HTML(response.body).at_css("a.hero__back")
+      expect(back.text).to eq(I18n.t("partners.show.back_to_index"))
+      expect(back[:href]).to eq(partners_path)
+    end
+
+    # Page actions row (Components::PageActions, #3368): just the back link.
+    it "renders a page actions row linking back to the partners index" do
+      get partner_url(partner, host: "#{site.slug}.lvh.me")
+
+      links = Nokogiri::HTML(response.body).css("nav.page-actions a.page-actions__link")
+      expect(links.map(&:text)).to eq([I18n.t("partners.show.go_back")])
+      expect(links.first[:href]).to eq(partners_path)
+    end
+
     it "includes Organization JSON-LD structured data" do
       get partner_url(partner, host: "#{site.slug}.lvh.me")
       json_ld_blocks = response.body.scan(%r{<script type="application/ld\+json">(.+?)</script>}m)

@@ -5,12 +5,17 @@ class Views::News::Show < Views::Base
 
   prop :article, Article, reader: :private
   prop :site, Site, reader: :private
+  # Computed in NewsController#show, by publish date within this site's own
+  # articles. Either may be nil at either end of the list.
+  prop :previous_article, _Nilable(::Article), reader: :private, default: nil
+  prop :next_article, _Nilable(::Article), reader: :private, default: nil
 
   def view_template
     content_for(:title) { article.title }
 
     div(vocab: 'http://schema.org/', typeof: 'Article') do
-      Hero(article.title, site.tagline, schema: 'name', section: t('news.show.section'))
+      Hero(article.title, site.tagline, schema: 'name', section: t('news.show.section'),
+                                        back: [t('news.show.back_to_index'), news_index_path])
       div(class: 'container-public mb-32') do
         Breadcrumb(
           trail: [[t('navigation.site.news'), news_index_path], [article.title, news_path(article)]],
@@ -18,6 +23,7 @@ class Views::News::Show < Views::Base
         )
         hr
         render_article_body
+        render_page_actions
       end
     end
   end
@@ -64,5 +70,16 @@ class Views::News::Show < Views::Base
         end
       end
     end
+  end
+
+  # Page actions row (Components::PageActions, #3368): previous/next article
+  # by publish date within this site, either of which may not exist at the
+  # ends of the list, then back to the index.
+  def render_page_actions
+    links = []
+    links << [t('news.show.previous'), news_path(previous_article)] if previous_article
+    links << [t('news.show.next'), news_path(next_article)] if next_article
+    links << [t('news.show.go_back'), news_index_path]
+    PageActions(links: links)
   end
 end
