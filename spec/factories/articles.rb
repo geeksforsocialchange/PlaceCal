@@ -8,8 +8,10 @@
 #  article_image :string
 #  body          :text             not null
 #  body_html     :string
+#  image_credit  :string
 #  is_draft      :boolean          default(TRUE), not null
 #  published_at  :date
+#  pull_quote    :text
 #  slug          :string
 #  title         :text             not null
 #  created_at    :datetime         not null
