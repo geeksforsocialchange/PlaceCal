@@ -22,8 +22,11 @@ module CalendarImporter::Events
       @event['url']
     end
 
+    # The venue only arrives via the `expand=venue` expansion. When Eventbrite
+    # omits it the key is absent entirely, and the SDK's `[]` raises rather
+    # than returning nil, so guard the lookup.
     def place
-      @place ||= @event['venue']
+      @place ||= @event.respond_to?(:venue) ? @event['venue'] : nil
     end
 
     def location

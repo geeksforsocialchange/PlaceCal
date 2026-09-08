@@ -74,7 +74,7 @@ class CalendarImporter::CalendarImporterTask
     active_event_uids << parsed_event.uid
 
     parsed_event.save_all_occurences
-  rescue CalendarImporter::EventResolver::Problem => e
+  rescue CalendarImporter::LocationResolver::Problem => e
     notices << e.message
   end
 

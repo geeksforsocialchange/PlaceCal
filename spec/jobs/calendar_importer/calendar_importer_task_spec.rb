@@ -175,6 +175,23 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
         end.to raise_error(CalendarImporter::Exceptions::InvalidResponse, /Source responded with invalid JSON/)
       end
     end
+
+    it "records a location problem as a notice instead of failing the import" do
+      calendar = build(:calendar, strategy: "event")
+      importer_task = described_class.new(calendar, Time.zone.today, true)
+
+      parsed_event = instance_double(
+        CalendarImporter::EventResolver,
+        is_private?: false,
+        has_no_occurences?: false,
+        determine_online_location: nil
+      )
+      allow(parsed_event).to receive(:determine_location_for_strategy)
+        .and_raise(CalendarImporter::LocationResolver::Problem, "N/A")
+
+      expect { importer_task.send(:process_event, parsed_event) }.not_to raise_error
+      expect(importer_task.send(:notices)).to eq(["N/A"])
+    end
   end
 
   describe "generic iCal import" do
