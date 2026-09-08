@@ -7,7 +7,7 @@ class Components::PartnerPreview < Components::Base
   def view_template
     li(class: 'preview') do
       div(class: 'preview__header') do
-        h3 { link_to(@partner.name, @partner, data: { turbo_frame: '_top', turbo_action: 'replace' }) }
+        h3 { link_to(@partner.name, partner_path(@partner), data: { turbo_frame: '_top', turbo_action: 'replace' }) }
         if show_neighbourhood?
           css = "neighbourhood #{primary_neighbourhood? ? 'neighbourhood--primary' : 'neighbourhood--secondary'} preview__neighbourhood"
           div(class: css) { span { neighbourhood_name } }
@@ -16,7 +16,6 @@ class Components::PartnerPreview < Components::Base
 
       if @partner.description
         div(class: 'preview__details') do
-          comment { "Categories: #{@partner.categories.map(&:name).join(', ')}" }
           p { @partner.summary }
         end
       end

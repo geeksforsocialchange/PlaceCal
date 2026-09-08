@@ -175,6 +175,22 @@ RSpec.describe Site, type: :model do
       ids = site.owned_neighbourhood_ids
       expect(ids).to include(ward.id)
     end
+
+    it "memoises the id list so it is not rebuilt per caller" do
+      site.owned_neighbourhood_ids
+
+      queries = 0
+      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*, payload|
+        queries += 1 unless payload[:cached] || payload[:name] == "SCHEMA"
+      end
+      begin
+        3.times { site.owned_neighbourhood_ids }
+      ensure
+        ActiveSupport::Notifications.unsubscribe(subscriber)
+      end
+
+      expect(queries).to eq(0)
+    end
   end
 
   describe "theming" do
