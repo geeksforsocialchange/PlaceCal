@@ -43,6 +43,10 @@ en:
       open: "Open to read more"
       close: "Close"
 
+  # app/components/address.rb
+  address:
+    directions: "Directions"
+
   # Public navigation labels. A site's nav is derived from its own data
   # (#3368 D6), so these are the only fixed items; a theme's registered pages
   # contribute their own labels.
