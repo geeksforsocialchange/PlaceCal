@@ -182,17 +182,21 @@ class Site < ApplicationRecord
     slug.blank?
   end
 
+  # Memoised: for a site anchored to a large area this expands to thousands of
+  # rows, and it is read once per partner card (via show_neighbourhoods?), so
+  # rebuilding it each time cost ~500ms on a 108-partner page.
+  #
   # @return [Array<Neighbourhood>] all neighbourhoods in this site's subtrees
   def owned_neighbourhoods
-    neighbourhoods.map(&:subtree).flatten
+    @owned_neighbourhoods ||= neighbourhoods.map(&:subtree).flatten
   end
 
   # @return [Array<Integer>] all neighbourhood IDs in this site's subtrees
   def owned_neighbourhood_ids
-    neighbourhoods
-      .select(:id, :ancestry)
-      .map(&:subtree_ids)
-      .flatten
+    @owned_neighbourhood_ids ||= neighbourhoods
+                                 .select(:id, :ancestry)
+                                 .map(&:subtree_ids)
+                                 .flatten
   end
 
   # The site's neighbourhoods and every descendant, as a relation rather than
