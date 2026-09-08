@@ -32,8 +32,11 @@ class Views::Partners::Show < Views::Base
   def view_template
     set_content_for_tags
     render_local_layout
-    render_page_actions
+    # Meta before the actions row: the iCal and CSV links belong with the
+    # event browser they export, so they sit under the box and the back
+    # button closes the page.
     render_meta_section
+    render_page_actions
   end
 
   private
