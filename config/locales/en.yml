@@ -92,6 +92,10 @@ en:
     reset: "Reset filters"
     today: "Today"
     go_to_date: "Go to date"
+    # Label for the date toggle in the day-strip-with-date-picker style
+    # (event_filter_style :day_strip_with_date_picker), alongside "Go to date"
+    # for the date_picker style's own button.
+    pick_a_date: "Pick a date"
     filter_and_sort: "Filter and sort"
     # Radio labels in the sort/period/repeats dropdown, grouped as they appear
     sort:

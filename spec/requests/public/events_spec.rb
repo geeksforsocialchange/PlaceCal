@@ -32,6 +32,63 @@ RSpec.describe "Public Events", type: :request do
         expect(response.body).to include(event.summary)
       end
     end
+
+    it "shows the iCal and CSV export links under the events box" do
+      get events_url(host: "#{site.slug}.lvh.me")
+
+      meta = Nokogiri::HTML(response.body).at_css(".meta")
+      ical_link = meta.css("a").find { |a| a.text.include?("Subscribe") }
+      csv_link = meta.css("a").find { |a| a.text.include?("Download events as CSV") }
+
+      expect(ical_link["href"]).to eq(events_url(host: "#{site.slug}.lvh.me", protocol: "webcal", format: :ics))
+      expect(csv_link["href"]).to eq(events_url(host: "#{site.slug}.lvh.me", format: :csv, period: "future", sort: "time", repeating: "on"))
+    end
+  end
+
+  describe "GET /events.csv" do
+    let!(:upcoming_event) do
+      create(:event,
+             organiser: partner,
+             summary: "Tea Dance",
+             dtstart: 2.days.from_now.at_beginning_of_hour,
+             dtend: 2.days.from_now.at_beginning_of_hour + 2.hours,
+             address: address)
+    end
+    let!(:past_event) do
+      create(:event,
+             organiser: partner,
+             summary: "Ancient History",
+             dtstart: 2.days.ago.at_beginning_of_hour,
+             dtend: 2.days.ago.at_beginning_of_hour + 1.hour,
+             address: address)
+    end
+
+    def parsed_csv
+      get events_url(host: "#{site.slug}.lvh.me", format: :csv, period: "future")
+      expect(response).to be_successful
+      CSV.parse(response.body, headers: true)
+    end
+
+    it "returns a CSV attachment with the Canva Bulk Create header row" do
+      get events_url(host: "#{site.slug}.lvh.me", format: :csv, period: "future")
+
+      expect(response).to be_successful
+      expect(response.media_type).to eq("text/csv")
+      expect(response.headers["Content-Disposition"]).to include("#{site.slug}-events.csv")
+      expect(CSV.parse(response.body, headers: true).headers).to eq(
+        ["Title", "Date", "Time", "Location", "Organiser", "More info", "Description"]
+      )
+    end
+
+    it "includes upcoming events matching the current filters" do
+      titles = parsed_csv.map { |r| r["Title"] }
+      expect(titles).to include("Tea Dance")
+    end
+
+    it "excludes events outside the filtered period" do
+      titles = parsed_csv.map { |r| r["Title"] }
+      expect(titles).not_to include("Ancient History")
+    end
   end
 
   describe "GET /events/:id" do

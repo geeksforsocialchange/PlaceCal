@@ -15,7 +15,7 @@ module PlaceCal
   #
   # Each setting is optional.
   class Theme
-    EVENT_FILTER_STYLES = %i[date_picker day_strip].freeze
+    EVENT_FILTER_STYLES = %i[date_picker day_strip day_strip_with_date_picker].freeze
 
     # Slug format for a theme page (`theme.page`). Same shape as the URLs core
     # already serves, so a theme page cannot introduce a path segment the
