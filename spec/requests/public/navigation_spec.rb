@@ -56,6 +56,49 @@ RSpec.describe "Public site navigation", type: :request do
     end
   end
 
+  # nav_region_filter (#3368): a theme opt-in, only visible once the site has
+  # something to filter by.
+  context "with the nav_region_filter theme setting" do
+    let(:north) { create(:partnership, name: "North") }
+    let(:south) { create(:partnership, name: "South") }
+
+    def region_control
+      Nokogiri::HTML(response.body).at_css("li.header__region")
+    end
+
+    it "does not render on a core theme, even with two tags", :theme_registry do
+      site.tags << north
+      site.tags << south
+
+      get "http://navsite.lvh.me"
+
+      expect(region_control).to be_nil
+    end
+
+    it "does not render when the theme opts in but the site has only one tag", :theme_registry do
+      PlaceCal::Extensions.register_theme(:region_filter_fixture) { |theme| theme.nav_region_filter true }
+      site.update!(theme: "region_filter_fixture")
+      site.tags << north
+
+      get "http://navsite.lvh.me"
+
+      expect(region_control).to be_nil
+    end
+
+    it "renders as a segmented-control hook once the theme opts in and the site has two tags", :theme_registry do
+      PlaceCal::Extensions.register_theme(:region_filter_fixture) { |theme| theme.nav_region_filter true }
+      site.update!(theme: "region_filter_fixture")
+      site.tags << north
+      site.tags << south
+
+      get "http://navsite.lvh.me"
+
+      expect(region_control).to be_present
+      expect(region_control.at_css("nav.region-filter--nav")).to be_present
+      expect(region_control.css("a").map(&:text)).to include("North", "South")
+    end
+  end
+
   context "when a region is selected" do
     let(:north) { create(:partnership, name: "North") }
     let(:south) { create(:partnership, name: "South") }

@@ -272,6 +272,15 @@ module PlaceCal
     # @param value [Boolean, nil]
     setting :menu_label, cast: :boolean, default: false, predicate: true
 
+    # Whether the site nav includes the region control (Components::RegionFilter,
+    # #3368): a segmented control of the site's own Partnership tags, rendered
+    # as the last item before the theme CTA. Only takes effect when the site
+    # also has two or more Partnership tags: a theme opting in on a
+    # single-tag site simply sees nothing extra. Defaults to false.
+    #
+    # @param value [Boolean, nil]
+    setting :nav_region_filter, cast: :boolean, default: false, predicate: true
+
     # @param value [Symbol, nil] one of EVENT_FILTER_STYLES
     def event_filter_style(value = nil)
       return @event_filter_style if value.nil?
