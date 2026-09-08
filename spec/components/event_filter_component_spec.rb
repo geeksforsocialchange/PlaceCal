@@ -250,13 +250,13 @@ RSpec.describe Components::EventFilter, type: :component do
     it "shows neighbourhood filter when multiple neighbourhoods have events" do
       render_inline(described_class.new(**future_attrs, site: site))
 
-      expect(page).to have_selector("button span.filters__link", text: "Neighbourhood")
+      expect(page).to have_selector("button span.filters__toggle-label", text: "Neighbourhood")
     end
 
     it "shows selected neighbourhood name when a neighbourhood is selected" do
       render_inline(described_class.new(**future_attrs, site: site, selected_neighbourhood: ward1.id.to_s))
 
-      expect(page).to have_selector("button span.filters__link", text: ward1.name)
+      expect(page).to have_selector("button span.filters__toggle-value", text: ward1.name)
     end
 
     it "gives the neighbourhood dropdown its own group class alongside filters__group" do
@@ -279,7 +279,7 @@ RSpec.describe Components::EventFilter, type: :component do
 
       render_inline(described_class.new(**future_attrs, site: single_site))
 
-      expect(page).not_to have_selector("button span.filters__link", text: "Neighbourhood")
+      expect(page).not_to have_selector("button span.filters__toggle-label", text: "Neighbourhood")
     end
   end
 

@@ -682,6 +682,58 @@ RSpec.describe "Public Partners", type: :request do
     end
   end
 
+  describe "GET /partners with search" do
+    let!(:food_bank) { create(:partner, name: "Riverside Food Bank", address: create(:address, neighbourhood: ward)) }
+    let!(:youth_club) { create(:partner, name: "Riverside Youth Club", address: create(:address, neighbourhood: ward)) }
+
+    it "narrows the list to matching partners" do
+      get partners_url(host: "#{site.slug}.lvh.me", params: { q: "Food Bank" })
+
+      expect(response).to be_successful
+      expect(response.body).to include(food_bank.name)
+      expect(response.body).not_to include(youth_club.name)
+    end
+
+    it "keeps the searched value in the search field" do
+      get partners_url(host: "#{site.slug}.lvh.me", params: { q: "Food Bank" })
+
+      expect(response.body).to include('name="q"')
+      expect(response.body).to match(/name="q"[^>]*value="Food Bank"/)
+    end
+  end
+
+  describe "GET /partners with search and region" do
+    let(:region_site) { create(:site, slug: "search-regions") }
+    let(:region_ward) { create(:riverside_ward) }
+    let(:north_tag) { create(:partnership, name: "North") }
+    let(:south_tag) { create(:partnership, name: "South") }
+    let!(:north_food_bank) do
+      partner = create(:partner, name: "North Food Bank", address: create(:address, neighbourhood: region_ward))
+      partner.tags << north_tag
+      partner
+    end
+    let!(:south_food_bank) do
+      partner = create(:partner, name: "South Food Bank", address: create(:address, neighbourhood: region_ward))
+      partner.tags << south_tag
+      partner
+    end
+
+    before do
+      region_site.neighbourhoods << region_ward
+      region_site.tags << north_tag
+      region_site.tags << south_tag
+    end
+
+    it "keeps the region filter active alongside a search" do
+      get partners_url(host: "#{region_site.slug}.lvh.me", params: { region: north_tag.slug, q: "Food Bank" })
+
+      expect(response).to be_successful
+      expect(response.body).to include(north_food_bank.name)
+      expect(response.body).not_to include(south_food_bank.name)
+      expect(response.body).to match(/<input[^>]*type="hidden"[^>]*name="region"[^>]*value="#{north_tag.slug}"/)
+    end
+  end
+
   describe "region filter" do
     let(:region_site) { create(:site, slug: "regions") }
     let(:region_ward) { create(:riverside_ward) }

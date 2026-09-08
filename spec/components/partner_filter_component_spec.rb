@@ -42,7 +42,7 @@ RSpec.describe Components::PartnerFilter, type: :component do
                       selected_neighbourhood: nil
                     ))
 
-      expect(page).to have_selector("button span.filters__link", text: "Neighbourhood")
+      expect(page).to have_selector("button span.filters__toggle-label", text: "Neighbourhood")
     end
 
     it "does not show category filter when no partners have categories" do
@@ -52,7 +52,7 @@ RSpec.describe Components::PartnerFilter, type: :component do
                       selected_neighbourhood: nil
                     ))
 
-      expect(page).not_to have_selector("button span.filters__link", text: "Category")
+      expect(page).not_to have_selector("button span.filters__toggle-label", text: "Category")
     end
   end
 
@@ -80,7 +80,7 @@ RSpec.describe Components::PartnerFilter, type: :component do
                       selected_neighbourhood: nil
                     ))
 
-      expect(page).to have_selector("button span.filters__link", text: "Category")
+      expect(page).to have_selector("button span.filters__toggle-label", text: "Category")
     end
   end
 
@@ -106,7 +106,7 @@ RSpec.describe Components::PartnerFilter, type: :component do
                     ))
 
       # Component should render without errors - neighbourhood filter shows when multiple neighbourhoods
-      expect(page).to have_selector("button span.filters__link", text: "Neighbourhood")
+      expect(page).to have_selector("button span.filters__toggle-label", text: "Neighbourhood")
     end
 
     it "renders with selected neighbourhood and shows selected name" do
@@ -117,7 +117,7 @@ RSpec.describe Components::PartnerFilter, type: :component do
                     ))
 
       # When a neighbourhood is selected, it shows the neighbourhood name instead of "Neighbourhood"
-      expect(page).to have_selector("button span.filters__link", text: neighbourhood1.name)
+      expect(page).to have_selector("button span.filters__toggle-value", text: neighbourhood1.name)
     end
 
     it "shows reset link when a filter is active" do
@@ -167,7 +167,7 @@ RSpec.describe Components::PartnerFilter, type: :component do
                       selected_neighbourhood: nil
                     ))
 
-      expect(page).not_to have_selector("button span.filters__link", text: "Neighbourhood")
+      expect(page).not_to have_selector("button span.filters__toggle-label", text: "Neighbourhood")
     end
 
     it "shows only relevant categories when a neighbourhood is selected" do
@@ -177,7 +177,7 @@ RSpec.describe Components::PartnerFilter, type: :component do
                       selected_neighbourhood: neighbourhood1.id.to_s
                     ))
 
-      expect(page).not_to have_selector("button span.filters__link", text: "Category")
+      expect(page).not_to have_selector("button span.filters__toggle-label", text: "Category")
     end
   end
 
@@ -204,6 +204,35 @@ RSpec.describe Components::PartnerFilter, type: :component do
       render_inline(described_class.new(site: site, region_tags: [north, south], selected_region: south))
 
       expect(page).to have_css("input[type=hidden][name=region][value='#{south.slug}']", visible: :all)
+    end
+  end
+
+  describe "search field" do
+    let(:site) { create(:site) }
+
+    it "renders a search input named q" do
+      render_inline(described_class.new(site: site))
+
+      expect(page).to have_css("input[type=search][name=q].filters__search")
+    end
+
+    it "labels and placeholders the field from the locale key" do
+      render_inline(described_class.new(site: site))
+
+      expect(page).to have_css("input[aria-label='#{I18n.t('filters.search_partners')}']")
+      expect(page).to have_css("input[placeholder='#{I18n.t('filters.search_partners')}']")
+    end
+
+    it "keeps the current search value" do
+      render_inline(described_class.new(site: site, selected_query: "food bank"))
+
+      expect(page).to have_css("input[name=q][value='food bank']")
+    end
+
+    it "submits on change rather than every keystroke" do
+      render_inline(described_class.new(site: site))
+
+      expect(page).to have_css("input[name=q][data-action='change->partner-filter-component#submitForm']")
     end
   end
 end

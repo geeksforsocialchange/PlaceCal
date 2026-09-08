@@ -174,13 +174,15 @@ class PartnersController < ApplicationController
   def render_local_index
     @selected_category = params[:category] if params[:category].present? && Integer(params[:category], exception: false)
     @selected_neighbourhood = params[:neighbourhood] if params[:neighbourhood].present? && Integer(params[:neighbourhood], exception: false)
+    @selected_query = params[:q].presence
 
     @region = current_region
     query = PartnersQuery.new(site: current_site)
     @partners = query.call(
       neighbourhood_id: @selected_neighbourhood,
       tag_id: @selected_category,
-      partnership_id: @region&.id
+      partnership_id: @region&.id,
+      query: @selected_query
     )
 
     @map = get_map_markers(@partners) if @partners.detect(&:address)
@@ -190,6 +192,7 @@ class PartnersController < ApplicationController
       map: @map, selected_category: @selected_category,
       selected_neighbourhood: @selected_neighbourhood,
       region_tags: region_tags, selected_region: @region,
+      selected_query: @selected_query,
       query: query
     )
   end
