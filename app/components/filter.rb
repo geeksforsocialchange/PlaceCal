@@ -9,6 +9,10 @@ class Components::Filter < Components::Base
   prop :submit_action, String
   prop :reset_action, String
   prop :selected_id, Integer, default: 0
+  # Extra class on the options group, so a caller with more than one Filter on
+  # a page (the neighbourhood filter, say) can give its dropdown a hook of
+  # its own, alongside the shared filters__group class.
+  prop :group_class, _Nilable(String), default: nil
 
   def view_template
     return unless @items.any?
@@ -38,7 +42,7 @@ class Components::Filter < Components::Base
   end
 
   def render_filter_options
-    div(class: 'filters__group') do
+    div(class: ['filters__group', @group_class].compact.join(' ')) do
       @items.each { |item| render_filter_option(item) }
     end
   end
