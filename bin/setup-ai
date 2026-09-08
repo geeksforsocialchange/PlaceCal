@@ -26,6 +26,7 @@ link "$SRC/better-stimulus/agent.md"        "$ROOT/.claude/agents/better-stimulu
 
 # Skills (whole directory, scripts co-located)
 link "$SRC/rails-hotwire-driver"            "$ROOT/.claude/skills/rails-hotwire-driver"
+link "$SRC/judge-arch"                      "$ROOT/.claude/skills/judge-arch"
 
 # Hooks: register the RuboCop auto-correct PostToolUse hook in the local
 # .claude/settings.json (merged idempotently; settings.local.json is untouched).
@@ -52,6 +53,7 @@ AI tooling installed successfully!
 What you get (see doc/ai/plugins/README.md):
   - better-stimulus       agent  — StimulusJS best practices
   - rails-hotwire-driver  skill  — drive the running dev server to verify changes
+  - judge-arch            skill  — fresh-context architectural review of a change
   - rubocop-autocorrect   hook   — auto-fixes RuboCop after every Ruby edit
 
 Context for assistants stays in:
@@ -64,5 +66,6 @@ this script if the links go stale.
 To remove later:
   rm -f .claude/agents/better-stimulus.md
   rm -f .claude/skills/rails-hotwire-driver
+  rm -f .claude/skills/judge-arch
   # and delete the rubocop-autocorrect PostToolUse entry from .claude/settings.json
 EOF
