@@ -4,7 +4,7 @@ set -euo pipefail
 # Install PlaceCal's AI assistant tooling into the local, gitignored .claude/
 # directory: symlink the vendored plugins (an agent + a skill) from their tracked
 # source of truth in doc/ai/plugins/, and register the RuboCop auto-correct
-# PostToolUse hook in .claude/settings.json. Idempotent — safe to re-run.
+# PostToolUse hook in .claude/settings.json. Idempotent - safe to re-run.
 #
 # The plugins are documented in doc/ai/plugins/README.md; the hook in
 # doc/ai/hooks/.
@@ -27,36 +27,41 @@ link "$SRC/better-stimulus/agent.md"        "$ROOT/.claude/agents/better-stimulu
 # Skills (whole directory, scripts co-located)
 link "$SRC/rails-hotwire-driver"            "$ROOT/.claude/skills/rails-hotwire-driver"
 
-# Hooks: register the RuboCop auto-correct PostToolUse hook in the local
-# .claude/settings.json (merged idempotently; settings.local.json is untouched).
-HOOK="$ROOT/doc/ai/hooks/rubocop-autocorrect.sh"
+# Hooks: register the PostToolUse hooks in the local .claude/settings.json
+# (merged idempotently; settings.local.json is untouched).
 SETTINGS="$ROOT/.claude/settings.json"
 ruby -rjson -e '
-  settings_path, hook = ARGV
+  settings_path, *hooks_to_add = ARGV
   settings = File.exist?(settings_path) ? JSON.parse(File.read(settings_path)) : {}
   hooks = (settings["hooks"] ||= {})
   post  = (hooks["PostToolUse"] ||= [])
-  already = post.any? { |e| Array(e["hooks"]).any? { |h| h["command"] == hook } }
-  unless already
+  changed = false
+  hooks_to_add.each do |hook|
+    already = post.any? { |e| Array(e["hooks"]).any? { |h| h["command"] == hook } }
+    next if already
+
     post << { "matcher" => "Write|Edit|MultiEdit",
               "hooks" => [{ "type" => "command", "command" => hook }] }
-    File.write(settings_path, JSON.pretty_generate(settings) + "\n")
+    changed = true
   end
-' "$SETTINGS" "$HOOK"
+  File.write(settings_path, JSON.pretty_generate(settings) + "\n") if changed
+' "$SETTINGS" "$ROOT/doc/ai/hooks/rubocop-autocorrect.sh" "$ROOT/doc/ai/hooks/no-em-dash.sh"
 echo "  hook   rubocop-autocorrect -> .claude/settings.json (PostToolUse)"
+echo "  hook   no-em-dash          -> .claude/settings.json (PostToolUse)"
 
 cat <<'EOF'
 
 AI tooling installed successfully!
 
 What you get (see doc/ai/plugins/README.md):
-  - better-stimulus       agent  — StimulusJS best practices
-  - rails-hotwire-driver  skill  — drive the running dev server to verify changes
-  - rubocop-autocorrect   hook   — auto-fixes RuboCop after every Ruby edit
+  - better-stimulus       agent  - StimulusJS best practices
+  - rails-hotwire-driver  skill  - drive the running dev server to verify changes
+  - rubocop-autocorrect   hook   - auto-fixes RuboCop after every Ruby edit
+  - no-em-dash            hook   - flags em/en dashes in edited files
 
 Context for assistants stays in:
-  - AGENTS.md / doc/ai/context.md  — project conventions
-  - doc/ai/prompts/                — per-domain guidance
+  - AGENTS.md / doc/ai/context.md  - project conventions
+  - doc/ai/prompts/                - per-domain guidance
 
 Edit the plugins in doc/ai/plugins/ (the symlinks point back there); re-run
 this script if the links go stale.
