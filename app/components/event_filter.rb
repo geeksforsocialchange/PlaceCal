@@ -12,6 +12,9 @@ class Components::EventFilter < Components::Base
   prop :show_monthly, _Boolean, default: true
   prop :region_tags, Array, default: -> { [] }
   prop :selected_region, _Nilable(::Tag), default: nil
+  # The controller passes its query so the site event scope is not rebuilt just
+  # to count the neighbourhood dropdown.
+  prop :query, _Nilable(::EventsQuery), default: nil
 
   # Today, tomorrow and five more days (D22).
   DAY_STRIP_LENGTH = 7
@@ -235,19 +238,22 @@ class Components::EventFilter < Components::Base
     end
   end
 
-  def neighbourhoods
+  # Counting future events per neighbourhood for the dropdown was ~100ms a
+  # request. Cached with a short TTL, the same tolerance Site#news_article_count
+  # already accepts; keyed on the site, period and region so each view caches
+  # separately. On a hit the query and its base scope are skipped.
+  def neighbourhood_items
     return [] unless @site
 
-    @neighbourhoods ||= EventsQuery.new(site: @site).neighbourhoods_with_counts(period: @period, tag_id: @selected_region&.id)
-  end
-
-  def neighbourhood_items
-    neighbourhoods.map do |n|
-      { id: n[:neighbourhood].id, name: n[:neighbourhood].name, count: n[:count] }
+    @neighbourhood_items ||= Rails.cache.fetch(['event_facet_neighbourhoods', @site.id, @period, @selected_region&.id],
+                                               expires_in: 10.minutes) do
+      query = @query || EventsQuery.new(site: @site)
+      query.neighbourhoods_with_counts(period: @period, tag_id: @selected_region&.id)
+           .map { |n| { id: n[:neighbourhood].id, name: n[:neighbourhood].name, count: n[:count] } }
     end
   end
 
   def show_neighbourhood_filter?
-    neighbourhoods.length > 1
+    neighbourhood_items.length > 1
   end
 end

@@ -16,6 +16,25 @@ RSpec.describe Components::PartnerFilter, type: :component do
       ]
     end
 
+    it "caches the neighbourhood facet counts, so a second render runs no facet query" do
+      cache = ActiveSupport::Cache::MemoryStore.new
+      allow(Rails).to receive(:cache).and_return(cache)
+
+      render_inline(described_class.new(site: site, selected_category: nil, selected_neighbourhood: nil))
+
+      facet_queries = 0
+      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*, payload|
+        facet_queries += 1 if payload[:sql].include?("neighbourhood_id") && !payload[:cached]
+      end
+      begin
+        render_inline(described_class.new(site: site, selected_category: nil, selected_neighbourhood: nil))
+      ensure
+        ActiveSupport::Notifications.unsubscribe(subscriber)
+      end
+
+      expect(facet_queries).to eq(0)
+    end
+
     it "shows neighbourhood filter when multiple neighbourhoods exist" do
       render_inline(described_class.new(
                       site: site,

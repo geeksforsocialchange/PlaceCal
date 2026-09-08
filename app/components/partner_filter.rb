@@ -8,11 +8,14 @@ class Components::PartnerFilter < Components::Base
   prop :selected_neighbourhood, _Nilable(String), default: nil
   prop :region_tags, Array, default: -> { [] }
   prop :selected_region, _Nilable(::Tag), default: nil
+  # The controller passes its own query so the site partner scope is built once
+  # for the listing and the facet counts, not once each.
+  prop :query, _Nilable(::PartnersQuery), default: nil
 
   def after_initialize
     @selected_category = @selected_category.to_i
     @selected_neighbourhood = @selected_neighbourhood.to_i
-    @query = PartnersQuery.new(site: @site)
+    @query ||= PartnersQuery.new(site: @site)
   end
 
   def view_template
@@ -77,20 +80,26 @@ class Components::PartnerFilter < Components::Base
     end
   end
 
-  def categories
-    @categories ||= @query.categories_with_counts(scope: filtered_scope(neighbourhood_id: selected_neighbourhood_id))
-  end
-
+  # Facet counts are recomputed at most every few minutes, the same tolerance
+  # the news-nav count already accepts (Site#news_article_count). Counting
+  # partners per category and neighbourhood was ~100ms a request; on a cache
+  # hit it is skipped along with the base-scope build it needed.
   def category_items
-    categories.map { |c| { id: c[:category].id, name: c[:category].name, count: c[:count] } }
+    @category_items ||= cached_facet(:categories, neighbourhood: selected_neighbourhood_id) do
+      @query.categories_with_counts(scope: filtered_scope(neighbourhood_id: selected_neighbourhood_id))
+            .map { |c| { id: c[:category].id, name: c[:category].name, count: c[:count] } }
+    end
   end
 
   def show_category_filter?
-    categories.length > 1
+    category_items.length > 1
   end
 
-  def neighbourhoods
-    @neighbourhoods ||= @query.neighbourhoods_with_counts(scope: filtered_scope(tag_id: selected_category_id))
+  # The site and the other active filters key the cache, so cross-filtered
+  # counts cache separately.
+  def cached_facet(facet, **filters, &)
+    key = ['partner_facets', facet, @site.id, @selected_region&.id, *filters.values]
+    Rails.cache.fetch(key, expires_in: 10.minutes, &)
   end
 
   def selected_category_id
@@ -113,11 +122,14 @@ class Components::PartnerFilter < Components::Base
   end
 
   def neighbourhood_items
-    neighbourhoods.map { |n| { id: n[:neighbourhood].id, name: n[:neighbourhood].name, count: n[:count] } }
+    @neighbourhood_items ||= cached_facet(:neighbourhoods, category: selected_category_id) do
+      @query.neighbourhoods_with_counts(scope: filtered_scope(tag_id: selected_category_id))
+            .map { |n| { id: n[:neighbourhood].id, name: n[:neighbourhood].name, count: n[:count] } }
+    end
   end
 
   def show_neighbourhood_filter?
-    neighbourhoods.length > 1
+    neighbourhood_items.length > 1
   end
 
   def any_filter_active?
