@@ -154,22 +154,26 @@ class User < ApplicationRecord
     role == :national_admin
   end
 
+  # Memoised: the policies and admin partner scoping call these repeatedly,
+  # sometimes per partner in a loop, and each build expands the user's
+  # neighbourhood subtrees (or the whole table for a national admin).
+  #
   # @return [Array<Neighbourhood>] all neighbourhoods in this user's subtrees
   def owned_neighbourhoods
-    if national_admin?
-      Neighbourhood.all.to_a
-    else
-      neighbourhoods.collect(&:subtree).flatten
-    end
+    @owned_neighbourhoods ||= if national_admin?
+                                Neighbourhood.all.to_a
+                              else
+                                neighbourhoods.collect(&:subtree).flatten
+                              end
   end
 
   # @return [Array<Integer>] all neighbourhood IDs in this user's subtrees
   def owned_neighbourhood_ids
-    if national_admin?
-      Neighbourhood.pluck(:id)
-    else
-      owned_neighbourhoods.collect(&:id)
-    end
+    @owned_neighbourhood_ids ||= if national_admin?
+                                   Neighbourhood.pluck(:id)
+                                 else
+                                   owned_neighbourhoods.collect(&:id)
+                                 end
   end
 
   # @param partner_id [Integer]

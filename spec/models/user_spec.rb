@@ -255,6 +255,22 @@ RSpec.describe User, type: :model do
       expect(owned.count).to be > 1
       expect(owned).to include(ward)
     end
+
+    it "memoises the subtree so it is not rebuilt per caller" do
+      user.owned_neighbourhood_ids
+
+      queries = 0
+      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*, payload|
+        queries += 1 unless payload[:cached] || payload[:name] == "SCHEMA"
+      end
+      begin
+        3.times { user.owned_neighbourhood_ids }
+      ensure
+        ActiveSupport::Notifications.unsubscribe(subscriber)
+      end
+
+      expect(queries).to eq(0)
+    end
   end
 
   describe "#can_view_neighbourhood_by_id?" do
