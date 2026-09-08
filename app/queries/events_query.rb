@@ -135,11 +135,8 @@ class EventsQuery
     filter_by_tag(base_scope, tag_id).future(day).reorder(dtstart: :asc).first
   end
 
-  # Returns neighbourhoods that have events, with counts for the given period
-  # Used for filter dropdowns
-  #
-  # Shows all descendant neighbourhoods of the site's configured neighbourhoods,
-  # at every level. Each neighbourhood's count includes events in its subtree.
+  # Neighbourhoods with events, with per-subtree counts, for the filter
+  # dropdown. Delegates the roll-up to EventNeighbourhoodCounts.
   #
   # @param period [String] 'day', 'week', or 'future'
   # @param tag_id [Integer] optionally restrict to a tag, so the counts agree
@@ -148,20 +145,8 @@ class EventsQuery
   def neighbourhoods_with_counts(period: 'future', tag_id: nil)
     return [] unless @site
 
-    site_root_ids = @site.neighbourhoods.pluck(:id)
-    return [] if site_root_ids.empty?
-
-    events = apply_period(filter_by_tag(base_scope, tag_id), period)
-
-    # Events counted against the neighbourhood they happen in (single query)
-    raw_counts = events
-                 .left_joins(:address, organiser: :address)
-                 .where('COALESCE(addresses.neighbourhood_id, addresses_partners.neighbourhood_id) IS NOT NULL')
-                 .group('COALESCE(addresses.neighbourhood_id, addresses_partners.neighbourhood_id)')
-                 .distinct
-                 .count
-
-    dropdown_neighbourhoods(raw_counts, site_root_ids)
+    scope = apply_period(filter_by_tag(base_scope, tag_id), period)
+    EventNeighbourhoodCounts.new(scope: scope, site: @site).call
   end
 
   # Whether the given event appears on this site — same rules as the event
@@ -327,29 +312,4 @@ class EventsQuery
   # The neighbourhood dropdown: every neighbourhood with events in its subtree,
   # each carrying that subtree's event count, sorted by name.
   #
-  # Only the neighbourhoods that have events and their ancestors can carry a
-  # non-zero count, so we load just those rather than every descendant of the
-  # site. A country-anchored site has ~13,000 descendants; loading them all to
-  # fill a handful-long dropdown cost ~2s a request. Entries are kept to strict
-  # descendants of the site's own neighbourhoods, so the anchor nodes are
-  # excluded, matching the previous descendants-only behaviour.
-  #
-  # @param raw_counts [Hash{Integer=>Integer}] event count per neighbourhood id
-  # @param site_root_ids [Array<Integer>] the site's own neighbourhood ids
-  # @return [Array<Hash>] { neighbourhood:, count: } sorted by name
-  def dropdown_neighbourhoods(raw_counts, site_root_ids)
-    return [] if raw_counts.empty?
-
-    event_hoods = Neighbourhood.where(id: raw_counts.keys).to_a
-    candidate_ids = (raw_counts.keys + event_hoods.flat_map(&:ancestor_ids)).uniq
-
-    Neighbourhood.where(id: candidate_ids).order(:name).filter_map do |node|
-      next unless (node.ancestor_ids & site_root_ids).any?
-
-      # An event counts towards a node when the node is an ancestor-or-self of
-      # the neighbourhood the event is in, i.e. the event sits in its subtree.
-      count = event_hoods.sum { |h| h.path_ids.include?(node.id) ? raw_counts[h.id] : 0 }
-      { neighbourhood: node, count: count } if count.positive?
-    end
-  end
 end
