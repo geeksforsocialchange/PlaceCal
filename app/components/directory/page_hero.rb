@@ -11,14 +11,11 @@ class Components::Directory::PageHero < Components::Directory::Base
   # single breadcrumb_label/breadcrumb_path pair.
   prop :breadcrumbs, _Nilable(Array), default: nil
   prop :background_image_url, _Nilable(String), default: nil
-  # Constrains the hero content to the narrow (960px) editorial measure so it
-  # lines up with a page built on the same width (e.g. Our Story).
-  prop :narrow, _Boolean, default: false
 
   def view_template(&block)
     section(class: 'bg-foreground pt-6 pb-4 relative overflow-hidden', style: 'color: var(--color-background)') do
       render_background_image if @background_image_url
-      div(class: "#{@narrow ? 'container-editorial' : 'container-public'} relative z-10") do
+      div(class: 'container-public relative z-10') do
         render_breadcrumb if @breadcrumb_label || @breadcrumbs
         render_kicker if @kicker
         h1(class: 'hero-title') { @title }
@@ -43,7 +40,10 @@ class Components::Directory::PageHero < Components::Directory::Base
 
   def render_breadcrumb
     nav(class: 'text-sm mb-2', style: 'color: var(--color-background)', aria_label: t('directory.aria.breadcrumb')) do
-      a(href: root_path, class: 'no-underline hover:underline', style: 'color: inherit') { t('directory.breadcrumbs.root') }
+      # root_path is host-relative, so on the join site the trail starts at
+      # the join homepage: label it accordingly.
+      root_label = join_site_request? ? t('join.breadcrumbs.root') : t('directory.breadcrumbs.root')
+      a(href: root_path, class: 'no-underline hover:underline', style: 'color: inherit') { root_label }
       crumb_items.each do |item|
         span(class: 'mx-1.5 opacity-60') { safe('›') }
         if item[:path]

@@ -16,6 +16,7 @@ class ApplicationController < ActionController::Base
   before_action :set_appsignal_namespace
 
   include Pundit::Authorization
+  include EventFeeds
   # Theme-scoped strings for nav labels and flashes built in controllers.
   include PlaceCal::ThemeTranslation
   include RegionFilterable
@@ -54,7 +55,7 @@ class ApplicationController < ActionController::Base
   end
 
   def resource_not_found
-    render Views::Homepage::ResourceNotFound.new, status: :not_found
+    render Views::Shared::ResourceNotFound.new, status: :not_found
   end
 
   def not_acceptable
@@ -106,6 +107,9 @@ class ApplicationController < ActionController::Base
     # The admin subdomain gives a global view of data.
     return @current_site = nil if request.subdomain == Site::ADMIN_SUBDOMAIN
 
+    # The join marketing site has no Site row either.
+    return @current_site = nil if join_site_request?
+
     @current_site = Site.find_by_request(request)
 
     if @current_site.nil? && request.subdomain.present? &&
@@ -117,92 +121,19 @@ class ApplicationController < ActionController::Base
   end
 
   # @return [Boolean] true when this request is for the nationwide directory:
-  #   the apex (no matched site) outside the admin subdomain.
+  #   the apex (no matched site) outside the admin and join subdomains.
   def directory_request?
-    current_site.nil? && request.subdomain != Site::ADMIN_SUBDOMAIN
+    current_site.nil? && request.subdomain != Site::ADMIN_SUBDOMAIN && !join_site_request?
+  end
+
+  # @return [Boolean] true when this request is for the join marketing site
+  #   (join.placecal.org).
+  def join_site_request?
+    request.subdomain == Site::JOIN_SUBDOMAIN
   end
 
   def set_primary_neighbourhood
     @primary_neighbourhood = current_site&.primary_neighbourhood
-  end
-
-  # Create a calendar from array of events
-  def create_calendar(events, title = false)
-    cal = Icalendar::Calendar.new
-    cal.x_wr_calname = title || 'PlaceCal'
-    site_url = current_site&.url || 'https://placecal.org'
-    events.each do |e|
-      ical = create_ical_event(e, site_url)
-      cal.add_event(ical)
-    end
-    cal
-  end
-
-  # Convert an event object into an ics listing
-  def create_ical_event(e, site_url)
-    event_url = "#{site_url}/events/#{e.id}"
-    event = Icalendar::Event.new
-    event.uid = e.uid.presence || "event-#{e.id}@placecal.org"
-    event.dtstart = e.dtstart
-    event.dtend = e.dtend
-    event.summary = e.summary
-    event.description = "#{unescape_ical_text(e.description)}\n\n#{event_url}"
-    event.url = event_url
-    event.location = e.location
-    event
-  end
-
-  # Unescape iCal escape sequences stored in the DB from source calendar imports.
-  #
-  # We do this ourselves rather than using icalendar gem's Text unescaping because:
-  # 1. The gem only handles standard RFC 5545 escapes (\n \, \; \\), not non-standard
-  #    \' and \" that some source calendars produce
-  # 2. Simpler to have one function that handles everything than split responsibility
-  #
-  # Order matters: unescape \\ last so we don't clobber other sequences.
-  def unescape_ical_text(text)
-    return '' if text.blank?
-
-    text.gsub('\\n', "\n")
-        .gsub('\\,', ',')
-        .gsub('\\;', ';')
-        .gsub("\\'", "'")
-        .gsub('\\"', '"')
-        .gsub('\\\\', '\\')
-  end
-
-  # Track iCal feed downloads in AppSignal and Matomo.
-  # Sets a distinct AppSignal action name and sends a server-side hit to
-  # Matomo (iCal clients don't execute JavaScript, so the JS tracker never
-  # sees these requests).
-  def track_ical_download
-    track_file_download('ical_feed')
-  end
-
-  # Track CSV event exports (see EventsCsv) the same way.
-  def track_csv_download
-    track_file_download('csv_export')
-  end
-
-  def track_file_download(action)
-    Appsignal::Transaction.current.set_action("#{self.class.name}##{action}")
-
-    return unless Rails.env.production?
-
-    token = ENV.fetch('MATOMO_TOKEN_AUTH', nil)
-    return if token.blank?
-
-    # Request state is read before the thread spawns: the request object is
-    # not safe to touch once the response is sent. cip/ua are only honoured
-    # with a valid token_auth, else every download records as the app server.
-    params = { idsite: '1', rec: '1', apiv: '1', token_auth: token,
-               url: request.original_url, download: request.original_url,
-               ua: request.user_agent.to_s, cip: request.remote_ip }
-    Thread.new do
-      Net::HTTP.post_form(URI('https://stats.gfsc.community/matomo.php'), params)
-    rescue StandardError => e
-      Rails.logger.warn("Matomo tracking failed: #{e.message}")
-    end
   end
 
   def authenticate_by_ip
@@ -245,8 +176,9 @@ class ApplicationController < ActionController::Base
     Current.theme = PlaceCal::Theme.for(current_site)
   end
 
+  # News has no directory-wide index; apex requests bounce to the homepage.
   def redirect_from_directory
-    redirect_to '/find-placecal' if directory_request?
+    redirect_to '/' if directory_request?
   end
 
   def set_navigation

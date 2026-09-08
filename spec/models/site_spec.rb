@@ -88,8 +88,8 @@ RSpec.describe Site, type: :model do
     end
 
     it "falls back to the default recipient when blank" do
-      expect(build(:site, contact_email: nil).join_recipient).to eq(Join::DEFAULT_RECIPIENT)
-      expect(build(:site, contact_email: "").join_recipient).to eq(Join::DEFAULT_RECIPIENT)
+      expect(build(:site, contact_email: nil).join_recipient).to eq(ContactRequest::DEFAULT_RECIPIENT)
+      expect(build(:site, contact_email: "").join_recipient).to eq(ContactRequest::DEFAULT_RECIPIENT)
     end
   end
 

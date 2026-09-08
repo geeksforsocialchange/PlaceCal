@@ -9,7 +9,7 @@ RSpec.describe Components::Directory::Footer, type: :component do
     link = page.find("a[href='https://gfsc.community']")
     logo = link.find("img")
     expect(logo[:src]).to include("gfsc-logo-dark")
-    expect(logo[:alt]).to eq(I18n.t("directory.footer.gfsc_logo_alt"))
+    expect(logo[:alt]).to eq(I18n.t("colophon.gfsc_logo_alt"))
   end
 
   it "links to the GFSC Discord" do

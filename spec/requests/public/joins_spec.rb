@@ -21,7 +21,7 @@ RSpec.describe "Public Joins (Contact Form)", type: :request do
 
   let(:valid_params) do
     {
-      join: {
+      contact_request: {
         name: "Test User",
         email: "test@example.com",
         why: "I want to help my community"
@@ -65,7 +65,7 @@ RSpec.describe "Public Joins (Contact Form)", type: :request do
 
         expect(ActionMailer::Base.deliveries.size).to eq(1)
         mail = ActionMailer::Base.deliveries.last
-        expect(mail.to).to eq([Join::DEFAULT_RECIPIENT])
+        expect(mail.to).to eq([ContactRequest::DEFAULT_RECIPIENT])
         expect(mail.subject).to eq(I18n.t("join_mailer.join_us.subject"))
       end
     end
@@ -88,7 +88,7 @@ RSpec.describe "Public Joins (Contact Form)", type: :request do
         submit_form(host: "#{site.slug}.lvh.me", params: valid_params)
 
         expect(ActionMailer::Base.deliveries.size).to eq(1)
-        expect(ActionMailer::Base.deliveries.last.to).to eq([Join::DEFAULT_RECIPIENT])
+        expect(ActionMailer::Base.deliveries.last.to).to eq([ContactRequest::DEFAULT_RECIPIENT])
       end
     end
 
@@ -107,7 +107,7 @@ RSpec.describe "Public Joins (Contact Form)", type: :request do
     context "with invalid params" do
       let(:invalid_params) do
         {
-          join: {
+          contact_request: {
             name: "",
             email: "",
             why: ""
@@ -115,10 +115,9 @@ RSpec.describe "Public Joins (Contact Form)", type: :request do
         }
       end
 
-      it "re-renders the form with errors" do
+      it "re-renders the form with errors and a 422 so Turbo shows them" do
         post "/get-in-touch", params: invalid_params, headers: { "Host" => "lvh.me" }
-        # Renders form again or redirects depending on captcha
-        expect(response).to be_successful.or be_redirect
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it "sends no mail" do

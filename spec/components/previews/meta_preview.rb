@@ -3,11 +3,11 @@
 class MetaPreview < Lookbook::Preview
   # @label With permalink
   def with_permalink
-    render Components::Meta.new("/events/123")
+    render Components::Sites::Meta.new("/events/123")
   end
 
   # @label Without permalink
   def without_permalink
-    render Components::Meta.new(nil)
+    render Components::Sites::Meta.new(nil)
   end
 end

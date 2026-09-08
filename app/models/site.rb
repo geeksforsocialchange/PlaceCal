@@ -55,6 +55,10 @@ class Site < ApplicationRecord
   # defining the admin subdomain string here.
   ADMIN_SUBDOMAIN = 'admin'
 
+  # Reserved for the join.placecal.org marketing site (#3163) — like admin,
+  # it has no Site row.
+  JOIN_SUBDOMAIN = 'join'
+
   # Canonical apex URL for the nationwide directory. The directory has no Site
   # row — an apex request resolves to no site and renders the directory.
   # Resolved in config/initializers/directory_url.rb (the environment's
@@ -154,7 +158,7 @@ class Site < ApplicationRecord
   #
   # @return [String]
   def join_recipient
-    contact_email.presence || Join::DEFAULT_RECIPIENT
+    contact_email.presence || ContactRequest::DEFAULT_RECIPIENT
   end
 
   # The site's public URL, falling back to its conventional placecal.org

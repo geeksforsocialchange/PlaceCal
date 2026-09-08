@@ -42,17 +42,6 @@ RSpec.describe "Public Sites", type: :request do
     end
   end
 
-  describe "find placecal page" do
-    it "shows published sites" do
-      # Publish the site so it appears in the list
-      site.update!(is_published: true)
-
-      get find_placecal_url(host: "lvh.me")
-      expect(response).to be_successful
-      expect(response.body).to include(site.place_name)
-    end
-  end
-
   describe "tag cards" do
     it "hides tag cards by default" do
       get "http://hulme.lvh.me"

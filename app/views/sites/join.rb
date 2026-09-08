@@ -7,17 +7,19 @@
 # rendering; only the page chrome (hero, intro, email CTA) is site-specific.
 # The enquiry is delivered to the site's own contact_email (D13).
 class Views::Sites::Join < Views::Directory::Join
+  register_output_helper :icon
+
   prop :site, Site, reader: :private
 
   def view_template
     content_for(:title) { t('sites.join.hero.title') }
     content_for(:description) { site.og_description }
 
-    Hero(t('sites.join.hero.title'), site.tagline)
+    Shared::Hero(t('sites.join.hero.title'), site.tagline)
 
     div(class: 'container-editorial py-8') do
       p(class: 'join-note mb-6') { t('sites.join.intro', site: site.name) }
-      render_form
+      Shared::ContactForm(contact_request: contact_request, url: get_in_touch_path)
       render_email_cta
     end
   end

@@ -10,16 +10,16 @@ class AddressPreview < Lookbook::Preview
       city: "Manchester",
       postcode: "M15 5RF"
     )
-    render Components::Address.new(address: address)
+    render Components::Shared::Address.new(address: address)
   end
 
   # @label With raw URL location
   def with_raw_url
-    render Components::Address.new(raw_location: "https://zoom.us/j/123456789")
+    render Components::Shared::Address.new(raw_location: "https://zoom.us/j/123456789")
   end
 
   # @label With raw text location
   def with_raw_text
-    render Components::Address.new(raw_location: "Meeting point: outside the library")
+    render Components::Shared::Address.new(raw_location: "Meeting point: outside the library")
   end
 end

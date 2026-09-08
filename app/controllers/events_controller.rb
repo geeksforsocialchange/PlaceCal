@@ -42,7 +42,7 @@ class EventsController < ApplicationController
     end
     respond_to do |format|
       format.html do
-        render Views::Events::Show.new(
+        render Views::Sites::Events::Show.new(
           event: @event, site: @site, map: @map, more_from_organiser: @more_from_organiser
         )
       end
@@ -135,9 +135,9 @@ class EventsController < ApplicationController
     respond_to do |format|
       format.html do
         if params[:simple].present?
-          render Views::Events::IndexSimple.new(events: @events), layout: false
+          render Views::Sites::Events::IndexSimple.new(events: @events), layout: false
         else
-          render Views::Events::Index.new(
+          render Views::Sites::Events::Index.new(
             events: @events, period: @period, sort: @sort, repeating: @repeating,
             current_day: @current_day, site: @site,
             selected_neighbourhood: @selected_neighbourhood,
@@ -147,7 +147,7 @@ class EventsController < ApplicationController
           )
         end
       end
-      format.text { render Views::Events::IndexText.new(events: @events), layout: false }
+      format.text { render Views::Sites::Events::IndexText.new(events: @events), layout: false }
       format.ics { render_ical }
     end
   end
