@@ -447,4 +447,31 @@ RSpec.describe Site, type: :model do
       expect(other.news_article_count).to eq(0)
     end
   end
+
+  describe "#owned_neighbourhoods_subtree" do
+    let(:site) { create(:site) }
+    let(:district) { create(:millbrook_district) }
+    let(:ward) { create(:riverside_ward, parent: district) }
+
+    it "is empty for a site with no neighbourhoods" do
+      expect(site.owned_neighbourhoods_subtree).to be_empty
+    end
+
+    it "returns the site's neighbourhoods and their descendants" do
+      ward
+      site.neighbourhoods << district
+
+      ids = site.owned_neighbourhoods_subtree.pluck(:id)
+
+      expect(ids).to include(district.id, ward.id)
+    end
+
+    it "matches owned_neighbourhood_ids without materialising the id list" do
+      ward
+      site.neighbourhoods << district
+
+      expect(site.owned_neighbourhoods_subtree.pluck(:id).sort).to eq(site.owned_neighbourhood_ids.sort)
+      expect(site.owned_neighbourhoods_subtree.to_sql).to include('"neighbourhoods"."ancestry" LIKE')
+    end
+  end
 end

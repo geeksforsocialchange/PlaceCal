@@ -195,6 +195,22 @@ class Site < ApplicationRecord
       .flatten
   end
 
+  # The site's neighbourhoods and every descendant, as a relation rather than
+  # an array of ids. Meant to be embedded as a subquery: a site anchored to a
+  # large area (a whole country's subtree is 13,000-odd rows) otherwise
+  # serialises a five-figure id list into every partner query, which cost
+  # ~440ms and 180KB of SQL per request. As a subquery Postgres resolves the
+  # subtree from the ancestry path itself. See PartnersQuery#in_site_neighbourhoods_sql.
+  #
+  # @return [ActiveRecord::Relation<Neighbourhood>] empty when the site has none
+  def owned_neighbourhoods_subtree
+    nodes = neighbourhoods.select(:id, :ancestry).to_a
+    return Neighbourhood.none if nodes.empty?
+
+    nodes.map { |node| Neighbourhood.subtree_of(node) }
+         .reduce { |relation, subtree| relation.or(subtree) }
+  end
+
   # Whether a site shows News in its nav is derived from this count (#3368 D6),
   # so every page of every site runs it. Memoised per instance for the request
   # and cached across requests for ten minutes.
