@@ -143,6 +143,7 @@ class Views::Layouts::Admin::Application < Phlex::HTML
   def leftbar_support_links
     leftbar_section(t('admin.leftbar.get_support')) do
       admin_nav_link(t('admin.leftbar.handbook'), 'https://handbook.placecal.org/', :book)
+      admin_nav_link(t('admin.leftbar.browser_extension'), 'https://handbook.placecal.org/browser-extension', :external_link)
       admin_nav_link(t('admin.leftbar.discord'), 'http://discord.gfsc.studio/', :chat)
       admin_nav_link(t('admin.leftbar.report_bug'), 'https://github.com/geeksforsocialchange/PlaceCal/issues/new?assignees=&labels=&template=bug_report.md', :bug)
       li do

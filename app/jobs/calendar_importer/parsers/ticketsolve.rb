@@ -10,9 +10,9 @@ module CalendarImporter::Parsers
     KEY = 'ticket-solve'
     DOMAINS = %w[*.ticketsolve.com].freeze
 
-    def self.allowlist_pattern
-      %r{^https?://([^.]*)\.ticketsolve\.com/?}
-    end
+    URL_PATTERNS = [
+      { pattern: '^https?://([^.]*)\.ticketsolve\.com/?', flags: '' }
+    ].freeze
 
     def import_events_from(data)
       @events = []

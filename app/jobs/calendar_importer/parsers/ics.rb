@@ -19,18 +19,15 @@ module CalendarImporter::Parsers
       webcal://
     ].freeze
 
-    def self.allowlist_pattern
-      allowlists = {
-        gcal: %r{^https?://calendar\.google\.com.*},
-        outlook: %r{^https?://outlook\.(office365|live)\.com/owa/calendar/.*},
-        webcal: %r{^webcal://},
-        mossley: %r{^https?://mossleycommunitycentre\.org\.uk},
-        teamup: %r{^https?://ics\.teamup\.com/feed/.*},
-        consortium: %r{^https://www\.consortium\.lgbt/events/.*},
-        generic: %r{^https?://.*\.ics$}
-      }
-      Regexp.union(allowlists.values)
-    end
+    URL_PATTERNS = [
+      { pattern: '^https?://calendar\.google\.com.*', flags: '' },                        # gcal
+      { pattern: '^https?://outlook\.(office365|live)\.com/owa/calendar/.*', flags: '' }, # outlook
+      { pattern: '^webcal://', flags: '' },                                               # webcal
+      { pattern: '^https?://mossleycommunitycentre\.org\.uk', flags: '' },                # mossley
+      { pattern: '^https?://ics\.teamup\.com/feed/.*', flags: '' },                       # teamup
+      { pattern: '^https://www\.consortium\.lgbt/events/.*', flags: '' },                 # consortium
+      { pattern: '^https?://.*\.ics$', flags: '' }                                        # generic .ics
+    ].freeze
 
     def download_calendar
       res = Base.read_http_source @url
