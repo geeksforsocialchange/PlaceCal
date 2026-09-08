@@ -189,7 +189,8 @@ class PartnersController < ApplicationController
       partners: @partners, site: @site,
       map: @map, selected_category: @selected_category,
       selected_neighbourhood: @selected_neighbourhood,
-      region_tags: region_tags, selected_region: @region
+      region_tags: region_tags, selected_region: @region,
+      query: query
     )
   end
 end

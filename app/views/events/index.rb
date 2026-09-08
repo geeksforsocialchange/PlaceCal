@@ -13,6 +13,7 @@ class Views::Events::Index < Views::Base
   prop :show_monthly, _Boolean, reader: :private, default: true
   prop :region_tags, Array, reader: :private, default: -> { [] }
   prop :selected_region, _Nilable(::Tag), reader: :private, default: nil
+  prop :query, _Nilable(::EventsQuery), reader: :private, default: nil
 
   def view_template
     content_for(:title) { t('events.index.page_title') }
@@ -53,7 +54,8 @@ class Views::Events::Index < Views::Base
               selected_neighbourhood: selected_neighbourhood,
               show_monthly: show_monthly,
               region_tags: region_tags,
-              selected_region: selected_region
+              selected_region: selected_region,
+              query: query
             )
           end
         end
