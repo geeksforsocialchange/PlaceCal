@@ -5,9 +5,11 @@ require "rails_helper"
 RSpec.describe CalendarImporter::Events::EventbriteEvent do
   subject(:event) { described_class.new(sdk_event) }
 
-  # Mirror production: the parser hands us SDK attribute objects, whose `[]`
-  # raises NoMethodError for keys that are absent from the payload.
-  let(:sdk_event) { EventbriteSDK::Resource::Attributes.new(payload) }
+  # Mirror production: the parser hands us EventbriteSDK::Event resources, not
+  # bare attribute objects. `venue` is a declared relationship, so the resource
+  # always responds to it, while `[]` raises NoMethodError for a venue that was
+  # never expanded into the payload. A bare Attributes double hides that.
+  let(:sdk_event) { EventbriteSDK::Event.new(payload) }
 
   let(:base_payload) do
     {
