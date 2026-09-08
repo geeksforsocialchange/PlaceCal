@@ -150,6 +150,7 @@ class EventsController < ApplicationController
       end
       format.text { render Views::Events::IndexText.new(events: @events), layout: false }
       format.ics { render_ical }
+      format.csv { render_events_csv }
     end
   end
 
@@ -165,5 +166,15 @@ class EventsController < ApplicationController
     cal = create_calendar(query.for_ical)
     cal.publish
     render plain: cal.to_ical
+  end
+
+  # The same builder as the partner page's CSV export (app/services/events_csv.rb),
+  # for the events currently on screen: whatever @events picked up from the
+  # index action's own period/sort/repeating/neighbourhood/region filters.
+  def render_events_csv
+    track_csv_download
+    site_url = current_site&.url || 'https://placecal.org'
+    send_data EventsCsv.new(@events.values.flatten, site_url: site_url).call,
+              filename: "#{@site&.slug || 'events'}-events.csv", type: :csv
   end
 end
