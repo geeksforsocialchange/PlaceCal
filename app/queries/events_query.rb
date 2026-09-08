@@ -164,68 +164,14 @@ class EventsQuery
   # Base Scope
   # ===================
 
+  # Events for the whole directory (no site) or, via SiteEventsScope, the ones
+  # that belong to this site. Preloads place and organiser for the cards.
   def base_scope
-    @base_scope ||= if @site.nil?
-                      Event.includes(:place, :organiser)
-                    else
-                      events_for_site.includes(:place, :organiser)
-                    end
+    @base_scope ||= events_in_scope.includes(:place, :organiser)
   end
 
-  # Inline of Event.for_site: the events that belong on this site. Both site
-  # shapes take events organised by, or hosted at, one of the site's partners;
-  # a neighbourhood site also takes any event whose address is in its area,
-  # and a tagged site adds the legacy venue match. The hosted-at rule reaches
-  # an event a site partner puts on somewhere else, which is how the partner
-  # page and the tag filter already count it.
-  def events_for_site
-    if @site.tags.any?
-      events_for_tagged_site(site_partner_ids)
-    else
-      events_for_untagged_site(site_partner_ids)
-    end
-  end
-
-  # The site's partner ids, fetched once per query object and handed to
-  # Postgres as a literal list. As a subquery the planner hashed the set and
-  # scanned every future event for each count: 600ms against 12ms on
-  # production data, four counts per events page. Ids only, never rows.
-  def site_partner_ids
-    @site_partner_ids ||= PartnersQuery.new(site: @site).call.reorder(nil).except(:includes).pluck(:id)
-  end
-
-  # For sites without tags: partner events plus anything at a site address.
-  def events_for_untagged_site(partner_ids)
-    site_neighbourhood_ids = @site.owned_neighbourhood_ids
-
-    base = Event.left_joins(:address)
-    base.where(organiser_id: partner_ids)
-        .or(base.where(place_id: partner_ids))
-        .or(base.where(addresses: { neighbourhood_id: site_neighbourhood_ids }))
-  end
-
-  # For sites with tags: events organised by, or hosted at, a partner in the
-  # site scope, plus the legacy venue match.
-  def events_for_tagged_site(partner_ids)
-    return Event.none if partner_ids.empty?
-
-    base = Event.left_joins(:address)
-    base.where(organiser_id: partner_ids)
-        .or(base.where(place_id: partner_ids))
-        .or(base.where(legacy_venue_match_sql(partner_ids)))
-  end
-
-  # Legacy venue matching, from 2024 (commit 5b90f19), for events whose place
-  # was never set: an event counts as happening at a partner when its address
-  # street line is the partner's name and the postcodes agree. Ids are cast
-  # to integers again before interpolation.
-  def legacy_venue_match_sql(partner_ids)
-    <<~SQL.squish
-      EXISTS (SELECT 1 FROM partners venue_partners
-        INNER JOIN addresses venue_addresses ON venue_addresses.id = venue_partners.address_id
-        WHERE venue_partners.id IN (#{partner_ids.map(&:to_i).join(',')})
-        AND lower(venue_partners.name) = lower(addresses.street_address) AND lower(venue_addresses.postcode) = lower(addresses.postcode))
-    SQL
+  def events_in_scope
+    @site.nil? ? Event.all : SiteEventsScope.new(site: @site).call
   end
 
   # ===================
