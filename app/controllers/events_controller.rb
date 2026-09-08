@@ -143,7 +143,8 @@ class EventsController < ApplicationController
             selected_neighbourhood: @selected_neighbourhood,
             next_date: @next_date, truncated: @truncated,
             show_monthly: @show_monthly,
-            region_tags: region_tags, selected_region: @region
+            region_tags: region_tags, selected_region: @region,
+            query: @query
           )
         end
       end
