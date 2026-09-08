@@ -155,6 +155,34 @@ RSpec.describe "bin/extension-dev-gemfile" do
     expect(resolved_gems).to have_key("added-later")
   end
 
+  describe "the lockfile" do
+    let(:lockfile) { File.join(core, "Gemfile.extensions-dev.lock") }
+
+    it "is seeded from core's Gemfile.lock when none exists, so only the path entries resolve afresh" do
+      File.write(File.join(core, "Gemfile.lock"), "GEM\n  specs:\n    json (2.21.2)\n")
+      _out, _err, status = run("placecal-theme-transdimension=../theme")
+
+      expect(status).to be_success
+      expect(File.read(lockfile)).to include("json (2.21.2)")
+    end
+
+    it "leaves an existing lockfile alone" do
+      File.write(File.join(core, "Gemfile.lock"), "GEM\n  specs:\n    json (2.21.2)\n")
+      File.write(lockfile, "# mine\n")
+      _out, _err, status = run("placecal-theme-transdimension=../theme")
+
+      expect(status).to be_success
+      expect(File.read(lockfile)).to eq("# mine\n")
+    end
+
+    it "writes nothing when core has no Gemfile.lock" do
+      _out, _err, status = run("placecal-theme-transdimension=../theme")
+
+      expect(status).to be_success
+      expect(File).not_to exist(lockfile)
+    end
+  end
+
   describe "when it cannot do what was asked" do
     it "refuses a gem core's Gemfile does not have" do
       _out, err, status = run("placecal-theme-nowhere=../nowhere")

@@ -318,7 +318,7 @@ PLACECAL_CORE_PATH=../PlaceCal \
   RAILS_ENV=test bundle exec rspec
 ```
 
-It takes `<gem>=<path>` pairs, and the paths are resolved as core sees them, from beside core's `Gemfile`. Every extension you do not name stays exactly as core pins it, so one boot still loads all of them: two engines registering two themes in one process is a property core has to keep working, and a dev Gemfile that dropped the sibling extension would hide a regression in it. The generated `Gemfile.extensions-dev` is local to the core checkout and gitignored there.
+It takes `<gem>=<path>` pairs, and the paths are resolved as core sees them, from beside core's `Gemfile`. Every extension you do not name stays exactly as core pins it, so one boot still loads all of them: two engines registering two themes in one process is a property core has to keep working, and a dev Gemfile that dropped the sibling extension would hide a regression in it. The generated `Gemfile.extensions-dev` is local to the core checkout and gitignored there. The generator also seeds `Gemfile.extensions-dev.lock` from core's `Gemfile.lock` when no lockfile exists yet, so Bundler resolves only the path entries and every other gem stays at the version core pins; a fresh resolution would otherwise pick up any new major release since core last locked, which is how `json` 3.0 broke an extension's CI without touching core's. A lockfile that already exists is left alone.
 
 ## Continuous integration
 
