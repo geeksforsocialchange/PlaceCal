@@ -348,6 +348,17 @@ RSpec.describe "Public Partners", type: :request do
         expect(html).to include(%(data-turbo-frame="events-browser"))
       end
 
+      it "closes the browser with the feed and export links beside the show-more link" do
+        get partner_url(partner, host: "#{site.slug}.lvh.me")
+        actions = Nokogiri::HTML(events_browser_html).at_css(".partner-events__actions")
+
+        expect(actions).to be_present
+        expect(actions.css("a").map { |a| a["class"] }).to eq(%w[partner-events__more partner-events__ical partner-events__csv])
+        expect(actions.at_css(".partner-events__ical")["href"]).to include(".ics")
+        expect(actions.at_css(".partner-events__csv")["href"]).to include(".csv")
+        expect(response.body.scan(".ics").size).to eq(1)
+      end
+
       it "appends the next days when days is requested explicitly" do
         get partner_url(partner, host: "#{site.slug}.lvh.me", params: { days: 8 })
         html = events_browser_html

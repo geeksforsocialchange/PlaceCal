@@ -552,6 +552,22 @@ RSpec.describe "Public Events", type: :request do
         expect(response.body).to include("Distant Northern Social")
       end
 
+      # events_default_period: a theme pins the default the density heuristic
+      # would otherwise choose (the flat upcoming list the Trans Dimension
+      # design draws).
+      it "lets a theme pin the default period to the whole upcoming list", :theme_registry do
+        25.times { |n| create(:event, organiser: south_partner, dtstart: (n % 6).days.from_now.at_noon, summary: "Busy South #{n}") }
+        create(:event, organiser: north_partner, dtstart: 20.days.from_now.at_noon, summary: "Distant Northern Social")
+        PlaceCal::Extensions.register_theme(:flat_list_fixture) { |theme| theme.events_default_period :future }
+        region_site.update!(theme: "flat_list_fixture")
+
+        get events_url(host: "regions.lvh.me")
+
+        expect(response).to be_successful
+        expect(response.body).to include("Distant Northern Social")
+        expect(response.body).to include("Busy South 5")
+      end
+
       it "carries the region on the site navigation links" do
         get events_url(host: "regions.lvh.me", region: north_tag.slug)
 

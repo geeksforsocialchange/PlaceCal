@@ -217,10 +217,24 @@ class Views::Partners::Show < Views::Base
           site_tagline: site.tagline,
           context_partner: partner
         )
-        render_show_more_days if more_days.positive?
       else
         p { em { no_event_message || empty_period_message } }
       end
+      render_events_actions
+    end
+  end
+
+  # The row that closes the event browser: the next page of days when there
+  # is one, then the feed and the export for the list the reader is looking
+  # at. Inside the frame so it is one block with the list it acts on, and so
+  # a theme can lay the three out as one row of buttons.
+  def render_events_actions
+    div(class: 'partner-events__actions') do
+      render_show_more_days if more_days.positive?
+      link_to t('partners.show.subscribe_ical', name: partner.name),
+              partner_url(partner, protocol: :webcal, format: :ics),
+              class: 'partner-events__ical'
+      link_to t('events.csv_export.link'), partner_url(partner, format: :csv), class: 'partner-events__csv' if events.any?
     end
   end
 
@@ -322,16 +336,9 @@ class Views::Partners::Show < Views::Base
     PageActions(links: [[t('partners.show.go_back'), partners_path]])
   end
 
+  # The feed and export links moved into the event browser (render_events_actions),
+  # so Meta carries the permalink alone.
   def render_meta_section
-    Meta("/partners/#{partner.id}") do |component|
-      component.with_link do
-        link_to t('partners.show.subscribe_ical', name: partner.name),
-                partner_url(partner, protocol: :webcal, format: :ics)
-        if events.any?
-          whitespace
-          link_to t('events.csv_export.link'), partner_url(partner, format: :csv)
-        end
-      end
-    end
+    Meta("/partners/#{partner.id}")
   end
 end

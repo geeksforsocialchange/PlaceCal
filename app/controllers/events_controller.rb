@@ -77,6 +77,9 @@ class EventsController < ApplicationController
   # region is not given the day view a busy site would pick (#3368 D7).
   def default_period
     return params[:period] if params[:period].present?
+    # A theme may pin the default (PlaceCal::Theme#events_default_period),
+    # for a listing designed as one flat list of everything upcoming.
+    return Current.theme.events_default_period if Current.theme.events_default_period.present?
 
     future_count = @query.future_count(tag_id: @region&.id)
     return 'future' if future_count < 20
