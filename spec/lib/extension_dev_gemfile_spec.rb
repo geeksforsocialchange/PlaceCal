@@ -158,28 +158,89 @@ RSpec.describe "bin/extension-dev-gemfile" do
   describe "the lockfile" do
     let(:lockfile) { File.join(core, "Gemfile.extensions-dev.lock") }
 
-    it "is seeded from core's Gemfile.lock when none exists, so only the path entries resolve afresh" do
-      File.write(File.join(core, "Gemfile.lock"), "GEM\n  specs:\n    json (2.21.2)\n")
-      _out, _err, status = run("placecal-theme-transdimension=../theme")
+    let(:core_lock) do
+      <<~LOCK
+        GIT
+          remote: https://github.com/geeksforsocialchange/placecal-theme-transdimension.git
+          revision: 24ad592c109c926c3369394b1c1098b3a27159b4
+          tag: v0.3.15
+          specs:
+            placecal-theme-transdimension (0.3.15)
+              rails (>= 8.0)
 
-      expect(status).to be_success
-      expect(File.read(lockfile)).to include("json (2.21.2)")
+        GEM
+          remote: https://rubygems.org/
+          specs:
+            json (2.21.2)
+            rails (8.1.0)
+
+        DEPENDENCIES
+          placecal-theme-transdimension!
+          rails
+      LOCK
+    end
+
+    # A checkout beside core with the gemspec the seed reads the version and
+    # dependencies from.
+    def write_checkout
+      dir = File.join(core, "theme")
+      FileUtils.mkdir_p(dir)
+      File.write(File.join(dir, "placecal-theme-transdimension.gemspec"), <<~GEMSPEC)
+        Gem::Specification.new do |spec|
+          spec.name = "placecal-theme-transdimension"
+          spec.version = "0.4.0"
+          spec.summary = "test"
+          spec.authors = ["test"]
+          spec.add_dependency "rails", ">= 8.0"
+          spec.add_dependency "phlex", "~> 2.0"
+        end
+      GEMSPEC
+    end
+
+    before { write_checkout }
+
+    it "is seeded from core's Gemfile.lock with the checkout as a path source, so nothing else resolves afresh" do
+      File.write(File.join(core, "Gemfile.lock"), core_lock)
+      _out, err, status = run("placecal-theme-transdimension=theme")
+
+      expect(status).to be_success, err
+      seeded = File.read(lockfile)
+      expect(seeded).to include("json (2.21.2)")
+      expect(seeded).not_to include("GIT")
+      expect(seeded).to start_with(<<~SECTION)
+        PATH
+          remote: theme
+          specs:
+            placecal-theme-transdimension (0.4.0)
+              phlex (~> 2.0)
+              rails (>= 8.0)
+
+      SECTION
     end
 
     it "leaves an existing lockfile alone" do
-      File.write(File.join(core, "Gemfile.lock"), "GEM\n  specs:\n    json (2.21.2)\n")
+      File.write(File.join(core, "Gemfile.lock"), core_lock)
       File.write(lockfile, "# mine\n")
-      _out, _err, status = run("placecal-theme-transdimension=../theme")
+      _out, _err, status = run("placecal-theme-transdimension=theme")
 
       expect(status).to be_success
       expect(File.read(lockfile)).to eq("# mine\n")
     end
 
     it "writes nothing when core has no Gemfile.lock" do
-      _out, _err, status = run("placecal-theme-transdimension=../theme")
+      _out, _err, status = run("placecal-theme-transdimension=theme")
 
       expect(status).to be_success
       expect(File).not_to exist(lockfile)
+    end
+
+    it "refuses a checkout without the gemspec it needs" do
+      File.write(File.join(core, "Gemfile.lock"), core_lock)
+      FileUtils.rm(File.join(core, "theme", "placecal-theme-transdimension.gemspec"))
+      _out, err, status = run("placecal-theme-transdimension=theme")
+
+      expect(status).not_to be_success
+      expect(err).to include("no placecal-theme-transdimension.gemspec")
     end
   end
 

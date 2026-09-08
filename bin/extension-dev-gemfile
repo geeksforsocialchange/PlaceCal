@@ -101,19 +101,54 @@ core.join(GENERATED).write(<<~RUBY)
   end
 RUBY
 
-# Seed the generated Gemfile's lockfile from core's own, so Bundler resolves
-# only the path entries above and keeps every other gem at the version core
-# pins. Without a lockfile Bundler resolves the whole tree afresh, and a gem
-# that has cut a new major since core last locked (json 3.0 broke
-# Partner#opening_times_is_json_or_nil this way in the theme CI) lands in the
-# extension's test run but nowhere else. An existing lockfile is left alone:
-# it is a developer's own working state, and `bundle lock` keeps it current.
-lockfile = core.join("#{GENERATED}.lock")
-core_lock = core.join('Gemfile.lock')
-if !lockfile.file? && core_lock.file?
-  lockfile.write(core_lock.read)
+# Seed the generated Gemfile's lockfile from core's own, so Bundler keeps
+# every gem at the version core pins and resolves nothing afresh. Without a
+# lockfile Bundler resolves the whole tree, and a gem that has cut a new major
+# since core last locked (json 3.0 broke Partner#opening_times_is_json_or_nil
+# this way in the theme CI) lands in the extension's test run but nowhere
+# else. An existing lockfile is left alone: it is a developer's own working
+# state, and `bundle lock` keeps it current.
+#
+# The seeded lockfile has to be complete, not merely close: CI's Ruby setup
+# installs in deployment mode whenever a lockfile exists, and deployment mode
+# refuses a lockfile whose sources differ from the Gemfile's. So each named
+# gem's GIT section is replaced with a PATH section describing the checkout,
+# with the version and runtime dependencies read from its gemspec, which is
+# what Bundler itself would write.
+def lockfile_path_section(name, path, gemspec)
+  deps = gemspec.runtime_dependencies.sort_by(&:name).map do |dep|
+    "      #{dep.name} (#{dep.requirement})"
+  end
+  ['PATH', "  remote: #{path}", '  specs:', "    #{name} (#{gemspec.version})", *deps, ''].join("\n")
+end
+
+def seed_lockfile(core, entries)
+  lockfile = core.join("#{GENERATED}.lock")
+  core_lock = core.join('Gemfile.lock')
+  return if lockfile.file? || !core_lock.file?
+
+  lock = core_lock.read
+  entries.each do |name, path|
+    gemspec_file = core.join(path, "#{name}.gemspec")
+    abort "extension-dev-gemfile: no #{name}.gemspec under #{core.join(path)}." unless gemspec_file.file?
+
+    gemspec = Gem::Specification.load(gemspec_file.to_s)
+    abort "extension-dev-gemfile: could not load #{gemspec_file}." if gemspec.nil?
+
+    # The GIT block whose specs list this gem: "GIT", its indented lines, the
+    # spec line and the spec's indented dependencies, up to the blank line.
+    git_block = /^GIT\n(?:  .*\n)*?    #{Regexp.escape(name)} \(.*\n(?:      .*\n)*\n/
+    abort "extension-dev-gemfile: #{name} is not a git gem in #{core_lock}." unless lock.match?(git_block)
+
+    lock = lock.sub(git_block, '')
+    lock = "#{lockfile_path_section(name, path, gemspec)}\n#{lock}"
+  end
+
+  lockfile.write(lock)
   puts "Seeded #{lockfile} from #{core_lock}"
 end
+
+seed_lockfile(core, entries)
 
 puts "Wrote #{core.join(GENERATED)}"
 entries.each { |name, path| puts "  #{name} -> #{path}" }
