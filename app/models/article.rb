@@ -96,11 +96,11 @@ class Article < ApplicationRecord
     # this also also allows us to skip an entire chunk of query if the
     # site has no tags or locations.
 
-    site_neighbourhood_ids = site.owned_neighbourhoods.pluck(:id)
+    has_neighbourhoods = site.neighbourhoods.exists?
     site_tag_ids = site.tags.pluck(:id)
 
     # if site has no tags or neighbourhoods then just return nothing to caller
-    return none if site_neighbourhood_ids.empty? && site_tag_ids.empty?
+    return none unless has_neighbourhoods || site_tag_ids.any?
 
     scope = all
 
@@ -108,14 +108,18 @@ class Article < ApplicationRecord
     where_params = []
 
     # articles by neighbourhood
-    if site_neighbourhood_ids.any?
+    if has_neighbourhoods
       # TODO: service areas?
+      # The site subtree goes in as a subquery, not a five-figure id list: a
+      # country-anchored site otherwise materialised ~13,000 ids and loaded
+      # every subtree row. owned_neighbourhoods_subtree is built from the
+      # site's own records, never user input.
+      subtree_ids = site.owned_neighbourhoods_subtree.select(:id).to_sql
       scope = scope
               .joins('LEFT OUTER JOIN article_partners ON articles.id=article_partners.article_id')
               .joins('LEFT OUTER JOIN partners ON article_partners.partner_id = partners.id')
               .joins('LEFT OUTER JOIN addresses ON partners.address_id = addresses.id')
-      where_fragments << 'addresses.neighbourhood_id IN (?)'
-      where_params << site_neighbourhood_ids
+      where_fragments << "addresses.neighbourhood_id IN (#{subtree_ids})"
     end
 
     # articles by tag
