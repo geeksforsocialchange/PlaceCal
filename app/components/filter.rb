@@ -9,6 +9,10 @@ class Components::Filter < Components::Base
   prop :submit_action, String
   prop :reset_action, String
   prop :selected_id, Integer, default: 0
+  # Extra class on the options group, so a caller with more than one Filter on
+  # a page (the neighbourhood filter, say) can give its dropdown a hook of
+  # its own, alongside the shared filters__group class.
+  prop :group_class, _Nilable(String), default: nil
 
   def view_template
     return unless @items.any?
@@ -23,8 +27,9 @@ class Components::Filter < Components::Base
     div(class: 'filters__toggle') do
       button(type: 'button', data: { action: toggle_action_value }) do
         raw(view_context.icon(:triangle_down, size: nil))
-        span(class: 'filters__link', data: { "#{@controller}-target": "#{@name}Text" }) do
-          button_text
+        span(class: 'filters__toggle-label') { @label }
+        span(class: 'filters__toggle-value', data: { "#{@controller}-target": "#{@name}Text" }) do
+          toggle_value
         end
       end
     end
@@ -38,7 +43,7 @@ class Components::Filter < Components::Base
   end
 
   def render_filter_options
-    div(class: 'filters__group') do
+    div(class: ['filters__group', @group_class].compact.join(' ')) do
       @items.each { |item| render_filter_option(item) }
     end
   end
@@ -82,8 +87,8 @@ class Components::Filter < Components::Base
     selected_item&.dig(:name)
   end
 
-  def button_text
-    filter_active? ? selected_item_name : @label
+  def toggle_value
+    filter_active? ? selected_item_name : t('filters.show_all')
   end
 
   def toggle_action_value

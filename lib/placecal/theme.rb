@@ -15,7 +15,7 @@ module PlaceCal
   #
   # Each setting is optional.
   class Theme
-    EVENT_FILTER_STYLES = %i[date_picker day_strip].freeze
+    EVENT_FILTER_STYLES = %i[date_picker day_strip day_strip_with_date_picker].freeze
 
     # Slug format for a theme page (`theme.page`). Same shape as the URLs core
     # already serves, so a theme page cannot introduce a path segment the
@@ -82,6 +82,7 @@ module PlaceCal
       @nav_cta = nil
       @pages = {}
       @event_filter_style = :date_picker
+      @events_default_period = nil
       @warned = Set.new
     end
 
@@ -271,6 +272,33 @@ module PlaceCal
     #
     # @param value [Boolean, nil]
     setting :menu_label, cast: :boolean, default: false, predicate: true
+
+    # Whether the site nav includes the region control (Components::RegionFilter,
+    # #3368): a segmented control of the site's own Partnership tags, rendered
+    # as the last item before the theme CTA. Only takes effect when the site
+    # also has two or more Partnership tags: a theme opting in on a
+    # single-tag site simply sees nothing extra. Defaults to false.
+    #
+    # @param value [Boolean, nil]
+    setting :nav_region_filter, cast: :boolean, default: false, predicate: true
+
+    # The events listing's default period when the request names none.
+    # Core picks one from the calendar's density (see
+    # EventsController#default_period); a theme whose listing is one flat list
+    # of everything upcoming sets 'future' here so a busy site is not forced
+    # into the day view. nil keeps core's heuristic.
+    #
+    # @param value [String, Symbol, nil] one of EVENTS_DEFAULT_PERIODS
+    EVENTS_DEFAULT_PERIODS = %w[future week day].freeze
+
+    def events_default_period(value = nil)
+      return @events_default_period if value.nil?
+
+      value = value.to_s
+      raise ArgumentError, "unknown events_default_period #{value.inspect}, expected one of #{EVENTS_DEFAULT_PERIODS.inspect}" unless EVENTS_DEFAULT_PERIODS.include?(value)
+
+      @events_default_period = value
+    end
 
     # @param value [Symbol, nil] one of EVENT_FILTER_STYLES
     def event_filter_style(value = nil)

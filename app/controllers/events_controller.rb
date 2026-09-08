@@ -77,6 +77,9 @@ class EventsController < ApplicationController
   # region is not given the day view a busy site would pick (#3368 D7).
   def default_period
     return params[:period] if params[:period].present?
+    # A theme may pin the default (PlaceCal::Theme#events_default_period),
+    # for a listing designed as one flat list of everything upcoming.
+    return Current.theme.events_default_period if Current.theme.events_default_period.present?
 
     future_count = @query.future_count(tag_id: @region&.id)
     return 'future' if future_count < 20
@@ -150,6 +153,7 @@ class EventsController < ApplicationController
       end
       format.text { render Views::Events::IndexText.new(events: @events), layout: false }
       format.ics { render_ical }
+      format.csv { render_events_csv }
     end
   end
 
@@ -165,5 +169,15 @@ class EventsController < ApplicationController
     cal = create_calendar(query.for_ical)
     cal.publish
     render plain: cal.to_ical
+  end
+
+  # The same builder as the partner page's CSV export (app/services/events_csv.rb),
+  # for the events currently on screen: whatever @events picked up from the
+  # index action's own period/sort/repeating/neighbourhood/region filters.
+  def render_events_csv
+    track_csv_download
+    site_url = current_site&.url || 'https://placecal.org'
+    send_data EventsCsv.new(@events.values.flatten, site_url: site_url).call,
+              filename: "#{@site&.slug || 'events'}-events.csv", type: :csv
   end
 end

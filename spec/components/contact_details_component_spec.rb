@@ -37,6 +37,20 @@ RSpec.describe Components::ContactDetails, type: :phlex do
     expect(page).to have_text("No contact information")
   end
 
+  it "gives each scss-variant link a channel class, wrapped in an item span" do
+    render_inline(described_class.new(partner: contact_partner,
+                                      email: contact_email,
+                                      phone: contact_phone,
+                                      url: contact_url))
+
+    expect(page).to have_css("span.contact_details__item a.contact_details__phone", text: contact_phone)
+    expect(page).to have_css("span.contact_details__item a.contact_details__email", text: contact_email)
+    expect(page).to have_css("span.contact_details__item a.contact_details__website")
+    expect(page).to have_css("span.contact_details__item a.contact_details__facebook")
+    expect(page).to have_css("span.contact_details__item a.contact_details__twitter")
+    expect(page).to have_css("span.contact_details__item a.contact_details__instagram")
+  end
+
   context "tailwind variant" do
     it "renders contact details in card layout" do
       render_inline(described_class.new(partner: contact_partner,
