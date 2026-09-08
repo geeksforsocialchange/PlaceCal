@@ -23,8 +23,9 @@ class Components::Filter < Components::Base
     div(class: 'filters__toggle') do
       button(type: 'button', data: { action: toggle_action_value }) do
         raw(view_context.icon(:triangle_down, size: nil))
-        span(class: 'filters__link', data: { "#{@controller}-target": "#{@name}Text" }) do
-          button_text
+        span(class: 'filters__toggle-label') { @label }
+        span(class: 'filters__toggle-value', data: { "#{@controller}-target": "#{@name}Text" }) do
+          toggle_value
         end
       end
     end
@@ -82,8 +83,8 @@ class Components::Filter < Components::Base
     selected_item&.dig(:name)
   end
 
-  def button_text
-    filter_active? ? selected_item_name : @label
+  def toggle_value
+    filter_active? ? selected_item_name : t('filters.show_all')
   end
 
   def toggle_action_value

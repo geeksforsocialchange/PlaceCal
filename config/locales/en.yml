@@ -93,6 +93,9 @@ en:
     today: "Today"
     go_to_date: "Go to date"
     filter_and_sort: "Filter and sort"
+    # Toggle value shown when a Components::Filter dropdown has no selection.
+    show_all: "Show all"
+    search_partners: "Search partners"
     # Radio labels in the sort/period/repeats dropdown, grouped as they appear
     sort:
       time: "Sort by date"
