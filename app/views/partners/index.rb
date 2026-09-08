@@ -8,6 +8,7 @@ class Views::Partners::Index < Views::Base
   prop :selected_neighbourhood, _Nilable(String), reader: :private
   prop :region_tags, Array, reader: :private, default: -> { [] }
   prop :selected_region, _Nilable(::Tag), reader: :private, default: nil
+  prop :query, _Nilable(::PartnersQuery), reader: :private, default: nil
 
   def view_template
     content_for(:title) { t('partners.index.page_title') }
@@ -24,7 +25,8 @@ class Views::Partners::Index < Views::Base
             selected_category: selected_category,
             selected_neighbourhood: selected_neighbourhood,
             region_tags: region_tags,
-            selected_region: selected_region
+            selected_region: selected_region,
+            query: query
           )
         end
 
