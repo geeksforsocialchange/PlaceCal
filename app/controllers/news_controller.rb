@@ -15,21 +15,21 @@ class NewsController < ApplicationController
   def index
     @offset = params[:offset].to_i
     @offset = 0 if @offset.negative?
-    @next_offset = @offset + ARTICLES_PER_PAGE
 
-    @article_count = Article
-                     .for_site(@site)
-                     .published
-                     .count
+    # Fetch one extra record beyond the page size so we know whether an
+    # older page exists, without a separate COUNT query.
+    fetched = Article
+              .for_site(@site)
+              .published
+              .by_publish_date
+              .offset(@offset)
+              .limit(ARTICLES_PER_PAGE + 1)
+              .to_a
 
-    @articles = Article
-                .for_site(@site)
-                .published
-                .by_publish_date
-                .offset(@offset)
-                .limit(ARTICLES_PER_PAGE)
+    @has_more = fetched.size > ARTICLES_PER_PAGE
+    @articles = fetched.first(ARTICLES_PER_PAGE)
 
-    render Views::News::Index.new(articles: @articles, site: @site, next_offset: @next_offset)
+    render Views::News::Index.new(articles: @articles, site: @site, offset: @offset, has_more: @has_more)
   end
 
   def show

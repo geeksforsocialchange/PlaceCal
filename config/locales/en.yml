@@ -468,6 +468,7 @@ en:
     index:
       page_title: "News from your area"
       read_more: "Find out more"
+      newer: "Recent news"
       older: "Older news items"
       # strftime pattern for the article card date; themes may override
       date_format: "%B %Y"
