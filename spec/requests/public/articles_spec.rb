@@ -49,6 +49,67 @@ RSpec.describe "Public Articles (News)", type: :request do
         expect(response.body).not_to include("articles__partners")
       end
     end
+
+    context "with pagination" do
+      let!(:partner) { create(:partner, address: address) }
+
+      def create_published_articles(count)
+        count.times do |i|
+          article = create(:article, is_draft: false, published_at: (count - i).days.ago)
+          article.partners << partner
+        end
+      end
+
+      context "with fewer articles than one page" do
+        before { create_published_articles(5) }
+
+        it "shows neither a newer nor an older link" do
+          get news_index_url(host: "#{site.slug}.lvh.me")
+
+          doc = Nokogiri::HTML(response.body)
+          expect(doc.at_css(".articles__pagination-newer")).to be_nil
+          expect(doc.at_css(".articles__pagination-older")).to be_nil
+        end
+      end
+
+      context "with more articles than one page" do
+        before { create_published_articles(NewsController::ARTICLES_PER_PAGE + 5) }
+
+        it "shows an older link on the first page, and no newer link" do
+          get news_index_url(host: "#{site.slug}.lvh.me")
+
+          doc = Nokogiri::HTML(response.body)
+          expect(doc.at_css(".articles__pagination-newer")).to be_nil
+
+          older = doc.at_css(".articles__pagination-older")
+          expect(older).to be_present
+          expect(older[:href]).to include("offset=#{NewsController::ARTICLES_PER_PAGE}")
+        end
+
+        it "shows a newer link back to the bare index on the second page, and no older link" do
+          get news_index_url(host: "#{site.slug}.lvh.me", offset: NewsController::ARTICLES_PER_PAGE)
+
+          doc = Nokogiri::HTML(response.body)
+          newer = doc.at_css(".articles__pagination-newer")
+          expect(newer).to be_present
+          expect(newer[:href]).to eq(news_index_path)
+
+          expect(doc.at_css(".articles__pagination-older")).to be_nil
+        end
+      end
+
+      context "with three full pages" do
+        before { create_published_articles((NewsController::ARTICLES_PER_PAGE * 2) + 5) }
+
+        it "shows a newer link with the offset of the previous page" do
+          get news_index_url(host: "#{site.slug}.lvh.me", offset: NewsController::ARTICLES_PER_PAGE * 2)
+
+          doc = Nokogiri::HTML(response.body)
+          newer = doc.at_css(".articles__pagination-newer")
+          expect(newer[:href]).to include("offset=#{NewsController::ARTICLES_PER_PAGE}")
+        end
+      end
+    end
   end
 
   describe "GET /news/:id (show)" do
@@ -113,6 +174,77 @@ RSpec.describe "Public Articles (News)", type: :request do
         get news_url(article, host: "#{site.slug}.lvh.me")
         expect(response).to be_successful
         expect(response.body).not_to include("article__author")
+      end
+    end
+
+    context "with an image credit" do
+      let!(:article) do
+        create(:article, is_draft: false, image_credit: "Photo by Jane Doe",
+                         article_image: fixture_file_upload("good-cat-picture.jpg"))
+      end
+
+      it "shows the credit under the image" do
+        get news_url(article, host: "#{site.slug}.lvh.me")
+
+        credit = Nokogiri::HTML(response.body).at_css(".article__image-credit")
+        expect(credit).to be_present
+        expect(credit.text).to eq("Photo by Jane Doe")
+      end
+    end
+
+    context "without an image" do
+      let!(:article) { create(:article, is_draft: false, image_credit: "Photo by Jane Doe") }
+
+      it "does not show a credit" do
+        get news_url(article, host: "#{site.slug}.lvh.me")
+        expect(response.body).not_to include("article__image-credit")
+      end
+    end
+
+    context "with a pull quote and at least three paragraphs" do
+      let!(:article) do
+        create(:article, is_draft: false, pull_quote: "This is the pulled-out quote.",
+                         body: "Paragraph one.\n\nParagraph two.\n\nParagraph three.\n\nParagraph four.")
+      end
+
+      it "renders the pull quote after the third paragraph" do
+        get news_url(article, host: "#{site.slug}.lvh.me")
+
+        content = Nokogiri::HTML(response.body).at_css(".article__content")
+        paragraphs = content.css("> p")
+        expect(paragraphs.map(&:text)).to eq(["Paragraph one.", "Paragraph two.", "Paragraph three.", "Paragraph four."])
+
+        pull_quote_node = content.at_css(".pullquote")
+        expect(pull_quote_node).to be_present
+        expect(pull_quote_node.text).to include("This is the pulled-out quote.")
+
+        # The quote sits after the third paragraph, before the fourth.
+        third_paragraph = paragraphs[2]
+        expect(third_paragraph.next_element["class"]).to include("pullquote")
+      end
+    end
+
+    context "with a pull quote and fewer than three paragraphs" do
+      let!(:article) do
+        create(:article, is_draft: false, pull_quote: "This is the pulled-out quote.",
+                         body: "Paragraph one.\n\nParagraph two.")
+      end
+
+      it "appends the pull quote at the end" do
+        get news_url(article, host: "#{site.slug}.lvh.me")
+
+        content = Nokogiri::HTML(response.body).at_css(".article__content")
+        last_element = content.children.to_a.rfind(&:element?)
+        expect(last_element["class"]).to include("pullquote")
+      end
+    end
+
+    context "without a pull quote" do
+      let!(:article) { create(:article, is_draft: false, pull_quote: nil) }
+
+      it "does not render a pull quote" do
+        get news_url(article, host: "#{site.slug}.lvh.me")
+        expect(response.body).not_to include("pullquote")
       end
     end
   end
