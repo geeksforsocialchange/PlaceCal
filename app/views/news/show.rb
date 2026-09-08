@@ -2,6 +2,11 @@
 
 class Views::News::Show < Views::Base
   register_output_helper :article_partner_links
+  register_value_helper :article_date
+
+  # The pull quote sits after the third paragraph of the body, or at the end
+  # when the body has fewer than three.
+  PULL_QUOTE_PARAGRAPH = 3
 
   prop :article, Article, reader: :private
   prop :site, Site, reader: :private
@@ -34,7 +39,7 @@ class Views::News::Show < Views::Base
     div(class: 'g article') do
       div(class: 'gi gi__1-5 article__aside') do
         p(class: 'article__published', title: article.published_at.to_s) do
-          plain article.published_at.strftime(t('news.show.date_format'))
+          plain article_date(article.published_at, t('news.show.date_format'))
         end
       end
 
@@ -55,15 +60,9 @@ class Views::News::Show < Views::Base
           end
         end
 
-        if article.article_image.present?
-          div(class: 'article__image') do
-            image_tag article.article_image.url, class: 'border'
-          end
-        end
+        render_image
 
-        div(class: 'article__content') do
-          raw safe(article.body_html.to_s)
-        end
+        div(class: 'article__content') { render_body_with_pull_quote }
 
         div(class: 'article__back') do
           link_to t('news.show.back'), news_index_path
@@ -81,5 +80,45 @@ class Views::News::Show < Views::Base
     links << [t('news.show.next'), news_path(next_article)] if next_article
     links << [t('news.show.go_back'), news_index_path]
     PageActions(links: links)
+  end
+
+  def render_image
+    return if article.article_image.blank?
+
+    div(class: 'article__image') do
+      image_tag article.article_image.url, class: 'border'
+      p(class: 'article__image-credit') { article.image_credit } if article.image_credit.present?
+    end
+  end
+
+  # The cached body HTML is a sequence of sanitised <p>...</p> paragraphs
+  # (see HtmlRenderCache). Splitting on the closing tag lets us drop the pull
+  # quote in after the third paragraph, or at the end if there are fewer.
+  #
+  # Kramdown separates paragraphs with a blank line, so unless the body ends
+  # exactly on a closing tag, the split leaves a trailing whitespace fragment
+  # that is not itself a paragraph and must not be treated as one.
+  def render_body_with_pull_quote
+    html = article.body_html.to_s
+    fragments = html.split('</p>')
+    trailing = html.end_with?('</p>') ? '' : fragments.pop.to_s
+
+    paragraphs = fragments.map { |paragraph| "#{paragraph}</p>" }
+    insert_after = article.pull_quote.present? ? [PULL_QUOTE_PARAGRAPH, paragraphs.length].min - 1 : nil
+
+    if paragraphs.empty?
+      render_pull_quote if insert_after
+    else
+      paragraphs.each_with_index do |paragraph, index|
+        raw safe(paragraph)
+        render_pull_quote if index == insert_after
+      end
+    end
+
+    raw safe(trailing) if trailing.present?
+  end
+
+  def render_pull_quote
+    PullQuote(source: '', quote_context: '', options: {}) { article.pull_quote }
   end
 end
