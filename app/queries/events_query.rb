@@ -148,12 +148,12 @@ class EventsQuery
   def neighbourhoods_with_counts(period: 'future', tag_id: nil)
     return [] unless @site
 
-    all_descendants = @site.neighbourhoods.flat_map { |n| n.descendants.to_a }
-    return [] if all_descendants.empty?
+    site_root_ids = @site.neighbourhoods.pluck(:id)
+    return [] if site_root_ids.empty?
 
     events = apply_period(filter_by_tag(base_scope, tag_id), period)
 
-    # Count events per leaf neighbourhood (single query)
+    # Events counted against the neighbourhood they happen in (single query)
     raw_counts = events
                  .left_joins(:address, organiser: :address)
                  .where('COALESCE(addresses.neighbourhood_id, addresses_partners.neighbourhood_id) IS NOT NULL')
@@ -161,14 +161,7 @@ class EventsQuery
                  .distinct
                  .count
 
-    # Build parent→children map from ancestry data already in memory,
-    # then compute subtree counts without extra DB queries
-    subtree_counts = subtree_counts_from_ancestry(all_descendants, raw_counts)
-
-    all_descendants
-      .select { |n| (subtree_counts[n.id] || 0).positive? }
-      .sort_by(&:name)
-      .map { |n| { neighbourhood: n, count: subtree_counts[n.id] } }
+    dropdown_neighbourhoods(raw_counts, site_root_ids)
   end
 
   # Whether the given event appears on this site — same rules as the event
@@ -331,29 +324,32 @@ class EventsQuery
     end
   end
 
-  # Compute subtree event counts using in-memory ancestry data (no extra queries).
-  # Builds a parent→children map, then propagates leaf counts upward.
-  def subtree_counts_from_ancestry(descendants, raw_counts)
-    ids = descendants.to_set(&:id)
-    children_map = Hash.new { |h, k| h[k] = [] }
-    roots = []
+  # The neighbourhood dropdown: every neighbourhood with events in its subtree,
+  # each carrying that subtree's event count, sorted by name.
+  #
+  # Only the neighbourhoods that have events and their ancestors can carry a
+  # non-zero count, so we load just those rather than every descendant of the
+  # site. A country-anchored site has ~13,000 descendants; loading them all to
+  # fill a handful-long dropdown cost ~2s a request. Entries are kept to strict
+  # descendants of the site's own neighbourhoods, so the anchor nodes are
+  # excluded, matching the previous descendants-only behaviour.
+  #
+  # @param raw_counts [Hash{Integer=>Integer}] event count per neighbourhood id
+  # @param site_root_ids [Array<Integer>] the site's own neighbourhood ids
+  # @return [Array<Hash>] { neighbourhood:, count: } sorted by name
+  def dropdown_neighbourhoods(raw_counts, site_root_ids)
+    return [] if raw_counts.empty?
 
-    descendants.each do |n|
-      if n.parent_id && ids.include?(n.parent_id)
-        children_map[n.parent_id] << n.id
-      else
-        roots << n.id
-      end
-    end
+    event_hoods = Neighbourhood.where(id: raw_counts.keys).to_a
+    candidate_ids = (raw_counts.keys + event_hoods.flat_map(&:ancestor_ids)).uniq
 
-    counts = {}
-    # Post-order traversal: compute children first, then sum into parent
-    compute = lambda do |id|
-      own = raw_counts[id] || 0
-      child_sum = children_map[id].sum { |cid| compute.call(cid) }
-      counts[id] = own + child_sum
+    Neighbourhood.where(id: candidate_ids).order(:name).filter_map do |node|
+      next unless (node.ancestor_ids & site_root_ids).any?
+
+      # An event counts towards a node when the node is an ancestor-or-self of
+      # the neighbourhood the event is in, i.e. the event sits in its subtree.
+      count = event_hoods.sum { |h| h.path_ids.include?(node.id) ? raw_counts[h.id] : 0 }
+      { neighbourhood: node, count: count } if count.positive?
     end
-    roots.each { |id| compute.call(id) }
-    counts
   end
 end

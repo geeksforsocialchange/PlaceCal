@@ -549,6 +549,34 @@ RSpec.describe EventsQuery do
         expect(result).to be_empty
       end
     end
+
+    # The dropdown lists only neighbourhoods with events and their ancestors, so
+    # it must not load every descendant of the site's territory. A site anchored
+    # to a district with many empty wards but events in one ward returns just
+    # that ward, having loaded a bounded set of neighbourhood rows, not the lot.
+    context "when the site's territory is large but few neighbourhoods have events" do
+      let(:district) { site.primary_neighbourhood }
+      let(:active_ward) { create(:neighbourhood, name: "Active Ward", unit: "ward", parent: district) }
+      let(:address) { create(:address, neighbourhood: active_ward) }
+      let(:partner) do
+        p = create(:partner, address: address)
+        p.service_areas << create(:service_area, neighbourhood: active_ward)
+        p
+      end
+
+      before do
+        create_list(:neighbourhood, 15, unit: "ward", parent: district)
+        create_list(:future_event, 2, organiser: partner, address: address)
+      end
+
+      it "returns only the event-bearing ward, not the empty siblings" do
+        query = described_class.new(site: site, day: today)
+        result = query.neighbourhoods_with_counts(period: "future")
+
+        expect(result.map { |r| r[:neighbourhood].id }).to contain_exactly(active_ward.id)
+        expect(result.first[:count]).to eq(2)
+      end
+    end
   end
 
   describe "#call with neighbourhood_id filter" do
