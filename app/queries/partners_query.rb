@@ -260,11 +260,11 @@ class PartnersQuery
   # has no partners.
   def build_base_scope
     return Partner.visible if @site.nil?
-    return Partner.none if site_neighbourhood_ids.empty? && site_tag_ids.empty?
+    return Partner.none if !site_has_neighbourhoods? && site_tag_ids.empty?
 
     scope = Partner.visible
     scope = scope.joins(:tags).where(tags: { id: site_tag_ids }) if site_tag_ids.any?
-    scope = scope.left_joins(:address, :service_areas).where(in_site_neighbourhoods_sql) if site_neighbourhood_ids.any?
+    scope = scope.left_joins(:address, :service_areas).where(in_site_neighbourhoods_sql) if site_has_neighbourhoods?
     scope.distinct
   end
 
@@ -278,23 +278,13 @@ class PartnersQuery
   # neighbourhood (e.g. "Manchester" the district) includes partners living
   # in its wards, not just those assigned to the area node itself.
   def filter_by_neighbourhood(partners, neighbourhood_id)
-    ids = neighbourhood_subtree_ids(neighbourhood_id)
-    return partners.none if ids.empty?
+    node = Neighbourhood.find_by(id: neighbourhood_id)
+    return partners.none unless node
 
     partners
       .left_joins(:address, :service_areas)
-      .where(
-        'addresses.neighbourhood_id IN (:ids) OR service_areas.neighbourhood_id IN (:ids)',
-        ids: ids
-      )
+      .where(in_neighbourhood_subtree_sql(Neighbourhood.subtree_of(node)))
       .distinct
-  end
-
-  # @return [Array<Integer>] the neighbourhood id plus all descendant ids, or
-  #   [] when the id is blank/unknown — so an invalid filter matches nothing
-  #   rather than raising on a non-integer value passed to an integer column.
-  def neighbourhood_subtree_ids(neighbourhood_id)
-    Neighbourhood.find_by(id: neighbourhood_id)&.subtree_ids || []
   end
 
   def filter_by_tag(partners, tag_id)
@@ -325,14 +315,25 @@ class PartnersQuery
   # ===================
 
   def in_site_neighbourhoods_sql
-    [
-      'addresses.neighbourhood_id IN (:ids) OR service_areas.neighbourhood_id IN (:ids)',
-      { ids: site_neighbourhood_ids }
-    ]
+    in_neighbourhood_subtree_sql(@site.owned_neighbourhoods_subtree)
   end
 
-  def site_neighbourhood_ids
-    @site_neighbourhood_ids ||= @site.owned_neighbourhood_ids
+  # Match a partner whose address or service area sits anywhere in +subtree+,
+  # embedding it as a subquery so the subtree stays in the database rather than
+  # arriving as a literal id list. +subtree+ is a Neighbourhood relation built
+  # from trusted records (site or dropdown selection), never user input.
+  #
+  # @param subtree [ActiveRecord::Relation<Neighbourhood>]
+  # @return [String] a WHERE fragment
+  def in_neighbourhood_subtree_sql(subtree)
+    ids = subtree.select(:id).to_sql
+    "addresses.neighbourhood_id IN (#{ids}) OR service_areas.neighbourhood_id IN (#{ids})"
+  end
+
+  def site_has_neighbourhoods?
+    return @site_has_neighbourhoods if defined?(@site_has_neighbourhoods)
+
+    @site_has_neighbourhoods = @site.neighbourhoods.exists?
   end
 
   def site_tag_ids
