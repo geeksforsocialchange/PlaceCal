@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-ruby '4.0.3'
+ruby '4.0.7'
 source 'https://gem.coop'
 
 # Core
