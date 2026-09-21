@@ -18,10 +18,7 @@
 class SitemapsController < ApplicationController
   CACHE_TTL = 1.day
   MAX_URLS_PER_SITEMAP = 50_000
-  # How far ahead the events sitemap looks. Recurring events are imported up to
-  # a year out, but the listings only link to the near future, so anything
-  # further away is a thin page no crawler can reach by following links. An
-  # event joins the sitemap as its date comes into the window.
+  # Events further out than this aren't linked from the listings, so they stay out of the sitemap.
   EVENTS_WINDOW = 8.weeks
   BASE = Site::DIRECTORY_URL
 

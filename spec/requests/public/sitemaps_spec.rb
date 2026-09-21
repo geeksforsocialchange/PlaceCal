@@ -86,8 +86,7 @@ RSpec.describe "Public Sitemaps", type: :request do
         expect(response.body).to include("events/#{ongoing_event.id}")
       end
 
-      # The listings only link to the near future, so far-off events would be
-      # sitemap-only pages no crawler can reach by following links.
+      # Far-off events aren't linked from the listings, so they'd be orphan pages.
       it "excludes events beyond the sitemap window" do
         get "/sitemap/events.xml", headers: { "Host" => host }
         expect(response.body).not_to include("events/#{far_future_event.id}")
