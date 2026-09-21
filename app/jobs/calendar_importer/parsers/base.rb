@@ -52,6 +52,16 @@ module CalendarImporter::Parsers
       'url' => { '@id' => 'http://schema.org/url', '@type' => '@id' }
     }.freeze
 
+    # Expanding ld+json feeds needs schema.org's own JSON-LD @context to resolve
+    # bare terms (startDate, url, eventStatus, ...) to their http://schema.org/
+    # IRIs. JSON::LD fetches that context over the network at parse time, so a
+    # schema.org outage (503) would silently break expansion: fields landed under
+    # nothing, every event failed validation and imports dropped to zero (prod
+    # incident #359). We bundle a copy of that context document and register it as
+    # a JSON::LD preloaded context so parsing never touches the network.
+    SCHEMA_ORG_CONTEXT_PATH = Rails.root.join('vendor/json-ld/schema_org_context.jsonld')
+    SCHEMA_ORG_CONTEXT_URL = 'http://schema.org/'
+
     def self.handles_url?(calendar)
       calendar.source =~ allowlist_pattern
     end
@@ -182,7 +192,22 @@ module CalendarImporter::Parsers
       raise InaccessibleFeed, I18n.t('admin.calendars.wizard.source.unreachable')
     end
 
+    # Register the bundled schema.org context so JSON::LD resolves it locally
+    # instead of fetching http://schema.org at parse time. JSON::LD canonicalises
+    # https to http when matching preloaded contexts, so this single registration
+    # covers both http://schema.org and https://schema.org references in feeds.
+    # Idempotent and lazily parsed on first use.
+    def self.register_schema_org_context!
+      return if JSON::LD::Context::PRELOADED.key?(SCHEMA_ORG_CONTEXT_URL)
+
+      JSON::LD::Context.add_preloaded(SCHEMA_ORG_CONTEXT_URL) do
+        JSON::LD::Context.new.parse(JSON.parse(File.read(SCHEMA_ORG_CONTEXT_PATH))['@context'])
+      end
+    end
+
     def self.parse_ld_json(url)
+      register_schema_org_context!
+
       response_body = read_http_source(url)
 
       doc = Nokogiri::HTML(response_body)

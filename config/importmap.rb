@@ -23,8 +23,9 @@ pin 'tom-select', to: 'https://cdn.jsdelivr.net/npm/tom-select@2.4.3/+esm', prel
 pin 'leaflet', to: 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/+esm', preload: false
 
 # MapLibre GL for vector tile rendering with custom styles
-pin 'maplibre-gl', to: 'https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/+esm', preload: false
-pin '@maplibre/maplibre-gl-leaflet', to: 'https://cdn.jsdelivr.net/npm/@maplibre/maplibre-gl-leaflet@0.0.22/+esm', preload: false
+pin 'maplibre-gl', to: 'https://cdn.jsdelivr.net/npm/maplibre-gl@6.10.0/+esm', preload: false
+# maplibre-gl-leaflet 0.1.x is the first line to declare maplibre-gl v6 peer compat
+pin '@maplibre/maplibre-gl-leaflet', to: 'https://cdn.jsdelivr.net/npm/@maplibre/maplibre-gl-leaflet@0.1.4/+esm', preload: false
 
 # Marker clustering for directory overview map
 pin 'leaflet.markercluster', to: 'https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/+esm', preload: false
