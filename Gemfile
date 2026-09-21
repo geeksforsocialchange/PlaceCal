@@ -4,6 +4,7 @@ ruby '4.0.3'
 source 'https://gem.coop'
 
 # Core
+gem 'json', '< 3'                 # Pin to 2.x: json 3.0 removed JSON.parse's positional options arg, which ActiveSupport::JSON.decode still passes (activesupport 8.1). Unpin once Rails supports json 3.
 gem 'kamal'                       # Container deployment
 gem 'pg'                          # PostgreSQL database adapter
 gem 'puma'                        # Web server
