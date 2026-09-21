@@ -2,9 +2,7 @@
 
 # Serves sitemaps for the nationwide directory and for each local site.
 #
-# The directory (no Site row) lists everything: all visible partners, the
-# events coming up within EVENTS_WINDOW, the partnerships index, and the
-# static/news pages.
+# The directory (placecal.org, no Site row) covers every partner and site.
 #
 # A local site lists only its own content, with every URL built from the site's
 # own base URL (Site#url), so a site's sitemap never points at placecal.org.
