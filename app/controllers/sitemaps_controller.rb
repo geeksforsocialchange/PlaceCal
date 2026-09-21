@@ -2,8 +2,9 @@
 
 # Serves sitemaps for the nationwide directory and for each local site.
 #
-# The directory (no Site row) lists everything: all visible partners, all
-# upcoming events, the partnerships index, and the static/news pages.
+# The directory (no Site row) lists everything: all visible partners, the
+# events coming up within EVENTS_WINDOW, the partnerships index, and the
+# static/news pages.
 #
 # A local site lists only its own content, with every URL built from the site's
 # own base URL (Site#url), so a site's sitemap never points at placecal.org.
@@ -17,6 +18,11 @@
 class SitemapsController < ApplicationController
   CACHE_TTL = 1.day
   MAX_URLS_PER_SITEMAP = 50_000
+  # How far ahead the events sitemap looks. Recurring events are imported up to
+  # a year out, but the listings only link to the near future, so anything
+  # further away is a thin page no crawler can reach by following links. An
+  # event joins the sitemap as its date comes into the window.
+  EVENTS_WINDOW = 8.weeks
   BASE = Site::DIRECTORY_URL
 
   skip_before_action :set_supporters
@@ -106,7 +112,8 @@ class SitemapsController < ApplicationController
     # past event pages are noindexed, and a sitemap listing noindexed URLs
     # draws "submitted URL marked noindex" warnings in Search Console.
     urls = events_scope.where('COALESCE(dtend, dtstart) >= ?', DateTime.current.beginning_of_day)
-                       .reorder(dtstart: :desc)
+                       .where(dtstart: ..EVENTS_WINDOW.from_now.end_of_day)
+                       .reorder(dtstart: :asc)
                        .limit(MAX_URLS_PER_SITEMAP)
                        .pluck('events.id', 'events.updated_at')
                        .uniq
