@@ -26,6 +26,13 @@ RSpec.describe "Admin::Home", type: :request do
         expect(response.body).to include("<title>Dashboard | PlaceCal Admin</title>")
       end
 
+      it "links to the browser extension in the support sidebar" do
+        get "http://#{admin_host}"
+        expect(response).to be_successful
+        expect(response.body).to include("Browser extension")
+        expect(response.body).to include("https://handbook.placecal.org/browser-extension")
+      end
+
       it "shows all sites when no sites assigned" do
         get "http://#{admin_host}"
         expect(response).to be_successful

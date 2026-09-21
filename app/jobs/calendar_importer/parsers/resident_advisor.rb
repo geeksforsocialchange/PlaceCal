@@ -6,11 +6,12 @@ module CalendarImporter::Parsers
     KEY = 'residentadvisor'
     DOMAINS = %w[ra.co].freeze
     RA_ENDPOINT = 'https://ra.co/graphql'
-    RA_REGEX = %r{^https://ra\.co/(promoters|clubs)/(\d+)$} # Accept club or promoter URLs
 
-    def self.allowlist_pattern
-      RA_REGEX
-    end
+    # Accept club or promoter URLs
+    URL_PATTERNS = [
+      { pattern: '^https://ra\.co/(promoters|clubs)/(\d+)$', flags: '' }
+    ].freeze
+    RA_REGEX = Regexp.new(URL_PATTERNS.first[:pattern])
 
     def download_calendar
       ra_entity = ra_entity(@url)

@@ -7,6 +7,14 @@ module CalendarImporter
       KEY = 'wix'
       DOMAINS = %w[wixsite.com].freeze
 
+      URL_PATTERNS = [
+        { pattern: '^https://[^.]+\.wixsite\.com/', flags: 'i' }
+      ].freeze
+
+      def self.content_detection
+        :wix
+      end
+
       # Detects Wix sites by:
       # 1. URL pattern for wixsite.com subdomains
       # 2. Checking page content for Wix generator meta tag (for custom domains)
@@ -72,11 +80,6 @@ module CalendarImporter
         hash['id'].present? &&
           hash['title'].present? &&
           hash.dig('scheduling', 'config', 'startDate').present?
-      end
-
-      # Keep for backwards compatibility, but handles_url? now does custom detection
-      def self.allowlist_pattern
-        %r{^https://[^.]+\.wixsite\.com/}i
       end
 
       def download_calendar

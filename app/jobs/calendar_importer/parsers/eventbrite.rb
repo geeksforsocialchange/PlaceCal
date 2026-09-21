@@ -40,9 +40,11 @@ module CalendarImporter::Parsers
       Errno::EPIPE
     ].freeze
 
-    def self.allowlist_pattern
-      %r{^https://www\.eventbrite\.(com|co\.uk)/o/[A-Za-z0-9-]+}
-    end
+    # Match Eventbrite organizer pages like:
+    # https://www.eventbrite.co.uk/o/organiser-name-12345
+    URL_PATTERNS = [
+      { pattern: '^https://www\.eventbrite\.(com|co\.uk)/o/[A-Za-z0-9-]+', flags: '' }
+    ].freeze
 
     def organizer_id
       path = URI.parse(@url).path
