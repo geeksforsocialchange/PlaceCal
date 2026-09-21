@@ -106,8 +106,8 @@ GEM
       logger
       rack (>= 2.0.0)
     ast (2.4.3)
-    auto_strip_attributes (2.6.0)
-      activerecord (>= 4.0)
+    auto_strip_attributes (3.0.0)
+      activerecord (>= 7.1, < 9)
     axe-core-api (4.13.0)
       dumb_delegator
     axe-core-rspec (4.13.0)
@@ -801,6 +801,7 @@ DEPENDENCIES
   importmap-rails
   inline_svg
   invisible_captcha
+  json (< 3)
   json-ld
   json-schema
   kamal
