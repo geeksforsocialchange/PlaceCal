@@ -10,7 +10,7 @@ module SitesHelper
       .order(:name)
       .all
       .collect do |ward|
-        name = ward.contextual_name
+        name = ward.contextual_fullname
         name += " - #{ward.release_date.year}/#{ward.release_date.month}" if ward.legacy_neighbourhood?
 
         { name: name, id: ward.id }
