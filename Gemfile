@@ -4,6 +4,7 @@ ruby '4.0.3'
 source 'https://gem.coop'
 
 # Core
+gem 'json', '< 3'                 # Pin to 2.x: json 3.0 removed JSON.parse's positional options arg, which ActiveSupport::JSON.decode still passes (activesupport 8.1). Unpin once Rails supports json 3.
 gem 'kamal'                       # Container deployment
 gem 'pg'                          # PostgreSQL database adapter
 gem 'puma'                        # Web server
@@ -98,7 +99,7 @@ group :development do
   gem 'rack-mini-profiler'        # In-page performance profiler (?pp=help in dev)
   gem 'rails-erd'                 # Entity-relationship diagrams
   gem 'rdoc'                      # Documentation generator
-  gem 'rubocop', '1.90.0', require: false
+  gem 'rubocop', '1.91.0', require: false
   gem 'rubocop-graphql', '1.8.0', require: false
   gem 'rubocop-performance', '1.27.0', require: false
   gem 'rubocop-rails', '2.37.0', require: false

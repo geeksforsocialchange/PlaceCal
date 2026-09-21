@@ -102,12 +102,12 @@ GEM
     annotaterb (4.24.0)
       activerecord (>= 6.0.0)
       activesupport (>= 6.0.0)
-    appsignal (4.10.1)
+    appsignal (4.10.3)
       logger
       rack (>= 2.0.0)
     ast (2.4.3)
-    auto_strip_attributes (2.6.0)
-      activerecord (>= 4.0)
+    auto_strip_attributes (3.0.0)
+      activerecord (>= 7.1, < 9)
     axe-core-api (4.13.0)
       dumb_delegator
     axe-core-rspec (4.13.0)
@@ -610,7 +610,7 @@ GEM
       rspec-mocks (>= 3.13.0, < 5.0.0)
       rspec-support (>= 3.13.0, < 5.0.0)
     rspec-support (3.13.7)
-    rubocop (1.90.0)
+    rubocop (1.91.0)
       json (>= 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -654,7 +654,7 @@ GEM
     ruby-vips (2.3.0)
       ffi (~> 1.12)
       logger
-    rubyzip (3.6.0)
+    rubyzip (3.7.0)
     sass-embedded (1.104.0-aarch64-linux-gnu)
       google-protobuf (~> 4.31)
     sass-embedded (1.104.0-aarch64-linux-musl)
@@ -672,7 +672,7 @@ GEM
     sass-embedded (1.104.0-x86_64-linux-musl)
       google-protobuf (~> 4.31)
     securerandom (0.4.1)
-    selenium-webdriver (4.48.0)
+    selenium-webdriver (4.49.0)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
@@ -718,9 +718,9 @@ GEM
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     uk_postcode (2.1.8)
-    unicode-display_width (3.2.0)
-      unicode-emoji (~> 4.1)
-    unicode-emoji (4.2.0)
+    unicode-display_width (3.3.0)
+      unicode-emoji (~> 4.3)
+    unicode-emoji (4.3.0)
     uniform_notifier (1.18.0)
     uri (1.1.1)
     useragent (0.16.11)
@@ -801,6 +801,7 @@ DEPENDENCIES
   importmap-rails
   inline_svg
   invisible_captcha
+  json (< 3)
   json-ld
   json-schema
   kamal
@@ -827,7 +828,7 @@ DEPENDENCIES
   rails-erd
   rdoc
   rspec-rails (~> 8.0)
-  rubocop (= 1.90.0)
+  rubocop (= 1.91.0)
   rubocop-graphql (= 1.8.0)
   rubocop-performance (= 1.27.0)
   rubocop-rails (= 2.37.0)
