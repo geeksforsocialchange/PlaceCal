@@ -66,6 +66,7 @@ RSpec.describe "Public Sitemaps", type: :request do
       let!(:upcoming_event) { create(:event, dtstart: 1.week.from_now, dtend: 1.week.from_now + 1.hour) }
       let!(:past_event) { create(:event, dtstart: 1.week.ago, dtend: 1.week.ago + 1.hour) }
       let!(:ongoing_event) { create(:event, dtstart: 1.day.ago, dtend: 1.day.from_now) }
+      let!(:far_future_event) { create(:event, dtstart: 6.months.from_now, dtend: 6.months.from_now + 1.hour) }
 
       it "includes upcoming events" do
         get "/sitemap/events.xml", headers: { "Host" => host }
@@ -83,6 +84,12 @@ RSpec.describe "Public Sitemaps", type: :request do
       it "includes multi-day events still running" do
         get "/sitemap/events.xml", headers: { "Host" => host }
         expect(response.body).to include("events/#{ongoing_event.id}")
+      end
+
+      # Far-off events aren't linked from the listings, so they'd be orphan pages.
+      it "excludes events beyond the sitemap window" do
+        get "/sitemap/events.xml", headers: { "Host" => host }
+        expect(response.body).not_to include("events/#{far_future_event.id}")
       end
     end
 
