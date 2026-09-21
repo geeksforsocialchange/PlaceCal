@@ -1,18 +1,8 @@
 # frozen_string_literal: true
 
-# Serves sitemaps for the nationwide directory and for each local site.
-#
-# The directory (placecal.org, no Site row) covers every partner and site.
-#
-# A local site lists only its own content, with every URL built from the site's
-# own base URL (Site#url), so a site's sitemap never points at placecal.org.
-# Site#url must therefore be the site's canonical apex, with no path: a search
-# engine ignores a sitemap whose URLs are on a host it was not fetched from, so
-# a site reachable at more than one hostname should set the one it wants
-# indexed. The request host is deliberately not used, so that an alias host
-# still advertises the canonical URLs rather than its own.
-# Unpublished sites are still served rather than 404'd, matching robots.txt:
-# crawl blocking is SiteRobots' job, and an unlinked sitemap costs nothing.
+# Sitemaps for the nationwide directory (everything) and for each local site
+# (its own content only). A site's URLs use Site#directory_url, not the request
+# host, so an alias hostname still advertises the canonical URLs.
 class SitemapsController < ApplicationController
   CACHE_TTL = 1.day
   MAX_URLS_PER_SITEMAP = 50_000
