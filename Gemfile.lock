@@ -99,7 +99,7 @@ GEM
     ancestry (5.1.0)
       activerecord (>= 5.2.6)
       logger
-    annotaterb (4.24.0)
+    annotaterb (4.25.0)
       activerecord (>= 6.0.0)
       activesupport (>= 6.0.0)
     appsignal (4.10.3)
