@@ -19,6 +19,11 @@ proxy:
     - placecal.org
     - "*.placecal.org"
     - www.queerleeds.lgbt
+    # The Trans Dimension (#3368): served by the transdimension extension theme.
+    # Cutover: merge this once the extension is deployed, then point Cloudflare
+    # DNS for both names at production.
+    - transdimension.uk
+    - www.transdimension.uk
 
 accessories:
   db:
