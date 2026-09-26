@@ -87,7 +87,18 @@ class Views::Events::Index < Views::Base
     Meta('/hello/world') do |component|
       component.with_link do
         link_to t('events.index.subscribe_ical', name: site.name), events_url(protocol: :webcal, format: :ics)
+        whitespace
+        link_to t('events.csv_export.link'), events_url(format: :csv, **csv_export_params)
       end
     end
+  end
+
+  # Carries the current view's filters into the CSV export, so the download
+  # matches whatever the visitor is looking at rather than the whole site.
+  def csv_export_params
+    params = { period: period, sort: sort, repeating: repeating }
+    params[:region] = selected_region.slug if selected_region
+    params[:neighbourhood] = selected_neighbourhood if selected_neighbourhood.present?
+    params
   end
 end

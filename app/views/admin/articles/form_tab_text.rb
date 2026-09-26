@@ -10,6 +10,7 @@ class Views::Admin::Articles::FormTabText < Views::Admin::Base
     div(class: 'space-y-6') do
       render_details_section(article, disabled_fields)
       render_body_section
+      render_pull_quote_section
     end
   end
 
@@ -105,6 +106,15 @@ class Views::Admin::Articles::FormTabText < Views::Admin::Base
 
       render_markdown_header
       render_markdown_content
+    end
+  end
+
+  def render_pull_quote_section
+    fieldset(class: 'fieldset') do
+      raw form.label(:pull_quote, t('admin.articles.fields.pull_quote_label'), class: 'fieldset-legend')
+      p(class: 'text-sm text-gray-600 mb-2') { t('admin.articles.fields.pull_quote_hint') }
+      raw form.input_field(:pull_quote, as: :text, class: 'textarea textarea-bordered w-full',
+                                        placeholder: t('admin.articles.fields.pull_quote_placeholder'))
     end
   end
 

@@ -43,6 +43,10 @@ en:
       open: "Open to read more"
       close: "Close"
 
+  # app/components/address.rb
+  address:
+    directions: "Directions"
+
   # Public navigation labels. A site's nav is derived from its own data
   # (#3368 D6), so these are the only fixed items; a theme's registered pages
   # contribute their own labels.
@@ -92,7 +96,14 @@ en:
     reset: "Reset filters"
     today: "Today"
     go_to_date: "Go to date"
+    # Label for the date toggle in the day-strip-with-date-picker style
+    # (event_filter_style :day_strip_with_date_picker), alongside "Go to date"
+    # for the date_picker style's own button.
+    pick_a_date: "Pick a date"
     filter_and_sort: "Filter and sort"
+    # Toggle value shown when a Components::Filter dropdown has no selection.
+    show_all: "Show all"
+    search_partners: "Search partners"
     # Radio labels in the sort/period/repeats dropdown, grouped as they appear
     sort:
       time: "Sort by date"
@@ -123,6 +134,11 @@ en:
   region_filter:
     label: "Filter by region"
     all: "All"
+
+  # Secondary actions row below a page's content (Components::PageActions,
+  # #3368): back-to-index, add-to-calendar, organiser/previous/next links.
+  page_actions:
+    label: "Page actions"
 
   # Support cards on a site homepage (app/components/help_card.rb). Keyed by
   # variant so a theme can override a single card's copy.
@@ -433,10 +449,27 @@ en:
   partners:
     show:
       section: ""
+      # Hero back link (#3368), above the section name and title.
+      back_to_index: "All partners"
+      # Page actions row back link (Components::PageActions, #3368).
+      go_back: "Back to partners"
       accessibility_heading: "Accessibility information"
       contact_heading: "Get in touch"
       address_heading: "Address"
       opening_times_heading: "Opening times"
+      # Events browser header (app/views/partners/show.rb#render_events_header)
+      upcoming_events: "Upcoming events"
+      events_count_events:
+        one: "%{count} event"
+        other: "%{count} events"
+      # Composed after events_count_events, e.g. "23 events" + "across 20 days"
+      events_count_days:
+        one: "across %{count} day"
+        other: "across %{count} days"
+      show_label: "Show"
+      show_more_days:
+        one: "Show %{count} more day"
+        other: "Show %{count} more days"
       # Headings in a managed place's block, which repeats the partner's own
       place_contact_heading: "Contact"
       # %{areas} is the rendered list of service areas, already escaped
@@ -461,13 +494,22 @@ en:
   news:
     show:
       section: ""
+      # Hero back link (#3368), above the section name and title.
+      back_to_index: "All news"
       # strftime pattern for the article's published date; themes may override
       date_format: "%B %Y"
       by: "By "
       back: "Back to news"
+      # Page actions row (Components::PageActions, #3368): previous/next by
+      # publish date, and back to the index. Distinct from `back` above, which
+      # labels the article's own inline back link.
+      previous: "Previous article"
+      next: "Next article"
+      go_back: "Back to news"
     index:
       page_title: "News from your area"
       read_more: "Find out more"
+      newer: "Recent news"
       older: "Older news items"
       # strftime pattern for the article card date; themes may override
       date_format: "%B %Y"
@@ -532,6 +574,8 @@ en:
     show:
       # Section name above the event page title, blank in core
       section: ""
+      # Hero back link (#3368), above the section name and title.
+      back: "All events"
       contact_heading: "Contact information"
       address_heading: "Event address"
       organiser_heading: "Event organiser"
@@ -540,6 +584,10 @@ en:
       problem_prompt: "Problem with this listing? "
       problem_link: "Let us know."
       problem_subject: "I think there's a problem with PlaceCal event %{url}"
+      # Page actions row (Components::PageActions, #3368).
+      organiser_events: "More from %{name}"
+      add_to_calendar: "Add to calendar"
+      go_back: "Back to events"
     csv_export:
       link: "Download events as CSV"
       # Column headers for the events CSV (app/services/events_csv.rb).

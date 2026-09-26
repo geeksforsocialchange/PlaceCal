@@ -48,7 +48,7 @@ class ArticlePolicy < ApplicationPolicy
   #
   # @returns [Array<String>] A list of URL Parameters
   def permitted_attributes
-    [:title, :author_id, :body, :published_at, :is_draft, :article_image,
+    [:title, :author_id, :body, :published_at, :is_draft, :article_image, :image_credit, :pull_quote,
      { partner_ids: [] }, { tag_ids: [] }]
   end
 

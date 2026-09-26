@@ -10,11 +10,15 @@
 class Components::RegionFilter < Components::Base
   prop :tags, Array, default: -> { [] }
   prop :selected, _Nilable(::Tag), default: nil
+  # True when rendered as a nav item (Components::Navigation) rather than as
+  # its own block above a listing. Swaps the standalone bottom margin for the
+  # `region-filter--nav` hook a theme can style as a segmented control.
+  prop :embedded, _Boolean, default: false
 
   def view_template
     return if @tags.size < 2
 
-    nav(class: 'region-filter mb-4', aria: { label: t('region_filter.label') }) do
+    nav(class: ['region-filter', (@embedded ? 'region-filter--nav' : 'mb-4')], aria: { label: t('region_filter.label') }) do
       ul(class: 'reset flex flex-wrap items-center gap-2') do
         render_option(nil, t('region_filter.all'))
         @tags.each { |tag| render_option(tag, tag.name) }

@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class Views::Partners::Show < Views::Base
+  include Phlex::Rails::Helpers::SelectTag
+  include Phlex::Rails::Helpers::OptionsForSelect
+
   register_value_helper :partner_service_area_text
 
   prop :partner, Partner, reader: :private
@@ -16,11 +19,24 @@ class Views::Partners::Show < Views::Base
   prop :date_period, _Nilable(String), reader: :private, default: nil
   prop :show_monthly, _Boolean, reader: :private, default: true
   prop :containing_sites, _Nilable(_Interface(:each)), reader: :private, default: nil
+  # Days-based "Show more days" paging for the events browser (see
+  # PartnersController#show). `events_total_count`/`events_total_days` are
+  # the whole upcoming set after the repeating filter but before the days
+  # limit is applied, so the header can report a total independent of what's
+  # actually on screen.
+  prop :days, Integer, reader: :private, default: 4
+  prop :more_days, Integer, reader: :private, default: 0
+  prop :events_total_count, _Nilable(Integer), reader: :private, default: nil
+  prop :events_total_days, _Nilable(Integer), reader: :private, default: nil
 
   def view_template
     set_content_for_tags
     render_local_layout
+    # Meta before the actions row: the iCal and CSV links belong with the
+    # event browser they export, so they sit under the box and the back
+    # button closes the page.
     render_meta_section
+    render_page_actions
   end
 
   private
@@ -75,7 +91,8 @@ class Views::Partners::Show < Views::Base
 
   def render_local_layout
     div do
-      Hero(partner.name, site.tagline, section: t('partners.show.section'))
+      Hero(partner.name, site.tagline, section: t('partners.show.section'),
+                                       back: [t('partners.show.back_to_index'), partners_path])
 
       div(class: 'container-public mb-32') do
         Breadcrumb(
@@ -187,6 +204,7 @@ class Views::Partners::Show < Views::Base
 
   def render_events_section
     turbo_frame_tag 'events-browser', data: { turbo_action: 'advance' } do
+      render_events_header if events_total_count&.positive?
       render_events_paginator if paginator
 
       if events.any?
@@ -202,7 +220,76 @@ class Views::Partners::Show < Views::Base
       else
         p { em { no_event_message || empty_period_message } }
       end
+      render_events_actions
     end
+  end
+
+  # The row that closes the event browser: the next page of days when there
+  # is one, then the feed and the export for the list the reader is looking
+  # at. Inside the frame so it is one block with the list it acts on, and so
+  # a theme can lay the three out as one row of buttons.
+  def render_events_actions
+    div(class: 'partner-events__actions') do
+      render_show_more_days if more_days.positive?
+      link_to t('partners.show.subscribe_ical', name: partner.name),
+              partner_url(partner, protocol: :webcal, format: :ics),
+              class: 'partner-events__ical'
+      link_to t('events.csv_export.link'), partner_url(partner, format: :csv), class: 'partner-events__csv' if events.any?
+    end
+  end
+
+  def render_events_header
+    div(class: 'partner-events__header') do
+      h2(class: 'partner-events__heading') { t('partners.show.upcoming_events') }
+      span(class: 'partner-events__count') { events_count_text }
+      render_repeating_filter
+    end
+  end
+
+  def events_count_text
+    events_text = t('partners.show.events_count_events', count: events_total_count)
+    days_text = t('partners.show.events_count_days', count: events_total_days)
+    "#{events_text} #{days_text}"
+  end
+
+  def render_repeating_filter
+    div(class: 'partner-events__repeating-filter', data: { controller: 'filters' }) do
+      form_tag('', method: :get, class: 'partner-events__repeating-form', enforce_utf8: false,
+                   data: { turbo_frame: 'events-browser', turbo_action: 'advance',
+                           filters_target: 'form', action: 'change->filters#submit' }) do
+        hidden_field_tag(:days, days, id: nil)
+        hidden_field_tag(:period, period, id: nil) if period.present?
+        hidden_field_tag(:sort, sort, id: nil) if sort.present?
+        # The select is wrapped in its label (implicit association) rather
+        # than paired by id: the paginator's own repeating radios reuse
+        # "repeating"-derived ids, and this form can render alongside them.
+        label do
+          plain t('partners.show.show_label')
+          select_tag(:repeating, class: 'partner-events__repeating', id: nil) do
+            options_for_select(repeating_options, repeating)
+          end
+        end
+      end
+    end
+  end
+
+  def repeating_options
+    %w[on last off].map { |value| [t("filters.repeating.#{value}"), value] }
+  end
+
+  def render_show_more_days
+    count = [more_days, 4].min
+    a(href: show_more_days_url, class: 'partner-events__more', data: { turbo_frame: 'events-browser' }) do
+      t('partners.show.show_more_days', count: count)
+    end
+  end
+
+  def show_more_days_url
+    url_params = { days: days + 4 }
+    url_params[:period] = period if period.present?
+    url_params[:sort] = sort if sort.present?
+    url_params[:repeating] = repeating if repeating.present?
+    partner_path(partner, **url_params)
   end
 
   def render_events_paginator
@@ -243,16 +330,15 @@ class Views::Partners::Show < Views::Base
     end
   end
 
+  # Page actions row (Components::PageActions, #3368): just the back link
+  # here - the partner page has nothing else generic to offer.
+  def render_page_actions
+    PageActions(links: [[t('partners.show.go_back'), partners_path]])
+  end
+
+  # The feed and export links moved into the event browser (render_events_actions),
+  # so Meta carries the permalink alone.
   def render_meta_section
-    Meta("/partners/#{partner.id}") do |component|
-      component.with_link do
-        link_to t('partners.show.subscribe_ical', name: partner.name),
-                partner_url(partner, protocol: :webcal, format: :ics)
-        if events.any?
-          whitespace
-          link_to t('events.csv_export.link'), partner_url(partner, format: :csv)
-        end
-      end
-    end
+    Meta("/partners/#{partner.id}")
   end
 end

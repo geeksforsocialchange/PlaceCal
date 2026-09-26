@@ -48,6 +48,19 @@ RSpec.describe PlaceCal::Theme do
     expect(theme.og_image).to be_nil
     expect(theme.background_color).to be_nil
     expect(theme.event_filter_style).to eq(:date_picker)
+    expect(theme.events_default_period).to be_nil
+  end
+
+  describe "#events_default_period" do
+    it "stores one of the listing periods as a string" do
+      theme.events_default_period :future
+
+      expect(theme.events_default_period).to eq("future")
+    end
+
+    it "refuses a period the listing does not have" do
+      expect { theme.events_default_period :fortnight }.to raise_error(ArgumentError, /events_default_period/)
+    end
   end
 
   describe "#icons" do
