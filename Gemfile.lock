@@ -576,7 +576,7 @@ GEM
     refract (1.1.0)
       prism
       zeitwerk
-    regexp_parser (2.12.0)
+    regexp_parser (2.13.0)
     reline (0.7.0)
       io-console (~> 0.5)
     request_store (1.7.0)
@@ -631,7 +631,7 @@ GEM
       lint_roller (~> 1.1)
       rubocop (>= 1.89.0, < 2.0)
       rubocop-ast (>= 1.47.1, < 2.0)
-    rubocop-rails (2.37.0)
+    rubocop-rails (2.38.0)
       activesupport (>= 4.2.0)
       lint_roller (~> 1.1)
       rack (>= 1.1)
@@ -831,7 +831,7 @@ DEPENDENCIES
   rubocop (= 1.91.0)
   rubocop-graphql (= 1.8.0)
   rubocop-performance (= 1.27.0)
-  rubocop-rails (= 2.37.0)
+  rubocop-rails (= 2.38.0)
   rubocop-rake
   rubocop-rspec
   ruby-lsp
