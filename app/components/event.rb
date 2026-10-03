@@ -10,6 +10,9 @@ class Components::Event < Components::Base
   # When rendered on a partner page, set this to that partner so we don't
   # redundantly show "By X" or "at X" when X is the page we're already on.
   prop :context_partner, _Nilable(::Partner), default: nil
+  # [label, path] back link, threaded through to Hero on the page layout
+  # (Views::Events::Show renders its hero here, not directly).
+  prop :back, _Nilable(Array), default: nil
 
   def view_template
     div(class: "h-event event #{page? ? 'event--full' : 'event--list'}") do
@@ -20,7 +23,7 @@ class Components::Event < Components::Base
   private
 
   def render_page_layout
-    Hero(summary, @site_tagline, section: t('events.show.section'))
+    Hero(summary, @site_tagline, section: t('events.show.section'), back: @back)
     a(class: 'p-name u-url', href: event_path(id), hidden: true) { summary }
     div(class: 'container-public') { render_event_details }
   end

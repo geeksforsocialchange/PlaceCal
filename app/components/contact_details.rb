@@ -77,47 +77,59 @@ class Components::ContactDetails < Components::Base
   def render_phone
     return if @phone.blank?
 
-    raw(view_context.icon(:contact_phone, size: '4'))
-    if @partner.valid_public_phone?
-      link_to(@phone, "tel:#{@phone}", target: '_blank', rel: 'noopener')
-    else
-      plain @phone
+    span(class: 'contact_details__item') do
+      raw(view_context.icon(:contact_phone, size: '4'))
+      if @partner.valid_public_phone?
+        link_to(@phone, "tel:#{@phone}", target: '_blank', rel: 'noopener', class: 'contact_details__phone')
+      else
+        plain @phone
+      end
     end
   end
 
   def render_email
     return if @email.blank?
 
-    raw(view_context.icon(:contact_email, size: '4'))
-    mail_to(@email, @email, target: '_blank')
+    span(class: 'contact_details__item') do
+      raw(view_context.icon(:contact_email, size: '4'))
+      mail_to(@email, @email, target: '_blank', class: 'contact_details__email')
+    end
   end
 
   def render_website
     return if @url.blank?
 
-    raw(view_context.icon(:contact_website, size: '4'))
-    link_to(strip_url(@url), @url, target: '_blank', rel: 'noopener')
+    span(class: 'contact_details__item') do
+      raw(view_context.icon(:contact_website, size: '4'))
+      link_to(strip_url(@url), @url, target: '_blank', rel: 'noopener', class: 'contact_details__website')
+    end
   end
 
   def render_facebook
     return if @partner.facebook_link.blank?
 
-    raw(view_context.icon(:contact_facebook, size: '4'))
-    link_to(@partner.facebook_link, "https://facebook.com/#{@partner.facebook_link}", target: '_blank', rel: 'noopener')
+    span(class: 'contact_details__item') do
+      raw(view_context.icon(:contact_facebook, size: '4'))
+      link_to(@partner.facebook_link, "https://facebook.com/#{@partner.facebook_link}", target: '_blank', rel: 'noopener', class: 'contact_details__facebook')
+    end
   end
 
   def render_twitter
     return if @partner.twitter_handle.blank?
 
-    raw(view_context.icon(:contact_twitter, size: '4'))
-    link_to("@#{@partner.twitter_handle}", "https://twitter.com/#{@partner.twitter_handle}", target: '_blank', rel: 'noopener')
+    span(class: 'contact_details__item') do
+      raw(view_context.icon(:contact_twitter, size: '4'))
+      link_to("@#{@partner.twitter_handle}", "https://twitter.com/#{@partner.twitter_handle}", target: '_blank', rel: 'noopener', class: 'contact_details__twitter')
+    end
   end
 
   def render_instagram
     return if @partner.instagram_handle.blank?
 
-    raw(view_context.icon(:contact_instagram, size: '4'))
-    link_to("@#{@partner.instagram_handle}", "https://www.instagram.com/#{@partner.instagram_handle}/", target: '_blank', rel: 'noopener')
+    span(class: 'contact_details__item') do
+      raw(view_context.icon(:contact_instagram, size: '4'))
+      link_to("@#{@partner.instagram_handle}", "https://www.instagram.com/#{@partner.instagram_handle}/", target: '_blank', rel: 'noopener', class: 'contact_details__instagram')
+    end
   end
 
   def contact?

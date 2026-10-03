@@ -250,13 +250,19 @@ RSpec.describe Components::EventFilter, type: :component do
     it "shows neighbourhood filter when multiple neighbourhoods have events" do
       render_inline(described_class.new(**future_attrs, site: site))
 
-      expect(page).to have_selector("button span.filters__link", text: "Neighbourhood")
+      expect(page).to have_selector("button span.filters__toggle-label", text: "Neighbourhood")
     end
 
     it "shows selected neighbourhood name when a neighbourhood is selected" do
       render_inline(described_class.new(**future_attrs, site: site, selected_neighbourhood: ward1.id.to_s))
 
-      expect(page).to have_selector("button span.filters__link", text: ward1.name)
+      expect(page).to have_selector("button span.filters__toggle-value", text: ward1.name)
+    end
+
+    it "gives the neighbourhood dropdown its own group class alongside filters__group" do
+      render_inline(described_class.new(**future_attrs, site: site))
+
+      expect(page).to have_css("div.filters__group.filters__group--neighbourhood")
     end
 
     it "does not show neighbourhood filter when only one neighbourhood has events" do
@@ -273,7 +279,7 @@ RSpec.describe Components::EventFilter, type: :component do
 
       render_inline(described_class.new(**future_attrs, site: single_site))
 
-      expect(page).not_to have_selector("button span.filters__link", text: "Neighbourhood")
+      expect(page).not_to have_selector("button span.filters__toggle-label", text: "Neighbourhood")
     end
   end
 
@@ -340,6 +346,20 @@ RSpec.describe Components::EventFilter, type: :component do
       expect(page).not_to have_css("a[aria-current='date']")
       expect(page).to have_css("a[aria-current='true']", text: "All upcoming")
     end
+
+    it "gives the All upcoming item its own class hook, leaving day items with theirs" do
+      render_inline(described_class.new(**day_strip_attrs))
+
+      expect(page).to have_css("li.day-strip__all", count: 1)
+      expect(page).to have_css("nav.day-strip li.shrink-0", count: 8)
+    end
+
+    it "does not add the toggle-row button classes to the sort toggle" do
+      render_inline(described_class.new(**day_strip_attrs))
+
+      expect(page).to have_no_css("button.filters__toggle-button")
+      expect(page).to have_no_css("div.filters__toggles")
+    end
   end
 
   describe "date picker filter style" do
@@ -348,6 +368,65 @@ RSpec.describe Components::EventFilter, type: :component do
 
       expect(page).not_to have_css("nav.day-strip")
       expect(page).to have_button("Go to date")
+    end
+
+    it "does not add the toggle-row button classes to the date toggle" do
+      render_inline(described_class.new(**base_attrs))
+
+      expect(page).to have_no_css("button.filters__toggle-button")
+      expect(page).to have_no_css("div.filters__toggles")
+    end
+  end
+
+  describe "day strip with date picker filter style" do
+    let(:theme) do
+      PlaceCal::Theme.new(:day_strip_with_date_picker_fixture).tap { |t| t.event_filter_style(:day_strip_with_date_picker) }
+    end
+
+    before { Current.theme = theme }
+
+    it "renders the day strip" do
+      render_inline(described_class.new(**base_attrs))
+
+      expect(page).to have_css("nav.day-strip")
+      expect(page).to have_link("Today")
+      expect(page).to have_link("All upcoming")
+    end
+
+    it "renders the sort and date toggles side by side in filters__toggles" do
+      render_inline(described_class.new(**base_attrs))
+
+      expect(page).to have_css("div.filters__toggles button.filters__toggle-button--filters", text: "Filter and sort")
+      expect(page).to have_css("div.filters__toggles button.filters__toggle-button--date", text: "Pick a date")
+    end
+
+    it "labels the date toggle Pick a date instead of Go to date" do
+      render_inline(described_class.new(**base_attrs))
+
+      expect(page).not_to have_button("Go to date")
+      expect(page).to have_button("Pick a date")
+    end
+
+    it "drops the date picker's own Today link, since the strip already has one" do
+      render_inline(described_class.new(**base_attrs))
+
+      expect(page).to have_no_css("[data-controller='date-picker'] a", text: "Today")
+    end
+
+    it "still renders the date picker's hidden date field" do
+      render_inline(described_class.new(**base_attrs))
+
+      expect(page).to have_css("input[type='date'].filters__date-input", visible: :all)
+    end
+  end
+
+  describe "filters__group modifier classes" do
+    it "adds a modifier alongside filters__group on the sort, period and repeating groups" do
+      render_inline(described_class.new(**base_attrs))
+
+      expect(page).to have_css("div.filters__group.filters__group--sort")
+      expect(page).to have_css("div.filters__group.filters__group--period")
+      expect(page).to have_css("div.filters__group.filters__group--repeating")
     end
   end
 

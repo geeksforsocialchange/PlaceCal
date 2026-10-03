@@ -8,6 +8,7 @@ class Components::PartnerFilter < Components::Base
   prop :selected_neighbourhood, _Nilable(String), default: nil
   prop :region_tags, Array, default: -> { [] }
   prop :selected_region, _Nilable(::Tag), default: nil
+  prop :selected_query, _Nilable(String), default: nil
   # The controller passes its own query so the site partner scope is built once
   # for the listing and the facet counts, not once each.
   prop :query, _Nilable(::PartnersQuery), default: nil
@@ -28,6 +29,7 @@ class Components::PartnerFilter < Components::Base
         render_category_filter if show_category_filter?
         render_neighbourhood_filter if show_neighbourhood_filter?
         render_reset_link if any_filter_active?
+        render_search
       end
     end
   end
@@ -80,6 +82,21 @@ class Components::PartnerFilter < Components::Base
     end
   end
 
+  # A plain search box, not one of the toggle filters above: it submits the
+  # whole form (so region/category/neighbourhood ride along) on Enter or when
+  # the field loses focus after a change, never on every keystroke.
+  def render_search
+    div(class: 'breadcrumb__filters filters') do
+      input(
+        type: 'search', name: 'q', value: @selected_query,
+        class: 'filters__search',
+        placeholder: t('filters.search_partners'),
+        aria_label: t('filters.search_partners'),
+        data: { action: 'change->partner-filter-component#submitForm' }
+      )
+    end
+  end
+
   # Facet counts are recomputed at most every few minutes, the same tolerance
   # the news-nav count already accepts (Site#news_article_count). Counting
   # partners per category and neighbourhood was ~100ms a request; on a cache
@@ -98,7 +115,7 @@ class Components::PartnerFilter < Components::Base
   # The site and the other active filters key the cache, so cross-filtered
   # counts cache separately.
   def cached_facet(facet, **filters, &)
-    key = ['partner_facets', facet, @site.id, @selected_region&.id, *filters.values]
+    key = ['partner_facets', facet, @site.id, @selected_region&.id, @selected_query, *filters.values]
     Rails.cache.fetch(key, expires_in: 10.minutes, &)
   end
 
@@ -111,11 +128,12 @@ class Components::PartnerFilter < Components::Base
   end
 
   # Facet counts cross-filter on the other active filters, and always on the
-  # selected region so the numbers match the listing. nil means "no extra
-  # filtering", which the query treats as the whole site scope.
+  # selected region and search text so the numbers match the listing. nil
+  # means "no extra filtering", which the query treats as the whole site scope.
   def filtered_scope(**filters)
     filters = filters.compact
     filters[:partnership_id] = @selected_region.id if @selected_region
+    filters[:query] = @selected_query if @selected_query.present?
     return nil if filters.empty?
 
     @query.call(**filters)

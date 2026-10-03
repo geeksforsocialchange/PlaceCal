@@ -38,4 +38,27 @@ RSpec.describe Components::Hero, type: :component do
     expect(page).not_to have_css("h1 b")
     expect(page).to have_css("h1", text: "<b>bold</b>")
   end
+
+  # Optional back link (#3368): "All events" above an event page hero, say.
+  describe "the back link" do
+    it "renders nothing when back is not given" do
+      render_inline(described_class.new("Riverside Hub", nil))
+
+      expect(page).not_to have_css("a.hero__back")
+    end
+
+    it "renders the label and path when back is given" do
+      render_inline(described_class.new("Riverside Hub", nil, back: ["All events", "/events"]))
+
+      expect(page).to have_link("All events", href: "/events", class: "hero__back")
+    end
+
+    it "renders above the section name and the title" do
+      render_inline(described_class.new("Riverside Hub", nil, section: "Partner", back: ["All partners", "/partners"]))
+
+      order = page.all("a.hero__back, p.hero__section, h1").map(&:tag_name)
+
+      expect(order).to eq(%w[a p h1])
+    end
+  end
 end

@@ -58,7 +58,7 @@ class Views::Layouts::Application < Phlex::HTML
                   ]
                 end)
             ]) do
-          Navigation(navigation: navigation, site: site)
+          Navigation(navigation: navigation, site: site, region_tags: view_context.region_tags, selected_region: view_context.current_region)
           # FIXME: move main elem into component to save excess divs
           main do
             Flash()

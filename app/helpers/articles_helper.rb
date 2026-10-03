@@ -28,4 +28,16 @@ module ArticlesHelper
     fragment.css('script, style').each(&:remove)
     truncate fragment.text.squish, length: 200, separator: ' '
   end
+
+  # Formats a date with an article date_format locale pattern, substituting
+  # `%o` for the ordinal day (2nd, 3rd) before strftime. Mirrors
+  # Components::Event#formatted_date so a theme can set a `date_format` such
+  # as "%o %B %Y" for either the news index or the article byline.
+  #
+  # @param date [Date, Time] the date to format
+  # @param format [String] a strftime pattern, may contain `%o`
+  # @return [String] the formatted date
+  def article_date(date, format)
+    date.strftime(format.gsub('%o', date.day.ordinalize))
+  end
 end

@@ -11,6 +11,11 @@ class Components::Hero < Components::Base
   prop :standfirst_detail, _Nilable(String), default: nil
   # Optional section name shown above the hero (e.g. "Events" on an event page).
   prop :section, _Nilable(String), default: nil
+  # Optional [label, path] back link, rendered above everything else in the
+  # hero (before the section name, when both are present) - "All events" on
+  # an event page, say. A generic slot: any page with a hero and an index to
+  # return to can use it.
+  prop :back, _Nilable(Array), default: nil
 
   def after_initialize
     @title_lines = title_lines(@title)
@@ -19,6 +24,7 @@ class Components::Hero < Components::Base
   def view_template
     div(class: 'hero') do
       div(class: 'container-public') do
+        render_back if @back
         p(class: 'hero__section') { @section } if @section.present?
         if @subtitle.present?
           # The tagline is a strapline, not a section title. It used to be an h4
@@ -41,6 +47,11 @@ class Components::Hero < Components::Base
   end
 
   private
+
+  def render_back
+    label, path = @back
+    link_to(label, path, class: 'hero__back')
+  end
 
   # The title is user or feed supplied (partner names, event summaries, article
   # titles), so it is rendered as text and the long-title line break is a real

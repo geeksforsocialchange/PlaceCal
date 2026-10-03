@@ -377,3 +377,16 @@ a.btn-home-outline:hover {
 	flex-wrap: wrap;
 	row-gap: 0.5rem;
 }
+
+/* Page actions row (#3368): Components::PageActions ships only the
+   .page-actions / .page-actions__link hooks, so a themeless site needs one
+   rule to read as a tidy row rather than a bare bulleted list. Same idea as
+   .meta's link row (app/assets/stylesheets/components/meta.scss) for the
+   permalink/subscribe links below an event or partner page. A theme is free
+   to restyle both classes entirely. */
+.page-actions ul {
+	@apply flex flex-wrap items-center justify-center gap-4;
+}
+.page-actions__link {
+	@apply text-foreground underline;
+}

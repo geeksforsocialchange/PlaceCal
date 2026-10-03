@@ -29,10 +29,12 @@ class Views::Events::Show < Views::Base
         display_context: :page,
         event: event,
         primary_neighbourhood: site.primary_neighbourhood,
-        site_tagline: site.tagline
+        site_tagline: site.tagline,
+        back: [t('events.show.back'), events_path]
       )
       render_event_details
       Map(points: map, style: :multi)
+      render_page_actions
       render_event_meta
     end
   end
@@ -305,6 +307,16 @@ class Views::Events::Show < Views::Base
         span { link_to event.place, event.place }
       end
     end
+  end
+
+  # Page actions row (Components::PageActions, #3368): organiser's other
+  # events (when there is an organiser), add to calendar, back to the index.
+  def render_page_actions
+    links = []
+    links << [t('events.show.organiser_events', name: event.organiser.name), partner_path(event.organiser)] if event.organiser
+    links << [t('events.show.add_to_calendar'), event_url(event, protocol: :webcal, format: :ics)]
+    links << [t('events.show.go_back'), events_path]
+    PageActions(links: links)
   end
 
   def render_event_meta
