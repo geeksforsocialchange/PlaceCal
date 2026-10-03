@@ -115,7 +115,6 @@ class Calendar < ApplicationRecord
   validates :source, uniqueness: { message: 'calendar source already in use' },
                      format: { with: CALENDAR_URL_REGEX, message: 'not a valid URL' }
 
-  validate :source_not_private_ip
   validate :check_source_reachable
 
   # ==== Scopes ====
@@ -367,13 +366,6 @@ class Calendar < ApplicationRecord
     ensure
       Calendar.record_timestamps = true
     end
-  end
-
-  def source_not_private_ip
-    return unless source.present? && source_changed?
-    return if errors[:source].any?
-
-    errors.add :source, I18n.t('admin.calendars.wizard.source.private_address') if Validation.private_ip?(source)
   end
 
   # called for validation

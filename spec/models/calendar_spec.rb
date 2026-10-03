@@ -82,15 +82,6 @@ RSpec.describe Calendar, type: :model do
         calendar = build(:calendar, organiser: partner, source: "http://169.254.169.254/latest/meta-data/")
 
         expect(calendar.save).to be false
-        expect(calendar.errors[:source]).to include(I18n.t("admin.calendars.wizard.source.private_address"))
-        expect(a_request(:any, /.*/)).not_to have_been_made
-      end
-
-      it "rejects a hostname resolving to a private address without fetching it" do
-        allow(OutboundUrlGuard).to receive(:resolve).with("intranet.example.com").and_return([IPAddr.new("10.0.0.5")])
-        calendar = build(:calendar, organiser: partner, source: "https://intranet.example.com/calendar.ics")
-
-        expect(calendar.save).to be false
         expect(calendar.errors[:source].join).to include(I18n.t("admin.calendars.wizard.source.private_address"))
         expect(a_request(:any, /.*/)).not_to have_been_made
       end

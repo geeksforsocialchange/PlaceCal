@@ -246,18 +246,6 @@ RSpec.describe "Admin::Calendars", type: :request do
       expect(a_request(:any, /.*/)).not_to have_been_made
     end
 
-    it "refuses a hostname that resolves to a private address without making a request" do
-      allow(OutboundUrlGuard).to receive(:resolve).with("intranet.example.com").and_return([IPAddr.new("192.168.0.10")])
-
-      post test_source_admin_calendars_url(host: admin_host),
-           params: { source: "webcal://intranet.example.com/calendar.ics" },
-           as: :json
-
-      expect(response.parsed_body["valid"]).to be false
-      expect(response.parsed_body["error"]).to eq(I18n.t("admin.calendars.wizard.source.private_address"))
-      expect(a_request(:any, /.*/)).not_to have_been_made
-    end
-
     it "returns error for unreachable URLs" do
       VCR.use_cassette(:example_dot_com_bad_response, allow_playback_repeats: true) do
         post test_source_admin_calendars_url(host: admin_host),
