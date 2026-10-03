@@ -148,7 +148,8 @@ module CalendarImporter::Parsers
     def self.safely_parse_json(string)
       raise InvalidResponse, 'Source responded with missing JSON' if string.blank?
 
-      JSON.parse string.to_s
+      # json 3 rejects duplicate keys by default, and third-party feeds contain them.
+      JSON.parse string.to_s, allow_duplicate_key: true
     rescue JSON::JSONError => e
       raise InvalidResponse, "Source responded with invalid JSON (#{e})"
     end
@@ -201,7 +202,7 @@ module CalendarImporter::Parsers
       return if JSON::LD::Context::PRELOADED.key?(SCHEMA_ORG_CONTEXT_URL)
 
       JSON::LD::Context.add_preloaded(SCHEMA_ORG_CONTEXT_URL) do
-        JSON::LD::Context.new.parse(JSON.parse(File.read(SCHEMA_ORG_CONTEXT_PATH))['@context'])
+        JSON::LD::Context.new.parse(JSON.parse(File.read(SCHEMA_ORG_CONTEXT_PATH), allow_duplicate_key: true)['@context'])
       end
     end
 
