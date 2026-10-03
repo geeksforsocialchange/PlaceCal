@@ -287,4 +287,104 @@ RSpec.describe "Admin::Users", type: :request do
       expect(response.body).to include("not allowed to upload")
     end
   end
+
+  describe "partner assignment scope" do
+    let(:foreign_partner) { create(:oldtown_library) }
+
+    context "as a partner admin" do
+      let(:own_partner) { create(:partner) }
+      let(:user) { create(:partner_admin, partner: own_partner) }
+
+      before { sign_in user }
+
+      it "cannot self-assign a partner outside their scope" do
+        put admin_user_url(user, host: admin_host), params: { user: { partner_ids: [own_partner.id, foreign_partner.id] } }
+
+        expect(user.reload.partner_ids).to contain_exactly(own_partner.id)
+
+        get edit_admin_partner_url(foreign_partner, host: admin_host)
+        expect(response).not_to be_successful
+      end
+
+      it "cannot create a user attached only to a partner outside their scope" do
+        expect do
+          post admin_users_url(host: admin_host),
+               params: { user: { email: "newuser@example.com", partner_ids: [foreign_partner.id] } }
+        end.not_to change(User, :count)
+
+        expect(response).to have_http_status(:unprocessable_content)
+      end
+
+      it "drops out-of-scope partners when creating a user" do
+        post admin_users_url(host: admin_host),
+             params: { user: { email: "newuser@example.com", partner_ids: [own_partner.id, foreign_partner.id] } }
+
+        expect(User.find_by(email: "newuser@example.com").partner_ids).to contain_exactly(own_partner.id)
+      end
+
+      it "preserves the edited user's partners outside their scope" do
+        target_user = create(:user, partners: [own_partner, foreign_partner])
+
+        put admin_user_url(target_user, host: admin_host), params: { user: { partner_ids: [""] } }
+
+        expect(target_user.reload.partner_ids).to contain_exactly(foreign_partner.id)
+      end
+
+      it "can assign a partner within their scope" do
+        target_user = create(:user, partners: [own_partner])
+        other_own_partner = create(:partner)
+        user.partners << other_own_partner
+
+        put admin_user_url(target_user, host: admin_host),
+            params: { user: { partner_ids: [own_partner.id, other_own_partner.id] } }
+
+        expect(target_user.reload.partner_ids).to contain_exactly(own_partner.id, other_own_partner.id)
+      end
+    end
+
+    context "as a neighbourhood admin" do
+      let(:ward) { create(:riverside_ward) }
+      let(:user) { create(:neighbourhood_admin, neighbourhood: ward) }
+      let!(:ward_partner) { create(:partner, address: create(:address, neighbourhood: ward)) }
+
+      before { sign_in user }
+
+      it "can assign a partner in their neighbourhood but not one outside it" do
+        target_user = create(:user, partners: [ward_partner])
+
+        put admin_user_url(target_user, host: admin_host),
+            params: { user: { partner_ids: [ward_partner.id, foreign_partner.id] } }
+
+        expect(target_user.reload.partner_ids).to contain_exactly(ward_partner.id)
+      end
+
+      it "cannot self-assign a partner outside their neighbourhood" do
+        put admin_user_url(user, host: admin_host), params: { user: { partner_ids: [foreign_partner.id] } }
+
+        expect(user.reload.partner_ids).to be_empty
+      end
+
+      it "preserves the edited user's partners outside their neighbourhood" do
+        target_user = create(:user, partners: [ward_partner, foreign_partner])
+
+        put admin_user_url(target_user, host: admin_host), params: { user: { partner_ids: [""] } }
+
+        expect(target_user.reload.partner_ids).to contain_exactly(foreign_partner.id)
+      end
+    end
+
+    context "as a root user" do
+      let(:user) { create(:root_user) }
+
+      before { sign_in user }
+
+      it "can assign any partner" do
+        target_user = create(:user)
+
+        put admin_user_url(target_user, host: admin_host), params: { user: { partner_ids: [foreign_partner.id] } }
+
+        expect(target_user.reload.partner_ids).to contain_exactly(foreign_partner.id)
+      end
+    end
+  end
 end
