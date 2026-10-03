@@ -10,7 +10,7 @@
 		"daisyui": "5.7.46",
 		"husky": "9.1.7",
 		"leaflet": "1.9.4",
-		"lint-staged": "17.5.1",
+		"lint-staged": "17.6.0",
 		"prettier": "3.9.9",
 		"tom-select": "2.6.2"
 	},
