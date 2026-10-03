@@ -26,7 +26,9 @@ RSpec.configure do |config|
   # Clean up after each system test. reset_sessions! clears cookies but not
   # sessionStorage, so leftover keys (e.g. partnerTabAfterSave from save-bar)
   # can leak into the next test and silently switch tabs on page load.
-  config.after(type: :system) do
+  config.after(type: :system) do |example|
+    InputDiagnostics.report(page, example) if example.exception
+
     begin
       page.execute_script("window.sessionStorage.clear()")
     rescue StandardError
