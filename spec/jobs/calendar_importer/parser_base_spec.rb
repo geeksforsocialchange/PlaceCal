@@ -115,12 +115,77 @@ RSpec.describe CalendarImporter::Parsers::Base do
       end
     end
 
-    it "raises correct exception with invalid URL" do
-      VCR.use_cassette(:invalid_url) do
+    context "with address vetting" do
+      before { allow(described_class).to receive(:sleep) }
+
+      it "refuses a private target without making a request" do
         expect do
-          described_class.read_http_source("https://dandilion.gfsc.studio")
-        end.to raise_error(CalendarImporter::Exceptions::InaccessibleFeed, /There was a socket error.*Failed to open TCP connection to dandilion.gfsc.studio:443/)
+          described_class.read_http_source("http://169.254.169.254/latest/meta-data/")
+        end.to raise_error(CalendarImporter::Exceptions::InaccessibleFeed, I18n.t("admin.calendars.wizard.source.private_address"))
+        expect(a_request(:any, /.*/)).not_to have_been_made
       end
+
+      it "refuses a redirect to a private address before following it" do
+        stub_request(:get, "https://example.com/feed.ics")
+          .to_return(status: 302, headers: { "Location" => "http://127.0.0.1:6379/" })
+
+        expect do
+          described_class.read_http_source("https://example.com/feed.ics")
+        end.to raise_error(CalendarImporter::Exceptions::InaccessibleFeed, I18n.t("admin.calendars.wizard.source.private_address"))
+        expect(a_request(:get, "http://127.0.0.1:6379/")).not_to have_been_made
+      end
+
+      it "refuses a redirect to a hostname that resolves privately" do
+        allow(OutboundUrlGuard).to receive(:resolve).with("internal.example.net").and_return([IPAddr.new("10.0.0.5")])
+        stub_request(:get, "https://example.com/feed.ics")
+          .to_return(status: 301, headers: { "Location" => "https://internal.example.net/admin" })
+
+        expect do
+          described_class.read_http_source("https://example.com/feed.ics")
+        end.to raise_error(CalendarImporter::Exceptions::InaccessibleFeed, I18n.t("admin.calendars.wizard.source.private_address"))
+        expect(a_request(:get, "https://internal.example.net/admin")).not_to have_been_made
+      end
+
+      it "follows relative redirects to public addresses" do
+        stub_request(:get, "https://example.com/old").to_return(status: 301, headers: { "Location" => "/new" })
+        stub_request(:get, "https://example.com/new").to_return(status: 200, body: "BEGIN:VCALENDAR")
+
+        expect(described_class.read_http_source("https://example.com/old")).to eq("BEGIN:VCALENDAR")
+      end
+
+      it "gives up after too many redirects" do
+        stub_request(:get, %r{\Ahttps://example\.com/loop}).to_return(status: 302, headers: { "Location" => "/loop" })
+
+        expect do
+          described_class.read_http_source("https://example.com/loop")
+        end.to raise_error(CalendarImporter::Exceptions::InaccessibleFeed, I18n.t("admin.calendars.wizard.source.too_many_redirects"))
+      end
+
+      it "pins the connection to the vetted address" do
+        connections = []
+        allow(HTTParty::ConnectionAdapter).to receive(:call).and_wrap_original do |original, *args|
+          original.call(*args).tap { |http| connections << http }
+        end
+        stub_request(:get, "https://example.com/feed.ics").to_return(status: 200, body: "ok")
+
+        described_class.read_http_source("https://example.com/feed.ics")
+
+        expect(connections.map(&:ipaddr)).to eq(["203.0.113.10"])
+      end
+
+      it "normalises webcal:// to https://" do
+        stub_request(:get, "https://example.com/feed.ics").to_return(status: 200, body: "BEGIN:VCALENDAR")
+
+        expect(described_class.read_http_source("webcal://example.com/feed.ics")).to eq("BEGIN:VCALENDAR")
+      end
+    end
+
+    it "raises correct exception when the host does not resolve" do
+      allow(OutboundUrlGuard).to receive(:resolve).and_raise(SocketError, "getaddrinfo: nodename nor servname provided")
+
+      expect do
+        described_class.read_http_source("https://dandilion.gfsc.studio")
+      end.to raise_error(CalendarImporter::Exceptions::InaccessibleFeed, /There was a socket error.*getaddrinfo/)
     end
 
     it "raises correct exception when URL gives invalid response" do
