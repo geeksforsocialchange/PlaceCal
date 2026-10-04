@@ -116,7 +116,6 @@ class Calendar < ApplicationRecord
                      format: { with: CALENDAR_URL_REGEX, message: 'not a valid URL' }
 
   validate :check_source_reachable
-  validate :source_not_private_ip
 
   # ==== Scopes ====
   scope :that_appear_on_site, lambda { |site|
@@ -367,13 +366,6 @@ class Calendar < ApplicationRecord
     ensure
       Calendar.record_timestamps = true
     end
-  end
-
-  def source_not_private_ip
-    return unless source.present? && source_changed?
-    return if errors[:source].any?
-
-    errors.add :source, 'must not point to a private network address' if Validation.private_ip?(source)
   end
 
   # called for validation

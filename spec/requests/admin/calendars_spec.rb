@@ -235,6 +235,17 @@ RSpec.describe "Admin::Calendars", type: :request do
       expect(json["error"]).to include("enter a URL")
     end
 
+    it "refuses a private address without making a request" do
+      post test_source_admin_calendars_url(host: admin_host),
+           params: { source: "http://169.254.169.254/latest/meta-data/" },
+           as: :json
+
+      expect(response).to be_successful
+      expect(response.parsed_body["valid"]).to be false
+      expect(response.parsed_body["error"]).to eq(I18n.t("admin.calendars.wizard.source.private_address"))
+      expect(a_request(:any, /.*/)).not_to have_been_made
+    end
+
     it "returns error for unreachable URLs" do
       VCR.use_cassette(:example_dot_com_bad_response, allow_playback_repeats: true) do
         post test_source_admin_calendars_url(host: admin_host),
