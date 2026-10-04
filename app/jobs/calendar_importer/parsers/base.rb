@@ -23,6 +23,8 @@ module CalendarImporter::Parsers
     TRANSIENT_HTTP_STATUSES = [408, 429, 500, 502, 503, 504].freeze
     HTTP_MAX_RETRIES = 3
     HTTP_RETRY_BACKOFF = 2 # seconds, multiplied by the attempt number
+    HTTP_MAX_REDIRECTS = 5
+    JSON_LD_CONTEXT_HOSTS = %w[schema.org www.schema.org].freeze
 
     def self.requires_api_token?
       false
@@ -162,14 +164,15 @@ module CalendarImporter::Parsers
       # webcal:// is just https:// with a different scheme — normalize before fetching
       url = url.sub(%r{\Awebcal://}i, 'https://')
 
-      # User-Agent is currently set to make Resident Advisor happy, but this is also more "honest".
-      # It may be this method needs per-vendor headers
-      response = with_http_retries(
-        "Fetching #{url}",
-        retry_if: ->(r) { TRANSIENT_HTTP_STATUSES.include?(r.code) }
-      ) do
-        HTTParty.get(url, follow_redirects: follow_redirects, headers: { 'User-Agent': 'Httparty' })
+      response = fetch_vetted(url)
+      HTTP_MAX_REDIRECTS.times do
+        location = follow_redirects && redirect_location(response)
+        break unless location
+
+        url = URI.join(url, location).to_s
+        response = fetch_vetted(url)
       end
+      raise InaccessibleFeed, I18n.t('admin.calendars.wizard.source.too_many_redirects') if follow_redirects && redirect_location(response)
       return response.body if response.success?
 
       msg = case response.code
@@ -181,6 +184,10 @@ module CalendarImporter::Parsers
               I18n.t('admin.calendars.wizard.source.unreadable', code: response.code)
             end
       raise InaccessibleFeed, msg
+    rescue OutboundUrlGuard::BlockedUrl
+      raise InaccessibleFeed, I18n.t('admin.calendars.wizard.source.private_address')
+    rescue URI::InvalidURIError
+      raise InaccessibleFeed, I18n.t('admin.calendars.wizard.source.unreadable', code: response&.code)
     rescue HTTParty::ResponseError => e
       raise InaccessibleFeed, "The source URL could not be resolved (#{e})"
     rescue SocketError => e
@@ -206,6 +213,41 @@ module CalendarImporter::Parsers
       end
     end
 
+    # Redirects are followed by hand so every hop is vetted, and the socket is
+    # pinned to the vetted address so a second DNS answer cannot swap it.
+    def self.fetch_vetted(url)
+      address = OutboundUrlGuard.vet!(url)
+      pinned_adapter = lambda do |uri, options|
+        HTTParty::ConnectionAdapter.call(uri, options).tap { |http| http.ipaddr = address }
+      end
+
+      # User-Agent is currently set to make Resident Advisor happy, but this is also more "honest".
+      # It may be this method needs per-vendor headers
+      with_http_retries(
+        "Fetching #{url}",
+        retry_if: ->(r) { TRANSIENT_HTTP_STATUSES.include?(r.code) }
+      ) do
+        HTTParty.get(url, follow_redirects: false, connection_adapter: pinned_adapter,
+                          headers: { 'User-Agent': 'Httparty' })
+      end
+    end
+    private_class_method :fetch_vetted
+
+    def self.redirect_location(response)
+      return unless response.code.between?(300, 399)
+
+      response.headers['location'].presence
+    end
+    private_class_method :redirect_location
+
+    # Pages can name remote JSON-LD contexts; only schema.org is fetched.
+    def self.load_json_ld_document(url, **, &)
+      host = URI.parse(url.to_s).host.to_s.downcase
+      raise JSON::LD::JsonLdError::LoadingDocumentFailed, url.to_s unless JSON_LD_CONTEXT_HOSTS.include?(host)
+
+      JSON::LD::API.documentLoader(url, **, &)
+    end
+
     def self.parse_ld_json(url)
       register_schema_org_context!
 
@@ -216,8 +258,9 @@ module CalendarImporter::Parsers
 
       data_nodes.reduce([]) do |out, node|
         json = safely_parse_json(node.inner_html)
-        expanded = JSON::LD::API.expand(json)
-        compact = JSON::LD::API.compact(expanded, CONTEXT)
+        loader = method(:load_json_ld_document)
+        expanded = JSON::LD::API.expand(json, documentLoader: loader)
+        compact = JSON::LD::API.compact(expanded, CONTEXT, documentLoader: loader)
         out.append compact
       end
     end
