@@ -1,22 +1,13 @@
 # frozen_string_literal: true
 
-# Serves sitemaps for the nationwide directory and for each local site.
-#
-# The directory (no Site row) lists everything: all visible partners, all
-# upcoming events, the partnerships index, and the static/news pages.
-#
-# A local site lists only its own content, with every URL built from the site's
-# own base URL (Site#url), so a site's sitemap never points at placecal.org.
-# Site#url must therefore be the site's canonical apex, with no path: a search
-# engine ignores a sitemap whose URLs are on a host it was not fetched from, so
-# a site reachable at more than one hostname should set the one it wants
-# indexed. The request host is deliberately not used, so that an alias host
-# still advertises the canonical URLs rather than its own.
-# Unpublished sites are still served rather than 404'd, matching robots.txt:
-# crawl blocking is SiteRobots' job, and an unlinked sitemap costs nothing.
+# Sitemaps for the nationwide directory (everything) and for each local site
+# (its own content only). A site's URLs use Site#directory_url, not the request
+# host, so an alias hostname still advertises the canonical URLs.
 class SitemapsController < ApplicationController
   CACHE_TTL = 1.day
   MAX_URLS_PER_SITEMAP = 50_000
+  # Events further out than this aren't linked from the listings, so they stay out of the sitemap.
+  EVENTS_WINDOW = 8.weeks
   BASE = Site::DIRECTORY_URL
 
   skip_before_action :set_supporters
@@ -47,17 +38,11 @@ class SitemapsController < ApplicationController
 
   private
 
-  # A sitemap belongs to a site or to the nationwide directory, and nothing
-  # else has one. #base_url otherwise falls back to the directory's URL for any
-  # host at all, so the controller states its own precondition rather than
-  # relying on the catch-all redirect in config/routes.rb, which is what
-  # currently keeps the site-less admin host away from here.
+  # Only sites and the directory have sitemaps (not the admin host).
   def require_site_or_directory
     head :not_found unless current_site || directory_request?
   end
 
-  # Base URL every entry hangs off: the site's own URL on a site, the
-  # directory's otherwise.
   def base_url
     @base_url ||= current_site ? current_site.directory_url.chomp('/') : BASE
   end
@@ -106,7 +91,8 @@ class SitemapsController < ApplicationController
     # past event pages are noindexed, and a sitemap listing noindexed URLs
     # draws "submitted URL marked noindex" warnings in Search Console.
     urls = events_scope.where('COALESCE(dtend, dtstart) >= ?', DateTime.current.beginning_of_day)
-                       .reorder(dtstart: :desc)
+                       .where(dtstart: ..EVENTS_WINDOW.from_now.end_of_day)
+                       .reorder(dtstart: :asc)
                        .limit(MAX_URLS_PER_SITEMAP)
                        .pluck('events.id', 'events.updated_at')
                        .uniq
@@ -128,12 +114,7 @@ class SitemapsController < ApplicationController
     wrap_urlset(urls)
   end
 
-  # terms-of-use is directory-only; privacy and get-in-touch resolve on both.
-  # A site with no Join link should not advertise /get-in-touch either, and
-  # SiteNavigation#join_navigation has two conditions for that link, not one:
-  # the site takes enquiries, and the theme has not moved the link into its own
-  # footer (PlaceCal::Theme#nav_join). A slug the theme serves as its own page
-  # is dropped here and emitted once by #theme_page_entries.
+  # Skips /get-in-touch on sites with no Join link, and slugs the theme serves itself.
   def static_page_slugs
     slugs = current_site ? %w[privacy get-in-touch] : %w[privacy terms-of-use get-in-touch]
     slugs -= %w[get-in-touch] if current_site && !join_link?
@@ -177,8 +158,7 @@ class SitemapsController < ApplicationController
     wrap_urlset(urls.uniq)
   end
 
-  # Static pages the site's theme serves at /:slug (#3368). The content lives
-  # in the theme's views, not in the database, so there is no lastmod.
+  # Theme pages live in views, not the database, so they have no lastmod.
   def theme_page_entries
     theme_page_slugs.map { |slug| url_entry("#{base_url}/#{slug}") }
   end

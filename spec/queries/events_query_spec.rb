@@ -549,6 +549,34 @@ RSpec.describe EventsQuery do
         expect(result).to be_empty
       end
     end
+
+    # The dropdown lists only neighbourhoods with events and their ancestors, so
+    # it must not load every descendant of the site's territory. A site anchored
+    # to a district with many empty wards but events in one ward returns just
+    # that ward, having loaded a bounded set of neighbourhood rows, not the lot.
+    context "when the site's territory is large but few neighbourhoods have events" do
+      let(:district) { site.primary_neighbourhood }
+      let(:active_ward) { create(:neighbourhood, name: "Active Ward", unit: "ward", parent: district) }
+      let(:address) { create(:address, neighbourhood: active_ward) }
+      let(:partner) do
+        p = create(:partner, address: address)
+        p.service_areas << create(:service_area, neighbourhood: active_ward)
+        p
+      end
+
+      before do
+        create_list(:neighbourhood, 15, unit: "ward", parent: district)
+        create_list(:future_event, 2, organiser: partner, address: address)
+      end
+
+      it "returns only the event-bearing ward, not the empty siblings" do
+        query = described_class.new(site: site, day: today)
+        result = query.neighbourhoods_with_counts(period: "future")
+
+        expect(result.map { |r| r[:neighbourhood].id }).to contain_exactly(active_ward.id)
+        expect(result.first[:count]).to eq(2)
+      end
+    end
   end
 
   describe "#call with neighbourhood_id filter" do
@@ -847,18 +875,41 @@ RSpec.describe EventsQuery do
       expect(partner_set_queries).to be_empty
     end
 
-    # The legacy venue clause is raw SQL, so it interpolates the partner scope
-    # with to_sql. PartnersQuery#call carries includes; if a future where
-    # clause ever referenced an included table Rails would switch to eager
-    # loading and emit a multi-column SELECT, which an IN (...) cannot take.
-    it "interpolates a single-column partner subquery even from an eager-loading scope" do
-      scope = PartnersQuery.new(site: tag_only_site).call.references(:addresses)
-      expect(scope).to be_eager_loading
+    # The partner set reaches Postgres as a literal id list rather than a
+    # subquery: with a subquery the planner hashed the set and scanned every
+    # future event for each count (600ms against 12ms on production data).
+    it "passes the site's partner ids to the events query as a literal list" do
+      sql = described_class.new(site: tag_only_site, day: today).send(:base_scope).to_sql
 
-      sql = described_class.new(site: tag_only_site, day: today).send(:legacy_venue_match_sql, scope)
+      expect(sql).to include(%("events"."organiser_id" = #{tagged_partner.id}))
+      expect(sql).to include(%("events"."place_id" = #{tagged_partner.id}))
+      expect(sql).to include(%(venue_partners.id IN (#{tagged_partner.id})))
+      expect(sql).not_to include("IN (SELECT")
+    end
 
-      expect(sql).to include('IN (SELECT DISTINCT "partners"."id" FROM')
-      expect(sql).not_to include('"addresses"."id" AS')
+    it "fetches the partner ids once per query object" do
+      query = described_class.new(site: tag_only_site, day: today)
+      queries = []
+      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*, payload|
+        queries << payload[:sql] unless payload[:cached]
+      end
+
+      begin
+        query.future_count
+        query.next_7_days_count
+        query.monthly_count
+      ensure
+        ActiveSupport::Notifications.unsubscribe(subscriber)
+      end
+
+      expect(queries.count { |q| q.include?('FROM "partners"') }).to eq(1)
+    end
+
+    it "returns nothing for a tagged site with no partners" do
+      empty_site = create(:site, slug: "empty-tagged")
+      empty_site.tags << create(:partnership, name: "Nobody")
+
+      expect(described_class.new(site: empty_site, day: today).call(period: "future")).to be_empty
     end
   end
 end

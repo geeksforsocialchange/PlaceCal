@@ -135,11 +135,8 @@ class EventsQuery
     filter_by_tag(base_scope, tag_id).future(day).reorder(dtstart: :asc).first
   end
 
-  # Returns neighbourhoods that have events, with counts for the given period
-  # Used for filter dropdowns
-  #
-  # Shows all descendant neighbourhoods of the site's configured neighbourhoods,
-  # at every level. Each neighbourhood's count includes events in its subtree.
+  # Neighbourhoods with events, with per-subtree counts, for the filter
+  # dropdown. Delegates the roll-up to EventNeighbourhoodCounts.
   #
   # @param period [String] 'day', 'week', or 'future'
   # @param tag_id [Integer] optionally restrict to a tag, so the counts agree
@@ -148,27 +145,8 @@ class EventsQuery
   def neighbourhoods_with_counts(period: 'future', tag_id: nil)
     return [] unless @site
 
-    all_descendants = @site.neighbourhoods.flat_map { |n| n.descendants.to_a }
-    return [] if all_descendants.empty?
-
-    events = apply_period(filter_by_tag(base_scope, tag_id), period)
-
-    # Count events per leaf neighbourhood (single query)
-    raw_counts = events
-                 .left_joins(:address, organiser: :address)
-                 .where('COALESCE(addresses.neighbourhood_id, addresses_partners.neighbourhood_id) IS NOT NULL')
-                 .group('COALESCE(addresses.neighbourhood_id, addresses_partners.neighbourhood_id)')
-                 .distinct
-                 .count
-
-    # Build parent→children map from ancestry data already in memory,
-    # then compute subtree counts without extra DB queries
-    subtree_counts = subtree_counts_from_ancestry(all_descendants, raw_counts)
-
-    all_descendants
-      .select { |n| (subtree_counts[n.id] || 0).positive? }
-      .sort_by(&:name)
-      .map { |n| { neighbourhood: n, count: subtree_counts[n.id] } }
+    scope = apply_period(filter_by_tag(base_scope, tag_id), period)
+    EventNeighbourhoodCounts.new(scope: scope, site: @site).call
   end
 
   # Whether the given event appears on this site — same rules as the event
@@ -186,70 +164,14 @@ class EventsQuery
   # Base Scope
   # ===================
 
+  # Events for the whole directory (no site) or, via SiteEventsScope, the ones
+  # that belong to this site. Preloads place and organiser for the cards.
   def base_scope
-    @base_scope ||= if @site.nil?
-                      Event.includes(:place, :organiser)
-                    else
-                      events_for_site.includes(:place, :organiser)
-                    end
+    @base_scope ||= events_in_scope.includes(:place, :organiser)
   end
 
-  # Inline of Event.for_site: the events that belong on this site. Both site
-  # shapes take events organised by, or hosted at, one of the site's partners;
-  # a neighbourhood site also takes any event whose address is in its area,
-  # and a tagged site adds the legacy venue match. The hosted-at rule reaches
-  # an event a site partner puts on somewhere else, which is how the partner
-  # page and the tag filter already count it.
-  def events_for_site
-    partners_scope = PartnersQuery.new(site: @site).call.reorder(nil)
-
-    if @site.tags.any?
-      events_for_tagged_site(partners_scope)
-    else
-      events_for_untagged_site(partners_scope)
-    end
-  end
-
-  # For sites without tags: use subquery instead of materializing partners
-  def events_for_untagged_site(partners_scope)
-    site_neighbourhood_ids = @site.owned_neighbourhood_ids
-    partner_subquery = partners_scope.select(:id)
-
-    base = Event.left_joins(:address)
-    base.where(organiser_id: partner_subquery)
-        .or(base.where(place_id: partner_subquery))
-        .or(base.where(addresses: { neighbourhood_id: site_neighbourhood_ids }))
-  end
-
-  # For sites with tags: events organised by, or hosted at, a partner in the
-  # site scope, plus the legacy venue match. The partner set stays in the
-  # database as a subquery, so a tag-only site does not load every partner
-  # row on every events request (#3368).
-  def events_for_tagged_site(partners_scope)
-    partner_subquery = partners_scope.select(:id)
-    base = Event.left_joins(:address)
-    base.where(organiser_id: partner_subquery)
-        .or(base.where(place_id: partner_subquery))
-        .or(base.where(legacy_venue_match_sql(partners_scope)))
-  end
-
-  # Legacy venue matching, from 2024 (commit 5b90f19), for events whose place
-  # was never set: an event counts as happening at a partner when its address
-  # street line is the partner's name and the postcodes agree.
-  #
-  # This one interpolates the partner scope as raw SQL, so it strips the
-  # preloads and the ordering first: with `includes` still on the relation, a
-  # future `where` referencing an included table would flip Rails into eager
-  # loading and emit a multi-column SELECT, which an IN (...) cannot take. A
-  # subquery wants neither preloads nor an ORDER BY anyway.
-  def legacy_venue_match_sql(partners_scope)
-    partner_subquery = partners_scope.except(:includes, :order).select(:id)
-    <<~SQL.squish
-      EXISTS (SELECT 1 FROM partners venue_partners
-        INNER JOIN addresses venue_addresses ON venue_addresses.id = venue_partners.address_id
-        WHERE venue_partners.id IN (#{partner_subquery.to_sql})
-        AND lower(venue_partners.name) = lower(addresses.street_address) AND lower(venue_addresses.postcode) = lower(addresses.postcode))
-    SQL
+  def events_in_scope
+    @site.nil? ? Event.all : SiteEventsScope.new(site: @site).call
   end
 
   # ===================
@@ -276,7 +198,7 @@ class EventsQuery
   def filter_by_tag(events, tag_id)
     return events if tag_id.blank?
 
-    partner_ids = PartnerTag.where(tag_id: tag_id).select(:partner_id)
+    partner_ids = PartnerTag.where(tag_id: tag_id).pluck(:partner_id)
     events.where(organiser_id: partner_ids).or(events.where(place_id: partner_ids))
   end
 
@@ -333,29 +255,7 @@ class EventsQuery
     end
   end
 
-  # Compute subtree event counts using in-memory ancestry data (no extra queries).
-  # Builds a parent→children map, then propagates leaf counts upward.
-  def subtree_counts_from_ancestry(descendants, raw_counts)
-    ids = descendants.to_set(&:id)
-    children_map = Hash.new { |h, k| h[k] = [] }
-    roots = []
-
-    descendants.each do |n|
-      if n.parent_id && ids.include?(n.parent_id)
-        children_map[n.parent_id] << n.id
-      else
-        roots << n.id
-      end
-    end
-
-    counts = {}
-    # Post-order traversal: compute children first, then sum into parent
-    compute = lambda do |id|
-      own = raw_counts[id] || 0
-      child_sum = children_map[id].sum { |cid| compute.call(cid) }
-      counts[id] = own + child_sum
-    end
-    roots.each { |id| compute.call(id) }
-    counts
-  end
+  # The neighbourhood dropdown: every neighbourhood with events in its subtree,
+  # each carrying that subtree's event count, sorted by name.
+  #
 end

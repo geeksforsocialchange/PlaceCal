@@ -28,7 +28,7 @@ Importers require two parts:
 ### CalendarImporter::Parsers
 
 1. Create `/app/jobs/calendar_importer/parsers/my_parser.rb` and link it from `/app/jobs/calendar_importer/calendar_importer.rb`.
-2. Implement a `#download_calendar` method that returns event data.
+2. Implement a `#download_calendar` method that returns event data. Fetch the source with `Base.read_http_source` (or `Base.parse_ld_json`), never a direct HTTP call, so the private address guard applies. See [Source URL Restrictions](importing.md#source-url-restrictions).
 3. Implement an `#import_events_from(data)` method that invokes a `CalendarImporter::Events`.
 
 ### CalendarImporter::Events
