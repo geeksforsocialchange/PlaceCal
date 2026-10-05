@@ -3,6 +3,11 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require "spec_helper"
 ENV["RAILS_ENV"] ||= "test"
+# Test-only fixture extension (WP 0.4, #3368): required before the Rails
+# environment boots, the same way Bundler requires a real extension gem, so
+# its engine initializers, assets, routes and locales take part in boot.
+require_relative "../config/application"
+require_relative "fixtures/extensions/example_theme/lib/example_theme"
 require_relative "../config/environment"
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?

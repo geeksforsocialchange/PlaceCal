@@ -11,6 +11,7 @@ import {
 	clearInputError,
 	setContinueButtonEnabled,
 	clearInputStyling,
+	markWizardConnected,
 } from "controllers/mixins/wizard";
 
 /**
@@ -72,6 +73,17 @@ export default class extends Controller {
 		);
 		updateWizardUI(this);
 		this.updateContinueButton();
+		// After a failed save the server re-renders the form with values already
+		// present, but availability state and hint visibility only update on input
+		// events — re-run the checks so pre-filled fields don't show stale errors
+		// or block the Continue button (#3356)
+		if (this.hasNameInputTarget && this.nameInputTarget.value.trim() !== "") {
+			this.performNameCheck();
+		}
+		if (this.hasAdminEmailTarget && this.adminEmailTarget.value.trim() !== "") {
+			this.performAdminEmailCheck();
+		}
+		markWizardConnected(this);
 	}
 
 	// Step navigation

@@ -5,7 +5,7 @@ class PagesController < ApplicationController
   before_action :set_site
 
   def home
-    if default_site?
+    if directory_request?
       render_directory_home
     else
       @neighbourhoods = Site.published.select do |site|
@@ -26,15 +26,41 @@ class PagesController < ApplicationController
   end
 
   def terms_of_use
-    render Views::Directory::TermsOfUse.new
+    render Views::Directory::MarkdownPage.new(
+      slug: 'terms_of_use',
+      title: t('directory.pages.terms_of_use.title'),
+      breadcrumb_label: t('directory.pages.terms_of_use.breadcrumb'),
+      document_title: t('directory.pages.terms_of_use.document_title')
+    )
   end
 
   def privacy
-    render Views::Directory::Privacy.new
+    # A theme may serve its own privacy copy at the conventional URL (#3368,
+    # D14). Core routes /privacy, so the theme's `privacy` page is never
+    # reached by the /:slug catch-all; this action looks it up itself.
+    theme_page = theme_page_view('privacy')
+    return render_theme_page(theme_page) if theme_page
+
+    render Views::Directory::MarkdownPage.new(
+      slug: 'privacy',
+      title: t('directory.pages.privacy.title'),
+      breadcrumb_label: t('directory.pages.privacy.breadcrumb'),
+      document_title: t('directory.pages.privacy.document_title')
+    )
+  end
+
+  # Static content page served by the site's theme at /:slug (#3368). The
+  # catch-all route is matched last, so anything core routes never reaches
+  # here. Core holds no page content: the theme's view supplies all of it.
+  def show
+    theme_page = theme_page_view(params[:slug])
+    raise ActiveRecord::RecordNotFound unless theme_page
+
+    render_theme_page(theme_page)
   end
 
   def our_story
-    render Views::Homepage::OurStory.new
+    render Views::Directory::OurStory.new
   end
 
   def community_groups
@@ -62,23 +88,52 @@ class PagesController < ApplicationController
   end
 
   def robots
+    # One path, a different body per host, the same as the sitemap and the
+    # manifest: a shared cache keying on the path alone would hand one site's
+    # robots.txt to another.
+    response.headers['Vary'] = 'Host'
     if current_site
       render plain: current_site.robots
+    elsif directory_request?
+      # The apex serves the nationwide directory: always crawlable
+      render plain: Site.directory_robots
     else
-      # Admin subdomain or no site found - disallow all indexing
+      # Admin subdomain - disallow all indexing
       render plain: "User-agent: *\nDisallow: /"
     end
   end
 
-  NEIGHBOURHOOD_UNIT_RANK = %w[ward district county region].freeze
   DIRECTORY_CACHE_TTL = 1.day
 
+  # ONS GSS codes for the places featured as homepage "jump" links, in display
+  # order. Pinned by code (stable across environments) rather than by id.
+  JUMP_NEIGHBOURHOOD_CODES = %w[
+    E08000003
+    E12000007
+    E07000148
+    E08000035
+    E08000021
+  ].freeze
+
   private
+
+  # @return [Class, nil] the theme view for this slug. The nationwide directory
+  #   has no Site and so no theme pages; an unregistered slug, or a view class
+  #   that no longer resolves, both give nil.
+  def theme_page_view(slug)
+    return nil if current_site.nil?
+
+    Current.theme.page_view_class(slug)
+  end
+
+  def render_theme_page(view_class)
+    render view_class.new(site: current_site)
+  end
 
   def render_directory_home
     @stats = Rails.cache.fetch('directory/stats', expires_in: DIRECTORY_CACHE_TTL) do
       {
-        partnerships: Site.where(is_published: true).where.not(slug: 'default-site').count,
+        partnerships: Site.where(is_published: true).count,
         partners: Partner.visible.count,
         events: Event.where(dtstart: Time.zone.today..30.days.from_now).count,
         neighbourhoods: Neighbourhood.districts.count
@@ -86,16 +141,17 @@ class PagesController < ApplicationController
     end
 
     @partner_locations = Rails.cache.fetch('directory/partner_locations', expires_in: DIRECTORY_CACHE_TTL) do
-      build_partner_locations
+      PartnerLocationsQuery.new.call.map do |location|
+        { lat: location[:lat], lon: location[:lon], name: location[:name], url: partner_path(location[:slug]) }
+      end
     end
 
-    @jump_sites = Rails.cache.fetch('directory/jump_sites', expires_in: DIRECTORY_CACHE_TTL) do
-      build_jump_sites.to_a
+    @jump_neighbourhoods = Rails.cache.fetch('directory/jump_neighbourhoods', expires_in: DIRECTORY_CACHE_TTL) do
+      build_jump_neighbourhoods.to_a
     end
 
     @partnerships = Rails.cache.fetch('directory/partnerships', expires_in: DIRECTORY_CACHE_TTL) do
       Site.where(is_published: true)
-          .where.not(slug: 'default-site')
           .order(partners_count: :desc)
           .limit(6)
           .to_a
@@ -110,12 +166,7 @@ class PagesController < ApplicationController
     end
 
     @partner_event_counts = Rails.cache.fetch('directory/partner_event_counts', expires_in: DIRECTORY_CACHE_TTL) do
-      ids = @recent_partners.map(&:id)
-      Event.future(Time.zone.today)
-           .where(place_id: ids)
-           .or(Event.future(Time.zone.today).where(organiser_id: ids))
-           .group(:place_id)
-           .count
+      EventsQuery.upcoming_counts_by_partner(@recent_partners.map(&:id))
     end
 
     render Views::Directory::Home.new(
@@ -125,61 +176,14 @@ class PagesController < ApplicationController
       partner_event_counts: @partner_event_counts,
       stats: @stats,
       partner_locations: @partner_locations,
-      jump_sites: @jump_sites
+      jump_neighbourhoods: @jump_neighbourhoods
     )
   end
 
-  def build_jump_sites
-    partnership_ids = Tag.where(type: 'Partnership').joins(:sites).select('sites.id')
-    sites = Site.where(is_published: true)
-                .where.not(slug: 'default-site')
-                .where.not(id: partnership_ids)
-                .order(partners_count: :desc)
-                .limit(3)
-    return sites if sites.any?
-
-    Site.where(slug: %w[manchester london norwich], is_published: true)
-  end
-
-  def build_partner_locations
-    locations = Partner.visible.joins(:address)
-                       .where.not(addresses: { latitude: nil })
-                       .pluck(:name, :slug, 'addresses.latitude', 'addresses.longitude')
-                       .map { |name, slug, lat, lon| { lat: lat, lon: lon, name: name, url: partner_path(slug) } }
-
-    addressless = Partner.visible.where(address_id: nil).includes(service_areas: :neighbourhood)
-    return locations if addressless.none?
-
-    sa_nhood_ids = addressless.flat_map { |p| p.service_areas.map(&:neighbourhood_id) }.compact.uniq
-    centroid_cache = neighbourhood_centroids(sa_nhood_ids)
-
-    addressless.find_each do |p|
-      best = p.service_areas.filter_map(&:neighbourhood)
-              .select { |n| NEIGHBOURHOOD_UNIT_RANK.include?(n.unit) }
-              .min_by { |n| NEIGHBOURHOOD_UNIT_RANK.index(n.unit) }
-      next unless best
-
-      coords = centroid_cache[best.id]
-      next unless coords
-
-      locations << { lat: coords[0], lon: coords[1], name: p.name, url: partner_path(p.slug) }
-    end
-
-    locations
-  end
-
-  def neighbourhood_centroids(neighbourhood_ids)
-    cache = {}
-    Neighbourhood.where(id: neighbourhood_ids).find_each do |n|
-      addrs = Address.where(neighbourhood_id: n.id).where.not(latitude: nil)
-      unless addrs.exists?
-        desc_ids = n.descendant_ids
-        addrs = Address.where(neighbourhood_id: desc_ids).where.not(latitude: nil) if desc_ids.any?
-      end
-      next unless addrs.exists?
-
-      cache[n.id] = [addrs.average(:latitude).to_f, addrs.average(:longitude).to_f]
-    end
-    cache
+  def build_jump_neighbourhoods
+    found = Neighbourhood.latest_release
+                         .where(unit_code_value: JUMP_NEIGHBOURHOOD_CODES)
+                         .index_by(&:unit_code_value)
+    JUMP_NEIGHBOURHOOD_CODES.filter_map { |code| found[code] }
   end
 end

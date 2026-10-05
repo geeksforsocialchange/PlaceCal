@@ -29,6 +29,66 @@
 			},
 			"additionalProperties": false
 		},
+		"areaServed": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"required": ["@type", "name"],
+				"properties": {
+					"@type": { "type": "string", "enum": ["AdministrativeArea"] },
+					"name": { "type": "string", "minLength": 1 }
+				},
+				"additionalProperties": false
+			},
+			"minItems": 1
+		},
+		"location": {
+			"type": "object",
+			"required": ["@type"],
+			"properties": {
+				"@type": { "type": "string", "enum": ["Place"] },
+				"address": {
+					"type": "object",
+					"required": ["@type"],
+					"properties": {
+						"@type": { "type": "string", "enum": ["PostalAddress"] },
+						"streetAddress": { "type": "string" },
+						"addressLocality": { "type": "string" },
+						"postalCode": { "type": "string" },
+						"addressCountry": { "type": "string" }
+					},
+					"additionalProperties": false
+				},
+				"geo": {
+					"type": "object",
+					"required": ["@type", "latitude", "longitude"],
+					"properties": {
+						"@type": { "type": "string", "enum": ["GeoCoordinates"] },
+						"latitude": { "type": "number" },
+						"longitude": { "type": "number" }
+					},
+					"additionalProperties": false
+				},
+				"openingHoursSpecification": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"required": ["@type", "dayOfWeek", "opens", "closes"],
+						"properties": {
+							"@type": {
+								"type": "string",
+								"enum": ["OpeningHoursSpecification"]
+							},
+							"dayOfWeek": { "type": "string", "minLength": 1 },
+							"opens": { "type": "string", "pattern": "^\\d{2}:\\d{2}$" },
+							"closes": { "type": "string", "pattern": "^\\d{2}:\\d{2}$" }
+						},
+						"additionalProperties": false
+					}
+				}
+			},
+			"additionalProperties": false
+		},
 		"event": {
 			"type": "array",
 			"items": {

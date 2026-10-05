@@ -85,25 +85,35 @@ export default class extends Controller {
 
 ### Frame Navigation
 
-```erb
-<!-- app/views/posts/index.html.erb -->
-<turbo-frame id="posts">
-  <div class="posts-header">
-    <%= link_to "New Post", new_post_path, data: { turbo_frame: "_top" } %>
-  </div>
+```ruby
+# app/views/posts/index.rb
+class Views::Posts::Index < Views::Base
+  include Phlex::Rails::Helpers::TurboFrameTag
+  include Phlex::Rails::Helpers::LinkTo
+  include Phlex::Rails::Helpers::DOMID
 
-  <div class="posts-list">
-    <% @posts.each do |post| %>
-      <turbo-frame id="<%= dom_id(post) %>" class="post-item">
-        <%= render post %>
-      </turbo-frame>
-    <% end %>
-  </div>
+  prop :posts, ActiveRecord::Relation, reader: :private
 
-  <%= turbo_frame_tag "pagination", src: posts_path(page: @page), loading: :lazy do %>
-    <div class="loading"><%= t('admin.labels.loading') %></div>
-  <% end %>
-</turbo-frame>
+  def view_template
+    turbo_frame_tag "posts" do
+      div(class: "posts-header") do
+        raw link_to("New Post", new_post_path, data: { turbo_frame: "_top" })
+      end
+
+      div(class: "posts-list") do
+        posts.each do |post|
+          turbo_frame_tag dom_id(post), class: "post-item" do
+            render post
+          end
+        end
+      end
+
+      turbo_frame_tag "pagination", src: posts_path(page: @page), loading: :lazy do
+        div(class: "loading") { t('admin.labels.loading') }
+      end
+    end
+  end
+end
 ```
 
 ### Frame Responses
@@ -137,23 +147,31 @@ end
 
 ## Turbo Streams
 
-### Stream Templates
+### Stream Responses
 
-```erb
-<!-- app/views/posts/create.turbo_stream.erb -->
-<%= turbo_stream.prepend "posts" do %>
-  <%= render @post %>
-<% end %>
+Render Turbo Streams straight from the controller, passing **Phlex components** as
+the content (they're renderable) — no `.turbo_stream.erb` template needed:
 
-<%= turbo_stream.update "posts-count", @posts.count %>
+```ruby
+# app/controllers/posts_controller.rb
+def create
+  @post = Post.new(post_params)
+  if @post.save
+    render turbo_stream: [
+      turbo_stream.prepend("posts", Components::PostCard.new(@post)),
+      turbo_stream.update("posts-count", @posts.count.to_s),
+      turbo_stream.replace("new-post-form", Components::PostForm.new(post: Post.new))
+    ]
+  else
+    render Views::Posts::New.new(post: @post), status: :unprocessable_entity
+  end
+end
+```
 
-<%= turbo_stream.replace "new-post-form" do %>
-  <%= render "form", post: Post.new %>
-<% end %>
+For a custom client-side action, emit the action tag from the controller too:
 
-<%= turbo_stream_action_tag "dispatch",
-  event: "post:created",
-  detail: { id: @post.id } %>
+```ruby
+turbo_stream.action(:dispatch, "post:created", detail: { id: @post.id })
 ```
 
 ### Broadcast Updates
@@ -348,12 +366,15 @@ export function debounce(func, wait) {
 
 ### Passing Locale Strings via Data Attributes
 
-```erb
-<%# In your view - pass localized strings to JavaScript %>
-<div data-controller="search"
-     data-search-loading-text-value="<%= t('admin.labels.loading') %>"
-     data-search-no-results-text-value="<%= t('admin.empty.no_items', items: 'results') %>">
-</div>
+```ruby
+# In a Phlex view/component — pass localized strings to the Stimulus controller
+div(
+  data: {
+    controller: "search",
+    "search-loading-text-value": t('admin.labels.loading'),
+    "search-no-results-text-value": t('admin.empty.no_items', items: 'results')
+  }
+)
 ```
 
 ```javascript
@@ -374,10 +395,13 @@ export default class extends Controller {
 
 When JavaScript needs to construct messages dynamically, pass templates:
 
-```erb
-<div data-controller="notification"
-     data-notification-created-template-value="<%= t('notifications.created', item: '%{item}') %>">
-</div>
+```ruby
+div(
+  data: {
+    controller: "notification",
+    "notification-created-template-value": t('notifications.created', item: '%{item}')
+  }
+)
 ```
 
 ```javascript
@@ -389,23 +413,27 @@ showCreated(itemName) {
 
 ## Integration Patterns
 
-### Rails Helpers
+### Wiring Stimulus from Phlex
 
-```erb
-<!-- Stimulus data attributes -->
-<div data-controller="toggle"
-     data-toggle-open-class="hidden"
-     data-action="click->toggle#toggle">
-  <!-- content -->
-</div>
+```ruby
+# Stimulus data attributes
+div(
+  data: {
+    controller: "toggle",
+    "toggle-open-class": "hidden",
+    action: "click->toggle#toggle"
+  }
+) do
+  # content
+end
 
-<!-- Turbo permanent elements -->
-<div id="flash-messages" data-turbo-permanent>
-  <%= render "shared/flash" %>
-</div>
+# Turbo permanent element
+div(id: "flash-messages", data: { turbo_permanent: true }) do
+  render Components::Flash.new
+end
 
-<!-- Turbo cache control -->
-<meta name="turbo-cache-control" content="no-preview">
+# Turbo cache control (in the layout head)
+meta(name: "turbo-cache-control", content: "no-preview")
 ```
 
 ### Custom Actions

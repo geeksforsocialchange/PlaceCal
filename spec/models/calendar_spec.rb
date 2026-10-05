@@ -1,5 +1,45 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: calendars
+#
+#  id                   :bigint           not null, primary key
+#  api_token            :string
+#  calendar_state       :string           default("idle")
+#  checksum_updated_at  :datetime
+#  critical_error       :text
+#  import_started_at    :datetime
+#  importer_mode        :string           default("auto")
+#  importer_used        :string
+#  is_working           :boolean          default(TRUE), not null
+#  last_checksum        :string
+#  last_import_at       :datetime
+#  name                 :string           not null
+#  notice_count         :integer
+#  notices              :jsonb
+#  public_contact_email :string
+#  public_contact_name  :string
+#  public_contact_phone :string
+#  source               :string           not null
+#  strategy             :string
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#  organiser_id         :bigint           not null
+#  place_id             :bigint
+#
+# Indexes
+#
+#  index_calendars_on_calendar_state  (calendar_state)
+#  index_calendars_on_organiser_id    (organiser_id)
+#  index_calendars_on_place_id        (place_id)
+#  index_calendars_source             (source) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (organiser_id => partners.id)
+#  fk_rails_...  (place_id => partners.id)
+#
 require "rails_helper"
 
 RSpec.describe Calendar, type: :model do
@@ -36,6 +76,14 @@ RSpec.describe Calendar, type: :model do
         calendar = build(:calendar, organiser: partner, source: "webcal://example.com/calendar.ics")
         allow(calendar).to receive(:check_source_reachable)
         expect(calendar).to be_valid
+      end
+
+      it "rejects a private address before trying to fetch it" do
+        calendar = build(:calendar, organiser: partner, source: "http://169.254.169.254/latest/meta-data/")
+
+        expect(calendar.save).to be false
+        expect(calendar.errors[:source].join).to include(I18n.t("admin.calendars.wizard.source.private_address"))
+        expect(a_request(:any, /.*/)).not_to have_been_made
       end
 
       it "rejects invalid URLs" do
@@ -158,6 +206,75 @@ RSpec.describe Calendar, type: :model do
     it "returns count of events this week" do
       # This is a basic test - actual event counting would need events created
       expect(calendar.events_this_week).to eq(0)
+    end
+  end
+
+  describe "import attempt timestamps" do
+    let(:calendar) { create(:calendar) }
+
+    it "stamps import_started_at when an attempt is queued" do
+      calendar.update_columns(calendar_state: "idle", import_started_at: nil) # rubocop:disable Rails/SkipsModelValidations
+
+      expect { calendar.queue_for_import!(false) }
+        .to change { calendar.reload.import_started_at }.from(nil)
+
+      expect(calendar.calendar_state).to eq("in_queue")
+      expect(calendar.import_started_at).to be_within(5.seconds).of(Time.current)
+    end
+
+    it "stamps import_started_at when the worker starts the import" do
+      calendar.update_columns(calendar_state: "in_queue", import_started_at: nil) # rubocop:disable Rails/SkipsModelValidations
+
+      expect { calendar.flag_start_import_job! }
+        .to change { calendar.reload.import_started_at }.from(nil)
+
+      expect(calendar.calendar_state).to eq("in_worker")
+      expect(calendar.import_started_at).to be_within(5.seconds).of(Time.current)
+    end
+  end
+
+  describe ".reset_stuck_imports!" do
+    let(:calendar) { create(:calendar) }
+
+    def put_stuck(state, started_at)
+      calendar.update_columns(calendar_state: state, import_started_at: started_at) # rubocop:disable Rails/SkipsModelValidations
+    end
+
+    %w[in_worker in_queue].each do |state|
+      it "resets a calendar stuck in #{state} beyond the threshold" do
+        put_stuck(state, 3.hours.ago)
+
+        expect(described_class.reset_stuck_imports!).to contain_exactly(calendar.id)
+        expect(calendar.reload.calendar_state).to eq("idle")
+      end
+
+      it "resets a legacy #{state} calendar with no import_started_at" do
+        put_stuck(state, nil)
+
+        expect(described_class.reset_stuck_imports!).to contain_exactly(calendar.id)
+        expect(calendar.reload.calendar_state).to eq("idle")
+      end
+
+      it "leaves a #{state} calendar whose attempt started recently" do
+        put_stuck(state, 10.minutes.ago)
+
+        expect(described_class.reset_stuck_imports!).to be_empty
+        expect(calendar.reload.calendar_state).to eq(state)
+      end
+    end
+
+    it "ignores calendars that are not in a busy state" do
+      put_stuck("bad_source", 3.hours.ago)
+
+      expect(described_class.reset_stuck_imports!).to be_empty
+      expect(calendar.reload.calendar_state).to eq("bad_source")
+    end
+
+    it "honours a custom threshold" do
+      put_stuck("in_worker", 30.minutes.ago)
+
+      expect(described_class.reset_stuck_imports!(threshold: 15.minutes)).to contain_exactly(calendar.id)
+      expect(calendar.reload.calendar_state).to eq("idle")
     end
   end
 end

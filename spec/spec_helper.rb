@@ -2,12 +2,12 @@ require "simplecov"
 require "simplecov_json_formatter"
 SimpleCov.start "rails" do
   enable_coverage :branch
-  add_group "Datatables", "app/datatables"
-  add_group "GraphQL", "app/graphql"
-  add_group "Importers", "app/jobs/calendar_importer"
-  add_group "Components", "app/components"
-  add_group "Policies", "app/policies"
-  add_group "Uploaders", "app/uploaders"
+  group "Datatables", "app/datatables"
+  group "GraphQL", "app/graphql"
+  group "Importers", "app/jobs/calendar_importer"
+  group "Components", "app/components"
+  group "Policies", "app/policies"
+  group "Uploaders", "app/uploaders"
 
   if ENV["CI"]
     formatter SimpleCov::Formatter::MultiFormatter.new([

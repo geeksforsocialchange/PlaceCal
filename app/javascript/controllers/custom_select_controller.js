@@ -9,11 +9,16 @@ export default class extends Controller {
 		this.keydownHandler = this.handleKeydown.bind(this);
 		document.addEventListener("click", this.outsideClickHandler);
 		document.addEventListener("keydown", this.keydownHandler);
+		// Signal readiness so system specs can wait for connect() before
+		// clicking the trigger. The toggle action is silently dropped if the
+		// trigger is clicked before JS boots (notably in CI).
+		this.element.dataset.customSelectConnected = "true";
 	}
 
 	disconnect() {
 		document.removeEventListener("click", this.outsideClickHandler);
 		document.removeEventListener("keydown", this.keydownHandler);
+		delete this.element.dataset.customSelectConnected;
 	}
 
 	toggle(event) {
@@ -47,6 +52,9 @@ export default class extends Controller {
 		this.hiddenSelectTarget.dispatchEvent(
 			new Event("change", { bubbles: true }),
 		);
+
+		// Apply the filter immediately on selection — no need to press Filter.
+		this.element.closest("form")?.requestSubmit();
 	}
 
 	closeOnOutsideClick(event) {

@@ -4,6 +4,7 @@
 /doc/**/*.js
 /tmp/
 /vendor/bundle/
+/vendor/assets/
 /.rubocop_todo.yml
 /.rubocop.yml
 /dump/

@@ -46,7 +46,7 @@ a.btn-dark-outline:hover {
 	color: var(--color-background);
 	font-weight: 800;
 	font-size: 0.75rem;
-	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+	box-shadow: var(--shadow-marker);
 }
 .cluster-md {
 	font-size: 0.85rem;
@@ -59,7 +59,305 @@ a.btn-dark-outline:hover {
 	background: var(--color-secondary);
 	border-radius: 50%;
 	border: 2px solid var(--color-background);
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: var(--shadow-dot);
+}
+
+/* Rendered markdown documents (legal pages — privacy, terms of use) */
+.markdown-content > :first-child {
+	@apply mt-0;
+}
+.markdown-content h2 {
+	@apply text-2xl font-bold mt-8 mb-3;
+}
+.markdown-content h3 {
+	@apply text-xl font-bold mt-6 mb-2;
+}
+.markdown-content p {
+	@apply my-4;
+}
+.markdown-content ul {
+	@apply list-disc pl-6 my-4 space-y-1;
+}
+.markdown-content ol {
+	@apply list-decimal pl-6 my-4 space-y-1;
+}
+.markdown-content li {
+	@apply pl-1;
+}
+.markdown-content a {
+	@apply underline;
+	color: var(--color-foreground);
+}
+.markdown-content a:hover {
+	@apply no-underline;
+}
+
+/* "Get in touch" / Join enquiry form (app/views/directory/join.rb) */
+.join-card {
+	background: var(--color-background);
+	border: 2px solid var(--color-rules);
+	border-radius: var(--radius-card);
+	padding: 2rem 2.25rem 2.25rem;
+}
+.join-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 1.1rem 1.25rem;
+}
+@media (width >= theme(--breakpoint-md)) {
+	.join-grid {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+.join-block {
+	margin-top: 1.4rem;
+}
+
+.join-field {
+	display: flex;
+	flex-direction: column;
+	gap: 0.4rem;
+	min-width: 0;
+}
+.join-label {
+	display: flex;
+	align-items: center;
+	gap: 0.3rem;
+	font-weight: 700;
+	font-size: var(--text-detail);
+	color: var(--color-foreground);
+}
+.join-label .req {
+	color: var(--color-secondary-deep);
+	font-weight: 800;
+}
+.join-label .opt {
+	color: var(--color-tertiary);
+	font-weight: 600;
+	font-size: var(--text-xs);
+}
+
+.join-control {
+	width: 100%;
+	font-size: var(--text-base);
+	font-weight: 500;
+	color: var(--color-foreground);
+	background: var(--color-background);
+	border: 2px solid var(--color-rules-dark);
+	border-radius: var(--radius-field);
+	padding: 0.72rem 0.9rem;
+	outline: none;
+	transition:
+		border-color 0.15s,
+		box-shadow 0.15s,
+		background 0.15s;
+}
+.join-control::placeholder {
+	color: var(--color-tertiary);
+}
+.join-control:hover {
+	border-color: var(--color-tertiary);
+}
+.join-control:focus {
+	border-color: var(--color-foreground);
+	background: var(--color-surface);
+	box-shadow: 0 0 0 3px var(--color-focus-ring);
+}
+textarea.join-control {
+	min-height: 132px;
+	resize: vertical;
+	line-height: 1.5;
+}
+
+/* Custom checkbox "chips" for the "I'd like" choices */
+.join-choices {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.7rem;
+}
+.join-choice {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.6rem;
+	padding: 0.62rem 1.15rem 0.62rem 0.8rem;
+	border: 2px solid var(--color-rules-dark);
+	border-radius: var(--radius-pill);
+	background: var(--color-background);
+	cursor: pointer;
+	font-weight: 700;
+	font-size: 0.95rem;
+	color: var(--color-foreground);
+	user-select: none;
+	transition:
+		border-color 0.15s,
+		background 0.15s;
+}
+.join-choice:hover {
+	border-color: var(--color-tertiary);
+}
+.join-choice input {
+	position: absolute;
+	opacity: 0;
+	pointer-events: none;
+}
+.join-choice__box {
+	width: 22px;
+	height: 22px;
+	flex-shrink: 0;
+	border: 2px solid var(--color-rules-dark);
+	border-radius: var(--radius-check);
+	background: var(--color-surface);
+	display: grid;
+	place-items: center;
+	transition:
+		background 0.15s,
+		border-color 0.15s;
+}
+.join-choice__box svg {
+	color: var(--color-background);
+	opacity: 0;
+	transform: scale(0.6);
+	transition:
+		opacity 0.15s,
+		transform 0.15s;
+}
+.join-choice:has(input:checked) {
+	border-color: var(--color-foreground);
+	background: var(--color-home-background-3);
+}
+.join-choice:has(input:checked) .join-choice__box {
+	background: var(--color-foreground);
+	border-color: var(--color-foreground);
+}
+.join-choice:has(input:checked) .join-choice__box svg {
+	opacity: 1;
+	transform: scale(1);
+}
+.join-choice:has(input:focus-visible) {
+	box-shadow: 0 0 0 3px var(--color-focus-ring);
+}
+
+/* Submit row */
+.join-actions {
+	display: flex;
+	align-items: center;
+	gap: 1.25rem;
+	flex-wrap: wrap;
+	margin-top: 1.85rem;
+}
+.join-submit {
+	display: inline-flex;
+	align-items: center;
+	background: var(--color-foreground);
+	color: var(--color-background);
+	font-weight: 700;
+	font-size: 1.02rem;
+	padding: 0.8rem 2.1rem;
+	border: 0;
+	border-radius: var(--radius-pill);
+	box-shadow: 0 0 0 2px var(--color-foreground);
+	cursor: pointer;
+	transition: 0.2s;
+}
+.join-submit:hover {
+	background: var(--color-background);
+	color: var(--color-foreground);
+}
+.join-note {
+	font-size: 0.86rem;
+	color: var(--color-tertiary);
+	max-width: 34ch;
+	line-height: 1.45;
+}
+
+/* Email fallback CTA card (sits below the form card) */
+.join-email-cta {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 1.25rem;
+	margin-top: 1.25rem;
+	background: var(--color-secondary);
+	border-radius: var(--radius-card);
+	padding: 1.6rem 1.9rem;
+}
+/* Darker than --color-foreground (#5b4e46): brown text on the salmon card
+   only reaches 3.46:1, below WCAG AA 4.5:1 for body copy. This shade clears it. */
+.join-email-cta__heading {
+	font-family: var(--font-serif);
+	font-weight: 400;
+	font-size: 1.35rem;
+	line-height: 1.15;
+	color: var(--color-foreground-darker);
+	margin: 0 0 0.2rem;
+}
+.join-email-cta__body {
+	font-size: 0.95rem;
+	color: var(--color-foreground-darker);
+}
+.join-email-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.55rem;
+	white-space: nowrap;
+	text-decoration: none;
+	background: var(--color-foreground);
+	color: var(--color-background);
+	font-weight: 700;
+	font-size: 1rem;
+	padding: 0.7rem 1.4rem;
+	border-radius: var(--radius-pill);
+	box-shadow: 0 0 0 2px var(--color-foreground);
+	transition: 0.2s;
+}
+.join-email-link:hover {
+	background: var(--color-background);
+	color: var(--color-foreground);
+}
+
+/* Flash messages — distinct success / error states (Components::Flash) */
+.flash-message {
+	border-radius: var(--radius-card);
+	padding: 0.75rem 1rem;
+	font-size: 0.9rem;
+	font-weight: 700;
+	color: var(--color-foreground);
+}
+.flash-message--success {
+	background: var(--color-primary);
+}
+.flash-message--error {
+	background: var(--color-secondary);
+}
+
+/* Directory paginator pills (app/components/directory/paginator.rb) */
+.paginator-pill {
+	@apply inline-flex items-center justify-center min-w-9 h-9 px-2 rounded-full text-sm font-bold text-foreground no-underline bg-home-background-3 transition-colors;
+}
+.paginator-pill:hover {
+	@apply bg-primary;
+}
+.paginator-pill--active {
+	@apply inline-flex items-center justify-center min-w-9 h-9 px-2 rounded-full text-sm font-bold text-background no-underline bg-foreground;
+}
+
+/* Small rounded pill badge (event counts, category chips on partner/partnership
+   cards). Colours stay inline at the call site; --tight trims the padding. */
+.badge {
+	@apply inline-flex items-center text-2xs font-bold rounded-full px-2.5 py-0.5;
+}
+.badge--tight {
+	@apply px-2;
+}
+
+/* Inverting outline button on cream sections (e.g. Our Story "show more"). */
+a.btn-home-outline {
+	@apply inline-flex items-center gap-2 rounded-full border-2 border-home-background bg-home-background px-6 py-[0.7rem] text-base font-bold text-foreground no-underline transition-colors;
+}
+a.btn-home-outline:hover {
+	@apply border-foreground bg-foreground text-background;
 }
 
 /* Override leaflet.markercluster default styles */
@@ -67,4 +365,15 @@ a.btn-dark-outline:hover {
 .marker-cluster-medium,
 .marker-cluster-large {
 	background: transparent !important;
+}
+
+/* Day strip event filter (D22). The legacy breadcrumb actions row is a
+   nowrap flex container sized to its content, so the strip would push the
+   sort filter off screen on narrow viewports. Cap it so the strip scrolls
+   inside the row, and let the sort filter wrap under it when space runs out. */
+.breadcrumb__actions:has(.day-strip) {
+	min-width: 0;
+	max-width: 100%;
+	flex-wrap: wrap;
+	row-gap: 0.5rem;
 }

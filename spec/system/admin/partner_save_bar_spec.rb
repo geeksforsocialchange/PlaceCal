@@ -12,10 +12,6 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
 
   let!(:partner) { create(:partner) }
 
-  before do
-    create_default_site
-  end
-
   def visit_partner_edit
     url = admin_url("/partners/#{partner.id}/edit")
     visit url
@@ -44,6 +40,11 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
       Rails.logger.warn "Retrying partner edit page load (attempt #{attempts})"
       visit url
     end
+
+    # Wait for the Stimulus controllers to connect before interacting —
+    # clicks before connect() are reverted or ignored (flaky in CI)
+    wait_for_form_tabs
+    wait_for_save_bar
   end
 
   # Helper to modify form fields in a way that triggers JavaScript input events
@@ -68,11 +69,9 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     end
 
     it "shows Back, Save, and Continue buttons on middle tabs" do
-      # Wait for Stimulus save-bar controller to connect
-      expect(page).to have_css('[data-controller="save-bar"]')
-
-      # Go to Location tab
-      find('input[aria-label="📍 Location"]').click
+      # go_to_place_tab waits for the tab's :checked state, so the click can't
+      # be silently swallowed before the save-bar listeners react (flaky in CI)
+      go_to_place_tab
 
       # Wait for button visibility to update (JavaScript runs on setTimeout)
       expect(page).to have_button("Back")
@@ -81,8 +80,7 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     end
 
     it "shows Back and Save buttons on Preview tab (no Continue)" do
-      # Go to Preview tab
-      find('input[aria-label="👁️ Preview"]').click
+      go_to_partner_tab("👁️ Preview")
 
       expect(page).to have_button("Back")
       expect(page).to have_button("Save")
@@ -116,18 +114,16 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     end
 
     it "changes button text to include Save when dirty" do
-      # Wait for Stimulus save-bar controller to connect
-      expect(page).to have_css('[data-controller="save-bar"]')
-
-      # Go to a middle tab first
-      find('input[aria-label="📍 Location"]').click
+      # Go to a middle tab first (waits for :checked — a raw click can be
+      # swallowed before the save-bar listeners react, flaky in CI)
+      go_to_place_tab
 
       # Initially shows "Back" and "Continue"
       expect(page).to have_button("Back")
       expect(page).to have_button("Continue", visible: :all)
 
       # Go back to basic and modify
-      find('input[aria-label="📋 Basic Info"]').click
+      go_to_basic_info_tab
       modify_field('input[name="partner[name]"]', "Modified Partner Name")
 
       # Go to location tab again
@@ -135,6 +131,9 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
       accept_confirm do
         find('input[aria-label="📍 Location"]').click
       end
+
+      # Wait for the accepted tab switch to land before asserting the buttons
+      expect(page).to have_css('input[aria-label="📍 Location"]:checked', visible: :all)
 
       # Now should show "Save & Back" and "Save & Continue"
       expect(page).to have_button("Save & Back")
@@ -172,11 +171,17 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     end
 
     it "does not prompt when switching tabs without changes" do
-      # Switch tabs without making changes - no prompt expected
-      find('input[aria-label="📍 Location"]').click
+      # Wait for the form to settle into its clean (no unsaved changes) state
+      # before switching. While field enhancements initialise, the save bar can
+      # briefly read as dirty (its baseline snapshot races the enhancement); a
+      # tab click during that window fires the unsaved-changes confirm, which —
+      # with no accept_confirm here — is dismissed and cancels the switch, so
+      # the Location tab never becomes checked (flaky in CI). A clean save bar
+      # shows "Continue" rather than "Save & Continue".
+      expect(page).to have_no_button("Save & Continue", visible: :all)
 
-      # Should be on Location tab
-      expect(page).to have_css('input[aria-label="📍 Location"]:checked', visible: :all)
+      # Switch tabs without making changes - no prompt expected
+      go_to_place_tab
     end
   end
 
@@ -187,8 +192,6 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     end
 
     it "navigates to next tab when clicking Continue without changes" do
-      # Wait for Stimulus save-bar controller to connect and show the Continue button
-      expect(page).to have_css('[data-controller="save-bar"]')
       expect(page).to have_button("Continue", visible: :visible)
       click_button "Continue"
 
@@ -197,11 +200,8 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     end
 
     it "navigates to previous tab when clicking Back without changes" do
-      # Wait for Stimulus save-bar controller to connect
-      expect(page).to have_css('[data-controller="save-bar"]')
-
-      # Go to Location tab first
-      find('input[aria-label="📍 Location"]').click
+      # Go to Location tab first (re-clicks if the click is dropped, #3341)
+      go_to_place_tab
       expect(page).to have_button("Back", visible: :visible)
 
       click_button "Back"

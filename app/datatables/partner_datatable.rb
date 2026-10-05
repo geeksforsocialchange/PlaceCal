@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety
+# rubocop:disable-next Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety
 class PartnerDatatable < Datatable
   def view_columns
     # Order must match columns array in index.html.erb
@@ -301,4 +301,3 @@ class PartnerDatatable < Datatable
     HTML
   end
 end
-# rubocop:enable Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety

@@ -8,7 +8,7 @@ class Components::Directory::AzJumpBar < Components::Directory::Base
   prop :filter_params, Hash, default: -> { {} }
 
   def view_template
-    nav(class: 'flex gap-0.5 flex-wrap py-3', aria_label: 'Filter by letter') do
+    nav(class: 'flex gap-0.5 flex-wrap py-3', aria_label: t('directory.aria.filter_by_letter')) do
       render_all_link
       LETTERS.each do |letter|
         if @active_letters.include?(letter)
@@ -28,9 +28,9 @@ class Components::Directory::AzJumpBar < Components::Directory::Base
 
   def render_all_link
     if @selected_letter.nil?
-      span(class: "#{letter_base} #{letter_selected} w-auto px-2") { plain 'All' }
+      span(class: "#{letter_base} #{letter_selected} w-auto px-2") { plain t('directory.filters.all') }
     else
-      a(href: all_path, class: "#{letter_base} #{letter_active} w-auto px-2") { plain 'All' }
+      a(href: all_path, class: "#{letter_base} #{letter_active} w-auto px-2") { plain t('directory.filters.all') }
     end
   end
 

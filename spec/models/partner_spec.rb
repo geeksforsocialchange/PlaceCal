@@ -1,5 +1,57 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: partners
+#
+#  id                      :bigint           not null, primary key
+#  accessibility_info      :text
+#  accessibility_info_html :string
+#  admin_email             :string
+#  admin_name              :string
+#  booking_info            :text
+#  calendar_email          :string
+#  calendar_name           :string
+#  calendar_phone          :string
+#  can_be_assigned_events  :boolean          default(FALSE), not null
+#  description             :text
+#  description_html        :string
+#  facebook_link           :string
+#  hidden                  :boolean          default(FALSE), not null
+#  hidden_reason           :text
+#  hidden_reason_html      :string
+#  image                   :string
+#  instagram_handle        :string
+#  is_a_place              :boolean          default(FALSE), not null
+#  name                    :string           not null
+#  opening_times           :jsonb
+#  partner_email           :string
+#  partner_name            :string
+#  partner_phone           :string
+#  public_email            :string
+#  public_name             :string
+#  public_phone            :string
+#  slug                    :string
+#  summary                 :string
+#  summary_html            :string
+#  twitter_handle          :string
+#  url                     :string
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
+#  address_id              :bigint
+#  hidden_blame_id         :integer
+#
+# Indexes
+#
+#  index_partners_hidden         (hidden)
+#  index_partners_lower_name_    (lower((name)::text)) UNIQUE
+#  index_partners_on_address_id  (address_id)
+#  index_partners_on_slug        (slug) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (address_id => addresses.id)
+#
 require "rails_helper"
 
 RSpec.describe Partner, type: :model do
@@ -158,6 +210,44 @@ RSpec.describe Partner, type: :model do
     end
   end
 
+  describe "service_areas nested attributes" do
+    let(:ward) { create(:riverside_ward) }
+
+    it "rejects rows with a blank neighbourhood_id" do
+      # The real form submits _destroy: "false" for every kept row — the
+      # reject_if must treat that as "not marked for destruction", not as
+      # a present value
+      partner = build(:partner, service_areas_attributes: [
+                        { neighbourhood_id: ward.id, _destroy: "false" },
+                        { neighbourhood_id: "", _destroy: "false" }
+                      ])
+      expect(partner.service_areas.size).to eq(1)
+      expect(partner).to be_valid
+    end
+
+    # Regression test for issue #3356: an untouched "New Service Area" picker row
+    # submits a blank neighbourhood_id, which used to build an invalid ServiceArea
+    # and also fail check_neighbourhood_access for non-root admins
+    it "lets a neighbourhood admin create a partner despite a leftover blank row" do
+      admin = create(:neighbourhood_admin, neighbourhood: ward)
+      partner = build(:partner, address: nil, accessed_by_user: admin,
+                                service_areas_attributes: [
+                                  { neighbourhood_id: ward.id, _destroy: "false" },
+                                  { neighbourhood_id: "", _destroy: "false" }
+                                ])
+      expect(partner).to be_valid
+    end
+
+    it "still removes existing service areas via _destroy" do
+      partner = create(:mobile_partner, service_area_wards: [ward])
+      sa = partner.service_areas.reload.first
+      partner.update!(service_areas_attributes: [
+                        { id: sa.id, neighbourhood_id: ward.id, _destroy: "1" }
+                      ])
+      expect(partner.reload.service_areas).to be_empty
+    end
+  end
+
   describe "factories" do
     it "creates a valid partner" do
       partner = build(:partner)
@@ -288,6 +378,70 @@ RSpec.describe Partner, type: :model do
       found = JSON.parse(partner.opening_times_data)
       expect(found.length).to eq(2)
     end
+
+    describe "validation" do
+      def spec(day, opens, closes)
+        { dayOfWeek: "http://schema.org/#{day}", opens: opens, closes: closes }
+      end
+
+      it "is valid with non-overlapping times across different days" do
+        partner = build(:partner, opening_times: [
+          spec("Monday", "09:00", "17:00"),
+          spec("Tuesday", "10:00", "20:00")
+        ].to_json)
+
+        expect(partner).to be_valid
+      end
+
+      it "is valid with non-overlapping times on the same day" do
+        partner = build(:partner, opening_times: [
+          spec("Monday", "09:00", "12:00"),
+          spec("Monday", "13:00", "17:00")
+        ].to_json)
+
+        expect(partner).to be_valid
+      end
+
+      it "is invalid when a closing time is before its opening time" do
+        partner = build(:partner, opening_times: [
+          spec("Monday", "17:00", "09:00")
+        ].to_json)
+
+        expect(partner).not_to be_valid
+        expect(partner.errors[:opening_times])
+          .to include(I18n.t("activerecord.errors.models.partner.attributes.opening_times.end_before_start"))
+      end
+
+      it "is invalid when a closing time equals its opening time" do
+        partner = build(:partner, opening_times: [
+          spec("Monday", "09:00", "09:00")
+        ].to_json)
+
+        expect(partner).not_to be_valid
+        expect(partner.errors[:opening_times])
+          .to include(I18n.t("activerecord.errors.models.partner.attributes.opening_times.end_before_start"))
+      end
+
+      it "is invalid when two ranges overlap on the same day" do
+        partner = build(:partner, opening_times: [
+          spec("Monday", "09:00", "13:00"),
+          spec("Monday", "12:00", "17:00")
+        ].to_json)
+
+        expect(partner).not_to be_valid
+        expect(partner.errors[:opening_times])
+          .to include(I18n.t("activerecord.errors.models.partner.attributes.opening_times.overlapping"))
+      end
+
+      it "allows identical times on different days without flagging overlap" do
+        partner = build(:partner, opening_times: [
+          spec("Monday", "09:00", "17:00"),
+          spec("Tuesday", "09:00", "17:00")
+        ].to_json)
+
+        expect(partner).to be_valid
+      end
+    end
   end
 
   describe "scopes" do
@@ -337,6 +491,19 @@ RSpec.describe Partner, type: :model do
 
     it "returns ward name at ward level" do
       expect(partner.neighbourhood_name_for_site("ward")).to eq("Riverside")
+    end
+  end
+
+  describe "#contactable?" do
+    it "is true when any public contact method is present" do
+      expect(build(:partner, public_email: "hi@example.org").contactable?).to be true
+    end
+
+    it "is false when every public contact method is blank" do
+      partner = build(:partner,
+                      public_email: nil, public_phone: nil, url: nil,
+                      facebook_link: nil, twitter_handle: nil, instagram_handle: nil)
+      expect(partner.contactable?).to be false
     end
   end
 end

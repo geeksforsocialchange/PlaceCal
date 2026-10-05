@@ -15,6 +15,7 @@ class Views::Admin::Sites::FormTabBasic < Views::Admin::Base
       render_name_field
       render_site_admin_field(site)
       render_place_name_field
+      render_contact_email_field
       render_tagline_field
       render_hero_text_field
       render_description_field
@@ -45,11 +46,7 @@ class Views::Admin::Sites::FormTabBasic < Views::Admin::Base
     fieldset(class: 'fieldset') do
       raw form.label(:site_admin_id, t('admin.sites.fields.site_admin'), class: 'fieldset-legend')
       raw form.select(:site_admin_id,
-                      User.order(:last_name, :first_name).map { |u|
-                        full_name = [u.first_name, u.last_name].compact.join(' ').presence
-                        label_text = full_name ? "#{full_name} (#{u.email})" : u.email
-                        [label_text, u.id]
-                      },
+                      User.order(:last_name, :first_name).map { |u| [u.display_name, u.id] },
                       { include_blank: t('admin.placeholders.select_model', model: t('admin.models.admin.one').downcase) },
                       { class: 'select select-bordered w-full', 'aria-label': t('admin.sites.fields.site_admin'), data: { controller: 'tom-select' } })
     end
@@ -57,12 +54,7 @@ class Views::Admin::Sites::FormTabBasic < Views::Admin::Base
 
   def render_readonly_admin_field(site)
     admin = site.site_admin
-    admin_display = if admin
-                      full_name = [admin.first_name, admin.last_name].compact.join(' ').presence
-                      full_name ? "#{full_name} (#{admin.email})" : admin.email
-                    else
-                      t('admin.labels.none')
-                    end
+    admin_display = admin ? admin.display_name : t('admin.labels.none')
 
     div(class: 'card bg-base-200/50 border border-base-300 p-3') do
       p(class: 'text-sm') do
@@ -77,6 +69,14 @@ class Views::Admin::Sites::FormTabBasic < Views::Admin::Base
       raw form.label(:place_name, attr_label(:site, :place_name), class: 'fieldset-legend')
       raw form.input_field(:place_name, class: 'input input-bordered w-full')
       p(class: 'fieldset-label') { t('admin.sites.fields.place_name_hint') }
+    end
+  end
+
+  def render_contact_email_field
+    fieldset(class: 'fieldset') do
+      raw form.label(:contact_email, attr_label(:site, :contact_email), class: 'fieldset-legend')
+      raw form.input_field(:contact_email, as: :email, class: 'input input-bordered w-full')
+      p(class: 'fieldset-label') { t('admin.sites.fields.contact_email_hint') }
     end
   end
 

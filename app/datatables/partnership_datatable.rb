@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety
+# rubocop:disable-next Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety
 class PartnershipDatatable < Datatable
   def view_columns
     @view_columns ||= {
@@ -139,4 +139,3 @@ class PartnershipDatatable < Datatable
     end
   end
 end
-# rubocop:enable Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety

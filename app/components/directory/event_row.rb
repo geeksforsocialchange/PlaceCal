@@ -83,7 +83,7 @@ class Components::Directory::EventRow < Components::Directory::Base
   def render_meta_online
     span(class: 'inline-flex items-center gap-1') do
       render_icon(:event_online)
-      plain 'Online'
+      plain t('directory.event_row.online')
     end
   end
 

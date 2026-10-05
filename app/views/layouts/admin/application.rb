@@ -11,6 +11,7 @@ class Views::Layouts::Admin::Application < Phlex::HTML
   include Phlex::Rails::Helpers::CurrentPage
   include Phlex::Rails::Helpers::ContentTag
   include Phlex::Rails::Helpers::Request
+  include Phlex::Rails::Helpers::AssetPath
   include Components::Admin::SvgIcons
 
   def view_template
@@ -26,7 +27,8 @@ class Views::Layouts::Admin::Application < Phlex::HTML
         end
         csrf_meta_tags
         stylesheet_link_tag 'admin_tailwind', media: 'all', 'data-turbo-track': 'reload'
-        javascript_include_tag 'es-module-shims', async: true
+        shim_url = asset_path('es-module-shims.js')
+        script { raw safe("if(!HTMLScriptElement.supports||!HTMLScriptElement.supports('importmap')){var s=document.createElement('script');s.src='#{shim_url}';s.async=true;document.head.appendChild(s)}") }
         javascript_importmap_tags
         render_meta
       end
@@ -174,10 +176,9 @@ class Views::Layouts::Admin::Application < Phlex::HTML
       icon(:code, size: '3')
       plain "#{t('admin.leftbar.build')}: "
       code(class: 'font-mono') do
-        git_rev = ENV.fetch('GIT_REV', nil)
         link_to(
-          git_rev ? git_rev[0, 7] : 'dev',
-          "https://github.com/geeksforsocialchange/PlaceCal/commit/#{git_rev}",
+          AppVersion.label(fallback: 'dev'),
+          AppVersion.url,
           class: 'text-placecal-teal-dark underline hover:no-underline'
         )
       end

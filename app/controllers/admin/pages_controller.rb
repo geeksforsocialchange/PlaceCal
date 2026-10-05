@@ -1,9 +1,14 @@
 # frozen_string_literal: true
 
 module Admin
+  # The admin dashboard (#home, the admin root) and the icon gallery. Both are
+  # exempt from Pundit's verification callbacks: they authorize nothing of
+  # their own, and #home scopes everything it lists through policy_scope.
   class PagesController < Admin::ApplicationController
-    skip_after_action :verify_authorized
-    skip_after_action :verify_policy_scoped
+    DASHBOARD_ACTIONS = %i[home icons].freeze
+
+    skip_after_action :verify_authorized, only: DASHBOARD_ACTIONS
+    skip_after_action :verify_policy_scoped, only: DASHBOARD_ACTIONS
     before_action :require_root_user, only: [:icons]
 
     def home

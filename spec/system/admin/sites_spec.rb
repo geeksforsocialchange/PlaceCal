@@ -69,8 +69,8 @@ RSpec.describe "Admin Sites", :slow, type: :system do
       # Wait for the page to load
       find("button", text: "Save")
 
-      # Navigate to Neighbourhoods tab
-      find("input.tab[aria-label*='Neighbourhoods']").click
+      # Navigate to Neighbourhoods tab (re-clicks if the click is dropped, #3341)
+      click_tab_matching("input.tab[aria-label*='Neighbourhoods']")
 
       # The site has a primary neighbourhood (sites_neighbourhood created in setup)
       # Check that the nested form for additional neighbourhoods only has the "Add" button,

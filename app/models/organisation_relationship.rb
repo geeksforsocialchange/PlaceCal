@@ -1,5 +1,24 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: organisation_relationships
+#
+#  id                 :bigint           not null, primary key
+#  verb               :string           not null
+#  partner_object_id  :bigint           not null
+#  partner_subject_id :bigint           not null
+#
+# Indexes
+#
+#  index_organisation_relationships_on_partner_object_id  (partner_object_id)
+#  unique_organisation_relationship_row                   (partner_subject_id,verb,partner_object_id) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (partner_object_id => partners.id)
+#  fk_rails_...  (partner_subject_id => partners.id)
+#
 class OrganisationRelationship < ApplicationRecord
   # NOTE: This model is (was) used to define a relationship between
   #   partners so one "big" partner can have lots of "small" partners "within"

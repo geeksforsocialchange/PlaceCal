@@ -3,7 +3,26 @@ import { Controller } from "@hotwired/stimulus";
 export default class extends Controller {
 	static values = { args: Object };
 
-	async connect() {
+	connect() {
+		if ("requestIdleCallback" in window) {
+			this._idleId = requestIdleCallback(() => this._loadMap(), {
+				timeout: 4000,
+			});
+		} else {
+			this._timerId = setTimeout(() => this._loadMap(), 200);
+		}
+	}
+
+	disconnect() {
+		if (this._idleId) cancelIdleCallback(this._idleId);
+		if (this._timerId) clearTimeout(this._timerId);
+		this.element.classList.remove("map");
+		if (this.argsValue.styleClass?.length)
+			this.element.classList.remove(...this.argsValue.styleClass);
+		this.map?.remove();
+	}
+
+	async _loadMap() {
 		const [, , { ensureMaplibreCss }] = await Promise.all([
 			import("leaflet"),
 			import("@maplibre/maplibre-gl-leaflet"),
@@ -16,13 +35,6 @@ export default class extends Controller {
 		if (this.argsValue.styleClass?.length)
 			this.element.classList.add(...this.argsValue.styleClass);
 		this.createMap();
-	}
-
-	disconnect() {
-		this.element.classList.remove("map");
-		if (this.argsValue.styleClass?.length)
-			this.element.classList.remove(...this.argsValue.styleClass);
-		this.map?.remove();
 	}
 
 	createMap() {

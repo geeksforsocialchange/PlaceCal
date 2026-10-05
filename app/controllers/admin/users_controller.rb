@@ -64,7 +64,7 @@ module Admin
     def update
       authorize @user
 
-      if @user.update(permitted_attributes(@user))
+      if @user.update(scope_partner_ids(permitted_attributes(@user)))
         flash[:success] = 'User has been saved'
         redirect_to edit_admin_user_path(@user)
 
@@ -75,7 +75,7 @@ module Admin
     end
 
     def create
-      @user = User.new(permitted_attributes(User))
+      @user = User.new(scope_partner_ids(permitted_attributes(User)))
 
       authorize @user
 
@@ -164,13 +164,25 @@ module Admin
       end
     end
 
+    # Non-root admins may only add or remove partners they manage; partners
+    # outside their scope that the edited user already has are kept.
+    def scope_partner_ids(attrs)
+      return attrs if current_user.root? || !attrs.key?(:partner_ids)
+
+      manageable = policy_scope(Partner)
+      submitted = manageable.where(id: attrs[:partner_ids].compact_blank).pluck(:id)
+      kept = @user&.persisted? ? @user.partner_ids - manageable.where(id: @user.partner_ids).pluck(:id) : []
+      attrs.merge(partner_ids: submitted + kept)
+    end
+
     def validate_partner_relation
-      # we only allow admins to assign partners they can see so any ids here are proof of a relationship
       return if current_user.root?
-      return unless params[:user][:partner_ids].reject { |id| id == '' }.empty?
+
+      attrs = scope_partner_ids(permitted_attributes(User))
+      return if attrs[:partner_ids].present?
 
       # we're about to refresh the page so save the users input
-      @user = User.new(permitted_attributes(User))
+      @user = User.new(attrs)
       flash.now[:danger] = 'User was not created: You must assign a Partner to the User or you will not be able to access it after creation'
       render Views::Admin::Users::New.new(user: @user), status: :unprocessable_content
     end
