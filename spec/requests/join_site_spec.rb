@@ -59,6 +59,16 @@ RSpec.describe "Join marketing site", type: :request do
         get "http://join.lvh.me#{path}"
         expect(response.body).to include(I18n.t("join.wip.heading"), I18n.t("join.wip.cta"))
       end
+
+      it "asks search engines not to index #{path} while the copy is unagreed" do
+        get "http://join.lvh.me#{path}"
+        expect(response.body).to include('<meta name="robots" content="noindex, noarchive">')
+      end
+    end
+
+    it "leaves the directory indexable" do
+      get "http://lvh.me/"
+      expect(response.body).to include('<meta name="robots" content="noarchive">')
     end
 
     it "keeps the work-in-progress notice off the directory" do

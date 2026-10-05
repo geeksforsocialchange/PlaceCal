@@ -39,6 +39,8 @@ class Views::Layouts::Application < Phlex::HTML
 
       # app/assets/stylesheets/base/layout.scss
       body do
+        # Outside .page so it spans the viewport, not the page column.
+        Join::WipBanner() if join_site?
         div(class: [
               'page',
               *(if site.nil?
@@ -136,7 +138,7 @@ class Views::Layouts::Application < Phlex::HTML
     link(rel: 'canonical', href: canonical_href)
     # Views can tighten robots via content_for (e.g. past events set noindex
     # so thousands of stale event pages don't dilute the site in the index).
-    robots_content = content_for?(:robots) ? content_for(:robots) : 'noarchive'
+    robots_content = content_for?(:robots) ? content_for(:robots) : default_robots
     meta(name: 'robots', content: robots_content)
 
     json_ld = site ? site.to_json_ld(base_url: request.base_url) : Site.directory_json_ld(request.base_url)
@@ -264,6 +266,11 @@ class Views::Layouts::Application < Phlex::HTML
 
   def navigation
     view_context.instance_variable_get(:@navigation)
+  end
+
+  # Temporary: the join site stays out of search results until its copy is agreed.
+  def default_robots
+    join_site? ? 'noindex, noarchive' : 'noarchive'
   end
 
   # The join marketing site shares this layout (and its nil-site page chrome)
