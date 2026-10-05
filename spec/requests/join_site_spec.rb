@@ -54,6 +54,18 @@ RSpec.describe "Join marketing site", type: :request do
       end
     end
 
+    %w[/ /who-its-for /features /our-story /pricing /book-a-demo].each do |path|
+      it "shows the work-in-progress notice on #{path}" do
+        get "http://join.lvh.me#{path}"
+        expect(response.body).to include(I18n.t("join.wip.heading"), I18n.t("join.wip.cta"))
+      end
+    end
+
+    it "keeps the work-in-progress notice off the directory" do
+      get "http://lvh.me/"
+      expect(response.body).not_to include(I18n.t("join.wip.heading"))
+    end
+
     it "renders the join chrome, not the directory chrome" do
       get "http://join.lvh.me/"
       expect(response.body).to include("join.placecal.org")

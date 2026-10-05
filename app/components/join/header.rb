@@ -4,6 +4,7 @@
 # then the shared nil-site navigation with a "Book a demo" CTA.
 class Components::Join::Header < Components::Join::Base
   def view_template
+    render_wip_banner
     render_band
     render Components::Shared::Navigation.new(
       navigation: nav_items,
@@ -14,6 +15,20 @@ class Components::Join::Header < Components::Join::Base
   end
 
   private
+
+  # An aside so the notice sits in a landmark of its own (axe region rule).
+  def render_wip_banner
+    aside(class: 'bg-foreground text-background', aria_label: t('join.wip.aria_label')) do
+      div(class: 'container-public py-4 flex items-center gap-x-6 gap-y-2 flex-wrap') do
+        strong(class: 'font-serif font-regular text-card') { t('join.wip.heading') }
+        p(class: 'm-0 text-detail leading-relaxed flex-1 min-w-64') { t('join.wip.body') }
+        a(href: "mailto:#{t('join.footer.email')}",
+          class: 'with-no-sass text-detail font-bold text-background underline hover:no-underline') do
+          t('join.wip.cta')
+        end
+      end
+    end
+  end
 
   # A nav landmark (not a bare div) so the band's content is contained by a
   # landmark — axe's region rule flags top-level content outside one.

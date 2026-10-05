@@ -2,6 +2,12 @@
 # NOTE: this copy is a first pass from the design prototype.
 en:
   join:
+    # Launch notice shown on every join page until the copy and pricing are agreed.
+    wip:
+      aria_label: Site status
+      heading: Work in progress
+      body: This site is an early draft we're sharing for feedback. Nothing here is final or agreed yet, including the pricing.
+      cta: Email us what you think
     band:
       host: join.placecal.org
       directory_link: Browse the directory · placecal.org
