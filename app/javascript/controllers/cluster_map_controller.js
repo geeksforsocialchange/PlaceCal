@@ -3,7 +3,23 @@ import { Controller } from "@hotwired/stimulus";
 export default class extends Controller {
 	static values = { markers: Array, styleUrl: String };
 
-	async connect() {
+	connect() {
+		if ("requestIdleCallback" in window) {
+			this._idleId = requestIdleCallback(() => this._loadMap(), {
+				timeout: 4000,
+			});
+		} else {
+			this._timerId = setTimeout(() => this._loadMap(), 200);
+		}
+	}
+
+	disconnect() {
+		if (this._idleId) cancelIdleCallback(this._idleId);
+		if (this._timerId) clearTimeout(this._timerId);
+		this.map?.remove();
+	}
+
+	async _loadMap() {
 		const [leafletMod] = await Promise.all([
 			import("leaflet"),
 			import("@maplibre/maplibre-gl-leaflet"),
@@ -14,10 +30,6 @@ export default class extends Controller {
 		if (!this.element.isConnected) return;
 
 		this.createMap();
-	}
-
-	disconnect() {
-		this.map?.remove();
 	}
 
 	createMap() {
@@ -77,7 +89,7 @@ export default class extends Controller {
 		if (this.markersValue.length > 0) {
 			const bounds = cluster.getBounds();
 			if (bounds.isValid()) {
-				this.map.fitBounds(bounds, { padding: [20, 15] });
+				this.map.fitBounds(bounds, { padding: [10, 10] });
 			}
 		} else {
 			this.map.setView([54.0, -2.0], 6);

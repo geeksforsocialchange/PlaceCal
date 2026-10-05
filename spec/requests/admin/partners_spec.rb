@@ -291,6 +291,34 @@ RSpec.describe "Admin::Partners", type: :request do
       end
     end
 
+    context "custom slug with a validation failure (#2358)" do
+      let(:user) { create(:root_user) }
+      let!(:other_partner) { create(:partner, slug: "taken-slug") }
+      let(:partner) { create(:riverside_partner) }
+
+      before { sign_in user }
+
+      it "re-renders the form with the slug the user entered, not the original" do
+        original_slug = partner.slug
+
+        partner_params = {
+          name: partner.name,
+          slug: "taken-slug", # already used => slug validation fails
+          address_attributes: {
+            street_address: partner.address.street_address,
+            postcode: partner.address.postcode
+          }
+        }
+
+        put admin_partner_url(partner, host: admin_host), params: { partner: partner_params }
+
+        expect(response).not_to be_redirect
+        expect(response.body).to include('value="taken-slug"')
+        expect(response.body).not_to include("value=\"#{original_slug}\"")
+        expect(partner.reload.slug).to eq(original_slug)
+      end
+    end
+
     context "neighbourhood admin address restriction" do
       let(:ward) { create(:riverside_ward) }
       let(:user) { create(:neighbourhood_admin, neighbourhood: ward) }
@@ -316,6 +344,56 @@ RSpec.describe "Admin::Partners", type: :request do
         put admin_partner_url(partner, host: admin_host), params: { partner: partner_params }
 
         expect(response.body).to include("Partners cannot have an address outside of your ward")
+      end
+    end
+  end
+
+  describe "POST /admin/partners" do
+    context "as a neighbourhood admin" do
+      let(:ward) { create(:riverside_ward) }
+      let(:user) { create(:neighbourhood_admin, neighbourhood: ward) }
+
+      before { sign_in user }
+
+      # Regression test for issue #3356: the wizard submits a blank
+      # neighbourhood_id for any untouched "New Service Area" picker row
+      it "creates a partner despite a leftover blank service area row" do
+        post admin_partners_url(host: admin_host), params: {
+          partner: {
+            name: "Common Arts",
+            service_areas_attributes: {
+              "0" => { neighbourhood_id: ward.id.to_s, _destroy: "false" },
+              "1" => { neighbourhood_id: "", _destroy: "false" }
+            }
+          }
+        }
+
+        partner = Partner.find_by(name: "Common Arts")
+        expect(partner).to be_present
+        expect(partner.service_areas.map(&:neighbourhood_id)).to eq([ward.id])
+        expect(response).to be_redirect
+      end
+
+      # Regression test for issue #3356: service areas rendered as cards after a
+      # failed save must round-trip their neighbourhood_id, or they are silently
+      # dropped from the retry submission
+      it "keeps service areas submittable when validation fails and the form re-renders" do
+        post admin_partners_url(host: admin_host), params: {
+          partner: {
+            name: "",
+            service_areas_attributes: {
+              "0" => { neighbourhood_id: ward.id.to_s }
+            }
+          }
+        }
+
+        expect(response).to have_http_status(:unprocessable_content)
+
+        doc = Nokogiri::HTML(response.body)
+        neighbourhood_inputs = doc.css("input[name^='partner[service_areas_attributes]']")
+                                  .select { |input| input["name"].end_with?("[neighbourhood_id]") }
+                                  .map { |input| input["value"] }
+        expect(neighbourhood_inputs).to include(ward.id.to_s)
       end
     end
   end

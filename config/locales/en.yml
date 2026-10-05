@@ -2,12 +2,27 @@
 # Contains: ActiveRecord models/attributes, site metadata, and shared strings
 
 en:
+  # Theme labels for the admin site form; extensions may add their own
+  # themes.<name>.label (PlaceCal::Theme#label falls back to a titleized name).
+  themes:
+    pink:
+      label: Pink
+    orange:
+      label: Orange
+    green:
+      label: Green
+    blue:
+      label: Blue
   # ===========================================================================
   # SITE METADATA
   # ===========================================================================
 
   meta:
     description: "%{site} is a community events calendar where you can find out everything that's happening, all in one place."
+
+  site:
+    # <title> for the nationwide directory, which has no Site record to name
+    title_default: "PlaceCal | The Community Calendar"
 
   colophon:
     year: "© 2019-%{year}"
@@ -18,6 +33,116 @@ en:
   contact:
     email: "support@placecal.org"
 
+  join_mailer:
+    join_us:
+      subject: "New Join Request"
+      subject_with_site: "New Join Request (%{site})"
+
+  components:
+    details:
+      open: "Open to read more"
+      close: "Close"
+
+  # Public navigation labels. A site's nav is derived from its own data
+  # (#3368 D6), so these are the only fixed items; a theme's registered pages
+  # contribute their own labels.
+  navigation:
+    menu: "Menu"
+    directory:
+      home: "Home"
+      partners: "Partners"
+      partnerships: "Partnerships"
+      events: "Events"
+      join: "Join us"
+    primary: "Main navigation"
+    site:
+      home: "Home"
+      events: "Events"
+      partners: "Partners"
+      news: "News"
+      join: "Get in touch"
+      privacy: "Privacy"
+      terms: "Terms"
+      log_in: "Log in"
+      # Screen-reader-only line under the site name. Blank in core so a themed
+      # site is not told it is "The Community Calendar"; a theme may set its own.
+      strapline: ""
+
+  footer:
+    # Alt text for the PlaceCal logo in the footer of sites without their own
+    logo_alt: "PlaceCal"
+    site_navigation: "Site Navigation"
+    site_enquiries: "%{site} Enquiries"
+    general_enquiries: "General Enquiries"
+    get_in_touch: "Get in touch!"
+    # Abbreviated labels before a phone number and an email address
+    phone_label: "T:"
+    email_label: "E:"
+    site_supporters: " PlaceCal %{site} Supporters"
+    global_supporters: "PlaceCal Supporters"
+    build: "Build: "
+
+  # Labels for the partner and event listing filters on a site (the nationwide
+  # directory has its own set under directory.filters).
+  # All public listing-filter copy lives here, whichever listing renders it.
+  filters:
+    filter_by: "Filter by:"
+    category: "Category"
+    neighbourhood: "Neighbourhood"
+    reset: "Reset filters"
+    today: "Today"
+    go_to_date: "Go to date"
+    filter_and_sort: "Filter and sort"
+    # Radio labels in the sort/period/repeats dropdown, grouped as they appear
+    sort:
+      time: "Sort by date"
+      summary: "Sort by name"
+    period:
+      day: "Daily view"
+      week: "Weekly view"
+      month: "Monthly view"
+      future: "Show all"
+    # "on"/"off" are quoted: YAML would otherwise read them as booleans
+    repeating:
+      "on": "Show repeats"
+      "last": "Show repeats last"
+      "off": "Hide repeats"
+    # Day strip event filter (D22): the Today / Tomorrow / next five days
+    # navigation rendered for themes with event_filter_style :day_strip.
+    day_strip:
+      label: "Filter events by day"
+      today: "Today"
+      tomorrow: "Tomorrow"
+      all_upcoming: "All upcoming"
+      # strftime pattern for the other day buttons; themes may override
+      date_format: "%a %-d"
+
+  # Region selector shown on local sites with more than one Partnership tag
+  # (#3368 D7). Labels only: the URL param is always ?region=<tag slug>, so a
+  # theme can relabel the control without changing the param.
+  region_filter:
+    label: "Filter by region"
+    all: "All"
+
+  # Support cards on a site homepage (app/components/help_card.rb). Keyed by
+  # variant so a theme can override a single card's copy.
+  help_card:
+    email_now: "Email now"
+    computer_access:
+      title: "Computer access"
+      description: "Places with computers you can use"
+      empty_message: "Information about getting online coming soon."
+    free_wifi:
+      title: "Public Wifi"
+      empty_message: "Information about getting public wifi coming soon."
+    getting_help:
+      title: "PlaceCal Support"
+      description: "You can find out more about how PlaceCal works in our handbook."
+      link: "Handbook"
+    adding_events:
+      title: "Adding Your Events"
+      description: "Want to add your organisation's events? Something on we should know about?"
+
   # ===========================================================================
   # DIRECTORY (public placecal.org)
   # ===========================================================================
@@ -25,7 +150,184 @@ en:
   directory:
     breadcrumbs:
       root: "Directory"
+    aria:
+      breadcrumb: "Breadcrumb"
+      time_period: "Time period"
+      sort_order: "Sort order"
+      filter_by_letter: "Filter by letter"
+      pagination: "Pagination"
+    # Shared filter chrome, used by both the partner filter and the events
+    # filter form (app/components/directory/partner_filter.rb,
+    # neighbourhood_cascade.rb and app/views/directory/events/index.rb).
+    filters:
+      all: "All"
+      all_plural: "All %{label}"
+      search: "Search"
+      search_placeholder: "Name or keyword…"
+      apply: "Filter"
+      clear: "Clear"
+      category: "Category"
+      partnership: "Partnership"
+      neighbourhood: "Neighbourhood"
+      all_categories: "All categories"
+      all_partnerships: "All partnerships"
+      all_neighbourhoods: "All neighbourhoods"
+      all_of: "All of %{name}"
+    map_coming_soon: "Map coming soon"
+    hero:
+      search_placeholder: "Search partners…"
+      search_button: "Search"
+      jump_to: "Jump to:"
+    event_row:
+      online: "Online"
+    home:
+      description: "Find community groups, venues and events near you. PlaceCal aggregates thousands of events from hundreds of local organisations across the UK."
+      hero_title: "Find community groups, venues and events near you."
+      hero_subtitle: "PlaceCal aggregates thousands of events and activities from hundreds of local community organisations across the UK. This is the directory for all of it — search by place, by interest, or browse the map."
+      stats:
+        # Partner/Partnership/Neighbourhood labels come from model_name.human;
+        # only the non-model "this month" label lives here.
+        events: "Events this month"
+      partnerships:
+        kicker: "Partnerships"
+        heading: "Community hubs running on PlaceCal"
+        see_all: "See all partnerships"
+      activity:
+        kicker: "Activity"
+        heading: "Recently joined PlaceCal"
+        browse_all: "Browse all partners"
+      events:
+        kicker: "Tonight & this week"
+        heading: "Happening around the UK"
+        filter_by_place: "Filter events by place"
+      cta:
+        what_is:
+          heading: "What is PlaceCal?"
+          body: "PlaceCal is an online calendar which lists events and activities by and for members of local communities, curated around interests and locality."
+          link: "Our story"
+        run:
+          heading: "Run PlaceCal in your community"
+          body: "Setting up a PlaceCal means a dedicated website for your community, connected to the directory. We work with you on the ground to build partnerships with local venues and organisers."
+          link: "Get in touch"
+    events:
+      index:
+        description: "Discover %{count} upcoming events and activities from community organisations across the UK on PlaceCal."
+        hero_title: "Events on PlaceCal"
+        hero_subtitle: "A nationwide event feed is a lot. Narrow down by place, interest, or partnership to see what's coming up near you."
+        kicker: "%{count} upcoming events across the UK"
+        search_placeholder: "Event name or keyword…"
+        period_label: "Time range"
+        periods:
+          day: "Today"
+          week: "This week"
+          month: "This month"
+          future: "All upcoming"
+        period_phrases:
+          day: " today"
+          week: " this week"
+          month: " this month"
+          future: ""
+        results:
+          none: "No events%{period}"
+          count:
+            one: "%{count} event%{period}"
+            other: "%{count} events%{period}"
+        empty: "No events found%{period}."
+        show_all: "Show all upcoming events"
+      show:
+        where: "Where"
+        address: "Address"
+        ward: "%{name} ward"
+        more_from: "More from %{name}"
+        information: "Event information"
+        organised_by: "Organised by"
+    pages:
+      privacy:
+        title: "PlaceCal Privacy Policy"
+        breadcrumb: "Privacy"
+        document_title: "Privacy Policy"
+      terms_of_use:
+        title: "PlaceCal Terms of Use"
+        breadcrumb: "Terms"
+        document_title: "Terms of Use"
+      our_story:
+        heading: "Our story"
+        hero_title: "We set out to examine the causes of social isolation and loneliness within neighbourhoods, and figure out how to combat them."
+        hero_lede: "PlaceCal grew out of years of work with age-friendly partnerships in Manchester. It started with listening, not building."
+        start:
+          eyebrow: "How we began"
+          heading: "We started by listening"
+          body:
+            - "We spoke to over 6,000 people across Manchester and divested more than £200,000 in funds directly to community groups. We kept working with the age-friendly partnerships in Hulme and Moss Side, the pilot area where we are based, to find out why so many people felt cut off from their own neighbourhood."
+            - "Social isolation is a major issue in the UK, where it is estimated that around two million older people experience loneliness. Studies show it is as bad for your health as smoking. Yet despite huge investment by councils and health providers in event listings, asset maps and directories, no one could reliably find out what was actually happening nearby."
+        stats:
+          - value: "6,000+"
+            label: "Conversations"
+          - value: "£200k"
+            label: "Divested to communities"
+          - value: "2 million"
+            label: "Isolated older people"
+        quote:
+          text: "“There’s nothing to do in my neighbourhood.”"
+          caption: "The same sentence, in communities up and down the country. That isolation erodes community resilience, and it was the finding that set everything else in motion."
+        problems:
+          eyebrow: "What we learned"
+          heading: "We found three big problems"
+          people:
+            kicker: "People"
+            title: "People weren’t working together"
+            image_alt: "Different institutions each building their own systems"
+            body: "Every large institution was building its own community-information website, with different organisations gathering exactly the same data. This top-down approach was inefficient, missed whole swathes of small groups, and produced duplicate, low-quality listings rather than one really good one."
+          software:
+            kicker: "Software"
+            title: "The existing software wasn’t working"
+            image_alt: "An older person struggling to keep listings updated"
+            body: "Community-information sites were either maintained on a group’s behalf by institutional staff, or required the groups themselves to log in and keep events updated. So groups re-entered the same information on site after site, on top of Facebook, Twitter and Instagram, for an ever-increasing workload and a tiny amount of publicity."
+          skills:
+            kicker: "Skills"
+            title: "Tech skills were very low"
+            image_alt: "A person unsure how to publish online"
+            body: "Digital exclusion hits community groups hardest, particularly in deprived areas. Many groups had never published anything online at all, relying entirely on word of mouth, and missing out on connecting with new and enthusiastic participants. Staff at large institutions often felt just as left behind."
+        turning:
+          heading: "We needed to fix all of these together to have any impact."
+          body: "That meant building a single package of software and training, with shared ownership, so that everyone could work together to build stronger communities."
+          logo_alt: "PlaceCal"
+        solutions:
+          eyebrow: "What we built"
+          heading: "One package, owned together"
+          ownership:
+            kicker: "Ownership"
+            title: "Collective, not-for-profit ownership"
+            image_alt: "Councils, organisers and residents around a shared map pin"
+            body: "To be sustainable, everything is owned and managed directly by the institutions and community groups using it. PlaceCal supports the work already being done in neighbourhoods by partnerships of councils, community organisers and public-health services."
+          technology:
+            kicker: "Technology"
+            title: "Software built on existing tools"
+            image_alt: "Calendars and tools feeding into one place"
+            body: "PlaceCal builds on the tools groups already use, like Google Calendar, Outlook 365 and Facebook. Those listings are converted into super-simple, highly accessible and constantly-updated calendars for each neighbourhood, community group and venue."
+          people:
+            kicker: "People"
+            title: "A training programme that includes everyone"
+            image_alt: "A training session bringing everyone along"
+            body: "Our education programme walks institutions and community groups alike through the process of publishing and updating their information, so no one is left behind by the technology."
+        cta:
+          heading: "Set up PlaceCal in your community"
+          button: "Get in touch"
     partners:
+      index:
+        description: "Browse %{count} community partners across the UK on PlaceCal. Search by name, category, partnership or neighbourhood."
+        hero_title: "All partners on PlaceCal"
+        hero_subtitle: "Every community group, venue, library and organisation publishing their events on PlaceCal, UK-wide."
+        kicker: "%{count} partners across %{partnerships} partnerships"
+        results:
+          filtered: "Showing %{shown} of %{total} partners"
+          total: "%{count} partners"
+          page: " — page %{page} of %{pages}"
+        sort:
+          recent: "Recently updated"
+          name: "A–Z"
+        empty: "No partners found matching your filters."
+        clear: "Clear filters"
       show:
         upcoming_events: "Upcoming events"
         location: "Location"
@@ -34,6 +336,34 @@ en:
           one: "Show 1 more event"
           other: "Show %{count} more events"
         serves: "Serves %{area}."
+    partnerships:
+      index:
+        hero_title: "Partnerships on PlaceCal"
+        hero_subtitle: "Discover local partnerships across the UK bringing communities together through PlaceCal. Each partnership runs its own calendar site, connecting the groups, events and services in their area."
+        hero_kicker: "%{count} partnerships serving %{partners} partners"
+        search_placeholder: "Search partnerships…"
+        search_button: "Search"
+        empty: "No partnerships found."
+        clear_search: "Clear search"
+      show:
+        kicker: "Partnership"
+        visit: "Visit %{url}"
+        partners_heading: "Partners in this partnership"
+        see_all_partners: "See all %{count} partners"
+        upcoming_events: "Upcoming events"
+        show_more_events:
+          one: "Show 1 more event"
+          other: "Show %{count} more events"
+        see_all_events: "See all events"
+        events_this_month:
+          one: "%{count} event this month"
+          other: "%{count} events this month"
+        get_involved: "Get involved"
+        cta_text: "Running a community group%{area}? Join this partnership to list your events."
+        cta_area: " in %{name}"
+        contact_coordinator: "Contact coordinator"
+      card:
+        kicker: "Partnership"
     sidebar:
       part_of: "Part of"
       partnerships:
@@ -44,9 +374,186 @@ en:
       categories: "Categories"
       share_subscribe: "Share & subscribe"
       subscribe_ical: "Subscribe via iCal"
+      download_csv: "Download events (CSV)"
     contact:
       get_in_touch: "Get in touch"
       no_contact: "No contact information — let us know!"
+    join:
+      hero:
+        kicker: "Join PlaceCal"
+        title: "Get in touch"
+        subtitle: "Want PlaceCal for your community, group, or area? Contact us to discuss how you can join our not-for-profit and collectively owned community calendar."
+        breadcrumb: "Get in touch"
+      optional: "optional"
+      choices_legend: "I'd like"
+      placeholders:
+        name: "Your full name"
+        email: "you@organisation.org"
+        job_title: "e.g. Community coordinator"
+        phone: "So we can call you back"
+        job_org: "Who you're with"
+        area: "Neighbourhood, town or region"
+        why: "Tell us a little about your community and what you're hoping PlaceCal can do for it."
+      submit: "Submit"
+      note: "We read every message and usually reply within two working days."
+      email_cta:
+        heading: "Rather just email?"
+        body: "Drop us a line directly and we'll pick it up from there."
+        address: "info@placecal.org"
+      flash:
+        success: "Thank you for your interest in PlaceCal. We'll be in touch with you shortly."
+        error: "Please fill out the required fields below."
+    footer:
+      tagline: "An open, community-run directory of local events and services near you."
+      browse: "Browse"
+      events: "Events"
+      partners: "Partners"
+      partnerships: "Partnerships"
+      for_partners: "For partners"
+      get_in_touch: "Get in touch"
+      discord: "Chat on Discord"
+      admin_log_in: "Admin log in"
+      about: "About"
+      our_story: "Our story"
+      privacy_policy: "Privacy policy"
+      terms_of_use: "Terms of use"
+      build: "Build:"
+      placecal_logo_alt: "PlaceCal logo"
+      gfsc_logo_alt: "Geeks for Social Change"
+
+  # ===========================================================================
+  # LOCAL SITE LISTING PAGES (heroes; themes override via theme_overrides.*)
+  # ===========================================================================
+  #
+  # Several keys below are deliberately blank. A blank core key is the idiom
+  # for a slot a theme may fill: core renders nothing for it, and a theme
+  # supplies copy through theme_overrides.<theme>.<key> without core needing a
+  # conditional or the theme forking the view. See doc/extensions.md.
+
+  partners:
+    show:
+      section: ""
+      accessibility_heading: "Accessibility information"
+      contact_heading: "Get in touch"
+      address_heading: "Address"
+      opening_times_heading: "Opening times"
+      # Headings in a managed place's block, which repeats the partner's own
+      place_contact_heading: "Contact"
+      # %{areas} is the rendered list of service areas, already escaped
+      service_area_html: "We operate in %{areas}."
+      # %{places} is the rendered list of links to the places this partner runs
+      managed_by_html: "%{name} manage %{places}."
+      image_alt: "Image for %{name}"
+      subscribe_ical: "Subscribe to %{name}'s events with iCal"
+      # Empty states for the partner page's event list, one per period
+      no_events_day: "No events this day."
+      no_events_week: "No events this week."
+      no_events_month: "No events this month."
+      no_events_upcoming: "No upcoming events."
+    index:
+      page_title: "Partners"
+      title: "Our Partners"
+      standfirst: ""
+      standfirst_detail: ""
+      # Real text, not blank: it is the h2 between the hero h1 and the h3 of
+      # each partner card, and without it the page skips a heading level.
+      list_heading: "All partners"
+  news:
+    show:
+      section: ""
+      # strftime pattern for the article's published date; themes may override
+      date_format: "%B %Y"
+      by: "By "
+      back: "Back to news"
+    index:
+      page_title: "News from your area"
+      read_more: "Find out more"
+      older: "Older news items"
+      # strftime pattern for the article card date; themes may override
+      date_format: "%B %Y"
+      title: "News from your area"
+      standfirst: ""
+
+  # ===========================================================================
+  # LOCAL SITES (subdomain sites)
+  # ===========================================================================
+
+  sites:
+    home:
+      # %{link} is the "local organisations" link, %{place} the site's place name
+      mission_html: "We're working with %{link} to create a great calendar of everything that's on in %{place}."
+      mission_link: "local organisations"
+      whats_on: "See what's on"
+      about_us: "About Us"
+    join:
+      hero:
+        title: "Get in touch"
+      intro: "Send a message to the %{site} team. We read every message and will get back to you."
+      email_cta:
+        heading: "Rather just email?"
+        body: "Write to %{site} directly and we'll pick it up from there."
+
+  # ===========================================================================
+  # EVENT EXPORTS (shared by local sites and the directory)
+  # ===========================================================================
+
+  events:
+    index:
+      page_title: "Events"
+      title: "Events & activities"
+      standfirst: ""
+      # Blank by design: the event list opens with an h2 per day, so there is
+      # no heading level to bridge here and a theme may still add one.
+      list_heading: ""
+      subscribe_ical: "Subscribe to %{name} with iCal"
+    card:
+      # strftime patterns for the event list date; themes may override
+      date_format: "%e %b"
+      date_format_with_year: "%e %b %Y"
+      # Text before the organiser link in the event list, blank in core
+      organiser_prefix: ""
+      online: "Online"
+      duration_hours:
+        one: "%{count} hour"
+        other: "%{count} hours"
+      duration_minutes:
+        one: "%{count} min"
+        other: "%{count} mins"
+      # RFC 5545 FREQ values as they arrive from a calendar feed
+      frequency:
+        daily: "Daily"
+        weekly: "Weekly"
+        monthly: "Monthly"
+        yearly: "Yearly"
+    page:
+      # strftime patterns for the event page date; %o is the ordinal day
+      date_format: "%e %b"
+      date_format_with_year: "%e %b %Y"
+    show:
+      # Section name above the event page title, blank in core
+      section: ""
+      contact_heading: "Contact information"
+      address_heading: "Event address"
+      organiser_heading: "Event organiser"
+      venue_heading: "Venue"
+      # Prompt and link inviting a reader to report a bad listing
+      problem_prompt: "Problem with this listing? "
+      problem_link: "Let us know."
+      problem_subject: "I think there's a problem with PlaceCal event %{url}"
+    csv_export:
+      link: "Download events as CSV"
+      # Column headers for the events CSV (app/services/events_csv.rb).
+      # These double as Canva Bulk Create field names — the shared poster
+      # template's fields are connected to them by name, so renaming a
+      # header means updating the template too (see doc/canva-posters.md).
+      headers:
+        title: "Title"
+        date: "Date"
+        time: "Time"
+        location: "Location"
+        organiser: "Organiser"
+        url: "More info"
+        description: "Description"
 
   # ===========================================================================
   # DATE & TIME FORMATS
@@ -55,6 +562,40 @@ en:
   date:
     formats:
       datetime: "%b %-d, %Y %l:%M"
+
+  time:
+    formats:
+      og_date: "%A %-d %B %Y"
+      og_time: "%-l:%M%P"
+
+  # ===========================================================================
+  # OPEN GRAPH SHARE CARDS
+  # ===========================================================================
+
+  og_image:
+    labels:
+      event: "Event"
+      partner: "Partner"
+      partnership: "Partnership"
+      community_site: "Community site"
+    upcoming_events:
+      one: "1 upcoming event"
+      other: "%{count} upcoming events"
+    partner_organisations:
+      one: "1 partner organisation"
+      other: "%{count} partner organisations"
+    events_this_month:
+      one: "1 event this month"
+      other: "%{count} events this month"
+    powered_by: "Powered by"
+    generic:
+      statement: "Events and activities by and for your community"
+    alt:
+      event: "Details for the event %{name} on PlaceCal"
+      partner: "Details for the partner %{name} on PlaceCal"
+      partnership: "Details for the partnership %{name} on PlaceCal"
+      site: "%{name}, powered by PlaceCal"
+      directory: "PlaceCal logo"
 
   # ===========================================================================
   # ENUMERIZE (Calendar types)
@@ -79,6 +620,26 @@ en:
   # ===========================================================================
   # ACTIVERECORD
   # ===========================================================================
+
+  # ===========================================================================
+  # ACTIVEMODEL (non-persisted models, e.g. the Join enquiry form)
+  # ===========================================================================
+  activemodel:
+    models:
+      join:
+        one: "Join enquiry"
+        other: "Join enquiries"
+    attributes:
+      join:
+        name: "Name"
+        email: "Email address"
+        job_title: "Job title"
+        phone: "Phone number"
+        job_org: "Organisation name"
+        area: "The area it covers"
+        ringback: "A ring back"
+        more_info: "More information"
+        why: "Why I want PlaceCal"
 
   activerecord:
     # -------------------------------------------------------------------------
@@ -192,6 +753,7 @@ en:
 
       site:
         <<: *default_attrs
+        contact_email: "Contact Email"
         place_name: "Place Name"
         hero_text: "Hero Text"
         hero_image: "Hero Image"
@@ -226,3 +788,6 @@ en:
           attributes:
             tag_ids:
               blank: "Select at least one Tag"
+            opening_times:
+              end_before_start: "has a closing time that is not after its opening time"
+              overlapping: "has overlapping times on the same day"

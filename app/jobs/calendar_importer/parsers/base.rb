@@ -12,6 +12,20 @@ module CalendarImporter::Parsers
     NAME = ''
     KEY = ''
 
+    # Third-party event sources intermittently return rate-limit (429) and
+    # server-error (5xx) responses. These are transient upstream failures, not
+    # problems with our request, so they're worth retrying with backoff before
+    # giving up (see AppSignal incidents #311/#331 for the Eventbrite case that
+    # motivated this). 408 Request Timeout is included as a transient network
+    # hiccup. This is the HTTParty (status-code) view of "transient"; the
+    # RestClient/SDK exception-class equivalent is Eventbrite::TRANSIENT_HTTP_ERRORS
+    # — keep the two in sync when adding a status.
+    TRANSIENT_HTTP_STATUSES = [408, 429, 500, 502, 503, 504].freeze
+    HTTP_MAX_RETRIES = 3
+    HTTP_RETRY_BACKOFF = 2 # seconds, multiplied by the attempt number
+    HTTP_MAX_REDIRECTS = 5
+    JSON_LD_CONTEXT_HOSTS = %w[schema.org www.schema.org].freeze
+
     def self.requires_api_token?
       false
     end
@@ -40,9 +54,61 @@ module CalendarImporter::Parsers
       'url' => { '@id' => 'http://schema.org/url', '@type' => '@id' }
     }.freeze
 
+    # Expanding ld+json feeds needs schema.org's own JSON-LD @context to resolve
+    # bare terms (startDate, url, eventStatus, ...) to their http://schema.org/
+    # IRIs. JSON::LD fetches that context over the network at parse time, so a
+    # schema.org outage (503) would silently break expansion: fields landed under
+    # nothing, every event failed validation and imports dropped to zero (prod
+    # incident #359). We bundle a copy of that context document and register it as
+    # a JSON::LD preloaded context so parsing never touches the network.
+    SCHEMA_ORG_CONTEXT_PATH = Rails.root.join('vendor/json-ld/schema_org_context.jsonld')
+    SCHEMA_ORG_CONTEXT_URL = 'http://schema.org/'
+
     def self.handles_url?(calendar)
       calendar.source =~ allowlist_pattern
     end
+
+    # Run a block, retrying transient HTTP failures with a linear backoff before
+    # giving up. Two retry triggers are supported so this works across the
+    # different HTTP clients the parsers use:
+    #
+    #   retry_on: a list of exception classes to retry (e.g. RestClient's typed
+    #             5xx/429 errors, raised by the Eventbrite SDK).
+    #   retry_if: a predicate on the block's return value (e.g. an HTTParty
+    #             response whose .code is a transient status).
+    #
+    # Once retries are exhausted the last exception is re-raised (or the last
+    # result returned) so the caller decides how to degrade.
+    def self.with_http_retries(context, retry_on: [], retry_if: nil, max_retries: HTTP_MAX_RETRIES)
+      attempt = 0
+
+      loop do
+        result =
+          begin
+            yield
+          rescue *retry_on => e
+            attempt += 1
+            raise if attempt > max_retries
+
+            log_http_retry(context, attempt, max_retries, "#{e.class} (#{e.message})")
+            sleep(HTTP_RETRY_BACKOFF * attempt)
+            next
+          end
+
+        return result unless retry_if && attempt < max_retries && retry_if.call(result)
+
+        attempt += 1
+        log_http_retry(context, attempt, max_retries, 'transient response')
+        sleep(HTTP_RETRY_BACKOFF * attempt)
+      end
+    end
+
+    def self.log_http_retry(context, attempt, max_retries, reason)
+      Rails.logger.warn(
+        "#{context}: transient HTTP failure (#{reason}), retry #{attempt}/#{max_retries}"
+      )
+    end
+    private_class_method :log_http_retry
 
     def initialize(calendar, options = {})
       @calendar = calendar
@@ -84,7 +150,8 @@ module CalendarImporter::Parsers
     def self.safely_parse_json(string)
       raise InvalidResponse, 'Source responded with missing JSON' if string.blank?
 
-      JSON.parse string.to_s
+      # json 3 rejects duplicate keys by default, and third-party feeds contain them.
+      JSON.parse string.to_s, allow_duplicate_key: true
     rescue JSON::JSONError => e
       raise InvalidResponse, "Source responded with invalid JSON (#{e})"
     end
@@ -97,9 +164,15 @@ module CalendarImporter::Parsers
       # webcal:// is just https:// with a different scheme — normalize before fetching
       url = url.sub(%r{\Awebcal://}i, 'https://')
 
-      # User-Agent is currently set to make Resident Advisor happy, but this is also more "honest".
-      # It may be this method needs per-vendor headers
-      response = HTTParty.get(url, follow_redirects: follow_redirects, headers: { 'User-Agent': 'Httparty' })
+      response = fetch_vetted(url)
+      HTTP_MAX_REDIRECTS.times do
+        location = follow_redirects && redirect_location(response)
+        break unless location
+
+        url = URI.join(url, location).to_s
+        response = fetch_vetted(url)
+      end
+      raise InaccessibleFeed, I18n.t('admin.calendars.wizard.source.too_many_redirects') if follow_redirects && redirect_location(response)
       return response.body if response.success?
 
       msg = case response.code
@@ -111,13 +184,73 @@ module CalendarImporter::Parsers
               I18n.t('admin.calendars.wizard.source.unreadable', code: response.code)
             end
       raise InaccessibleFeed, msg
+    rescue OutboundUrlGuard::BlockedUrl
+      raise InaccessibleFeed, I18n.t('admin.calendars.wizard.source.private_address')
+    rescue URI::InvalidURIError
+      raise InaccessibleFeed, I18n.t('admin.calendars.wizard.source.unreadable', code: response&.code)
     rescue HTTParty::ResponseError => e
       raise InaccessibleFeed, "The source URL could not be resolved (#{e})"
     rescue SocketError => e
       raise InaccessibleFeed, "There was a socket error (#{e})"
+    rescue Net::ReadTimeout, Net::OpenTimeout, OpenSSL::SSL::SSLError => e
+      # Slow/unreachable feeds and TLS negotiation failures are expected when
+      # scraping third-party sources. Treat them as an unreachable source rather
+      # than letting them bubble up as unhandled exceptions (see issue #3100).
+      Rails.logger.warn("Calendar source unreachable for #{url}: #{e.class} (#{e.message})")
+      raise InaccessibleFeed, I18n.t('admin.calendars.wizard.source.unreachable')
+    end
+
+    # Register the bundled schema.org context so JSON::LD resolves it locally
+    # instead of fetching http://schema.org at parse time. JSON::LD canonicalises
+    # https to http when matching preloaded contexts, so this single registration
+    # covers both http://schema.org and https://schema.org references in feeds.
+    # Idempotent and lazily parsed on first use.
+    def self.register_schema_org_context!
+      return if JSON::LD::Context::PRELOADED.key?(SCHEMA_ORG_CONTEXT_URL)
+
+      JSON::LD::Context.add_preloaded(SCHEMA_ORG_CONTEXT_URL) do
+        JSON::LD::Context.new.parse(JSON.parse(File.read(SCHEMA_ORG_CONTEXT_PATH), allow_duplicate_key: true)['@context'])
+      end
+    end
+
+    # Redirects are followed by hand so every hop is vetted, and the socket is
+    # pinned to the vetted address so a second DNS answer cannot swap it.
+    def self.fetch_vetted(url)
+      address = OutboundUrlGuard.vet!(url)
+      pinned_adapter = lambda do |uri, options|
+        HTTParty::ConnectionAdapter.call(uri, options).tap { |http| http.ipaddr = address }
+      end
+
+      # User-Agent is currently set to make Resident Advisor happy, but this is also more "honest".
+      # It may be this method needs per-vendor headers
+      with_http_retries(
+        "Fetching #{url}",
+        retry_if: ->(r) { TRANSIENT_HTTP_STATUSES.include?(r.code) }
+      ) do
+        HTTParty.get(url, follow_redirects: false, connection_adapter: pinned_adapter,
+                          headers: { 'User-Agent': 'Httparty' })
+      end
+    end
+    private_class_method :fetch_vetted
+
+    def self.redirect_location(response)
+      return unless response.code.between?(300, 399)
+
+      response.headers['location'].presence
+    end
+    private_class_method :redirect_location
+
+    # Pages can name remote JSON-LD contexts; only schema.org is fetched.
+    def self.load_json_ld_document(url, **, &)
+      host = URI.parse(url.to_s).host.to_s.downcase
+      raise JSON::LD::JsonLdError::LoadingDocumentFailed, url.to_s unless JSON_LD_CONTEXT_HOSTS.include?(host)
+
+      JSON::LD::API.documentLoader(url, **, &)
     end
 
     def self.parse_ld_json(url)
+      register_schema_org_context!
+
       response_body = read_http_source(url)
 
       doc = Nokogiri::HTML(response_body)
@@ -125,8 +258,9 @@ module CalendarImporter::Parsers
 
       data_nodes.reduce([]) do |out, node|
         json = safely_parse_json(node.inner_html)
-        expanded = JSON::LD::API.expand(json)
-        compact = JSON::LD::API.compact(expanded, CONTEXT)
+        loader = method(:load_json_ld_document)
+        expanded = JSON::LD::API.expand(json, documentLoader: loader)
+        compact = JSON::LD::API.compact(expanded, CONTEXT, documentLoader: loader)
         out.append compact
       end
     end

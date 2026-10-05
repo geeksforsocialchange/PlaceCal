@@ -7,6 +7,10 @@ FactoryBot.define do
   factory :neighbourhood, aliases: [:bare_neighbourhood] do
     sequence(:name) { |n| "Neighbourhood #{n}" }
     unit { "ward" }
+    # Derive level from unit so the cascading picker's at_level queries work in
+    # tests (the real ONS import / seeds set this; the factory used to leave it
+    # nil, which made the picker return no options).
+    level { Neighbourhood::LEVELS[unit.to_sym] }
     unit_code_key { "ZZ00WD" }
     sequence(:unit_code_value) { |n| format("N%08d", n) }  # 9 characters total
     release_date { Neighbourhood::LATEST_RELEASE_DATE }  # Current release

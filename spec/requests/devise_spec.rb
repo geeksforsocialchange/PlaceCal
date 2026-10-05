@@ -4,9 +4,7 @@ require "rails_helper"
 
 RSpec.describe "Devise Pages", type: :request do
   # Devise auth pages redirect from subdomains to root domain (via devise_check_on_root_site).
-  # Access them on the root domain with a default site present.
-  let!(:default_site) { create(:default_site) }
-
+  # Access them on the root domain (the directory).
   describe "GET /users/sign_in (login)" do
     it "returns successful response" do
       get new_user_session_url(host: "lvh.me")

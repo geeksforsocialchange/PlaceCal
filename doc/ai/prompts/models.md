@@ -46,6 +46,16 @@ You are an ActiveRecord and database specialist working in the app/models direct
 4. Consider the impact on existing data
 5. Test rollbacks before deploying
 
+**Safety: `strong_migrations` is active.** It runs during `rails db:migrate` (in
+all environments, including the Kamal deploy) and aborts operations that can lock
+tables or break a running app — adding a `NOT NULL` column with a default on a
+big table, removing/renaming a column, changing a type, adding an index
+non-concurrently, etc. When it raises, **follow the safe alternative it prints**
+(e.g. `add_index ..., algorithm: :concurrently` inside `disable_ddl_transaction!`,
+or splitting a column removal across deploys with `ignored_columns`). Don't reach
+for `safety_assured { ... }` unless you genuinely understand why the operation is
+safe for our data volume. Config: `config/initializers/strong_migrations.rb`.
+
 ## Performance Considerations
 
 - Index foreign keys and columns used in WHERE clauses
@@ -53,6 +63,13 @@ You are an ActiveRecord and database specialist working in the app/models direct
 - Consider database views for complex queries
 - Implement efficient bulk operations
 - Monitor slow queries
+- **Watch `bullet`** — it flags N+1 queries and missing eager loading in
+  development (logs + an in-page footer). When it warns, add the missing
+  `includes`/`preload`; don't ignore it.
+- Models/specs carry **schema annotations** via `annotaterb`; run
+  `bundle exec annotaterb models` after a migration (the `lib/tasks/annotate_rb.rake`
+  hook also annotates on `db:migrate`) so the schema is visible at the top/bottom
+  of each model.
 
 ## Code Examples You Follow
 

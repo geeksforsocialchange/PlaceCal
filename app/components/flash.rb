@@ -7,19 +7,19 @@ class Components::Flash < Components::Base
     messages = @flash_messages || flash
     return unless messages.any?
 
-    div(class: 'flashes') do
+    div(class: 'flashes flex flex-col gap-2 my-4') do
       messages.each do |key, value|
-        div(class: "alert #{alert_class(key)}", role: 'alert') { value }
+        div(class: "flash-message flash-message--#{state(key)}", role: 'alert') { value }
       end
     end
   end
 
   private
 
-  def alert_class(key)
+  def state(key)
     case key.to_sym
-    when :danger, :alert, :error then 'alert-danger'
-    else 'alert-success'
+    when :danger, :alert, :error then 'error'
+    else 'success'
     end
   end
 end

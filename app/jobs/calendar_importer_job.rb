@@ -5,12 +5,46 @@ class CalendarImporterJob < ApplicationJob
 
   queue_as :default
 
+  # Backstop for exceptions not matched by a more specific handler below. A
+  # worker that dies mid-import strands the calendar in `in_worker`; an
+  # *uncaught* exception does the same (the state transition never completes).
+  # Flag the calendar into the terminal `error` state so it isn't stranded,
+  # then re-raise so the exception still surfaces in error tracking — unexpected
+  # exceptions are bugs we want to see, not silently swallow (see the
+  # "does not swallow unrelated StandardError" spec).
+  #
+  # Declared first so the specific handlers below take precedence: rescue_from
+  # matches handlers in reverse declaration order, so this only catches what
+  # the others don't (and must not clobber e.g. the timeout -> bad_source map).
+  rescue_from StandardError do |exception|
+    report_error exception, 'Unexpected error during import'
+    raise exception
+  end
+
   rescue_from UnsupportedFeed do |exception|
     report_error exception, 'Calendar URL is not supported'
   end
 
   rescue_from InaccessibleFeed do |exception|
     report_bad_source_error exception.message
+  end
+
+  # Network timeouts and TLS failures are expected when scraping third-party
+  # feeds that are slow or temporarily down. Treat them as an unreachable
+  # source instead of letting them surface as unhandled exceptions (see issue
+  # #3100). Most HTTP fetches funnel through Parsers::Base.read_http_source,
+  # which already maps these to InaccessibleFeed; this backstop covers parsers
+  # that make HTTP requests by other means (e.g. API and POST-based parsers).
+  # RestClient::Exceptions::Timeout (the parent of RestClient's Read/OpenTimeout)
+  # covers the Eventbrite parser, which fetches via RestClient/EventbriteSDK —
+  # its timeout errors are not subclasses of Net::ReadTimeout/Net::OpenTimeout.
+  rescue_from Net::ReadTimeout, Net::OpenTimeout, OpenSSL::SSL::SSLError,
+              RestClient::Exceptions::Timeout do |exception|
+    Rails.logger.warn(
+      "Calendar source unreachable for calendar #{@calendar_id}: " \
+      "#{exception.class} (#{exception.message})"
+    )
+    report_bad_source_error I18n.t('admin.calendars.wizard.source.unreachable')
   end
 
   rescue_from InvalidResponse do |exception|

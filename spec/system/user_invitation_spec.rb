@@ -7,10 +7,6 @@ RSpec.describe "User Invitation Flow", :slow, type: :system do
   # Use unique email to avoid conflicts with other tests
   let(:invited_user_email) { "invited.user.#{SecureRandom.hex(4)}@placecal.org" }
 
-  before do
-    create_default_site
-  end
-
   it "allows admin to invite a user who can then set their password" do
     sign_in_as(admin_user)
 

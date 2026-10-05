@@ -1,0 +1,214 @@
+# frozen_string_literal: true
+#
+# RuboCop configuration for a PlaceCal extension (theme engine).
+#
+# Derived from core's own .rubocop.yml and trimmed to what an extension can
+# contain: Phlex views and components, locale files, content and specs. It
+# lives in core so the rules stay in one place; both theme engines used to
+# carry a byte-identical copy of it, and the copies had already drifted.
+#
+# A theme inherits it by path. Every way of running an extension's checks puts
+# core beside it: the reusable workflow (.github/workflows/extension-test.yml)
+# checks core out at ./PlaceCal, and locally the extension's specs and RuboCop
+# already run with BUNDLE_GEMFILE pointed at a core checkout. So the extension's
+# whole .rubocop.yml is:
+#
+#   inherit_from: ../PlaceCal/config/rubocop/extension.yml
+#
+# Paths are relative to the file doing the inheriting, so use whatever gets from
+# the extension root to the core checkout. An extension whose gem entry point is
+# not lib/placecal-theme-<name>.rb adds its own Naming/FileName exclude below
+# that line.
+
+plugins:
+  - rubocop-rake
+  - rubocop-rspec
+  - rubocop-performance
+  - rubocop-rails
+
+AllCops:
+  NewCops: enable
+  SuggestExtensions: false
+  TargetRailsVersion: 8.0
+  Exclude:
+    - "node_modules/**/*"
+    - "tmp/**/*"
+    - "vendor/**/*"
+    - ".git/**/*"
+
+# =============================================================================
+# Layout cops
+# =============================================================================
+
+Layout/EmptyLinesAroundExceptionHandlingKeywords:
+  Enabled: false
+
+Layout/ExtraSpacing:
+  Enabled: false
+
+Layout/LineLength:
+  Max: 515
+
+# =============================================================================
+# Lint cops
+# =============================================================================
+
+# Phlex components don't need super in initialize
+Lint/MissingSuper:
+  Exclude:
+    - "app/components/**/*.rb"
+
+Lint/ConstantDefinitionInBlock:
+  Exclude:
+    - "spec/**/*.rb"
+
+Lint/RedundantCopDisableDirective:
+  Enabled: false
+
+# =============================================================================
+# Metrics cops
+# =============================================================================
+
+# Phlex views/components are template code where each HTML element call
+# inflates AbcSize/MethodLength. These metrics don't add value for templates.
+Metrics/AbcSize:
+  Exclude:
+    - "app/views/**/*.rb"
+    - "app/components/**/*.rb"
+
+Metrics/MethodLength:
+  Exclude:
+    - "app/views/**/*.rb"
+    - "app/components/**/*.rb"
+
+Metrics/ParameterLists:
+  Exclude:
+    - "app/views/**/*.rb"
+    - "app/components/**/*.rb"
+
+# An RSpec describe block is one long block by construction. Core raises the
+# limit for the whole app in its .rubocop_todo.yml (Max: 322); the engine only
+# needs it for specs.
+Metrics/BlockLength:
+  Exclude:
+    - "spec/**/*.rb"
+
+Metrics/ClassLength:
+  Exclude:
+    - "spec/**/*.rb"
+    - "app/views/**/*.rb"
+    - "app/components/**/*.rb"
+
+# =============================================================================
+# Naming cops
+# =============================================================================
+
+# Literal Properties' after_initialize is not memoization
+Naming/MemoizedInstanceVariableName:
+  Exclude:
+    - "app/components/**/*.rb"
+
+Naming/BlockForwarding:
+  Enabled: false
+
+Naming/VariableNumber:
+  Enabled: false
+
+# =============================================================================
+# Rails cops
+# =============================================================================
+
+# Phlex uses `raw` for rendering form helpers and HTML content
+Rails/OutputSafety:
+  Exclude:
+    - "app/components/**/*.rb"
+    - "app/views/**/*.rb"
+
+Rails/RootPathnameMethods:
+  Enabled: false
+
+# =============================================================================
+# RSpec cops
+# =============================================================================
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/NestedGroups:
+  Max: 4
+
+RSpec/DescribeClass:
+  Enabled: false
+
+RSpec/DescribeMethod:
+  Enabled: false
+
+RSpec/LetSetup:
+  Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Max: 15
+
+RSpec/ContextWording:
+  Enabled: false
+
+RSpec/IndexedLet:
+  Enabled: false
+
+RSpec/LeakyConstantDeclaration:
+  Enabled: false
+
+RSpec/VerifiedDoubles:
+  Enabled: false
+
+RSpec/SpecFilePathFormat:
+  Enabled: false
+
+RSpec/NoExpectationExample:
+  Enabled: false
+
+RSpec/MultipleDescribes:
+  Enabled: false
+
+# =============================================================================
+# Style cops
+# =============================================================================
+
+# Phlex views and components use compact style (class Foo::Bar::Baz), matching
+# core and the Zeitwerk namespaces the engine pushes.
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/HashSyntax:
+  Enabled: false
+
+# The extension's entry point defines its Views and Components namespaces
+# together.
+Style/OneClassPerFile:
+  Exclude:
+    - "lib/*.rb"
+
+Style/RedundantConstantBase:
+  Enabled: false
+
+# The gem entry point must match the gem name for Bundler.require.
+Naming/FileName:
+  Exclude:
+    - "lib/placecal-theme-*.rb"
+
+# =============================================================================
+# Rails cops that only apply to an extension
+# =============================================================================
+
+# The two-line host guard in lib/<ext>.rb aborts when the core it is loaded
+# into predates the extension contract. There is no Rails to report the error
+# through at that point: the app is still being required.
+Rails/Exit:
+  Exclude:
+    - "lib/*.rb"

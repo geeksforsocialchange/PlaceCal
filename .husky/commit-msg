@@ -1,0 +1,15 @@
+msg_file="$1"
+
+# House style, enforced with Ruby (BSD grep has no -P for \x escapes):
+#   - no em/en dashes in the message
+#   - no 'Co-Authored-By: Claude' trailer (not used in this repo)
+ruby -e '
+  msg = File.read(ARGV[0], encoding: "UTF-8")
+  if msg.match?(/[\u2013\u2014\u2015]/)
+    warn "commit-msg: em or en dash in the message. Use full stops, commas, parentheses or colons."
+    exit 1
+  elsif msg.match?(/^\s*Co-Authored-By:\s*Claude/i)
+    warn "commit-msg: drop the Co-Authored-By: Claude trailer; it is not used in this repo."
+    exit 1
+  end
+' "$msg_file"

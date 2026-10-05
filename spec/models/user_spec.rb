@@ -1,5 +1,43 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: users
+#
+#  id                      :bigint           not null, primary key
+#  access_token            :string
+#  access_token_expires_at :string
+#  avatar                  :string
+#  current_sign_in_at      :datetime
+#  current_sign_in_ip      :inet
+#  email                   :string           default(""), not null
+#  encrypted_password      :string           default("")
+#  first_name              :string
+#  invitation_accepted_at  :datetime
+#  invitation_created_at   :datetime
+#  invitation_limit        :integer
+#  invitation_sent_at      :datetime
+#  invitation_token        :string
+#  invited_by_type         :string
+#  last_name               :string
+#  last_sign_in_at         :datetime
+#  last_sign_in_ip         :inet
+#  phone                   :string
+#  remember_created_at     :datetime
+#  reset_password_sent_at  :datetime
+#  reset_password_token    :string
+#  role                    :string           not null
+#  sign_in_count           :integer          default(0), not null
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
+#  invited_by_id           :integer
+#
+# Indexes
+#
+#  index_users_on_email                 (email) UNIQUE
+#  index_users_on_invitation_token      (invitation_token) UNIQUE
+#  index_users_on_reset_password_token  (reset_password_token) UNIQUE
+#
 require "rails_helper"
 
 RSpec.describe User, type: :model do
@@ -107,6 +145,36 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe "#display_name" do
+    let(:user) { build(:user, email: "test@example.com") }
+
+    it "returns name with email in parens" do
+      user.first_name = "Joan"
+      user.last_name = "Jones"
+      expect(user.display_name).to eq("Joan Jones (test@example.com)")
+    end
+
+    it "falls back to the email prefix when name is blank" do
+      user.first_name = ""
+      user.last_name = ""
+      expect(user.display_name).to eq("test (test@example.com)")
+    end
+
+    # Regression for #3241: a blank email must not render as "Name ()"
+    it "returns just the name when email is blank" do
+      user.first_name = "Joan"
+      user.last_name = "Jones"
+      user.email = ""
+      expect(user.display_name).to eq("Joan Jones")
+    end
+
+    it "falls back to a model label when name and email are both blank" do
+      user = create(:user, first_name: "", last_name: "")
+      user.email = nil
+      expect(user.display_name).to eq("User ##{user.id}")
+    end
+  end
+
   describe "role predicates" do
     it "#root? returns true for root role" do
       user = build(:user, role: :root)
@@ -186,6 +254,22 @@ RSpec.describe User, type: :model do
       # The subtree includes the district itself and its children (wards)
       expect(owned.count).to be > 1
       expect(owned).to include(ward)
+    end
+
+    it "memoises the subtree so it is not rebuilt per caller" do
+      user.owned_neighbourhood_ids
+
+      queries = 0
+      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*, payload|
+        queries += 1 unless payload[:cached] || payload[:name] == "SCHEMA"
+      end
+      begin
+        3.times { user.owned_neighbourhood_ids }
+      ensure
+        ActiveSupport::Notifications.unsubscribe(subscriber)
+      end
+
+      expect(queries).to eq(0)
     end
   end
 

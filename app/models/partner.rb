@@ -1,5 +1,57 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: partners
+#
+#  id                      :bigint           not null, primary key
+#  accessibility_info      :text
+#  accessibility_info_html :string
+#  admin_email             :string
+#  admin_name              :string
+#  booking_info            :text
+#  calendar_email          :string
+#  calendar_name           :string
+#  calendar_phone          :string
+#  can_be_assigned_events  :boolean          default(FALSE), not null
+#  description             :text
+#  description_html        :string
+#  facebook_link           :string
+#  hidden                  :boolean          default(FALSE), not null
+#  hidden_reason           :text
+#  hidden_reason_html      :string
+#  image                   :string
+#  instagram_handle        :string
+#  is_a_place              :boolean          default(FALSE), not null
+#  name                    :string           not null
+#  opening_times           :jsonb
+#  partner_email           :string
+#  partner_name            :string
+#  partner_phone           :string
+#  public_email            :string
+#  public_name             :string
+#  public_phone            :string
+#  slug                    :string
+#  summary                 :string
+#  summary_html            :string
+#  twitter_handle          :string
+#  url                     :string
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
+#  address_id              :bigint
+#  hidden_blame_id         :integer
+#
+# Indexes
+#
+#  index_partners_hidden         (hidden)
+#  index_partners_lower_name_    (lower((name)::text)) UNIQUE
+#  index_partners_on_address_id  (address_id)
+#  index_partners_on_slug        (slug) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (address_id => addresses.id)
+#
 class Partner < ApplicationRecord
   # ==== Includes / Extends ====
   include Validation
@@ -7,6 +59,7 @@ class Partner < ApplicationRecord
   include Permalinkable
   extend FriendlyId
   include HtmlRenderCache
+  include SlugRetainable
 
   # ==== Constants ====
 
@@ -105,7 +158,14 @@ class Partner < ApplicationRecord
      c[:street_address3]].all?(&:blank?)
   }
 
-  accepts_nested_attributes_for :service_areas, allow_destroy: true
+  # An untouched "New Service Area" picker row submits a blank neighbourhood_id;
+  # without reject_if it becomes an invalid ServiceArea that also fails
+  # check_neighbourhood_access for non-root admins (issue #3356).
+  # NB: the form always submits _destroy ("false" for kept rows), so the flag
+  # must be cast, not blank?-checked
+  accepts_nested_attributes_for :service_areas, allow_destroy: true, reject_if: lambda { |sa|
+    sa[:neighbourhood_id].blank? && !ActiveRecord::Type::Boolean.new.cast(sa[:_destroy])
+  }
 
   # ==== Uploaders ====
   mount_uploader :image, ImageUploader
@@ -155,6 +215,7 @@ class Partner < ApplicationRecord
   validate :neighbourhood_admin_address_access, on: %i[create update]
   validate :must_have_address_or_service_area
   validate :opening_times_is_json_or_nil
+  validate :opening_times_are_valid
   validate :three_or_less_category_tags
   validate :partnership_admins_must_add_partnership, on: %i[create]
   validate :must_give_reason_to_hide
@@ -353,6 +414,12 @@ class Partner < ApplicationRecord
     errors.blank?
   end
 
+  # @return [Boolean] whether any public contact method is present
+  def contactable?
+    public_email.present? || public_phone.present? || url.present? ||
+      facebook_link.present? || twitter_handle.present? || instagram_handle.present?
+  end
+
   # @return [Boolean] whether name passes format/length validation
   def valid_name?
     self.class.validators_on(:name).each do |validator|
@@ -486,6 +553,66 @@ class Partner < ApplicationRecord
     return if opening_times.nil?
 
     errors.add :base, 'Partner.opening_times must be valid json'
+  end
+
+  # Validates each opening hours specification has a sensible time range and
+  # that ranges on the same day do not overlap. Skips when the value is blank
+  # or not parseable (handled by #opening_times_is_json_or_nil).
+  def opening_times_are_valid
+    return if opening_times.blank?
+    return unless valid_json? opening_times
+
+    specs = JSON.parse(opening_times)
+    return unless specs.is_a?(Array)
+
+    by_day = {}
+    has_invalid_range = false
+
+    specs.each do |spec|
+      next unless spec.is_a?(Hash)
+
+      opens = parse_opening_time(spec['opens'])
+      closes = parse_opening_time(spec['closes'])
+      next if opens.nil? || closes.nil?
+
+      if closes <= opens
+        has_invalid_range = true
+        next
+      end
+
+      (by_day[opening_times_day(spec)] ||= []) << [opens, closes]
+    end
+
+    errors.add(:opening_times, :end_before_start) if has_invalid_range
+    flag_overlapping_opening_times(by_day)
+  end
+
+  # @return [Integer, nil] minutes since midnight, or nil if unparseable
+  def parse_opening_time(value)
+    return nil if value.blank?
+
+    match = value.to_s.match(/\A(\d{1,2}):(\d{2})/)
+    return nil unless match
+
+    hours = match[1].to_i
+    minutes = match[2].to_i
+    return nil if hours > 23 || minutes > 59
+
+    (hours * 60) + minutes
+  end
+
+  # @return [String] day key for grouping (last URL segment, or "" if absent)
+  def opening_times_day(spec)
+    spec['dayOfWeek'].to_s.split('/').last.to_s
+  end
+
+  def flag_overlapping_opening_times(by_day)
+    has_overlap = by_day.each_value.any? do |ranges|
+      sorted = ranges.sort_by(&:first)
+      sorted.each_cons(2).any? { |(_, prev_close), (next_open, _)| next_open < prev_close }
+    end
+
+    errors.add(:opening_times, :overlapping) if has_overlap
   end
 
   def three_or_less_category_tags

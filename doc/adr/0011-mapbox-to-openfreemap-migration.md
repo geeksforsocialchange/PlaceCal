@@ -57,15 +57,16 @@ https://tiles.openfreemap.org/sprites/ofm_f384/ofm
 
 ### Style Files
 
-Map styles are stored in `public/map-styles/` and selected via the `theme` data attribute in the map controller:
+Core's map styles are stored in `public/map-styles/`, one per core theme:
 
-| File           | Usage               | Parks Color        | Water Color              |
-| -------------- | ------------------- | ------------------ | ------------------------ |
-| `pink.json`    | Default theme       | `#AFCF5A` (green)  | `#86CED6` (teal)         |
-| `blue.json`    | Moston, Mossley     | `#28a9e1` (blue)   | `#93d1e2` (light blue)   |
-| `green.json`   | Green-themed sites  | `#AFCF5A` (green)  | `#86CED6` (teal)         |
-| `orange.json`  | Orange-themed sites | `#e87d1e` (orange) | `#f4b183` (light orange) |
-| `mossley.json` | Mossley site        | `#28a9e1` (blue)   | `#93d1e2` (light blue)   |
+| File          | Usage               | Parks Color        | Water Color              |
+| ------------- | ------------------- | ------------------ | ------------------------ |
+| `pink.json`   | Default theme       | `#AFCF5A` (green)  | `#86CED6` (teal)         |
+| `blue.json`   | Blue-themed sites   | `#28a9e1` (blue)   | `#93d1e2` (light blue)   |
+| `green.json`  | Green-themed sites  | `#AFCF5A` (green)  | `#86CED6` (teal)         |
+| `orange.json` | Orange-themed sites | `#e87d1e` (orange) | `#f4b183` (light orange) |
+
+Which one a request gets is the theme's decision, not the site's: `MapHelper#map_style_url` reads `Current.theme.map_style_name` (`PlaceCal::Theme#map_style`, see `doc/extensions.md`) and falls back to `pink` for the nationwide directory and for a site whose theme nothing registers. An extension theme names its own style and ships it as an asset rather than in `public/`, so the helper looks in `public/map-styles/` first and then resolves `map-styles/<name>.json` through the asset pipeline. `mossley.json` used to live here; Mossley is an extension now and the file went with it.
 
 ### PlaceCal Brand Colors (from original Mapbox exports)
 

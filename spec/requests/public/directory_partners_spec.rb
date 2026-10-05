@@ -3,7 +3,6 @@
 require "rails_helper"
 
 RSpec.describe "Directory Partners", type: :request do
-  let!(:default_site) { create(:default_site) }
   let(:ward) { create(:riverside_ward) }
 
   describe "GET /partners (directory index)" do
@@ -45,7 +44,7 @@ RSpec.describe "Directory Partners", type: :request do
 
     it "sets page title" do
       get partners_url(host: "lvh.me")
-      expect(response.body).to include("<title>Partners")
+      expect(response.body).to include("<title>Partners | PlaceCal</title>")
     end
 
     context "with A-Z sort" do
@@ -58,6 +57,14 @@ RSpec.describe "Directory Partners", type: :request do
         get partners_url(host: "lvh.me", params: { sort: "name" })
         letter = partner.name[0].upcase
         expect(response.body).to include("letter-#{letter}")
+      end
+
+      # Regression for #3226: the neighbourhood filter adds DISTINCT, and the
+      # A-Z letter pluck must not carry the name ORDER BY into the DISTINCT
+      # select or Postgres raises PG::InvalidColumnReference.
+      it "succeeds when combined with a neighbourhood filter" do
+        get partners_url(host: "lvh.me", params: { sort: "name", neighbourhood: ward.id })
+        expect(response).to be_successful
       end
     end
 
@@ -92,6 +99,36 @@ RSpec.describe "Directory Partners", type: :request do
         expect(response.body).to include(partner.name)
       end
     end
+
+    context "with cross-filtering facets" do
+      let(:other_ward) { create(:oldtown_ward) }
+      let!(:alpha_partner) do
+        create(:partner, address: create(:address, neighbourhood: ward))
+          .tap { |p| p.categories << create(:category_tag, name: "Alphacat") }
+      end
+      let!(:bravo_partner) do
+        create(:partner, address: create(:address, neighbourhood: other_ward))
+          .tap { |p| p.categories << create(:category_tag, name: "Bravocat") }
+      end
+
+      it "lists every category when unfiltered" do
+        get partners_url(host: "lvh.me")
+        expect(response.body).to include("Alphacat")
+        expect(response.body).to include("Bravocat")
+      end
+
+      it "limits the category facet to the selected neighbourhood" do
+        get partners_url(host: "lvh.me", params: { neighbourhood: ward.id })
+        expect(response.body).to include("Alphacat")
+        expect(response.body).not_to include("Bravocat")
+      end
+
+      it "still shows the selected neighbourhood when no partners match the other filters" do
+        # other_ward has no Alphacat partners, but the picker should reflect it.
+        get partners_url(host: "lvh.me", params: { neighbourhood: other_ward.id, category: alpha_partner.categories.first.id })
+        expect(response.body).to include(other_ward.shortname)
+      end
+    end
   end
 
   describe "GET /partners/:id (directory show)" do
@@ -100,6 +137,30 @@ RSpec.describe "Directory Partners", type: :request do
     it "returns successful response" do
       get partner_url(partner, host: "lvh.me")
       expect(response).to be_successful
+    end
+
+    it "links partnerships in the sidebar relative to the current host" do
+      site = create(:site, is_published: true)
+      site.neighbourhoods << partner.address.neighbourhood
+
+      get partner_url(partner, host: "lvh.me")
+
+      expect(response.body).to include("http://#{site.slug}.lvh.me")
+      expect(response.body).not_to include("#{site.slug}.placecal.org")
+    end
+
+    it "lists a tag-only partnership site the partner belongs to" do
+      partnership = create(:partnership)
+      tag_only_site = create(:site, is_published: true, name: "Tag Only Partnership")
+      tag_only_site.tags << partnership
+      partner.tags << partnership
+
+      get partner_url(partner, host: "lvh.me")
+
+      # A partnership site picks its partners by tag alone (#3368 D7, D24), so
+      # it has no neighbourhoods to be found through.
+      expect(tag_only_site.neighbourhoods).to be_empty
+      expect(response.body).to include("Tag Only Partnership")
     end
 
     it "displays partner name in hero" do

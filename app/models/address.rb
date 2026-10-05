@@ -1,5 +1,28 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: addresses
+#
+#  id               :bigint           not null, primary key
+#  city             :string
+#  country_code     :string           default("UK"), not null
+#  latitude         :float
+#  longitude        :float
+#  postcode         :string           not null
+#  street_address   :string           not null
+#  street_address2  :string
+#  street_address3  :string
+#  neighbourhood_id :bigint
+#
+# Indexes
+#
+#  index_addresses_on_neighbourhood_id  (neighbourhood_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (neighbourhood_id => neighbourhoods.id)
+#
 class Address < ApplicationRecord
   # ==== Includes / Extends ====
   include NeighbourhoodCacheInvalidator
@@ -117,6 +140,19 @@ class Address < ApplicationRecord
     all_address_lines.join(', ')
   end
 
+  # Schema.org PostalAddress node, shared by the partner and event JSON-LD
+  # builders (PartnerJsonLd, EventJsonLd).
+  # @return [Hash]
+  def to_json_ld
+    {
+      '@type' => 'PostalAddress',
+      'streetAddress' => full_street_address,
+      'addressLocality' => city,
+      'postalCode' => postcode,
+      'addressCountry' => country_code
+    }.compact
+  end
+
   private
 
   # ==== Private methods ====
@@ -152,7 +188,8 @@ class Address < ApplicationRecord
     self.longitude = res['longitude']
     self.latitude = res['latitude']
 
-    # TODO: backfill city for existing addresses. See #3123
+    # Existing addresses are backfilled via the addresses:backfill_city rake
+    # task (see #3123).
     self.city = res['admin_district'] if city.blank?
   end
 end
