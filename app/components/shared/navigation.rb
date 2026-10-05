@@ -9,6 +9,8 @@ class Components::Shared::Navigation < Components::Base
   # get-in-touch). The join marketing site swaps in "Book a demo".
   prop :cta_label, _Nilable(String), default: nil
   prop :cta_path, _Nilable(String), default: nil
+  # Off where the page supplies its own h1.
+  prop :home_heading, _Boolean, default: true
 
   def view_template
     header(class: [
@@ -78,7 +80,7 @@ class Components::Shared::Navigation < Components::Base
 
   def render_site_name
     if @site.nil?
-      if request.path == '/'
+      if request.path == '/' && @home_heading
         h1(class: 'sr-only') { 'PlaceCal' }
       else
         h2(class: 'sr-only') { 'PlaceCal' }

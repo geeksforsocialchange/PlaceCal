@@ -10,6 +10,7 @@ class Components::Shared::ContactForm < Components::Base
   prop :url, String, reader: :private
   # Site pages show their own contact address instead of PlaceCal's.
   prop :email_cta, _Boolean, default: true
+  prop :email_address, _Nilable(String), default: nil
 
   def view_template
     render_form
@@ -104,7 +105,7 @@ class Components::Shared::ContactForm < Components::Base
   end
 
   def render_email_cta
-    address = t('contact_form.email_cta.address')
+    address = @email_address || t('contact_form.email_cta.address')
 
     div(class: 'join-email-cta') do
       div do

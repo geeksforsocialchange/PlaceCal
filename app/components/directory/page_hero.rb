@@ -11,6 +11,7 @@ class Components::Directory::PageHero < Components::Directory::Base
   # single breadcrumb_label/breadcrumb_path pair.
   prop :breadcrumbs, _Nilable(Array), default: nil
   prop :background_image_url, _Nilable(String), default: nil
+  prop :root_label, _Nilable(String), default: nil
 
   def view_template(&block)
     section(class: 'bg-foreground pt-6 pb-4 relative overflow-hidden', style: 'color: var(--color-background)') do
@@ -40,9 +41,7 @@ class Components::Directory::PageHero < Components::Directory::Base
 
   def render_breadcrumb
     nav(class: 'text-sm mb-2', style: 'color: var(--color-background)', aria_label: t('directory.aria.breadcrumb')) do
-      # root_path is host-relative, so on the join site the trail starts at
-      # the join homepage: label it accordingly.
-      root_label = join_site_request? ? t('join.breadcrumbs.root') : t('directory.breadcrumbs.root')
+      root_label = @root_label || t('directory.breadcrumbs.root')
       a(href: root_path, class: 'no-underline hover:underline', style: 'color: inherit') { root_label }
       crumb_items.each do |item|
         span(class: 'mx-1.5 opacity-60') { safe('›') }

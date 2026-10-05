@@ -35,12 +35,6 @@ class Components::Base < Phlex::HTML
     h3(class: 'allcaps-label text-tertiary mt-1 mb-2') { text }
   end
 
-  # True when rendering on the join marketing site (join.placecal.org):
-  # lets components shared with the directory adapt their labels/links.
-  def join_site_request?
-    ::Sites::JoinHost.matches?(request)
-  end
-
   if Rails.env.development?
     def before_template
       comment { self.class.name.to_s }

@@ -141,8 +141,10 @@ class Views::Layouts::Application < Phlex::HTML
     robots_content = content_for?(:robots) ? content_for(:robots) : default_robots
     meta(name: 'robots', content: robots_content)
 
-    json_ld = site ? site.to_json_ld(base_url: request.base_url) : Site.directory_json_ld(request.base_url)
-    script(type: 'application/ld+json') { raw safe(json_ld.to_json) }
+    unless join_site?
+      json_ld = site ? site.to_json_ld(base_url: request.base_url) : Site.directory_json_ld(request.base_url)
+      script(type: 'application/ld+json') { raw safe(json_ld.to_json) }
+    end
     return unless content_for?(:json_ld)
 
     script(type: 'application/ld+json') { raw safe(content_for(:json_ld)) }
@@ -196,8 +198,7 @@ class Views::Layouts::Application < Phlex::HTML
     link(rel: 'mask-icon', href: image_url(icons[:mask_icon]), color: icons[:mask_icon_color])
   end
 
-  # A page-supplied title always wins: the root shortcut used to run first,
-  # which stamped the directory branding over the join homepage's title.
+  # A page's own title beats the root shortcut, so the join homepage can name itself.
   def compute_title
     page_title = captured_title
     return "#{page_title} | #{site.name}" if page_title && site&.name

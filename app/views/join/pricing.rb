@@ -256,7 +256,7 @@ class Views::Join::Pricing < Views::Join::Base
       div(class: 'col-start-2 min-[680px]:col-start-auto mb-3 min-[680px]:mb-0 flex justify-start min-[680px]:justify-center') do
         # Width, not max-width: the legacy unlayered img { max-width: 100% }
         # rule outranks layered Tailwind utilities and would undo a cap.
-        image_tag(ROLLOUT_ART[index], alt: '', class: 'w-[150px] min-[680px]:w-[190px] h-auto')
+        image_tag(ROLLOUT_ART[index], alt: '', class: 'w-[150px] min-[680px]:w-[190px] h-auto') if ROLLOUT_ART[index]
       end
       div(class: 'col-start-2 min-[680px]:col-start-auto') do
         h3(class: 'font-serif font-regular text-[1.55rem] text-foreground mt-0 mb-1') { step[:title] }

@@ -25,7 +25,7 @@ class Views::Join::Audience < Views::Join::Base
       div(class: 'container-public') do
         breadcrumb([t('join.breadcrumbs.audiences'), join_audiences_path], [t("#{prefix}.title")], on_secondary: true)
         div(class: 'allcaps-label text-foreground-dark mb-2') do
-          t('join.audiences.for_kicker', audience: t("#{prefix}.title").downcase)
+          t('join.audiences.for_kicker', audience: t("#{prefix}.title"))
         end
         h1(class: 'join-headline max-w-(--width-prose-lg) m-0 mb-4') { t("#{prefix}.hero") }
         p(class: 'text-base leading-relaxed text-foreground-dark max-w-(--width-prose) mt-0 mb-6') { t("#{prefix}.subhero") }

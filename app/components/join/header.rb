@@ -9,7 +9,8 @@ class Components::Join::Header < Components::Join::Base
       navigation: nav_items,
       site: nil,
       cta_label: t('join.nav.book_demo'),
-      cta_path: join_demo_path
+      cta_path: join_demo_path,
+      home_heading: false
     )
   end
 

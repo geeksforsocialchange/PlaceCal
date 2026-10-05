@@ -29,7 +29,7 @@ class Join::PagesController < ApplicationController
   # The directory's Our Story page, reused in the join chrome with the
   # closing CTA pointed at book-a-demo.
   def our_story
-    render Views::Directory::OurStory.new(cta_path: join_demo_path)
+    render Views::Directory::OurStory.new(cta_path: join_demo_path, root_label: t('join.breadcrumbs.root'))
   end
 
   def pricing
@@ -42,6 +42,7 @@ class Join::PagesController < ApplicationController
 
   def demo_create
     @contact_request = ContactRequest.new(contact_request_params)
+    @contact_request.demo = true
 
     if @contact_request.submit
       redirect_to join_root_path, notice: t('join.demo.flash.success')

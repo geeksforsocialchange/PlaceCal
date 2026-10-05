@@ -6,6 +6,7 @@ class Views::Directory::OurStory < Views::Base
   IMAGE_BASE = 'home/our_story'
 
   prop :cta_path, _Nilable(String), default: nil
+  prop :root_label, _Nilable(String), default: nil
 
   # Alternating illustration/text rows — rows 1 & 3 image-left, row 2 image-right.
   PROBLEMS = [
@@ -25,6 +26,7 @@ class Views::Directory::OurStory < Views::Base
 
     Directory::PageHero(
       breadcrumb_label: t("#{T}.heading"),
+      root_label: @root_label,
       kicker: t("#{T}.heading"),
       title: t("#{T}.hero_title"),
       subtitle: t("#{T}.hero_lede")

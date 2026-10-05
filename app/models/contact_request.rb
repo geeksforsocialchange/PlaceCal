@@ -25,6 +25,9 @@ class ContactRequest
   # controller sets it from current_site, and the directory leaves it nil.
   attr_accessor :site
 
+  # Set by the join site's book-a-demo form so the inbox can tell it apart.
+  attr_accessor :demo
+
   validates :name, :email, :why, presence: true
 
   def submit

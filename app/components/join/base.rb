@@ -12,7 +12,9 @@ class Components::Join::Base < Components::Base
     'culture_tourism' => 'home/audiences/culture_square.jpg'
   }.freeze
   AUDIENCE_KEYS = AUDIENCES.keys.freeze
-  AUDIENCE_SLUGS = AUDIENCE_KEYS.map { |key| key.tr('_', '-') }.freeze
+  def self.slug_for(key) = key.tr('_', '-')
+
+  AUDIENCE_SLUGS = AUDIENCE_KEYS.map { |key| slug_for(key) }.freeze
 
   private
 
@@ -23,6 +25,6 @@ class Components::Join::Base < Components::Base
   end
 
   def audience_path(key)
-    join_audience_path(key.tr('_', '-'))
+    join_audience_path(self.class.slug_for(key))
   end
 end

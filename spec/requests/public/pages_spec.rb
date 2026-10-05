@@ -118,8 +118,9 @@ RSpec.describe "Public Pages", type: :request do
   %w[community-groups vcses housing-providers metropolitan-areas
      culture-tourism social-prescribers].each do |audience_slug|
     describe "GET /#{audience_slug}" do
-      it "redirects to the join site" do
+      it "redirects temporarily to the join site" do
         get "/#{audience_slug}", headers: { "Host" => "lvh.me" }
+        expect(response).to have_http_status(:found)
         expect(response).to redirect_to("http://join.lvh.me/who-its-for/#{audience_slug}")
       end
     end

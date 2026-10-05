@@ -25,7 +25,7 @@ class Components::Join::Footer < Components::Join::Base
       render_link_column(t('join.footer.about'), [
                            [t('join.footer.our_story'), join_our_story_path],
                            [t('join.footer.gfsc'), 'https://gfsc.studio'],
-                           [t('join.footer.email'), 'mailto:hello@placecal.org']
+                           [t('contact.email'), "mailto:#{t('contact.email')}"]
                          ])
     end
   end

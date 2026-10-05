@@ -7,7 +7,7 @@ class Views::Join::Base < Views::Base
   private
 
   def audience_path(key)
-    join_audience_path(key.tr('_', '-'))
+    join_audience_path(Components::Join::Base.slug_for(key))
   end
 
   # Pass [label] for the current page, or [label, path] for a link.

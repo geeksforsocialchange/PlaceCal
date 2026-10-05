@@ -17,6 +17,8 @@ class JoinMailer < ApplicationMailer
       # headers, so it never reaches the Subject header intact.
       subject = if site
                   t('join_mailer.join_us.subject_with_site', site: site.name.to_s.delete("\r\n"))
+                elsif contact_request.demo
+                  t('join_mailer.join_us.subject_demo')
                 else
                   t('join_mailer.join_us.subject')
                 end

@@ -39,6 +39,7 @@ en:
     join_us:
       subject: "New Join Request"
       subject_with_site: "New Join Request (%{site})"
+      subject_demo: "New demo request"
       answer_yes: "Yes"
       answer_no: "No"
 
@@ -608,7 +609,7 @@ en:
   # ===========================================================================
 
   # ===========================================================================
-  # CONTACT FORM (Components::ContactForm — shared by the directory's
+  # CONTACT FORM (Components::ContactForm, shared by the directory's
   # get-in-touch page and the join site's book-a-demo page)
   # ===========================================================================
   contact_form:

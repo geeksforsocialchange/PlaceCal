@@ -71,6 +71,29 @@ RSpec.describe "Join marketing site", type: :request do
       expect(response.body).to include('<meta name="robots" content="noarchive">')
     end
 
+    it "has exactly one h1 on the homepage" do
+      get "http://join.lvh.me/"
+      expect(response.body.scan("<h1").size).to eq(1)
+    end
+
+    it "keeps acronyms in the audience kicker" do
+      get "http://join.lvh.me/who-its-for/vcses"
+      expect(response.body).to include("For VCSEs")
+    end
+
+    it "uses one contact address across the site" do
+      addresses = %w[/ /book-a-demo].flat_map do |path|
+        get "http://join.lvh.me#{path}"
+        response.body.scan(/mailto:([^"?]+)/).flatten
+      end
+      expect(addresses.uniq).to eq([I18n.t("contact.email")])
+    end
+
+    it "does not describe itself as the directory in structured data" do
+      get "http://join.lvh.me/pricing"
+      expect(response.body).not_to include("application/ld+json")
+    end
+
     it "keeps the work-in-progress notice off the directory" do
       get "http://lvh.me/"
       expect(response.body).not_to include(I18n.t("join.wip.heading"))
@@ -104,7 +127,7 @@ RSpec.describe "Join marketing site", type: :request do
       end.to change { ActionMailer::Base.deliveries.count }.by(1)
 
       expect(response).to redirect_to("http://join.lvh.me/")
-      expect(ActionMailer::Base.deliveries.last.subject).to eq("New Join Request")
+      expect(ActionMailer::Base.deliveries.last.subject).to eq(I18n.t("join_mailer.join_us.subject_demo"))
     end
 
     it "re-renders the form when required fields are missing" do

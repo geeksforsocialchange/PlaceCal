@@ -34,7 +34,6 @@ en:
       about: About
       our_story: Our story
       gfsc: Geeks for Social Change
-      email: hello@placecal.org
       placecal_logo_alt: PlaceCal
     home:
       title: Run PlaceCal in your community
@@ -54,18 +53,18 @@ en:
       audiences:
         kicker: Who it's for
         heading: PlaceCal works differently for different people.
-        lede: Pick the one that describes you — each has its own pitch, case study, and next step.
+        lede: Pick the one that describes you. Each has its own pitch, case study, and next step.
       why:
         kicker: Why PlaceCal
         heading: Three big problems. One shared fix.
         intro: "We spent years talking to over 6,000 people in Manchester about why community information was so hard to find. The answers were always the same:"
         problems:
-          - Every institution builds their own directory — none of them stay up to date
+          - Every institution builds their own directory, and none of them stay up to date
           - Community groups don't have time to maintain six different listings
           - Nobody trains anyone how to do any of this
         cta: Read our story
         quote: "“PlaceCal lets us focus on organising collaborative festivals across venues, rather than struggling to find out what's on.”"
-        quote_by: — Community partnership coordinator, Hulme
+        quote_by: Community partnership coordinator, Hulme
       features:
         kicker: What you get
         heading: Everything a hyperlocal calendar needs.
@@ -77,7 +76,7 @@ en:
     audiences:
       index:
         title: Who PlaceCal is for.
-        lede: We work with six kinds of organisation. Each has its own story — pick yours.
+        lede: We work with six kinds of organisation. Each has its own story, so pick yours.
       see_pitch: See the pitch
       for_kicker: For %{audience}
       how_heading: How it works for you
@@ -92,7 +91,7 @@ en:
         lede: Turn your local knowledge into a community information website.
         image_alt: A middle aged woman and young girl enjoying a pottery class
         hero: We help community groups build something bigger than themselves.
-        subhero: You know everything about your neighbourhood. We give you the tools to share it — without adding work to overstretched volunteers.
+        subhero: You know everything about your neighbourhood. We give you the tools to share it, without adding work to overstretched volunteers.
         details: We know first hand that community partnerships are often cash strapped and time poor, but are often delivering the most important and life-changing support to the most vulnerable in society. The PlaceCal process helps make the most of the little time you have, and works with what community groups are already using, in some cases requiring no additional effort.
         impact:
           - title: 200+ events a week
@@ -105,7 +104,7 @@ en:
         image_alt: An aerial view of a city centre
         hero: One calendar for everything going on in your city.
         subhero: Stop paying three agencies to build three directories that never stay up to date. PlaceCal gives you one shared system across health, housing, culture and community.
-        details: Councils across Greater Manchester and beyond are using PlaceCal to replace fragmented asset maps, brittle event directories and paper leaflets with one living system — co-owned by residents, VCSEs, libraries and council staff alike.
+        details: Councils across Greater Manchester and beyond are using PlaceCal to replace fragmented asset maps, brittle event directories and paper leaflets with one living system, co-owned by residents, VCSEs, libraries and council staff alike.
         impact:
           - title: Manchester City Council
             body: Age Friendly Manchester uses PlaceCal as its primary activity finder for residents aged 50+. 94 partners, 212 events per month, curated alongside the council team.
@@ -114,10 +113,10 @@ en:
       housing_providers:
         title: Housing providers
         lede: Connect your tenants with their local community.
-        image_alt: A row of brightly coloured timber houses — blue, green, grey, yellow and red
+        image_alt: "A row of brightly coloured timber houses: blue, green, grey, yellow and red"
         hero: Tenant engagement that starts with what's actually happening nearby.
         subhero: A PlaceCal branded for your housing association, auto-populated with the community events near each of your properties. Residents see what's on a short walk from their front door.
-        details: We work with housing providers to give residents a curated, hyperlocal calendar of activities — from coffee mornings and warm spaces to job clubs and support groups — all running inside existing community infrastructure you already fund.
+        details: We work with housing providers to give residents a curated, hyperlocal calendar of activities, from coffee mornings and warm spaces to job clubs and support groups, all running inside existing community infrastructure you already fund.
         impact:
           - title: Targeted to postcode
             body: Residents in each estate see activities within a 15-minute walk, automatically surfaced based on the postcode they live at.
@@ -129,19 +128,19 @@ en:
         image_alt: A GP talking with a patient
         hero: A social prescribing tool that doesn't waste the patient's afternoon.
         subhero: Filter by interest, day of the week and walking distance from the practice. Print a referral sheet in one click.
-        details: PlaceCal is used by link workers and GPs across Greater Manchester to find the right group for the patient in front of them — without relying on out-of-date PDFs or asking the receptionist.
+        details: PlaceCal is used by link workers and GPs across Greater Manchester to find the right group for the patient in front of them, without relying on out-of-date PDFs or asking the receptionist.
         impact:
           - title: Under 30 seconds per referral
             body: Search by interest, filter by day and distance, print or email the referral. No accounts, no passwords, no third-party software.
           - title: Always up to date
-            body: Community groups maintain their own listings using tools they already use — Google Calendar, Outlook, Facebook. You always see the current version.
+            body: "Community groups maintain their own listings using tools they already use: Google Calendar, Outlook, Facebook. You always see the current version."
       vcses:
         title: VCSEs
         lede: Support community groups in your neighbourhood to work better together.
         image_alt: Four laughing volunteers in matching event t-shirts sitting outdoors, throwing colourful paper shapes
         hero: Infrastructure for the infrastructure organisation.
         subhero: If your job is to enable the community groups in your area, PlaceCal is the shared system they've been waiting for.
-        details: Voluntary, community and social enterprise organisations can set up PlaceCal for their patch — giving every member group a free, maintained listing and the training to keep it updated.
+        details: Voluntary, community and social enterprise organisations can set up PlaceCal for their patch, giving every member group a free, maintained listing and the training to keep it updated.
         impact:
           - title: One training programme
             body: We deliver the training so your team doesn't have to become calendar software experts.
@@ -152,7 +151,7 @@ en:
         lede: Bring more people into your venue, your area or your city.
         image_alt: A crowd at a music venue
         hero: Every venue in the area, on one calendar. Yes, even that one.
-        subhero: Cultural districts, festival cities and tourism boards use PlaceCal to surface the full programme — from main-stage gigs to the poetry night in the pub.
+        subhero: Cultural districts, festival cities and tourism boards use PlaceCal to surface the full programme, from main-stage gigs to the poetry night in the pub.
         details: Whether you're running a cultural quarter, a BID, or a destination marketing organisation, PlaceCal gives you a curated calendar that includes the grassroots programming usually invisible to official listings.
         impact:
           - title: Festival mode
@@ -161,12 +160,12 @@ en:
             body: Visitors see the whole cultural offer, not just the venues that pay for listings.
     features:
       title: Everything PlaceCal does.
-      lede: A thorough list of what comes in the box. Every feature is included in every plan — there is no pro tier.
+      lede: A thorough list of what comes in the box. Every feature is included in every plan. There is no pro tier.
       list:
         - title: Hyperlocal by default
           body: Every partnership runs on its own subdomain with curated partners, events and neighbourhoods.
         - title: Works with existing tools
-          body: Community groups use Google Calendar, Outlook, Facebook, iCal feeds — whatever they already have. We integrate.
+          body: Community groups use Google Calendar, Outlook, Facebook, iCal feeds, whatever they already have. We integrate.
         - title: Collective ownership
           body: Not-for-profit, co-operative, and co-owned by the partnerships who use it.
         - title: Accessibility first
@@ -178,7 +177,7 @@ en:
         - title: Map & location tools
           body: Every partner pinned. Filter by walking distance, neighbourhood or ward.
         - title: Social prescribing ready
-          body: Designed with link workers — 30-second search, one-click referral sheet.
+          body: "Designed with link workers: 30-second search, one-click referral sheet."
         - title: Multi-site partnerships
           body: One partner can appear on several local PlaceCals without duplicating data.
     # Shared by the audience-page aside and the pricing-page timeline.
@@ -194,7 +193,7 @@ en:
         - title: Launch & train
           body: You have tools and ongoing support.
     # Our story is served by the directory's page (Views::Directory::OurStory,
-    # copy under directory.pages.our_story) — no join-specific copy.
+    # copy under directory.pages.our_story), so there is no join-specific copy.
     # Pricing copy follows the July 2026 business plan and Stefan's design
     # handoff: three paid tiers priced by who you are (group counts are
     # guidelines, not meters), a free Starter strip, extras, and a FAQ.
@@ -327,5 +326,5 @@ en:
       title: Book a 30-minute chat.
       lede: No pitch deck. We listen, learn what you're trying to do, and tell you honestly whether PlaceCal is the right fit.
       flash:
-        success: Thanks — we've got your message and we'll be in touch to pick a time.
-        error: Sorry — we couldn't send that. Please check the form below and try again.
+        success: Thanks, we've got your message and we'll be in touch to pick a time.
+        error: Sorry, we couldn't send that. Please check the form below and try again.

@@ -164,11 +164,11 @@ Rails.application.routes.draw do
 
   get 'our-story', to: 'pages#our_story'
 
-  # Retired pages: the homepage replaces find-placecal, the join site the pitches.
+  # Retired pages. The pitches redirect temporarily while the join site is a draft.
   get 'find-placecal', to: redirect('/')
   %w[community-groups metropolitan-areas vcses housing-providers
      social-prescribers culture-tourism].each do |audience_slug|
-    get audience_slug, to: redirect { |_params, request|
+    get audience_slug, to: redirect(status: 302) { |_params, request|
       # Partner custom domains have no join.<domain>, so production names the host.
       if Rails.env.production?
         "https://join.placecal.org/who-its-for/#{audience_slug}"
