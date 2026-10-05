@@ -79,8 +79,6 @@ RSpec.describe "GraphQL API", :slow, type: :system do
     # Configure protocol for full URL generation
     Rails.application.default_url_options[:protocol] = "https"
 
-    create_default_site
-
     app_routes = Rails.application.routes
     app_routes.default_url_options[:host] = server.host
     app_routes.default_url_options[:port] = server.port

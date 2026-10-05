@@ -4,7 +4,7 @@ class Views::Partners::Show < Views::Base
   register_value_helper :partner_service_area_text
 
   prop :partner, Partner, reader: :private
-  prop :site, Site, reader: :private
+  prop :site, _Nilable(::Site), reader: :private
   prop :current_day, Date, reader: :private
   prop :map, _Nilable(Array), reader: :private
   prop :events, _Interface(:each), reader: :private
@@ -26,14 +26,27 @@ class Views::Partners::Show < Views::Base
   private
 
   def set_content_for_tags
-    content_for(:title) { partner.name }
-    if partner.image.present?
-      content_for(:image) { partner.image }
-    else
-      content_for(:image) { site.og_image }
-    end
+    content_for(:title) { title_with_place }
+    content_for(:canonical) { partner.permalink }
+    content_for(:image) { partner_og_image_url(partner) }
+    content_for(:image_alt) { t('og_image.alt.partner', name: partner.name) }
     content_for(:description) { partner.summary } if partner.summary
-    content_for(:json_ld) { safe(partner.to_json_ld(base_url: request.base_url).to_json) }
+    # Built from the directory apex, not request.base_url, so the JSON-LD @id
+    # names the same URL as the canonical tag above — the structured data must
+    # reinforce the canonical entity, not contradict it per-subdomain.
+    content_for(:json_ld) { safe(partner.to_json_ld(base_url: ::Site::DIRECTORY_URL).to_json) }
+  end
+
+  # "Partner Name, Place" — the locality makes the <title> match how people
+  # actually search ("X in Y"). Neighbourhood name first (most local), city
+  # as fallback; service-area-only partners just get their name. Skipped when
+  # the name already contains the place ("Moss Side Powerhouse Library, Moss
+  # Side" reads clunky in search results and adds nothing).
+  def title_with_place
+    place = partner.address&.neighbourhood&.name.presence || partner.address&.city.presence
+    return partner.name if place.nil? || partner.name.downcase.include?(place.downcase)
+
+    "#{partner.name}, #{place}"
   end
 
   def render_partner_description
@@ -51,7 +64,7 @@ class Views::Partners::Show < Views::Base
 
   def render_accessibility_details(summary_class: nil)
     details(id: 'accessibility-info') do
-      summary(class: summary_class) { 'Accessibility information' }
+      summary(class: summary_class) { t('partners.show.accessibility_heading') }
       div(class: 'mt-2 text-sm text-foreground') do
         raw safe(partner.accessibility_info_html.to_s)
       end
@@ -62,11 +75,11 @@ class Views::Partners::Show < Views::Base
 
   def render_local_layout
     div do
-      Hero(partner.name, site.tagline)
+      Hero(partner.name, site.tagline, section: t('partners.show.section'))
 
       div(class: 'container-public mb-32') do
         Breadcrumb(
-          trail: [['Partners', partners_path], [partner.name, partner_path(partner)]],
+          trail: [[t('navigation.site.partners'), partners_path], [partner.name, partner_path(partner)]],
           site_name: site.name
         )
 
@@ -85,18 +98,22 @@ class Views::Partners::Show < Views::Base
       end
       div(class: 'gi gi__2-5') do
         render_partner_image
-        Map(points: map, site: site.slug, compact: true)
+        Map(points: map, compact: true)
         render_opening_times
       end
     end
   end
 
+  # These section headings are h2 rather than h3: they are the first headings
+  # under the page h1 and an h3 there skips a level. The look is unchanged,
+  # because Tailwind's preflight already flattens every heading to the
+  # inherited size with no margin, so an h2 and an h3 here draw identically.
   def render_contact_and_address
-    h3(class: 'udl udl--fw allcaps h4') { 'Get in touch' }
+    h2(class: 'udl udl--fw allcaps h4') { t('partners.show.contact_heading') }
     ContactDetails(partner: partner)
 
-    h3(class: 'udl udl--fw allcaps h4') { 'Address' }
-    p { "We operate in #{partner_service_area_text(partner)}." } if partner.has_service_areas?
+    h2(class: 'udl udl--fw allcaps h4') { t('partners.show.address_heading') }
+    p { raw(t('partners.show.service_area_html', areas: partner_service_area_text(partner))) } if partner.has_service_areas?
 
     Address(address: partner.address)
 
@@ -104,10 +121,13 @@ class Views::Partners::Show < Views::Base
 
     return unless partner.managees.any?
 
+    # view_context.link_to, not the registered output helper: the helper
+    # writes straight to the buffer, so building the list as an interpolation
+    # argument would emit the links ahead of the sentence that contains them.
+    places = safe_join(partner.managees.map { |place| view_context.link_to(place.name, place) }, ', ')
+
     p(class: 'small') do
-      plain "#{partner.name} manage "
-      raw safe_join(partner.managees.map { |place| link_to place.name, place }, ', ')
-      plain '.'
+      raw(t('partners.show.managed_by_html', name: partner.name, places: places))
     end
   end
 
@@ -118,7 +138,7 @@ class Views::Partners::Show < Views::Base
       img(
         src: partner.image.standard.url,
         srcset: "#{partner.image.standard.url} 1x, #{partner.image.retina.url} 2x",
-        alt: "Image for #{partner.name}",
+        alt: t('partners.show.image_alt', name: partner.name),
         class: 'map--single'
       )
     end
@@ -129,7 +149,7 @@ class Views::Partners::Show < Views::Base
     return unless times.any?
 
     br
-    h3(class: 'udl udl--fw allcaps h4') { 'Opening times' }
+    h2(class: 'udl udl--fw allcaps h4') { t('partners.show.opening_times_heading') }
     ul(class: 'opening_times reset') do
       times.each do |slot|
         li { slot }
@@ -147,11 +167,11 @@ class Views::Partners::Show < Views::Base
           raw safe(place.summary_html.to_s) if place.summary_html.present?
         end
         div(class: 'gi gi__1-2') do
-          h2(class: 'udl udl--fw allcaps h4') { 'Address' }
+          h2(class: 'udl udl--fw allcaps h4') { t('partners.show.address_heading') }
           div(class: 'small') do
             Address(address: place.address)
           end
-          h2(class: 'udl udl--fw allcaps h4') { 'Contact' }
+          h2(class: 'udl udl--fw allcaps h4') { t('partners.show.place_contact_heading') }
           div(class: 'small') do
             ContactDetails(
               partner: partner,
@@ -216,17 +236,22 @@ class Views::Partners::Show < Views::Base
 
   def empty_period_message
     case period
-    when 'day' then 'No events this day.'
-    when 'week' then 'No events this week.'
-    when 'month' then 'No events this month.'
-    else 'No upcoming events.'
+    when 'day' then t('partners.show.no_events_day')
+    when 'week' then t('partners.show.no_events_week')
+    when 'month' then t('partners.show.no_events_month')
+    else t('partners.show.no_events_upcoming')
     end
   end
 
   def render_meta_section
     Meta("/partners/#{partner.id}") do |component|
       component.with_link do
-        link_to "Subscribe to #{partner}'s events with iCal", partner_url(partner, protocol: :webcal, format: :ics)
+        link_to t('partners.show.subscribe_ical', name: partner.name),
+                partner_url(partner, protocol: :webcal, format: :ics)
+        if events.any?
+          whitespace
+          link_to t('events.csv_export.link'), partner_url(partner, format: :csv)
+        end
       end
     end
   end

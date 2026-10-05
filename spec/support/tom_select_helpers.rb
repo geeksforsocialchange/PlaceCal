@@ -2,7 +2,7 @@
 
 # Helpers for Tom Select dropdown interactions in system specs
 # Also includes helpers for StackedListSelectorComponent
-# rubocop:disable Metrics/ModuleLength
+# rubocop:disable-next Metrics/ModuleLength
 module TomSelectHelpers
   # Wait for Tom Select containers to be ready
   def await_tom_select(time = 30)
@@ -203,7 +203,6 @@ module TomSelectHelpers
     find_element_with_retry(max_attempts: max_attempts, &)
   end
 end
-# rubocop:enable Metrics/ModuleLength
 
 RSpec.configure do |config|
   config.include TomSelectHelpers, type: :system

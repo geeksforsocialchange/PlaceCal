@@ -23,18 +23,23 @@ on:
 permissions:
   contents: read
 
+# These lint / security / test jobs mirror config/ci.rb, which devs can run
+# locally in one shot with `bin/ci` (Rails 8.1 ActiveSupport::ContinuousIntegration).
+# Keep the two in sync — a check added here should be added there, and vice
+# versa. CI keeps the jobs split and the test suite parallelised for speed;
+# bin/ci runs the same steps sequentially.
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: ruby/setup-ruby@v1
+      - uses: ruby/setup-ruby@14594264cd68ce8a2345dd349bc3d138a4ef85c8 # v1.327.0
         with:
           bundler-cache: true
           cache-version: 3
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: ".node-version"
           cache: yarn
@@ -45,18 +50,41 @@ jobs:
           bin/yarn run format:check
           bundle exec rubocop
 
+      - name: Check extensions stay inside the contract
+        run: bundle exec bin/check-extension-tree
+
   security:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: ruby/setup-ruby@v1
+      - uses: ruby/setup-ruby@14594264cd68ce8a2345dd349bc3d138a4ef85c8 # v1.327.0
         with:
           bundler-cache: true
           cache-version: 3
 
       - name: Run Brakeman
         run: bundle exec brakeman --no-pager
+
+      # npm's advisory endpoint periodically drops or 503s requests. Retry, and
+      # if npm still cannot answer, warn rather than fail: a registry outage is
+      # not a vulnerability. Real findings still fail the job.
+      - name: Audit JavaScript dependencies (importmap)
+        run: |
+          for attempt in 1 2 3; do
+            if output=$(bin/importmap audit 2>&1); then
+              echo "$output"
+              exit 0
+            fi
+            echo "$output"
+            if ! echo "$output" | grep -qE "Importmap::Npm::HTTPError|transport error|Unexpected error response 5"; then
+              echo "::error::importmap audit reported vulnerable packages"
+              exit 1
+            fi
+            echo "npm advisory endpoint unavailable (attempt $attempt of 3)"
+            sleep $((attempt * 30))
+          done
+          echo "::warning::importmap audit skipped: npm advisory endpoint unavailable after 3 attempts"
 
   test:
     runs-on: ubuntu-latest
@@ -91,28 +119,28 @@ jobs:
       CI: true
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
 
-      - uses: ruby/setup-ruby@v1
+      - uses: ruby/setup-ruby@14594264cd68ce8a2345dd349bc3d138a4ef85c8 # v1.327.0
         with:
           bundler-cache: true
           cache-version: 3
 
-      - name: Install Imagemagick
+      - name: Install Imagemagick and libvips
         run: |
           sudo apt-get update
-          sudo apt-get install -y imagemagick
+          sudo apt-get install -y imagemagick libvips-dev
 
       - name: Install Chrome for browser tests
         if: matrix.suite == 'system' || startsWith(matrix.suite, 'cucumber')
-        uses: browser-actions/setup-chrome@latest
+        uses: browser-actions/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4 # latest
         id: setup-chrome
         with:
           chrome-version: stable
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: ".node-version"
           cache: yarn
@@ -173,7 +201,7 @@ jobs:
 
       - if: failure()
         name: Upload test screenshots
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: test-screenshots-${{ matrix.suite }}
           path: tmp/capybara/
@@ -205,6 +233,9 @@ jobs:
     concurrency:
       group: deploy-${{ github.event_name == 'release' && 'production' || github.event.inputs.destination || 'staging' }}
       cancel-in-progress: false
+    environment:
+      name: ${{ github.event_name == 'release' && 'production' || github.event.inputs.destination || 'staging' }}
+      url: ${{ (github.event_name == 'release' || github.event.inputs.destination == 'production') && 'https://placecal.org' || 'https://placecal-staging.org' }}
     permissions:
       contents: read
       packages: write
@@ -214,7 +245,7 @@ jobs:
       REGISTRY: ghcr.io
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set deploy destination
         id: dest
@@ -228,13 +259,13 @@ jobs:
           fi
 
       - name: Log in to GitHub Container Registry
-        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.repository_owner }}
           password: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
 
-      - uses: ruby/setup-ruby@v1
+      - uses: ruby/setup-ruby@14594264cd68ce8a2345dd349bc3d138a4ef85c8 # v1.327.0
         with:
           bundler-cache: true
           cache-version: 3
@@ -271,6 +302,7 @@ jobs:
           MAILERSEND_PASSWORD: ${{ secrets.MAILERSEND_PASSWORD }}
           APPSIGNAL_PUSH_API_KEY: ${{ secrets.APPSIGNAL_PUSH_API_KEY }}
           EVENTBRITE_TOKEN: ${{ secrets.EVENTBRITE_TOKEN }}
+          MATOMO_TOKEN_AUTH: ${{ secrets.MATOMO_TOKEN_AUTH }}
           # SSL (Cloudflare Origin CA certificate — per-destination)
           SSL_CERTIFICATE_PEM: ${{ steps.dest.outputs.destination == 'production' && secrets.PRODUCTION_SSL_CERTIFICATE_PEM || secrets.STAGING_SSL_CERTIFICATE_PEM }}
           SSL_PRIVATE_KEY_PEM: ${{ steps.dest.outputs.destination == 'production' && secrets.PRODUCTION_SSL_PRIVATE_KEY_PEM || secrets.STAGING_SSL_PRIVATE_KEY_PEM }}

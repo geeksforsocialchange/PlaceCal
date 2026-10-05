@@ -1,5 +1,28 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: neighbourhoods
+#
+#  id              :bigint           not null, primary key
+#  ancestry        :string
+#  level           :integer
+#  name            :string
+#  name_abbr       :string
+#  parent_name     :string
+#  partners_count  :integer          default(0), not null
+#  release_date    :datetime
+#  unit            :string           default("ward")
+#  unit_code_key   :string           default("WD19CD")
+#  unit_code_value :string
+#  unit_name       :string
+#
+# Indexes
+#
+#  index_neighbourhoods_on_ancestry        (ancestry)
+#  index_neighbourhoods_on_level           (level)
+#  index_neighbourhoods_on_partners_count  (partners_count)
+#
 class Neighbourhood < ApplicationRecord
   # ==== Includes / Extends ====
   has_ancestry

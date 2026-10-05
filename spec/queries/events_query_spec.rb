@@ -194,6 +194,21 @@ RSpec.describe EventsQuery do
       query = described_class.new(site: site, day: today)
       expect(query.next_event_after(10.days.from_now)).to be_nil
     end
+
+    # Insertion order is the reverse of chronological order here, so an
+    # unordered query returns the wrong event.
+    context "when the events were created out of chronological order" do
+      let!(:latest) { create(:future_event, organiser: partner, dtstart: 9.days.from_now) }
+      let!(:soonest) { create(:future_event, organiser: partner, dtstart: 1.day.from_now) }
+
+      it "returns the soonest event, not whichever row comes back first" do
+        query = described_class.new(site: site, day: today)
+
+        expect(query.next_event_after(today)).to eq(soonest)
+        expect(query.next_event_after(2.days.from_now)).to eq(event1)
+        expect(query.next_event_after(6.days.from_now)).to eq(latest)
+      end
+    end
   end
 
   describe "period: 'month'" do
@@ -534,6 +549,34 @@ RSpec.describe EventsQuery do
         expect(result).to be_empty
       end
     end
+
+    # The dropdown lists only neighbourhoods with events and their ancestors, so
+    # it must not load every descendant of the site's territory. A site anchored
+    # to a district with many empty wards but events in one ward returns just
+    # that ward, having loaded a bounded set of neighbourhood rows, not the lot.
+    context "when the site's territory is large but few neighbourhoods have events" do
+      let(:district) { site.primary_neighbourhood }
+      let(:active_ward) { create(:neighbourhood, name: "Active Ward", unit: "ward", parent: district) }
+      let(:address) { create(:address, neighbourhood: active_ward) }
+      let(:partner) do
+        p = create(:partner, address: address)
+        p.service_areas << create(:service_area, neighbourhood: active_ward)
+        p
+      end
+
+      before do
+        create_list(:neighbourhood, 15, unit: "ward", parent: district)
+        create_list(:future_event, 2, organiser: partner, address: address)
+      end
+
+      it "returns only the event-bearing ward, not the empty siblings" do
+        query = described_class.new(site: site, day: today)
+        result = query.neighbourhoods_with_counts(period: "future")
+
+        expect(result.map { |r| r[:neighbourhood].id }).to contain_exactly(active_ward.id)
+        expect(result.first[:count]).to eq(2)
+      end
+    end
   end
 
   describe "#call with neighbourhood_id filter" do
@@ -661,6 +704,212 @@ RSpec.describe EventsQuery do
 
         expect(events).to include(event_in_ward2_partner_in_ward1)
       end
+    end
+  end
+
+  describe ".upcoming_counts_by_partner" do
+    it "returns an empty hash for blank ids" do
+      expect(described_class.upcoming_counts_by_partner([])).to eq({})
+    end
+
+    it "counts upcoming events hosted at the partner" do
+      partner = create(:partner)
+      create(:future_event, place: partner)
+
+      expect(described_class.upcoming_counts_by_partner([partner.id])).to eq(partner.id => 1)
+    end
+
+    it "excludes past events" do
+      partner = create(:partner)
+      create(:past_event, place: partner)
+
+      expect(described_class.upcoming_counts_by_partner([partner.id])).to eq({})
+    end
+  end
+
+  describe "#call with tag_id (region filter)" do
+    let(:region_site) { create(:site, slug: "two-region-site") }
+    let(:ward) { create(:riverside_ward) }
+    let(:north_tag) { create(:partnership, name: "North") }
+    let(:south_tag) { create(:partnership, name: "South") }
+    let(:north_partner) { create(:partner, name: "North Partner", address: create(:address, neighbourhood: ward)) }
+    let(:south_partner) { create(:partner, name: "South Partner", address: create(:address, neighbourhood: ward)) }
+
+    before do
+      region_site.neighbourhoods << ward
+      region_site.tags << north_tag
+      region_site.tags << south_tag
+      north_partner.tags << north_tag
+      south_partner.tags << south_tag
+      create(:future_event, organiser: north_partner, summary: "Northern Social")
+      create(:future_event, organiser: south_partner, summary: "Southern Social")
+    end
+
+    it "returns every event when no tag is given" do
+      result = described_class.new(site: region_site, day: today).call(period: "future")
+
+      expect(result.values.flatten.map(&:summary)).to contain_exactly("Northern Social", "Southern Social")
+    end
+
+    it "restricts events to partners carrying the tag" do
+      result = described_class.new(site: region_site, day: today).call(period: "future", tag_id: north_tag.id)
+
+      expect(result.values.flatten.map(&:summary)).to eq(["Northern Social"])
+    end
+
+    it "matches events hosted at a tagged partner as well as organised by one" do
+      create(:future_event, organiser: south_partner, place: north_partner, summary: "Hosted Up North")
+
+      result = described_class.new(site: region_site, day: today).call(period: "future", tag_id: north_tag.id)
+
+      expect(result.values.flatten.map(&:summary)).to contain_exactly("Northern Social", "Hosted Up North")
+    end
+
+    describe "counts and next event" do
+      # Time is frozen at 2022-11-08, so every date below is inside November.
+      before do
+        create_list(:future_event, 4, organiser: south_partner, dtstart: 2.days.from_now)
+        create(:future_event, organiser: north_partner, dtstart: 3.days.from_now, summary: "Soon North")
+      end
+
+      it "counts only the region's future events" do
+        query = described_class.new(site: region_site, day: today)
+
+        expect(query.future_count).to eq(7)
+        expect(query.future_count(tag_id: north_tag.id)).to eq(2)
+      end
+
+      it "counts only the region's events in the next 7 days" do
+        query = described_class.new(site: region_site, day: today)
+
+        expect(query.next_7_days_count).to eq(5)
+        expect(query.next_7_days_count(tag_id: north_tag.id)).to eq(1)
+      end
+
+      it "counts only the region's events in the month" do
+        query = described_class.new(site: region_site, day: today)
+
+        expect(query.monthly_count).to eq(7)
+        expect(query.monthly_count(tag_id: north_tag.id)).to eq(2)
+      end
+
+      it "finds the next event inside the region" do
+        query = described_class.new(site: region_site, day: today)
+
+        expect(query.next_event_after(today, tag_id: north_tag.id).organiser).to eq(north_partner)
+      end
+    end
+  end
+
+  describe "site scoping for a neighbourhood site" do
+    let(:neighbourhood_site) { create(:site, slug: "neighbourhood-site") }
+    let(:ward) { create(:riverside_ward) }
+    let(:other_ward) { create(:cliffside_ward) }
+    let(:site_partner) { create(:partner, name: "Site Partner", address: create(:riverside_address, neighbourhood: ward)) }
+    let(:outside_partner) { create(:partner, name: "Outside Partner", address: create(:cliffside_address, neighbourhood: other_ward)) }
+
+    before do
+      neighbourhood_site.neighbourhoods << ward
+      create(:future_event, organiser: site_partner, summary: "Organised Here")
+      create(:future_event, organiser: outside_partner, address: create(:cliffside_address, neighbourhood: other_ward), summary: "Outside")
+    end
+
+    # The same rule as a tagged site: an event a site partner hosts belongs on
+    # the site even when the event's own address is outside its area.
+    it "includes events hosted at a site partner as well as organised by one" do
+      create(:future_event, organiser: outside_partner, place: site_partner,
+                            address: create(:cliffside_address, neighbourhood: other_ward), summary: "Hosted Here")
+
+      result = described_class.new(site: neighbourhood_site, day: today).call(period: "future")
+
+      expect(result.values.flatten.map(&:summary)).to contain_exactly("Organised Here", "Hosted Here")
+    end
+  end
+
+  describe "site scoping for a tag-only site" do
+    let(:tag_only_site) { create(:site, slug: "tag-only-site") }
+    let(:ward) { create(:riverside_ward) }
+    let(:tag) { create(:partnership, name: "Tagged") }
+    let(:tagged_partner) { create(:partner, name: "Tagged Partner", address: create(:address, neighbourhood: ward)) }
+    let(:untagged_partner) { create(:partner, name: "Untagged Partner", address: create(:address, neighbourhood: ward)) }
+
+    before do
+      tag_only_site.tags << tag
+      tagged_partner.tags << tag
+      create(:future_event, organiser: tagged_partner, summary: "Tagged Social")
+      create(:future_event, organiser: untagged_partner, summary: "Untagged Social")
+    end
+
+    it "returns only events from partners carrying the site tag" do
+      result = described_class.new(site: tag_only_site, day: today).call(period: "future")
+
+      expect(result.values.flatten.map(&:summary)).to eq(["Tagged Social"])
+    end
+
+    it "includes events hosted at a tagged partner" do
+      create(:future_event, organiser: untagged_partner, place: tagged_partner, summary: "Hosted At Tagged")
+
+      result = described_class.new(site: tag_only_site, day: today).call(period: "future")
+
+      expect(result.values.flatten.map(&:summary)).to contain_exactly("Tagged Social", "Hosted At Tagged")
+    end
+
+    it "keeps the partner set in SQL rather than loading partner rows" do
+      queries = []
+      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*, payload|
+        queries << payload[:sql]
+      end
+
+      begin
+        described_class.new(site: tag_only_site, day: today).call(period: "future")
+      ensure
+        ActiveSupport::Notifications.unsubscribe(subscriber)
+      end
+
+      # Preloading the organiser and place of the events we return fetches
+      # partner rows by primary key, which is fine. What must not happen is a
+      # query that pulls the whole site partner set into memory.
+      partner_set_queries = queries.select { |sql| sql.include?('"partners".*') }
+                                   .grep_v(/"partners"\."id" (?:=|IN \()/)
+
+      expect(partner_set_queries).to be_empty
+    end
+
+    # The partner set reaches Postgres as a literal id list rather than a
+    # subquery: with a subquery the planner hashed the set and scanned every
+    # future event for each count (600ms against 12ms on production data).
+    it "passes the site's partner ids to the events query as a literal list" do
+      sql = described_class.new(site: tag_only_site, day: today).send(:base_scope).to_sql
+
+      expect(sql).to include(%("events"."organiser_id" = #{tagged_partner.id}))
+      expect(sql).to include(%("events"."place_id" = #{tagged_partner.id}))
+      expect(sql).to include(%(venue_partners.id IN (#{tagged_partner.id})))
+      expect(sql).not_to include("IN (SELECT")
+    end
+
+    it "fetches the partner ids once per query object" do
+      query = described_class.new(site: tag_only_site, day: today)
+      queries = []
+      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*, payload|
+        queries << payload[:sql] unless payload[:cached]
+      end
+
+      begin
+        query.future_count
+        query.next_7_days_count
+        query.monthly_count
+      ensure
+        ActiveSupport::Notifications.unsubscribe(subscriber)
+      end
+
+      expect(queries.count { |q| q.include?('FROM "partners"') }).to eq(1)
+    end
+
+    it "returns nothing for a tagged site with no partners" do
+      empty_site = create(:site, slug: "empty-tagged")
+      empty_site.tags << create(:partnership, name: "Nobody")
+
+      expect(described_class.new(site: empty_site, day: today).call(period: "future")).to be_empty
     end
   end
 end

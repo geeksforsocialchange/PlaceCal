@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Views::Homepage::Home < Views::Base
+class Views::Homepage::Home < Views::Homepage::Base
   prop :neighbourhoods, _Interface(:each), reader: :private
 
   def view_template

@@ -20,8 +20,11 @@
 		border-color: var(--base-secondary);
 	}
 
-	h5 {
-		margin-top: 0;
+	// The footer headings are h2s so the document outline never jumps a level,
+	// but they keep the h5 look they had: the small class sets the size and
+	// line height, allcaps the weight, and this restores the h5 margin.
+	&__heading {
+		margin: 0 0 1.67em;
 	}
 
 	&__inner {

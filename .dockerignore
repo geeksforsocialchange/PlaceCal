@@ -30,7 +30,6 @@ doc
 # IDE config
 .vscode
 .claude
-.claude-swarm
 
 # CI
 .github

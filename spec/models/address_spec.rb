@@ -1,5 +1,28 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: addresses
+#
+#  id               :bigint           not null, primary key
+#  city             :string
+#  country_code     :string           default("UK"), not null
+#  latitude         :float
+#  longitude        :float
+#  postcode         :string           not null
+#  street_address   :string           not null
+#  street_address2  :string
+#  street_address3  :string
+#  neighbourhood_id :bigint
+#
+# Indexes
+#
+#  index_addresses_on_neighbourhood_id  (neighbourhood_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (neighbourhood_id => neighbourhoods.id)
+#
 require "rails_helper"
 
 RSpec.describe Address, type: :model do

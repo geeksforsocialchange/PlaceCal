@@ -1,5 +1,43 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: users
+#
+#  id                      :bigint           not null, primary key
+#  access_token            :string
+#  access_token_expires_at :string
+#  avatar                  :string
+#  current_sign_in_at      :datetime
+#  current_sign_in_ip      :inet
+#  email                   :string           default(""), not null
+#  encrypted_password      :string           default("")
+#  first_name              :string
+#  invitation_accepted_at  :datetime
+#  invitation_created_at   :datetime
+#  invitation_limit        :integer
+#  invitation_sent_at      :datetime
+#  invitation_token        :string
+#  invited_by_type         :string
+#  last_name               :string
+#  last_sign_in_at         :datetime
+#  last_sign_in_ip         :inet
+#  phone                   :string
+#  remember_created_at     :datetime
+#  reset_password_sent_at  :datetime
+#  reset_password_token    :string
+#  role                    :string           not null
+#  sign_in_count           :integer          default(0), not null
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
+#  invited_by_id           :integer
+#
+# Indexes
+#
+#  index_users_on_email                 (email) UNIQUE
+#  index_users_on_invitation_token      (invitation_token) UNIQUE
+#  index_users_on_reset_password_token  (reset_password_token) UNIQUE
+#
 class User < ApplicationRecord
   # ==== Includes / Extends ====
   include Validation
@@ -84,8 +122,11 @@ class User < ApplicationRecord
     "#{name} <#{email}>".strip
   end
 
-  # @return [String] "Firstname Lastname (email)"
+  # @return [String] "Firstname Lastname (email)", degrading gracefully when
+  #   either part is missing so we never render a bare "Name ()" (#3241)
   def display_name
+    return full_name.presence || "#{self.class.model_name.human} ##{id}" if email.blank?
+
     name = full_name.presence || email.split('@').first
     "#{name} (#{email})"
   end
@@ -113,22 +154,26 @@ class User < ApplicationRecord
     role == :national_admin
   end
 
+  # Memoised: the policies and admin partner scoping call these repeatedly,
+  # sometimes per partner in a loop, and each build expands the user's
+  # neighbourhood subtrees (or the whole table for a national admin).
+  #
   # @return [Array<Neighbourhood>] all neighbourhoods in this user's subtrees
   def owned_neighbourhoods
-    if national_admin?
-      Neighbourhood.all.to_a
-    else
-      neighbourhoods.collect(&:subtree).flatten
-    end
+    @owned_neighbourhoods ||= if national_admin?
+                                Neighbourhood.all.to_a
+                              else
+                                neighbourhoods.collect(&:subtree).flatten
+                              end
   end
 
   # @return [Array<Integer>] all neighbourhood IDs in this user's subtrees
   def owned_neighbourhood_ids
-    if national_admin?
-      Neighbourhood.pluck(:id)
-    else
-      owned_neighbourhoods.collect(&:id)
-    end
+    @owned_neighbourhood_ids ||= if national_admin?
+                                   Neighbourhood.pluck(:id)
+                                 else
+                                   owned_neighbourhoods.collect(&:id)
+                                 end
   end
 
   # @param partner_id [Integer]

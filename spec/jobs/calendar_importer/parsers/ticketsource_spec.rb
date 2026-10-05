@@ -108,6 +108,37 @@ RSpec.describe CalendarImporter::Parsers::Ticketsource do
         expect(data.length).to eq(1)
         expect(data.first["id"]).to eq("evt_123")
       end
+
+      it "retries a transient 5xx response then succeeds (ApiBase retry path)" do
+        allow(CalendarImporter::Parsers::Base).to receive(:sleep) # don't actually back off
+        events_url = "https://api.ticketsource.io/events?page=1&per_page=100"
+        stub_request(:get, events_url).to_return(
+          { status: 503 },
+          { status: 200, body: events_response, headers: { "Content-Type" => "application/json" } }
+        )
+
+        parser = described_class.new(calendar)
+        data = parser.download_calendar
+
+        expect(data.length).to eq(1)
+        expect(a_request(:get, events_url)).to have_been_made.twice
+        expect(CalendarImporter::Parsers::Base).to have_received(:sleep).once
+      end
+
+      it "raises InaccessibleFeed once retries are exhausted on a persistent 5xx" do
+        allow(CalendarImporter::Parsers::Base).to receive(:sleep)
+        events_url = "https://api.ticketsource.io/events?page=1&per_page=100"
+        stub_request(:get, events_url).to_return(status: 503)
+
+        parser = described_class.new(calendar)
+        expect { parser.download_calendar }.to raise_error(
+          CalendarImporter::Exceptions::InaccessibleFeed,
+          /API error \(code=503\)/
+        )
+        # initial attempt + HTTP_MAX_RETRIES retries
+        expect(a_request(:get, events_url))
+          .to have_been_made.times(CalendarImporter::Parsers::Base::HTTP_MAX_RETRIES + 1)
+      end
     end
   end
 

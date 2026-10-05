@@ -76,6 +76,69 @@ RSpec.describe PartnersQuery do
       end
     end
 
+    context "with an area-level neighbourhood filter" do
+      let(:district) { create(:millbrook_district) }
+      let(:ward) { create(:riverside_ward, parent: district) }
+      let!(:partner_in_ward) do
+        address = create(:address, neighbourhood: ward)
+        create(:partner, address: address)
+      end
+
+      before { site.neighbourhoods << district }
+
+      it "includes partners in descendant neighbourhoods" do
+        results = described_class.new(site: site).call(neighbourhood_id: district.id)
+
+        expect(results).to include(partner_in_ward)
+      end
+    end
+
+    context "when the site is anchored to a large area" do
+      let(:district) { create(:millbrook_district) }
+      let(:ward) { create(:riverside_ward, parent: district) }
+      let!(:partner_in_ward) do
+        create(:partner, address: create(:address, neighbourhood: ward))
+      end
+      let(:area_site) { create(:site) }
+
+      before { area_site.neighbourhoods << district }
+
+      # The subtree reaches Postgres as a subquery, never a literal id list: a
+      # country-anchored site otherwise serialised ~13,000 ids into 180KB of
+      # SQL on every request. See Site#owned_neighbourhoods_subtree.
+      it "matches the neighbourhood subtree with a subquery, not an id list" do
+        sql = described_class.new(site: area_site).call.to_sql
+
+        expect(sql).to include('IN (SELECT "neighbourhoods"."id" FROM "neighbourhoods"')
+        expect(sql).to match(%r{"neighbourhoods"\."ancestry" LIKE '[\d/]+/%'})
+      end
+
+      it "still returns partners in the area's descendants" do
+        results = described_class.new(site: area_site).call
+
+        expect(results).to include(partner_in_ward)
+      end
+    end
+
+    context "with an unknown or invalid neighbourhood filter" do
+      before do
+        address = create(:address, neighbourhood: neighbourhood)
+        create(:partner, address: address)
+      end
+
+      it "returns no partners for a non-existent neighbourhood id" do
+        results = described_class.new(site: site).call(neighbourhood_id: 0)
+
+        expect(results).to be_empty
+      end
+
+      it "does not raise for a non-integer neighbourhood id" do
+        expect do
+          described_class.new(site: site).call(neighbourhood_id: "not-a-number").to_a
+        end.not_to raise_error
+      end
+    end
+
     context "with tag filter" do
       let!(:category) { create(:category) }
       let!(:partner_with_tag) do
@@ -103,6 +166,33 @@ RSpec.describe PartnersQuery do
 
       it "returns empty relation" do
         results = described_class.new(site: empty_site).call
+
+        expect(results).to be_empty
+      end
+    end
+
+    context "with a tag-only site (partnership tags, no neighbourhoods)" do
+      let(:tag_only_site) { create(:site) }
+      let(:partnership) { create(:partnership) }
+      let!(:tagged_partner) { create(:partner, name: "Tagged") }
+      let!(:tagged_elsewhere) { create(:partner, name: "Tagged elsewhere") }
+      let!(:untagged_partner) { create(:partner, name: "Untagged") }
+
+      before do
+        tag_only_site.tags << partnership
+        tagged_partner.tags << partnership
+        tagged_elsewhere.tags << partnership
+      end
+
+      it "scopes by tag alone, wherever the partner is" do
+        results = described_class.new(site: tag_only_site).call
+
+        expect(results).to contain_exactly(tagged_partner, tagged_elsewhere)
+      end
+
+      it "still requires the neighbourhood when the site has both" do
+        tag_only_site.neighbourhoods << create(:neighbourhood)
+        results = described_class.new(site: tag_only_site).call
 
         expect(results).to be_empty
       end
@@ -155,6 +245,31 @@ RSpec.describe PartnersQuery do
       end
     end
 
+    context "with partners in descendant neighbourhoods" do
+      let(:district) { create(:millbrook_district) }
+      let(:ward) { create(:riverside_ward, parent: district) }
+
+      before do
+        site.neighbourhoods << district
+        create(:partner, address: create(:address, neighbourhood: district))
+        create(:partner, address: create(:address, neighbourhood: ward))
+      end
+
+      it "rolls descendant partners up into the area-level count" do
+        results = described_class.new(site: site).neighbourhoods_with_counts
+
+        district_result = results.find { |r| r[:neighbourhood].id == district.id }
+        expect(district_result[:count]).to eq(2)
+      end
+
+      it "still counts the descendant neighbourhood on its own" do
+        results = described_class.new(site: site).neighbourhoods_with_counts
+
+        ward_result = results.find { |r| r[:neighbourhood].id == ward.id }
+        expect(ward_result[:count]).to eq(1)
+      end
+    end
+
     context "when partner has address and service area in same neighbourhood" do
       before do
         partner1.service_area_neighbourhoods << neighbourhood
@@ -183,6 +298,94 @@ RSpec.describe PartnersQuery do
         expect(results.length).to eq(1)
         neighbourhood_result = results.find { |r| r[:neighbourhood].id == neighbourhood.id }
         expect(neighbourhood_result[:count]).to eq(1)
+      end
+    end
+  end
+
+  describe "#neighbourhood_tree" do
+    # Nil site (the directory) so the scope is all visible partners, independent
+    # of which neighbourhoods a site owns — matching how the public directory
+    # uses it.
+    subject(:tree) { described_class.new(site: nil).neighbourhood_tree }
+
+    let(:district) { create(:millbrook_district) }
+    let(:riverside) { create(:riverside_ward, parent: district) }
+    let(:oldtown) { create(:oldtown_ward, parent: district) }
+
+    let!(:riverside_partners) do
+      Array.new(2) { create(:partner, address: create(:address, neighbourhood: riverside)) }
+    end
+    let!(:oldtown_partner) do
+      create(:partner, address: create(:address, neighbourhood: oldtown))
+    end
+
+    it "drops the country level and roots the tree at regions" do
+      expect(tree.length).to eq(1)
+      expect(tree.first[:unit]).to eq("region")
+    end
+
+    it "nests region > county > district > ward" do
+      region = tree.first
+      county = region[:children].first
+      district_node = county[:children].first
+      wards = district_node[:children]
+
+      expect(region[:unit]).to eq("region")
+      expect(county[:unit]).to eq("county")
+      expect(district_node[:unit]).to eq("district")
+      expect(district_node[:id]).to eq(district.id)
+      expect(wards.map { |w| w[:id] }).to contain_exactly(riverside.id, oldtown.id)
+    end
+
+    it "rolls subtree partner counts up to every ancestor level" do
+      region = tree.first
+      county = region[:children].first
+      district_node = county[:children].first
+
+      expect(region[:count]).to eq(3)
+      expect(county[:count]).to eq(3)
+      expect(district_node[:count]).to eq(3)
+    end
+
+    it "counts each ward on its own" do
+      wards = tree.first[:children].first[:children].first[:children]
+      counts = wards.to_h { |w| [w[:id], w[:count]] }
+
+      expect(counts[riverside.id]).to eq(2)
+      expect(counts[oldtown.id]).to eq(1)
+    end
+
+    it "sorts children by name at each level" do
+      wards = tree.first[:children].first[:children].first[:children]
+      names = wards.map { |w| w[:name] }
+
+      expect(names).to eq(names.sort_by(&:downcase))
+    end
+
+    it "returns an empty array when no partners have neighbourhoods" do
+      Partner.destroy_all
+      expect(tree).to eq([])
+    end
+
+    context "with a selected neighbourhood that has no partners under the scope" do
+      let(:empty_ward) { create(:greenfield_ward, parent: district) }
+
+      def find_node(nodes, id)
+        nodes.each do |node|
+          return node if node[:id] == id
+
+          found = find_node(node[:children], id)
+          return found if found
+        end
+        nil
+      end
+
+      it "keeps the selected neighbourhood in the tree with a zero count" do
+        result = described_class.new(site: nil).neighbourhood_tree(selected_id: empty_ward.id)
+        node = find_node(result, empty_ward.id)
+
+        expect(node).to be_present
+        expect(node[:count]).to eq(0)
       end
     end
   end
@@ -279,6 +482,23 @@ RSpec.describe PartnersQuery do
       results = described_class.new(site: site_with_tags).call
 
       expect(results).to include(partner_both_tags, partner_site_tag_only)
+    end
+  end
+
+  describe ".area_labels" do
+    it "builds the neighbourhood breadcrumb from the partner's address" do
+      region = create(:neighbourhood, name: "Greater Riverside", unit: "region")
+      district = create(:neighbourhood, name: "Riverdale", unit: "district", parent: region)
+      ward = create(:neighbourhood, name: "Riverside", unit: "ward", parent: district)
+      partner = create(:partner, address: create(:address, neighbourhood: ward))
+
+      labels = described_class.area_labels(Partner.where(id: partner.id))
+
+      expect(labels[partner.id]).to eq("#{region.shortname} › #{district.shortname} › #{ward.shortname}")
+    end
+
+    it "returns an empty hash for no partners" do
+      expect(described_class.area_labels(Partner.none)).to eq({})
     end
   end
 end

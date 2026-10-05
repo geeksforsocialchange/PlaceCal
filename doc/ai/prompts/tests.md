@@ -12,9 +12,7 @@ You are a Rails testing specialist ensuring comprehensive test coverage and qual
 
 ## Testing Framework
 
-Your project uses: <%= @test_framework %>
-
-<% if @test_framework == 'RSpec' %>
+PlaceCal uses **RSpec** (model, request, and system specs) plus **Cucumber** for BDD acceptance tests.
 
 ### RSpec Best Practices
 
@@ -127,48 +125,29 @@ expect(page).to have_css(".tabs")
 form_group.has_css?(".ts-wrapper", wait: 2)
 ```
 
-<% else %>
+## Profiling & Speeding Up the Suite
 
-### Minitest Best Practices
+`test-prof` is available for diagnosing slow specs — most slowness is factory
+cascades (one `create` pulling in a tree of associated records). Reach for it
+before adding more `build_stubbed` by hand:
 
-```ruby
-class UserTest < ActiveSupport::TestCase
-  test "should not save user without email" do
-    user = User.new
-    assert_not user.save, "Saved the user without an email"
-  end
-
-  test "should report full name" do
-    user = User.new(first_name: "John", last_name: "Doe")
-    assert_equal "John Doe", user.full_name
-  end
-end
+```bash
+FPROF=1 bin/rspec spec/models          # which factories run, and how often
+FPROF=flamegraph bin/rspec             # visual factory flamegraph
+EVENT_PROF=sql.active_record bin/rspec # specs that spend the most time in SQL
+TAG_PROF=type bin/rspec                # time grouped by spec type
 ```
 
-### Integration Tests
+When a factory is created many times with the same associations across an
+example, use **FactoryDefault** (wired up in `spec/support/test_prof.rb`) to
+build it once and reuse it:
 
 ```ruby
-class UsersControllerTest < ActionDispatch::IntegrationTest
-  setup do
-    @user = users(:one)
-  end
-
-  test "should get index" do
-    get users_url
-    assert_response :success
-  end
-
-  test "should create user" do
-    assert_difference('User.count') do
-      post users_url, params: { user: { email: 'new@example.com' } }
-    end
-
-    assert_redirected_to user_url(User.last)
-  end
-end
+let(:site) { create_default(:site) }   # later create(:partner) reuses this site
 ```
 
-<% end %>
+Prefer `build_stubbed` over `create` when a spec doesn't need the record
+persisted, and only create the associations the assertion actually touches.
 
 ## Testing Localized Content (i18n)
 

@@ -86,6 +86,97 @@ RSpec.describe PartnerJsonLd do
       it "omits address key" do
         expect(data).not_to have_key("address")
       end
+
+      it "omits location key" do
+        expect(data).not_to have_key("location")
+      end
+
+      it "emits areaServed instead of a fabricated location" do
+        expect(data).to have_key("areaServed")
+        expect(data).not_to have_key("location")
+      end
+    end
+
+    context "with service areas" do
+      let(:ward) { create(:neighbourhood, name: "Moss Side") }
+      let(:partner) { create(:partner, address: nil, service_areas: [create(:service_area, neighbourhood: ward)]) }
+
+      it "names each served region as an AdministrativeArea" do
+        expect(data["areaServed"]).to eq([
+                                           { "@type" => "AdministrativeArea", "name" => "Moss Side" }
+                                         ])
+      end
+    end
+
+    context "without service areas" do
+      it "omits areaServed" do
+        expect(data).not_to have_key("areaServed")
+      end
+    end
+
+    context "with a physical location" do
+      it "emits a generic Place location (not LocalBusiness) with geo" do
+        location = data["location"]
+        expect(location["@type"]).to eq("Place")
+        expect(location["address"]["@type"]).to eq("PostalAddress")
+        expect(location["geo"]["@type"]).to eq("GeoCoordinates")
+        expect(location["geo"]["latitude"]).to eq(partner.address.latitude.to_f)
+        expect(location["geo"]["longitude"]).to eq(partner.address.longitude.to_f)
+      end
+
+      it "keeps the org itself typed as Organization" do
+        expect(data["@type"]).to eq("Organization")
+      end
+
+      it "omits geo when the address has no coordinates" do
+        partner.address.latitude = nil
+        partner.address.longitude = nil
+        expect(partner.to_json_ld["location"]).not_to have_key("geo")
+      end
+    end
+
+    context "with opening times" do
+      before do
+        partner.update!(opening_times: [
+          { "dayOfWeek" => "http://schema.org/Monday", "opens" => "09:00", "closes" => "17:00" }
+        ].to_json)
+      end
+
+      it "emits openingHoursSpecification on the location" do
+        spec = data["location"]["openingHoursSpecification"]
+        expect(spec).to eq([
+                             { "@type" => "OpeningHoursSpecification", "dayOfWeek" => "Monday", "opens" => "09:00", "closes" => "17:00" }
+                           ])
+      end
+
+      it "omits openingHoursSpecification when there are no opening times" do
+        partner.update!(opening_times: "[]")
+        expect(partner.to_json_ld["location"]).not_to have_key("openingHoursSpecification")
+      end
+
+      # The opening_times validation silently skips malformed slots rather
+      # than rejecting them, and legacy rows predate it — so rendering must
+      # survive whatever is persisted, dropping only the bad slot.
+      it "drops slots with unparseable times instead of raising" do
+        partner.update!(opening_times: [
+          { "dayOfWeek" => "http://schema.org/Monday", "opens" => "25:99", "closes" => "17:00" },
+          { "dayOfWeek" => "http://schema.org/Tuesday", "opens" => "10:00", "closes" => "16:00" }
+        ].to_json)
+        spec = partner.to_json_ld["location"]["openingHoursSpecification"]
+        expect(spec).to eq([
+                             { "@type" => "OpeningHoursSpecification", "dayOfWeek" => "Tuesday", "opens" => "10:00", "closes" => "16:00" }
+                           ])
+      end
+
+      it "drops non-hash slots instead of raising" do
+        partner.update!(opening_times: [
+          "nonsense",
+          { "dayOfWeek" => "http://schema.org/Friday", "opens" => "09:00", "closes" => "12:00" }
+        ].to_json)
+        spec = partner.to_json_ld["location"]["openingHoursSpecification"]
+        expect(spec.length).to eq(1)
+        expect(spec.first["dayOfWeek"]).to eq("Friday")
+      end
     end
 
     context "with embedded events" do

@@ -34,7 +34,9 @@
 		text-align: center;
 	}
 
-	h4 {
+	// The tagline. It is a paragraph rather than a heading so the page does not
+	// skip from the navigation's h2 site name to the h1 by way of an h4.
+	p.allcaps {
 		display: inline-block;
 		margin-top: 0.5rem;
 		margin-bottom: 1.5rem;

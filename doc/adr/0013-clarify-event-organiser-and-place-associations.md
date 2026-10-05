@@ -2,7 +2,7 @@
 
 - Author: @kimadactyl (Kim)
 - Date: 2026-03-09
-- Status: **In progress**
+- Status: **Accepted** (implemented, issue #2917 closed 2026-04-01)
 
 ## Context and Problem Statement
 

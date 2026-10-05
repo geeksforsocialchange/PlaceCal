@@ -2,7 +2,7 @@
 
 class Components::Directory::CustomSelect < Components::Directory::Base
   prop :name, String
-  prop :label_text, String
+  prop :label_text, _Nilable(String), default: nil
   prop :options, _Interface(:each)
   prop :selected, _Nilable(String), default: nil
   prop :default_label, _Nilable(String), default: nil
@@ -10,7 +10,7 @@ class Components::Directory::CustomSelect < Components::Directory::Base
 
   def view_template
     div(class: 'min-w-0 flex-1 relative', data: { controller: 'custom-select' }) do
-      label(class: 'block allcaps-label text-tertiary mb-1') { @label_text }
+      label(class: 'block allcaps-label text-tertiary mb-1') { @label_text } if @label_text.present?
       render_hidden_select
       render_trigger
       render_panel
@@ -21,7 +21,7 @@ class Components::Directory::CustomSelect < Components::Directory::Base
 
   def render_hidden_select
     select(
-      name: @name, id: @name,
+      name: @name,
       data: { custom_select_target: 'hiddenSelect' },
       class: 'sr-only', tabindex: '-1', aria: { hidden: 'true' }
     ) do
@@ -37,13 +37,13 @@ class Components::Directory::CustomSelect < Components::Directory::Base
     button(
       type: 'button',
       data: { custom_select_target: 'trigger', action: 'custom-select#toggle' },
-      class: 'w-full flex items-center justify-between border-2 border-rules rounded-full px-4 py-2 text-sm bg-background text-foreground cursor-pointer hover:border-foreground transition-colors'
+      class: 'w-full h-[42px] flex items-center gap-2 border-2 border-rules rounded-sm px-4 text-sm bg-background text-foreground cursor-pointer hover:border-foreground transition-colors'
     ) do
-      span(data: { role: 'label' }) { selected_label }
+      span(class: 'flex-1 min-w-0 truncate text-left', data: { role: 'label' }) { selected_label }
       span(
         data: { custom_select_target: 'arrow' },
-        class: 'transition-transform duration-200'
-      ) { raw(chevron_svg) }
+        class: 'transition-transform duration-200 shrink-0'
+      ) { raw(view_context.icon(:chevron_down, size: nil, css_class: 'w-3.5 h-3.5')) }
     end
   end
 
@@ -51,9 +51,9 @@ class Components::Directory::CustomSelect < Components::Directory::Base
     div(
       data: { custom_select_target: 'panel' },
       style: 'display: none',
-      class: 'absolute z-50 left-0 right-0 mt-1 bg-foreground rounded-card overflow-hidden shadow-lg'
+      class: 'absolute z-50 left-0 right-0 mt-1 bg-foreground rounded-sm overflow-hidden shadow-lg'
     ) do
-      div(class: 'max-h-60 overflow-y-auto py-1') do
+      div(class: 'max-h-[60vh] overflow-y-auto py-1') do
         all_options.each do |opt|
           render_option(opt)
         end
@@ -108,15 +108,14 @@ class Components::Directory::CustomSelect < Components::Directory::Base
   end
 
   def placeholder
-    @default_label || "All #{@label_text.downcase.pluralize}"
+    return @default_label if @default_label
+    return t('directory.filters.all') if @label_text.blank?
+
+    t('directory.filters.all_plural', label: @label_text.downcase.pluralize)
   end
 
   def selected_label
     match = all_options.find { |o| o[:value].to_s == @selected.to_s }
     match ? match[:label] : placeholder
-  end
-
-  def chevron_svg
-    safe('<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>')
   end
 end

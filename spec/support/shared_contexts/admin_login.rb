@@ -4,7 +4,6 @@ RSpec.shared_context "admin login" do
   let(:admin_user) { create(:root_user, email: "admin@placecal.org", password: "password", password_confirmation: "password") }
 
   before do
-    create_default_site
     sign_in_as_admin
   end
 

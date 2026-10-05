@@ -95,13 +95,12 @@ RSpec.describe "Visual regression screenshots", :visual_regression, type: :syste
 
     return
     # rubocop: disable Lint/UnreachableCode
-    # rubocop: disable RSpec/Output
+    # rubocop: disable-next RSpec/Output
     if label
       puts "#{name}, #{label}: #{output}"
     else
       puts "#{name}: #{output}"
     end
-    # rubocop: enable RSpec/Output
     # rubocop: enable Lint/UnreachableCode
   end
 

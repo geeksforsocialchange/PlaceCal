@@ -1,0 +1,102 @@
+name: Discord release notification
+
+# Posts a branded embed to Discord when a release is published, instead of the
+# default GitHub -> Discord webhook that dumps the raw release body (including
+# the long renovate maintenance list).
+#
+# Enable by:
+#   1. Add the DISCORD_RELEASE_WEBHOOK repo secret (the Discord webhook URL,
+#      WITHOUT the trailing "/github" that the GitHub integration uses).
+#   2. Remove the old "release" repo webhook (Settings -> Webhooks) so releases
+#      aren't announced twice.
+# Until the secret is set the job runs but no-ops.
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post release embed to Discord
+        env:
+          WEBHOOK: ${{ secrets.DISCORD_RELEASE_WEBHOOK }}
+          RELEASE_NAME: ${{ github.event.release.name }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RELEASE_URL: ${{ github.event.release.html_url }}
+          RELEASE_BODY: ${{ github.event.release.body }}
+        run: |
+          python3 <<'PY'
+          import json, os, re, urllib.request
+
+          webhook = os.environ.get("WEBHOOK", "").strip()
+          if not webhook:
+              print("DISCORD_RELEASE_WEBHOOK not set; skipping.")
+              raise SystemExit(0)
+
+          body = os.environ.get("RELEASE_BODY", "") or ""
+          tag = os.environ.get("RELEASE_TAG", "") or ""
+          name = (os.environ.get("RELEASE_NAME", "") or tag or "New release").strip()
+          url = os.environ.get("RELEASE_URL", "") or ""
+
+          # Pull the trailing "Full changelog" line off so it stays pinned to the
+          # very bottom regardless of section order.
+          footer = ""
+          match = re.search(r"(?m)^\*\*Full changelog\*\*.*$", body)
+          if match:
+              footer = body[match.start():].strip()
+              body = body[:match.start()]
+
+          # Split into sections, dropping empty template ones (e.g. "What's
+          # changed") and collapsing the noisy renovate "Maintenance" list to a
+          # single count. Maintenance goes last so human-facing changes lead.
+          parts = re.split(r"(?m)^(## .*)$", body)
+          main_sections, maint_sections = [], []
+          for header, content in zip(parts[1::2], parts[2::2]):
+              bullets = sum(1 for ln in content.splitlines() if ln.lstrip().startswith("- "))
+              if bullets == 0:
+                  continue
+              if "Maintenance" in header:
+                  noun = "update" if bullets == 1 else "updates"
+                  maint_sections.append(f"{header}\n- {bullets} dependency & maintenance {noun}")
+              else:
+                  main_sections.append(f"{header}\n{content.strip()}")
+
+          preamble = parts[0].strip()
+          blocks = ([preamble] if preamble else []) + main_sections + maint_sections
+          if footer:
+              blocks.append(footer)
+          description = "\n\n".join(blocks).strip()
+
+          # Discord caps embed descriptions at 4096 chars.
+          limit = 3900
+          if len(description) > limit:
+              description = description[:limit].rstrip() + "\n\n…"
+
+          embed = {
+              "title": name,
+              "url": url,
+              "description": description,
+              "color": 0xAFCF5A,  # PlaceCal brand green
+              "footer": {"text": "PlaceCal release"},
+          }
+          payload = {"username": "PlaceCal", "embeds": [embed]}
+
+          # Discord sits behind Cloudflare, which 403s (error 1010) requests
+          # that don't send a User-Agent, so set one explicitly.
+          req = urllib.request.Request(
+              webhook,
+              data=json.dumps(payload).encode("utf-8"),
+              headers={
+                  "Content-Type": "application/json",
+                  "User-Agent": "PlaceCal-release-bot",
+              },
+              method="POST",
+          )
+          with urllib.request.urlopen(req) as resp:
+              print(f"Discord responded {resp.status}")
+          PY

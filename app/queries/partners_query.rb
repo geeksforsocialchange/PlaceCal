@@ -12,6 +12,39 @@
 #   )
 #
 class PartnersQuery
+  # Area-breadcrumb label per partner id for the directory cards
+  # (e.g. "Manchester › Hulme › Moss Side"). Each partner's neighbourhood is
+  # its address neighbourhood, falling back to its first service area. Ancestors
+  # are batch-loaded so the partner index doesn't fire an ancestors query per
+  # card (the partner_card used to call hierarchy_path itself — an N+1).
+  #
+  # @param partners [Enumerable<Partner>] partners eager-loaded with their
+  #   address neighbourhood and service areas
+  # @return [Hash{Integer=>String,nil}] partner id => breadcrumb label (or nil)
+  def self.area_labels(partners)
+    partners = partners.to_a
+    return {} if partners.empty?
+
+    # Resolving service_area_neighbourhoods.first below would query per partner;
+    # preload the through-association once.
+    ActiveRecord::Associations::Preloader.new(records: partners, associations: :service_area_neighbourhoods).call
+
+    neighbourhoods = partners.to_h do |partner|
+      hood = partner.address&.neighbourhood
+      hood ||= partner.service_area_neighbourhoods.first if partner.has_service_areas?
+      [partner.id, hood]
+    end
+
+    ancestors = Neighbourhood.where(id: neighbourhoods.values.compact.flat_map(&:ancestor_ids).uniq).index_by(&:id)
+
+    neighbourhoods.transform_values do |hood|
+      next unless hood
+
+      path = hood.ancestor_ids.filter_map { |id| ancestors[id] } + [hood]
+      path.last(3).map(&:shortname).join(' › ')
+    end
+  end
+
   def initialize(site:)
     @site = site
   end
@@ -34,67 +67,28 @@ class PartnersQuery
     partners.includes({ address: :neighbourhood }, { service_areas: :neighbourhood }, :categories).order(sort_clause(sort))
   end
 
-  # Returns neighbourhoods that have partners, with counts
-  # Used for filter dropdowns
+  # Filter-dropdown facet counts. Delegated to PartnerFacets so this object
+  # stays focused on selecting partners.
+  delegate :neighbourhoods_with_counts, :neighbourhood_tree,
+           :partnerships_with_counts, :categories_with_counts, to: :facets
+
+  # Whether the given partner appears on this site — same rules as the
+  # partner listing (address or service area in the site's neighbourhoods,
+  # matching tag on tagged sites).
   #
-  # @return [Array<Hash>] array of { neighbourhood: Neighbourhood, count: Integer }
-  def neighbourhoods_with_counts(scope: nil)
-    partner_ids = (scope || base_scope).reorder(nil).select(:id)
-
-    pairs = ActiveRecord::Base.connection.select_all(<<~SQL) # rubocop:disable Rails/SquishedSQLHeredocs
-      SELECT neighbourhood_id, partner_id FROM (
-        SELECT a.neighbourhood_id, p.id AS partner_id
-        FROM partners p
-        INNER JOIN addresses a ON a.id = p.address_id
-        WHERE p.id IN (#{partner_ids.to_sql})
-          AND a.neighbourhood_id IS NOT NULL
-        UNION
-        SELECT sa.neighbourhood_id, sa.partner_id
-        FROM service_areas sa
-        WHERE sa.partner_id IN (#{partner_ids.to_sql})
-          AND sa.neighbourhood_id IS NOT NULL
-      ) AS combined
-    SQL
-
-    counts = pairs.group_by { |r| r['neighbourhood_id'] }
-                  .transform_values { |rows| rows.map { |r| r['partner_id'] }.uniq.length }
-
-    return [] if counts.empty?
-
-    Neighbourhood.where(id: counts.keys).order(:name).map do |n|
-      { neighbourhood: n, count: counts[n.id] }
-    end
-  end
-
-  # Returns partnerships that have partners, with counts
-  # Used for filter dropdowns on the directory site
-  #
-  # @return [Array<Hash>] array of { partnership: Partnership, count: Integer }
-  def partnerships_with_counts(scope: nil)
-    Tag
-      .joins(:partner_tags)
-      .where(partner_tags: { partner_id: (scope || base_scope).reorder(nil).select(:id) }, type: 'Partnership')
-      .group(:id, :name)
-      .order(:name)
-      .select('tags.*, COUNT(partner_tags.partner_id) as partner_count')
-      .map { |tag| { partnership: tag, count: tag.partner_count } }
-  end
-
-  # Returns categories/tags that have partners, with counts
-  # Used for filter dropdowns
-  #
-  # @return [Array<Hash>] array of { category: Tag, count: Integer }
-  def categories_with_counts(scope: nil)
-    Tag
-      .joins(:partner_tags)
-      .where(partner_tags: { partner_id: (scope || base_scope).reorder(nil).select(:id) }, type: 'Category')
-      .group(:id, :name)
-      .order(:name)
-      .select('tags.*, COUNT(partner_tags.partner_id) as partner_count')
-      .map { |tag| { category: tag, count: tag.partner_count } }
+  # @param partner [Partner]
+  # @return [Boolean]
+  def include?(partner)
+    base_scope.exists?(partner.id)
   end
 
   private
+
+  # @return [PartnerFacets] facet-count collaborator, defaulting to this site's
+  #   partner scope
+  def facets
+    @facets ||= PartnerFacets.new(default_scope: base_scope)
+  end
 
   # ===================
   # Base Scope
@@ -107,30 +101,38 @@ class PartnersQuery
     @base_scope ||= build_base_scope
   end
 
+  # A site scopes its partners by its neighbourhoods, by its tags, or by both
+  # (tag AND neighbourhood). A tagged site with no neighbourhoods is tag-only:
+  # partnership sites such as The Trans Dimension span cities and pick their
+  # partners by Partnership tag alone (#3368 D7, D24). A site with neither
+  # has no partners.
   def build_base_scope
-    return Partner.visible if @site&.directory_site?
-    return Partner.none if site_neighbourhood_ids.empty?
+    return Partner.visible if @site.nil?
+    return Partner.none if !site_has_neighbourhoods? && site_tag_ids.empty?
 
     scope = Partner.visible
     scope = scope.joins(:tags).where(tags: { id: site_tag_ids }) if site_tag_ids.any?
-    scope
-      .left_joins(:address, :service_areas)
-      .where(in_site_neighbourhoods_sql)
-      .distinct
+    scope = scope.left_joins(:address, :service_areas).where(in_site_neighbourhoods_sql) if site_has_neighbourhoods?
+    scope.distinct
   end
 
   # ===================
   # Filtering
   # ===================
 
-  # Filter by neighbourhood (partner's address OR service area)
+  # Filter by neighbourhood (partner's address OR service area).
+  #
+  # Matches the neighbourhood and all of its descendants, so an area-level
+  # neighbourhood (e.g. "Manchester" the district) includes partners living
+  # in its wards, not just those assigned to the area node itself.
   def filter_by_neighbourhood(partners, neighbourhood_id)
+    node = Neighbourhood.find_by(id: neighbourhood_id)
+    return partners.none unless node
+
     partners
       .left_joins(:address, :service_areas)
-      .where(
-        'addresses.neighbourhood_id = :id OR service_areas.neighbourhood_id = :id',
-        id: neighbourhood_id
-      )
+      .where(in_neighbourhood_subtree_sql(Neighbourhood.subtree_of(node)))
+      .distinct
   end
 
   def filter_by_tag(partners, tag_id)
@@ -161,14 +163,25 @@ class PartnersQuery
   # ===================
 
   def in_site_neighbourhoods_sql
-    [
-      'addresses.neighbourhood_id IN (:ids) OR service_areas.neighbourhood_id IN (:ids)',
-      { ids: site_neighbourhood_ids }
-    ]
+    in_neighbourhood_subtree_sql(@site.owned_neighbourhoods_subtree)
   end
 
-  def site_neighbourhood_ids
-    @site_neighbourhood_ids ||= @site.owned_neighbourhood_ids
+  # Match a partner whose address or service area sits anywhere in +subtree+,
+  # embedding it as a subquery so the subtree stays in the database rather than
+  # arriving as a literal id list. +subtree+ is a Neighbourhood relation built
+  # from trusted records (site or dropdown selection), never user input.
+  #
+  # @param subtree [ActiveRecord::Relation<Neighbourhood>]
+  # @return [String] a WHERE fragment
+  def in_neighbourhood_subtree_sql(subtree)
+    ids = subtree.select(:id).to_sql
+    "addresses.neighbourhood_id IN (#{ids}) OR service_areas.neighbourhood_id IN (#{ids})"
+  end
+
+  def site_has_neighbourhoods?
+    return @site_has_neighbourhoods if defined?(@site_has_neighbourhoods)
+
+    @site_has_neighbourhoods = @site.neighbourhoods.exists?
   end
 
   def site_tag_ids
