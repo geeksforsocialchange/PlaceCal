@@ -9,7 +9,9 @@ Capybara.disable_animation = true
 
 # Configure default host for system tests
 Capybara.configure do |config|
-  config.default_max_wait_time = 5
+  # CI runs the JS-heavy system suite on 2-core runners where waits that are
+  # comfortable locally get missed under load (issue #3341).
+  config.default_max_wait_time = ENV["CI"] ? 10 : 5
   config.server = :puma, { Silent: true }
   config.always_include_port = true
 end
@@ -21,8 +23,17 @@ Capybara.app_host = "http://lvh.me"
 Capybara.server_host = "127.0.0.1"
 
 RSpec.configure do |config|
-  # Clean up after each system test
-  config.after(type: :system) do
+  # Clean up after each system test. reset_sessions! clears cookies but not
+  # sessionStorage, so leftover keys (e.g. partnerTabAfterSave from save-bar)
+  # can leak into the next test and silently switch tabs on page load.
+  config.after(type: :system) do |example|
+    InputDiagnostics.report(page, example) if example.exception
+
+    begin
+      page.execute_script("window.sessionStorage.clear()")
+    rescue StandardError
+      nil # browser may not have a page loaded
+    end
     Capybara.reset_sessions!
   end
 

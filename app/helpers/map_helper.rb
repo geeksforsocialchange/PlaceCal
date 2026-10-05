@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module MapHelper
-  def args_for_map(map_points, site, style_mode, compact_mode)
+  def args_for_map(map_points, style_mode, compact_mode)
     data_for_markers = map_points.dup.reject(&:nil?).map do |mrkr|
       {}.tap do |pin|
         pin[:position] = [mrkr[:lat], mrkr[:lon]]
@@ -16,7 +16,7 @@ module MapHelper
       iconUrl: image_path('icons/map/map-marker.png'),
       shadowUrl: image_path('icons/map/map-shadow.png'),
       markers: group_colocated_markers(data_for_markers),
-      styleUrl: style_url_for_site(site),
+      styleUrl: map_style_url,
       styleClass: map_style_class(data_for_markers, style_mode, compact_mode)
     }.to_json.html_safe
   end
@@ -60,23 +60,17 @@ module MapHelper
 
   # Returns the URL to a themed MapLibre style JSON file
   # Uses OpenFreeMap vector tiles with custom colors matching site themes
-  def style_url_for_site(site)
-    # site can be a Site object or a slug string
-    site_record = site.is_a?(Site) ? site : Site.find_by(slug: site)
+  def map_style_url
+    # The request's theme resolves the style name. The directory and sites
+    # with an unregistered theme fall back to pink.
+    style_name = Current.theme.map_style_name || 'pink'
 
-    style_name = if site_record.nil?
-                   'pink'
-                 elsif site_record.theme.to_s == 'custom'
-                   # Custom themed sites use their slug (e.g., 'mossley')
-                   site_record.slug
-                 else
-                   site_record.theme.to_s
-                 end
+    # A style ships either in core's public/map-styles or, for extensions, as
+    # an asset at map-styles/<name>.json (e.g. app/assets/builds/map-styles/).
+    # Fall back to pink if neither exists.
+    return "/map-styles/#{style_name}.json" if Rails.public_path.join('map-styles', "#{style_name}.json").exist?
 
-    # Fall back to pink if style file doesn't exist
-    style_path = Rails.public_path.join('map-styles', "#{style_name}.json")
-    style_name = 'pink' unless File.exist?(style_path)
-
-    "/map-styles/#{style_name}.json"
+    asset = Rails.application.assets&.resolver&.resolve("map-styles/#{style_name}.json")
+    asset || '/map-styles/pink.json'
   end
 end

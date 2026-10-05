@@ -26,6 +26,7 @@ AllCops:
     - "vendor/**/*"
     - ".git/**/*"
     - "db/schema.rb"
+    - "doc/ai/plugins/**/*" # vendored AI tooling scripts, not app code
 
 # =============================================================================
 # GraphQL cops

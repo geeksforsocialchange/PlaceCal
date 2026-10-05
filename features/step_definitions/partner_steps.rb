@@ -31,7 +31,10 @@ When("I create a new partner with name {string}") do |name|
   await_datatables
   click_link "Add Partner"
 
-  # Step 1: Name - wizard form uses partner_wizard controller
+  # Step 1: Name - wizard form uses partner_wizard controller.
+  # Wait for the controller to connect: a Continue click before connect is
+  # dropped (no Stimulus action listener yet) and the step never advances.
+  wait_for_wizard
   fill_in "partner_name", with: name
 
   # Wait for name validation debounce to complete and enable Continue button

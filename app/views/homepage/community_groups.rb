@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-class Views::Homepage::CommunityGroups < Views::Base
-  include Views::Homepage::Audiences
-
+class Views::Homepage::CommunityGroups < Views::Homepage::Base
   def view_template
     article(class: 'home') do
       div(class: 'margin') do

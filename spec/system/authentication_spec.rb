@@ -10,10 +10,6 @@ RSpec.describe "Authentication", :slow, type: :system do
            password_confirmation: "password")
   end
 
-  before do
-    create_default_site
-  end
-
   describe "login flow" do
     it "redirects user to admin site after login" do
       visit public_url("/users/sign_in")

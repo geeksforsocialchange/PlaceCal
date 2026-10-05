@@ -31,26 +31,25 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
 
   def render_partnerships
     count = Array(@containing_sites).size
-    div(class: 'rounded-card overflow-hidden') do
-      div(class: 'bg-foreground px-4 py-3', style: 'color: var(--color-background)') do
-        div(class: 'allcaps-label mb-0.5 opacity-80') { t('directory.sidebar.part_of') }
-        div(class: 'font-serif text-lg') { t('directory.sidebar.partnerships', count: count) }
+    Directory::SidebarCard(
+      eyebrow: t('directory.sidebar.part_of'),
+      title: t('directory.sidebar.partnerships', count: count)
+    ) do
+      div(class: 'text-xs text-tertiary mb-3') do
+        plain t('directory.sidebar.partnerships_description', name: @partner.name)
       end
-      div(class: 'bg-home-background-3 px-4 py-3') do
-        div(class: 'text-xs text-tertiary mb-3') do
-          plain t('directory.sidebar.partnerships_description', name: @partner.name)
-        end
-        Array(@containing_sites).each do |site_record|
-          a(href: "https://#{site_record.slug}.placecal.org",
-            class: 'flex items-center justify-between py-2 no-underline text-foreground hover:bg-background/50 transition-colors rounded px-1') do
-            div do
-              div(class: 'font-extra-bold text-sm') { site_record.name }
-              div(class: 'text-xs text-tertiary') do
-                plain site_record.primary_neighbourhood&.name if site_record.primary_neighbourhood
-              end
+      Array(@containing_sites).each do |site_record|
+        # Relative to the current host so the links work in development
+        # (slug.lvh.me) as well as production (slug.placecal.org)
+        a(href: root_url(subdomain: site_record.slug),
+          class: 'flex items-center justify-between py-2 no-underline text-foreground hover:bg-background/50 transition-colors rounded px-1') do
+          div do
+            div(class: 'font-extra-bold text-sm') { site_record.name }
+            div(class: 'text-xs text-tertiary') do
+              plain site_record.primary_neighbourhood&.name if site_record.primary_neighbourhood
             end
-            span(class: 'text-tertiary') { safe('&#8599;') }
           end
+          span(class: 'text-tertiary') { safe('&#8599;') }
         end
       end
     end
@@ -117,6 +116,13 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
           class: 'inline-flex items-center gap-1.5 text-sm font-bold text-foreground no-underline hover:underline hover:decoration-primary') do
           raw(view_context.icon(:calendar, size: '3.5'))
           plain t('directory.sidebar.subscribe_ical')
+        end
+      end
+      div(class: 'mt-1.5') do
+        a(href: partner_url(@partner, format: :csv),
+          class: 'inline-flex items-center gap-1.5 text-sm font-bold text-foreground no-underline hover:underline hover:decoration-primary') do
+          raw(view_context.icon(:arrow_down, size: '3.5'))
+          plain t('directory.sidebar.download_csv')
         end
       end
     end

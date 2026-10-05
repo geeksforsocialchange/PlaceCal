@@ -143,7 +143,6 @@ RSpec.describe 'Admin Partners', type: :request do
   let(:admin) { create(:root_user) }
 
   before do
-    create_default_site
     sign_in admin
   end
 
@@ -408,7 +407,6 @@ create(:mobile_partner, service_area_wards: [ward1, ward2])
 
 ```ruby
 create(:site)                      # Generic site
-create(:site, slug: 'default-site') # Required for routing
 ```
 
 ### Events & Calendars
@@ -451,17 +449,17 @@ create(:service_area, partner: partner, neighbourhood: ward)
 
 ## Support Files
 
-| File                                 | Purpose                      |
-| ------------------------------------ | ---------------------------- |
-| `spec/rails_helper.rb`               | Main RSpec configuration     |
-| `spec/support/capybara.rb`           | Browser/Cuprite setup        |
-| `spec/support/tom_select_helpers.rb` | Tom Select dropdown helpers  |
-| `spec/support/system_helpers.rb`     | System test utilities        |
-| `spec/support/site_helpers.rb`       | `create_default_site` helper |
-| `spec/support/graphql_helpers.rb`    | GraphQL test utilities       |
-| `spec/support/vcr.rb`                | HTTP recording config        |
-| `spec/support/shared_examples/`      | Reusable test examples       |
-| `spec/support/shared_contexts/`      | Reusable test setup          |
+| File                                 | Purpose                     |
+| ------------------------------------ | --------------------------- |
+| `spec/rails_helper.rb`               | Main RSpec configuration    |
+| `spec/support/capybara.rb`           | Browser/Cuprite setup       |
+| `spec/support/tom_select_helpers.rb` | Tom Select dropdown helpers |
+| `spec/support/system_helpers.rb`     | System test utilities       |
+| `spec/support/site_helpers.rb`       | Site URL helpers            |
+| `spec/support/graphql_helpers.rb`    | GraphQL test utilities      |
+| `spec/support/vcr.rb`                | HTTP recording config       |
+| `spec/support/shared_examples/`      | Reusable test examples      |
+| `spec/support/shared_contexts/`      | Reusable test setup         |
 
 ---
 

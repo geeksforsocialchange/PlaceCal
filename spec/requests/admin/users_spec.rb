@@ -49,6 +49,26 @@ RSpec.describe "Admin::Users", type: :request do
         expect(response).to be_successful
         expect(response.body).to include(target_user.email)
       end
+
+      context "when the target user is a site admin" do
+        let!(:site) { create(:site, name: "Riverside Calendar", site_admin: target_user) }
+
+        it "lists the sites the user administers" do
+          get edit_admin_user_url(target_user, host: admin_host)
+          expect(response).to be_successful
+          expect(response.body).to include(site.name)
+        end
+      end
+
+      context "when the target user administers no sites" do
+        it "renders without error and shows the empty state" do
+          get edit_admin_user_url(target_user, host: admin_host)
+          expect(response).to be_successful
+          expect(response.body).to include(
+            I18n.t("admin.empty.none_assigned", items: Site.model_name.human(count: 2).downcase)
+          )
+        end
+      end
     end
   end
 
@@ -265,6 +285,74 @@ RSpec.describe "Admin::Users", type: :request do
       expect(response.body).to include("error prohibited this User from being saved")
       expect(response.body).to include("Avatar")
       expect(response.body).to include("not allowed to upload")
+    end
+  end
+
+  describe "partner assignment scope" do
+    let(:foreign_partner) { create(:oldtown_library) }
+
+    context "as a partner admin" do
+      let(:own_partner) { create(:partner) }
+      let(:user) { create(:partner_admin, partner: own_partner) }
+
+      before { sign_in user }
+
+      it "cannot self-assign a partner outside their scope" do
+        put admin_user_url(user, host: admin_host), params: { user: { partner_ids: [own_partner.id, foreign_partner.id] } }
+
+        expect(user.reload.partner_ids).to contain_exactly(own_partner.id)
+
+        get edit_admin_partner_url(foreign_partner, host: admin_host)
+        expect(response).not_to be_successful
+      end
+
+      it "cannot create a user attached only to a partner outside their scope" do
+        expect do
+          post admin_users_url(host: admin_host),
+               params: { user: { email: "newuser@example.com", partner_ids: [foreign_partner.id] } }
+        end.not_to change(User, :count)
+
+        expect(response).to have_http_status(:unprocessable_content)
+      end
+
+      it "preserves the edited user's partners outside their scope" do
+        target_user = create(:user, partners: [own_partner, foreign_partner])
+
+        put admin_user_url(target_user, host: admin_host), params: { user: { partner_ids: [""] } }
+
+        expect(target_user.reload.partner_ids).to contain_exactly(foreign_partner.id)
+      end
+    end
+
+    context "as a neighbourhood admin" do
+      let(:ward) { create(:riverside_ward) }
+      let(:user) { create(:neighbourhood_admin, neighbourhood: ward) }
+      let!(:ward_partner) { create(:partner, address: create(:address, neighbourhood: ward)) }
+
+      before { sign_in user }
+
+      it "can assign a partner in their neighbourhood but not one outside it" do
+        target_user = create(:user, partners: [ward_partner])
+
+        put admin_user_url(target_user, host: admin_host),
+            params: { user: { partner_ids: [ward_partner.id, foreign_partner.id] } }
+
+        expect(target_user.reload.partner_ids).to contain_exactly(ward_partner.id)
+      end
+    end
+
+    context "as a root user" do
+      let(:user) { create(:root_user) }
+
+      before { sign_in user }
+
+      it "can assign any partner" do
+        target_user = create(:user)
+
+        put admin_user_url(target_user, host: admin_host), params: { user: { partner_ids: [foreign_partner.id] } }
+
+        expect(target_user.reload.partner_ids).to contain_exactly(foreign_partner.id)
+      end
     end
   end
 end

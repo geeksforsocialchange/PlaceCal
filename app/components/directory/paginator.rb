@@ -6,7 +6,7 @@ class Components::Directory::Paginator < Components::Directory::Base
   def view_template
     return unless @pagy.pages > 1
 
-    nav(class: 'flex items-center justify-center gap-1 py-6', aria_label: 'Pagination') do
+    nav(class: 'flex items-center justify-center gap-1 py-6', aria_label: t('directory.aria.pagination')) do
       render_prev
       render_pages
       render_next
@@ -63,11 +63,11 @@ class Components::Directory::Paginator < Components::Directory::Base
   end
 
   def pill_class
-    'inline-flex items-center justify-center min-w-9 h-9 px-2 rounded-full text-sm font-bold text-foreground no-underline bg-home-background-3 hover:bg-primary transition-colors'
+    'paginator-pill'
   end
 
   def active_pill_class
-    'inline-flex items-center justify-center min-w-9 h-9 px-2 rounded-full text-sm font-bold no-underline bg-foreground text-background'
+    'paginator-pill--active'
   end
 
   def pagy_url(page)

@@ -19,13 +19,17 @@
 	},
 	"packageRules": [
 		{
+			"matchManagers": ["bundler"],
+			"rangeStrategy": "update-lockfile"
+		},
+		{
 			"matchDatasources": ["docker"],
 			"matchPackageNames": ["postgres"],
 			"matchCurrentVersion": "13.4",
 			"allowedVersions": "13.4"
 		},
 		{
-			"matchManagers": ["npm", "rubygems"],
+			"matchDatasources": ["npm", "rubygems"],
 			"minimumReleaseAge": "7 days"
 		},
 		{

@@ -4,6 +4,7 @@ ruby '4.0.3'
 source 'https://gem.coop'
 
 # Core
+gem 'json', '< 4'                 # Major bumps change parser defaults (3.0 rejects duplicate keys), so take them deliberately.
 gem 'kamal'                       # Container deployment
 gem 'pg'                          # PostgreSQL database adapter
 gem 'puma'                        # Web server
@@ -33,8 +34,10 @@ gem 'image_processing'            # Image resizing for uploads
 gem 'inline_svg'                  # Inlines SVGs into markup. Used in SvgImagesHelper
 gem 'kramdown'                    # Markdown to HTML rendering
 gem 'literal'                     # Typed properties for Phlex components
+gem 'mini_magick', require: false # ImageMagick backend for CarrierWave uploads (soft dep of image_processing 2)
 gem 'pagy'                        # Lightweight pagination
 gem 'phlex-rails', '~> 2.3'       # Ruby-native view components
+gem 'ruby-vips', require: false   # libvips backend for ActiveStorage variants and OG image rendering (soft dep of image_processing 2)
 gem 'simple_form'                 # Form builder
 gem 'strict_ivars', require: false # Catch undefined instance variable reads
 
@@ -63,28 +66,43 @@ gem 'csv'                         # CSV parsing (neighbourhood data imports)
 gem 'enumerize'                   # Enumerated attributes (site theme, badge zoom)
 gem 'invisible_captcha'           # Spam protection on contact form
 gem 'paper_trail'                 # Event version tracking and audit log
+gem 'strong_migrations'           # Catch unsafe migrations before they reach production
+
+# Installation-specific extensions for placecal.org (see doc/extensions.md).
+# Not part of core: a self-hosted PlaceCal can delete this whole block. Each
+# extension is a Rails engine that registers a theme; it ships its CSS
+# prebuilt, so the Dockerfile needs no extra build step. Bump the tag to
+# release a new version of an extension.
+group :extensions do
+  gem 'placecal-theme-mossley', github: 'geeksforsocialchange/placecal-theme-mossley', tag: 'v0.1.4'
+  gem 'placecal-theme-transdimension', github: 'geeksforsocialchange/placecal-theme-transdimension', tag: 'v0.4.0'
+end
 
 group :development, :test do
   gem 'byebug'                    # Debugger
   gem 'dotenv-rails'              # Load .env files
+  gem 'i18n-tasks', require: false # Find missing/unused locale keys (CLI + guard spec)
 end
 
 group :development do
+  gem 'annotaterb'                # Annotate models/specs with schema (run: annotaterb models)
   gem 'better_errors'             # Better error pages
   gem 'binding_of_caller'         # REPL in error pages
   gem 'brakeman', '~> 8.0'        # Static security analysis
+  gem 'bullet'                    # Detect N+1 queries and missing eager loading
   gem 'database_consistency', require: false # Schema validation
   gem 'foreman'                   # Process manager (Procfile.dev)
   gem 'graphiql-rails'            # GraphQL IDE at /graphiql
   gem 'letter_opener'             # Preview emails in browser
   gem 'listen'                    # File-watching for Lookbook live reload
   gem 'lookbook', '>= 2.3.14'    # Component preview UI (Storybook for Rails)
+  gem 'rack-mini-profiler'        # In-page performance profiler (?pp=help in dev)
   gem 'rails-erd'                 # Entity-relationship diagrams
   gem 'rdoc'                      # Documentation generator
-  gem 'rubocop', '1.86.2', require: false
-  gem 'rubocop-graphql', '1.6.0', require: false
-  gem 'rubocop-performance', '1.26.1', require: false
-  gem 'rubocop-rails', '2.35.3', require: false
+  gem 'rubocop', '1.91.0', require: false
+  gem 'rubocop-graphql', '1.8.0', require: false
+  gem 'rubocop-performance', '1.27.0', require: false
+  gem 'rubocop-rails', '2.38.0', require: false
   gem 'rubocop-rake', require: false
   gem 'rubocop-rspec', require: false
   gem 'ruby-lsp', require: false   # Ruby language server (IDE support)
@@ -106,14 +124,10 @@ group :test do
   gem 'pundit-matchers', '~> 4.0' # Policy spec matchers
   gem 'rspec-rails', '~> 8.0'     # Test framework
   gem 'selenium-webdriver'        # Browser driver for system tests
-  gem 'shoulda-matchers', '~> 7.0' # Model/controller matchers
+  gem 'shoulda-matchers', '~> 8.0' # Model/controller matchers
   gem 'simplecov', require: false # Code coverage
+  gem 'test-prof'                 # Test suite profiling (factory profiler, FactoryDefault)
   gem 'timecop'                   # Time travel in tests
   gem 'vcr'                       # Record/replay HTTP interactions
   gem 'webmock'                   # Stub HTTP requests (used by VCR)
-end
-
-# Run `bin/setup-ai` to enable, or manually: bundle config set --local with ai && bundle install
-group :ai, optional: true do
-  gem 'claude-on-rails'
 end

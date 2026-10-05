@@ -6,13 +6,22 @@ class Components::Admin::SourceInput < Components::Admin::Base
   prop :show_importer, _Boolean, default: true
 
   def view_template
-    div(data_controller: 'source-validator', data_source_validator_test_url_value: @test_url) do
+    div(data_controller: 'source-validator',
+        data_source_validator_test_url_value: @test_url,
+        data_source_validator_api_token_parsers_value: api_token_modes.to_json) do
       render_source_field
-      render_importer_field if @show_importer
+      if @show_importer
+        render_importer_field
+        render_api_token_field
+      end
     end
   end
 
   private
+
+  def api_token_modes
+    CalendarImporter::CalendarImporter::PARSERS.select(&:requires_api_token?).map { |p| p::KEY }
+  end
 
   def render_source_field
     fieldset(class: 'fieldset') do
@@ -84,7 +93,38 @@ class Components::Admin::SourceInput < Components::Admin::Base
                             collection: options_for_importer,
                             selected: @form.object.importer_mode || 'auto',
                             class: 'select select-bordered w-full',
-                            data: { 'source-validator-target': 'importerModeSelect' }))
+                            data: {
+                              'source-validator-target': 'importerModeSelect',
+                              action: 'change->source-validator#importerModeChanged'
+                            }))
     end
+  end
+
+  # The API token field is only relevant for importers that authenticate with a key.
+  # It is hidden server-side unless the saved mode needs one (or a token is already stored),
+  # then shown/hidden by the source-validator controller as the mode changes.
+  def render_api_token_field
+    classes = %w[fieldset mt-4]
+    classes << 'hidden' unless api_token_field_visible?
+
+    fieldset(class: classes.join(' '), data: { 'source-validator-target': 'apiTokenSection' }) do
+      label(for: 'calendar_api_token', class: 'fieldset-legend') do
+        plain I18n.t('admin.calendars.fields.api_token')
+        whitespace
+        span(class: 'text-error') { I18n.t('admin.labels.required') }
+      end
+      raw(@form.input_field(:api_token,
+                            type: :password,
+                            class: 'input input-bordered w-full font-mono text-sm',
+                            placeholder: I18n.t('admin.calendars.fields.api_token_placeholder'),
+                            autocomplete: 'off',
+                            value: @form.object.api_token,
+                            'data-source-validator-target': 'apiTokenInput'))
+      p(class: 'fieldset-label') { I18n.t('admin.calendars.fields.api_token_hint') }
+    end
+  end
+
+  def api_token_field_visible?
+    @form.object.importer_mode.in?(api_token_modes) || @form.object.api_token.present?
   end
 end

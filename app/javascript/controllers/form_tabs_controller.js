@@ -25,6 +25,10 @@ export default class extends Controller {
 
 		// Check for saved tab after form submission
 		this.restoreTabAfterSave();
+
+		// Marker for tests: tab clicks before connect() can be reverted by
+		// restoreTabAfterSave(), so helpers wait for this before clicking
+		this.element.dataset.formTabsConnected = "true";
 	}
 
 	disconnect() {

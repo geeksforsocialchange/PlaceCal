@@ -16,6 +16,25 @@ RSpec.describe Components::PartnerFilter, type: :component do
       ]
     end
 
+    it "caches the neighbourhood facet counts, so a second render runs no facet query" do
+      cache = ActiveSupport::Cache::MemoryStore.new
+      allow(Rails).to receive(:cache).and_return(cache)
+
+      render_inline(described_class.new(site: site, selected_category: nil, selected_neighbourhood: nil))
+
+      facet_queries = 0
+      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*, payload|
+        facet_queries += 1 if payload[:sql].include?("neighbourhood_id") && !payload[:cached]
+      end
+      begin
+        render_inline(described_class.new(site: site, selected_category: nil, selected_neighbourhood: nil))
+      ensure
+        ActiveSupport::Notifications.unsubscribe(subscriber)
+      end
+
+      expect(facet_queries).to eq(0)
+    end
+
     it "shows neighbourhood filter when multiple neighbourhoods exist" do
       render_inline(described_class.new(
                       site: site,
@@ -159,6 +178,32 @@ RSpec.describe Components::PartnerFilter, type: :component do
                     ))
 
       expect(page).not_to have_selector("button span.filters__link", text: "Category")
+    end
+  end
+
+  describe "region filter" do
+    let(:neighbourhood) { create(:neighbourhood) }
+    let(:site) { create(:site, neighbourhoods: [neighbourhood]) }
+    let(:north) { create(:partnership, name: "North") }
+    let(:south) { create(:partnership, name: "South") }
+
+    it "is hidden when the site has one partnership tag" do
+      render_inline(described_class.new(site: site, region_tags: [north]))
+
+      expect(page).not_to have_css("nav.region-filter")
+    end
+
+    it "is shown when the site has two partnership tags" do
+      render_inline(described_class.new(site: site, region_tags: [north, south]))
+
+      expect(page).to have_css("nav.region-filter")
+      expect(page).to have_link("South")
+    end
+
+    it "carries the selected region through the filter form" do
+      render_inline(described_class.new(site: site, region_tags: [north, south], selected_region: south))
+
+      expect(page).to have_css("input[type=hidden][name=region][value='#{south.slug}']", visible: :all)
     end
   end
 end

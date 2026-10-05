@@ -6,7 +6,7 @@ module Sites
       return false if request.subdomain == Site::ADMIN_SUBDOMAIN
 
       site = Site.find_by_request request
-      site&.local_site?
+      site.present?
     end
   end
 end

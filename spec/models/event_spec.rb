@@ -1,5 +1,51 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: events
+#
+#  id                       :bigint           not null, primary key
+#  are_spaces_available     :string
+#  description              :text
+#  description_html         :string
+#  dtend                    :datetime
+#  dtstart                  :datetime         not null
+#  footer                   :text
+#  is_active                :boolean          default(TRUE), not null
+#  notices                  :jsonb
+#  publisher_url            :string
+#  raw_location_from_source :text
+#  rrule                    :jsonb
+#  summary                  :text             not null
+#  summary_html             :string
+#  uid                      :string
+#  created_at               :datetime         not null
+#  updated_at               :datetime         not null
+#  address_id               :bigint
+#  calendar_id              :bigint
+#  online_address_id        :bigint
+#  organiser_id             :bigint           not null
+#  place_id                 :bigint
+#
+# Indexes
+#
+#  index_events_address_id                   (address_id)
+#  index_events_calendar_id_dtstart          (calendar_id,dtstart)
+#  index_events_dtstart                      (dtstart)
+#  index_events_on_online_address_id         (online_address_id)
+#  index_events_on_organiser_id_and_dtstart  (organiser_id,dtstart)
+#  index_events_on_place_id                  (place_id)
+#  index_events_uid                          (uid)
+#  index_events_unique_per_calendar          (calendar_id,uid,dtstart,dtend) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (address_id => addresses.id)
+#  fk_rails_...  (calendar_id => calendars.id)
+#  fk_rails_...  (online_address_id => online_addresses.id)
+#  fk_rails_...  (organiser_id => partners.id)
+#  fk_rails_...  (place_id => partners.id)
+#
 require "rails_helper"
 
 RSpec.describe Event, type: :model do
@@ -50,6 +96,41 @@ RSpec.describe Event, type: :model do
       event = build(:hybrid_event)
       expect(event.address).to be_present
       expect(event.online_address).to be_present
+    end
+  end
+
+  describe "#past?" do
+    it "is true once the event is over" do
+      event = build(:event, dtstart: 2.days.ago, dtend: 2.days.ago + 1.hour)
+      expect(event.past?).to be true
+    end
+
+    it "is false for upcoming events" do
+      event = build(:event, dtstart: 1.day.from_now, dtend: 1.day.from_now + 1.hour)
+      expect(event.past?).to be false
+    end
+
+    it "is false for a multi-day event still running" do
+      event = build(:event, dtstart: 1.day.ago, dtend: 1.day.from_now)
+      expect(event.past?).to be false
+    end
+
+    it "falls back to dtstart when dtend is missing" do
+      event = build(:event, dtstart: 2.days.ago, dtend: nil)
+      expect(event.past?).to be true
+    end
+  end
+
+  describe "#og_title" do
+    it "includes the organiser when present" do
+      event = build(:event, summary: "Tea Dance", organiser: build(:partner, name: "The Powerhouse"))
+      expect(event.og_title).to include("Tea Dance")
+      expect(event.og_title).to include("@ The Powerhouse")
+    end
+
+    it "still returns a title without an organiser" do
+      event = build(:event, summary: "Tea Dance", organiser: nil)
+      expect(event.og_title).to include("Tea Dance")
     end
   end
 

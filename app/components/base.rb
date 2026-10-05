@@ -28,10 +28,8 @@ class Components::Base < Phlex::HTML
   register_value_helper :current_user
   register_value_helper :policy
 
-  # I18n translate helper
-  def t(key, **)
-    I18n.t(key, **)
-  end
+  # I18n translate helper, theme-aware (PlaceCal::ThemeTranslation)
+  include PlaceCal::ThemeTranslation
 
   def sidebar_heading(text)
     h3(class: 'allcaps-label text-tertiary mt-1 mb-2') { text }

@@ -23,6 +23,21 @@ class EventsQuery
   UPCOMING_LIMIT = 10
   WEEKLY_DENSITY_THRESHOLD = 10
 
+  # Upcoming-event counts keyed by partner id, counting events a partner either
+  # hosts (place) or organises. Used to badge partner rows/cards in the directory.
+  #
+  # @param partner_ids [Array<Integer>] partners to count events for
+  # @return [Hash{Integer=>Integer}] partner id => upcoming event count
+  def self.upcoming_counts_by_partner(partner_ids)
+    return {} if partner_ids.blank?
+
+    future = Event.future(Time.current)
+    future.where(place_id: partner_ids)
+          .or(future.where(organiser_id: partner_ids))
+          .group(:place_id)
+          .count
+  end
+
   def initialize(site:, day: Time.zone.today)
     @site = site
     @day = day
@@ -40,18 +55,21 @@ class EventsQuery
   # @param place [Partner] filter to events at this place
   # @param organiser_or_place [Partner] filter to events by OR at this organiser
   # @param neighbourhood_id [Integer] filter to events in this neighbourhood
+  # @param tag_id [Integer] filter to events whose organiser or place carries
+  #   this tag (used by the public region filter, see #3368 D7)
   # @param limit [Integer] max number of events to return
   #
   # @return [Hash] events grouped by date { Date => [Event, ...] }
   # rubocop:disable Metrics/ParameterLists
   def call(period:, sort: 'time', repeating: 'on', organiser: nil, place: nil,
-           organiser_or_place: nil, neighbourhood_id: nil, limit: nil)
+           organiser_or_place: nil, neighbourhood_id: nil, tag_id: nil, limit: nil)
     # rubocop:enable Metrics/ParameterLists
     events = build_filtered_scope(
       organiser: organiser,
       place: place,
       organiser_or_place: organiser_or_place,
       neighbourhood_id: neighbourhood_id,
+      tag_id: tag_id,
       repeating: repeating
     )
     events = apply_period(events, period)
@@ -71,11 +89,7 @@ class EventsQuery
   # @param period [String] 'day', 'week', 'month', or 'future'
   # @return [ActiveRecord::Relation<Event>]
   def flat_call(period:)
-    events = build_filtered_scope(
-      organiser: nil, place: nil,
-      organiser_or_place: nil, neighbourhood_id: nil, repeating: 'on'
-    )
-    apply_period(events, period).distinct.sort_by_time
+    apply_period(build_filtered_scope(repeating: 'on'), period).distinct.sort_by_time
   end
 
   # Returns events as a flat relation for iCal feeds (no grouping)
@@ -91,59 +105,57 @@ class EventsQuery
     apply_period(base_scope, period).count
   end
 
-  # Count methods for determining default period
-  def future_count
-    base_scope.future(@day).count
-  end
-
-  def next_7_days_count
-    base_scope.find_next_7_days(@day).count
-  end
-
-  def monthly_count
-    base_scope.for_month(@day).count
-  end
-
-  def show_monthly?
-    monthly_count <= FUTURE_LIMIT
-  end
-
-  def next_event_after(day)
-    base_scope.future(day).first
-  end
-
-  # Returns neighbourhoods that have events, with counts for the given period
-  # Used for filter dropdowns
+  # Count methods for determining default period.
   #
-  # Shows all descendant neighbourhoods of the site's configured neighbourhoods,
-  # at every level. Each neighbourhood's count includes events in its subtree.
+  # Each takes the same optional tag_id as #call, so a region-filtered listing
+  # picks its period, its monthly toggle and its next-event link from the
+  # region's own events rather than the whole site's (#3368 D7).
+  #
+  # @param tag_id [Integer, nil] restrict to events whose organiser or place
+  #   carries this tag
+  def future_count(tag_id: nil)
+    filter_by_tag(base_scope, tag_id).future(@day).count
+  end
+
+  def next_7_days_count(tag_id: nil)
+    filter_by_tag(base_scope, tag_id).find_next_7_days(@day).count
+  end
+
+  def monthly_count(tag_id: nil)
+    filter_by_tag(base_scope, tag_id).for_month(@day).count
+  end
+
+  def show_monthly?(tag_id: nil)
+    monthly_count(tag_id: tag_id) <= FUTURE_LIMIT
+  end
+
+  # The soonest event on or after `day`. `future` only filters, so without an
+  # explicit order this took whatever row the database returned first.
+  def next_event_after(day, tag_id: nil)
+    filter_by_tag(base_scope, tag_id).future(day).reorder(dtstart: :asc).first
+  end
+
+  # Neighbourhoods with events, with per-subtree counts, for the filter
+  # dropdown. Delegates the roll-up to EventNeighbourhoodCounts.
   #
   # @param period [String] 'day', 'week', or 'future'
+  # @param tag_id [Integer] optionally restrict to a tag, so the counts agree
+  #   with a region-filtered listing
   # @return [Array<Hash>] array of { neighbourhood: Neighbourhood, count: Integer }
-  def neighbourhoods_with_counts(period: 'future')
+  def neighbourhoods_with_counts(period: 'future', tag_id: nil)
     return [] unless @site
 
-    all_descendants = @site.neighbourhoods.flat_map { |n| n.descendants.to_a }
-    return [] if all_descendants.empty?
+    scope = apply_period(filter_by_tag(base_scope, tag_id), period)
+    EventNeighbourhoodCounts.new(scope: scope, site: @site).call
+  end
 
-    events = apply_period(base_scope, period)
-
-    # Count events per leaf neighbourhood (single query)
-    raw_counts = events
-                 .left_joins(:address, organiser: :address)
-                 .where('COALESCE(addresses.neighbourhood_id, addresses_partners.neighbourhood_id) IS NOT NULL')
-                 .group('COALESCE(addresses.neighbourhood_id, addresses_partners.neighbourhood_id)')
-                 .distinct
-                 .count
-
-    # Build parent→children map from ancestry data already in memory,
-    # then compute subtree counts without extra DB queries
-    subtree_counts = subtree_counts_from_ancestry(all_descendants, raw_counts)
-
-    all_descendants
-      .select { |n| (subtree_counts[n.id] || 0).positive? }
-      .sort_by(&:name)
-      .map { |n| { neighbourhood: n, count: subtree_counts[n.id] } }
+  # Whether the given event appears on this site — same rules as the event
+  # listing. Always true for the directory (site: nil).
+  #
+  # @param event [Event]
+  # @return [Boolean]
+  def include?(event)
+    base_scope.exists?(event.id)
   end
 
   private
@@ -152,66 +164,42 @@ class EventsQuery
   # Base Scope
   # ===================
 
+  # Events for the whole directory (no site) or, via SiteEventsScope, the ones
+  # that belong to this site. Preloads place and organiser for the cards.
   def base_scope
-    @base_scope ||= if @site.nil? || @site.directory_site?
-                      Event.includes(:place, :organiser)
-                    else
-                      events_for_site.includes(:place, :organiser)
-                    end
+    @base_scope ||= events_in_scope.includes(:place, :organiser)
   end
 
-  # Inline of Event.for_site - finds events belonging to partners in this site
-  # When site has tags: only events from tagged partners (no address fallback)
-  # When site has no tags: events from site partners OR events with address in site neighbourhoods
-  def events_for_site
-    partners_scope = PartnersQuery.new(site: @site).call.reorder(nil)
-
-    if @site.tags.any?
-      events_for_tagged_site(partners_scope)
-    else
-      events_for_untagged_site(partners_scope)
-    end
-  end
-
-  # For sites without tags: use subquery instead of materializing partners
-  def events_for_untagged_site(partners_scope)
-    site_neighbourhood_ids = @site.owned_neighbourhood_ids
-    partner_subquery = partners_scope.select(:id)
-
-    base = Event.left_joins(:address)
-    base.where(organiser_id: partner_subquery)
-        .or(base.where(addresses: { neighbourhood_id: site_neighbourhood_ids }))
-  end
-
-  # For sites with tags: must load partners for legacy name/postcode address matching
-  def events_for_tagged_site(partners_scope)
-    partner_records = partners_scope.includes(:address).load
-    partner_names = partner_records.map { |p| p.name.downcase }
-    partner_postcodes = partner_records.filter_map(&:address).map { |a| a.postcode.downcase }
-
-    Event
-      .left_joins(:address)
-      .where(
-        'organiser_id IN (:partner_ids) OR ' \
-        '(lower(addresses.street_address) IN (:partner_names) AND ' \
-        'lower(addresses.postcode) IN (:partner_postcodes))',
-        partner_ids: partner_records.map(&:id),
-        partner_names: partner_names,
-        partner_postcodes: partner_postcodes
-      )
+  def events_in_scope
+    @site.nil? ? Event.all : SiteEventsScope.new(site: @site).call
   end
 
   # ===================
   # Filtering
   # ===================
 
-  def build_filtered_scope(organiser:, place:, organiser_or_place:, neighbourhood_id:, repeating:)
+  # rubocop:disable Metrics/ParameterLists
+  def build_filtered_scope(repeating:, organiser: nil, place: nil, organiser_or_place: nil,
+                           neighbourhood_id: nil, tag_id: nil)
+    # rubocop:enable Metrics/ParameterLists
     events = base_scope
+    events = filter_by_tag(events, tag_id)
     events = events.by_organiser(organiser) if organiser
     events = events.in_place(place) if place
     events = events.by_organiser_or_place(organiser_or_place) if organiser_or_place
     events = filter_by_neighbourhood(events, neighbourhood_id) if neighbourhood_id.present?
     apply_repeating_filter(events, repeating)
+  end
+
+  # Restrict to events whose organiser or place carries the tag. Mirrors
+  # PartnersQuery#filter_by_tag: the region filter is a partnership-tag filter,
+  # and an event belongs to a region when the partner behind it does.
+  # A blank tag_id means no region is selected, so the scope passes through.
+  def filter_by_tag(events, tag_id)
+    return events if tag_id.blank?
+
+    partner_ids = PartnerTag.where(tag_id: tag_id).pluck(:partner_id)
+    events.where(organiser_id: partner_ids).or(events.where(place_id: partner_ids))
   end
 
   # Filter by physical location of event (event address, or partner address if no event address)
@@ -267,29 +255,7 @@ class EventsQuery
     end
   end
 
-  # Compute subtree event counts using in-memory ancestry data (no extra queries).
-  # Builds a parent→children map, then propagates leaf counts upward.
-  def subtree_counts_from_ancestry(descendants, raw_counts)
-    ids = descendants.to_set(&:id)
-    children_map = Hash.new { |h, k| h[k] = [] }
-    roots = []
-
-    descendants.each do |n|
-      if n.parent_id && ids.include?(n.parent_id)
-        children_map[n.parent_id] << n.id
-      else
-        roots << n.id
-      end
-    end
-
-    counts = {}
-    # Post-order traversal: compute children first, then sum into parent
-    compute = lambda do |id|
-      own = raw_counts[id] || 0
-      child_sum = children_map[id].sum { |cid| compute.call(cid) }
-      counts[id] = own + child_sum
-    end
-    roots.each { |id| compute.call(id) }
-    counts
-  end
+  # The neighbourhood dropdown: every neighbourhood with events in its subtree,
+  # each carrying that subtree's event count, sorted by name.
+  #
 end

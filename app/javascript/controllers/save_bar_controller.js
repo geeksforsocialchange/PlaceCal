@@ -69,6 +69,10 @@ export default class extends Controller {
 					setTimeout(() => this.updateButtons(), 10);
 				});
 			});
+
+		// Marker for tests: button visibility only updates once the tab click
+		// listeners above are attached, so helpers wait for this before clicking
+		this.element.dataset.saveBarConnected = "true";
 	}
 
 	disconnect() {
