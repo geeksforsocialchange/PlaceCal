@@ -138,7 +138,7 @@ class Components::Shared::Navigation < Components::Base
     false
   end
 
-  # TODO: Change to join.placecal.org once the join flow is live
+  # Stays on get-in-touch until the join site's copy is agreed.
   def render_join_button
     li(class: 'text-center max-md:py-3') do
       link_to(@cta_label || t('navigation.directory.join'), @cta_path || get_in_touch_path,

@@ -54,7 +54,7 @@
 	margin-bottom: calc(var(--spacing) * 3);
 }
 
-/* Join site display headline — bigger than hero-title, used on join.placecal.org */
+/* Join site display headline: bigger than hero-title, used on join.placecal.org */
 @utility join-headline {
 	font-family: var(--font-serif);
 	font-weight: var(--font-weight-regular);

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-# Shared base for the join marketing site pages (join.placecal.org, #3163).
-# Copy lives under join.* in config/locales/join.en.yml; the audience keys
-# are Components::Join::Base::AUDIENCE_KEYS.
+# Base for join site pages. Copy lives under join.* in join.en.yml.
 class Views::Join::Base < Views::Base
   register_output_helper :icon
 
@@ -12,9 +10,8 @@ class Views::Join::Base < Views::Base
     join_audience_path(key.tr('_', '-'))
   end
 
-  # Breadcrumb trail on join page tops (the design's .bc) — taupe on cream,
-  # or the AA-safe ink on salmon heroes (taupe only reaches 2.4:1 there).
-  # Pass [label] for the current page, or [label, path] pairs for links.
+  # Pass [label] for the current page, or [label, path] for a link.
+  # on_secondary swaps to the darker ink, since taupe fails contrast on salmon.
   def breadcrumb(*crumbs, on_secondary: false)
     tone = on_secondary ? 'text-foreground-dark' : 'text-tertiary'
     nav(class: "text-xs #{tone} mb-3", aria_label: t('join.aria.breadcrumb')) do

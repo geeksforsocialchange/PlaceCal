@@ -1,13 +1,6 @@
 # frozen_string_literal: true
 
-# Headline numbers shared by the nationwide directory homepage and the join
-# marketing site: live partnerships, visible partners, events over the next
-# month, and districts covered.
-#
-# @example
-#   DirectoryStatsQuery.fetch_cached
-#   # => { partnerships: 10, partners: 413, events: 918, neighbourhoods: 42 }
-#
+# Headline counts: partnerships, partners, events this month, districts.
 class DirectoryStatsQuery
   CACHE_KEY = 'directory/stats'
   CACHE_TTL = 1.day

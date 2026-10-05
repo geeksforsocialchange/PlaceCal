@@ -39,6 +39,8 @@ en:
     join_us:
       subject: "New Join Request"
       subject_with_site: "New Join Request (%{site})"
+      answer_yes: "Yes"
+      answer_no: "No"
 
   components:
     details:

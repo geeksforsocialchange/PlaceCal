@@ -55,7 +55,7 @@ class Site < ApplicationRecord
   # defining the admin subdomain string here.
   ADMIN_SUBDOMAIN = 'admin'
 
-  # Reserved for the join.placecal.org marketing site (#3163) — like admin,
+  # Reserved for the join.placecal.org marketing site (#3163): like admin,
   # it has no Site row.
   JOIN_SUBDOMAIN = 'join'
 
@@ -128,6 +128,8 @@ class Site < ApplicationRecord
   # ==== Validations ====
   validates :name, :slug, :url, presence: true
   validates :slug, uniqueness: true
+  # A site slug is its subdomain, and these two are served by something else.
+  validates :slug, exclusion: { in: [JOIN_SUBDOMAIN, 'www'] }
   validates :hero_text, length: { maximum: 120 }
   validates :contact_email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
   # Themes come from the extension registry, not a static list, so an

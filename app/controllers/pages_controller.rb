@@ -4,10 +4,7 @@ class PagesController < ApplicationController
   before_action :set_primary_neighbourhood, only: [:site]
   before_action :set_site
 
-  # Only ever reached as the nationwide directory: hosts with a Site route to
-  # sites#index (Sites::Local), the admin subdomain has its own root, and the
-  # join subdomain has its own routes/catch-all. The legacy pre-directory
-  # homepage (Views::Homepage::Home) was unreachable and has been deleted.
+  # Only reached on the apex: every other host has its own root route.
   def home
     render_directory_home
   end

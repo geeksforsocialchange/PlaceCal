@@ -16,7 +16,7 @@ class Components::Join::Header < Components::Join::Base
   private
 
   # A nav landmark (not a bare div) so the band's content is contained by a
-  # landmark — axe's region rule flags top-level content outside one.
+  # landmark: axe's region rule flags top-level content outside one.
   def render_band
     nav(class: 'bg-secondary', aria_label: t('join.band.aria_label')) do
       div(class: 'container-public py-2 flex items-center justify-between gap-4 flex-wrap') do

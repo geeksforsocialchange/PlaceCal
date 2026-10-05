@@ -1,13 +1,6 @@
 # frozen_string_literal: true
 
-# The ContactRequest enquiry form (card, choice chips, email fallback CTA),
-# shared by the directory's get-in-touch page and the join site's book-a-demo
-# page — the two pages post the same model to their own URL. Copy lives under
-# contact_form.* in en.yml; the join-* classes are in
-# app/tailwind/public/_components.css.
-#
-# Named ContactForm, not ContactRequest: a component constant matching the
-# model name would shadow the model through the components kit.
+# Named ContactForm because a ContactRequest component would shadow the model.
 class Components::Shared::ContactForm < Components::Base
   register_output_helper :simple_form_for
   register_output_helper :invisible_captcha
@@ -15,20 +8,17 @@ class Components::Shared::ContactForm < Components::Base
 
   prop :contact_request, ContactRequest, reader: :private
   prop :url, String, reader: :private
+  # Site pages show their own contact address instead of PlaceCal's.
+  prop :email_cta, _Boolean, default: true
 
   def view_template
     render_form
-    render_email_cta
+    render_email_cta if @email_cta
   end
 
   private
 
-  # simple_form_for gives us the form tag, CSRF token and model binding. We
-  # render each control with the plain Rails form-builder helpers (text_field,
-  # check_box, submit, …) rather than simple_form's `f.input` wrappers so the
-  # bespoke label/grid/chip markup below is fully under our control. Those
-  # helpers return an ActiveSupport::SafeBuffer, which `raw` writes straight
-  # into the Phlex output buffer.
+  # Plain form-builder helpers, not f.input, so the label and chip markup stay ours.
   def render_form
     simple_form_for contact_request, url: url do |f|
       invisible_captcha

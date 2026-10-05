@@ -81,6 +81,18 @@ RSpec.describe Site, type: :model do
     # No explicit validates_uniqueness_of on slug in the model
   end
 
+  describe "reserved subdomains" do
+    it "refuses a slug another host already answers on" do
+      %w[join www].each do |slug|
+        expect(build(:site, slug: slug)).not_to be_valid
+      end
+    end
+
+    it "does not reserve those words for other models" do
+      expect(Partner.friendly_id_config.reserved_words).not_to include("join", "www")
+    end
+  end
+
   describe "#join_recipient" do
     it "returns the site's own contact email when set" do
       site = build(:site, contact_email: "hello@example.org")

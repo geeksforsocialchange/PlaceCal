@@ -1,12 +1,6 @@
 # frozen_string_literal: true
 
-# PlaceCal's origin & mission narrative, rebuilt in the directory (Firehose)
-# design system. A narrow (960px) editorial page: hero, the research that
-# started it, three problems, a turning point, the three-part solution, and a
-# call to action. Copy lives under directory.pages.our_story in en.yml.
-#
-# Served on both the directory (/our-story) and the join marketing site,
-# which passes its book-a-demo path as the closing CTA.
+# Also served on the join site, which passes its own closing CTA path.
 class Views::Directory::OurStory < Views::Base
   T = 'directory.pages.our_story'
   IMAGE_BASE = 'home/our_story'
@@ -46,9 +40,7 @@ class Views::Directory::OurStory < Views::Base
 
   private
 
-  # A clearly-narrower article measure than the heroes' container-public rail:
-  # close-but-not-equal widths read as misalignment, a decisive difference
-  # reads as a deliberate centered column.
+  # Decisively narrower than the hero: a near-equal width reads as misaligned.
   def narrow(classes = '', &)
     div(class: "mx-auto max-w-[820px] px-6 #{classes}".strip, &)
   end

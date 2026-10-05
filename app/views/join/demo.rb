@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# "Book a demo" — the same ContactForm as the directory's get-in-touch page,
+# "Book a demo": the same ContactForm as the directory's get-in-touch page,
 # posting to the join-side route (forms can't post across subdomains).
 class Views::Join::Demo < Views::Join::Base
   prop :contact_request, ::ContactRequest, reader: :private

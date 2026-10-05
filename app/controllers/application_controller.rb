@@ -129,7 +129,7 @@ class ApplicationController < ActionController::Base
   # @return [Boolean] true when this request is for the join marketing site
   #   (join.placecal.org).
   def join_site_request?
-    request.subdomain == Site::JOIN_SUBDOMAIN
+    Sites::JoinHost.matches?(request)
   end
 
   def set_primary_neighbourhood
@@ -184,7 +184,9 @@ class ApplicationController < ActionController::Base
   def set_navigation
     return @navigation if @navigation
 
-    @navigation = if directory_request?
+    @navigation = if join_site_request?
+                    []
+                  elsif directory_request?
                     directory_navigation
                   else
                     sub_site_navigation

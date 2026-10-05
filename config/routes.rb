@@ -164,16 +164,12 @@ Rails.application.routes.draw do
 
   get 'our-story', to: 'pages#our_story'
 
-  # The legacy informational pages are deleted (#3163). Their URLs redirect:
-  # find-placecal's job is done by the directory homepage, and the audience
-  # pitches live on the join site.
+  # Retired pages: the homepage replaces find-placecal, the join site the pitches.
   get 'find-placecal', to: redirect('/')
   %w[community-groups metropolitan-areas vcses housing-providers
      social-prescribers culture-tourism].each do |audience_slug|
     get audience_slug, to: redirect { |_params, request|
-      # These routes are reachable on every host, including partner sites'
-      # custom domains, where join.<request.domain> wouldn't exist — always
-      # target the canonical join host in production.
+      # Partner custom domains have no join.<domain>, so production names the host.
       if Rails.env.production?
         "https://join.placecal.org/who-its-for/#{audience_slug}"
       else

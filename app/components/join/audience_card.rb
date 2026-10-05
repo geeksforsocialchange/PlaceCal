@@ -5,7 +5,7 @@
 class Components::Join::AudienceCard < Components::Join::Base
   prop :audience, String, reader: :private
   # 3 under a section h2 (homepage, audience pages); 2 when the card grid sits
-  # directly under the page h1 (who-its-for index) — heading order must not skip.
+  # directly under the page h1 (who-its-for index): heading order must not skip.
   prop :heading_level, Integer, default: 3
 
   def view_template

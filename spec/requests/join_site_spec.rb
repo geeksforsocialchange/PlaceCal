@@ -3,7 +3,7 @@
 require "rails_helper"
 
 # The join marketing site (join.placecal.org, #3163), served entirely from
-# the join subdomain — unknown paths there bounce to the apex.
+# the join subdomain: unknown paths there bounce to the apex.
 RSpec.describe "Join marketing site", type: :request do
   describe "the join subdomain" do
     it "serves the homepage" do

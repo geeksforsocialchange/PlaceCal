@@ -14,6 +14,23 @@ module Views; end
 
 module Components
   extend Phlex::Kit
+
+  # Kit names from before components were namespaced; theme gems still call them.
+  LEGACY_KIT_NAMES = {
+    Address: 'Shared::Address', ContactDetails: 'Shared::ContactDetails', Flash: 'Shared::Flash',
+    Hero: 'Shared::Hero', Map: 'Shared::Map', Navigation: 'Shared::Navigation',
+    Breadcrumb: 'Sites::Breadcrumb', Event: 'Sites::Event', EventFilter: 'Sites::EventFilter',
+    EventList: 'Sites::EventList', Filter: 'Sites::Filter', Footer: 'Sites::Footer',
+    HelpCard: 'Sites::HelpCard', HeroSection: 'Sites::HeroSection', Meta: 'Sites::Meta',
+    PartnerFilter: 'Sites::PartnerFilter', PartnerPreview: 'Sites::PartnerPreview',
+    Profile: 'Sites::Profile', Timeline: 'Sites::Timeline'
+  }.freeze
+
+  LEGACY_KIT_NAMES.each do |name, target|
+    define_method(name) do |*args, **kwargs, &block|
+      render(Components.const_get(target).new(*args, **kwargs), &block)
+    end
+  end
 end
 
 Rails.autoloaders.main.push_dir(

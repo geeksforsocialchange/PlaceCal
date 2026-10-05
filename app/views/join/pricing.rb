@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
-# The pricing page (July 2026 model): three paid tiers priced by who you
-# are, compared in a table on wide screens and stacked cards under 900px,
-# with a free Starter strip, extras, the shared four-step rollout as a
-# timeline, and a native-details FAQ. No JavaScript anywhere.
+# Table on wide screens, stacked cards under 900px. No JavaScript.
 class Views::Join::Pricing < Views::Join::Base
   TIER_KEYS = %i[community organisation institution].freeze
 
@@ -57,9 +54,7 @@ class Views::Join::Pricing < Views::Join::Base
     end
   end
 
-  # Desktop (≥900px): a semantic comparison table. The design's hard
-  # requirement is that this must never squish — under 900px it is hidden
-  # entirely and the stacked cards below take over.
+  # Hidden under 900px so it never squishes: the cards take over there.
   def render_compare_table
     div(class: 'hidden min-[900px]:block') do
       table(class: 'w-full border-collapse table-fixed') do

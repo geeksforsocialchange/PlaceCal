@@ -1,13 +1,8 @@
 # frozen_string_literal: true
 
-# Chrome and cards for the join marketing site (join.placecal.org, #3163).
-# This namespace is only possible because the enquiry form model is named
-# ContactRequest — a top-level Join model would be shadowed by this module
-# inside every view that includes the Components kit.
+# A top-level Join model would be shadowed by this namespace in every view.
 class Components::Join::Base < Components::Base
-  # Ordered audience registry: key → square card image. One "Who it's for"
-  # page each; keys mirror the join.audiences.* locale tree. Keeping the image
-  # beside the key means an audience can't exist without card artwork.
+  # Ordered: audience key to card image, so none exists without artwork.
   AUDIENCES = {
     'community_groups' => 'home/audiences/communities_square.jpg',
     'metropolitan_areas' => 'home/audiences/metro_square.jpg',

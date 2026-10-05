@@ -14,7 +14,7 @@ class Join::PagesController < ApplicationController
     render Views::Join::Audiences.new
   end
 
-  # Match the dashed slug exactly — accepting the underscored key form too
+  # Match the dashed slug exactly: accepting the underscored key form too
   # would serve every audience page at two URLs, each claiming to be canonical.
   def audience
     raise ActiveRecord::RecordNotFound unless Components::Join::Base::AUDIENCE_SLUGS.include?(params[:slug])

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-# The shared footer small print: GFSC's legal details and the running build
-# version, identical on partner sites, the directory, and the join site.
-# Wrapping footers own the layout and typography; this emits classless <p>s.
+# Footer small print. Emits classless <p>s: the wrapping footer owns the styling.
 class Components::Shared::Impressum < Components::Base
   # Partner-site footers already show the GFSC logo among the global
   # supporters, so they turn the impressum's own logo off.
