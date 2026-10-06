@@ -22,10 +22,6 @@ class Views::Layouts::Application < Phlex::HTML
         csrf_meta_tags
         stylesheet_link_tag 'application', media: 'all', 'data-turbo-track': 'reload'
         stylesheet_link_tag 'public_tailwind', media: 'all', 'data-turbo-track': 'reload'
-        # Legacy informational homepage pages (Views::Homepage::*) opt into the
-        # home.scss bundle. Scoped via content_for so the nationwide directory
-        # pages (which share the nil-site layout) don't inherit its body styling.
-        stylesheet_link_tag 'home', media: 'all', 'data-turbo-track': 'reload' if content_for?(:home_styles)
         stylesheet_link_tag site.stylesheet_link, media: 'all', 'data-turbo-track': 'reload' if site&.stylesheet_link
         stylesheet_link_tag 'print', media: 'print', 'data-turbo-track': 'reload'
         render_theme_head
@@ -42,9 +38,9 @@ class Views::Layouts::Application < Phlex::HTML
       end
 
       # app/assets/stylesheets/base/layout.scss
-      # app/assets/stylesheets/home/_layout.scss
-      # app/assets/stylesheets/home/pages/_index.scss
       body do
+        # Outside .page so it spans the viewport, not the page column.
+        Join::WipBanner() if join_site?
         div(class: [
               'page',
               *(if site.nil?
@@ -58,19 +54,25 @@ class Views::Layouts::Application < Phlex::HTML
                   ]
                 end)
             ]) do
-          Navigation(navigation: navigation, site: site)
+          if join_site?
+            Join::Header()
+          else
+            Shared::Navigation(navigation: navigation, site: site)
+          end
           # FIXME: move main elem into component to save excess divs
           main do
-            Flash()
+            Shared::Flash()
             yield
           end
-          if site.nil?
+          if join_site?
+            Join::Footer()
+          elsif site.nil?
             Directory::Footer()
           elsif (footer_class = theme.footer_class)
             # Theme footer slot (#3368 D1): the theme owns the whole footer.
             render footer_class.new(site: site, navigation: navigation)
           else
-            Footer(site, navigation: navigation)
+            Sites::Footer(site, navigation: navigation)
           end
         end
       end
@@ -136,11 +138,13 @@ class Views::Layouts::Application < Phlex::HTML
     link(rel: 'canonical', href: canonical_href)
     # Views can tighten robots via content_for (e.g. past events set noindex
     # so thousands of stale event pages don't dilute the site in the index).
-    robots_content = content_for?(:robots) ? content_for(:robots) : 'noarchive'
+    robots_content = content_for?(:robots) ? content_for(:robots) : default_robots
     meta(name: 'robots', content: robots_content)
 
-    json_ld = site ? site.to_json_ld(base_url: request.base_url) : Site.directory_json_ld(request.base_url)
-    script(type: 'application/ld+json') { raw safe(json_ld.to_json) }
+    unless join_site?
+      json_ld = site ? site.to_json_ld(base_url: request.base_url) : Site.directory_json_ld(request.base_url)
+      script(type: 'application/ld+json') { raw safe(json_ld.to_json) }
+    end
     return unless content_for?(:json_ld)
 
     script(type: 'application/ld+json') { raw safe(content_for(:json_ld)) }
@@ -194,12 +198,12 @@ class Views::Layouts::Application < Phlex::HTML
     link(rel: 'mask-icon', href: image_url(icons[:mask_icon]), color: icons[:mask_icon_color])
   end
 
+  # A page's own title beats the root shortcut, so the join homepage can name itself.
   def compute_title
-    return t('site.title_default') if current_page?(root_url) && site.nil?
-
     page_title = captured_title
     return "#{page_title} | #{site.name}" if page_title && site&.name
     return "#{page_title} | PlaceCal" if page_title
+    return t('site.title_default') if current_page?(root_url) && site.nil?
 
     site&.name || t('site.title_default')
   end
@@ -263,6 +267,17 @@ class Views::Layouts::Application < Phlex::HTML
 
   def navigation
     view_context.instance_variable_get(:@navigation)
+  end
+
+  # Temporary: the join site stays out of search results until its copy is agreed.
+  def default_robots
+    join_site? ? 'noindex, noarchive' : 'noarchive'
+  end
+
+  # The join marketing site shares this layout (and its nil-site page chrome)
+  # but swaps in its own header and footer.
+  def join_site?
+    ::Sites::JoinHost.matches?(request)
   end
 
   # The theme for this request. PlaceCal::Theme::NONE stands in for the

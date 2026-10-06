@@ -67,7 +67,7 @@ The `phlex` and `phlex-rails` gems include built-in ruby-lsp addons that index:
 - Phlex HTML helper methods (`div`, `span`, `h1`, etc. registered via `register_element`)
 - Output/value helpers (registered via `register_output_helper` / `register_value_helper`)
 
-**Limitation:** Kit shorthand methods (e.g. `Hero("title")`) are defined dynamically via `method_missing` and won't appear in autocomplete. Use explicit `Components::Hero` references when you need go-to-definition.
+**Limitation:** Kit shorthand methods (e.g. `Hero("title")`) are defined dynamically via `method_missing` and won't appear in autocomplete. Use explicit `Components::Shared::Hero` references when you need go-to-definition.
 
 ## Alternative: Solargraph
 

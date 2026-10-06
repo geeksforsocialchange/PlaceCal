@@ -1,23 +1,21 @@
 # frozen_string_literal: true
 
-# The "get in touch" form as it appears on a local site (#3368, D8).
-#
-# The field set, form markup and validation are identical to the directory
-# form, so this subclasses it rather than duplicating ~100 lines of form
-# rendering; only the page chrome (hero, intro, email CTA) is site-specific.
-# The enquiry is delivered to the site's own contact_email (D13).
-class Views::Sites::Join < Views::Directory::Join
+# The get-in-touch form on a local site, delivered to the site's own contact_email.
+class Views::Sites::Join < Views::Base
+  register_output_helper :icon
+
+  prop :contact_request, ContactRequest, reader: :private
   prop :site, Site, reader: :private
 
   def view_template
     content_for(:title) { t('sites.join.hero.title') }
     content_for(:description) { site.og_description }
 
-    Hero(t('sites.join.hero.title'), site.tagline)
+    Shared::Hero(t('sites.join.hero.title'), site.tagline)
 
     div(class: 'container-editorial py-8') do
       p(class: 'join-note mb-6') { t('sites.join.intro', site: site.name) }
-      render_form
+      Shared::ContactForm(contact_request: contact_request, url: get_in_touch_path, email_cta: false)
       render_email_cta
     end
   end
