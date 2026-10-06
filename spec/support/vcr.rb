@@ -13,9 +13,6 @@ VCR.configure do |c|
   # Ignore lvh.me requests (used for subdomain testing in system specs)
   c.ignore_hosts "lvh.me", "admin.lvh.me"
 
-  # Ignore schema.org requests (JSON-LD context loading)
-  c.ignore_hosts "schema.org", "www.schema.org"
-
   # Filter sensitive API keys from cassettes
   c.before_record do |interaction|
     # Scrub Authorization headers (used by TicketTailor Basic Auth etc.)
@@ -23,4 +20,4 @@ VCR.configure do |c|
   end
 end
 
-WebMock.disable_net_connect!(allow_localhost: true, allow: [/lvh\.me/, /schema\.org/])
+WebMock.disable_net_connect!(allow_localhost: true, allow: [/lvh\.me/])

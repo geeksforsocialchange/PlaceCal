@@ -29,13 +29,13 @@ class NewsController < ApplicationController
     @has_more = fetched.size > ARTICLES_PER_PAGE
     @articles = fetched.first(ARTICLES_PER_PAGE)
 
-    render Views::News::Index.new(articles: @articles, site: @site, offset: @offset, has_more: @has_more)
+    render Views::Sites::News::Index.new(articles: @articles, site: @site, offset: @offset, has_more: @has_more)
   end
 
   def show
     previous_article, next_article = adjacent_articles
-    render Views::News::Show.new(article: @article, site: @site,
-                                 previous_article: previous_article, next_article: next_article)
+    render Views::Sites::News::Show.new(article: @article, site: @site,
+                                        previous_article: previous_article, next_article: next_article)
   end
 
   private

@@ -1,21 +1,22 @@
 # frozen_string_literal: true
 
 class Views::Mailers::Join::JoinUs < Views::Mailers::Base
-  prop :join, Join, reader: :private
+  prop :contact_request, ContactRequest, reader: :private
 
   def email_content
-    field 'Name', join.name
-    field 'Email', join.email
-    field 'Phone number', join.phone
-    field 'Job Title', join.job_title
-    field 'Organization Name', join.job_org
-    field 'Area you cover', join.area
-    field 'A Ring Back', join.ringback == '1' ? 'Yes' : 'No'
-    field 'More Information', join.more_info == '1' ? 'Yes' : 'No'
-    field 'Why I Want Placecal', join.why
+    %i[name email phone job_title job_org area].each do |attribute|
+      field ContactRequest.human_attribute_name(attribute), contact_request.public_send(attribute)
+    end
+    field ContactRequest.human_attribute_name(:ringback), yes_no(contact_request.ringback)
+    field ContactRequest.human_attribute_name(:more_info), yes_no(contact_request.more_info)
+    field ContactRequest.human_attribute_name(:why), contact_request.why
   end
 
   private
+
+  def yes_no(value)
+    value ? t('join_mailer.join_us.answer_yes') : t('join_mailer.join_us.answer_no')
+  end
 
   def field(label, value)
     p do

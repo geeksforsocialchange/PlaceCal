@@ -74,6 +74,23 @@ Each Calendar has a `strategy` that determines how imported events get their pla
 
 API-based parsers (TicketSource, TicketTailor) extend `ApiBase` and use `skip_source_validation?` to skip HTTP source checks during calendar creation.
 
+## Source URL Restrictions
+
+Every fetch of a calendar source goes through `OutboundUrlGuard` (`app/services/outbound_url_guard.rb`), called from `CalendarImporter::Parsers::Base.read_http_source`. It stops an admin pointing the server at internal services (SSRF).
+
+The guard resolves the hostname and refuses the URL if any address is loopback, private, link-local or otherwise internal. Redirects are checked hop by hop. A refused URL raises `InaccessibleFeed` with the `admin.calendars.wizard.source.private_address` message.
+
+This applies in every environment, so these sources are refused in development too:
+
+- `http://localhost:3000/...`, `http://lvh.me:3000/...` and `http://127.0.0.1/...`
+- Anything on a private network, such as `http://192.168.1.10/feed.ics` or a hostname that only resolves on a VPN
+
+To test an importer against a local file, record a VCR cassette or stub the request in a spec instead of serving the feed from your machine. To try a feed by hand in development, host it somewhere with a public address.
+
+In specs, `spec/support/outbound_url_guard.rb` stubs `OutboundUrlGuard.resolve` so hostnames resolve to a public documentation address and no real DNS lookup happens. Override that stub in a spec to simulate a hostname that resolves privately.
+
+Remote JSON-LD `@context` documents are only loaded from schema.org. A page that names any other remote context will not parse.
+
 ## Event Deduplication
 
 Events are identified by `(calendar_id, uid, dtstart, dtend)` with a unique database index. On re-import:

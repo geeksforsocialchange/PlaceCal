@@ -190,7 +190,7 @@ RSpec.describe "Public Articles (News)", type: :request do
       end
     end
 
-    # Page actions row (Components::PageActions, #3368): previous/next by
+    # Page actions row (Components::Sites::PageActions, #3368): previous/next by
     # publish date within this site, plus back to the index. NewsController
     # computes the neighbours with Article.for_site, which calls `.distinct`
     # (see the model) - this runs for real against Postgres, which is the

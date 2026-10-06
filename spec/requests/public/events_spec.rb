@@ -128,7 +128,7 @@ RSpec.describe "Public Events", type: :request do
       expect(response.body).to include(%(<meta name="robots" content="noindex, noarchive">))
     end
 
-    # Page actions row (Components::PageActions, #3368): organiser's other
+    # Page actions row (Components::Sites::PageActions, #3368): organiser's other
     # events, add to calendar, back to the events index.
     describe "the page actions row" do
       def page_actions

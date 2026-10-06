@@ -4,6 +4,7 @@ ruby '4.0.3'
 source 'https://gem.coop'
 
 # Core
+gem 'json', '< 4'                 # Major bumps change parser defaults (3.0 rejects duplicate keys), so take them deliberately.
 gem 'kamal'                       # Container deployment
 gem 'pg'                          # PostgreSQL database adapter
 gem 'puma'                        # Web server
@@ -74,7 +75,7 @@ gem 'strong_migrations'           # Catch unsafe migrations before they reach pr
 # release a new version of an extension.
 group :extensions do
   gem 'placecal-theme-mossley', github: 'geeksforsocialchange/placecal-theme-mossley', tag: 'v0.1.4'
-  gem 'placecal-theme-transdimension', github: 'geeksforsocialchange/placecal-theme-transdimension', tag: 'v0.3.15'
+  gem 'placecal-theme-transdimension', github: 'geeksforsocialchange/placecal-theme-transdimension', tag: 'v0.4.0'
 end
 
 group :development, :test do
@@ -98,10 +99,10 @@ group :development do
   gem 'rack-mini-profiler'        # In-page performance profiler (?pp=help in dev)
   gem 'rails-erd'                 # Entity-relationship diagrams
   gem 'rdoc'                      # Documentation generator
-  gem 'rubocop', '1.90.0', require: false
+  gem 'rubocop', '1.91.0', require: false
   gem 'rubocop-graphql', '1.8.0', require: false
   gem 'rubocop-performance', '1.27.0', require: false
-  gem 'rubocop-rails', '2.37.0', require: false
+  gem 'rubocop-rails', '2.38.0', require: false
   gem 'rubocop-rake', require: false
   gem 'rubocop-rspec', require: false
   gem 'ruby-lsp', require: false   # Ruby language server (IDE support)

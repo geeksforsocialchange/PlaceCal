@@ -130,7 +130,7 @@ theme :my_ext do |theme|
 end
 ```
 
-Views inherit `Views::Base` to get Rails helpers, `t()` translations, and the core `Components` kit. Components inherit `Components::Base`.
+Views inherit `Views::Base` to get Rails helpers, `t()` translations, and the core `Components` kit. Components inherit `Components::Base`. Core components are namespaced (`Shared::Hero(...)`, `Sites::Event(...)`); the pre-namespacing bare names (`Hero(...)`, `Event(...)`) still work through `Components::LEGACY_KIT_NAMES` in `config/initializers/phlex.rb`, and `spec/requests/extensions/installed_themes_spec.rb` renders every installed theme's homepage to prove it.
 
 Every setting is optional, and the full list is defined in `lib/placecal/theme.rb`:
 

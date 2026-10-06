@@ -98,7 +98,7 @@ RSpec.describe "Public Partners", type: :request do
       expect(back[:href]).to eq(partners_path)
     end
 
-    # Page actions row (Components::PageActions, #3368): just the back link.
+    # Page actions row (Components::Sites::PageActions, #3368): just the back link.
     it "renders a page actions row linking back to the partners index" do
       get partner_url(partner, host: "#{site.slug}.lvh.me")
 

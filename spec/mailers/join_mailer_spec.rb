@@ -9,15 +9,15 @@ RSpec.describe JoinMailer, type: :mailer do
 
   describe "#join_us" do
     it "sends to the default recipient when there is no site" do
-      mail = described_class.join_us(Join.new(**join_attrs))
+      mail = described_class.join_us(ContactRequest.new(**join_attrs))
 
-      expect(mail.to).to eq([Join::DEFAULT_RECIPIENT])
+      expect(mail.to).to eq([ContactRequest::DEFAULT_RECIPIENT])
       expect(mail.subject).to eq(I18n.t("join_mailer.join_us.subject"))
     end
 
     it "sends to the site's contact_email and names the site in the subject" do
       site = build(:site, name: "Millbrook", contact_email: "hello@example.org")
-      mail = described_class.join_us(Join.new(site: site, **join_attrs))
+      mail = described_class.join_us(ContactRequest.new(site: site, **join_attrs))
 
       expect(mail.to).to eq(["hello@example.org"])
       expect(mail.subject).to eq(I18n.t("join_mailer.join_us.subject_with_site", site: "Millbrook"))
@@ -25,7 +25,7 @@ RSpec.describe JoinMailer, type: :mailer do
 
     it "keeps newlines in the site name out of the subject header" do
       site = build(:site, name: "Millbrook\r\nBcc: sneaky@example.com", contact_email: "hello@example.org")
-      mail = described_class.join_us(Join.new(site: site, **join_attrs))
+      mail = described_class.join_us(ContactRequest.new(site: site, **join_attrs))
 
       expect(mail.subject).not_to include("\r")
       expect(mail.subject).not_to include("\n")
@@ -35,9 +35,9 @@ RSpec.describe JoinMailer, type: :mailer do
 
     it "falls back to the default recipient when the site has no contact_email" do
       site = build(:site, contact_email: nil)
-      mail = described_class.join_us(Join.new(site: site, **join_attrs))
+      mail = described_class.join_us(ContactRequest.new(site: site, **join_attrs))
 
-      expect(mail.to).to eq([Join::DEFAULT_RECIPIENT])
+      expect(mail.to).to eq([ContactRequest::DEFAULT_RECIPIENT])
     end
   end
 
@@ -60,7 +60,7 @@ RSpec.describe JoinMailer, type: :mailer do
     end
 
     it "uses the theme's override with no request to have set Current" do
-      mail = described_class.join_us(Join.new(site: themed_site, **join_attrs))
+      mail = described_class.join_us(ContactRequest.new(site: themed_site, **join_attrs))
 
       expect(mail.subject).to eq("Fixture join request (Themed)")
       expect(mail.body.encoded).to include("Test User")
@@ -69,7 +69,7 @@ RSpec.describe JoinMailer, type: :mailer do
     it "renders under the join's own site, not whatever Current was left on" do
       use_current_site(build(:site, name: "Someone else", theme: "pink"))
 
-      mail = described_class.join_us(Join.new(site: themed_site, **join_attrs))
+      mail = described_class.join_us(ContactRequest.new(site: themed_site, **join_attrs))
 
       expect(mail.subject).to eq("Fixture join request (Themed)")
     end
@@ -80,14 +80,14 @@ RSpec.describe JoinMailer, type: :mailer do
     it "puts Current back the way it found it" do
       caller_site = use_current_site(build(:site, name: "Someone else", theme: "pink"))
 
-      described_class.join_us(Join.new(site: themed_site, **join_attrs)).subject
+      described_class.join_us(ContactRequest.new(site: themed_site, **join_attrs)).subject
 
       expect(Current.site).to eq(caller_site)
       expect(Current.theme.name).to eq("pink")
     end
 
     it "uses the null theme's copy for a join with no site" do
-      mail = described_class.join_us(Join.new(**join_attrs))
+      mail = described_class.join_us(ContactRequest.new(**join_attrs))
 
       expect(mail.subject).to eq(I18n.t("join_mailer.join_us.subject"))
       expect(Current.theme).to eq(PlaceCal::Theme::NONE)
