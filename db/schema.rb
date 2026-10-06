@@ -222,7 +222,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_05_120000) do
     t.string "calendar_email"
     t.string "calendar_name"
     t.string "calendar_phone"
-    t.boolean "can_be_assigned_events", default: false, null: false
+    t.boolean "can_be_assigned_events", default: true, null: false
     t.datetime "created_at", precision: nil, null: false
     t.text "description"
     t.string "description_html"

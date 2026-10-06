@@ -73,12 +73,16 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base
           plain is_enabled ? t('admin.partners.event_matching.enabled') : t('admin.partners.event_matching.disabled')
         end
         div(class: 'flex items-center gap-3') do
-          span(class: 'label-text text-sm font-medium text-gray-600') { t('admin.labels.disabled') }
+          span(class: event_matching_label_class(active: !is_enabled), id: 'event-matching-label-disabled') do
+            t('admin.labels.disabled')
+          end
           raw form.check_box(:can_be_assigned_events,
                              class: 'toggle toggle-success',
                              id: 'partner_can_be_assigned_events',
                              onchange: 'updateEventMatchingTitle(this.checked)')
-          span(class: 'label-text text-sm font-medium text-success') { t('admin.labels.enabled') }
+          span(class: event_matching_label_class(active: is_enabled, success: true), id: 'event-matching-label-enabled') do
+            t('admin.labels.enabled')
+          end
         end
       end
 
@@ -86,6 +90,18 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base
 
       render_event_matching_benefits
     end
+  end
+
+  # The label matching the toggle's current position is prominent; the other is faded.
+  # The active "enabled" label uses the success colour; otherwise it is neutral.
+  def event_matching_label_class(active:, success: false)
+    emphasis =
+      if active
+        success ? 'text-success' : 'text-base-content'
+      else
+        'text-base-content/40'
+      end
+    "label-text text-sm font-medium #{emphasis}"
   end
 
   def render_event_matching_benefits
@@ -114,6 +130,14 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base
         function updateEventMatchingTitle(isEnabled) {
           const title = document.getElementById('event-matching-title');
           title.textContent = isEnabled ? '#{t('admin.partners.event_matching.enabled')}' : '#{t('admin.partners.event_matching.disabled')}';
+
+          const faded = 'text-base-content/40';
+          const enabledLabel = document.getElementById('event-matching-label-enabled');
+          const disabledLabel = document.getElementById('event-matching-label-disabled');
+          enabledLabel.classList.toggle('text-success', isEnabled);
+          enabledLabel.classList.toggle(faded, !isEnabled);
+          disabledLabel.classList.toggle('text-base-content', !isEnabled);
+          disabledLabel.classList.toggle(faded, isEnabled);
         }
       JS
     end
