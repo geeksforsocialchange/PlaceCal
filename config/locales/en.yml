@@ -609,7 +609,7 @@ en:
   # ===========================================================================
 
   # ===========================================================================
-  # CONTACT FORM (Components::ContactForm, shared by the directory's
+  # CONTACT FORM (Components::Shared::ContactForm, shared by the directory's
   # get-in-touch page and the join site's book-a-demo page)
   # ===========================================================================
   contact_form:
@@ -628,7 +628,6 @@ en:
     email_cta:
       heading: "Rather just email?"
       body: "Drop us a line directly and we'll pick it up from there."
-      address: "info@placecal.org"
 
   # ===========================================================================
   # ACTIVEMODEL (non-persisted models, e.g. the ContactRequest enquiry form)

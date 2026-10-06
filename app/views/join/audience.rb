@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# One "Who it's for" pitch page. The audience key is validated by the
-# controller against Join::Base::AUDIENCE_KEYS.
+# One "Who it's for" pitch page; the controller has already validated the slug.
 class Views::Join::Audience < Views::Join::Base
   prop :audience, String, reader: :private
 
@@ -73,7 +72,8 @@ class Views::Join::Audience < Views::Join::Base
   end
 
   def render_others
-    others = Join::Base::AUDIENCE_KEYS - [audience]
+    keys = Join::Base::AUDIENCE_KEYS
+    others = (keys - [audience]).rotate(keys.index(audience))
 
     section(class: 'py-10 bg-home-background-3') do
       div(class: 'container-public') do

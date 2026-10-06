@@ -2,6 +2,25 @@
 
 # config/routes.rb
 Rails.application.routes.draw do
+  # Deployed environments name their own apex, so a forged Host header cannot
+  # choose a redirect target; dev and test keep the request's host.
+  apex_redirect = lambda do |label|
+    redirect do |_params, request|
+      if Rails.env.local?
+        "#{request.protocol}#{request.host.delete_prefix("#{label}.")}#{request.port_string}#{request.fullpath}"
+      else
+        "#{Site::DIRECTORY_URL}#{request.fullpath}"
+      end
+    end
+  end
+  join_url = lambda do |request|
+    if Rails.env.local?
+      "#{request.protocol}#{Site::JOIN_SUBDOMAIN}.#{request.domain}#{request.port_string}"
+    else
+      Site::DIRECTORY_URL.sub('://', "://#{Site::JOIN_SUBDOMAIN}.")
+    end
+  end
+
   # ============================================================
   # Infrastructure
   # ============================================================
@@ -72,13 +91,8 @@ Rails.application.routes.draw do
   # admin route (e.g. /events, /news, /places) would otherwise fall through to
   # the public controllers, which assume a current_site and raise on the
   # site-less admin host (#3267). Bounce those requests to the apex instead.
-  match '*path', via: :all,
-                 constraints: { subdomain: Site::ADMIN_SUBDOMAIN },
-                 to: redirect { |_params, request|
-                   host = request.host.delete_prefix('admin.')
-                   port = request.optional_port ? ":#{request.optional_port}" : ''
-                   "#{request.protocol}#{host}#{port}#{request.fullpath}"
-                 }
+  match '*path', via: :all, constraints: { subdomain: Site::ADMIN_SUBDOMAIN },
+                 to: apex_redirect.call(Site::ADMIN_SUBDOMAIN)
 
   # ============================================================
   # Join marketing site (join.placecal.org, #3163)
@@ -99,13 +113,8 @@ Rails.application.routes.draw do
 
   # Anything else on the join subdomain bounces to the apex, mirroring the
   # admin catch-all above.
-  match '*path', via: :all,
-                 constraints: { subdomain: Site::JOIN_SUBDOMAIN },
-                 to: redirect { |_params, request|
-                   host = request.host.delete_prefix('join.')
-                   port = request.optional_port ? ":#{request.optional_port}" : ''
-                   "#{request.protocol}#{host}#{port}#{request.fullpath}"
-                 }
+  match '*path', via: :all, constraints: { subdomain: Site::JOIN_SUBDOMAIN },
+                 to: apex_redirect.call(Site::JOIN_SUBDOMAIN)
 
   # ============================================================
   # Public site
@@ -169,13 +178,7 @@ Rails.application.routes.draw do
   %w[community-groups metropolitan-areas vcses housing-providers
      social-prescribers culture-tourism].each do |audience_slug|
     get audience_slug, to: redirect(status: 302) { |_params, request|
-      # Partner custom domains have no join.<domain>, so production names the host.
-      if Rails.env.production?
-        "https://join.placecal.org/who-its-for/#{audience_slug}"
-      else
-        port = request.optional_port ? ":#{request.optional_port}" : ''
-        "#{request.protocol}join.#{request.domain}#{port}/who-its-for/#{audience_slug}"
-      end
+      "#{join_url.call(request)}/who-its-for/#{audience_slug}"
     }
   end
 

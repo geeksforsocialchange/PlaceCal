@@ -7,6 +7,7 @@ class Views::Directory::OurStory < Views::Base
 
   prop :cta_path, _Nilable(String), default: nil
   prop :root_label, _Nilable(String), default: nil
+  prop :cta_label, _Nilable(String), default: nil
 
   # Alternating illustration/text rows — rows 1 & 3 image-left, row 2 image-right.
   PROBLEMS = [
@@ -153,7 +154,7 @@ class Views::Directory::OurStory < Views::Base
           end
           link_to @cta_path || get_in_touch_path,
                   class: 'with-no-sass btn-home-outline' do
-            plain t("#{T}.cta.button")
+            plain @cta_label || t("#{T}.cta.button")
             span(aria_hidden: 'true') { safe('→') }
           end
         end

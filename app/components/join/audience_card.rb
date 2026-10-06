@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-# Linked card for one audience ("Who it's for"), used on the join homepage,
-# the audiences index, and the "you might also be interested in" strip.
+# Linked card for one audience.
 class Components::Join::AudienceCard < Components::Join::Base
   prop :audience, String, reader: :private
-  # 3 under a section h2 (homepage, audience pages); 2 when the card grid sits
-  # directly under the page h1 (who-its-for index): heading order must not skip.
+  # 2 when the grid sits directly under the page h1, so heading order never skips.
   prop :heading_level, Integer, default: 3
 
   def view_template

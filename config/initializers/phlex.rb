@@ -28,7 +28,10 @@ module Components
 
   LEGACY_KIT_NAMES.each do |name, target|
     define_method(name) do |*args, **kwargs, &block|
-      render(Components.const_get(target).new(*args, **kwargs), &block)
+      # A section kit's own component of this name (Admin::Flash, Directory::Hero) wins.
+      kit = self.class.ancestors.find { |mod| mod.singleton_class.include?(Phlex::Kit) && mod != Components && mod.const_defined?(name, false) }
+      constant = kit ? kit.const_get(name) : Components.const_get(target)
+      render(constant.new(*args, **kwargs), &block)
     end
   end
 end

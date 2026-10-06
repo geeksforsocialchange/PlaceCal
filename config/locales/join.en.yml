@@ -194,10 +194,6 @@ en:
           body: You have tools and ongoing support.
     # Our story is served by the directory's page (Views::Directory::OurStory,
     # copy under directory.pages.our_story), so there is no join-specific copy.
-    # Pricing copy follows the July 2026 business plan and Stefan's design
-    # handoff: three paid tiers priced by who you are (group counts are
-    # guidelines, not meters), a free Starter strip, extras, and a FAQ.
-    # Voice rules from the handoff: plain and warm, no em dashes.
     pricing:
       title: Plans and pricing
       description: PlaceCal plans for community groups, VCSE organisations and institutions. Priced by who you are, and free forever for grassroots groups.

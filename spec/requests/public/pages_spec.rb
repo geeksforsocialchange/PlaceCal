@@ -123,6 +123,12 @@ RSpec.describe "Public Pages", type: :request do
         expect(response).to have_http_status(:found)
         expect(response).to redirect_to("http://join.lvh.me/who-its-for/#{audience_slug}")
       end
+
+      it "names the configured join host outside dev and test" do
+        allow(Rails.env).to receive(:local?).and_return(false)
+        get "/#{audience_slug}", headers: { "Host" => "evil.com" }
+        expect(response).to redirect_to("https://join.placecal.org/who-its-for/#{audience_slug}")
+      end
     end
   end
 

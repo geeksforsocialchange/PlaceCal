@@ -4,8 +4,7 @@ class ContactRequest
   include ActiveModel::Model
   include ActiveModel::Attributes
 
-  # Strong-params whitelist shared by the two controllers that receive this
-  # form (get-in-touch and the join site's book-a-demo).
+  # Strong-params whitelist for the enquiry form.
   PERMITTED_PARAMS = %i[name email phone job_title job_org area ringback more_info why].freeze
   # Fallback recipient for enquiries that arrive without a site, or from a
   # site with no contact_email of its own (#3368, D13).

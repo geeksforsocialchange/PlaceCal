@@ -1,15 +1,35 @@
 # frozen_string_literal: true
 
-# Footer small print. Emits classless <p>s: the wrapping footer owns the styling.
+# Footer small print. The wrapping footer owns the styling.
 class Components::Shared::Impressum < Components::Base
-  # Partner-site footers already show the GFSC logo among the global
-  # supporters, so they turn the impressum's own logo off.
   prop :logo, _Boolean, default: true
+  # Partner sites print the registered company details as well.
+  prop :company_details, _Boolean, default: false
 
   def view_template
     render_logo if @logo
+    if @company_details
+      render_company_details
+    else
+      div(class: 'flex justify-between flex-wrap gap-2') do
+        span { copyright }
+        span do
+          plain "#{t('colophon.build')} "
+          link_to(AppVersion.label(fallback: 'main'), AppVersion.url, class: 'text-tertiary underline hover:decoration-primary')
+        end
+      end
+    end
+  end
+
+  private
+
+  def copyright
+    "#{t('colophon.year', year: Time.zone.today.year)} #{t('colophon.copyright')}"
+  end
+
+  def render_company_details
     p do
-      plain "#{t('colophon.year', year: Time.zone.today.year)} #{t('colophon.copyright')}"
+      plain copyright
       br
       plain t('colophon.company')
       br
@@ -17,13 +37,9 @@ class Components::Shared::Impressum < Components::Base
     end
     p do
       plain "#{t('colophon.build')} "
-      tag.tt do
-        link_to(AppVersion.label(fallback: 'main'), AppVersion.url, class: 'text-inherit underline hover:decoration-primary')
-      end
+      tag.tt { link_to(AppVersion.label(fallback: 'main'), AppVersion.url) }
     end
   end
-
-  private
 
   def render_logo
     link_to('https://gfsc.community', class: 'inline-block mb-2') do

@@ -9,13 +9,13 @@ RSpec.describe "Join marketing site", type: :request do
     it "serves the homepage" do
       get "http://join.lvh.me/"
       expect(response).to be_successful
-      expect(response.body).to include("Set up PlaceCal in your community.")
+      expect(response.body).to include(I18n.t("join.home.hero.title"))
     end
 
     it "serves the audiences index" do
       get "http://join.lvh.me/who-its-for"
       expect(response).to be_successful
-      expect(response.body).to include("Who PlaceCal is for.")
+      expect(response.body).to include(I18n.t("join.audiences.index.title"))
     end
 
     Components::Join::Base::AUDIENCE_KEYS.each do |key|
@@ -78,7 +78,7 @@ RSpec.describe "Join marketing site", type: :request do
 
     it "keeps acronyms in the audience kicker" do
       get "http://join.lvh.me/who-its-for/vcses"
-      expect(response.body).to include("For VCSEs")
+      expect(response.body).to include(I18n.t("join.audiences.for_kicker", audience: I18n.t("join.audiences.vcses.title")))
     end
 
     it "uses one contact address across the site" do
@@ -101,8 +101,8 @@ RSpec.describe "Join marketing site", type: :request do
 
     it "renders the join chrome, not the directory chrome" do
       get "http://join.lvh.me/"
-      expect(response.body).to include("join.placecal.org")
-      expect(response.body).to include("Book a demo")
+      expect(response.body).to include(I18n.t("join.band.host"))
+      expect(response.body).to include(I18n.t("join.nav.book_demo"))
     end
 
     it "reuses the directory Our Story page with a join breadcrumb and book-a-demo CTA" do
@@ -143,6 +143,12 @@ RSpec.describe "Join marketing site", type: :request do
     it "redirect to their apex equivalent" do
       get "http://join.lvh.me/events"
       expect(response).to redirect_to("http://lvh.me/events")
+    end
+
+    it "redirect to the configured apex, not the request host, outside dev and test" do
+      allow(Rails.env).to receive(:local?).and_return(false)
+      get "http://join.evil.com/events"
+      expect(response).to redirect_to("#{Site::DIRECTORY_URL}/events")
     end
   end
 

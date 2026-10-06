@@ -14,7 +14,7 @@ class Views::Join::Demo < Views::Join::Base
           h1(class: 'join-headline m-0 mb-2') { t('join.demo.title') }
           p(class: 'text-base text-tertiary leading-relaxed max-w-(--width-prose-md) mx-auto m-0') { t('join.demo.lede') }
         end
-        Shared::ContactForm(contact_request: contact_request, url: join_demo_path, email_address: t('contact.email'))
+        Shared::ContactForm(contact_request: contact_request, url: join_demo_path)
       end
     end
   end

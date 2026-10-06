@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class Components::Join::Footer < Components::Join::Base
-  include Phlex::Rails::Helpers::MailTo
-
   def view_template
     footer(class: 'bg-home-background border-t-[5px] border-rules mt-16 pt-10 pb-6') do
       render_grid
@@ -59,7 +57,7 @@ class Components::Join::Footer < Components::Join::Base
   end
 
   def render_impressum
-    div(class: 'container-public mt-6 pt-5 border-t-2 border-rules text-xs text-tertiary font-serif [&_p]:my-1',
+    div(class: 'container-public mt-6 pt-5 border-t-2 border-rules text-xs text-tertiary font-serif',
         data_nosnippet: true) do
       Shared::Impressum()
     end

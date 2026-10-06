@@ -3,8 +3,7 @@
 class Components::Join::FeatureCard < Components::Join::Base
   prop :title, String
   prop :body, String
-  # 3 under a section h2 (homepage, audience pages); 2 when the card grid sits
-  # directly under the page h1 (features index): heading order must not skip.
+  # 2 when the grid sits directly under the page h1, so heading order never skips.
   prop :heading_level, Integer, default: 3
 
   def view_template

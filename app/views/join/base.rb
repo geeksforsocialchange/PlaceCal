@@ -6,10 +6,6 @@ class Views::Join::Base < Views::Base
 
   private
 
-  def audience_path(key)
-    join_audience_path(Components::Join::Base.slug_for(key))
-  end
-
   # Pass [label] for the current page, or [label, path] for a link.
   # on_secondary swaps to the darker ink, since taupe fails contrast on salmon.
   def breadcrumb(*crumbs, on_secondary: false)

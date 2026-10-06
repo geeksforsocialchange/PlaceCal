@@ -50,7 +50,6 @@ RSpec.describe "Public Joins (Contact Form)", type: :request do
       get "/get-in-touch", headers: { "Host" => "#{site.slug}.lvh.me" }
       expect(response.body.scan("join-email-cta__heading").size).to eq(1)
       expect(response.body).to include("mailto:hello@example.org")
-      expect(response.body).not_to include("mailto:#{I18n.t('contact_form.email_cta.address')}")
     end
 
     it "shows no email box on a site with no contact address" do

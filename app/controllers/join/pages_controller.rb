@@ -3,7 +3,6 @@
 # The join.placecal.org marketing site (#3163): mostly-static sales pages plus
 # the "book a demo" enquiry form. Routes are constrained to the join subdomain.
 class Join::PagesController < ApplicationController
-  before_action :set_site
   invisible_captcha only: %i[demo_create]
 
   def home
@@ -29,7 +28,8 @@ class Join::PagesController < ApplicationController
   # The directory's Our Story page, reused in the join chrome with the
   # closing CTA pointed at book-a-demo.
   def our_story
-    render Views::Directory::OurStory.new(cta_path: join_demo_path, root_label: t('join.breadcrumbs.root'))
+    render Views::Directory::OurStory.new(cta_path: join_demo_path, cta_label: t('join.nav.book_demo'),
+                                          root_label: t('join.breadcrumbs.root'))
   end
 
   def pricing

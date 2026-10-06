@@ -146,7 +146,7 @@ class Components::Sites::Footer < Components::Base
 
   def render_impressum
     div(class: 'footer__item footer__impressum', data_nosnippet: true) do
-      Shared::Impressum(logo: false)
+      Shared::Impressum(logo: false, company_details: true)
     end
   end
 end
