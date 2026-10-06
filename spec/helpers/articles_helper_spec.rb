@@ -53,4 +53,24 @@ RSpec.describe ArticlesHelper, type: :helper do
       expect(CGI.unescapeHTML(output)).to eq("Hello world")
     end
   end
+
+  describe "#article_date" do
+    it "substitutes %o with the ordinal day before formatting" do
+      date = Date.new(2026, 9, 2)
+
+      expect(helper.article_date(date, "%o %B %Y")).to eq("2nd September 2026")
+    end
+
+    it "handles ordinal days that end in th" do
+      date = Date.new(2026, 9, 11)
+
+      expect(helper.article_date(date, "%o %B %Y")).to eq("11th September 2026")
+    end
+
+    it "formats without an ordinal token unchanged" do
+      date = Date.new(2026, 9, 2)
+
+      expect(helper.article_date(date, "%B %Y")).to eq("September 2026")
+    end
+  end
 end
