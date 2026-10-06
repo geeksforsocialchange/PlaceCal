@@ -107,58 +107,28 @@ RSpec.describe "Public Pages", type: :request do
     end
   end
 
+  # The legacy informational pages are deleted (#3163); their URLs 301.
   describe "GET /find-placecal" do
-    it "returns successful response" do
+    it "redirects to the directory homepage" do
       get "/find-placecal", headers: { "Host" => "lvh.me" }
-      expect(response).to be_successful
+      expect(response).to redirect_to("/")
     end
   end
 
-  describe "GET /community-groups" do
-    it "returns successful response" do
-      get "/community-groups", headers: { "Host" => "lvh.me" }
-      expect(response).to be_successful
-    end
+  %w[community-groups vcses housing-providers metropolitan-areas
+     culture-tourism social-prescribers].each do |audience_slug|
+    describe "GET /#{audience_slug}" do
+      it "redirects temporarily to the join site" do
+        get "/#{audience_slug}", headers: { "Host" => "lvh.me" }
+        expect(response).to have_http_status(:found)
+        expect(response).to redirect_to("http://join.lvh.me/who-its-for/#{audience_slug}")
+      end
 
-    it "includes audience content" do
-      get "/community-groups", headers: { "Host" => "lvh.me" }
-      expect(response.body).to match(/communit/i)
-    end
-  end
-
-  # Audience pages
-  describe "GET /vcses" do
-    it "returns successful response" do
-      get "/vcses", headers: { "Host" => "lvh.me" }
-      expect(response).to be_successful
-    end
-  end
-
-  describe "GET /housing-providers" do
-    it "returns successful response" do
-      get "/housing-providers", headers: { "Host" => "lvh.me" }
-      expect(response).to be_successful
-    end
-  end
-
-  describe "GET /metropolitan-areas" do
-    it "returns successful response" do
-      get "/metropolitan-areas", headers: { "Host" => "lvh.me" }
-      expect(response).to be_successful
-    end
-  end
-
-  describe "GET /culture-tourism" do
-    it "returns successful response" do
-      get "/culture-tourism", headers: { "Host" => "lvh.me" }
-      expect(response).to be_successful
-    end
-  end
-
-  describe "GET /social-prescribers" do
-    it "returns successful response" do
-      get "/social-prescribers", headers: { "Host" => "lvh.me" }
-      expect(response).to be_successful
+      it "names the configured join host outside dev and test" do
+        allow(Rails.env).to receive(:local?).and_return(false)
+        get "/#{audience_slug}", headers: { "Host" => "evil.com" }
+        expect(response).to redirect_to("https://join.placecal.org/who-its-for/#{audience_slug}")
+      end
     end
   end
 

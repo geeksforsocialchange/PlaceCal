@@ -2,6 +2,25 @@
 
 # config/routes.rb
 Rails.application.routes.draw do
+  # Deployed environments name their own apex, so a forged Host header cannot
+  # choose a redirect target; dev and test keep the request's host.
+  apex_redirect = lambda do |label|
+    redirect do |_params, request|
+      if Rails.env.local?
+        "#{request.protocol}#{request.host.delete_prefix("#{label}.")}#{request.port_string}#{request.fullpath}"
+      else
+        "#{Site::DIRECTORY_URL}#{request.fullpath}"
+      end
+    end
+  end
+  join_url = lambda do |request|
+    if Rails.env.local?
+      "#{request.protocol}#{Site::JOIN_SUBDOMAIN}.#{request.domain}#{request.port_string}"
+    else
+      Site::DIRECTORY_URL.sub('://', "://#{Site::JOIN_SUBDOMAIN}.")
+    end
+  end
+
   # ============================================================
   # Infrastructure
   # ============================================================
@@ -72,13 +91,30 @@ Rails.application.routes.draw do
   # admin route (e.g. /events, /news, /places) would otherwise fall through to
   # the public controllers, which assume a current_site and raise on the
   # site-less admin host (#3267). Bounce those requests to the apex instead.
-  match '*path', via: :all,
-                 constraints: { subdomain: Site::ADMIN_SUBDOMAIN },
-                 to: redirect { |_params, request|
-                   host = request.host.delete_prefix('admin.')
-                   port = request.optional_port ? ":#{request.optional_port}" : ''
-                   "#{request.protocol}#{host}#{port}#{request.fullpath}"
-                 }
+  match '*path', via: :all, constraints: { subdomain: Site::ADMIN_SUBDOMAIN },
+                 to: apex_redirect.call(Site::ADMIN_SUBDOMAIN)
+
+  # ============================================================
+  # Join marketing site (join.placecal.org, #3163)
+  # ============================================================
+  # Replaces the old apex audience pages, whose URLs redirect here.
+  constraints(subdomain: Site::JOIN_SUBDOMAIN) do
+    scope as: :join, module: :join, controller: :pages do
+      get '/', action: :home, as: :root
+      get 'who-its-for', action: :audiences, as: :audiences
+      get 'who-its-for/:slug', action: :audience, as: :audience
+      get 'features', action: :features, as: :features
+      get 'our-story', action: :our_story, as: :our_story
+      get 'pricing', action: :pricing, as: :pricing
+      get 'book-a-demo', action: :demo, as: :demo
+      post 'book-a-demo', action: :demo_create
+    end
+  end
+
+  # Anything else on the join subdomain bounces to the apex, mirroring the
+  # admin catch-all above.
+  match '*path', via: :all, constraints: { subdomain: Site::JOIN_SUBDOMAIN },
+                 to: apex_redirect.call(Site::JOIN_SUBDOMAIN)
 
   # ============================================================
   # Public site
@@ -135,15 +171,16 @@ Rails.application.routes.draw do
   get '/places/:id/events/:year/:month/:day', to: 'partners#show', constraints: ymd
   get '/places/:id/embed', to: 'places#embed'
 
-  # Deprecated: moving to join.placecal.org
-  get 'find-placecal', to: 'pages#find_placecal'
   get 'our-story', to: 'pages#our_story'
-  get 'community-groups', to: 'pages#community_groups'
-  get 'metropolitan-areas', to: 'pages#metropolitan_areas'
-  get 'vcses', to: 'pages#vcses'
-  get 'housing-providers', to: 'pages#housing_providers'
-  get 'social-prescribers', to: 'pages#social_prescribers'
-  get 'culture-tourism', to: 'pages#culture_tourism'
+
+  # Retired pages. The pitches redirect temporarily while the join site is a draft.
+  get 'find-placecal', to: redirect('/')
+  %w[community-groups metropolitan-areas vcses housing-providers
+     social-prescribers culture-tourism].each do |audience_slug|
+    get audience_slug, to: redirect(status: 302) { |_params, request|
+      "#{join_url.call(request)}/who-its-for/#{audience_slug}"
+    }
+  end
 
   # Deprecated: collections
   resources :collections, only: %i[show]

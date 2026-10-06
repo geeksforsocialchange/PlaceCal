@@ -159,15 +159,15 @@ RSpec.describe PlaceCal::Theme do
       expect(theme.homepage_view_class).to be_nil
       expect(theme.head_class).to be_nil
       theme.homepage_view "Views::Sites::Default"
-      theme.head "Components::Footer"
+      theme.head "Components::Sites::Footer"
       expect(theme.homepage_view_class).to eq(Views::Sites::Default)
-      expect(theme.head_class).to eq(Components::Footer)
+      expect(theme.head_class).to eq(Components::Sites::Footer)
     end
 
     it "returns nil and logs when a class name no longer resolves" do
       theme.homepage_view "Nope::Views::Home"
       theme.head "Nope::Components::Head"
-      theme.footer "Nope::Components::Footer"
+      theme.footer "Nope::Components::Sites::Footer"
 
       allow(Rails.logger).to receive(:warn)
 
@@ -177,7 +177,7 @@ RSpec.describe PlaceCal::Theme do
 
       expect(Rails.logger).to have_received(:warn).with(/homepage_view class Nope::Views::Home/)
       expect(Rails.logger).to have_received(:warn).with(/head class Nope::Components::Head/)
-      expect(Rails.logger).to have_received(:warn).with(/footer class Nope::Components::Footer/)
+      expect(Rails.logger).to have_received(:warn).with(/footer class Nope::Components::Sites::Footer/)
     end
   end
 
@@ -213,9 +213,9 @@ RSpec.describe PlaceCal::Theme do
 
   describe "#page_view_class" do
     it "constantizes the registered class name" do
-      theme.page "about", "Components::Footer"
+      theme.page "about", "Components::Sites::Footer"
 
-      expect(theme.page_view_class("about")).to eq(Components::Footer)
+      expect(theme.page_view_class("about")).to eq(Components::Sites::Footer)
     end
 
     it "returns nil for a slug the theme does not register" do
