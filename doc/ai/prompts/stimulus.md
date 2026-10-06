@@ -429,7 +429,7 @@ end
 
 # Turbo permanent element
 div(id: "flash-messages", data: { turbo_permanent: true }) do
-  render Components::Flash.new
+  render Components::Shared::Flash.new
 end
 
 # Turbo cache control (in the layout head)

@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
-# PlaceCal's origin & mission narrative, rebuilt in the directory (Firehose)
-# design system. A narrow (960px) editorial page: hero, the research that
-# started it, three problems, a turning point, the three-part solution, and a
-# call to action. Copy lives under directory.pages.our_story in en.yml.
+# Also served on the join site, which passes its own closing CTA path.
 class Views::Directory::OurStory < Views::Base
   T = 'directory.pages.our_story'
   IMAGE_BASE = 'home/our_story'
+
+  prop :cta_path, _Nilable(String), default: nil
+  prop :root_label, _Nilable(String), default: nil
+  prop :cta_label, _Nilable(String), default: nil
 
   # Alternating illustration/text rows — rows 1 & 3 image-left, row 2 image-right.
   PROBLEMS = [
@@ -25,8 +26,8 @@ class Views::Directory::OurStory < Views::Base
     content_for(:title) { t("#{T}.heading") }
 
     Directory::PageHero(
-      narrow: true,
       breadcrumb_label: t("#{T}.heading"),
+      root_label: @root_label,
       kicker: t("#{T}.heading"),
       title: t("#{T}.hero_title"),
       subtitle: t("#{T}.hero_lede")
@@ -42,8 +43,9 @@ class Views::Directory::OurStory < Views::Base
 
   private
 
+  # Decisively narrower than the hero: a near-equal width reads as misaligned.
   def narrow(classes = '', &)
-    div(class: "container-editorial #{classes}".strip, &)
+    div(class: "mx-auto max-w-[820px] px-6 #{classes}".strip, &)
   end
 
   def render_start
@@ -119,7 +121,7 @@ class Views::Directory::OurStory < Views::Base
       div do
         div(class: 'flex items-baseline gap-2.5 mb-2') do
           # Deepened coral (vs --color-secondary-deep) so the large numeral clears WCAG AA (3:1) on cream.
-          span(class: 'font-serif text-[1.9rem] leading-none -tracking-[0.02em]', style: 'color: #d65a52') { feature[:num] } if feature[:num]
+          span(class: 'font-serif text-[1.9rem] leading-none -tracking-[0.02em]', style: 'color: var(--color-secondary-dark)') { feature[:num] } if feature[:num]
           span(class: 'allcaps-label text-tertiary') { t("#{base}.kicker") }
         end
         h3(class: 'mt-0 mb-2 text-[1.45rem] leading-[1.15] font-bold text-foreground') { t("#{base}.title") }
@@ -134,8 +136,8 @@ class Views::Directory::OurStory < Views::Base
         h2(class: 'mx-auto mt-0 mb-4 max-w-[760px] font-serif font-regular text-[clamp(1.9rem,3.8vw,2.6rem)] leading-[1.12] text-foreground text-balance') do
           t("#{T}.turning.heading")
         end
-        # #43392f (the design's text-on-colour brown) clears WCAG AA on the pink panel; the prior opacity-85 brown did not.
-        p(class: 'mx-auto my-0 max-w-[560px] text-[1.05rem] leading-[1.55]', style: 'color: #43392f') do
+        # --color-foreground-dark (the design's text-on-colour brown) clears WCAG AA on the pink panel; the prior opacity-85 brown did not.
+        p(class: 'mx-auto my-0 max-w-[560px] text-[1.05rem] leading-[1.55]', style: 'color: var(--color-foreground-dark)') do
           t("#{T}.turning.body")
         end
         image_tag "#{IMAGE_BASE}/logo_onpink.svg", alt: t("#{T}.turning.logo_alt"), class: 'inline h-[46px] mt-7'
@@ -150,9 +152,9 @@ class Views::Directory::OurStory < Views::Base
           h2(class: 'my-0 font-serif font-regular text-[clamp(1.5rem,3vw,2rem)] leading-[1.1] text-foreground') do
             t("#{T}.cta.heading")
           end
-          link_to get_in_touch_path,
+          link_to @cta_path || get_in_touch_path,
                   class: 'with-no-sass btn-home-outline' do
-            plain t("#{T}.cta.button")
+            plain @cta_label || t("#{T}.cta.button")
             span(aria_hidden: 'true') { safe('→') }
           end
         end

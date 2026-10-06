@@ -6,13 +6,11 @@
 
 Rails.application.config.dartsass.builds = {
   'application.scss' => 'application.css',
-  'home.scss' => 'home.css',
   'base/print.scss' => 'print.css',
   'themes/blue.scss' => 'themes/blue.css',
   'themes/green.scss' => 'themes/green.css',
   'themes/orange.scss' => 'themes/orange.css',
-  'themes/pink.scss' => 'themes/pink.css',
-  'themes/custom/mossley.scss' => 'themes/custom/mossley.css'
+  'themes/pink.scss' => 'themes/pink.css'
 }
 
 # Silence @import deprecation warnings — migration to @use/@forward is a separate task.

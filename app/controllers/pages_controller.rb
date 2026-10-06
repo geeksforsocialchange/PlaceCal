@@ -4,25 +4,9 @@ class PagesController < ApplicationController
   before_action :set_primary_neighbourhood, only: [:site]
   before_action :set_site
 
+  # Only reached on the apex: every other host has its own root route.
   def home
-    if directory_request?
-      render_directory_home
-    else
-      @neighbourhoods = Site.published.select do |site|
-        site.tags.none? { |tag| tag.type == 'Partnership' }
-      end
-      render Views::Homepage::Home.new(neighbourhoods: @neighbourhoods)
-    end
-  end
-
-  def find_placecal
-    @neighbourhoods = Site.published.select do |site|
-      site.tags.none? { |tag| tag.type == 'Partnership' }
-    end
-    @partnerships = Site.published.select do |site|
-      site.tags.any? { |tag| tag.type == 'Partnership' }
-    end
-    render Views::Homepage::FindPlacecal.new(neighbourhoods: @neighbourhoods, partnerships: @partnerships)
+    render_directory_home
   end
 
   def terms_of_use
@@ -35,6 +19,12 @@ class PagesController < ApplicationController
   end
 
   def privacy
+    # A theme may serve its own privacy copy at the conventional URL (#3368,
+    # D14). Core routes /privacy, so the theme's `privacy` page is never
+    # reached by the /:slug catch-all; this action looks it up itself.
+    theme_page = theme_page_view('privacy')
+    return render_theme_page(theme_page) if theme_page
+
     render Views::Directory::MarkdownPage.new(
       slug: 'privacy',
       title: t('directory.pages.privacy.title'),
@@ -43,39 +33,30 @@ class PagesController < ApplicationController
     )
   end
 
+  # Static content page served by the site's theme at /:slug (#3368). The
+  # catch-all route is matched last, so anything core routes never reaches
+  # here. Core holds no page content: the theme's view supplies all of it.
+  def show
+    theme_page = theme_page_view(params[:slug])
+    raise ActiveRecord::RecordNotFound unless theme_page
+
+    render_theme_page(theme_page)
+  end
+
   def our_story
     render Views::Directory::OurStory.new
   end
 
-  def community_groups
-    render Views::Homepage::CommunityGroups.new
-  end
-
-  def vcses
-    render Views::Homepage::Vcses.new
-  end
-
-  def housing_providers
-    render Views::Homepage::HousingProviders.new
-  end
-
-  def metropolitan_areas
-    render Views::Homepage::MetropolitanAreas.new
-  end
-
-  def social_prescribers
-    render Views::Homepage::SocialPrescribers.new
-  end
-
-  def culture_tourism
-    render Views::Homepage::CultureTourism.new
-  end
-
   def robots
+    # One path, a different body per host, the same as the sitemap and the
+    # manifest: a shared cache keying on the path alone would hand one site's
+    # robots.txt to another.
+    response.headers['Vary'] = 'Host'
     if current_site
       render plain: current_site.robots
-    elsif directory_request?
-      # The apex serves the nationwide directory: always crawlable
+    elsif directory_request? || join_site_request?
+      # The apex serves the nationwide directory and join.placecal.org is the
+      # public marketing site: both always crawlable
       render plain: Site.directory_robots
     else
       # Admin subdomain - disallow all indexing
@@ -97,15 +78,21 @@ class PagesController < ApplicationController
 
   private
 
+  # @return [Class, nil] the theme view for this slug. The nationwide directory
+  #   has no Site and so no theme pages; an unregistered slug, or a view class
+  #   that no longer resolves, both give nil.
+  def theme_page_view(slug)
+    return nil if current_site.nil?
+
+    Current.theme.page_view_class(slug)
+  end
+
+  def render_theme_page(view_class)
+    render view_class.new(site: current_site)
+  end
+
   def render_directory_home
-    @stats = Rails.cache.fetch('directory/stats', expires_in: DIRECTORY_CACHE_TTL) do
-      {
-        partnerships: Site.where(is_published: true).count,
-        partners: Partner.visible.count,
-        events: Event.where(dtstart: Time.zone.today..30.days.from_now).count,
-        neighbourhoods: Neighbourhood.districts.count
-      }
-    end
+    @stats = DirectoryStatsQuery.fetch_cached
 
     @partner_locations = Rails.cache.fetch('directory/partner_locations', expires_in: DIRECTORY_CACHE_TTL) do
       PartnerLocationsQuery.new.call.map do |location|

@@ -6,7 +6,9 @@ module SiteRobots
   # @return [String] robots.txt content, blocking crawlers if unpublished
   def robots
     if is_published?
-      self.class.published_robots
+      # A site advertises its own sitemap, not the directory's. The directory's
+      # sitemap lists nothing under this site's hostname.
+      self.class.published_robots(directory_url.chomp('/'))
     else
       <<~TXT
         #{self.class.robots_config}
@@ -21,12 +23,13 @@ module SiteRobots
     # has no Site row and is always publicly crawlable.
     # @return [String]
     def directory_robots
-      published_robots
+      published_robots(self::DIRECTORY_URL)
     end
 
+    # @param base_url [String] host the sitemap is served from, no trailing slash
     # @return [String] the permissive robots.txt template plus sitemap reference
-    def published_robots
-      "#{robots_config}\nSitemap: #{self::DIRECTORY_URL}/sitemap.xml\n"
+    def published_robots(base_url = self::DIRECTORY_URL)
+      "#{robots_config}\nSitemap: #{base_url}/sitemap.xml\n"
     end
 
     # @return [String] contents of the environment's robots.txt template

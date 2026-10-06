@@ -93,6 +93,33 @@ RSpec.describe PartnersQuery do
       end
     end
 
+    context "when the site is anchored to a large area" do
+      let(:district) { create(:millbrook_district) }
+      let(:ward) { create(:riverside_ward, parent: district) }
+      let!(:partner_in_ward) do
+        create(:partner, address: create(:address, neighbourhood: ward))
+      end
+      let(:area_site) { create(:site) }
+
+      before { area_site.neighbourhoods << district }
+
+      # The subtree reaches Postgres as a subquery, never a literal id list: a
+      # country-anchored site otherwise serialised ~13,000 ids into 180KB of
+      # SQL on every request. See Site#owned_neighbourhoods_subtree.
+      it "matches the neighbourhood subtree with a subquery, not an id list" do
+        sql = described_class.new(site: area_site).call.to_sql
+
+        expect(sql).to include('IN (SELECT "neighbourhoods"."id" FROM "neighbourhoods"')
+        expect(sql).to match(%r{"neighbourhoods"\."ancestry" LIKE '[\d/]+/%'})
+      end
+
+      it "still returns partners in the area's descendants" do
+        results = described_class.new(site: area_site).call
+
+        expect(results).to include(partner_in_ward)
+      end
+    end
+
     context "with an unknown or invalid neighbourhood filter" do
       before do
         address = create(:address, neighbourhood: neighbourhood)
@@ -139,6 +166,33 @@ RSpec.describe PartnersQuery do
 
       it "returns empty relation" do
         results = described_class.new(site: empty_site).call
+
+        expect(results).to be_empty
+      end
+    end
+
+    context "with a tag-only site (partnership tags, no neighbourhoods)" do
+      let(:tag_only_site) { create(:site) }
+      let(:partnership) { create(:partnership) }
+      let!(:tagged_partner) { create(:partner, name: "Tagged") }
+      let!(:tagged_elsewhere) { create(:partner, name: "Tagged elsewhere") }
+      let!(:untagged_partner) { create(:partner, name: "Untagged") }
+
+      before do
+        tag_only_site.tags << partnership
+        tagged_partner.tags << partnership
+        tagged_elsewhere.tags << partnership
+      end
+
+      it "scopes by tag alone, wherever the partner is" do
+        results = described_class.new(site: tag_only_site).call
+
+        expect(results).to contain_exactly(tagged_partner, tagged_elsewhere)
+      end
+
+      it "still requires the neighbourhood when the site has both" do
+        tag_only_site.neighbourhoods << create(:neighbourhood)
+        results = described_class.new(site: tag_only_site).call
 
         expect(results).to be_empty
       end

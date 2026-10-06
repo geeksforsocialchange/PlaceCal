@@ -3,7 +3,7 @@
 class NavigationPreview < Lookbook::Preview
   # @label Directory (no site)
   def directory
-    render Components::Navigation.new(
+    render Components::Shared::Navigation.new(
       navigation: PreviewSupport.sample_navigation,
       site: nil
     )

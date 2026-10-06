@@ -67,7 +67,7 @@ class PartnersController < ApplicationController
 
     respond_to do |format|
       format.html do
-        view_class = directory_request? ? Views::Directory::Partners::Show : Views::Partners::Show
+        view_class = directory_request? ? Views::Directory::Partners::Show : Views::Sites::Partners::Show
         render view_class.new(
           partner: @partner, site: @site, current_day: @current_day,
           map: @map, events: @events,
@@ -175,18 +175,22 @@ class PartnersController < ApplicationController
     @selected_category = params[:category] if params[:category].present? && Integer(params[:category], exception: false)
     @selected_neighbourhood = params[:neighbourhood] if params[:neighbourhood].present? && Integer(params[:neighbourhood], exception: false)
 
+    @region = current_region
     query = PartnersQuery.new(site: current_site)
     @partners = query.call(
       neighbourhood_id: @selected_neighbourhood,
-      tag_id: @selected_category
+      tag_id: @selected_category,
+      partnership_id: @region&.id
     )
 
     @map = get_map_markers(@partners) if @partners.detect(&:address)
 
-    render Views::Partners::Index.new(
+    render Views::Sites::Partners::Index.new(
       partners: @partners, site: @site,
       map: @map, selected_category: @selected_category,
-      selected_neighbourhood: @selected_neighbourhood
+      selected_neighbourhood: @selected_neighbourhood,
+      region_tags: region_tags, selected_region: @region,
+      query: query
     )
   end
 end

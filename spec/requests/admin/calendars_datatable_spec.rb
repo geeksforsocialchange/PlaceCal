@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-# rubocop:disable Rails/SkipsModelValidations
+# rubocop:disable-next Rails/SkipsModelValidations
 RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
   let(:admin_user) { create(:root_user) }
   # Define columns for this datatable
@@ -310,4 +310,3 @@ RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
     end
   end
 end
-# rubocop:enable Rails/SkipsModelValidations

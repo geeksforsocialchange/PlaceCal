@@ -9,12 +9,12 @@ image: geeksforsocialchange/placecal
 servers:
   web:
     options:
-      memory: 512m
+      memory: 1g
   job_worker:
     cmd: bin/rails jobs:work
     proxy: false
     options:
-      memory: 512m
+      memory: 768m
 
 proxy:
   ssl:
@@ -81,7 +81,7 @@ accessories:
     directories:
       - data:/var/lib/postgresql
     options:
-      memory: 512m
+      memory: 1g
 
 asset_path: /rails/public/assets
 

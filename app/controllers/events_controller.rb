@@ -42,7 +42,7 @@ class EventsController < ApplicationController
     end
     respond_to do |format|
       format.html do
-        render Views::Events::Show.new(
+        render Views::Sites::Events::Show.new(
           event: @event, site: @site, map: @map, more_from_organiser: @more_from_organiser
         )
       end
@@ -72,13 +72,16 @@ class EventsController < ApplicationController
   # - Few events total: show all (future)
   # - Moderate density: show week view
   # - High density: show day view
+  #
+  # Counts the selected region's events, not the whole site's, so a sparse
+  # region is not given the day view a busy site would pick (#3368 D7).
   def default_period
     return params[:period] if params[:period].present?
 
-    future_count = @query.future_count
+    future_count = @query.future_count(tag_id: @region&.id)
     return 'future' if future_count < 20
 
-    week_count = @query.next_7_days_count
+    week_count = @query.next_7_days_count(tag_id: @region&.id)
     week_count > 20 ? 'day' : 'week'
   end
 
@@ -115,6 +118,7 @@ class EventsController < ApplicationController
     @repeating = params[:repeating] || 'on'
     @sort = params[:sort] || 'time'
     @selected_neighbourhood = params[:neighbourhood] if params[:neighbourhood].present? && Integer(params[:neighbourhood], exception: false)
+    @region = current_region
     @query = EventsQuery.new(site: current_site, day: @current_day)
     @period = params[:period] || default_period
 
@@ -122,26 +126,29 @@ class EventsController < ApplicationController
       period: @period,
       repeating: @repeating,
       sort: @sort,
-      neighbourhood_id: @selected_neighbourhood
+      neighbourhood_id: @selected_neighbourhood,
+      tag_id: @region&.id
     )
     @truncated = @query.truncated
-    @next_date = @query.next_event_after(@current_day)
-    @show_monthly = @query.show_monthly?
+    @next_date = @query.next_event_after(@current_day, tag_id: @region&.id)
+    @show_monthly = @query.show_monthly?(tag_id: @region&.id)
     respond_to do |format|
       format.html do
         if params[:simple].present?
-          render Views::Events::IndexSimple.new(events: @events), layout: false
+          render Views::Sites::Events::IndexSimple.new(events: @events), layout: false
         else
-          render Views::Events::Index.new(
+          render Views::Sites::Events::Index.new(
             events: @events, period: @period, sort: @sort, repeating: @repeating,
             current_day: @current_day, site: @site,
             selected_neighbourhood: @selected_neighbourhood,
             next_date: @next_date, truncated: @truncated,
-            show_monthly: @show_monthly
+            show_monthly: @show_monthly,
+            region_tags: region_tags, selected_region: @region,
+            query: @query
           )
         end
       end
-      format.text { render Views::Events::IndexText.new(events: @events), layout: false }
+      format.text { render Views::Sites::Events::IndexText.new(events: @events), layout: false }
       format.ics { render_ical }
     end
   end

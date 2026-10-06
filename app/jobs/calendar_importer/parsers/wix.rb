@@ -36,7 +36,7 @@ module CalendarImporter
         doc = Nokogiri::HTML(html)
         doc.xpath('//script[@type="application/json"]').any? do |script|
           json = begin
-            JSON.parse(script.inner_html)
+            JSON.parse(script.inner_html, allow_duplicate_key: true)
           rescue StandardError
             nil
           end
@@ -124,7 +124,7 @@ module CalendarImporter
       end
 
       def parse_json_safely(string)
-        JSON.parse(string)
+        JSON.parse(string, allow_duplicate_key: true)
       rescue JSON::ParserError
         nil
       end

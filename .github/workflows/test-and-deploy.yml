@@ -34,7 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
+      - uses: ruby/setup-ruby@14594264cd68ce8a2345dd349bc3d138a4ef85c8 # v1.327.0
         with:
           bundler-cache: true
           cache-version: 3
@@ -50,12 +50,15 @@ jobs:
           bin/yarn run format:check
           bundle exec rubocop
 
+      - name: Check extensions stay inside the contract
+        run: bundle exec bin/check-extension-tree
+
   security:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
+      - uses: ruby/setup-ruby@14594264cd68ce8a2345dd349bc3d138a4ef85c8 # v1.327.0
         with:
           bundler-cache: true
           cache-version: 3
@@ -63,8 +66,25 @@ jobs:
       - name: Run Brakeman
         run: bundle exec brakeman --no-pager
 
+      # npm's advisory endpoint periodically drops or 503s requests. Retry, and
+      # if npm still cannot answer, warn rather than fail: a registry outage is
+      # not a vulnerability. Real findings still fail the job.
       - name: Audit JavaScript dependencies (importmap)
-        run: bin/importmap audit
+        run: |
+          for attempt in 1 2 3; do
+            if output=$(bin/importmap audit 2>&1); then
+              echo "$output"
+              exit 0
+            fi
+            echo "$output"
+            if ! echo "$output" | grep -qE "Importmap::Npm::HTTPError|transport error|Unexpected error response 5"; then
+              echo "::error::importmap audit reported vulnerable packages"
+              exit 1
+            fi
+            echo "npm advisory endpoint unavailable (attempt $attempt of 3)"
+            sleep $((attempt * 30))
+          done
+          echo "::warning::importmap audit skipped: npm advisory endpoint unavailable after 3 attempts"
 
   test:
     runs-on: ubuntu-latest
@@ -103,7 +123,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
+      - uses: ruby/setup-ruby@14594264cd68ce8a2345dd349bc3d138a4ef85c8 # v1.327.0
         with:
           bundler-cache: true
           cache-version: 3
@@ -245,7 +265,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
 
-      - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
+      - uses: ruby/setup-ruby@14594264cd68ce8a2345dd349bc3d138a4ef85c8 # v1.327.0
         with:
           bundler-cache: true
           cache-version: 3

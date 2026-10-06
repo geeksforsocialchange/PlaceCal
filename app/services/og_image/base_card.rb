@@ -15,7 +15,7 @@ module OgImage
   #
   # Site-backed cards (Site, Partnership) also share an optional hero-image
   # background layout here, opted into by overriding #hero_path.
-  # rubocop:disable Metrics/ClassLength -- cohesive drawing helpers + hero layout
+  # rubocop:disable-next Metrics/ClassLength -- cohesive drawing helpers + hero layout
   class BaseCard
     WIDTH = 1200
     HEIGHT = 630
@@ -229,7 +229,7 @@ module OgImage
     # ==== Drawing helpers ====
 
     # Category pill: extrabold uppercase with 2.5px tracking on a rounded bar.
-    # rubocop:disable Metrics/ParameterLists -- keyword args mirroring CSS pill properties
+    # rubocop:disable-next Metrics/ParameterLists -- keyword args mirroring CSS pill properties
     def pill(text_value, background, foreground, size: 22, pad: 24, height: PILL_HEIGHT)
       label_img = text(text_value.upcase, size: size, face: 'Rawline ExtraBold', colour: foreground,
                                           letter_spacing: 2.5)
@@ -241,7 +241,6 @@ module OgImage
       SVG
       composite(bar, label_img, pad, ((height - label_img.height) / 2.0).round)
     end
-    # rubocop:enable Metrics/ParameterLists
 
     # Load an uploaded photo as an opaque width x height tile with optional
     # rounded corners applied through an alpha mask.
@@ -376,5 +375,4 @@ module OgImage
       I18n.t(key, scope: 'og_image', **)
     end
   end
-  # rubocop:enable Metrics/ClassLength
 end
