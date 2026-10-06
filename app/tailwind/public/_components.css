@@ -128,7 +128,7 @@ a.btn-dark-outline:hover {
 	color: var(--color-foreground);
 }
 .join-label .req {
-	color: var(--color-secondary-deep);
+	color: var(--color-secondary-strong);
 	font-weight: 800;
 }
 .join-label .opt {
@@ -317,7 +317,32 @@ textarea.join-control {
 	color: var(--color-foreground);
 }
 
-/* Flash messages — distinct success / error states (Components::Flash) */
+/* Join site primary CTA. Element-qualified so it outranks the legacy a:not(.with-no-sass) colour. */
+a.btn-join,
+input.btn-join {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	background: var(--color-secondary-strong);
+	color: var(--color-background);
+	font-weight: 700;
+	font-size: var(--text-base);
+	padding: 0.7rem 1.5rem;
+	border: 0;
+	border-radius: 9999px;
+	box-shadow: 0 0 0 2px var(--color-secondary-strong);
+	text-decoration: none;
+	cursor: pointer;
+	transition: 0.2s;
+}
+a.btn-join:hover,
+input.btn-join:hover {
+	background: var(--color-foreground);
+	box-shadow: 0 0 0 2px var(--color-foreground);
+	color: var(--color-background);
+}
+
+/* Flash messages — distinct success / error states (Components::Shared::Flash) */
 .flash-message {
 	border-radius: var(--radius-card);
 	padding: 0.75rem 1rem;
