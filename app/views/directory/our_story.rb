@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
-# PlaceCal's origin & mission narrative, rebuilt in the directory (Firehose)
-# design system. A narrow (960px) editorial page: hero, the research that
-# started it, three problems, a turning point, the three-part solution, and a
-# call to action. Copy lives under directory.pages.our_story in en.yml.
+# Also served on the join site, which passes its own closing CTA path.
 class Views::Directory::OurStory < Views::Base
   T = 'directory.pages.our_story'
   IMAGE_BASE = 'home/our_story'
+
+  prop :cta_path, _Nilable(String), default: nil
+  prop :root_label, _Nilable(String), default: nil
+  prop :cta_label, _Nilable(String), default: nil
 
   # Alternating illustration/text rows — rows 1 & 3 image-left, row 2 image-right.
   PROBLEMS = [
@@ -25,8 +26,8 @@ class Views::Directory::OurStory < Views::Base
     content_for(:title) { t("#{T}.heading") }
 
     Directory::PageHero(
-      narrow: true,
       breadcrumb_label: t("#{T}.heading"),
+      root_label: @root_label,
       kicker: t("#{T}.heading"),
       title: t("#{T}.hero_title"),
       subtitle: t("#{T}.hero_lede")
@@ -42,8 +43,9 @@ class Views::Directory::OurStory < Views::Base
 
   private
 
+  # Decisively narrower than the hero: a near-equal width reads as misaligned.
   def narrow(classes = '', &)
-    div(class: "container-editorial #{classes}".strip, &)
+    div(class: "mx-auto max-w-[820px] px-6 #{classes}".strip, &)
   end
 
   def render_start
@@ -150,9 +152,9 @@ class Views::Directory::OurStory < Views::Base
           h2(class: 'my-0 font-serif font-regular text-[clamp(1.5rem,3vw,2rem)] leading-[1.1] text-foreground') do
             t("#{T}.cta.heading")
           end
-          link_to get_in_touch_path,
+          link_to @cta_path || get_in_touch_path,
                   class: 'with-no-sass btn-home-outline' do
-            plain t("#{T}.cta.button")
+            plain @cta_label || t("#{T}.cta.button")
             span(aria_hidden: 'true') { safe('→') }
           end
         end

@@ -129,7 +129,7 @@ theme :my_ext do |theme|
 end
 ```
 
-Views inherit `Views::Base` to get Rails helpers, `t()` translations, and the core `Components` kit. Components inherit `Components::Base`.
+Views inherit `Views::Base` to get Rails helpers, `t()` translations, and the core `Components` kit. Components inherit `Components::Base`. Core components are namespaced (`Shared::Hero(...)`, `Sites::Event(...)`); the pre-namespacing bare names (`Hero(...)`, `Event(...)`) still work through `Components::LEGACY_KIT_NAMES` in `config/initializers/phlex.rb`, and `spec/requests/extensions/installed_themes_spec.rb` renders every installed theme's homepage to prove it.
 
 Every setting is optional, and the full list is defined in `lib/placecal/theme.rb`:
 
@@ -318,7 +318,7 @@ PLACECAL_CORE_PATH=../PlaceCal \
   RAILS_ENV=test bundle exec rspec
 ```
 
-It takes `<gem>=<path>` pairs, and the paths are resolved as core sees them, from beside core's `Gemfile`. Every extension you do not name stays exactly as core pins it, so one boot still loads all of them: two engines registering two themes in one process is a property core has to keep working, and a dev Gemfile that dropped the sibling extension would hide a regression in it. The generated `Gemfile.extensions-dev` is local to the core checkout and gitignored there.
+It takes `<gem>=<path>` pairs, and the paths are resolved as core sees them, from beside core's `Gemfile`. Every extension you do not name stays exactly as core pins it, so one boot still loads all of them: two engines registering two themes in one process is a property core has to keep working, and a dev Gemfile that dropped the sibling extension would hide a regression in it. The generated `Gemfile.extensions-dev` is local to the core checkout and gitignored there. The generator also seeds `Gemfile.extensions-dev.lock` from core's `Gemfile.lock` when no lockfile exists yet, rewriting each named gem's git section as a path section from the checkout's gemspec, so every other gem stays at the version core pins and the lockfile is complete enough for a deployment-mode install (which is how CI's Ruby setup installs when a lockfile exists). A fresh resolution would otherwise pick up any new major release since core last locked, which is how `json` 3.0 broke an extension's CI without touching core's. A lockfile that already exists is left alone.
 
 ## Continuous integration
 

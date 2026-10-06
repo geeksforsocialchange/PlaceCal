@@ -93,6 +93,33 @@ RSpec.describe PartnersQuery do
       end
     end
 
+    context "when the site is anchored to a large area" do
+      let(:district) { create(:millbrook_district) }
+      let(:ward) { create(:riverside_ward, parent: district) }
+      let!(:partner_in_ward) do
+        create(:partner, address: create(:address, neighbourhood: ward))
+      end
+      let(:area_site) { create(:site) }
+
+      before { area_site.neighbourhoods << district }
+
+      # The subtree reaches Postgres as a subquery, never a literal id list: a
+      # country-anchored site otherwise serialised ~13,000 ids into 180KB of
+      # SQL on every request. See Site#owned_neighbourhoods_subtree.
+      it "matches the neighbourhood subtree with a subquery, not an id list" do
+        sql = described_class.new(site: area_site).call.to_sql
+
+        expect(sql).to include('IN (SELECT "neighbourhoods"."id" FROM "neighbourhoods"')
+        expect(sql).to match(%r{"neighbourhoods"\."ancestry" LIKE '[\d/]+/%'})
+      end
+
+      it "still returns partners in the area's descendants" do
+        results = described_class.new(site: area_site).call
+
+        expect(results).to include(partner_in_ward)
+      end
+    end
+
     context "with an unknown or invalid neighbourhood filter" do
       before do
         address = create(:address, neighbourhood: neighbourhood)

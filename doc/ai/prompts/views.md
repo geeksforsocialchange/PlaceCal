@@ -77,12 +77,12 @@ en:
 ## Phlex Views (pages)
 
 A page is a Phlex class under `Views::`, inheriting `Views::Base` (or a
-section base like `Views::Admin::Base` / `Views::Homepage::Base`). It declares
+section base like `Views::Admin::Base` / `Views::Join::Base`). It declares
 typed `prop`s, sets the title with `content_for`, and composes components — often
-via the **Kit** syntax (`Hero(...)`, `Filter(...)`) rather than `render`.
+via the **Kit** syntax (`Shared::Hero(...)`, `Sites::Filter(...)`) rather than `render`. Components live in section folders: `Components::Shared` (used by more than one section), `Components::Sites` (partner sites), `Components::Directory`, `Components::Join` and `Components::Admin`.
 
 ```ruby
-class Views::News::Index < Views::Base
+class Views::Sites::News::Index < Views::Base
   register_output_helper :article_partner_links   # bring in a Rails helper that outputs HTML
   register_value_helper :article_summary_text     # ...or one that returns a value
 
@@ -93,7 +93,7 @@ class Views::News::Index < Views::Base
   def view_template
     content_for(:title) { 'News from your area' }
 
-    Hero('News from your area', site.tagline)   # Kit call to Components::Hero
+    Shared::Hero('News from your area', site.tagline)   # Kit call to Components::Shared::Hero
 
     div(class: 'articles') do
       articles.each { |article| render_article_card(article) }
@@ -134,7 +134,7 @@ end
 - **Base classes**: Public components inherit `Components::Base`, admin components inherit `Components::Admin::Base`; pages inherit `Views::Base` (or a section base)
 - **Typed props**: `prop :name, Type` with Literal types (`String`, `_Nilable(...)`, `_Boolean`, `_Interface(:method)`, `_Any`); add `reader: :private` for a private reader
 - **Positional props**: `prop :title, String, :positional` allows `Hero("Title")` instead of `Hero(title: "Title")`
-- **Kit syntax**: render a component by calling it — `Hero(summary, tagline)`, `Filter(name: ..., items: ...)`, with a block for content — instead of `render Components::Hero.new(...)`
+- **Kit syntax**: render a component by calling it, `Shared::Hero(summary, tagline)`, `Sites::Filter(name: ..., items: ...)`, with a block for content, instead of `render Components::Shared::Hero.new(...)`. The bare pre-namespacing names (`Hero(...)`) still resolve through `Components::LEGACY_KIT_NAMES` for theme gems; do not use them in core.
 - **Rails helpers**: pull them in with `register_output_helper :helper` (HTML output) / `register_value_helper :helper` (returns a value), or the `Phlex::Rails::Helpers::*` mixins (e.g. `include Phlex::Rails::Helpers::FormWith`)
 - **Rails form/builder output**: wrap in `raw` to embed it — e.g. `raw(form.input_field(:email, class: '...'))`; for plain HTML strings (SVGs, `_html` i18n) use `raw safe(...)`
 - **Namespace collisions**: use `::ModelName` (e.g. `::Address.new`) inside components so it doesn't resolve to `Components::ModelName`

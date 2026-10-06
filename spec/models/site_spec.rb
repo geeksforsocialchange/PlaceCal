@@ -81,6 +81,18 @@ RSpec.describe Site, type: :model do
     # No explicit validates_uniqueness_of on slug in the model
   end
 
+  describe "reserved subdomains" do
+    it "refuses a slug another host already answers on" do
+      %w[join www].each do |slug|
+        expect(build(:site, slug: slug)).not_to be_valid
+      end
+    end
+
+    it "does not reserve those words for other models" do
+      expect(Partner.friendly_id_config.reserved_words).not_to include("join", "www")
+    end
+  end
+
   describe "#join_recipient" do
     it "returns the site's own contact email when set" do
       site = build(:site, contact_email: "hello@example.org")
@@ -88,8 +100,8 @@ RSpec.describe Site, type: :model do
     end
 
     it "falls back to the default recipient when blank" do
-      expect(build(:site, contact_email: nil).join_recipient).to eq(Join::DEFAULT_RECIPIENT)
-      expect(build(:site, contact_email: "").join_recipient).to eq(Join::DEFAULT_RECIPIENT)
+      expect(build(:site, contact_email: nil).join_recipient).to eq(ContactRequest::DEFAULT_RECIPIENT)
+      expect(build(:site, contact_email: "").join_recipient).to eq(ContactRequest::DEFAULT_RECIPIENT)
     end
   end
 
@@ -163,6 +175,38 @@ RSpec.describe Site, type: :model do
     end
   end
 
+  describe "#show_neighbourhoods? and #join_word" do
+    let(:district) { create(:millbrook_district) }
+    let(:ward) { create(:riverside_ward, parent: district) }
+
+    it "is false for a site with a single leaf neighbourhood" do
+      site = create(:site, neighbourhoods: [ward])
+      expect(site.show_neighbourhoods?).to be(false)
+      expect(site.join_word).to eq("in")
+    end
+
+    it "is true for a site whose single neighbourhood has descendants" do
+      ward
+      site = create(:site, neighbourhoods: [district])
+      expect(site.show_neighbourhoods?).to be(true)
+      expect(site.join_word).to eq("near")
+    end
+
+    it "is true for a site with more than one neighbourhood" do
+      site = create(:site, neighbourhoods: [ward, create(:oldtown_ward)])
+      expect(site.show_neighbourhoods?).to be(true)
+    end
+
+    it "does not build the whole neighbourhood id list" do
+      site = create(:site, neighbourhoods: [district])
+      allow(site).to receive(:owned_neighbourhood_ids).and_call_original
+
+      site.show_neighbourhoods?
+
+      expect(site).not_to have_received(:owned_neighbourhood_ids)
+    end
+  end
+
   describe "#owned_neighbourhood_ids" do
     let(:site) { create(:site) }
     let(:ward) { create(:riverside_ward) }
@@ -174,6 +218,22 @@ RSpec.describe Site, type: :model do
     it "returns IDs of all owned neighbourhoods including descendants" do
       ids = site.owned_neighbourhood_ids
       expect(ids).to include(ward.id)
+    end
+
+    it "memoises the id list so it is not rebuilt per caller" do
+      site.owned_neighbourhood_ids
+
+      queries = 0
+      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*, payload|
+        queries += 1 unless payload[:cached] || payload[:name] == "SCHEMA"
+      end
+      begin
+        3.times { site.owned_neighbourhood_ids }
+      ensure
+        ActiveSupport::Notifications.unsubscribe(subscriber)
+      end
+
+      expect(queries).to eq(0)
     end
   end
 
@@ -445,6 +505,33 @@ RSpec.describe Site, type: :model do
       Rails.cache.write(cache_key, 7)
 
       expect(other.news_article_count).to eq(0)
+    end
+  end
+
+  describe "#owned_neighbourhoods_subtree" do
+    let(:site) { create(:site) }
+    let(:district) { create(:millbrook_district) }
+    let(:ward) { create(:riverside_ward, parent: district) }
+
+    it "is empty for a site with no neighbourhoods" do
+      expect(site.owned_neighbourhoods_subtree).to be_empty
+    end
+
+    it "returns the site's neighbourhoods and their descendants" do
+      ward
+      site.neighbourhoods << district
+
+      ids = site.owned_neighbourhoods_subtree.pluck(:id)
+
+      expect(ids).to include(district.id, ward.id)
+    end
+
+    it "matches owned_neighbourhood_ids without materialising the id list" do
+      ward
+      site.neighbourhoods << district
+
+      expect(site.owned_neighbourhoods_subtree.pluck(:id).sort).to eq(site.owned_neighbourhood_ids.sort)
+      expect(site.owned_neighbourhoods_subtree.to_sql).to include('"neighbourhoods"."ancestry" LIKE')
     end
   end
 end

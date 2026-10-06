@@ -55,6 +55,10 @@ class Site < ApplicationRecord
   # defining the admin subdomain string here.
   ADMIN_SUBDOMAIN = 'admin'
 
+  # Reserved for the join.placecal.org marketing site (#3163): like admin,
+  # it has no Site row.
+  JOIN_SUBDOMAIN = 'join'
+
   # Canonical apex URL for the nationwide directory. The directory has no Site
   # row — an apex request resolves to no site and renders the directory.
   # Resolved in config/initializers/directory_url.rb (the environment's
@@ -124,6 +128,8 @@ class Site < ApplicationRecord
   # ==== Validations ====
   validates :name, :slug, :url, presence: true
   validates :slug, uniqueness: true
+  # A site slug is its subdomain, and these two are served by something else.
+  validates :slug, exclusion: { in: [JOIN_SUBDOMAIN, 'www'] }
   validates :hero_text, length: { maximum: 120 }
   validates :contact_email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
   # Themes come from the extension registry, not a static list, so an
@@ -154,7 +160,7 @@ class Site < ApplicationRecord
   #
   # @return [String]
   def join_recipient
-    contact_email.presence || Join::DEFAULT_RECIPIENT
+    contact_email.presence || ContactRequest::DEFAULT_RECIPIENT
   end
 
   # The site's public URL, falling back to its conventional placecal.org
@@ -182,17 +188,37 @@ class Site < ApplicationRecord
     slug.blank?
   end
 
+  # Memoised: for a site anchored to a large area this expands to thousands of
+  # rows, and it is read once per partner card (via show_neighbourhoods?), so
+  # rebuilding it each time cost ~500ms on a 108-partner page.
+  #
   # @return [Array<Neighbourhood>] all neighbourhoods in this site's subtrees
   def owned_neighbourhoods
-    neighbourhoods.map(&:subtree).flatten
+    @owned_neighbourhoods ||= neighbourhoods.map(&:subtree).flatten
   end
 
   # @return [Array<Integer>] all neighbourhood IDs in this site's subtrees
   def owned_neighbourhood_ids
-    neighbourhoods
-      .select(:id, :ancestry)
-      .map(&:subtree_ids)
-      .flatten
+    @owned_neighbourhood_ids ||= neighbourhoods
+                                 .select(:id, :ancestry)
+                                 .map(&:subtree_ids)
+                                 .flatten
+  end
+
+  # The site's neighbourhoods and every descendant, as a relation rather than
+  # an array of ids. Meant to be embedded as a subquery: a site anchored to a
+  # large area (a whole country's subtree is 13,000-odd rows) otherwise
+  # serialises a five-figure id list into every partner query, which cost
+  # ~440ms and 180KB of SQL per request. As a subquery Postgres resolves the
+  # subtree from the ancestry path itself. See PartnersQuery#in_site_neighbourhoods_sql.
+  #
+  # @return [ActiveRecord::Relation<Neighbourhood>] empty when the site has none
+  def owned_neighbourhoods_subtree
+    nodes = neighbourhoods.select(:id, :ancestry).to_a
+    return Neighbourhood.none if nodes.empty?
+
+    nodes.map { |node| Neighbourhood.subtree_of(node) }
+         .reduce { |relation, subtree| relation.or(subtree) }
   end
 
   # Whether a site shows News in its nav is derived from this count (#3368 D6),
@@ -214,17 +240,21 @@ class Site < ApplicationRecord
   end
 
   # @return [Boolean] whether neighbourhood badges should be shown
+  # Whether the site spans more than one neighbourhood, asked once per partner
+  # card. It needs a yes/no, not the id list: building the whole subtree (~13,000
+  # rows for a country-anchored site) just to call .many? cost ~100ms. A site
+  # spans more than one neighbourhood when it has more than one, or its single
+  # one has any descendant.
   def show_neighbourhoods?
-    owned_neighbourhood_ids.many?
+    return @show_neighbourhoods if defined?(@show_neighbourhoods)
+
+    hoods = neighbourhoods.limit(2).to_a
+    @show_neighbourhoods = hoods.many? || hoods.first&.has_children? || false
   end
 
   # @return [String] "near" for multi-neighbourhood sites, "in" otherwise
   def join_word
-    if owned_neighbourhoods.many?
-      'near'
-    else
-      'in'
-    end
+    show_neighbourhoods? ? 'near' : 'in'
   end
 
   # @return [EventsQuery]
