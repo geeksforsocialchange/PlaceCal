@@ -42,6 +42,50 @@ RSpec.describe PartnersHelper, type: :helper do
     end
   end
 
+  describe "#options_for_partner_users" do
+    let(:neighbourhood_admin) { create(:neighbourhood_admin) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(neighbourhood_admin)
+    end
+
+    it "includes the current user so they can add themselves as an admin" do
+      options = helper.options_for_partner_users(partner)
+      ids = options.map(&:last)
+
+      expect(ids).to include(neighbourhood_admin.id)
+    end
+
+    it "excludes users already assigned to the partner" do
+      other_user = create(:user)
+      partner.users << other_user
+
+      options = helper.options_for_partner_users(partner)
+      ids = options.map(&:last)
+
+      expect(ids).not_to include(other_user.id)
+    end
+
+    it "excludes the current user when they are already an admin of the partner" do
+      partner.users << neighbourhood_admin
+
+      options = helper.options_for_partner_users(partner)
+      ids = options.map(&:last)
+
+      expect(ids).not_to include(neighbourhood_admin.id)
+    end
+
+    it "returns [email, id] pairs ordered by email" do
+      create(:user, email: "zzz@placecal.org")
+      create(:user, email: "aaa@placecal.org")
+
+      options = helper.options_for_partner_users(partner)
+      emails = options.map(&:first)
+
+      expect(emails).to eq(emails.sort)
+    end
+  end
+
   describe "#options_for_partner_partnerships" do
     let(:partnership_admin) { create(:neighbourhood_admin) }
     let(:partnership_tag) { create(:partnership) }
