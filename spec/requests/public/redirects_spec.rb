@@ -89,7 +89,7 @@ RSpec.describe "Public Redirects", type: :request do
     end
 
     context "on the nationwide directory" do
-      it "redirects to /find-placecal without querying the articles table" do
+      it "redirects to the homepage without querying the articles table" do
         article_queries = []
         instantiated = []
 
@@ -109,7 +109,7 @@ RSpec.describe "Public Redirects", type: :request do
           ActiveSupport::Notifications.unsubscribe(instantiation_subscriber)
         end
 
-        expect(response).to redirect_to("/find-placecal")
+        expect(response).to redirect_to("/")
         # The directory has no site to rescue a slug for, so the title-slug
         # fallback must not scan every published article platform-wide (#3368).
         expect(article_queries).to be_empty

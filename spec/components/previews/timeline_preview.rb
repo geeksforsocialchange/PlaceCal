@@ -3,7 +3,7 @@
 class TimelinePreview < Lookbook::Preview
   # @label Day view
   def day_view
-    render Components::Timeline.new(
+    render Components::Sites::Timeline.new(
       pointer: Time.zone.today,
       period: "day",
       sort: "time",
@@ -13,7 +13,7 @@ class TimelinePreview < Lookbook::Preview
 
   # @label Week view
   def week_view
-    render Components::Timeline.new(
+    render Components::Sites::Timeline.new(
       pointer: Time.zone.today,
       period: "week",
       sort: "time",
@@ -23,7 +23,7 @@ class TimelinePreview < Lookbook::Preview
 
   # @label Month view
   def month_view
-    render Components::Timeline.new(
+    render Components::Sites::Timeline.new(
       pointer: Time.zone.today,
       period: "month",
       sort: "time",
@@ -33,7 +33,7 @@ class TimelinePreview < Lookbook::Preview
 
   # @label Upcoming with tabs
   def upcoming
-    render Components::Timeline.new(
+    render Components::Sites::Timeline.new(
       pointer: Time.zone.today,
       period: "upcoming",
       sort: "time",
