@@ -115,4 +115,47 @@ Use MCP tools to:
 - Check association options and their performance implications
 - Reference database-specific features (PostgreSQL, MySQL, etc.)
 
-Remember: Focus on data integrity, performance, and following Rails conventions.
+## Rules that must hold
+
+### A model never builds HTML or reads the request
+
+```ruby
+# ❌ never: markup assembled in a model method
+def opening_times_html
+  %(<span class='opening_times--day'>#{day}</span>).html_safe
+end
+
+# ✅ always: the model returns data; a component in app/components/ renders it
+def opening_times
+  parsed.map { |t| { day: t['dayOfWeek'], opens: t['opens'], closes: t['closes'] } }
+end
+```
+
+`params`, `request`, `session`, `current_user`, `view_context`, `helpers.` and
+`html_safe` do not appear under `app/models/`. The one accepted boundary is
+`Site.find_by_request`, which exists to turn a request into a `Site`. Request
+scoped state enters through `Current` or through method arguments.
+
+### A rescue never hides a failure
+
+```ruby
+# ❌ never: the caller cannot tell "no opening times" from "corrupt JSON"
+rescue JSON::ParserError
+  []
+
+# ✅ always: report, then return the safe value
+rescue JSON::ParserError => e
+  Rails.logger.warn("Partner #{id} opening_times unparseable: #{e.message}")
+  []
+```
+
+### `safety_assured` needs a stated reason
+
+```ruby
+# ❌ never
+safety_assured { remove_column :partners, :legacy_slug }
+
+# ✅ always: the reason sits next to the bypass so the reviewer can check it
+# legacy_slug has been in ignored_columns since PR #3258, two deploys ago
+safety_assured { remove_column :partners, :legacy_slug }
+```
