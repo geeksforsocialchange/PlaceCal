@@ -165,9 +165,9 @@ class Components::Sites::Event < Components::Base
   # The frequency comes from the calendar feed (RFC 5545 FREQ), so an
   # unmapped value falls back to the raw word rather than a missing key.
   def repeats
-    return false if @event.rrule.blank?
+    frequency = ::Event.rrule_frequency(@event.rrule)
+    return false if frequency.blank?
 
-    frequency = @event.rrule[0]['table']['frequency'].to_s
     t("events.card.frequency.#{frequency.downcase}", default: frequency.titleize)
   end
 

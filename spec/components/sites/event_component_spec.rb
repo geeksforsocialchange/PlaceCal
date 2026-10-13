@@ -198,4 +198,14 @@ RSpec.describe Components::Sites::Event, type: :component do
       expect(page).to have_text("Weekly")
     end
   end
+
+  context "with repeating event imported under icalendar 2.13 (flat rule, no table key)" do
+    let(:event_rrule) { [{ "frequency" => "WEEKLY", "by_day" => ["TH"] }] }
+    let(:event_address) { nil }
+
+    it "shows repeat frequency" do
+      rendered
+      expect(page).to have_text("Weekly")
+    end
+  end
 end
