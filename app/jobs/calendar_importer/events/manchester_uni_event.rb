@@ -20,10 +20,11 @@ module CalendarImporter::Events
 
     def location; end
 
+    # The feed's local block is a bare date and time; DateTime.parse would stamp it UTC
     def dtstart
       date = @event.at_xpath('./ns:times[@type="local"] //ns:start //ns:date')
       time = @event.at_xpath('./ns:times[@type="local"] //ns:start //ns:time')
-      DateTime.parse([date, time].join(', '))
+      Time.zone.parse([date, time].join(' '))
     rescue StandardError
       nil
     end
@@ -31,7 +32,7 @@ module CalendarImporter::Events
     def dtend
       date = @event.at_xpath('./ns:times[@type="local"] //ns:end //ns:date')
       time = @event.at_xpath('./ns:times[@type="local"] //ns:end //ns:time')
-      DateTime.parse([date, time].join(', '))
+      Time.zone.parse([date, time].join(' '))
     rescue StandardError
       nil
     end
