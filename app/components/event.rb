@@ -159,7 +159,8 @@ class Components::Event < Components::Base
   end
 
   def repeats
-    @event.rrule.present? ? @event.rrule[0]['table']['frequency'].titleize : false
+    frequency = ::Event.rrule_frequency(@event.rrule)
+    frequency.present? ? frequency.titleize : false
   end
 
   def neighbourhood_name
