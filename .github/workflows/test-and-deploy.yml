@@ -34,12 +34,12 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
+      - uses: ruby/setup-ruby@651ff0d62c5c79bed6d53ec518387aae20e72c1a # v1.329.0
         with:
           bundler-cache: true
           cache-version: 3
 
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: ".node-version"
           cache: yarn
@@ -55,7 +55,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
+      - uses: ruby/setup-ruby@651ff0d62c5c79bed6d53ec518387aae20e72c1a # v1.329.0
         with:
           bundler-cache: true
           cache-version: 3
@@ -63,8 +63,25 @@ jobs:
       - name: Run Brakeman
         run: bundle exec brakeman --no-pager
 
+      # npm's advisory endpoint periodically drops or 503s requests. Retry, and
+      # if npm still cannot answer, warn rather than fail: a registry outage is
+      # not a vulnerability. Real findings still fail the job.
       - name: Audit JavaScript dependencies (importmap)
-        run: bin/importmap audit
+        run: |
+          for attempt in 1 2 3; do
+            if output=$(bin/importmap audit 2>&1); then
+              echo "$output"
+              exit 0
+            fi
+            echo "$output"
+            if ! echo "$output" | grep -qE "Importmap::Npm::HTTPError|transport error|Unexpected error response 5"; then
+              echo "::error::importmap audit reported vulnerable packages"
+              exit 1
+            fi
+            echo "npm advisory endpoint unavailable (attempt $attempt of 3)"
+            sleep $((attempt * 30))
+          done
+          echo "::warning::importmap audit skipped: npm advisory endpoint unavailable after 3 attempts"
 
   test:
     runs-on: ubuntu-latest
@@ -103,7 +120,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
+      - uses: ruby/setup-ruby@651ff0d62c5c79bed6d53ec518387aae20e72c1a # v1.329.0
         with:
           bundler-cache: true
           cache-version: 3
@@ -120,7 +137,7 @@ jobs:
         with:
           chrome-version: stable
 
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: ".node-version"
           cache: yarn
@@ -181,7 +198,7 @@ jobs:
 
       - if: failure()
         name: Upload test screenshots
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: test-screenshots-${{ matrix.suite }}
           path: tmp/capybara/
@@ -245,7 +262,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
 
-      - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
+      - uses: ruby/setup-ruby@651ff0d62c5c79bed6d53ec518387aae20e72c1a # v1.329.0
         with:
           bundler-cache: true
           cache-version: 3
