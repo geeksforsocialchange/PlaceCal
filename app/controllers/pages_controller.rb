@@ -64,7 +64,7 @@ class PagesController < ApplicationController
     end
   end
 
-  DIRECTORY_CACHE_TTL = 1.day
+  DIRECTORY_CACHE_OPTIONS = { expires_in: 1.day, race_condition_ttl: 30.seconds }.freeze
 
   # ONS GSS codes for the places featured as homepage "jump" links, in display
   # order. Pinned by code (stable across environments) rather than by id.
@@ -94,32 +94,32 @@ class PagesController < ApplicationController
   def render_directory_home
     @stats = DirectoryStatsQuery.fetch_cached
 
-    @partner_locations = Rails.cache.fetch('directory/partner_locations', expires_in: DIRECTORY_CACHE_TTL) do
+    @partner_locations = Rails.cache.fetch('directory/partner_locations', **DIRECTORY_CACHE_OPTIONS) do
       PartnerLocationsQuery.new.call.map do |location|
         { lat: location[:lat], lon: location[:lon], name: location[:name], url: partner_path(location[:slug]) }
       end
     end
 
-    @jump_neighbourhoods = Rails.cache.fetch('directory/jump_neighbourhoods', expires_in: DIRECTORY_CACHE_TTL) do
+    @jump_neighbourhoods = Rails.cache.fetch('directory/jump_neighbourhoods', **DIRECTORY_CACHE_OPTIONS) do
       build_jump_neighbourhoods.to_a
     end
 
-    @partnerships = Rails.cache.fetch('directory/partnerships', expires_in: DIRECTORY_CACHE_TTL) do
+    @partnerships = Rails.cache.fetch('directory/partnerships', **DIRECTORY_CACHE_OPTIONS) do
       Site.where(is_published: true)
           .order(partners_count: :desc)
           .limit(6)
           .to_a
     end
 
-    @recent_partners = Rails.cache.fetch('directory/recent_partners', expires_in: DIRECTORY_CACHE_TTL) do
+    @recent_partners = Rails.cache.fetch('directory/recent_partners', **DIRECTORY_CACHE_OPTIONS) do
       Partner.visible.includes(:categories, :address).order(created_at: :desc).limit(5).to_a
     end
 
-    @upcoming_events = Rails.cache.fetch('directory/upcoming_events', expires_in: DIRECTORY_CACHE_TTL) do
+    @upcoming_events = Rails.cache.fetch('directory/upcoming_events', **DIRECTORY_CACHE_OPTIONS) do
       EventsQuery.new(site: @site).call(period: 'upcoming')
     end
 
-    @partner_event_counts = Rails.cache.fetch('directory/partner_event_counts', expires_in: DIRECTORY_CACHE_TTL) do
+    @partner_event_counts = Rails.cache.fetch('directory/partner_event_counts', **DIRECTORY_CACHE_OPTIONS) do
       EventsQuery.upcoming_counts_by_partner(@recent_partners.map(&:id))
     end
 

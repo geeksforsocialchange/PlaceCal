@@ -3,12 +3,12 @@
 # Headline counts: partnerships, partners, events this month, districts.
 class DirectoryStatsQuery
   CACHE_KEY = 'directory/stats'
-  CACHE_TTL = 1.day
+  CACHE_OPTIONS = { expires_in: 1.day, race_condition_ttl: 30.seconds }.freeze
 
   # One cache entry shared by both homepages, so they quote the same numbers.
   # @return [Hash] counts keyed by :partnerships, :partners, :events, :neighbourhoods
   def self.fetch_cached
-    Rails.cache.fetch(CACHE_KEY, expires_in: CACHE_TTL) { new.call }
+    Rails.cache.fetch(CACHE_KEY, **CACHE_OPTIONS) { new.call }
   end
 
   # @return [Hash] counts keyed by :partnerships, :partners, :events, :neighbourhoods
