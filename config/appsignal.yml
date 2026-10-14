@@ -4,7 +4,11 @@ production:
   revision: <%= ENV['GIT_REV'] %>
   ignore_errors:
     - ActionController::BadRequest
+    - ActionDispatch::Http::MimeNegotiation::InvalidType
+    - ActionDispatch::RemoteIp::IpSpoofAttackError
 staging:
   revision: <%= ENV['GIT_REV'] %>
   ignore_errors:
     - ActionController::BadRequest
+    - ActionDispatch::Http::MimeNegotiation::InvalidType
+    - ActionDispatch::RemoteIp::IpSpoofAttackError
