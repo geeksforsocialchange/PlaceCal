@@ -38,6 +38,21 @@
 		}
 	}
 
+	&__toggle-label {
+		margin-right: 0.25em;
+	}
+
+	&__toggle-value {
+		border-bottom: 2px solid $base-rules-dark;
+	}
+
+	&__search {
+		font-family: $sans-serif;
+		border: 2px solid $base-rules-dark;
+		background: $base-background;
+		padding: 0.25rem 0.5rem;
+	}
+
 	&__date-input {
 		position: absolute;
 		opacity: 0;
