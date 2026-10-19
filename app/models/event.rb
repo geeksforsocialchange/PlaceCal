@@ -197,11 +197,20 @@ class Event < ApplicationRecord
     result.cmd_tuples
   end
 
+  # icalendar < 2.13 serialised each rule as an OpenStruct (keys under "table"), 2.13+ as a flat Struct.
+  # @return [String, nil] raw RFC 5545 FREQ value, e.g. "WEEKLY"
+  def self.rrule_frequency(rrule)
+    rule = rrule.is_a?(Array) ? rrule.first : nil
+    return if rule.blank?
+
+    (rule['table'] || rule)['frequency'].presence
+  end
+
   # ==== Instance methods ====
 
   # @return [String, nil] human-readable recurrence label (e.g. "Weekly")
   def repeat_frequency
-    rrule[0]['table']['frequency'].titleize if rrule
+    self.class.rrule_frequency(rrule)&.titleize
   end
 
   # @return [String] formatted time range, e.g. "09:00 – 10:00"

@@ -381,4 +381,24 @@ RSpec.describe Event, type: :model do
       expect(event).to respond_to(:summary_html)
     end
   end
+
+  describe "#repeat_frequency" do
+    it "is nil for one-off events" do
+      expect(build(:event, rrule: false).repeat_frequency).to be_nil
+    end
+
+    it "reads the OpenStruct shape written by icalendar < 2.13" do
+      event = build(:event, rrule: [{ "table" => { "frequency" => "MONTHLY" } }])
+      expect(event.repeat_frequency).to eq("Monthly")
+    end
+
+    it "reads the flat Struct shape written by icalendar 2.13+" do
+      event = build(:event, rrule: [{ "frequency" => "WEEKLY", "by_day" => ["TH"] }])
+      expect(event.repeat_frequency).to eq("Weekly")
+    end
+
+    it "is nil when the rule has no frequency" do
+      expect(build(:event, rrule: [{}]).repeat_frequency).to be_nil
+    end
+  end
 end
