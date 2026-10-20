@@ -218,11 +218,17 @@ class Components::Sites::EventFilter < Components::Base
 
   def build_sort_toggle
     button_class = 'filters__toggle-button filters__toggle-button--filters' if day_strip_with_date_picker?
+    button_class = "#{button_class} filters__toggle-button--active".strip if filters_active?
     view_context.content_tag(:div, class: 'filters__toggle') do
       view_context.content_tag(:button, type: 'button', class: button_class, data: { action: 'click->filters#toggle' }) do
         safe_join([view_context.icon(:triangle_down, size: nil), ' ', view_context.content_tag(:span, t('filters.filter_and_sort'), class: 'filters__link')])
       end
     end
+  end
+
+  # Something other than the defaults is applied, so the closed toggle can say so.
+  def filters_active?
+    @sort != 'time' || (@repeating.present? && @repeating != 'on') || @period == 'week'
   end
 
   def build_sort_dropdown

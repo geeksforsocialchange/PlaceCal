@@ -95,6 +95,26 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
     end
   end
 
+  describe "active state on the filter toggle" do
+    it "is absent with the default sort, period and repeating" do
+      render_inline(described_class.new(**base_attrs))
+
+      expect(page).to have_no_css(".filters__toggle-button--active")
+    end
+
+    it "marks the toggle when the sort is not the default" do
+      render_inline(described_class.new(**base_attrs, sort: "summary"))
+
+      expect(page).to have_css("button.filters__toggle-button--active")
+    end
+
+    it "marks the toggle when repeats are hidden" do
+      render_inline(described_class.new(**base_attrs, repeating: "off"))
+
+      expect(page).to have_css("button.filters__toggle-button--active")
+    end
+  end
+
   describe "filter dropdown" do
     it "renders Filter and sort toggle" do
       render_inline(described_class.new(**base_attrs))
