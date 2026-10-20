@@ -176,9 +176,10 @@ class Components::Sites::Event < Components::Base
     t("events.card.frequency.#{frequency.downcase}", default: frequency.titleize)
   end
 
-  # "By <organiser>" under the title; the hero's standfirst slot is free on this page.
+  # "By <organiser>" under the title, the name linked; the hero's standfirst slot is free here.
   def organiser_line
-    @event.organiser && t('events.show.by_organiser', name: @event.organiser.name)
+    organiser = @event.organiser
+    organiser && t('events.show.by_organiser_html', name: view_context.link_to(organiser.name, partner_path(organiser)))
   end
 
   def neighbourhood_line

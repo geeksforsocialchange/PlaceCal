@@ -121,6 +121,7 @@ RSpec.describe Components::Sites::Event, type: :component do
         render_inline(described_class.new(display_context: :page, event: event))
 
         expect(page).to have_css(".hero .hero__standfirst", text: "By Community Centre")
+        expect(page).to have_link("Community Centre", href: "/partners/community-centre")
       end
     end
 

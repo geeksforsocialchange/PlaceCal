@@ -592,8 +592,8 @@ en:
       organiser_events: "More from %{name}"
       # Heading over the organiser's other upcoming events on a site's event page
       more_from: "More from %{name}"
-      # Line under the event name in the page header
-      by_organiser: "By %{name}"
+      # Line under the event name in the page header; the name is a link
+      by_organiser_html: "By %{name}"
       add_to_calendar: "Add to calendar"
       go_back: "Back to events"
     csv_export:
