@@ -114,6 +114,16 @@ RSpec.describe Components::Sites::Event, type: :component do
       expect(page).to have_css("a.p-name.u-url[hidden]", text: "Community Meetup", visible: :hidden)
     end
 
+    context "when the event has an organiser" do
+      let(:event_organiser) { double(name: "Community Centre", id: 7, to_param: "community-centre") }
+
+      it "puts the organiser under the title as the hero standfirst" do
+        render_inline(described_class.new(display_context: :page, event: event))
+
+        expect(page).to have_css(".hero .hero__standfirst", text: "By Community Centre")
+      end
+    end
+
     it "renders no neighbourhood line when the event has no neighbourhood" do
       render_inline(described_class.new(display_context: :page, event: event))
 

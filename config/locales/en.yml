@@ -51,6 +51,10 @@ en:
   # app/components/address.rb
   address:
     directions: "Directions"
+    google_maps: "Google Maps"
+    apple_maps: "Apple Maps"
+    openstreetmap: "OSM"
+    openstreetmap_full: "OpenStreetMap"
 
   # Public navigation labels. A site's nav is derived from its own data
   # (#3368 D6), so these are the only fixed items; a theme's registered pages
@@ -408,6 +412,10 @@ en:
     contact:
       get_in_touch: "Get in touch"
       no_contact: "No contact information — let us know!"
+      networks:
+        facebook: "Facebook"
+        twitter: "Twitter"
+        instagram: "Instagram"
     join:
       hero:
         kicker: "Join PlaceCal"
@@ -584,6 +592,8 @@ en:
       organiser_events: "More from %{name}"
       # Heading over the organiser's other upcoming events on a site's event page
       more_from: "More from %{name}"
+      # Line under the event name in the page header
+      by_organiser: "By %{name}"
       add_to_calendar: "Add to calendar"
       go_back: "Back to events"
     csv_export:

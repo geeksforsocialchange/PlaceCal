@@ -273,7 +273,7 @@ class Views::Sites::Events::Show < Views::Base
       if event.organiser
         h2(class: 'h4 udl') { t('events.show.contact_heading') }
         div(class: 'small') do
-          Shared::ContactDetails(partner: event.organiser)
+          Shared::ContactDetails(partner: event.organiser, social_labels: :network)
         end
       end
     end

@@ -51,6 +51,36 @@ RSpec.describe Components::Shared::ContactDetails, type: :phlex do
     expect(page).to have_css("span.contact_details__item a.contact_details__instagram")
   end
 
+  it "marks the social links as social items" do
+    render_inline(described_class.new(partner: contact_partner))
+
+    expect(page).to have_css("span.contact_details__item--social", count: 3)
+    expect(page).not_to have_css("span.contact_details__item--social a.contact_details__email")
+  end
+
+  context "with social_labels: :network" do
+    before do
+      render_inline(described_class.new(partner: contact_partner,
+                                        email: contact_email,
+                                        phone: contact_phone,
+                                        url: contact_url,
+                                        social_labels: :network))
+    end
+
+    it "names each social link after its network, keeping the handle in the title" do
+      expect(page).to have_css("a.contact_details__facebook[title='rchfb']", text: "Facebook")
+      expect(page).to have_css("a.contact_details__twitter[title='@rchtwit']", text: "Twitter")
+      expect(page).to have_css("a.contact_details__instagram[title='@rchinsta']", text: "Instagram")
+      expect(page).not_to have_text("rchtwit")
+    end
+
+    it "leaves phone, email and website as they are" do
+      expect(page).to have_css("a.contact_details__phone", text: contact_phone)
+      expect(page).to have_css("a.contact_details__email", text: contact_email)
+      expect(page).to have_css("a.contact_details__website", text: contact_url)
+    end
+  end
+
   context "tailwind variant" do
     it "renders contact details in card layout" do
       render_inline(described_class.new(partner: contact_partner,

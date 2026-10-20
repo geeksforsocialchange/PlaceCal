@@ -23,7 +23,7 @@ class Components::Sites::Event < Components::Base
   private
 
   def render_page_layout
-    Shared::Hero(summary, @site_tagline, section: t('events.show.section'), back: @back)
+    Shared::Hero(summary, @site_tagline, section: t('events.show.section'), back: @back, standfirst: organiser_line)
     a(class: 'p-name u-url', href: event_path(id), hidden: true) { summary }
     div(class: 'container-public') { render_event_details }
   end
@@ -174,6 +174,11 @@ class Components::Sites::Event < Components::Base
     return false if frequency.blank?
 
     t("events.card.frequency.#{frequency.downcase}", default: frequency.titleize)
+  end
+
+  # "By <organiser>" under the title; the hero's standfirst slot is free on this page.
+  def organiser_line
+    @event.organiser && t('events.show.by_organiser', name: @event.organiser.name)
   end
 
   def neighbourhood_line

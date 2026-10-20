@@ -11,6 +11,8 @@ class Components::Shared::ContactDetails < Components::Base
   # renders just the icon rows for embedding in another card (e.g. the event
   # page's organiser SidebarCard).
   prop :variant, _Union(:scss, :tailwind, :tailwind_rows), default: :scss
+  # :network reads the social links as "Facebook" etc. (scss variant only); the handle moves to the title.
+  prop :social_labels, _Union(:handle, :network), default: :handle
 
   def after_initialize
     @phone ||= @partner.public_phone
@@ -108,27 +110,29 @@ class Components::Shared::ContactDetails < Components::Base
   def render_facebook
     return if @partner.facebook_link.blank?
 
-    span(class: 'contact_details__item') do
-      raw(view_context.icon(:contact_facebook, size: '4'))
-      link_to(@partner.facebook_link, "https://facebook.com/#{@partner.facebook_link}", target: '_blank', rel: 'noopener', class: 'contact_details__facebook')
-    end
+    social_link(:facebook, @partner.facebook_link, "https://facebook.com/#{@partner.facebook_link}")
   end
 
   def render_twitter
     return if @partner.twitter_handle.blank?
 
-    span(class: 'contact_details__item') do
-      raw(view_context.icon(:contact_twitter, size: '4'))
-      link_to("@#{@partner.twitter_handle}", "https://twitter.com/#{@partner.twitter_handle}", target: '_blank', rel: 'noopener', class: 'contact_details__twitter')
-    end
+    social_link(:twitter, "@#{@partner.twitter_handle}", "https://twitter.com/#{@partner.twitter_handle}")
   end
 
   def render_instagram
     return if @partner.instagram_handle.blank?
 
-    span(class: 'contact_details__item') do
-      raw(view_context.icon(:contact_instagram, size: '4'))
-      link_to("@#{@partner.instagram_handle}", "https://www.instagram.com/#{@partner.instagram_handle}/", target: '_blank', rel: 'noopener', class: 'contact_details__instagram')
+    social_link(:instagram, "@#{@partner.instagram_handle}", "https://www.instagram.com/#{@partner.instagram_handle}/")
+  end
+
+  def social_link(network, handle, href)
+    span(class: 'contact_details__item contact_details__item--social') do
+      raw(view_context.icon(:"contact_#{network}", size: '4'))
+      if @social_labels == :network
+        link_to(t("directory.contact.networks.#{network}"), href, title: handle, target: '_blank', rel: 'noopener', class: "contact_details__#{network}")
+      else
+        link_to(handle, href, target: '_blank', rel: 'noopener', class: "contact_details__#{network}")
+      end
     end
   end
 
