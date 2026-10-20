@@ -100,7 +100,9 @@ class Components::Sites::EventFilter < Components::Base
     # id: nil throughout: the neighbourhood and sort filters carry the same
     # three fields, so the default ids appeared twice on /events (axe
     # duplicate-id). The date picker reaches them by Stimulus target.
-    hidden_field_tag(:period, @period, id: nil, data: { date_picker_target: 'period' })
+    # With a day strip the picker selects that one day, as the strip's buttons do.
+    hidden_field_tag(:period, day_strip_with_date_picker? ? 'day' : @period, id: nil,
+                                                                             data: { date_picker_target: 'period' })
     hidden_field_tag(:sort, @sort, id: nil, data: { date_picker_target: 'sort' })
     hidden_field_tag(:repeating, @repeating, id: nil, data: { date_picker_target: 'repeating' })
     hidden_field_tag(:region, @selected_region.slug, id: nil) if @selected_region

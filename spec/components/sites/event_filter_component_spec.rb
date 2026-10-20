@@ -128,6 +128,12 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
       expect(page).to have_no_css(".filters__applied")
     end
 
+    it "sends the picker to a single day" do
+      render_inline(described_class.new(**base_attrs, period: "future"))
+
+      expect(page).to have_css("input[name='period'][value='day'][data-date-picker-target='period']", visible: :all)
+    end
+
     it "names a picked date on the from-this-date listing" do
       render_inline(described_class.new(**base_attrs, period: "future", pointer: today + 5))
 
