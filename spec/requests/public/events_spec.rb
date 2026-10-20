@@ -370,6 +370,7 @@ RSpec.describe "Public Events", type: :request do
       get event_url(event, host: "#{site.slug}.lvh.me")
       expect(response.body).to include("Contact information")
       expect(response.body).to match(%r{<h2[^>]*>Contact information</h2>})
+      expect(response.body).to match(%r{<p class="contact_details__partner"><a href="/partners/[^"]+">})
     end
 
     it "shows event address with consistent heading level" do
