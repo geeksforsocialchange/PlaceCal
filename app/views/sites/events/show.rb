@@ -34,6 +34,7 @@ class Views::Sites::Events::Show < Views::Base
       )
       render_event_details
       Shared::Map(points: map, style: :multi)
+      render_site_more_from_organiser if Array(more_from_organiser).any?
       render_page_actions
       render_event_meta
     end
@@ -305,6 +306,17 @@ class Views::Sites::Events::Show < Views::Base
       h2(class: 'h4 udl') { t('events.show.venue_heading') }
       div(class: 'small') do
         span { link_to event.place, event.place }
+      end
+    end
+  end
+
+  def render_site_more_from_organiser
+    section(class: 'container-narrowish event__more') do
+      h2(class: 'udl') { t('events.show.more_from', name: event.organiser.name) }
+      ul(class: 'events reset') do
+        Array(more_from_organiser).each do |other_event|
+          li { Sites::Event(event: other_event, context_partner: event.organiser) }
+        end
       end
     end
   end

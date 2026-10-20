@@ -582,6 +582,8 @@ en:
       problem_subject: "I think there's a problem with PlaceCal event %{url}"
       # Page actions row (Components::PageActions, #3368).
       organiser_events: "More from %{name}"
+      # Heading over the organiser's other upcoming events on a site's event page
+      more_from: "More from %{name}"
       add_to_calendar: "Add to calendar"
       go_back: "Back to events"
     csv_export:

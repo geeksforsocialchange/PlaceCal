@@ -26,7 +26,8 @@ class EventsController < ApplicationController
   # GET /events/1
   # GET /events/1.json
   def show
-    redirect_offsite_to_permalink(EventsQuery.new(site: current_site), @event)
+    query = EventsQuery.new(site: current_site)
+    redirect_offsite_to_permalink(query, @event)
     return if performed?
 
     if @event.partner_at_location
@@ -36,6 +37,12 @@ class EventsController < ApplicationController
     end
     if directory_request? && @event.organiser
       @more_from_organiser = Event.by_organiser_or_place(@event.organiser)
+                                  .upcoming.sort_by_time
+                                  .where.not(id: @event.id)
+                                  .limit(4)
+    elsif @event.organiser
+      # Scoped to the site so a site page never lists an event it does not carry.
+      @more_from_organiser = query.scope.merge(Event.by_organiser_or_place(@event.organiser))
                                   .upcoming.sort_by_time
                                   .where.not(id: @event.id)
                                   .limit(4)

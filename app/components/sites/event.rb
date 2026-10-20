@@ -54,6 +54,7 @@ class Components::Sites::Event < Components::Base
       render_detail('event__repeats', :event_online, t('events.card.online')) if online?
       render_organiser if show_organiser?
       render_place if show_place?
+      render_detail('event__neighbourhood-line', :neighbourhood, neighbourhood_line) if page? && @event.neighbourhood
     end
   end
 
@@ -172,6 +173,10 @@ class Components::Sites::Event < Components::Base
     return false if frequency.blank?
 
     t("events.card.frequency.#{frequency.downcase}", default: frequency.titleize)
+  end
+
+  def neighbourhood_line
+    [@event.neighbourhood.shortname, @event.neighbourhood.district&.shortname].compact.join(', ')
   end
 
   def neighbourhood_name

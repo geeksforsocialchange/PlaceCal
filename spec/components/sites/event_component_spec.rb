@@ -10,6 +10,7 @@ RSpec.describe Components::Sites::Event, type: :component do
   let(:event_online_address) { nil }
   let(:event_summary) { "Community Meetup" }
   let(:context_partner) { nil }
+  let(:event_neighbourhood) { nil }
 
   let(:event) do
     double(
@@ -22,7 +23,7 @@ RSpec.describe Components::Sites::Event, type: :component do
       partner_at_location: event_place,
       address: event_address,
       rrule: event_rrule,
-      neighbourhood: nil,
+      neighbourhood: event_neighbourhood,
       online_address: event_online_address
     )
   end
@@ -111,6 +112,30 @@ RSpec.describe Components::Sites::Event, type: :component do
       render_inline(described_class.new(display_context: :page, event: event, site_tagline: "The Community Calendar"))
 
       expect(page).to have_css("a.p-name.u-url[hidden]", text: "Community Meetup", visible: :hidden)
+    end
+
+    it "renders no neighbourhood line when the event has no neighbourhood" do
+      render_inline(described_class.new(display_context: :page, event: event))
+
+      expect(page).to have_no_css(".event__neighbourhood-line")
+    end
+
+    context "when the event has a neighbourhood" do
+      let(:event_neighbourhood) do
+        double(shortname: "Moss Side", district: double(shortname: "Manchester"), name_from_badge_zoom: "Moss Side")
+      end
+
+      it "renders the neighbourhood with its district" do
+        render_inline(described_class.new(display_context: :page, event: event))
+
+        expect(page).to have_css(".event__detail.event__neighbourhood-line", text: "Moss Side, Manchester")
+      end
+
+      it "leaves it off the list card" do
+        render_inline(described_class.new(display_context: :list, event: event))
+
+        expect(page).to have_no_css(".event__neighbourhood-line")
+      end
     end
   end
 

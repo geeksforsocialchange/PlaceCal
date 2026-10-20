@@ -157,6 +157,36 @@ RSpec.describe "Public Events", type: :request do
       # same guard and the same lack of a "no organiser" spec for it.
     end
 
+    describe "the more from organiser section" do
+      def more_from
+        Nokogiri::HTML(response.body).at_css("section.event__more")
+      end
+
+      it "lists another upcoming event from the same organiser" do
+        create(:event, organiser: partner, summary: "Second Event", dtstart: 2.days.from_now, address: address)
+        get event_url(event, host: "#{site.slug}.lvh.me")
+
+        expect(more_from.at_css("h2").text).to eq(I18n.t("events.show.more_from", name: partner.name))
+        expect(more_from.css("ul.events li").map(&:text)).to contain_exactly(a_string_including("Second Event"))
+      end
+
+      it "is absent when the organiser has no other upcoming event" do
+        get event_url(event, host: "#{site.slug}.lvh.me")
+
+        expect(more_from).to be_nil
+      end
+
+      it "leaves out the organiser's events that are not on this site" do
+        offsite_organiser = create(:partner, address: create(:address, neighbourhood: create(:oldtown_ward)))
+        onsite_event = create(:event, organiser: offsite_organiser, place: partner, dtstart: 1.day.from_now, address: address)
+        create(:event, organiser: offsite_organiser, summary: "Elsewhere Event", dtstart: 2.days.from_now,
+                       address: offsite_organiser.address)
+        get event_url(onsite_event, host: "#{site.slug}.lvh.me")
+
+        expect(more_from).to be_nil
+      end
+    end
+
     # Hero back link (#3368): "All events" above the event page hero.
     it "links the hero back link to the events index" do
       get event_url(event, host: "#{site.slug}.lvh.me")
