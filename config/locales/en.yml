@@ -135,6 +135,7 @@ en:
     # Line under the day strip listing what is applied, with a reset link
     applied:
       date: "Showing %{date}"
+      from_date: "From %{date}"
       date_format: "%a %-d %b"
       sorted_by_name: "Sorted by name"
       repeats_last: "Repeats last"

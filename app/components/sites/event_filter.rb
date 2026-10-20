@@ -248,11 +248,18 @@ class Components::Sites::EventFilter < Components::Base
   def applied_filters
     parts = []
     parts << t('filters.applied.date', date: applied_date_label) if @period == 'day' && @pointer
+    parts << t('filters.applied.from_date', date: applied_date_label) if @period != 'day' && pointer_moved?
     parts << t('filters.period.week') if @period == 'week'
     parts << t('filters.applied.sorted_by_name') if @sort == 'summary'
     parts << t('filters.applied.repeats_last') if @repeating == 'last'
     parts << t('filters.applied.repeats_hidden') if @repeating == 'off'
     parts
+  end
+
+  # The date picker lands on a "from this date" listing (period kept), so a
+  # pointer off today is a filter even when the period is not a day.
+  def pointer_moved?
+    @pointer.present? && @pointer != Time.zone.today
   end
 
   def applied_date_label

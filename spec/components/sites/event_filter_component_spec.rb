@@ -128,6 +128,13 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
       expect(page).to have_no_css(".filters__applied")
     end
 
+    it "names a picked date on the from-this-date listing" do
+      render_inline(described_class.new(**base_attrs, period: "future", pointer: today + 5))
+
+      expect(page).to have_css(".filters__applied-text", text: "From Sun 13 Nov")
+      expect(page).to have_link("Reset filters", href: "/events#paginator")
+    end
+
     it "names the day, the sort and the repeats setting, with a reset link" do
       render_inline(described_class.new(**base_attrs, sort: "summary", repeating: "off"))
 
