@@ -291,6 +291,22 @@ module SeedPartners # rubocop:disable Metrics/ModuleLength
     true
   end
 
+  # A fixed sunflower-spiral offset (within 0.004 lat, 0.006 lng) so partners in a ward do not share one map point.
+  def self.scattered_position(address_data, partner_number, idx)
+    angle = partner_number * 2.399963
+    radius = 0.35 + (0.65 * (idx + 0.5) / PARTNER_TYPES.length)
+    [(address_data[:latitude] + (0.004 * radius * Math.sin(angle))).round(5),
+     (address_data[:longitude] + (0.006 * radius * Math.cos(angle))).round(5)]
+  end
+
+  # Moves a seeded address off its ward point only while it still sits exactly on it.
+  def self.refresh_position(name, address_data, position)
+    address = Partner.find_by(name: name)&.address
+    return unless address && [address.latitude, address.longitude] == [address_data[:latitude], address_data[:longitude]]
+
+    address.update_columns(latitude: position[0], longitude: position[1]) # rubocop:disable Rails/SkipsModelValidations
+  end
+
   def self.run
     $stdout.puts 'Partners'
     seed_named_partners
@@ -356,15 +372,19 @@ module SeedPartners # rubocop:disable Metrics/ModuleLength
         name = "#{ward_name} #{type[:suffix]}"
         summary = format(type[:summaries][ward_idx % type[:summaries].length], ward_name)
         description = paragraphs(type[:description], ward_name)
-        next if already_seeded?(name, summary, description)
+        position = scattered_position(address_data, partner_number, idx)
+        if already_seeded?(name, summary, description)
+          refresh_position(name, address_data, position)
+          next
+        end
 
         address = Address.create!(
           street_address: "#{partner_number} #{ward_name} Street",
           postcode: address_data[:postcode],
-          latitude: address_data[:latitude] + (idx * 0.001),
-          longitude: address_data[:longitude] + (idx * 0.001),
           neighbourhood: ward
         )
+        # Geocoding the postcode on create sets the ward's point, so the scatter is written after it.
+        address.update_columns(latitude: position[0], longitude: position[1]) # rubocop:disable Rails/SkipsModelValidations
 
         partner = Partner.create!(
           name: name,

@@ -229,10 +229,12 @@ RSpec.describe Components::Sites::PartnerFilter, type: :component do
       expect(page).to have_css("input[name=q][value='food bank']")
     end
 
-    it "submits on change rather than every keystroke" do
+    it "submits on change rather than every keystroke, and when the clear button empties it" do
       render_inline(described_class.new(site: site))
 
-      expect(page).to have_css("input[name=q][data-action='change->partner-filter-component#submitForm']")
+      expect(page).to have_css("input[name=q][data-action='change->partner-filter-component#submitForm " \
+                               "input->partner-filter-component#submitIfCleared " \
+                               "search->partner-filter-component#submitIfCleared']")
     end
   end
 end

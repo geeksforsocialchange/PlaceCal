@@ -495,6 +495,8 @@ en:
       # Real text, not blank: it is the h2 between the hero h1 and the h3 of
       # each partner card, and without it the page skips a heading level.
       list_heading: "All partners"
+      # Shown in place of the list when the filters and search match nothing.
+      empty: "No partners found matching your filters."
   news:
     show:
       section: ""

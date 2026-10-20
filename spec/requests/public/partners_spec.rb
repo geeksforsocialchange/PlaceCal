@@ -40,6 +40,20 @@ RSpec.describe "Public Partners", type: :request do
       get partners_url(host: "#{site.slug}.lvh.me")
       expect(response.body).not_to include(hidden_partner.name)
     end
+
+    it "shows the empty-state message in place of the list when the search matches nothing" do
+      get partners_url(host: "#{site.slug}.lvh.me", params: { q: "zzzz-no-such-partner" })
+
+      body = response.parsed_body
+      expect(body.at_css("p.partners__empty").text).to eq(I18n.t("partners.index.empty"))
+      expect(body.at_css("ul#partners")).to be_nil
+    end
+
+    it "does not show the empty-state message when partners match" do
+      get partners_url(host: "#{site.slug}.lvh.me")
+
+      expect(response.parsed_body.at_css("p.partners__empty")).to be_nil
+    end
   end
 
   describe "GET /partners/:id" do

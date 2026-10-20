@@ -41,6 +41,7 @@ class Components::Sites::PartnerFilter < Components::Base
       url: partners_path, method: :get, data: {
         controller: 'partner-filter-component',
         'partner-filter-component-target': 'form',
+        action: 'submit->partner-filter-component#guardSubmit',
         'turbo-action': 'advance'
       }
     }
@@ -83,8 +84,8 @@ class Components::Sites::PartnerFilter < Components::Base
   end
 
   # A plain search box, not one of the toggle filters above: it submits the
-  # whole form (so region/category/neighbourhood ride along) on Enter or when
-  # the field loses focus after a change, never on every keystroke.
+  # whole form (so region/category/neighbourhood ride along) on Enter, when
+  # the field loses focus after a change, or when its clear button empties it.
   def render_search
     div(class: 'breadcrumb__filters filters') do
       input(
@@ -92,7 +93,8 @@ class Components::Sites::PartnerFilter < Components::Base
         class: 'filters__search',
         placeholder: t('filters.search_partners'),
         aria_label: t('filters.search_partners'),
-        data: { action: 'change->partner-filter-component#submitForm' }
+        data: { action: 'change->partner-filter-component#submitForm ' \
+                        'input->partner-filter-component#submitIfCleared search->partner-filter-component#submitIfCleared' }
       )
     end
   end
