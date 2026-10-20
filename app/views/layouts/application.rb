@@ -57,7 +57,8 @@ class Views::Layouts::Application < Phlex::HTML
           if join_site?
             Join::Header()
           else
-            Shared::Navigation(navigation: navigation, site: site)
+            Shared::Navigation(navigation: navigation, site: site,
+                               region_tags: view_context.region_tags, selected_region: view_context.current_region)
           end
           # FIXME: move main elem into component to save excess divs
           main do

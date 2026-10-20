@@ -10,6 +10,9 @@ class Components::Sites::Event < Components::Base
   # When rendered on a partner page, set this to that partner so we don't
   # redundantly show "By X" or "at X" when X is the page we're already on.
   prop :context_partner, _Nilable(::Partner), default: nil
+  # [label, path] back link, threaded through to Hero on the page layout
+  # (Views::Events::Show renders its hero here, not directly).
+  prop :back, _Nilable(Array), default: nil
 
   def view_template
     div(class: "h-event event #{page? ? 'event--full' : 'event--list'}") do
@@ -20,7 +23,7 @@ class Components::Sites::Event < Components::Base
   private
 
   def render_page_layout
-    Shared::Hero(summary, @site_tagline, section: t('events.show.section'))
+    Shared::Hero(summary, @site_tagline, section: t('events.show.section'), back: @back, standfirst: organiser_line)
     a(class: 'p-name u-url', href: event_path(id), hidden: true) { summary }
     div(class: 'container-public') { render_event_details }
   end
@@ -51,6 +54,7 @@ class Components::Sites::Event < Components::Base
       render_detail('event__repeats', :event_online, t('events.card.online')) if online?
       render_organiser if show_organiser?
       render_place if show_place?
+      render_detail('event__neighbourhood-line', :neighbourhood, neighbourhood_line) if page? && @event.neighbourhood
     end
   end
 
@@ -104,7 +108,8 @@ class Components::Sites::Event < Components::Base
       # Optional prefix such as "by ", blank in core; themes set it.
       prefix = t('events.card.organiser_prefix')
       span(class: 'event__organiser-prefix') { prefix } if prefix.present?
-      link_to(organiser.name.truncate(25), partner_path(organiser), data: { turbo_frame: '_top' })
+      # The card truncates to keep its row; the page has room for the whole name.
+      link_to(page? ? organiser.name : organiser.name.truncate(25), partner_path(organiser), data: { turbo_frame: '_top' })
     end
   end
 
@@ -169,6 +174,16 @@ class Components::Sites::Event < Components::Base
     return false if frequency.blank?
 
     t("events.card.frequency.#{frequency.downcase}", default: frequency.titleize)
+  end
+
+  # "By <organiser>" under the title, the name linked; the hero's standfirst slot is free here.
+  def organiser_line
+    organiser = @event.organiser
+    organiser && t('events.show.by_organiser_html', name: view_context.link_to(organiser.name, partner_path(organiser)))
+  end
+
+  def neighbourhood_line
+    [@event.neighbourhood.shortname, @event.neighbourhood.district&.shortname].compact.join(', ')
   end
 
   def neighbourhood_name

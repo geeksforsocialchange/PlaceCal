@@ -165,9 +165,9 @@ class EventsQuery
   # ===================
 
   # Events for the whole directory (no site) or, via SiteEventsScope, the ones
-  # that belong to this site. Preloads place and organiser for the cards.
+  # that belong to this site. Preloads what the event card reads per event.
   def base_scope
-    @base_scope ||= events_in_scope.includes(:place, :organiser)
+    @base_scope ||= events_in_scope.includes(:place, :organiser, :online_address, address: :neighbourhood)
   end
 
   def events_in_scope

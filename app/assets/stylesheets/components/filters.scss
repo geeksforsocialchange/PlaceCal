@@ -38,12 +38,42 @@
 		}
 	}
 
+	&__toggle-label {
+		margin-right: 0.25em;
+	}
+
+	&__toggle-value {
+		border-bottom: 2px solid $base-rules-dark;
+	}
+
+	&__search {
+		font-family: $sans-serif;
+		border: 2px solid $base-rules-dark;
+		background: $base-background;
+		padding: 0.25rem 0.5rem;
+	}
+
 	&__date-input {
 		position: absolute;
 		opacity: 0;
 		width: 0;
 		height: 0;
 		pointer-events: none;
+	}
+
+	// Touch: the input sits over its button so the tap opens the native picker
+	// itself; iOS will not open one from showPicker() or a programmatic focus.
+	@media (pointer: coarse) {
+		&__toggle:has(> .filters__date-input) {
+			position: relative;
+		}
+
+		&__toggle > &__date-input {
+			inset: 0;
+			width: 100%;
+			height: 100%;
+			pointer-events: auto;
+		}
 	}
 
 	&__label {

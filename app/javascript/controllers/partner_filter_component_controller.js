@@ -74,6 +74,23 @@ export default class extends Controller {
 		this.formTarget.requestSubmit();
 	}
 
+	// Enter fires change (which submits) and then the browser's own submit; two frame visits race.
+	guardSubmit(event) {
+		if (this.submitting) {
+			event.preventDefault();
+			return;
+		}
+		this.submitting = true;
+		setTimeout(() => {
+			this.submitting = false;
+		});
+	}
+
+	// The clear button empties the field with a plain input/search event (no inputType), never a change.
+	submitIfCleared(event) {
+		if (event.target.value === "" && !event.inputType) this.submitForm();
+	}
+
 	get selectedCategory() {
 		return this.categoryTargets.find((r) => r.checked);
 	}

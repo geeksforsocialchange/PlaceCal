@@ -26,21 +26,54 @@ class Components::Sites::EventFilter < Components::Base
 
   def view_template
     RegionFilter(tags: @region_tags, selected: @selected_region)
-    if Current.theme.event_filter_style == :day_strip
+    case Current.theme.event_filter_style
+    when :day_strip_with_date_picker
+      render_toggles_row
       render_day_strip
+      render_applied_filters
+      render_neighbourhood_filter if show_neighbourhood_filter?
+    when :day_strip
+      render_day_strip
+      render_neighbourhood_filter if show_neighbourhood_filter?
+      render_sort_filter
     else
       render_date_picker
+      render_neighbourhood_filter if show_neighbourhood_filter?
+      render_sort_filter
     end
-    render_neighbourhood_filter if show_neighbourhood_filter?
-    render_sort_filter
   end
 
   private
+
+  def day_strip_with_date_picker?
+    Current.theme.event_filter_style == :day_strip_with_date_picker
+  end
+
+  # Both toggles side by side, so a theme can lay them out as one row
+  # (#3368: the day-strip-with-date-picker style needs "Filter events" and
+  # "Pick a date" next to each other, with the day strip underneath).
+  def render_toggles_row
+    div(class: 'filters__toggles') do
+      render_sort_filter
+      render_date_toggle
+    end
+  end
 
   def render_date_picker
     div(class: 'filters__toggle', data: { controller: 'date-picker' }) do
       render_today_link
       render_goto_date_button
+      render_date_picker_fields
+    end
+  end
+
+  # The day-strip-with-date-picker style's own date toggle: the date picker's
+  # button and hidden field, minus the Today link, since the day strip
+  # already carries a Today button of its own.
+  def render_date_toggle
+    div(class: 'filters__toggle', data: { controller: 'date-picker' }) do
+      render_goto_date_button(button_class: 'filters__toggle-button filters__toggle-button--date',
+                              label: t('filters.pick_a_date'))
       render_date_picker_fields
     end
   end
@@ -51,11 +84,11 @@ class Components::Sites::EventFilter < Components::Base
     link_to(t('filters.today'), @today_url, class: 'filters__link filters__link--today', data: { turbo_frame: 'events-browser', turbo_action: 'advance' })
   end
 
-  def render_goto_date_button
-    button(type: 'button', data: { action: 'click->date-picker#open' }) do
+  def render_goto_date_button(button_class: nil, label: t('filters.go_to_date'))
+    button(type: 'button', class: button_class, data: { action: 'click->date-picker#open' }) do
       raw(view_context.icon(:triangle_down, size: nil))
       plain ' '
-      span(class: 'filters__link') { t('filters.go_to_date') }
+      span(class: 'filters__link') { label }
     end
   end
 
@@ -67,7 +100,9 @@ class Components::Sites::EventFilter < Components::Base
     # id: nil throughout: the neighbourhood and sort filters carry the same
     # three fields, so the default ids appeared twice on /events (axe
     # duplicate-id). The date picker reaches them by Stimulus target.
-    hidden_field_tag(:period, @period, id: nil, data: { date_picker_target: 'period' })
+    # With a day strip the picker selects that one day, as the strip's buttons do.
+    hidden_field_tag(:period, day_strip_with_date_picker? ? 'day' : @period, id: nil,
+                                                                             data: { date_picker_target: 'period' })
     hidden_field_tag(:sort, @sort, id: nil, data: { date_picker_target: 'sort' })
     hidden_field_tag(:repeating, @repeating, id: nil, data: { date_picker_target: 'repeating' })
     hidden_field_tag(:region, @selected_region.slug, id: nil) if @selected_region
@@ -82,7 +117,7 @@ class Components::Sites::EventFilter < Components::Base
         day_strip_dates.each_with_index do |date, index|
           li(class: 'shrink-0') { render_day_strip_day(date, index) }
         end
-        li(class: 'shrink-0') { render_day_strip_all_upcoming }
+        li(class: 'shrink-0 day-strip__all') { render_day_strip_all_upcoming }
       end
     end
   end
@@ -160,7 +195,8 @@ class Components::Sites::EventFilter < Components::Base
                                 controller: 'event-filter',
                                 toggle_action: 'toggleNeighbourhood',
                                 submit_action: 'submitNeighbourhood',
-                                reset_action: 'resetNeighbourhood'
+                                reset_action: 'resetNeighbourhood',
+                                group_class: 'filters__group--neighbourhood'
                               ))
         ].compact)
       end)
@@ -184,11 +220,60 @@ class Components::Sites::EventFilter < Components::Base
   end
 
   def build_sort_toggle
+    button_class = 'filters__toggle-button filters__toggle-button--filters' if day_strip_with_date_picker?
+    button_class = "#{button_class} filters__toggle-button--active".strip if filters_active?
     view_context.content_tag(:div, class: 'filters__toggle') do
-      view_context.content_tag(:button, type: 'button', data: { action: 'click->filters#toggle' }) do
+      view_context.content_tag(:button, type: 'button', class: button_class, data: { action: 'click->filters#toggle' }) do
         safe_join([view_context.icon(:triangle_down, size: nil), ' ', view_context.content_tag(:span, t('filters.filter_and_sort'), class: 'filters__link')])
       end
     end
+  end
+
+  # Something other than the defaults is applied, so the closed toggle can say so.
+  def filters_active?
+    @sort != 'time' || (@repeating.present? && @repeating != 'on') || @period == 'week'
+  end
+
+  # What is applied, in words, with a way back to the plain listing. The
+  # selected day counts too: the strip has no "all upcoming" on every theme.
+  def render_applied_filters
+    parts = applied_filters
+    return if parts.empty?
+
+    div(class: 'filters__applied') do
+      span(class: 'filters__applied-text') { parts.join(', ') }
+      link_to(t('filters.applied.reset'), "#{events_path(**region_params)}#paginator",
+              class: 'filters__applied-reset', data: { turbo_frame: 'events-browser', turbo_action: 'advance' })
+    end
+  end
+
+  def applied_filters
+    parts = []
+    parts << t('filters.applied.date', date: applied_date_label) if @period == 'day' && @pointer
+    parts << t('filters.applied.from_date', date: applied_date_label) if @period != 'day' && pointer_moved?
+    parts << t('filters.period.week') if @period == 'week'
+    parts << t('filters.applied.sorted_by_name') if @sort == 'summary'
+    parts << t('filters.applied.repeats_last') if @repeating == 'last'
+    parts << t('filters.applied.repeats_hidden') if @repeating == 'off'
+    parts
+  end
+
+  # The date picker lands on a "from this date" listing (period kept), so a
+  # pointer off today is a filter even when the period is not a day.
+  def pointer_moved?
+    @pointer.present? && @pointer != Time.zone.today
+  end
+
+  def applied_date_label
+    case (@pointer - Time.zone.today).to_i
+    when 0 then t('filters.day_strip.today').downcase
+    when 1 then t('filters.day_strip.tomorrow').downcase
+    else @pointer.strftime(t('filters.applied.date_format'))
+    end
+  end
+
+  def region_params
+    @selected_region ? { region: @selected_region.slug } : {}
   end
 
   def build_sort_dropdown
@@ -208,14 +293,14 @@ class Components::Sites::EventFilter < Components::Base
   end
 
   def render_sort_group
-    view_context.content_tag(:div, class: 'filters__group') do
+    view_context.content_tag(:div, class: 'filters__group filters__group--sort') do
       render_radio('sort', 'time', @sort == 'time', t('filters.sort.time')) +
         render_radio('sort', 'summary', @sort == 'summary', t('filters.sort.summary'))
     end
   end
 
   def render_period_group
-    view_context.content_tag(:div, class: 'filters__group') do
+    view_context.content_tag(:div, class: 'filters__group filters__group--period') do
       buf = render_radio('period', 'day', @period == 'day', t('filters.period.day')) +
             render_radio('period', 'week', @period == 'week', t('filters.period.week'))
       buf += render_radio('period', 'month', @period == 'month', t('filters.period.month')) if @show_monthly
@@ -224,7 +309,7 @@ class Components::Sites::EventFilter < Components::Base
   end
 
   def render_repeating_group
-    view_context.content_tag(:div, class: 'filters__group') do
+    view_context.content_tag(:div, class: 'filters__group filters__group--repeating') do
       render_radio('repeating', 'on', @repeating == 'on', t('filters.repeating.on')) +
         render_radio('repeating', 'last', @repeating == 'last', t('filters.repeating.last')) +
         render_radio('repeating', 'off', @repeating == 'off', t('filters.repeating.off'))
