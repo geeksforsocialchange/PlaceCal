@@ -108,7 +108,8 @@ class Components::Sites::Event < Components::Base
       # Optional prefix such as "by ", blank in core; themes set it.
       prefix = t('events.card.organiser_prefix')
       span(class: 'event__organiser-prefix') { prefix } if prefix.present?
-      link_to(organiser.name.truncate(25), partner_path(organiser), data: { turbo_frame: '_top' })
+      # The card truncates to keep its row; the page has room for the whole name.
+      link_to(page? ? organiser.name : organiser.name.truncate(25), partner_path(organiser), data: { turbo_frame: '_top' })
     end
   end
 
