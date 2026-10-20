@@ -112,15 +112,15 @@ RSpec.describe "Public Partners", type: :request do
       expect(back[:href]).to eq(partners_path)
     end
 
-    # Page actions row (Components::Sites::PageActions, #3368): the feed, then back.
-    it "renders a page actions row with the feed and a link back to the partners index" do
+    # Page actions row (Components::Sites::PageActions, #3368): back, then the feed.
+    it "renders a page actions row with a link back to the partners index and the feed" do
       get partner_url(partner, host: "#{site.slug}.lvh.me")
 
       links = Nokogiri::HTML(response.body).css("nav.page-actions a.page-actions__link")
-      expect(links.map(&:text)).to eq([I18n.t("partners.show.subscribe_ical", name: partner.name),
-                                       I18n.t("partners.show.go_back")])
-      expect(links.first[:href]).to start_with("webcal://").and include(".ics")
-      expect(links.last[:href]).to eq(partners_path)
+      expect(links.map(&:text)).to eq([I18n.t("partners.show.go_back"),
+                                       I18n.t("partners.show.subscribe_ical", name: partner.name)])
+      expect(links.first[:href]).to eq(partners_path)
+      expect(links.last[:href]).to start_with("webcal://").and include(".ics")
     end
 
     it "includes Organization JSON-LD structured data" do
@@ -371,9 +371,9 @@ RSpec.describe "Public Partners", type: :request do
 
         expect(actions.css("a").map { |a| a["class"] }).to eq(%w[partner-events__more])
         expect(hrefs.size).to eq(3)
-        expect(hrefs[0]).to include(".ics")
-        expect(hrefs[1]).to include(".csv")
-        expect(hrefs[2]).to eq(partners_path)
+        expect(hrefs[0]).to eq(partners_path)
+        expect(hrefs[1]).to include(".ics")
+        expect(hrefs[2]).to include(".csv")
         expect(response.body.scan(".ics").size).to eq(1)
       end
 

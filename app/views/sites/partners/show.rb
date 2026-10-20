@@ -321,12 +321,12 @@ class Views::Sites::Partners::Show < Views::Base
     end
   end
 
-  # Page actions row (Components::Sites::PageActions, #3368): the feed, the export
-  # when there is something to export, then back to the index.
+  # Page actions row (Components::Sites::PageActions, #3368): back to the index,
+  # the feed, then the export when there is something to export.
   def render_page_actions
-    links = [[t('partners.show.subscribe_ical', name: partner.name), partner_url(partner, protocol: :webcal, format: :ics)]]
+    links = [[t('partners.show.go_back'), partners_path],
+             [t('partners.show.subscribe_ical', name: partner.name), partner_url(partner, protocol: :webcal, format: :ics)]]
     links << [t('events.csv_export.link'), partner_url(partner, format: :csv)] if events.any?
-    links << [t('partners.show.go_back'), partners_path]
     Sites::PageActions(links: links)
   end
 
