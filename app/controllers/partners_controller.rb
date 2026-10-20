@@ -180,7 +180,8 @@ class PartnersController < ApplicationController
       partnership_id: params[:partnership],
       neighbourhood_id: params[:neighbourhood]
     }
-    partners = query.call(**filters, sort: @sort)
+    # The directory cards show category chips; the site partner cards do not.
+    partners = query.call(**filters, sort: @sort).includes(:categories)
     paginate_with_az_filter(partners)
 
     # Each facet's counts cross-filter on the OTHER active filters but not its

@@ -13,6 +13,13 @@ RSpec.describe PartnersQuery do
   end
 
   describe "#call" do
+    it "preloads what the site partner cards render and leaves categories to the directory callers" do
+      includes = described_class.new(site: site).call.includes_values
+
+      expect(includes).to include({ address: :neighbourhood }, { service_areas: :neighbourhood })
+      expect(includes).not_to include(:categories)
+    end
+
     context "with partners in site neighbourhoods" do
       let!(:partner_with_address) do
         address = create(:address, neighbourhood: neighbourhood)
