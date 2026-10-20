@@ -30,6 +30,7 @@ class Components::Sites::EventFilter < Components::Base
     when :day_strip_with_date_picker
       render_toggles_row
       render_day_strip
+      render_applied_filters
       render_neighbourhood_filter if show_neighbourhood_filter?
     when :day_strip
       render_day_strip
@@ -229,6 +230,41 @@ class Components::Sites::EventFilter < Components::Base
   # Something other than the defaults is applied, so the closed toggle can say so.
   def filters_active?
     @sort != 'time' || (@repeating.present? && @repeating != 'on') || @period == 'week'
+  end
+
+  # What is applied, in words, with a way back to the plain listing. The
+  # selected day counts too: the strip has no "all upcoming" on every theme.
+  def render_applied_filters
+    parts = applied_filters
+    return if parts.empty?
+
+    div(class: 'filters__applied') do
+      span(class: 'filters__applied-text') { parts.join(', ') }
+      link_to(t('filters.applied.reset'), "#{events_path(**region_params)}#paginator",
+              class: 'filters__applied-reset', data: { turbo_frame: 'events-browser', turbo_action: 'advance' })
+    end
+  end
+
+  def applied_filters
+    parts = []
+    parts << t('filters.applied.date', date: applied_date_label) if @period == 'day' && @pointer
+    parts << t('filters.period.week') if @period == 'week'
+    parts << t('filters.applied.sorted_by_name') if @sort == 'summary'
+    parts << t('filters.applied.repeats_last') if @repeating == 'last'
+    parts << t('filters.applied.repeats_hidden') if @repeating == 'off'
+    parts
+  end
+
+  def applied_date_label
+    case (@pointer - Time.zone.today).to_i
+    when 0 then t('filters.day_strip.today').downcase
+    when 1 then t('filters.day_strip.tomorrow').downcase
+    else @pointer.strftime(t('filters.applied.date_format'))
+    end
+  end
+
+  def region_params
+    @selected_region ? { region: @selected_region.slug } : {}
   end
 
   def build_sort_dropdown

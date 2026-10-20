@@ -115,6 +115,27 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
     end
   end
 
+  describe "applied filters line" do
+    before do
+      theme = PlaceCal::Theme.new(:fixture)
+      theme.event_filter_style(:day_strip_with_date_picker)
+      Current.theme = theme
+    end
+
+    it "is absent with the defaults" do
+      render_inline(described_class.new(**base_attrs, period: "future"))
+
+      expect(page).to have_no_css(".filters__applied")
+    end
+
+    it "names the day, the sort and the repeats setting, with a reset link" do
+      render_inline(described_class.new(**base_attrs, sort: "summary", repeating: "off"))
+
+      expect(page).to have_css(".filters__applied-text", text: "Showing today, Sorted by name, Repeats hidden")
+      expect(page).to have_link("Reset filters", href: "/events#paginator")
+    end
+  end
+
   describe "filter dropdown" do
     it "renders Filter and sort toggle" do
       render_inline(described_class.new(**base_attrs))
