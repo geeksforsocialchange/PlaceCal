@@ -32,9 +32,6 @@ class Views::Sites::Partners::Show < Views::Base
   def view_template
     set_content_for_tags
     render_local_layout
-    # Meta before the actions row: the iCal and CSV links belong with the
-    # event browser they export, so they sit under the box and the back
-    # button closes the page.
     render_meta_section
     render_page_actions
   end
@@ -104,6 +101,8 @@ class Views::Sites::Partners::Show < Views::Base
         render_managees
         render_events_section
       end
+      # Under the whole box, not in the sidebar, so a theme can run it full width
+      Shared::Map(points: map, compact: true)
     end
   end
 
@@ -115,7 +114,6 @@ class Views::Sites::Partners::Show < Views::Base
       end
       div(class: 'gi gi__2-5') do
         render_partner_image
-        Shared::Map(points: map, compact: true)
         render_opening_times
       end
     end
@@ -127,7 +125,7 @@ class Views::Sites::Partners::Show < Views::Base
   # inherited size with no margin, so an h2 and an h3 here draw identically.
   def render_contact_and_address
     h2(class: 'udl udl--fw allcaps h4') { t('partners.show.contact_heading') }
-    Shared::ContactDetails(partner: partner)
+    Shared::ContactDetails(partner: partner, social_labels: :network)
 
     h2(class: 'udl udl--fw allcaps h4') { t('partners.show.address_heading') }
     p { raw(t('partners.show.service_area_html', areas: partner_service_area_text(partner))) } if partner.has_service_areas?
@@ -224,18 +222,11 @@ class Views::Sites::Partners::Show < Views::Base
     end
   end
 
-  # The row that closes the event browser: the next page of days when there
-  # is one, then the feed and the export for the list the reader is looking
-  # at. Inside the frame so it is one block with the list it acts on, and so
-  # a theme can lay the three out as one row of buttons.
+  # Closes the event browser with the next page of days, inside the frame it pages.
   def render_events_actions
-    div(class: 'partner-events__actions') do
-      render_show_more_days if more_days.positive?
-      link_to t('partners.show.subscribe_ical', name: partner.name),
-              partner_url(partner, protocol: :webcal, format: :ics),
-              class: 'partner-events__ical'
-      link_to t('events.csv_export.link'), partner_url(partner, format: :csv), class: 'partner-events__csv' if events.any?
-    end
+    return unless more_days.positive?
+
+    div(class: 'partner-events__actions') { render_show_more_days }
   end
 
   def render_events_header
@@ -330,14 +321,16 @@ class Views::Sites::Partners::Show < Views::Base
     end
   end
 
-  # Page actions row (Components::Sites::PageActions, #3368): just the back link
-  # here - the partner page has nothing else generic to offer.
+  # Page actions row (Components::Sites::PageActions, #3368): the feed, the export
+  # when there is something to export, then back to the index.
   def render_page_actions
-    Sites::PageActions(links: [[t('partners.show.go_back'), partners_path]])
+    links = [[t('partners.show.subscribe_ical', name: partner.name), partner_url(partner, protocol: :webcal, format: :ics)]]
+    links << [t('events.csv_export.link'), partner_url(partner, format: :csv)] if events.any?
+    links << [t('partners.show.go_back'), partners_path]
+    Sites::PageActions(links: links)
   end
 
-  # The feed and export links moved into the event browser (render_events_actions),
-  # so Meta carries the permalink alone.
+  # Meta carries the permalink alone; the feed and export are page actions.
   def render_meta_section
     Sites::Meta("/partners/#{partner.id}")
   end

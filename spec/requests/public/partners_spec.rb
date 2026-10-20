@@ -112,13 +112,15 @@ RSpec.describe "Public Partners", type: :request do
       expect(back[:href]).to eq(partners_path)
     end
 
-    # Page actions row (Components::Sites::PageActions, #3368): just the back link.
-    it "renders a page actions row linking back to the partners index" do
+    # Page actions row (Components::Sites::PageActions, #3368): the feed, then back.
+    it "renders a page actions row with the feed and a link back to the partners index" do
       get partner_url(partner, host: "#{site.slug}.lvh.me")
 
       links = Nokogiri::HTML(response.body).css("nav.page-actions a.page-actions__link")
-      expect(links.map(&:text)).to eq([I18n.t("partners.show.go_back")])
-      expect(links.first[:href]).to eq(partners_path)
+      expect(links.map(&:text)).to eq([I18n.t("partners.show.subscribe_ical", name: partner.name),
+                                       I18n.t("partners.show.go_back")])
+      expect(links.first[:href]).to start_with("webcal://").and include(".ics")
+      expect(links.last[:href]).to eq(partners_path)
     end
 
     it "includes Organization JSON-LD structured data" do
@@ -362,14 +364,16 @@ RSpec.describe "Public Partners", type: :request do
         expect(html).to include(%(data-turbo-frame="events-browser"))
       end
 
-      it "closes the browser with the feed and export links beside the show-more link" do
+      it "closes the browser with the show-more link and puts the feed and export in the page actions" do
         get partner_url(partner, host: "#{site.slug}.lvh.me")
         actions = Nokogiri::HTML(events_browser_html).at_css(".partner-events__actions")
+        hrefs = Nokogiri::HTML(response.body).css("nav.page-actions a.page-actions__link").map { |a| a[:href] }
 
-        expect(actions).to be_present
-        expect(actions.css("a").map { |a| a["class"] }).to eq(%w[partner-events__more partner-events__ical partner-events__csv])
-        expect(actions.at_css(".partner-events__ical")["href"]).to include(".ics")
-        expect(actions.at_css(".partner-events__csv")["href"]).to include(".csv")
+        expect(actions.css("a").map { |a| a["class"] }).to eq(%w[partner-events__more])
+        expect(hrefs.size).to eq(3)
+        expect(hrefs[0]).to include(".ics")
+        expect(hrefs[1]).to include(".csv")
+        expect(hrefs[2]).to eq(partners_path)
         expect(response.body.scan(".ics").size).to eq(1)
       end
 
