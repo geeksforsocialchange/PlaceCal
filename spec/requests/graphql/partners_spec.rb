@@ -98,6 +98,25 @@ RSpec.describe "GraphQL Partners", type: :request do
       # GraphQL returns error when record not found
       expect(result["errors"]).to be_present
     end
+
+    it "returns a null locality when the address has no neighbourhood" do
+      partner.address.update_columns(neighbourhood_id: nil) # rubocop:disable Rails/SkipsModelValidations -- legacy data saves would now reject
+      result = execute_query(query, variables: { id: partner.id })
+
+      expect(result["errors"]).to be_nil
+      expect(result["data"]["partner"]["address"]["addressLocality"]).to be_nil
+    end
+
+    it "returns null opening hours when they are blank or not JSON" do
+      hours_query = "query($id: ID!) { partner(id: $id) { openingHours { dayOfWeek } } }"
+      ["", "not json"].each do |stored|
+        partner.update_columns(opening_times: stored) # rubocop:disable Rails/SkipsModelValidations -- legacy data saves would now reject
+        result = execute_query(hours_query, variables: { id: partner.id })
+
+        expect(result["errors"]).to be_nil
+        expect(result["data"]["partner"]["openingHours"]).to be_nil
+      end
+    end
   end
 
   describe "partner events field" do

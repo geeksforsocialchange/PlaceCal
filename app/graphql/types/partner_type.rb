@@ -63,7 +63,9 @@ module Types
     end
 
     def opening_hours
-      JSON.parse(object.opening_times) if object.opening_times
+      JSON.parse(object.opening_times) if object.opening_times.present?
+    rescue JSON::ParserError
+      nil
     end
 
     def articles
