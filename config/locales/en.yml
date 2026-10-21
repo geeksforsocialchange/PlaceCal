@@ -457,7 +457,8 @@ en:
       back_to_index: "All partners"
       # Page actions row back link (Components::PageActions, #3368).
       go_back: "All partners"
-      accessibility_heading: "Accessibility information"
+      accessibility_heading: "Accessibility"
+      accessibility_summary: "Show accessibility information"
       contact_heading: "Get in touch"
       address_heading: "Address"
       opening_times_heading: "Opening times"
