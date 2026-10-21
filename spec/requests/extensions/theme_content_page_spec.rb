@@ -211,6 +211,22 @@ RSpec.describe Views::ThemeContentPage, type: :component do
     expect(described_class.markdown_html(root, "not-committed.md")).to eq("")
   end
 
+  it "lets a page replace the markdown-content column and keep the wrapper" do
+    page = Class.new(ExampleTheme::Views::Content) do
+      private
+
+      def page_content
+        section(class: "own-section") { markdown("intro.md") }
+      end
+    end
+
+    render_inline(page.new(site: site))
+
+    expect(self.page).to have_css(".page--fixture-content > h1", text: "Fixture content page")
+    expect(self.page).to have_css(".page--fixture-content > section.own-section", text: "Fixture markdown intro paragraph.")
+    expect(self.page).to have_no_css(".markdown-content")
+  end
+
   it "says which declaration a page is missing" do
     page = Class.new(Views::ThemeContentPage) { slug "sparse" }
 
