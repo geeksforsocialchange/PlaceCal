@@ -8,10 +8,10 @@ GIT
 
 GIT
   remote: https://github.com/geeksforsocialchange/placecal-theme-transdimension.git
-  revision: 99b0277664ab3a3d5735049f24c0709cd9f0d0c3
-  tag: v0.5.5
+  revision: 487d13f12858c0358cfa49abbe2b75e4e4a3b6a2
+  tag: v0.5.6
   specs:
-    placecal-theme-transdimension (0.5.5)
+    placecal-theme-transdimension (0.5.6)
       rails (>= 8.0)
 
 GEM
