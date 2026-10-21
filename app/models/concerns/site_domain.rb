@@ -22,7 +22,7 @@ module SiteDomain
     # @return [Site, nil] the site whose domain is host, when this deploy serves it
     def served_at(host)
       host = host.to_s.downcase
-      return unless PlaceCal::ServedHosts.current.include?(host)
+      return unless PlaceCal::ServedHosts.current.serves?(host)
 
       find_by(domain: host)
     end
@@ -40,7 +40,7 @@ module SiteDomain
 
   # @return [Boolean] whether this deploy's proxy serves the site's domain
   def served_domain?
-    domain.present? && PlaceCal::ServedHosts.current.include?(domain)
+    domain.present? && PlaceCal::ServedHosts.current.serves?(domain)
   end
 
   # Where PlaceCal serves this site, for sitemaps, robots, permalinks and

@@ -63,7 +63,7 @@ module PlaceCal
     #
     # @param host [String]
     # @return [Boolean]
-    def include?(host)
+    def serves?(host)
       host = host.to_s.downcase
       return false if host.empty?
 

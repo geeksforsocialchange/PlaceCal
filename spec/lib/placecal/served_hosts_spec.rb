@@ -36,24 +36,24 @@ RSpec.describe PlaceCal::ServedHosts do
     end
   end
 
-  describe "#include?" do
+  describe "#serves?" do
     subject(:hosts) { described_class.new(["placecal.org", "*.placecal.org", "Transdimension.uk"]) }
 
     it "matches exact hosts, ignoring case" do
-      expect(hosts.include?("placecal.org")).to be(true)
-      expect(hosts.include?("TRANSDIMENSION.UK")).to be(true)
+      expect(hosts.serves?("placecal.org")).to be(true)
+      expect(hosts.serves?("TRANSDIMENSION.UK")).to be(true)
     end
 
     it "matches one label under a wildcard" do
-      expect(hosts.include?("hulme.placecal.org")).to be(true)
-      expect(hosts.include?("www.hulme.placecal.org")).to be(false)
+      expect(hosts.serves?("hulme.placecal.org")).to be(true)
+      expect(hosts.serves?("www.hulme.placecal.org")).to be(false)
     end
 
     it "does not match hosts it does not list" do
-      expect(hosts.include?("www.transdimension.uk")).to be(false)
-      expect(hosts.include?("fruitsaladevents.co.uk")).to be(false)
-      expect(hosts.include?("evilplacecal.org")).to be(false)
-      expect(hosts.include?("")).to be(false)
+      expect(hosts.serves?("www.transdimension.uk")).to be(false)
+      expect(hosts.serves?("fruitsaladevents.co.uk")).to be(false)
+      expect(hosts.serves?("evilplacecal.org")).to be(false)
+      expect(hosts.serves?("")).to be(false)
     end
   end
 

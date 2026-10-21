@@ -62,7 +62,7 @@ class Views::Admin::Sites::FormTabSettings < Views::Admin::Base
     domain = site.domain_in_database
     return if domain.blank?
 
-    if PlaceCal::ServedHosts.current.include?(domain)
+    if PlaceCal::ServedHosts.current.serves?(domain)
       p(class: 'fieldset-label whitespace-normal text-success') { t('admin.sites.fields.domain_served', domain:) }
     else
       p(class: 'fieldset-label whitespace-normal') do
