@@ -37,6 +37,8 @@ module CalendarImporter::Events
 
       # do we have HTML? yeah let's get rid of that
       doc = Nokogiri::HTML.fragment(clean_text)
+      # Their contents are code, not copy; left in they become text (Squarespace sends inline <style>).
+      doc.css('style, script, noscript, template').remove
 
       if as_plaintext
         doc.text
