@@ -356,16 +356,20 @@ Linting comes from core too. The extension's whole `.rubocop.yml` is `inherit_fr
 
 The convention is the same for every extension, and it lives here rather than in each extension's README. An extension's own README should link this section rather than restate it: both theme READMEs used to reproduce core's `group :extensions` block, and one of the copies was already naming a version behind the one core pinned.
 
-1. **The version lives in `lib/<module_dir>/version.rb`** as `<Module>::VERSION`, and `package.json` mirrors it. Bump both in one commit.
-2. **The tag is `v<version>`.** The reusable workflow checks a pushed tag against `VERSION` before it does anything else, so a mistagged release fails in seconds rather than shipping a build claiming a version it is not.
+1. **The version lives in `lib/<module_dir>/version.rb`** as `<Module>::VERSION`, and `package.json` mirrors it. A release is a PR that bumps both; a PR that leaves them alone ships nothing.
+2. **Merging tags the release.** Each extension's `release.yml` workflow runs on every push to its `main`: when `VERSION` has no `v<version>` tag yet, it tags the merge commit and publishes a GitHub release with generated notes. The tag always matches `VERSION`, and the reusable test workflow still fails a hand-pushed tag that disagrees with it.
 3. **The release note is the tag.** No extension keeps a CHANGELOG; the commits between two tags are the change.
-4. **Core pins the new tag.** From a core checkout:
+4. **Core opens the pin PR.** `.github/workflows/extension-pins.yml` runs hourly (and on demand from the Actions tab). For each gem in the `group :extensions` block whose repo has a newer release tag, `bin/extension-pin-bumps` opens a PR titled "Pin <gem> at v<version>" with the one-line `Gemfile` change and its `Gemfile.lock` entry. Merging it deploys to staging.
+
+   PRs opened with the workflow's built-in token do not trigger CI. Add a fine-grained personal access token with contents and pull-request write access to this repo as the `EXTENSION_PIN_TOKEN` secret and the PRs run CI like any other; without it, close and reopen the PR to start CI.
+
+   To pin by hand (an older tag, or a release before the hourly run):
 
    ```bash
    rake "placecal:extension:bump[placecal-theme-mossley,0.1.2]"
    ```
 
-   That rewrites just that gem's `tag:` in the `group :extensions` block and runs `bundle lock --update` for it, so the diff is the one gem and its locked commit. Commit the `Gemfile` and `Gemfile.lock` together: as the next section says, that is the whole deploy step. The task refuses a version that is not a release number, a gem the `Gemfile` does not have, and a gem that is not pinned by tag, because pinning by tag is rule 2 of the Trust section above.
+   That rewrites just that gem's `tag:` in the `group :extensions` block and runs `bundle lock --update` for it, so the diff is the one gem and its locked commit. Commit the `Gemfile` and `Gemfile.lock` together: as the next section says, that is the whole deploy step. The task refuses a version that is not a release number, a gem the `Gemfile` does not have, and a gem that is not pinned by tag, because pinning by tag is rule 2 of the Trust section above. `DRY_RUN=1 bin/extension-pin-bumps` shows what the workflow would pin.
 
 ## Build and deploy
 
