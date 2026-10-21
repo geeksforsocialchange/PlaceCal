@@ -4,8 +4,6 @@ An extension is a Rails engine that registers a theme for one site or installati
 
 ## The contract
 
-If a second partnership could want a feature, it belongs in core, built generically. If only one site wants it, it is views, CSS, assets and copy in an extension. A bespoke site is always an extension.
-
 An extension contains views, components, assets, locales, content and rake tasks. It has no models, migrations, controllers, routes or business logic. A theme that needs a new route is a feature for core.
 
 Generate one with `rails plugin new --full` (not `--mountable`: it must not isolate its namespace).

@@ -165,9 +165,8 @@ class Event < ApplicationRecord
     where.not(matching)
   }
 
-  # Only events that don't repeat
   scope :one_off_events_only, -> { where(rrule: false) }
-  scope :one_off_events_first, -> { order(rrule: :asc) }
+  scope :repeating_events_only, -> { where.not(rrule: false) }
 
   scope :upcoming, -> { where(dtstart: DateTime.current.beginning_of_day..) }
   scope :past, -> { where(dtstart: ..DateTime.current.beginning_of_day) }
