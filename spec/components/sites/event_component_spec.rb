@@ -11,12 +11,14 @@ RSpec.describe Components::Sites::Event, type: :component do
   let(:event_summary) { "Community Meetup" }
   let(:context_partner) { nil }
   let(:event_neighbourhood) { nil }
+  let(:event_dtstart) { Time.zone.parse("2024-01-15 10:00") }
+  let(:event_dtend) { Time.zone.parse("2024-01-15 12:00") }
 
   let(:event) do
     double(
       id: 1,
-      dtstart: Time.zone.parse("2024-01-15 10:00"),
-      dtend: Time.zone.parse("2024-01-15 12:00"),
+      dtstart: event_dtstart,
+      dtend: event_dtend,
       summary: event_summary,
       description: "A great community event",
       organiser: event_organiser,
@@ -93,6 +95,28 @@ RSpec.describe Components::Sites::Event, type: :component do
       render_inline(described_class.new(display_context: :list, event:))
 
       expect(page).not_to have_css("article")
+    end
+
+    context "when the event runs past midnight" do
+      let(:event_dtstart) { Time.zone.local(Time.zone.now.year, 10, 23, 23) }
+      let(:event_dtend) { Time.zone.local(Time.zone.now.year, 10, 24, 3) }
+
+      it "shows only the start day and a plain time range" do
+        rendered
+        expect(page).to have_css(".event__date", exact_text: /\A\s*23 Oct\s*\z/)
+        expect(page).to have_css(".event__time", text: /11pm \u2013\s+3am/)
+      end
+    end
+
+    context "when the event lasts a day or more" do
+      let(:event_dtstart) { Time.zone.local(Time.zone.now.year, 10, 23, 23) }
+      let(:event_dtend) { Time.zone.local(Time.zone.now.year, 10, 25, 15) }
+
+      it "shows the start day and puts the end date on the time line" do
+        rendered
+        expect(page).to have_css(".event__date", exact_text: /\A\s*23 Oct\s*\z/)
+        expect(page).to have_css(".event__time", text: "11pm \u2013 25 Oct 3pm")
+      end
     end
   end
 
