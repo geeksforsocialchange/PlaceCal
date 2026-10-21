@@ -213,6 +213,57 @@ RSpec.describe Article do
     end
   end
 
+  describe "publish order neighbours" do
+    let(:author) { create(:root) }
+    let!(:older) { article_published(Date.new(2026, 1, 1)) }
+    let!(:same_day_first) { article_published(Date.new(2026, 2, 1)) }
+    let!(:same_day_second) { article_published(Date.new(2026, 2, 1)) }
+    let!(:undated) { article_published(nil) }
+
+    # update_published_at overwrites published_at on create, so set it afterwards.
+    def article_published(on)
+      described_class.create!(title: "Article", body: "Body", is_draft: false, author: author).tap do |article|
+        article.update!(published_at: on)
+      end
+    end
+
+    it "walks the same order as by_publish_date, ties and undated articles included" do
+      listed = described_class.by_publish_date.to_a
+      expect(listed).to eq([undated, same_day_second, same_day_first, older])
+
+      listed.each_with_index do |article, index|
+        expect(described_class.listed_before(article).first).to eq(index.positive? ? listed[index - 1] : nil)
+        expect(described_class.listed_after(article).first).to eq(listed[index + 1])
+      end
+    end
+  end
+
+  describe ".title_slug_candidates" do
+    let(:author) { create(:root) }
+
+    titles = [
+      "Introducting G(END)ER SWAP",
+      "Café Society: crème brûlée night",
+      "Ærø & Straße",
+      "snake_case  -- spaced - hyphens",
+      "100% fun!",
+      "Ünïcödé 🎉 party",
+      "Ꭰ Cherokee only ᏣᎳᎩ title"
+    ]
+
+    titles.each do |title|
+      it "finds #{title.inspect} by its own parameterized slug" do
+        article = described_class.create!(title: title, body: "Body", is_draft: false, author: author)
+        described_class.create!(title: "Unrelated headline", body: "Body", is_draft: false, author: author)
+
+        found = described_class.title_slug_candidates(title.parameterize)
+
+        expect(found).to include(article)
+        expect(found.map(&:title)).not_to include("Unrelated headline")
+      end
+    end
+  end
+
   describe "body_html" do
     it "is rendered from body" do
       art = create(:article)
