@@ -10,6 +10,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   before_action :discard_stale_auth_flash, unless: :devise_controller?
   before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :redirect_www_to_site_domain
   before_action :set_current_site
   before_action :set_supporters
   before_action :set_navigation
@@ -167,6 +168,14 @@ class ApplicationController < ActionController::Base
 
   def set_site
     @site = current_site
+  end
+
+  # A site stored without www (https://transdimension.uk) still gets www traffic from DNS.
+  def redirect_www_to_site_domain
+    return unless request.host.start_with?('www.')
+
+    site = Site.find_using_domain(request.host.delete_prefix('www.'))
+    redirect_to "#{site.url.chomp('/')}#{request.fullpath}", status: :moved_permanently, allow_other_host: true if site
   end
 
   # Makes the resolved site and its theme available to the view layer for the

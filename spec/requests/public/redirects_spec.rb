@@ -20,6 +20,21 @@ RSpec.describe "Public Redirects", type: :request do
     end
   end
 
+  describe "www host for a site stored without www" do
+    it "redirects to the site's own address, keeping the path" do
+      create(:site, slug: "wwwtest", url: "https://wwwtest.lvh.me")
+      get "/events?period=future", headers: { "Host" => "www.wwwtest.lvh.me" }
+      expect(response).to have_http_status(301)
+      expect(response).to redirect_to("https://wwwtest.lvh.me/events?period=future")
+    end
+
+    it "leaves a site stored with www alone" do
+      create(:site, slug: "leedslike", url: "https://www.leedslike.lvh.me")
+      get "/", headers: { "Host" => "www.leedslike.lvh.me" }
+      expect(response).not_to have_http_status(301)
+    end
+  end
+
   describe "GET /news/:title-derived-slug" do
     let(:tag) { create(:category) }
     let(:site) { create(:site).tap { |s| s.tags << tag } }
