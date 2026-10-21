@@ -36,7 +36,7 @@ class Views::Admin::Partners::Form < Views::Admin::Base
         storage_key: 'partnerTabAfterSave',
         settings_hash: 'settings',
         preview_hash: 'preview',
-        form: form,
+        form:,
         record: partner
       )
     end

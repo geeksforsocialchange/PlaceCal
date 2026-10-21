@@ -18,7 +18,7 @@ RSpec.describe ContactRequest do
 
     it "queues the enquiry mail with serializable arguments when valid" do
       site = create(:site)
-      contact_request = described_class.new(name: "A", email: "a@example.com", why: "Community", site: site, demo: true)
+      contact_request = described_class.new(name: "A", email: "a@example.com", why: "Community", site:, demo: true)
 
       expect { contact_request.submit }.to have_enqueued_mail(JoinMailer, :join_us)
         .with(attributes: hash_including("name" => "A", "email" => "a@example.com", "why" => "Community"),

@@ -110,7 +110,7 @@ module OgImage
       count = Event.by_organiser_or_place(partner).upcoming.count
       return nil if count.zero?
 
-      t('upcoming_events', count: count)
+      t('upcoming_events', count:)
     end
 
     def compose_content(canvas)
@@ -124,7 +124,7 @@ module OgImage
 
       names.each_with_index do |name, i|
         style = TAG_PILL_STYLES[i % TAG_PILL_STYLES.size]
-        img = tag_pill(name, style, size: size)
+        img = tag_pill(name, style, size:)
         canvas = composite(canvas, img, left, top)
         left += img.width + 12
       end
@@ -132,7 +132,7 @@ module OgImage
     end
 
     def tag_pill(name, style, size:)
-      label_img = text(name, size: size, face: 'Rawline', weight: 'bold', colour: BROWN)
+      label_img = text(name, size:, face: 'Rawline', weight: 'bold', colour: BROWN)
       width = label_img.width + 44
       height = size + 20
       bar = svg(<<~SVG)

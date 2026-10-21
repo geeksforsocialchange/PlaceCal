@@ -201,7 +201,7 @@ module PlaceCal
       # @param engine_root [Pathname]
       def push_phlex_dirs!(engine_root)
         phlex_dirs(engine_root).each do |path, namespace|
-          Rails.autoloaders.main.push_dir(path, namespace: namespace)
+          Rails.autoloaders.main.push_dir(path, namespace:)
         end
       end
 

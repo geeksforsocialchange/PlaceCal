@@ -246,7 +246,7 @@ end
 # installations that ship that gem, so they are root's to set (#3368, WP 4.5).
 # Site admins keep the core themes and the fields they already had.
 RSpec.describe "Admin::Sites theme and contact authorisation", type: :request do
-  let!(:themed_site) { create(:site, slug: "themed-site", theme: "pink", site_admin: site_admin) }
+  let!(:themed_site) { create(:site, slug: "themed-site", theme: "pink", site_admin:) }
   let(:site_admin) { create(:citizen_user) }
   let(:root_user) { create(:root_user) }
 

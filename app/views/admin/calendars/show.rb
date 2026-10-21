@@ -7,7 +7,7 @@ class Views::Admin::Calendars::Show < Views::Admin::Base
 
   def view_template
     render_header
-    render Views::Admin::Calendars::ImporterOverview.new(calendar: calendar)
+    render Views::Admin::Calendars::ImporterOverview.new(calendar:)
     div(class: 'divider my-6')
     render_info_cards
     render_events_section

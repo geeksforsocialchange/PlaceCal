@@ -24,7 +24,7 @@ class Views::Admin::Sites::FormTabSettings < Views::Admin::Base
     fieldset(class: 'fieldset') do
       legend(class: 'fieldset-legend') { t('admin.sites.fields.publishing_status') }
       ToggleCard(
-        form: form,
+        form:,
         attribute: :is_published,
         title: t('admin.sites.fields.published'),
         description: t('admin.sites.fields.published_hint')

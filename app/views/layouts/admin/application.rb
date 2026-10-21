@@ -201,7 +201,7 @@ class Views::Layouts::Admin::Application < Phlex::HTML
   end
 
   def human_model_name(klass, count: 1)
-    klass.model_name.human(count: count)
+    klass.model_name.human(count:)
   end
 
   def policy(record)

@@ -61,7 +61,7 @@ RSpec.describe ArticlePolicy, type: :policy do
 
     context "on article for partner in their neighbourhood" do
       let(:address) { create(:address, neighbourhood: ward) }
-      let(:partner) { create(:partner, address: address) }
+      let(:partner) { create(:partner, address:) }
       let(:article) { create(:article, partners: [partner]) }
 
       it { is_expected.to permit_action(:index) }

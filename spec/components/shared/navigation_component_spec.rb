@@ -12,20 +12,20 @@ RSpec.describe Components::Shared::Navigation, type: :component do
   end
 
   it "renders navigation links" do
-    render_inline(described_class.new(navigation: navigation, site: nil))
+    render_inline(described_class.new(navigation:, site: nil))
 
     expect(page).to have_link(I18n.t("navigation.site.events"), href: "/events")
     expect(page).to have_link(I18n.t("navigation.site.partners"), href: "/partners")
   end
 
   it "renders home link" do
-    render_inline(described_class.new(navigation: navigation, site: nil))
+    render_inline(described_class.new(navigation:, site: nil))
 
     expect(page).to have_link(I18n.t("navigation.site.home"))
   end
 
   it "renders header structure" do
-    render_inline(described_class.new(navigation: navigation, site: nil))
+    render_inline(described_class.new(navigation:, site: nil))
 
     expect(page).to have_css(".header")
     expect(page).to have_css("nav.nav")
@@ -46,21 +46,21 @@ RSpec.describe Components::Shared::Navigation, type: :component do
 
     it "does not render when the theme setting is off" do
       Current.theme = PlaceCal::Theme.new(:fixture)
-      render_inline(described_class.new(navigation: navigation, site: nil, region_tags: [north, south]))
+      render_inline(described_class.new(navigation:, site: nil, region_tags: [north, south]))
 
       expect(page).not_to have_css("li.header__region")
     end
 
     it "does not render when the setting is on but the site has only one tag" do
       Current.theme = region_enabled_theme
-      render_inline(described_class.new(navigation: navigation, site: nil, region_tags: [north]))
+      render_inline(described_class.new(navigation:, site: nil, region_tags: [north]))
 
       expect(page).not_to have_css("li.header__region")
     end
 
     it "renders a segmented-control hook when the setting is on and the site has two tags" do
       Current.theme = region_enabled_theme
-      render_inline(described_class.new(navigation: navigation, site: nil, region_tags: [north, south]))
+      render_inline(described_class.new(navigation:, site: nil, region_tags: [north, south]))
 
       expect(page).to have_css("li.header__region nav.region-filter--nav")
       expect(page).to have_link("North")

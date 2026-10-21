@@ -109,7 +109,7 @@ class EventsController < ApplicationController
     partnerships = Site.where(is_published: true)
                        .order(:name)
                        .pluck(:slug, :name)
-                       .map { |slug, name| { slug: slug, name: name } }
+                       .map { |slug, name| { slug:, name: } }
 
     render Views::Directory::Events::Index.new(
       events: @events,
@@ -153,7 +153,7 @@ class EventsController < ApplicationController
             selected_neighbourhood: @selected_neighbourhood,
             next_date: @next_date, truncated: @truncated,
             show_monthly: @show_monthly,
-            region_tags: region_tags, selected_region: @region,
+            region_tags:, selected_region: @region,
             query: @query
           )
         end
@@ -184,7 +184,7 @@ class EventsController < ApplicationController
   def render_events_csv
     track_csv_download
     site_url = current_site&.url || 'https://placecal.org'
-    send_data EventsCsv.new(@events.values.flatten, site_url: site_url).call,
+    send_data EventsCsv.new(@events.values.flatten, site_url:).call,
               filename: "#{@site&.slug || 'events'}-events.csv", type: :csv
   end
 end

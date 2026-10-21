@@ -64,7 +64,7 @@ class Views::ThemeContentPage < Views::Base
               "heading_level #{heading_level.inspect} is not one of #{HEADING_LEVELS.join(', ')}"
       end
 
-      sections << { path: relative_path.to_s, heading: heading&.to_s, heading_level: heading_level }
+      sections << { path: relative_path.to_s, heading: heading&.to_s, heading_level: }
     end
 
     def sections
@@ -114,7 +114,7 @@ class Views::ThemeContentPage < Views::Base
     content_for(:title) { page_title }
     content_for(:description) { page_description } if page_description
 
-    div(class: "container-public py-8 page page--#{page_slug}", data: { page_slug: page_slug }) do
+    div(class: "container-public py-8 page page--#{page_slug}", data: { page_slug: }) do
       h1(class: 'h1') { page_title }
       page_content
     end

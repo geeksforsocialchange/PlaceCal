@@ -50,7 +50,7 @@ class Views::Sites::Collections::Show < Views::Base
 
   def render_events
     Sites::EventList(
-      events: events,
+      events:,
       primary_neighbourhood: site&.primary_neighbourhood,
       show_neighbourhoods: site ? site.show_neighbourhoods? : false,
       badge_zoom_level: site&.badge_zoom_level&.to_s,

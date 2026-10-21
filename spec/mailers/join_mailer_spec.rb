@@ -8,7 +8,7 @@ RSpec.describe JoinMailer, type: :mailer do
   end
 
   def join_us(site: nil, demo: false)
-    described_class.join_us(attributes: join_attrs, site_id: site&.id, demo: demo)
+    described_class.join_us(attributes: join_attrs, site_id: site&.id, demo:)
   end
 
   describe "#join_us" do
@@ -21,7 +21,7 @@ RSpec.describe JoinMailer, type: :mailer do
 
     it "sends to the site's contact_email and names the site in the subject" do
       site = create(:site, name: "Millbrook", contact_email: "hello@example.org")
-      mail = join_us(site: site)
+      mail = join_us(site:)
 
       expect(mail.to).to eq(["hello@example.org"])
       expect(mail.subject).to eq(I18n.t("join_mailer.join_us.subject_with_site", site: "Millbrook"))
@@ -29,7 +29,7 @@ RSpec.describe JoinMailer, type: :mailer do
 
     it "keeps newlines in the site name out of the subject header" do
       site = create(:site, name: "Millbrook\r\nBcc: sneaky@example.com", contact_email: "hello@example.org")
-      mail = join_us(site: site)
+      mail = join_us(site:)
 
       expect(mail.subject).not_to include("\r")
       expect(mail.subject).not_to include("\n")
@@ -49,7 +49,7 @@ RSpec.describe JoinMailer, type: :mailer do
 
     it "falls back to the default recipient when the site has no contact_email" do
       site = create(:site, contact_email: nil)
-      mail = join_us(site: site)
+      mail = join_us(site:)
 
       expect(mail.to).to eq([ContactRequest::DEFAULT_RECIPIENT])
     end

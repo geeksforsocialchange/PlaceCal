@@ -238,7 +238,7 @@ module SeedPartners # rubocop:disable Metrics/ModuleLength
     %i[categories facilities partnerships].each do |tag_type|
       (type[tag_type] || []).each do |tag_name|
         tag = Tag.find_by(name: tag_name)
-        PartnerTag.find_or_create_by!(partner: partner, tag: tag) if tag
+        PartnerTag.find_or_create_by!(partner:, tag:) if tag
       end
     end
   end
@@ -279,11 +279,11 @@ module SeedPartners # rubocop:disable Metrics/ModuleLength
 
   # True when the partner exists; its copy is refreshed only while it still has the placeholder.
   def self.already_seeded?(name, summary, description)
-    partner = Partner.find_by(name: name)
+    partner = Partner.find_by(name:)
     return false unless partner
 
     if partner.description == LEGACY_DESCRIPTION
-      partner.assign_attributes(summary: summary, description: description)
+      partner.assign_attributes(summary:, description:)
       # Copy only: other dev edits (such as a removed address) must not block the refresh.
       partner.save!(validate: false)
       $stdout.puts "  Refreshed copy: #{partner.name}"
@@ -301,7 +301,7 @@ module SeedPartners # rubocop:disable Metrics/ModuleLength
 
   # Moves a seeded address off its ward point only while it still sits exactly on it.
   def self.refresh_position(name, address_data, position)
-    address = Partner.find_by(name: name)&.address
+    address = Partner.find_by(name:)&.address
     return unless address && [address.latitude, address.longitude] == [address_data[:latitude], address_data[:longitude]]
 
     address.update_columns(latitude: position[0], longitude: position[1]) # rubocop:disable Rails/SkipsModelValidations
@@ -344,9 +344,9 @@ module SeedPartners # rubocop:disable Metrics/ModuleLength
 
       partner = Partner.create!(
         name: data[:name],
-        summary: summary,
-        description: description,
-        address: address
+        summary:,
+        description:,
+        address:
       )
 
       assign_tags(partner, named_type)
@@ -387,10 +387,10 @@ module SeedPartners # rubocop:disable Metrics/ModuleLength
         address.update_columns(latitude: position[0], longitude: position[1]) # rubocop:disable Rails/SkipsModelValidations
 
         partner = Partner.create!(
-          name: name,
-          summary: summary,
-          description: description,
-          address: address
+          name:,
+          summary:,
+          description:,
+          address:
         )
 
         assign_tags(partner, type)

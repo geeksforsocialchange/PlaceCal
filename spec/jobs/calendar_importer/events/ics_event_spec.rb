@@ -18,11 +18,11 @@ RSpec.describe CalendarImporter::Events::IcsEvent do
       uid: "test-event-123",
       summary: "Test Event",
       description: "A test event description",
-      location: location,
+      location:,
       rrule: nil,
       last_modified: nil,
       url: event_url,
-      custom_properties: custom_properties
+      custom_properties:
     )
     event
   end

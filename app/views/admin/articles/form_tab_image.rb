@@ -6,7 +6,7 @@ class Views::Admin::Articles::FormTabImage < Views::Admin::Base
   def view_template
     div(class: 'max-w-2xl') do
       ImageUpload(
-        form: form,
+        form:,
         attribute: :article_image,
         title: t('admin.articles.image.title'),
         aspect: '16:9'

@@ -20,7 +20,7 @@ RSpec.describe "GraphQL Articles", type: :request do
           author: user,
           is_draft: false,
           published_at: DateTime.current,
-          partners: partners
+          partners:
         )
       end
     end

@@ -84,7 +84,7 @@ RSpec.describe Site, type: :model do
   describe "reserved subdomains" do
     it "refuses a slug another host already answers on" do
       %w[join www].each do |slug|
-        expect(build(:site, slug: slug)).not_to be_valid
+        expect(build(:site, slug:)).not_to be_valid
       end
     end
 
@@ -341,8 +341,8 @@ RSpec.describe Site, type: :model do
   describe "#events_this_week" do
     let(:neighbourhood) { create(:neighbourhood) }
     let(:site) { create(:site, neighbourhoods: [neighbourhood]) }
-    let(:address) { create(:address, neighbourhood: neighbourhood) }
-    let(:partner) { create(:partner, address: address) }
+    let(:address) { create(:address, neighbourhood:) }
+    let(:partner) { create(:partner, address:) }
 
     it "counts events in the current week" do
       create(:event, organiser: partner, dtstart: Time.zone.now)
@@ -361,11 +361,11 @@ RSpec.describe Site, type: :model do
   describe "#refresh_partners_count!" do
     let(:neighbourhood) { create(:neighbourhood) }
     let(:site) { create(:site, neighbourhoods: [neighbourhood]) }
-    let(:address) { create(:address, neighbourhood: neighbourhood) }
+    let(:address) { create(:address, neighbourhood:) }
 
     it "updates the cached partners_count" do
-      create(:partner, address: address)
-      create(:partner, address: address)
+      create(:partner, address:)
+      create(:partner, address:)
 
       site.refresh_partners_count!
       expect(site.reload.partners_count).to eq(2)
@@ -375,8 +375,8 @@ RSpec.describe Site, type: :model do
   describe "#refresh_events_count!" do
     let(:neighbourhood) { create(:neighbourhood) }
     let(:site) { create(:site, neighbourhoods: [neighbourhood]) }
-    let(:address) { create(:address, neighbourhood: neighbourhood) }
-    let(:partner) { create(:partner, address: address) }
+    let(:address) { create(:address, neighbourhood:) }
+    let(:partner) { create(:partner, address:) }
 
     it "updates the cached events_count" do
       create(:event, organiser: partner, dtstart: Time.zone.now)
@@ -389,8 +389,8 @@ RSpec.describe Site, type: :model do
 
   describe ".sites_that_contain_partner" do
     let(:neighbourhood) { create(:neighbourhood) }
-    let(:address) { create(:address, neighbourhood: neighbourhood) }
-    let(:partner) { create(:partner, address: address) }
+    let(:address) { create(:address, neighbourhood:) }
+    let(:partner) { create(:partner, address:) }
 
     it "returns published sites that contain the partner" do
       site = create(:site, is_published: true, neighbourhoods: [neighbourhood])

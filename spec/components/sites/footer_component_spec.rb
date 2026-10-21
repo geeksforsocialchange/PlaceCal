@@ -46,7 +46,7 @@ RSpec.describe Components::Sites::Footer, type: :component do
     # The layout hands the footer the same derived navigation as the header
     # (SiteNavigation), so the spec constructs one the same way.
     def footer_nav_labels(navigation)
-      render_inline(described_class.new(site, navigation: navigation))
+      render_inline(described_class.new(site, navigation:))
       page.all(".footer__nav nav ul li a").map(&:text)
     end
 

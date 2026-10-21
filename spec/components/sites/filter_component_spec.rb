@@ -13,7 +13,7 @@ RSpec.describe Components::Sites::Filter, type: :component do
     {
       name: "category",
       label: "Category",
-      items: items,
+      items:,
       controller: "partner-filter-component",
       toggle_action: "toggleCategory",
       submit_action: "submitCategory",

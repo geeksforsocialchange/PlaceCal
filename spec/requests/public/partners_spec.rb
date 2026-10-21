@@ -15,7 +15,7 @@ RSpec.describe "Public Partners", type: :request do
     let!(:partners) do
       Array.new(3) do
         address = create(:address, neighbourhood: ward)
-        create(:partner, address: address)
+        create(:partner, address:)
       end
     end
 
@@ -231,7 +231,7 @@ RSpec.describe "Public Partners", type: :request do
     let!(:partners) do
       Array.new(5) do
         address = create(:address, neighbourhood: ward)
-        create(:partner, address: address)
+        create(:partner, address:)
       end
     end
 
@@ -260,14 +260,14 @@ RSpec.describe "Public Partners", type: :request do
     let!(:tagged_partners) do
       Array.new(3) do
         address = create(:address, neighbourhood: ward)
-        partner = create(:partner, address: address)
+        partner = create(:partner, address:)
         partner.tags << tag
         partner
       end
     end
     let!(:untagged_partner) do
       address = create(:address, neighbourhood: ward)
-      create(:partner, address: address)
+      create(:partner, address:)
     end
 
     before do
@@ -297,7 +297,7 @@ RSpec.describe "Public Partners", type: :request do
       31.times do |i|
         create(:event,
                organiser: partner,
-               calendar: calendar,
+               calendar:,
                dtstart: (i + 1).days.from_now.at_beginning_of_hour,
                dtend: (i + 1).days.from_now.at_beginning_of_hour + 2.hours)
       end
@@ -335,7 +335,7 @@ RSpec.describe "Public Partners", type: :request do
         10.times do |i|
           create(:event,
                  organiser: partner,
-                 calendar: calendar,
+                 calendar:,
                  summary: "Day #{i} Event",
                  dtstart: (i + 1).days.from_now.at_beginning_of_hour,
                  dtend: (i + 1).days.from_now.at_beginning_of_hour + 1.hour)
@@ -402,7 +402,7 @@ RSpec.describe "Public Partners", type: :request do
         31.times do |i|
           create(:event,
                  organiser: partner,
-                 calendar: calendar,
+                 calendar:,
                  dtstart: (i + 1).days.from_now.at_beginning_of_hour,
                  dtend: (i + 1).days.from_now.at_beginning_of_hour + 1.hour)
         end
@@ -421,7 +421,7 @@ RSpec.describe "Public Partners", type: :request do
       before do
         60.times do |i|
           start = ((i / 5) + 1).days.from_now.at_beginning_of_day + 9.hours + (i % 5).hours
-          create(:event, organiser: partner, calendar: calendar,
+          create(:event, organiser: partner, calendar:,
                          summary: format("Busy Event %02d", i), dtstart: start, dtend: start + 30.minutes)
         end
       end
@@ -454,7 +454,7 @@ RSpec.describe "Public Partners", type: :request do
         31.times do |i|
           create(:event,
                  organiser: partner,
-                 calendar: calendar,
+                 calendar:,
                  dtstart: (i + 1).days.from_now.at_beginning_of_hour,
                  dtend: (i + 1).days.from_now.at_beginning_of_hour + 1.hour)
         end
@@ -477,7 +477,7 @@ RSpec.describe "Public Partners", type: :request do
         31.times do |i|
           create(:event,
                  organiser: partner,
-                 calendar: calendar,
+                 calendar:,
                  dtstart: ((i * 2) + 1).days.from_now.at_beginning_of_hour,
                  dtend: ((i * 2) + 1).days.from_now.at_beginning_of_hour + 1.hour)
         end
@@ -495,7 +495,7 @@ RSpec.describe "Public Partners", type: :request do
         31.times do |i|
           create(:event,
                  organiser: partner,
-                 calendar: calendar,
+                 calendar:,
                  dtstart: ((i % 6) + 1).days.from_now.at_beginning_of_hour + i.hours,
                  dtend: ((i % 6) + 1).days.from_now.at_beginning_of_hour + i.hours + 1.hour)
         end
@@ -513,7 +513,7 @@ RSpec.describe "Public Partners", type: :request do
         31.times do |i|
           create(:event,
                  organiser: partner,
-                 calendar: calendar,
+                 calendar:,
                  dtstart: (35 + i).days.from_now.at_beginning_of_hour,
                  dtend: (35 + i).days.from_now.at_beginning_of_hour + 1.hour)
         end
@@ -538,7 +538,7 @@ RSpec.describe "Public Partners", type: :request do
     context "with A-Z sort" do
       let!(:az_partners) do
         %w[Alpha Bravo Charlie].map do |name|
-          create(:partner, name: name, address: create(:address, neighbourhood: ward))
+          create(:partner, name:, address: create(:address, neighbourhood: ward))
         end
       end
 
@@ -739,7 +739,7 @@ RSpec.describe "Public Partners", type: :request do
         5.times do |i|
           create(:event,
                  organiser: partner,
-                 calendar: calendar,
+                 calendar:,
                  dtstart: (i + 1).days.from_now.at_beginning_of_hour,
                  dtend: (i + 1).days.from_now.at_beginning_of_hour + 1.hour)
         end
@@ -760,7 +760,7 @@ RSpec.describe "Public Partners", type: :request do
         15.times do |i|
           create(:event,
                  organiser: partner,
-                 calendar: calendar,
+                 calendar:,
                  dtstart: (i + 1).days.from_now.at_beginning_of_hour,
                  dtend: (i + 1).days.from_now.at_beginning_of_hour + 1.hour)
         end

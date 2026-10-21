@@ -37,7 +37,7 @@ module PlaceCal
     # @yield [theme] the PlaceCal::Theme to configure
     # @return [PlaceCal::Theme]
     def register_theme(name, core: false)
-      theme = Theme.new(name, core: core)
+      theme = Theme.new(name, core:)
       yield theme if block_given?
       warn_on_reregistration(theme.name)
       registry[theme.name] = theme

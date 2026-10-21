@@ -68,7 +68,7 @@ module CucumberHelpers
   # Fill in a field by finding its fieldset legend (daisyUI pattern)
   def fill_in_fieldset(legend_text, with:)
     # First try standard fill_in (works with label, name, or id)
-    fill_in legend_text, with: with
+    fill_in(legend_text, with:)
   rescue Capybara::ElementNotFound
     # Fall back to finding by fieldset legend
     fieldsets = page.all("fieldset").select do |fs|

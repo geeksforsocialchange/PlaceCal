@@ -7,11 +7,11 @@ RSpec.describe PlaceCal::ExtensionPinPlan do
   let(:name) { "placecal-theme-mossley" }
 
   def plan(current: "0.1.0", latest: "0.2.0", target_prs: [], open_prs: [])
-    described_class.call(name: name, current: current, latest: latest, target_prs: target_prs, open_prs: open_prs)
+    described_class.call(name:, current:, latest:, target_prs:, open_prs:)
   end
 
   def pin_pr(number, version)
-    { number: number, head: "extensions/#{name}-v#{version}" }
+    { number:, head: "extensions/#{name}-v#{version}" }
   end
 
   it "opens a PR when a newer tag has no PR yet" do
@@ -64,7 +64,7 @@ RSpec.describe PlaceCal::ExtensionPinPlan do
     open_prs = [pin_pr(10, "0.1.1"), pin_pr(20, "0.1.0"), { number: 30, head: "extensions/placecal-theme-other-v0.1.1" },
                 { number: 40, head: "feature/unrelated" }]
 
-    result = plan(open_prs: open_prs)
+    result = plan(open_prs:)
 
     expect(result.action).to eq(:open)
     expect(result.close).to contain_exactly({ number: 10, version: "0.1.1" }, { number: 20, version: "0.1.0" })

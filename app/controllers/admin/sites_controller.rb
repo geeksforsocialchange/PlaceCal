@@ -17,7 +17,7 @@ module Admin
         format.json do
           render json: SiteDatatable.new(
             params,
-            view_context: view_context,
+            view_context:,
             sites: @sites
           )
         end

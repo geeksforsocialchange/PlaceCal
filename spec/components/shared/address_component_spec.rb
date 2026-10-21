@@ -7,27 +7,27 @@ RSpec.describe Components::Shared::Address, type: :component do
   let(:raw_location) { "Unformatted Address, Ungeolocated Lane" }
 
   it "renders address information" do
-    render_inline(described_class.new(address: address, raw_location: raw_location))
+    render_inline(described_class.new(address:, raw_location:))
 
     expect(page).to have_text(address.street_address)
     expect(page).to have_text(address.postcode)
   end
 
   it "renders with just an address" do
-    render_inline(described_class.new(address: address, raw_location: nil))
+    render_inline(described_class.new(address:, raw_location: nil))
 
     expect(page).to have_text(address.street_address)
   end
 
   it "renders with raw location when no address" do
-    render_inline(described_class.new(address: nil, raw_location: raw_location))
+    render_inline(described_class.new(address: nil, raw_location:))
 
     expect(page).to have_text(raw_location)
   end
 
   describe "directions link" do
     it "links to Google Maps using the coordinates when present" do
-      render_inline(described_class.new(address: address, raw_location: nil))
+      render_inline(described_class.new(address:, raw_location: nil))
 
       link = page.find("a.place_info__directions")
       expect(link[:href]).to eq(
@@ -39,7 +39,7 @@ RSpec.describe Components::Shared::Address, type: :component do
     end
 
     it "offers Apple Maps and OpenStreetMap alongside Google when there are coordinates" do
-      render_inline(described_class.new(address: address, raw_location: nil))
+      render_inline(described_class.new(address:, raw_location: nil))
 
       list = page.find("div.place_info__directions-list[role='group']")
       expect(list["aria-label"]).to eq("Directions")
@@ -61,7 +61,7 @@ RSpec.describe Components::Shared::Address, type: :component do
       address.latitude = nil
       address.longitude = nil
 
-      render_inline(described_class.new(address: address, raw_location: nil))
+      render_inline(described_class.new(address:, raw_location: nil))
 
       link = page.find("a.place_info__directions")
       expect(link[:href]).to eq(
@@ -73,7 +73,7 @@ RSpec.describe Components::Shared::Address, type: :component do
     end
 
     it "is absent without an address" do
-      render_inline(described_class.new(address: nil, raw_location: raw_location))
+      render_inline(described_class.new(address: nil, raw_location:))
 
       expect(page).not_to have_css("a.place_info__directions")
       expect(page).not_to have_css(".place_info__directions-list")

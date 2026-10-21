@@ -19,7 +19,7 @@ class Views::Directory::Partners::Show < Views::Sites::Partners::Show
           render_directory_location
           render_directory_accessibility
         end
-        Directory::PartnerSidebar(partner: partner, containing_sites: containing_sites || [])
+        Directory::PartnerSidebar(partner:, containing_sites: containing_sites || [])
       end
     end
   end
@@ -37,10 +37,10 @@ class Views::Directory::Partners::Show < Views::Sites::Partners::Show
     div(class: 'py-4') do
       h2(class: 'udl udl--fw allcaps text-xl') { t('directory.partners.show.upcoming_events') }
       flat.first(10).each do |event|
-        Directory::EventRow(event: event, context_partner: partner)
+        Directory::EventRow(event:, context_partner: partner)
       end
       Directory::OverflowToggle(items: flat.drop(10), label_key: 'directory.partners.show.show_more_events') do |event|
-        Directory::EventRow(event: event, context_partner: partner)
+        Directory::EventRow(event:, context_partner: partner)
       end
     end
   end

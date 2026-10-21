@@ -37,14 +37,14 @@ module PlaceCal
     end
 
     def skip(branch, reason, close, superseded_by)
-      Plan.new(action: :skip, branch: branch, reason: reason, close: close, superseded_by: superseded_by)
+      Plan.new(action: :skip, branch:, reason:, close:, superseded_by:)
     end
 
     def open_pin_prs(name, open_prs)
       pattern = %r{\Aextensions/#{Regexp.escape(name)}-v(\d+\.\d+\.\d+)\z}
       open_prs.filter_map do |pr|
         version = pr[:head].to_s[pattern, 1]
-        { number: pr[:number], version: version } if version
+        { number: pr[:number], version: } if version
       end
     end
   end

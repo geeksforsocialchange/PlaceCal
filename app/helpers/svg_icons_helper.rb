@@ -224,12 +224,12 @@ module SvgIconsHelper
     tag.svg(
       class: classes,
       'data-icon-name': name.to_s,
-      fill: fill,
-      stroke: stroke,
+      fill:,
+      stroke:,
       'stroke-linecap': stroke_linecap,
       'stroke-linejoin': stroke_linejoin,
       'stroke-width': stroke_width,
-      style: style,
+      style:,
       viewBox: viewbox
     ) do
       tag.path(d: path)

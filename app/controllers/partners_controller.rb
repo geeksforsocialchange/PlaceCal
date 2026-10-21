@@ -67,7 +67,7 @@ class PartnersController < ApplicationController
         track_csv_download
         events = Event.by_organiser_or_place(@partner).upcoming.sort_by_time
         site_url = current_site&.url || 'https://placecal.org'
-        send_data EventsCsv.new(events, site_url: site_url).call,
+        send_data EventsCsv.new(events, site_url:).call,
                   filename: "#{@partner.slug}-events.csv", type: :csv
       end
     end
@@ -77,7 +77,7 @@ class PartnersController < ApplicationController
     period = params[:period] || 'week'
     limit = params[:limit]&.to_i || 10
     query = EventsQuery.new(site: nil, day: @current_day)
-    @events = query.call(period: period, place: @partner, sort: 'time', limit: limit)
+    @events = query.call(period:, place: @partner, sort: 'time', limit:)
     response.headers.except! 'X-Frame-Options'
     render layout: false
   end
@@ -110,7 +110,7 @@ class PartnersController < ApplicationController
     if directory_request?
       @events = query.call(period: 'future', organiser_or_place: @partner, repeating: @repeating, sort: 'time')
     else
-      assign_days_windowed_events(sort: 'time', query: query)
+      assign_days_windowed_events(sort: 'time', query:)
     end
   end
 
@@ -130,7 +130,7 @@ class PartnersController < ApplicationController
 
     query = EventsQuery.new(site: nil, day: @current_day)
     if !directory_request? && @period == 'upcoming'
-      assign_days_windowed_events(sort: @sort, query: query)
+      assign_days_windowed_events(sort: @sort, query:)
     else
       @events = query.call(period: @period, organiser_or_place: @partner, repeating: @repeating, sort: @sort)
     end
@@ -144,7 +144,7 @@ class PartnersController < ApplicationController
     @events_total_count = day_counts.values.sum
     @events_total_days = day_counts.size
     @more_days = [day_counts.size - @days, 0].max
-    @events = last_day ? query.future_through(last_day, sort: sort, organiser_or_place: @partner, repeating: @repeating) : {}
+    @events = last_day ? query.future_through(last_day, sort:, organiser_or_place: @partner, repeating: @repeating) : {}
   end
 
   def clamp_days(raw_days)
@@ -239,9 +239,9 @@ class PartnersController < ApplicationController
       partners: @partners, site: @site,
       map: @map, selected_category: @selected_category,
       selected_neighbourhood: @selected_neighbourhood,
-      region_tags: region_tags, selected_region: @region,
+      region_tags:, selected_region: @region,
       selected_query: @selected_query,
-      query: query
+      query:
     )
   end
 end

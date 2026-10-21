@@ -125,7 +125,7 @@ class Views::Sites::Partners::Show < Views::Base
   # inherited size with no margin, so an h2 and an h3 here draw identically.
   def render_contact_and_address
     h2(class: 'udl udl--fw allcaps h4') { t('partners.show.contact_heading') }
-    Shared::ContactDetails(partner: partner, social_labels: :network)
+    Shared::ContactDetails(partner:, social_labels: :network)
 
     h2(class: 'udl udl--fw allcaps h4') { t('partners.show.address_heading') }
     p { raw(t('partners.show.service_area_html', areas: partner_service_area_text(partner))) } if partner.has_service_areas?
@@ -142,7 +142,7 @@ class Views::Sites::Partners::Show < Views::Base
     places = safe_join(partner.managees.map { |place| view_context.link_to(place.name, place) }, ', ')
 
     p(class: 'small') do
-      raw(t('partners.show.managed_by_html', name: partner.name, places: places))
+      raw(t('partners.show.managed_by_html', name: partner.name, places:))
     end
   end
 
@@ -189,7 +189,7 @@ class Views::Sites::Partners::Show < Views::Base
           h2(class: 'udl udl--fw allcaps h4') { t('partners.show.place_contact_heading') }
           div(class: 'small') do
             Shared::ContactDetails(
-              partner: partner,
+              partner:,
               email: place.public_email,
               phone: place.public_phone,
               url: place.url
@@ -207,8 +207,8 @@ class Views::Sites::Partners::Show < Views::Base
 
       if events.any?
         Sites::EventList(
-          events: events,
-          period: period,
+          events:,
+          period:,
           primary_neighbourhood: site.primary_neighbourhood,
           show_neighbourhoods: site.show_neighbourhoods?,
           badge_zoom_level: site.badge_zoom_level&.to_s,
@@ -271,7 +271,7 @@ class Views::Sites::Partners::Show < Views::Base
   def render_show_more_days
     count = [more_days, 4].min
     a(href: show_more_days_url, class: 'partner-events__more', data: { turbo_frame: 'events-browser' }) do
-      t('partners.show.show_more_days', count: count)
+      t('partners.show.show_more_days', count:)
     end
   end
 
@@ -290,11 +290,11 @@ class Views::Sites::Partners::Show < Views::Base
     div(class: 'paginator', id: 'paginator') do
       Sites::Timeline(
         pointer: current_day,
-        period: period,
-        date_period: date_period,
-        sort: sort,
-        repeating: repeating,
-        path: path,
+        period:,
+        date_period:,
+        sort:,
+        repeating:,
+        path:,
         show_upcoming: true
       )
       div(class: 'paginator__actions') do
@@ -302,11 +302,11 @@ class Views::Sites::Partners::Show < Views::Base
         Sites::EventFilter(
           pointer: current_day,
           period: filter_period,
-          sort: sort,
-          repeating: repeating,
-          today_url: today_url,
+          sort:,
+          repeating:,
+          today_url:,
           today: current_day == today,
-          show_monthly: show_monthly
+          show_monthly:
         )
       end
     end
@@ -327,7 +327,7 @@ class Views::Sites::Partners::Show < Views::Base
     links = [[t('partners.show.go_back'), partners_path],
              [t('partners.show.subscribe_ical', name: partner.name), partner_url(partner, protocol: :webcal, format: :ics)]]
     links << [t('events.csv_export.link'), partner_url(partner, format: :csv)] if events.any?
-    Sites::PageActions(links: links)
+    Sites::PageActions(links:)
   end
 
   # Meta carries the permalink alone; the feed and export are page actions.

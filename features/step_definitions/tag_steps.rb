@@ -3,19 +3,19 @@
 # Step definitions for tag management
 
 Given("there is a tag called {string}") do |name|
-  @tag = create(:category, name: name)
+  @tag = create(:category, name:)
 end
 
 Given("there is a category tag called {string}") do |name|
-  @tag = create(:category, name: name)
+  @tag = create(:category, name:)
 end
 
 Given("there is a facility tag called {string}") do |name|
-  @tag = create(:facility, name: name)
+  @tag = create(:facility, name:)
 end
 
 Given("there is a partnership tag called {string}") do |name|
-  @tag = create(:partnership, name: name)
+  @tag = create(:partnership, name:)
 end
 
 When("I view the tag {string}") do |name|

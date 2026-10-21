@@ -109,7 +109,7 @@ module ApplicationHelper
   # Usage: human_model_name(Partner) => "Partner"
   # Usage: human_model_name(Partner, count: 2) => "Partners"
   def human_model_name(klass, count: 1)
-    klass.model_name.human(count: count)
+    klass.model_name.human(count:)
   end
 
   # Convenience wrapper for attribute labels from activerecord.attributes

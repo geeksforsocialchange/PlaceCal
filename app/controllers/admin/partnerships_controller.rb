@@ -19,7 +19,7 @@ module Admin
         format.json do
           render json: PartnershipDatatable.new(
             params,
-            view_context: view_context,
+            view_context:,
             partnerships: @partnerships
           )
         end

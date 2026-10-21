@@ -22,7 +22,7 @@ module Admin
         format.json do
           render json: CalendarDatatable.new(
             params,
-            view_context: view_context,
+            view_context:,
             calendars: @calendars
           )
         end
@@ -110,7 +110,7 @@ module Admin
       return render json: { valid: false, error: 'Please enter a valid URL' } unless Validation::CALENDAR_URL_REGEX.match?(source)
 
       # Try to detect the importer
-      temp_calendar = Calendar.new(source: source, importer_mode: 'auto')
+      temp_calendar = Calendar.new(source:, importer_mode: 'auto')
       begin
         importer = CalendarImporter::CalendarImporter.new(temp_calendar)
         parser = importer.parser

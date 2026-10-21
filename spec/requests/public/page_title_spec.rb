@@ -9,9 +9,9 @@ RSpec.describe "Public page titles", type: :request do
   let(:site) { create(:site, slug: "titles") }
   let(:ward) { create(:riverside_ward) }
   let(:address) { create(:address, neighbourhood: ward) }
-  let(:partner) { create(:partner, address: address) }
+  let(:partner) { create(:partner, address:) }
   let(:event) do
-    create(:event, organiser: partner, address: address, summary: "Children's Storytime", dtstart: 1.day.from_now)
+    create(:event, organiser: partner, address:, summary: "Children's Storytime", dtstart: 1.day.from_now)
   end
 
   before do

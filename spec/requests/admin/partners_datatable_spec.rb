@@ -316,12 +316,12 @@ RSpec.describe "Admin::Partners Datatable JSON API", type: :request do
 
       let!(:partner_in_district) do
         address = create(:address, neighbourhood: ward_in_district)
-        create(:partner, name: "In District", address: address)
+        create(:partner, name: "In District", address:)
       end
 
       let!(:partner_outside_district) do
         address = create(:address, neighbourhood: other_ward)
-        create(:partner, name: "Outside District", address: address)
+        create(:partner, name: "Outside District", address:)
       end
 
       it "filters partners by district (includes all wards in district)" do
@@ -339,12 +339,12 @@ RSpec.describe "Admin::Partners Datatable JSON API", type: :request do
 
       let!(:partner_ward1) do
         address = create(:address, neighbourhood: ward1)
-        create(:partner, name: "In Ward One", address: address)
+        create(:partner, name: "In Ward One", address:)
       end
 
       let!(:partner_ward2) do
         address = create(:address, neighbourhood: ward2)
-        create(:partner, name: "In Ward Two", address: address)
+        create(:partner, name: "In Ward Two", address:)
       end
 
       it "filters partners by specific ward" do
@@ -474,12 +474,12 @@ RSpec.describe "Admin::Partners Datatable JSON API", type: :request do
       let!(:category) { create(:category, name: "Test Category") }
       let!(:partner) do
         address = create(:address, neighbourhood: ward)
-        create(:partner, name: "Full Partner", address: address)
+        create(:partner, name: "Full Partner", address:)
       end
 
       before do
         create(:calendar, organiser: partner)
-        create(:partner_admin, partner: partner)
+        create(:partner_admin, partner:)
         partner.tags << partnership
         partner.tags << category
       end

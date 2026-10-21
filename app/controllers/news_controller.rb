@@ -35,7 +35,7 @@ class NewsController < ApplicationController
   def show
     previous_article, next_article = adjacent_articles
     render Views::Sites::News::Show.new(article: @article, site: @site,
-                                        previous_article: previous_article, next_article: next_article)
+                                        previous_article:, next_article:)
   end
 
   private

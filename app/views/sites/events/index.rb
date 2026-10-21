@@ -45,26 +45,26 @@ class Views::Sites::Events::Index < Views::Base
             today_url = "/events/#{today.year}/#{today.month}/#{today.day}?period=#{period}&sort=#{sort}&repeating=#{repeating}#{region_param}#paginator"
             Sites::EventFilter(
               pointer: current_day,
-              period: period,
-              sort: sort,
-              repeating: repeating,
-              today_url: today_url,
+              period:,
+              sort:,
+              repeating:,
+              today_url:,
               today: current_day == today,
-              site: site,
-              selected_neighbourhood: selected_neighbourhood,
-              show_monthly: show_monthly,
-              region_tags: region_tags,
-              selected_region: selected_region,
-              query: query
+              site:,
+              selected_neighbourhood:,
+              show_monthly:,
+              region_tags:,
+              selected_region:,
+              query:
             )
           end
         end
       end
       Sites::Timeline(
         pointer: current_day,
-        period: period,
-        sort: sort,
-        repeating: repeating,
+        period:,
+        sort:,
+        repeating:,
         path: 'events'
       )
     end
@@ -72,14 +72,14 @@ class Views::Sites::Events::Index < Views::Base
 
   def render_event_list
     Sites::EventList(
-      events: events,
-      period: period,
+      events:,
+      period:,
       primary_neighbourhood: site.primary_neighbourhood,
       show_neighbourhoods: site.show_neighbourhoods?,
       badge_zoom_level: site.badge_zoom_level&.to_s,
       next_date: next_date&.dtstart,
       site_tagline: site.tagline,
-      truncated: truncated
+      truncated:
     )
   end
 
@@ -96,7 +96,7 @@ class Views::Sites::Events::Index < Views::Base
   # Carries the current view's filters into the CSV export, so the download
   # matches whatever the visitor is looking at rather than the whole site.
   def csv_export_params
-    params = { period: period, sort: sort, repeating: repeating }
+    params = { period:, sort:, repeating: }
     params[:region] = selected_region.slug if selected_region
     params[:neighbourhood] = selected_neighbourhood if selected_neighbourhood.present?
     params

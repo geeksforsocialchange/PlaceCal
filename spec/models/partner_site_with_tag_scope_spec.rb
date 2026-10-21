@@ -14,11 +14,11 @@ RSpec.describe PartnersQuery, "tag filtering" do
   let(:geocodable_neighbourhood) do
     create(
       :bare_neighbourhood,
-      unit: unit,
-      unit_name: unit_name,
-      unit_code_key: unit_code_key,
+      unit:,
+      unit_name:,
+      unit_code_key:,
       unit_code_value: unit_code,
-      release_date: release_date
+      release_date:
     )
   end
   # Must explicitly set neighbourhood - factory skips geocoding
@@ -29,7 +29,7 @@ RSpec.describe PartnersQuery, "tag filtering" do
   end
 
   it "empty site/tag returns nothing" do
-    output = described_class.new(site: site).call(tag_id: nil)
+    output = described_class.new(site:).call(tag_id: nil)
     expect(output).to be_empty
   end
 
@@ -55,7 +55,7 @@ RSpec.describe PartnersQuery, "tag filtering" do
       create(:partner, name: "Partner with no tags #{n}", address: address_one)
     end
 
-    output = described_class.new(site: site).call(tag_id: tag.id)
+    output = described_class.new(site:).call(tag_id: tag.id)
     expect(output.length).to eq(4)
   end
 end

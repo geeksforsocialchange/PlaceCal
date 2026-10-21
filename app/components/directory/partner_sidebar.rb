@@ -33,7 +33,7 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
     count = Array(@containing_sites).size
     Directory::SidebarCard(
       eyebrow: t('directory.sidebar.part_of'),
-      title: t('directory.sidebar.partnerships', count: count)
+      title: t('directory.sidebar.partnerships', count:)
     ) do
       div(class: 'text-xs text-tertiary mb-3') do
         plain t('directory.sidebar.partnerships_description', name: @partner.name)

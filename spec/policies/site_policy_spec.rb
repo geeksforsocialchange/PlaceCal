@@ -19,7 +19,7 @@ RSpec.describe SitePolicy, :theme_registry, type: :policy do
   describe "#permitted_theme?" do
     context "as the site admin of an extension-themed site" do
       let(:user) { site_admin }
-      let(:site) { create(:site, theme: "example_theme", site_admin: site_admin) }
+      let(:site) { create(:site, theme: "example_theme", site_admin:) }
 
       it "cannot blank the theme" do
         expect(policy.permitted_theme?("")).to be(false)
@@ -47,7 +47,7 @@ RSpec.describe SitePolicy, :theme_registry, type: :policy do
 
     context "as the site admin of a core-themed site" do
       let(:user) { site_admin }
-      let(:site) { create(:site, theme: "pink", site_admin: site_admin) }
+      let(:site) { create(:site, theme: "pink", site_admin:) }
 
       it "cannot blank the theme" do
         expect(policy.permitted_theme?("")).to be(false)
@@ -68,7 +68,7 @@ RSpec.describe SitePolicy, :theme_registry, type: :policy do
     context "when the stored theme is already blank" do
       let(:user) { site_admin }
       let(:site) do
-        create(:site, theme: "pink", site_admin: site_admin).tap do |record|
+        create(:site, theme: "pink", site_admin:).tap do |record|
           # Deliberately behind the validations: this is the historic row
           # shape, which the app itself can no longer produce.
           record.update_column(:theme, "") # rubocop:disable Rails/SkipsModelValidations
@@ -103,7 +103,7 @@ RSpec.describe SitePolicy, :theme_registry, type: :policy do
   end
 
   describe "#permitted_themes" do
-    let(:site) { create(:site, theme: "example_theme", site_admin: site_admin) }
+    let(:site) { create(:site, theme: "example_theme", site_admin:) }
 
     context "as a site admin" do
       let(:user) { site_admin }

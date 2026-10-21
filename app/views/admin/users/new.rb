@@ -121,7 +121,7 @@ class Views::Admin::Users::New < Views::Admin::Base
       div(class: 'card-body') do
         render_step_header(:crown, attr_label(:user, :role), t('admin.users.fields.role_hint'))
         RadioCardGroup(
-          form: form, attribute: :role,
+          form:, attribute: :role,
           values: User.role.values, i18n_scope: 'admin.users.roles'
         )
       end

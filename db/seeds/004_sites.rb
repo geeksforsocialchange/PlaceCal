@@ -48,16 +48,16 @@ module SeedSites # rubocop:disable Metrics/ModuleLength
   def self.ensure_primary_neighbourhood(site, neighbourhood)
     return unless neighbourhood
 
-    existing = SitesNeighbourhood.find_by(site: site, neighbourhood: neighbourhood)
+    existing = SitesNeighbourhood.find_by(site:, neighbourhood:)
     if existing
       existing.update!(relation_type: 'Primary')
     else
-      SitesNeighbourhood.create!(site: site, neighbourhood: neighbourhood, relation_type: 'Primary')
+      SitesNeighbourhood.create!(site:, neighbourhood:, relation_type: 'Primary')
     end
   end
 
   def self.create_site(slug:, name:, tagline:, url:, data_key:, neighbourhood: nil, published: true) # rubocop:disable Metrics/ParameterLists
-    site = Site.find_or_create_by!(slug: slug) do |s|
+    site = Site.find_or_create_by!(slug:) do |s|
       s.name = name
       s.tagline = tagline
       s.url = url
@@ -66,7 +66,7 @@ module SeedSites # rubocop:disable Metrics/ModuleLength
 
     data = SITE_DATA[data_key]
     site.update!(
-      name: name,
+      name:,
       place_name: data[:place_name],
       hero_text: data[:hero_text],
       theme: data[:theme],
@@ -82,7 +82,7 @@ module SeedSites # rubocop:disable Metrics/ModuleLength
     tag = Tag.find_by(name: tag_name, type: 'Partnership')
     return unless tag
 
-    SitesTag.find_or_create_by!(site: site, tag: tag)
+    SitesTag.find_or_create_by!(site:, tag:)
   end
 
   def self.run

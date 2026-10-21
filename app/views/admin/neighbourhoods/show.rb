@@ -21,7 +21,7 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base
         h1(class: 'text-2xl font-semibold') { safe_neighbourhood_name(neighbourhood) }
         div(class: 'mt-1') do
           NeighbourhoodHierarchyBadge(
-            neighbourhood: neighbourhood, link_each: true, show_icons: true
+            neighbourhood:, link_each: true, show_icons: true
           )
         end
       end

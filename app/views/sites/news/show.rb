@@ -79,7 +79,7 @@ class Views::Sites::News::Show < Views::Base
     links << [t('news.show.previous'), news_path(previous_article)] if previous_article
     links << [t('news.show.next'), news_path(next_article)] if next_article
     links << [t('news.show.go_back'), news_index_path]
-    Sites::PageActions(links: links)
+    Sites::PageActions(links:)
   end
 
   def render_image

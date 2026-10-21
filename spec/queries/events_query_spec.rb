@@ -16,14 +16,14 @@ RSpec.describe EventsQuery do
       before { create_list(:future_event, 10, organiser: partner) }
 
       it "returns all events" do
-        query = described_class.new(site: site, day: today)
+        query = described_class.new(site:, day: today)
         result = query.call(period: "future")
         total_events = result.values.flatten.count
         expect(total_events).to eq(10)
       end
 
       it "sets truncated to false" do
-        query = described_class.new(site: site, day: today)
+        query = described_class.new(site:, day: today)
         query.call(period: "future")
         expect(query.truncated).to be false
       end
@@ -37,14 +37,14 @@ RSpec.describe EventsQuery do
       end
 
       it "limits results to FUTURE_LIMIT" do
-        query = described_class.new(site: site, day: today)
+        query = described_class.new(site:, day: today)
         result = query.call(period: "future")
         total_events = result.values.flatten.count
         expect(total_events).to eq(described_class::FUTURE_LIMIT)
       end
 
       it "sets truncated to true" do
-        query = described_class.new(site: site, day: today)
+        query = described_class.new(site:, day: today)
         query.call(period: "future")
         expect(query.truncated).to be true
       end
@@ -54,13 +54,13 @@ RSpec.describe EventsQuery do
       before { create(:today_event, organiser: partner) }
 
       it "returns events for the specified day" do
-        query = described_class.new(site: site, day: today)
+        query = described_class.new(site:, day: today)
         result = query.call(period: "day")
         expect(result.keys).to eq([today])
       end
 
       it "does not truncate results" do
-        query = described_class.new(site: site, day: today)
+        query = described_class.new(site:, day: today)
         query.call(period: "day")
         expect(query.truncated).to be false
       end
@@ -73,13 +73,13 @@ RSpec.describe EventsQuery do
       end
 
       it "returns events within the next 7 days" do
-        query = described_class.new(site: site, day: today)
+        query = described_class.new(site:, day: today)
         result = query.call(period: "week")
         expect(result.values.flatten.count).to eq(2)
       end
 
       it "does not truncate results" do
-        query = described_class.new(site: site, day: today)
+        query = described_class.new(site:, day: today)
         query.call(period: "week")
         expect(query.truncated).to be false
       end
@@ -91,7 +91,7 @@ RSpec.describe EventsQuery do
 
       context "with repeating: 'on' (default)" do
         it "includes all events" do
-          query = described_class.new(site: site, day: today)
+          query = described_class.new(site:, day: today)
           result = query.call(period: "future", repeating: "on")
           expect(result.values.flatten.count).to eq(2)
         end
@@ -99,7 +99,7 @@ RSpec.describe EventsQuery do
 
       context "with repeating: 'off'" do
         it "excludes recurring events" do
-          query = described_class.new(site: site, day: today)
+          query = described_class.new(site:, day: today)
           result = query.call(period: "future", repeating: "off")
           events = result.values.flatten
           expect(events).to include(one_off_event)
@@ -109,7 +109,7 @@ RSpec.describe EventsQuery do
 
       context "with repeating: 'only'" do
         it "excludes one-off events" do
-          query = described_class.new(site: site, day: today)
+          query = described_class.new(site:, day: today)
           result = query.call(period: "future", repeating: "only")
           events = result.values.flatten
           expect(events).to include(recurring_event)
@@ -126,7 +126,7 @@ RSpec.describe EventsQuery do
 
       context "with sort: 'time' (default)" do
         it "groups events by date" do
-          query = described_class.new(site: site, day: today)
+          query = described_class.new(site:, day: today)
           result = query.call(period: "future", sort: "time")
           expect(result.keys.count).to eq(2)
         end
@@ -134,14 +134,14 @@ RSpec.describe EventsQuery do
 
       context "with sort: 'summary'" do
         it "returns events grouped under the selected day" do
-          query = described_class.new(site: site, day: today)
+          query = described_class.new(site:, day: today)
           result = query.call(period: "future", sort: "summary")
           expect(result.keys).to eq([today])
         end
 
         it "uses the selected day, not today, as the group key" do
           selected_day = today + 3.days
-          query = described_class.new(site: site, day: selected_day)
+          query = described_class.new(site:, day: selected_day)
           result = query.call(period: "future", sort: "summary")
           expect(result.keys).to eq([selected_day])
         end
@@ -159,7 +159,7 @@ RSpec.describe EventsQuery do
 
       context "with partner filter" do
         it "returns only events from the specified partner" do
-          query = described_class.new(site: site, day: today)
+          query = described_class.new(site:, day: today)
           result = query.call(period: "future", organiser: partner)
           events = result.values.flatten
           expect(events).to include(event1)
@@ -173,7 +173,7 @@ RSpec.describe EventsQuery do
     before { create_list(:future_event, 5, organiser: partner) }
 
     it "returns the count of future events" do
-      query = described_class.new(site: site, day: today)
+      query = described_class.new(site:, day: today)
       expect(query.future_count).to eq(5)
     end
   end
@@ -186,7 +186,7 @@ RSpec.describe EventsQuery do
     end
 
     it "returns the count of events in the next 7 days" do
-      query = described_class.new(site: site, day: today)
+      query = described_class.new(site:, day: today)
       expect(query.next_7_days_count).to eq(2)
     end
   end
@@ -196,12 +196,12 @@ RSpec.describe EventsQuery do
     let!(:event2) { create(:future_event, organiser: partner, dtstart: 5.days.from_now) }
 
     it "returns the next event after the given day" do
-      query = described_class.new(site: site, day: today)
+      query = described_class.new(site:, day: today)
       expect(query.next_event_after(today)).to eq(event1)
     end
 
     it "returns nil when no events exist after the given day" do
-      query = described_class.new(site: site, day: today)
+      query = described_class.new(site:, day: today)
       expect(query.next_event_after(10.days.from_now)).to be_nil
     end
 
@@ -212,7 +212,7 @@ RSpec.describe EventsQuery do
       let!(:soonest) { create(:future_event, organiser: partner, dtstart: 1.day.from_now) }
 
       it "returns the soonest event, not whichever row comes back first" do
-        query = described_class.new(site: site, day: today)
+        query = described_class.new(site:, day: today)
 
         expect(query.next_event_after(today)).to eq(soonest)
         expect(query.next_event_after(2.days.from_now)).to eq(event1)
@@ -229,7 +229,7 @@ RSpec.describe EventsQuery do
     end
 
     it "returns events from today to end of month" do
-      query = described_class.new(site: site, day: today)
+      query = described_class.new(site:, day: today)
       result = query.call(period: "month")
       events = result.values.flatten
       events.each do |event|
@@ -239,7 +239,7 @@ RSpec.describe EventsQuery do
     end
 
     it "excludes events in future months" do
-      query = described_class.new(site: site, day: today)
+      query = described_class.new(site:, day: today)
       result = query.call(period: "month")
       total = result.values.flatten.count
       expect(total).to eq(2)
@@ -247,7 +247,7 @@ RSpec.describe EventsQuery do
 
     it "shows full month when day is 1st of a future month" do
       future_first = 40.days.from_now.to_date.beginning_of_month
-      query = described_class.new(site: site, day: future_first)
+      query = described_class.new(site:, day: future_first)
       result = query.call(period: "month")
       expect(result.values.flatten.count).to eq(1)
     end
@@ -261,14 +261,14 @@ RSpec.describe EventsQuery do
     end
 
     it "returns at most UPCOMING_LIMIT events" do
-      query = described_class.new(site: site, day: today)
+      query = described_class.new(site:, day: today)
       result = query.call(period: "upcoming")
       total = result.values.flatten.count
       expect(total).to eq(described_class::UPCOMING_LIMIT)
     end
 
     it "returns events starting from today" do
-      query = described_class.new(site: site, day: today)
+      query = described_class.new(site:, day: today)
       result = query.call(period: "upcoming")
       events = result.values.flatten
       events.each do |event|
@@ -277,7 +277,7 @@ RSpec.describe EventsQuery do
     end
 
     it "spans across months when needed" do
-      query = described_class.new(site: site, day: today)
+      query = described_class.new(site:, day: today)
       result = query.call(period: "upcoming")
       months = result.values.flatten.map { |e| e.dtstart.month }.uniq
       expect(months.length).to be >= 1
@@ -291,7 +291,7 @@ RSpec.describe EventsQuery do
     end
 
     it "returns the count of events from today to end of month" do
-      query = described_class.new(site: site, day: today)
+      query = described_class.new(site:, day: today)
       expect(query.monthly_count).to eq(1)
     end
   end
@@ -301,7 +301,7 @@ RSpec.describe EventsQuery do
       before { create(:future_event, organiser: partner, dtstart: 2.days.from_now) }
 
       it "returns true" do
-        query = described_class.new(site: site, day: today)
+        query = described_class.new(site:, day: today)
         expect(query.show_monthly?).to be true
       end
     end
@@ -315,7 +315,7 @@ RSpec.describe EventsQuery do
       end
 
       it "returns false" do
-        query = described_class.new(site: site, day: today)
+        query = described_class.new(site:, day: today)
         expect(query.show_monthly?).to be false
       end
     end
@@ -360,7 +360,7 @@ RSpec.describe EventsQuery do
     end
 
     it "limits the number of results" do
-      query = described_class.new(site: site, day: today)
+      query = described_class.new(site:, day: today)
       result = query.call(period: "future", limit: 3)
       events = result.values.flatten
 
@@ -368,7 +368,7 @@ RSpec.describe EventsQuery do
     end
 
     it "returns all events when limit is nil" do
-      query = described_class.new(site: site, day: today)
+      query = described_class.new(site:, day: today)
       result = query.call(period: "future", limit: nil)
       events = result.values.flatten
 
@@ -393,11 +393,11 @@ RSpec.describe EventsQuery do
     let(:organiser) { create(:partner) }
     # A BST date, so a UTC day boundary would put both late events on one day.
     let(:day) { Date.new(2023, 7, 3) }
-    let(:query) { described_class.new(site: nil, day: day) }
-    let!(:late_event) { create(:event, organiser: organiser, dtstart: Time.zone.local(2023, 7, 4, 23, 30)) }
-    let!(:after_midnight_event) { create(:event, organiser: organiser, dtstart: Time.zone.local(2023, 7, 5, 0, 30)) }
+    let(:query) { described_class.new(site: nil, day:) }
+    let!(:late_event) { create(:event, organiser:, dtstart: Time.zone.local(2023, 7, 4, 23, 30)) }
+    let!(:after_midnight_event) { create(:event, organiser:, dtstart: Time.zone.local(2023, 7, 5, 0, 30)) }
     let!(:repeating_event) do
-      create(:recurring_event, organiser: organiser, dtstart: Time.zone.local(2023, 7, 6, 10))
+      create(:recurring_event, organiser:, dtstart: Time.zone.local(2023, 7, 6, 10))
     end
 
     it "counts events per local day, in date order" do
@@ -425,7 +425,7 @@ RSpec.describe EventsQuery do
     before { create_list(:future_event, 3, organiser: partner) }
 
     it "returns events as a relation for ical feed" do
-      query = described_class.new(site: site, day: today)
+      query = described_class.new(site:, day: today)
       result = query.for_ical
 
       expect(result.count).to eq(3)
@@ -435,7 +435,7 @@ RSpec.describe EventsQuery do
       other_partner = create(:partner)
       create(:future_event, organiser: other_partner)
 
-      query = described_class.new(site: site, day: today)
+      query = described_class.new(site:, day: today)
       result = query.for_ical
 
       expect(result.count).to eq(3)
@@ -468,7 +468,7 @@ RSpec.describe EventsQuery do
       end
 
       it "shows all descendant neighbourhoods with event counts" do
-        query = described_class.new(site: site, day: today)
+        query = described_class.new(site:, day: today)
         result = query.neighbourhoods_with_counts(period: "future")
 
         ward1_result = result.find { |r| r[:neighbourhood].id == ward1.id }
@@ -478,7 +478,7 @@ RSpec.describe EventsQuery do
       end
 
       it "orders neighbourhoods by name" do
-        query = described_class.new(site: site, day: today)
+        query = described_class.new(site:, day: today)
         result = query.neighbourhoods_with_counts(period: "future")
 
         names = result.map { |r| r[:neighbourhood].name }
@@ -545,9 +545,9 @@ RSpec.describe EventsQuery do
       before do
         ward = leaf_site.primary_neighbourhood
         address = create(:address, neighbourhood: ward)
-        partner_in_ward = create(:partner, address: address)
+        partner_in_ward = create(:partner, address:)
         partner_in_ward.service_areas << create(:service_area, neighbourhood: ward)
-        create_list(:future_event, 3, organiser: partner_in_ward, address: address)
+        create_list(:future_event, 3, organiser: partner_in_ward, address:)
       end
 
       it "returns empty (no descendants to show)" do
@@ -564,18 +564,18 @@ RSpec.describe EventsQuery do
       let(:address) { create(:address, neighbourhood: ward) }
 
       let(:partner_in_ward) do
-        p = create(:partner, address: address)
+        p = create(:partner, address:)
         p.service_areas << create(:service_area, neighbourhood: ward)
         p
       end
 
       before do
-        create(:future_event, organiser: partner_in_ward, address: address, dtstart: 2.days.from_now)
-        create(:future_event, organiser: partner_in_ward, address: address, dtstart: 10.days.from_now)
+        create(:future_event, organiser: partner_in_ward, address:, dtstart: 2.days.from_now)
+        create(:future_event, organiser: partner_in_ward, address:, dtstart: 10.days.from_now)
       end
 
       it "counts only events in the specified period" do
-        query = described_class.new(site: site, day: today)
+        query = described_class.new(site:, day: today)
         result = query.neighbourhoods_with_counts(period: "week")
 
         ward_result = result.find { |r| r[:neighbourhood].id == ward.id }
@@ -585,7 +585,7 @@ RSpec.describe EventsQuery do
 
     context "with no events" do
       it "returns empty array" do
-        query = described_class.new(site: site, day: today)
+        query = described_class.new(site:, day: today)
         result = query.neighbourhoods_with_counts(period: "future")
 
         expect(result).to be_empty
@@ -601,18 +601,18 @@ RSpec.describe EventsQuery do
       let(:active_ward) { create(:neighbourhood, name: "Active Ward", unit: "ward", parent: district) }
       let(:address) { create(:address, neighbourhood: active_ward) }
       let(:partner) do
-        p = create(:partner, address: address)
+        p = create(:partner, address:)
         p.service_areas << create(:service_area, neighbourhood: active_ward)
         p
       end
 
       before do
         create_list(:neighbourhood, 15, unit: "ward", parent: district)
-        create_list(:future_event, 2, organiser: partner, address: address)
+        create_list(:future_event, 2, organiser: partner, address:)
       end
 
       it "returns only the event-bearing ward, not the empty siblings" do
-        query = described_class.new(site: site, day: today)
+        query = described_class.new(site:, day: today)
         result = query.neighbourhoods_with_counts(period: "future")
 
         expect(result.map { |r| r[:neighbourhood].id }).to contain_exactly(active_ward.id)
@@ -640,7 +640,7 @@ RSpec.describe EventsQuery do
       let!(:event_in_ward2) { create(:future_event, organiser: partner1, address: address2) }
 
       it "includes events with address in the neighbourhood" do
-        query = described_class.new(site: site, day: today)
+        query = described_class.new(site:, day: today)
         result = query.call(period: "future", neighbourhood_id: ward1.id)
         events = result.values.flatten
 
@@ -648,7 +648,7 @@ RSpec.describe EventsQuery do
       end
 
       it "excludes events with address in other neighbourhoods" do
-        query = described_class.new(site: site, day: today)
+        query = described_class.new(site:, day: today)
         result = query.call(period: "future", neighbourhood_id: ward1.id)
         events = result.values.flatten
 
@@ -669,7 +669,7 @@ RSpec.describe EventsQuery do
       let!(:event_in_ward) { create(:future_event, organiser: ward_partner, address: ward_address) }
 
       it "includes events in child wards when filtering by district" do
-        query = described_class.new(site: site, day: today)
+        query = described_class.new(site:, day: today)
         result = query.call(period: "future", neighbourhood_id: district.id)
         events = result.values.flatten
 
@@ -699,7 +699,7 @@ RSpec.describe EventsQuery do
       let!(:event_no_address_partner_ward2) { create(:future_event, organiser: partner_in_ward2, address: nil) }
 
       it "includes events where partner address is in neighbourhood" do
-        query = described_class.new(site: site, day: today)
+        query = described_class.new(site:, day: today)
         result = query.call(period: "future", neighbourhood_id: ward1.id)
         events = result.values.flatten
 
@@ -707,7 +707,7 @@ RSpec.describe EventsQuery do
       end
 
       it "excludes events where partner address is in other neighbourhood" do
-        query = described_class.new(site: site, day: today)
+        query = described_class.new(site:, day: today)
         result = query.call(period: "future", neighbourhood_id: ward1.id)
         events = result.values.flatten
 
@@ -731,7 +731,7 @@ RSpec.describe EventsQuery do
       let!(:event_in_ward2_partner_in_ward1) { create(:future_event, organiser: partner_in_ward1, address: address2) }
 
       it "filters by event address, not partner address" do
-        query = described_class.new(site: site, day: today)
+        query = described_class.new(site:, day: today)
         result = query.call(period: "future", neighbourhood_id: ward1.id)
         events = result.values.flatten
 
@@ -740,7 +740,7 @@ RSpec.describe EventsQuery do
       end
 
       it "shows event when filtering by its actual location" do
-        query = described_class.new(site: site, day: today)
+        query = described_class.new(site:, day: today)
         result = query.call(period: "future", neighbourhood_id: ward2.id)
         events = result.values.flatten
 

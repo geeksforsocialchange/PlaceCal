@@ -21,7 +21,7 @@ class Views::Admin::Sites::FormTabPreview < Views::Admin::Base
   private
 
   def render_partners_section(site)
-    site_partners = PartnersQuery.new(site: site).call
+    site_partners = PartnersQuery.new(site:).call
 
     div(class: 'mb-8') do
       h3(class: 'text-lg font-bold mb-1 flex items-center gap-2') do
@@ -82,7 +82,7 @@ class Views::Admin::Sites::FormTabPreview < Views::Admin::Base
   end
 
   def render_events_section(site)
-    site_events = EventsQuery.new(site: site).scope.upcoming.where(dtstart: ..30.days.from_now).order(:dtstart)
+    site_events = EventsQuery.new(site:).scope.upcoming.where(dtstart: ..30.days.from_now).order(:dtstart)
 
     div do
       h3(class: 'text-lg font-bold mb-1 flex items-center gap-2') do

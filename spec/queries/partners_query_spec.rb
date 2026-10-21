@@ -14,7 +14,7 @@ RSpec.describe PartnersQuery do
 
   describe "#call" do
     it "preloads what the site partner cards render and leaves categories to the directory callers" do
-      includes = described_class.new(site: site).call.includes_values
+      includes = described_class.new(site:).call.includes_values
 
       expect(includes).to include({ address: :neighbourhood }, { service_areas: :neighbourhood })
       expect(includes).not_to include(:categories)
@@ -22,8 +22,8 @@ RSpec.describe PartnersQuery do
 
     context "with partners in site neighbourhoods" do
       let!(:partner_with_address) do
-        address = create(:address, neighbourhood: neighbourhood)
-        create(:partner, address: address)
+        address = create(:address, neighbourhood:)
+        create(:partner, address:)
       end
 
       let!(:partner_with_service_area) do
@@ -36,29 +36,29 @@ RSpec.describe PartnersQuery do
       let!(:partner_outside_site) do
         outside_neighbourhood = create(:neighbourhood)
         address = create(:address, neighbourhood: outside_neighbourhood)
-        create(:partner, address: address)
+        create(:partner, address:)
       end
 
       it "returns partners with addresses in site neighbourhoods" do
-        results = described_class.new(site: site).call
+        results = described_class.new(site:).call
 
         expect(results).to include(partner_with_address)
       end
 
       it "returns partners with service areas in site neighbourhoods" do
-        results = described_class.new(site: site).call
+        results = described_class.new(site:).call
 
         expect(results).to include(partner_with_service_area)
       end
 
       it "excludes partners outside site neighbourhoods" do
-        results = described_class.new(site: site).call
+        results = described_class.new(site:).call
 
         expect(results).not_to include(partner_outside_site)
       end
 
       it "returns partners ordered by name" do
-        results = described_class.new(site: site).call
+        results = described_class.new(site:).call
 
         expect(results).to eq(results.sort_by(&:name))
       end
@@ -66,17 +66,17 @@ RSpec.describe PartnersQuery do
 
     context "with neighbourhood filter" do
       let!(:partner_in_neighbourhood) do
-        address = create(:address, neighbourhood: neighbourhood)
-        create(:partner, address: address)
+        address = create(:address, neighbourhood:)
+        create(:partner, address:)
       end
 
       let!(:partner_in_other_neighbourhood) do
         address = create(:address, neighbourhood: other_neighbourhood)
-        create(:partner, address: address)
+        create(:partner, address:)
       end
 
       it "filters partners by neighbourhood" do
-        results = described_class.new(site: site).call(neighbourhood_id: neighbourhood.id)
+        results = described_class.new(site:).call(neighbourhood_id: neighbourhood.id)
 
         expect(results).to include(partner_in_neighbourhood)
         expect(results).not_to include(partner_in_other_neighbourhood)
@@ -88,13 +88,13 @@ RSpec.describe PartnersQuery do
       let(:ward) { create(:riverside_ward, parent: district) }
       let!(:partner_in_ward) do
         address = create(:address, neighbourhood: ward)
-        create(:partner, address: address)
+        create(:partner, address:)
       end
 
       before { site.neighbourhoods << district }
 
       it "includes partners in descendant neighbourhoods" do
-        results = described_class.new(site: site).call(neighbourhood_id: district.id)
+        results = described_class.new(site:).call(neighbourhood_id: district.id)
 
         expect(results).to include(partner_in_ward)
       end
@@ -129,19 +129,19 @@ RSpec.describe PartnersQuery do
 
     context "with an unknown or invalid neighbourhood filter" do
       before do
-        address = create(:address, neighbourhood: neighbourhood)
-        create(:partner, address: address)
+        address = create(:address, neighbourhood:)
+        create(:partner, address:)
       end
 
       it "returns no partners for a non-existent neighbourhood id" do
-        results = described_class.new(site: site).call(neighbourhood_id: 0)
+        results = described_class.new(site:).call(neighbourhood_id: 0)
 
         expect(results).to be_empty
       end
 
       it "does not raise for a non-integer neighbourhood id" do
         expect do
-          described_class.new(site: site).call(neighbourhood_id: "not-a-number").to_a
+          described_class.new(site:).call(neighbourhood_id: "not-a-number").to_a
         end.not_to raise_error
       end
     end
@@ -149,19 +149,19 @@ RSpec.describe PartnersQuery do
     context "with tag filter" do
       let!(:category) { create(:category) }
       let!(:partner_with_tag) do
-        address = create(:address, neighbourhood: neighbourhood)
-        partner = create(:partner, address: address)
+        address = create(:address, neighbourhood:)
+        partner = create(:partner, address:)
         partner.tags << category
         partner
       end
 
       let!(:partner_without_tag) do
-        address = create(:address, neighbourhood: neighbourhood)
-        create(:partner, address: address)
+        address = create(:address, neighbourhood:)
+        create(:partner, address:)
       end
 
       it "filters partners by tag" do
-        results = described_class.new(site: site).call(tag_id: category.id)
+        results = described_class.new(site:).call(tag_id: category.id)
 
         expect(results).to include(partner_with_tag)
         expect(results).not_to include(partner_without_tag)
@@ -208,29 +208,29 @@ RSpec.describe PartnersQuery do
 
   describe "#neighbourhoods_with_counts" do
     let!(:partner1) do
-      address = create(:address, neighbourhood: neighbourhood)
-      create(:partner, address: address)
+      address = create(:address, neighbourhood:)
+      create(:partner, address:)
     end
 
     let!(:partner2) do
-      address = create(:address, neighbourhood: neighbourhood)
-      create(:partner, address: address)
+      address = create(:address, neighbourhood:)
+      create(:partner, address:)
     end
 
     let!(:partner_other) do
       address = create(:address, neighbourhood: other_neighbourhood)
-      create(:partner, address: address)
+      create(:partner, address:)
     end
 
     it "returns neighbourhoods with partner counts" do
-      results = described_class.new(site: site).neighbourhoods_with_counts
+      results = described_class.new(site:).neighbourhoods_with_counts
 
       neighbourhood_result = results.find { |r| r[:neighbourhood].id == neighbourhood.id }
       expect(neighbourhood_result[:count]).to eq(2)
     end
 
     it "orders neighbourhoods by name" do
-      results = described_class.new(site: site).neighbourhoods_with_counts
+      results = described_class.new(site:).neighbourhoods_with_counts
 
       names = results.map { |r| r[:neighbourhood].name }
       expect(names).to eq(names.sort)
@@ -245,7 +245,7 @@ RSpec.describe PartnersQuery do
       end
 
       it "includes service-area partners in counts" do
-        results = described_class.new(site: site).neighbourhoods_with_counts
+        results = described_class.new(site:).neighbourhoods_with_counts
 
         other_result = results.find { |r| r[:neighbourhood].id == other_neighbourhood.id }
         expect(other_result[:count]).to eq(2)
@@ -263,14 +263,14 @@ RSpec.describe PartnersQuery do
       end
 
       it "rolls descendant partners up into the area-level count" do
-        results = described_class.new(site: site).neighbourhoods_with_counts
+        results = described_class.new(site:).neighbourhoods_with_counts
 
         district_result = results.find { |r| r[:neighbourhood].id == district.id }
         expect(district_result[:count]).to eq(2)
       end
 
       it "still counts the descendant neighbourhood on its own" do
-        results = described_class.new(site: site).neighbourhoods_with_counts
+        results = described_class.new(site:).neighbourhoods_with_counts
 
         ward_result = results.find { |r| r[:neighbourhood].id == ward.id }
         expect(ward_result[:count]).to eq(1)
@@ -283,7 +283,7 @@ RSpec.describe PartnersQuery do
       end
 
       it "does not double-count the partner" do
-        results = described_class.new(site: site).neighbourhoods_with_counts
+        results = described_class.new(site:).neighbourhoods_with_counts
 
         neighbourhood_result = results.find { |r| r[:neighbourhood].id == neighbourhood.id }
         expect(neighbourhood_result[:count]).to eq(2)
@@ -298,7 +298,7 @@ RSpec.describe PartnersQuery do
       end
 
       it "counts only partners matching the scoped query" do
-        query = described_class.new(site: site)
+        query = described_class.new(site:)
         scoped = query.call(tag_id: category.id)
         results = query.neighbourhoods_with_counts(scope: scoped)
 
@@ -402,28 +402,28 @@ RSpec.describe PartnersQuery do
     let!(:category2) { create(:category, name: "Sports") }
 
     let!(:partner1) do
-      address = create(:address, neighbourhood: neighbourhood)
-      partner = create(:partner, address: address)
+      address = create(:address, neighbourhood:)
+      partner = create(:partner, address:)
       partner.tags << category1
       partner
     end
 
     let!(:partner2) do
-      address = create(:address, neighbourhood: neighbourhood)
-      partner = create(:partner, address: address)
+      address = create(:address, neighbourhood:)
+      partner = create(:partner, address:)
       partner.tags << category1
       partner
     end
 
     let!(:partner3) do
-      address = create(:address, neighbourhood: neighbourhood)
-      partner = create(:partner, address: address)
+      address = create(:address, neighbourhood:)
+      partner = create(:partner, address:)
       partner.tags << category2
       partner
     end
 
     it "returns categories with partner counts" do
-      results = described_class.new(site: site).categories_with_counts
+      results = described_class.new(site:).categories_with_counts
 
       category1_result = results.find { |r| r[:category].id == category1.id }
       expect(category1_result[:count]).to eq(2)
@@ -433,7 +433,7 @@ RSpec.describe PartnersQuery do
     end
 
     it "orders categories by name" do
-      results = described_class.new(site: site).categories_with_counts
+      results = described_class.new(site:).categories_with_counts
 
       names = results.map { |r| r[:category].name }
       expect(names).to eq(names.sort)
@@ -441,7 +441,7 @@ RSpec.describe PartnersQuery do
 
     context "with scope parameter (cross-filtering)" do
       it "counts only partners in the scoped neighbourhood" do
-        query = described_class.new(site: site)
+        query = described_class.new(site:)
         scoped = query.call(neighbourhood_id: neighbourhood.id)
         results = query.categories_with_counts(scope: scoped)
 
@@ -457,15 +457,15 @@ RSpec.describe PartnersQuery do
   describe "tag filtering on site with site-level tags" do
     let(:site_tag) { create(:tag) }
     let!(:partner_both_tags) do
-      address = create(:address, neighbourhood: neighbourhood)
-      partner = create(:partner, address: address)
+      address = create(:address, neighbourhood:)
+      partner = create(:partner, address:)
       partner.tags << site_tag
       partner.tags << filter_tag
       partner
     end
     let!(:partner_site_tag_only) do
-      address = create(:address, neighbourhood: neighbourhood)
-      partner = create(:partner, address: address)
+      address = create(:address, neighbourhood:)
+      partner = create(:partner, address:)
       partner.tags << site_tag
       partner
     end

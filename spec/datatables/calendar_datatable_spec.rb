@@ -33,7 +33,7 @@ RSpec.describe CalendarDatatable do
       "order" => { "0" => { "column" => "0", "dir" => "asc" } }
     }.deep_merge(params))
 
-    described_class.new(default_params, view_context: view_context, calendars: calendars)
+    described_class.new(default_params, view_context:, calendars:)
   end
 
   describe "#view_columns" do
@@ -186,7 +186,7 @@ RSpec.describe CalendarDatatable do
 
     context "events cell rendering" do
       it "shows check for calendar with events" do
-        create(:event, calendar: calendar)
+        create(:event, calendar:)
         datatable = create_datatable
 
         events_html = datatable.data.first[:events]

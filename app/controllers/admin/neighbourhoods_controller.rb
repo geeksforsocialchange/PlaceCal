@@ -71,7 +71,7 @@ module Admin
         format.json do
           render json: NeighbourhoodDatatable.new(
             params,
-            view_context: view_context,
+            view_context:,
             neighbourhoods: @neighbourhoods,
             current_user: @current_user
           )

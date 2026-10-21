@@ -20,14 +20,14 @@ RSpec.describe Components::Sites::PartnerFilter, type: :component do
       cache = ActiveSupport::Cache::MemoryStore.new
       allow(Rails).to receive(:cache).and_return(cache)
 
-      render_inline(described_class.new(site: site, selected_category: nil, selected_neighbourhood: nil))
+      render_inline(described_class.new(site:, selected_category: nil, selected_neighbourhood: nil))
 
       facet_queries = 0
       subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*, payload|
         facet_queries += 1 if payload[:sql].include?("neighbourhood_id") && !payload[:cached]
       end
       begin
-        render_inline(described_class.new(site: site, selected_category: nil, selected_neighbourhood: nil))
+        render_inline(described_class.new(site:, selected_category: nil, selected_neighbourhood: nil))
       ensure
         ActiveSupport::Notifications.unsubscribe(subscriber)
       end
@@ -37,7 +37,7 @@ RSpec.describe Components::Sites::PartnerFilter, type: :component do
 
     it "shows neighbourhood filter when multiple neighbourhoods exist" do
       render_inline(described_class.new(
-                      site: site,
+                      site:,
                       selected_category: nil,
                       selected_neighbourhood: nil
                     ))
@@ -47,7 +47,7 @@ RSpec.describe Components::Sites::PartnerFilter, type: :component do
 
     it "does not show category filter when no partners have categories" do
       render_inline(described_class.new(
-                      site: site,
+                      site:,
                       selected_category: nil,
                       selected_neighbourhood: nil
                     ))
@@ -100,7 +100,7 @@ RSpec.describe Components::Sites::PartnerFilter, type: :component do
 
     it "renders with selected category" do
       render_inline(described_class.new(
-                      site: site,
+                      site:,
                       selected_category: category.slug,
                       selected_neighbourhood: nil
                     ))
@@ -111,7 +111,7 @@ RSpec.describe Components::Sites::PartnerFilter, type: :component do
 
     it "renders with selected neighbourhood and shows selected name" do
       render_inline(described_class.new(
-                      site: site,
+                      site:,
                       selected_category: nil,
                       selected_neighbourhood: neighbourhood1.id.to_s
                     ))
@@ -122,7 +122,7 @@ RSpec.describe Components::Sites::PartnerFilter, type: :component do
 
     it "shows reset link when a filter is active" do
       render_inline(described_class.new(
-                      site: site,
+                      site:,
                       selected_category: nil,
                       selected_neighbourhood: neighbourhood1.id.to_s
                     ))
@@ -132,7 +132,7 @@ RSpec.describe Components::Sites::PartnerFilter, type: :component do
 
     it "does not show reset link when no filters are active" do
       render_inline(described_class.new(
-                      site: site,
+                      site:,
                       selected_category: nil,
                       selected_neighbourhood: nil
                     ))
@@ -162,7 +162,7 @@ RSpec.describe Components::Sites::PartnerFilter, type: :component do
 
     it "shows only relevant neighbourhoods when a category is selected" do
       render_inline(described_class.new(
-                      site: site,
+                      site:,
                       selected_category: category1.id.to_s,
                       selected_neighbourhood: nil
                     ))
@@ -172,7 +172,7 @@ RSpec.describe Components::Sites::PartnerFilter, type: :component do
 
     it "shows only relevant categories when a neighbourhood is selected" do
       render_inline(described_class.new(
-                      site: site,
+                      site:,
                       selected_category: nil,
                       selected_neighbourhood: neighbourhood1.id.to_s
                     ))
@@ -188,20 +188,20 @@ RSpec.describe Components::Sites::PartnerFilter, type: :component do
     let(:south) { create(:partnership, name: "South") }
 
     it "is hidden when the site has one partnership tag" do
-      render_inline(described_class.new(site: site, region_tags: [north]))
+      render_inline(described_class.new(site:, region_tags: [north]))
 
       expect(page).not_to have_css("nav.region-filter")
     end
 
     it "is shown when the site has two partnership tags" do
-      render_inline(described_class.new(site: site, region_tags: [north, south]))
+      render_inline(described_class.new(site:, region_tags: [north, south]))
 
       expect(page).to have_css("nav.region-filter")
       expect(page).to have_link("South")
     end
 
     it "carries the selected region through the filter form" do
-      render_inline(described_class.new(site: site, region_tags: [north, south], selected_region: south))
+      render_inline(described_class.new(site:, region_tags: [north, south], selected_region: south))
 
       expect(page).to have_css("input[type=hidden][name=region][value='#{south.slug}']", visible: :all)
     end
@@ -211,26 +211,26 @@ RSpec.describe Components::Sites::PartnerFilter, type: :component do
     let(:site) { create(:site) }
 
     it "renders a search input named q" do
-      render_inline(described_class.new(site: site))
+      render_inline(described_class.new(site:))
 
       expect(page).to have_css("input[type=search][name=q].filters__search")
     end
 
     it "labels and placeholders the field from the locale key" do
-      render_inline(described_class.new(site: site))
+      render_inline(described_class.new(site:))
 
       expect(page).to have_css("input[aria-label='#{I18n.t('filters.search_partners')}']")
       expect(page).to have_css("input[placeholder='#{I18n.t('filters.search_partners')}']")
     end
 
     it "keeps the current search value" do
-      render_inline(described_class.new(site: site, selected_query: "food bank"))
+      render_inline(described_class.new(site:, selected_query: "food bank"))
 
       expect(page).to have_css("input[name=q][value='food bank']")
     end
 
     it "submits on change rather than every keystroke, and when the clear button empties it" do
-      render_inline(described_class.new(site: site))
+      render_inline(described_class.new(site:))
 
       expect(page).to have_css("input[name=q][data-action='change->partner-filter-component#submitForm " \
                                "input->partner-filter-component#submitIfCleared " \

@@ -75,7 +75,7 @@ RSpec.describe Calendar do
       VCR.use_cassette(:import_test_calendar) do
         bad_message = "A description of the error"
         name = "Calendar name"
-        calendar = create(:calendar, calendar_state: :in_worker, source: source_url, name: name)
+        calendar = create(:calendar, calendar_state: :in_worker, source: source_url, name:)
 
         # build some duplicate events
         event_args = {
