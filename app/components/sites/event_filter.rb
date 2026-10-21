@@ -339,6 +339,6 @@ class Components::Sites::EventFilter < Components::Base
   end
 
   def show_neighbourhood_filter?
-    neighbourhood_items.length > 1
+    Current.theme.event_neighbourhood_filter? && neighbourhood_items.length > 1
   end
 end

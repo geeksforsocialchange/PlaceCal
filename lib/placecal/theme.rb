@@ -282,6 +282,10 @@ module PlaceCal
     # @param value [Boolean, nil]
     setting :nav_region_filter, cast: :boolean, default: false, predicate: true
 
+    # Whether the events listing shows the neighbourhood filter; off also skips its count query.
+    # @param value [Boolean, nil]
+    setting :event_neighbourhood_filter, cast: :boolean, default: true, predicate: true
+
     # The events listing's default period when the request names none.
     # Core picks one from the calendar's density (see
     # EventsController#default_period); a theme whose listing is one flat list
