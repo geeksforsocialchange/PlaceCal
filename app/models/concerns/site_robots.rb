@@ -8,7 +8,7 @@ module SiteRobots
     if is_published?
       # A site advertises its own sitemap, not the directory's. The directory's
       # sitemap lists nothing under this site's hostname.
-      self.class.published_robots(directory_url.chomp('/'))
+      self.class.published_robots(canonical_url)
     else
       <<~TXT
         #{self.class.robots_config}

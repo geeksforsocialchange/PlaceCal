@@ -15,7 +15,6 @@ RSpec.describe "A theme whose stylesheet is missing from the pipeline", :theme_r
     create(:site,
            slug: "experimentalmusic",
            theme: "unbuilt",
-           url: "https://experimentalmusic.lvh.me",
            place_name: "Experimental Music")
   end
 

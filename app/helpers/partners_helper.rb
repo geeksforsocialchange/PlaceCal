@@ -78,7 +78,7 @@ module PartnersHelper
     return if @sites.blank? || @partner.blank?
 
     @sites
-      .map { |site| link_to site.name, "#{site.url.chomp('/')}/partners/#{@partner.slug}", target: '_blank', rel: 'noopener' }
+      .map { |site| link_to site.name, "#{site.canonical_url}/partners/#{@partner.slug}", target: '_blank', rel: 'noopener' }
       .join(', ')
       .html_safe
   end

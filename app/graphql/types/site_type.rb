@@ -8,6 +8,12 @@ module Types
           null: false,
           description: 'Internal reference ID'
 
+    field :description, String,
+          description: 'Longer description of site'
+
+    field :neighbourhoods, [NeighbourhoodType],
+          description: 'The neighbourhoods that this site encompasses'
+
     field :name, String,
           null: false,
           description: 'Full name of site'
@@ -19,10 +25,10 @@ module Types
     field :url, String,
           description: 'The public URL that this site can be found on PlaceCal'
 
-    field :description, String,
-          description: 'Longer description of site'
-
-    field :neighbourhoods, [NeighbourhoodType],
-          description: 'The neighbourhoods that this site encompasses'
+    # External API contract: the strings the old url column returned, whose one
+    # external site was stored with a trailing slash.
+    def url
+      object.served_domain? || object.domain.blank? ? object.public_url : "#{object.public_url}/"
+    end
   end
 end

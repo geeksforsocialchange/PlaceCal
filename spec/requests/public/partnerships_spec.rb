@@ -69,7 +69,15 @@ RSpec.describe "Public Partnerships", type: :request do
 
     it "shows visit button" do
       get partnership_url(partnership, host: "lvh.me")
-      expect(response.body).to include("#{partnership.slug}.placecal.org")
+      expect(response.body).to include(%(href="https://#{partnership.slug}.placecal.org"))
+    end
+
+    it "sends the visit button to an external domain but keeps PlaceCal's pages for see-all links" do
+      partnership.update!(domain: "fruitsaladevents.co.uk")
+      get partnership_url(partnership, host: "lvh.me")
+      expect(response.body).to include('href="https://fruitsaladevents.co.uk"')
+      expect(response.body).to include(%(href="https://#{partnership.slug}.placecal.org/partners"))
+      expect(response.body).not_to include("https://fruitsaladevents.co.uk/partners")
     end
 
     it "shows get involved card" do

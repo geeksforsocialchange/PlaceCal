@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe "Public Sitemaps", type: :request do
   let!(:local_site) do
-    create(:site, slug: "mossley", is_published: true, url: "https://mossley.placecal.org/",
+    create(:site, slug: "mossley", is_published: true,
                   contact_email: "hello@mossley.example.org")
   end
 
@@ -101,6 +101,17 @@ RSpec.describe "Public Sitemaps", type: :request do
         expect(response.body).to include("https://placecal.org/partnerships/mossley")
         expect(response.body).to include("https://mossley.placecal.org")
       end
+
+      it "lists each site at its canonical URL: a served domain, else its subdomain" do
+        serve_hosts("placecal.org", "*.placecal.org", "transdimension.uk")
+        create(:site, slug: "trans-dimension", domain: "transdimension.uk", is_published: true)
+        create(:site, slug: "fruitsaladevents", domain: "fruitsaladevents.co.uk", is_published: true)
+
+        get "/sitemap/partnerships.xml", headers: { "Host" => host }
+        expect(response.body).to include("<loc>https://transdimension.uk</loc>")
+        expect(response.body).to include("<loc>https://fruitsaladevents.placecal.org</loc>")
+        expect(response.body).not_to include("fruitsaladevents.co.uk")
+      end
     end
 
     describe "GET /sitemap/pages.xml" do
@@ -144,7 +155,7 @@ RSpec.describe "Public Sitemaps", type: :request do
 
     before do
       create(:sites_neighbourhood, site: local_site, neighbourhood: site_neighbourhood)
-      create(:site, slug: "other", is_published: true, url: "https://other.placecal.org/").tap do |other|
+      create(:site, slug: "other", is_published: true).tap do |other|
         create(:sites_neighbourhood, site: other, neighbourhood: other_neighbourhood)
       end
     end

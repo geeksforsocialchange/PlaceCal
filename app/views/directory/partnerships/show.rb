@@ -47,7 +47,7 @@ class Views::Directory::Partnerships::Show < Views::Base
   private
 
   def render_visit_button
-    a(href: @partnership.directory_url,
+    a(href: @partnership.public_url,
       class: 'inline-flex items-center gap-2 bg-primary text-foreground font-bold rounded-full px-5 py-2 no-underline hover:brightness-110 transition-all') do
       raw(view_context.icon(:external_link, size: nil, css_class: 'w-4 h-4'))
       plain t('directory.partnerships.show.visit', url: @partnership.display_url)
@@ -165,8 +165,9 @@ class Views::Directory::Partnerships::Show < Views::Base
     end
   end
 
+  # PlaceCal's own pages for the site, which an external site may not have.
   def partnership_base_url
-    @partnership.directory_url
+    @partnership.canonical_url
   end
 
   def partner_list

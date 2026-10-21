@@ -21,7 +21,7 @@ RSpec.describe "Theme slots", type: :request do
   end
 
   def site_on(theme, slug)
-    site = create(:site, slug:, theme:, url: "https://#{slug}.lvh.me")
+    site = create(:site, slug:, theme:)
     site.neighbourhoods << ward
     site
   end
@@ -224,7 +224,7 @@ RSpec.describe "Theme slots", type: :request do
     get "http://themed.lvh.me/sitemap/pages.xml"
 
     expect(response).to have_http_status(:ok)
-    expect(response.body).to include("<loc>#{themed_site.directory_url.chomp('/')}/proof</loc>")
+    expect(response.body).to include("<loc>#{themed_site.canonical_url}/proof</loc>")
   end
 
   # A theme's branding CSS needs a hook that does not move when an admin
@@ -301,7 +301,7 @@ RSpec.describe "Theme nav_join", :theme_registry, type: :request do
   let(:ward) { create(:riverside_ward) }
 
   def site_on(theme, slug)
-    site = create(:site, slug:, theme:, url: "https://#{slug}.lvh.me",
+    site = create(:site, slug:, theme:,
                          contact_email: "hello@example.org")
     site.neighbourhoods << ward
     site

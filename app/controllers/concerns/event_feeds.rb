@@ -11,7 +11,7 @@ module EventFeeds
   def create_calendar(events, title = nil)
     cal = Icalendar::Calendar.new
     cal.x_wr_calname = title || 'PlaceCal'
-    site_url = current_site&.url || 'https://placecal.org'
+    site_url = current_site&.canonical_url || 'https://placecal.org'
     events.each do |event|
       ical = create_ical_event(event, site_url)
       cal.add_event(ical)

@@ -833,6 +833,7 @@ en:
       site:
         <<: *default_attrs
         contact_email: "Contact Email"
+        domain: "Domain"
         place_name: "Place Name"
         hero_text: "Hero Text"
         hero_image: "Hero Image"

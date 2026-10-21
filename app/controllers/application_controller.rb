@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   before_action :discard_stale_auth_flash, unless: :devise_controller?
   before_action :configure_permitted_parameters, if: :devise_controller?
-  before_action :redirect_www_to_site_domain
+  before_action :redirect_to_site_domain
   before_action :set_current_site
   before_action :set_supporters
   before_action :set_navigation
@@ -170,12 +170,25 @@ class ApplicationController < ActionController::Base
     @site = current_site
   end
 
-  # A site stored without www (https://transdimension.uk) still gets www traffic from DNS.
-  def redirect_www_to_site_domain
-    return unless request.host.start_with?('www.')
+  # Sends www.<domain> and a served-domain site's slug subdomain to the site's canonical URL.
+  def redirect_to_site_domain
+    return unless request.get? || request.head?
 
-    site = Site.find_using_domain(request.host.delete_prefix('www.'))
-    redirect_to "#{site.url.chomp('/')}#{request.fullpath}", status: :moved_permanently, allow_other_host: true if site
+    site = www_alias_site || served_site_on_another_host
+    return if site.nil? || performed?
+
+    redirect_to "#{site.canonical_url}#{request.fullpath}", status: :moved_permanently, allow_other_host: true
+  end
+
+  # A site stored without www (transdimension.uk) still gets www traffic from DNS.
+  def www_alias_site
+    Site.served_at(request.host.delete_prefix('www.')) if request.host.start_with?('www.')
+  end
+
+  # @return [Site, nil] the current site when its domain is served but this request is not on it
+  def served_site_on_another_host
+    site = current_site
+    site if site&.served_domain? && request.host.casecmp(site.domain).nonzero?
   end
 
   # Makes the resolved site and its theme available to the view layer for the

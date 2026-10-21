@@ -21,6 +21,9 @@ Rails.application.configure do
   # Make sure lvh.me subdomains load properly
   config.hosts.clear
 
+  # Comma-separated, e.g. SERVED_HOSTS=transdimension.lvh.me to try a site's custom domain locally.
+  config.x.served_hosts = ENV.fetch('SERVED_HOSTS', 'lvh.me,*.lvh.me').split(',')
+
   # Do not eager load code on boot.
   config.eager_load = false
 

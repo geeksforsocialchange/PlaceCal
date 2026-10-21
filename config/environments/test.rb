@@ -24,6 +24,9 @@ Rails.application.configure do
   # derive it.
   config.x.directory_url = 'https://placecal.org'
 
+  # Production's apex and wildcard only; specs stub PlaceCal::ServedHosts for custom domains.
+  config.x.served_hosts = %w[placecal.org *.placecal.org]
+
   config.cache_classes = false
 
   # Do not eager load code on boot. This avoids loading your whole application

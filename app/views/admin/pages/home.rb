@@ -166,7 +166,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base
             div(class: 'flex-1 min-w-0') do
               h3(class: 'text-sm font-medium text-base-content group-hover:text-placecal-orange ' \
                         'transition-colors truncate') { site.name }
-              p(class: 'text-xs text-gray-600') { "#{site.slug}.placecal.org" }
+              p(class: 'text-xs text-gray-600') { site.display_url }
             end
             div(class: 'text-right flex-shrink-0') do
               span(class: 'text-sm font-semibold text-placecal-orange') { site.events_this_week.to_s }

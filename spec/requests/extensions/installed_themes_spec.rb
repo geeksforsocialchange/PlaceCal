@@ -11,7 +11,7 @@ RSpec.describe "Installed theme homepages", type: :request do
   installed_themes.each do |theme|
     it "renders the #{theme.name} homepage with an event, a partner and a site admin" do
       ward = create(:riverside_ward)
-      site = create(:site, slug: "themed", theme: theme.name, url: "https://themed.lvh.me", site_admin: create(:root_user))
+      site = create(:site, slug: "themed", theme: theme.name, site_admin: create(:root_user))
       site.neighbourhoods << ward
       partner = create(:partner, address: create(:address, neighbourhood: ward))
       create(:event, organiser: partner, address: partner.address)

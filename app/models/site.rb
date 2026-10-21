@@ -9,6 +9,7 @@
 #  contact_email     :string
 #  description       :text
 #  description_html  :string
+#  domain            :string
 #  events_count      :integer          default(0), not null
 #  footer_logo       :string
 #  hero_alttext      :string
@@ -23,7 +24,7 @@
 #  slug              :string           not null
 #  tagline           :string
 #  theme             :string           default("pink")
-#  url               :string           not null
+#  url               :string
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  site_admin_id     :bigint
@@ -31,6 +32,7 @@
 # Indexes
 #
 #  index_sites_is_published       (is_published)
+#  index_sites_on_domain          (domain) UNIQUE WHERE (domain IS NOT NULL)
 #  index_sites_on_events_count    (events_count)
 #  index_sites_on_partners_count  (partners_count)
 #  index_sites_slug               (slug) UNIQUE
@@ -46,6 +48,7 @@ class Site < ApplicationRecord
   extend Enumerize
   include HtmlRenderCache
   include SiteJsonLd
+  include SiteDomain
   include SiteRobots
   include SlugRetainable
 
@@ -65,6 +68,9 @@ class Site < ApplicationRecord
   # own apex URL; test pins the production URL).
   DIRECTORY_URL = Rails.configuration.x.directory_url
 
+  # Replaced by domain; the column is dropped in a later release.
+  self.ignored_columns += %w[url]
+
   # ==== Enums / Enumerize ====
   # theme -- no enumerize: validated against the extension registry below (#3368, D2)
   enumerize :badge_zoom_level,
@@ -77,6 +83,7 @@ class Site < ApplicationRecord
   attribute :contact_email,     :string                          # nullable
   attribute :description,       :text                            # nullable
   attribute :description_html,  :string                          # nullable, populated by HtmlRenderCache
+  attribute :domain,            :string                          # nullable
   attribute :events_count,      :integer, default: 0             # NOT NULL
   attribute :hero_alttext,      :string                          # nullable
   attribute :hero_image_credit, :string                          # nullable
@@ -89,10 +96,11 @@ class Site < ApplicationRecord
   attribute :slug,              :string                          # NOT NULL
   attribute :tagline,           :string                          # nullable
   attribute :theme,             :string,  default: 'pink'        # nullable
-  attribute :url,               :string                          # NOT NULL
 
   friendly_id :name, use: :slugged
   html_render_cache :description
+  # After the attribute declarations, which would otherwise replace it.
+  normalizes :domain, with: ->(value) { normalize_domain(value) }
 
   # ==== Associations ====
   has_one :sites_neighbourhood, dependent: :destroy
@@ -126,7 +134,7 @@ class Site < ApplicationRecord
   mount_uploader :hero_image, HeroImageUploader
 
   # ==== Validations ====
-  validates :name, :slug, :url, presence: true
+  validates :name, :slug, presence: true
   validates :slug, uniqueness: true
   # A site slug is its subdomain, and these two are served by something else.
   validates :slug, exclusion: { in: [JOIN_SUBDOMAIN, 'www'] }
@@ -161,24 +169,6 @@ class Site < ApplicationRecord
   # @return [String]
   def join_recipient
     contact_email.presence || ContactRequest::DEFAULT_RECIPIENT
-  end
-
-  # The site's public URL, falling back to its conventional placecal.org
-  # subdomain when no explicit url is set.
-  #
-  # This is the site's canonical base: robots.txt advertises its sitemap from
-  # here and every sitemap URL hangs off it, so it must be the apex the site
-  # should be indexed under, with no path. A site reachable at more than one
-  # hostname still advertises this one.
-  #
-  # @return [String]
-  def directory_url
-    url.presence || "https://#{slug}.placecal.org"
-  end
-
-  # @return [String] directory_url without the scheme or trailing slash, for display
-  def display_url
-    directory_url.sub(%r{\Ahttps?://}, '').chomp('/')
   end
 
   # @return [Boolean] whether FriendlyId should generate a new slug
@@ -328,27 +318,13 @@ class Site < ApplicationRecord
       find_each(&:refresh_counts!)
     end
 
-    # Find any sites with URLs that match the specified domain
-    #
-    # [QAD 2025-10-21] This a band-aid to work around the implementation in
-    # https://github.com/geeksforsocialchange/PlaceCal/pull/2201 which removed
-    # the site.domain field in favour of a site.url field. Long-term, a better
-    # implementation would be to restore site.domain and reverse the implementation
-    # of the above PR.
-    def find_using_domain(domain)
-      # Should be no need to sanitize `domain` because the interpolation happens
-      # before it is passed to Arel for sanitization
-      find_by(url: ["https://#{domain}", "https://#{domain}/"])
-    end
-
     # Find the requested Site from information in the rails request object.
     #
     # @param request The request must expose the methods: host, subdomain, subdomains
     # @return [Site, nil] nil for the apex / no-subdomain request (the
     #   nationwide directory has no Site row)
     def find_by_request(request)
-      # If there is a site with the domain in request.host, return it
-      site = find_using_domain(request.host)
+      site = served_at(request.host)
       return site if site.present?
 
       site_slug =
