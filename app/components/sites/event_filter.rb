@@ -253,8 +253,8 @@ class Components::Sites::EventFilter < Components::Base
     parts << t('filters.applied.from_date', date: applied_date_label) if @period != 'day' && pointer_moved?
     parts << t('filters.period.week') if @period == 'week'
     parts << t('filters.applied.sorted_by_name') if @sort == 'summary'
-    parts << t('filters.applied.repeats_last') if @repeating == 'last'
-    parts << t('filters.applied.repeats_hidden') if @repeating == 'off'
+    parts << t('filters.applied.one_off_only') if @repeating == 'off'
+    parts << t('filters.applied.repeating_only') if @repeating == 'only'
     parts
   end
 
@@ -311,8 +311,8 @@ class Components::Sites::EventFilter < Components::Base
   def render_repeating_group
     view_context.content_tag(:div, class: 'filters__group filters__group--repeating') do
       render_radio('repeating', 'on', @repeating == 'on', t('filters.repeating.on')) +
-        render_radio('repeating', 'last', @repeating == 'last', t('filters.repeating.last')) +
-        render_radio('repeating', 'off', @repeating == 'off', t('filters.repeating.off'))
+        render_radio('repeating', 'off', @repeating == 'off', t('filters.repeating.off')) +
+        render_radio('repeating', 'only', @repeating == 'only', t('filters.repeating.only'))
     end
   end
 

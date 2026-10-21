@@ -265,7 +265,7 @@ class Views::Sites::Partners::Show < Views::Base
   end
 
   def repeating_options
-    %w[on last off].map { |value| [t("filters.repeating.#{value}"), value] }
+    %w[on off only].map { |value| [t("filters.repeating.#{value}"), value] }
   end
 
   def render_show_more_days
