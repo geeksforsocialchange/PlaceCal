@@ -77,6 +77,27 @@ class EventsQuery
     group_and_sort(events, sort)
   end
 
+  # Uncapped count of future events per day, so a caller can total and window
+  # them by day without loading every row (unlike period 'future').
+  #
+  # @return [Hash{Date=>Integer}] only days with events, in date order
+  def future_counts_by_day(repeating: 'on', organiser_or_place: nil)
+    build_filtered_scope(repeating: repeating, organiser_or_place: organiser_or_place)
+      .future(@day)
+      .reorder(nil)
+      .group_by_day(:dtstart, series: false)
+      .count
+      .sort.to_h
+  end
+
+  # Future events up to the end of `last_day`, grouped like #call but uncapped.
+  #
+  # @return [Hash] events grouped by date { Date => [Event, ...] }
+  def future_through(last_day, sort: 'time', repeating: 'on', organiser_or_place: nil)
+    events = build_filtered_scope(repeating: repeating, organiser_or_place: organiser_or_place)
+    group_and_sort(events.future(@day).where(dtstart: ...last_day.next_day.in_time_zone), sort)
+  end
+
   # Returns the base scope as a flat relation for further chaining
   #
   # @return [ActiveRecord::Relation<Event>]

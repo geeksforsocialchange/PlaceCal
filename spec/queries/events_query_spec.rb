@@ -379,6 +379,37 @@ RSpec.describe EventsQuery do
     end
   end
 
+  describe "#future_counts_by_day and #future_through" do
+    let(:organiser) { create(:partner) }
+    # A BST date, so a UTC day boundary would put both late events on one day.
+    let(:day) { Date.new(2023, 7, 3) }
+    let(:query) { described_class.new(site: nil, day: day) }
+    let!(:late_event) { create(:event, organiser: organiser, dtstart: Time.zone.local(2023, 7, 4, 23, 30)) }
+    let!(:after_midnight_event) { create(:event, organiser: organiser, dtstart: Time.zone.local(2023, 7, 5, 0, 30)) }
+    let!(:repeating_event) do
+      create(:recurring_event, organiser: organiser, dtstart: Time.zone.local(2023, 7, 6, 10))
+    end
+
+    it "counts events per local day, in date order" do
+      counts = query.future_counts_by_day(organiser_or_place: organiser)
+
+      expect(counts).to eq(Date.new(2023, 7, 4) => 1, Date.new(2023, 7, 5) => 1, Date.new(2023, 7, 6) => 1)
+    end
+
+    it "applies the repeating filter" do
+      expect(query.future_counts_by_day(organiser_or_place: organiser, repeating: "off").keys)
+        .to eq([Date.new(2023, 7, 4), Date.new(2023, 7, 5)])
+      expect(query.future_counts_by_day(organiser_or_place: organiser, repeating: "last").values.sum).to eq(3)
+    end
+
+    it "loads events up to the end of the given local day" do
+      events = query.future_through(Date.new(2023, 7, 4), organiser_or_place: organiser).values.flatten
+
+      expect(events).to eq([late_event])
+      expect(events).not_to include(after_midnight_event, repeating_event)
+    end
+  end
+
   describe "#for_ical" do
     before { create_list(:future_event, 3, organiser: partner) }
 
