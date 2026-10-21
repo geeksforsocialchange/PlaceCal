@@ -108,7 +108,7 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
       expect(page).to have_css("button.filters__toggle-button--active")
     end
 
-    it "marks the toggle when repeats are hidden" do
+    it "marks the toggle when only one-off events are shown" do
       render_inline(described_class.new(**base_attrs, repeating: "off"))
 
       expect(page).to have_css("button.filters__toggle-button--active")
@@ -144,7 +144,7 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
     it "names the day, the sort and the repeats setting, with a reset link" do
       render_inline(described_class.new(**base_attrs, sort: "summary", repeating: "off"))
 
-      expect(page).to have_css(".filters__applied-text", text: "Showing today, Sorted by name, Repeats hidden")
+      expect(page).to have_css(".filters__applied-text", text: "Showing today, Sorted by name, One-off events only")
       expect(page).to have_link("Reset filters", href: "/events#paginator")
     end
   end
@@ -214,25 +214,25 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
     end
 
     describe "repeating options" do
-      it "renders Show repeats option" do
+      it "renders All events option" do
         render_inline(described_class.new(**base_attrs))
 
         expect(page).to have_field("repeating_on", type: "radio")
-        expect(page).to have_text("Show repeats")
+        expect(page).to have_text("All events")
       end
 
-      it "renders Show repeats last option" do
-        render_inline(described_class.new(**base_attrs))
-
-        expect(page).to have_field("repeating_last", type: "radio")
-        expect(page).to have_text("Show repeats last")
-      end
-
-      it "renders Hide repeats option" do
+      it "renders Only one-off events option" do
         render_inline(described_class.new(**base_attrs))
 
         expect(page).to have_field("repeating_off", type: "radio")
-        expect(page).to have_text("Hide repeats")
+        expect(page).to have_text("Only one-off events")
+      end
+
+      it "renders Only repeating events option" do
+        render_inline(described_class.new(**base_attrs))
+
+        expect(page).to have_field("repeating_only", type: "radio")
+        expect(page).to have_text("Only repeating events")
       end
 
       it "checks current repeating option" do

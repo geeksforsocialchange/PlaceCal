@@ -38,7 +38,7 @@ RSpec.describe "Public Events", type: :request do
 
       meta = Nokogiri::HTML(response.body).at_css(".meta")
       ical_link = meta.css("a").find { |a| a.text.include?("Subscribe") }
-      csv_link = meta.css("a").find { |a| a.text.include?("Download events as CSV") }
+      csv_link = meta.css("a").find { |a| a.text.include?("Download as CSV") }
 
       expect(ical_link["href"]).to eq(events_url(host: "#{site.slug}.lvh.me", protocol: "webcal", format: :ics))
       expect(csv_link["href"]).to eq(events_url(host: "#{site.slug}.lvh.me", format: :csv, period: "future", sort: "time", repeating: "on"))
