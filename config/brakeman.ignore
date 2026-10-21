@@ -41,13 +41,6 @@
       "file": "app/views/partners/show.html.erb",
       "line": 27,
       "note": "HTML is sanitized via Rails::HTML5::SafeListSanitizer in HtmlRenderCache before_save"
-    },
-    {
-      "fingerprint": "1f93f038547cfbebdd711749df51a7d09966200539a88ea82fd5203aa9fc4836",
-      "code": "redirect_to(\"#{Site.find_using_domain(request.host.delete_prefix(\"www.\")).url.chomp(\"/\")}#{request.fullpath}\", :status => :moved_permanently, :allow_other_host => true)",
-      "file": "app/controllers/application_controller.rb",
-      "line": 178,
-      "note": "Host comes from a Site row's stored url, not the request; only the path is appended, so it cannot redirect off-site."
     }
   ],
   "updated": "2026-02-16",

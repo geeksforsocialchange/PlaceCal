@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe "Public Sites", type: :request do
   let(:site_admin) { create(:root_user) }
-  let(:site) { create(:site, slug: "hulme", site_admin:, url: "https://hulme.lvh.me", place_name: "Hulme Community") }
+  let(:site) { create(:site, slug: "hulme", site_admin:, place_name: "Hulme Community") }
   let(:ward) { create(:riverside_ward) }
 
   before do

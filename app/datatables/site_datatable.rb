@@ -64,19 +64,13 @@ class SiteDatatable < Datatable
   end
 
   def render_name_cell(record)
-    site_url = record.url.presence
-    url_display = if site_url
-                    # Show just the domain part for cleaner display
-                    domain = site_url.gsub(%r{^https?://}, '').chomp('/')
-                    <<~URL_HTML
-                      <a href="#{ERB::Util.html_escape(site_url)}" target="_blank" class="text-xs text-gray-500 font-mono hover:text-orange-600 flex items-center gap-1">
-                        #{ERB::Util.html_escape(domain)}
-                        #{icon(:external_link, size: '3')}
-                      </a>
-                    URL_HTML
-                  else
-                    "<span class=\"text-xs text-gray-500 font-mono\">##{record.id} · /#{ERB::Util.html_escape(record.slug)}</span>"
-                  end
+    url_display = <<~URL_HTML
+      <a href="#{ERB::Util.html_escape(record.public_url)}" target="_blank" class="text-xs text-gray-500 font-mono hover:text-orange-600 flex items-center gap-1">
+        #{ERB::Util.html_escape(record.display_url)}
+        #{icon(:external_link, size: '3')}
+      </a>
+      #{render_domain_status(record)}
+    URL_HTML
 
     <<~HTML.html_safe
       <div class="flex flex-col gap-0.5">
@@ -86,6 +80,13 @@ class SiteDatatable < Datatable
         #{url_display}
       </div>
     HTML
+  end
+
+  def render_domain_status(record)
+    return '' if record.domain.blank?
+
+    status = record.served_domain? ? I18n.t('admin.sites.domain_status.served') : I18n.t('admin.sites.domain_status.external')
+    "<span class=\"text-xs text-gray-500\">#{ERB::Util.html_escape(status)}</span>"
   end
 
   def render_primary_neighbourhood_cell(record)

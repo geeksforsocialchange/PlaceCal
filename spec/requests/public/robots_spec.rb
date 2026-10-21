@@ -26,8 +26,25 @@ RSpec.describe "Public Robots", type: :request do
 
       it "advertises the site's own sitemap, not the directory's" do
         get "http://#{published_site.slug}.lvh.me/robots.txt"
-        expect(response.body).to include("Sitemap: #{published_site.url.chomp('/')}/sitemap.xml")
+        expect(response.body).to include("Sitemap: https://#{published_site.slug}.placecal.org/sitemap.xml")
         expect(response.body).not_to include("Sitemap: #{Site::DIRECTORY_URL}/sitemap.xml")
+      end
+
+      it "advertises a served domain's sitemap on that domain" do
+        serve_hosts("placecal.org", "*.placecal.org", "transdimension.uk")
+        site = create(:site, slug: "trans-dimension", domain: "transdimension.uk", is_published: true)
+
+        get "http://transdimension.uk/robots.txt"
+        expect(response.body).to include("Sitemap: https://transdimension.uk/sitemap.xml")
+        expect(site.robots).to include("Sitemap: https://transdimension.uk/sitemap.xml")
+      end
+
+      it "keeps an external site's sitemap on its PlaceCal subdomain" do
+        site = create(:site, slug: "fruitsaladevents", domain: "fruitsaladevents.co.uk", is_published: true)
+
+        get "http://fruitsaladevents.lvh.me/robots.txt"
+        expect(response.body).to include("Sitemap: https://fruitsaladevents.placecal.org/sitemap.xml")
+        expect(site.robots).not_to include("fruitsaladevents.co.uk")
       end
     end
 

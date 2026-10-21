@@ -21,16 +21,86 @@ RSpec.describe "Public Redirects", type: :request do
   end
 
   describe "www host for a site stored without www" do
+    before { serve_hosts("lvh.me", "*.lvh.me", "wwwtest.lvh.me", "www.leedslike.lvh.me") }
+
     it "redirects to the site's own address, keeping the path" do
-      create(:site, slug: "wwwtest", url: "https://wwwtest.lvh.me")
+      create(:site, slug: "wwwtest", domain: "wwwtest.lvh.me")
       get "/events?period=future", headers: { "Host" => "www.wwwtest.lvh.me" }
       expect(response).to have_http_status(301)
       expect(response).to redirect_to("https://wwwtest.lvh.me/events?period=future")
     end
 
+    it "redirects other methods too" do
+      create(:site, slug: "wwwtest", domain: "wwwtest.lvh.me")
+      post "/get-in-touch", headers: { "Host" => "www.wwwtest.lvh.me" }
+      expect(response).to redirect_to("https://wwwtest.lvh.me/get-in-touch")
+    end
+
     it "leaves a site stored with www alone" do
-      create(:site, slug: "leedslike", url: "https://www.leedslike.lvh.me")
+      create(:site, slug: "leedslike", domain: "www.leedslike.lvh.me")
       get "/", headers: { "Host" => "www.leedslike.lvh.me" }
+      expect(response).not_to have_http_status(301)
+    end
+  end
+
+  describe "slug subdomain of a site with a domain" do
+    let(:production_hosts) { ["placecal.org", "*.placecal.org", "www.queerleeds.lgbt", "transdimension.uk", "www.transdimension.uk"] }
+
+    before { serve_hosts(production_hosts) }
+
+    it "redirects a served domain's slug host to the domain, keeping path and query" do
+      create(:site, slug: "trans-dimension", domain: "transdimension.uk")
+      get "/events?period=future", headers: { "Host" => "trans-dimension.placecal.org" }
+      expect(response).to have_http_status(301)
+      expect(response).to redirect_to("https://transdimension.uk/events?period=future")
+    end
+
+    it "serves the site on its served domain" do
+      create(:site, slug: "trans-dimension", domain: "transdimension.uk")
+      get "/", headers: { "Host" => "transdimension.uk" }
+      expect(response).to have_http_status(200)
+    end
+
+    it "redirects www of a served domain stored without www" do
+      create(:site, slug: "trans-dimension", domain: "transdimension.uk")
+      get "/partners", headers: { "Host" => "www.transdimension.uk" }
+      expect(response).to redirect_to("https://transdimension.uk/partners")
+    end
+
+    it "serves a site stored with www on that host without redirecting" do
+      create(:site, slug: "queerleeds", domain: "www.queerleeds.lgbt")
+      get "/", headers: { "Host" => "www.queerleeds.lgbt" }
+      expect(response).to have_http_status(200)
+    end
+
+    it "does not redirect a plain site's slug host" do
+      create(:site, slug: "hulme")
+      get "/events", headers: { "Host" => "hulme.placecal.org" }
+      expect(response).to have_http_status(200)
+    end
+
+    it "does not redirect an external domain's slug host" do
+      create(:site, slug: "fruitsaladevents", domain: "fruitsaladevents.co.uk")
+      get "/events", headers: { "Host" => "fruitsaladevents.placecal.org" }
+      expect(response).to have_http_status(200)
+    end
+
+    it "does not redirect where the deploy does not serve the domain, as on staging" do
+      serve_hosts("placecal-staging.org", "*.placecal-staging.org")
+      create(:site, slug: "trans-dimension", domain: "transdimension.uk")
+      get "/events", headers: { "Host" => "trans-dimension.placecal-staging.org" }
+      expect(response).to have_http_status(200)
+    end
+
+    it "does not redirect a form post" do
+      create(:site, slug: "trans-dimension", domain: "transdimension.uk")
+      post "/get-in-touch", params: { contact_request: { name: "Sam" } }, headers: { "Host" => "trans-dimension.placecal.org" }
+      expect(response).not_to have_http_status(301)
+    end
+
+    it "leaves the admin subdomain alone" do
+      create(:site, slug: "trans-dimension", domain: "transdimension.uk")
+      get "/", headers: { "Host" => "admin.placecal.org" }
       expect(response).not_to have_http_status(301)
     end
   end

@@ -16,7 +16,7 @@ RSpec.describe "Site accessibility", :slow, type: :system do
   PALETTE_RULES = [:"color-contrast"].freeze
 
   let(:ward) { create(:riverside_ward) }
-  let(:site) { create(:site, slug: "riverside", theme: "pink", url: "https://riverside.lvh.me") }
+  let(:site) { create(:site, slug: "riverside", theme: "pink") }
   let(:partner) { create(:partner, name: "Riverside Hub", address: create(:riverside_address, neighbourhood: ward)) }
 
   let(:event) do

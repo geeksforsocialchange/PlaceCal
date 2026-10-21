@@ -9,7 +9,7 @@ RSpec.describe "Theme content page", type: :request do
   let(:ward) { create(:riverside_ward) }
 
   let!(:themed_site) do
-    site = create(:site, slug: "themed", theme: "example_theme", url: "https://themed.lvh.me")
+    site = create(:site, slug: "themed", theme: "example_theme")
     site.neighbourhoods << ward
     site
   end
@@ -55,11 +55,11 @@ RSpec.describe "Theme content page", type: :request do
     get "http://themed.lvh.me/sitemap/pages.xml"
 
     expect(response).to have_http_status(:ok)
-    expect(response.body).to include("<loc>#{themed_site.directory_url.chomp('/')}/fixture-content</loc>")
+    expect(response.body).to include("<loc>#{themed_site.canonical_url}/fixture-content</loc>")
   end
 
   it "does not serve it on a site whose theme did not register it" do
-    core_site = create(:site, slug: "plain", theme: "pink", url: "https://plain.lvh.me")
+    core_site = create(:site, slug: "plain", theme: "pink")
     core_site.neighbourhoods << ward
 
     get "http://plain.lvh.me/fixture-content"
@@ -69,7 +69,7 @@ RSpec.describe "Theme content page", type: :request do
 end
 
 RSpec.describe Views::ThemeContentPage, type: :component do
-  let(:site) { create(:site, slug: "themed", theme: "example_theme", url: "https://themed.lvh.me") }
+  let(:site) { create(:site, slug: "themed", theme: "example_theme") }
 
   describe "the declarations" do
     it "reads back what the page declared" do

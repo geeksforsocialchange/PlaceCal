@@ -143,7 +143,7 @@ class Views::Layouts::Application < Phlex::HTML
     meta(name: 'robots', content: robots_content)
 
     unless join_site?
-      json_ld = site ? site.to_json_ld(base_url: request.base_url) : Site.directory_json_ld(request.base_url)
+      json_ld = site ? site.to_json_ld : Site.directory_json_ld(request.base_url)
       script(type: 'application/ld+json') { raw safe(json_ld.to_json) }
     end
     return unless content_for?(:json_ld)

@@ -35,6 +35,27 @@ RSpec.describe "GraphQL Sites", type: :request do
     end
   end
 
+  # Fruit Salad's Elm site reads this API, so url keeps the exact strings
+  # production returned before sites had a domain field (#2498).
+  describe "url" do
+    before { serve_hosts("placecal.org", "*.placecal.org", "www.queerleeds.lgbt", "transdimension.uk", "www.transdimension.uk") }
+
+    let(:query) { "query($id: ID!) { site(id: $id) { url } }" }
+
+    {
+      ["hulme", nil] => "https://hulme.placecal.org",
+      ["trans-dimension", "transdimension.uk"] => "https://transdimension.uk",
+      ["queerleeds", "www.queerleeds.lgbt"] => "https://www.queerleeds.lgbt",
+      ["fruitsaladevents", "fruitsaladevents.co.uk"] => "https://fruitsaladevents.co.uk/"
+    }.each do |(slug, domain), expected|
+      it "is #{expected} for #{slug}" do
+        site = create(:site, slug:, domain:)
+        result = execute_query(query, variables: { id: site.id })
+        expect(result["data"]["site"]["url"]).to eq(expected)
+      end
+    end
+  end
+
   describe "site query" do
     let(:site) { create(:millbrook_site) }
 

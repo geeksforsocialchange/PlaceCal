@@ -23,7 +23,7 @@ RSpec.describe "Theme fallbacks", :theme_registry, type: :request do
   let(:ward) { create(:riverside_ward) }
 
   def site_on(theme, slug)
-    site = create(:site, slug:, theme:, url: "https://#{slug}.lvh.me")
+    site = create(:site, slug:, theme:)
     site.neighbourhoods << ward
     site
   end

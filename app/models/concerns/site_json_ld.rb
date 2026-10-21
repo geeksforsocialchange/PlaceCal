@@ -23,18 +23,18 @@ module SiteJsonLd
     end
   end
 
-  def to_json_ld(base_url:)
-    subsite_json_ld(base_url)
+  def to_json_ld
+    subsite_json_ld
   end
 
   private
 
-  def subsite_json_ld(base_url)
+  def subsite_json_ld
     data = {
       '@context' => 'https://schema.org',
       '@type' => 'WebSite',
       'name' => name,
-      'url' => url || base_url
+      'url' => canonical_url
     }
 
     if logo.present?

@@ -66,7 +66,7 @@ class PartnersController < ApplicationController
       format.csv do
         track_csv_download
         events = Event.by_organiser_or_place(@partner).upcoming.sort_by_time
-        site_url = current_site&.url || 'https://placecal.org'
+        site_url = current_site&.canonical_url || 'https://placecal.org'
         send_data EventsCsv.new(events, site_url:).call,
                   filename: "#{@partner.slug}-events.csv", type: :csv
       end
