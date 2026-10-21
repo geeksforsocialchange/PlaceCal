@@ -145,10 +145,10 @@ class Event < ApplicationRecord
   }
 
   # Filter by Place
-  scope :in_place, ->(place) { where(place: place) }
+  scope :in_place, ->(place) { where(place:) }
 
   # Filter by Organiser
-  scope :by_organiser, ->(organiser) { where(organiser: organiser) }
+  scope :by_organiser, ->(organiser) { where(organiser:) }
 
   # Filter by Organiser or Place
   scope :by_organiser_or_place, ->(organiser) { in_place(organiser).or(by_organiser(organiser)) }
@@ -309,10 +309,10 @@ class Event < ApplicationRecord
   # Ensures that the event added is unique
   # Checks for a duplicate event with the properties dtstart, summary, and calendar_id
   def unique_event
-    return unless Event.where(uid: uid,
-                              dtstart: dtstart,
-                              summary: summary,
-                              calendar_id: calendar_id)
+    return unless Event.where(uid:,
+                              dtstart:,
+                              summary:,
+                              calendar_id:)
                        .any?
 
     errors.add(:base, 'Unfortunately this event is a duplicate of an ' \

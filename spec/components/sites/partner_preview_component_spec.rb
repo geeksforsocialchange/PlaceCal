@@ -7,19 +7,19 @@ RSpec.describe Components::Sites::PartnerPreview, type: :component do
   let(:site) { create(:site) }
 
   it "renders partner name" do
-    render_inline(described_class.new(partner: partner, site: site))
+    render_inline(described_class.new(partner:, site:))
 
     expect(page).to have_selector("h3", text: partner.name)
   end
 
   it "renders partner summary" do
-    render_inline(described_class.new(partner: partner, site: site))
+    render_inline(described_class.new(partner:, site:))
 
     expect(page).to have_selector("p", text: partner.summary)
   end
 
   it "renders neighbourhood name" do
-    render_inline(described_class.new(partner: partner, site: site))
+    render_inline(described_class.new(partner:, site:))
 
     expect(page).to have_selector("span", text: "Riverside")
   end
@@ -29,7 +29,7 @@ RSpec.describe Components::Sites::PartnerPreview, type: :component do
       ward = create(:riverside_ward)
       mobile_partner = create(:mobile_partner, service_area_wards: [ward])
 
-      render_inline(described_class.new(partner: mobile_partner, site: site))
+      render_inline(described_class.new(partner: mobile_partner, site:))
 
       expect(page).to have_selector("h3", text: mobile_partner.name)
     end

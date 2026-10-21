@@ -10,7 +10,7 @@ class AddressPreview < Lookbook::Preview
       city: "Manchester",
       postcode: "M15 5RF"
     )
-    render Components::Shared::Address.new(address: address)
+    render Components::Shared::Address.new(address:)
   end
 
   # @label With raw URL location

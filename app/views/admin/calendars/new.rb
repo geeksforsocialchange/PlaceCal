@@ -241,7 +241,7 @@ class Views::Admin::Calendars::New < Views::Admin::Base
           fieldset(class: 'fieldset bg-base-200/50 rounded-xl p-6') do
             legend(class: 'fieldset-legend text-base font-semibold') { attr_label(:calendar, :strategy) }
             RadioCardGroup(
-              form: form, attribute: :strategy,
+              form:, attribute: :strategy,
               values: Calendar.strategy.values, i18n_scope: 'admin.calendars.strategy'
             )
             p(class: 'text-sm text-gray-600 mt-2') { t('admin.calendars.wizard.location.strategy_hint') }

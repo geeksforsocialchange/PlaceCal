@@ -12,7 +12,7 @@ class JoinMailer < ApplicationMailer
     # Current.set rather than assignment, so a deliver_now inside a request, or
     # a rake task looping over deliveries, gets its own Current back afterwards
     # instead of inheriting this enquiry's site for everything that follows.
-    Current.set(site: site, theme: PlaceCal::Theme.for(site)) do
+    Current.set(site:, theme: PlaceCal::Theme.for(site)) do
       # A newline in the interpolated name would let it inject extra mail
       # headers, so it never reaches the Subject header intact.
       subject = if site
@@ -23,8 +23,8 @@ class JoinMailer < ApplicationMailer
                   t('join_mailer.join_us.subject')
                 end
 
-      mail(to: site&.join_recipient || ContactRequest::DEFAULT_RECIPIENT, subject: subject) do |format|
-        format.html { render Views::Mailers::Join::JoinUs.new(contact_request: contact_request) }
+      mail(to: site&.join_recipient || ContactRequest::DEFAULT_RECIPIENT, subject:) do |format|
+        format.html { render Views::Mailers::Join::JoinUs.new(contact_request:) }
       end
     end
   end

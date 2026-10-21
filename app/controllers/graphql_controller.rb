@@ -37,10 +37,10 @@ class GraphqlController < ApplicationController
     # Trans Dimension queries score ~100 each.
     max_complexity = introspection ? nil : 1500
 
-    result = PlaceCalSchema.execute(query, variables: variables, context: context,
-                                           operation_name: operation_name,
-                                           max_depth: max_depth,
-                                           max_complexity: max_complexity)
+    result = PlaceCalSchema.execute(query, variables:, context:,
+                                           operation_name:,
+                                           max_depth:,
+                                           max_complexity:)
     render json: result
   rescue StandardError => e
     raise e unless Rails.env.development?

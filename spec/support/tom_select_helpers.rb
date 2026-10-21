@@ -195,12 +195,12 @@ module TomSelectHelpers
 
   # Retry helper for stale elements
   def find_element_and_retry_if_stale(max_attempts: 3, &)
-    find_element_with_retry(max_attempts: max_attempts, &)
+    find_element_with_retry(max_attempts:, &)
   end
 
   # Retry helper for not found elements
   def find_element_and_retry_if_not_found(max_attempts: 3, &)
-    find_element_with_retry(max_attempts: max_attempts, &)
+    find_element_with_retry(max_attempts:, &)
   end
 end
 

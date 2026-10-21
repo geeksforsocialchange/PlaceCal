@@ -5,7 +5,7 @@ class ModerationMailer < ApplicationMailer
     reason = partner.hidden_reason_html
 
     mail(to: user.email, subject: 'Your partner has been hidden from PlaceCal') do |format|
-      format.html { render Views::Mailers::Moderation::HiddenMessage.new(user: user, partner: partner, reason: reason) }
+      format.html { render Views::Mailers::Moderation::HiddenMessage.new(user:, partner:, reason:) }
     end
   end
 
@@ -14,7 +14,7 @@ class ModerationMailer < ApplicationMailer
     moderator = User.find(partner.hidden_blame_id)
 
     mail(to: 'support@placecal.org', subject: 'A partner has been hidden from PlaceCal') do |format|
-      format.html { render Views::Mailers::Moderation::HiddenStaffAlert.new(partner: partner, reason: reason, moderator: moderator) }
+      format.html { render Views::Mailers::Moderation::HiddenStaffAlert.new(partner:, reason:, moderator:) }
     end
   end
 end

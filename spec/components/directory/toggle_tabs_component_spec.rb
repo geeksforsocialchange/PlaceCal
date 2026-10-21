@@ -11,20 +11,20 @@ RSpec.describe Components::Directory::ToggleTabs, type: :component do
   end
 
   it "renders the active item as a static pill, not a link" do
-    render_inline(described_class.new(items: items, aria_label: "Time period"))
+    render_inline(described_class.new(items:, aria_label: "Time period"))
 
     expect(page).to have_css("span", text: "This week")
     expect(page).to have_no_link("This week")
   end
 
   it "renders inactive items as links" do
-    render_inline(described_class.new(items: items, aria_label: "Time period"))
+    render_inline(described_class.new(items:, aria_label: "Time period"))
 
     expect(page).to have_link("Today", href: "/events?period=day")
   end
 
   it "labels the nav landmark" do
-    render_inline(described_class.new(items: items, aria_label: "Time period"))
+    render_inline(described_class.new(items:, aria_label: "Time period"))
 
     expect(page).to have_css("nav[aria-label='Time period']")
   end

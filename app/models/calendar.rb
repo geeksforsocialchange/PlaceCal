@@ -273,10 +273,10 @@ class Calendar < ApplicationRecord
 
       update!(
         calendar_state: :idle,
-        notices: notices,
+        notices:,
         last_import_at: DateTime.current,
         critical_error: nil,
-        importer_used: importer_used
+        importer_used:
       )
     end
   end

@@ -10,7 +10,7 @@ class UpdateSiteThemes < ActiveRecord::Migration[6.0]
   end
 
   def set_theme(slug, colour)
-    site = Site.find_by(slug: slug)
+    site = Site.find_by(slug:)
     site&.update(theme: colour)
   end
 end

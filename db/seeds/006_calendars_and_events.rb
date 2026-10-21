@@ -121,9 +121,9 @@ module SeedCalendarsAndEvents # rubocop:disable Metrics/ModuleLength
           description: "#{title} at #{partner.name}. Everyone welcome!",
           dtstart: start, dtend: start + 90.minutes,
           organiser: partner,
-          calendar: calendar,
+          calendar:,
           address: online && k % 10 == 5 ? nil : partner.address,
-          online_address: online_address,
+          online_address:,
           rrule: (k % 4).zero? ? [RRULES[(k / 4) % RRULES.length]] : nil
         )
         event_count += 1

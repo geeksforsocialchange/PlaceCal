@@ -7,11 +7,11 @@ class Views::Admin::Neighbourhoods::Edit < Views::Admin::Base
     PageHeader(model_name: 'Neighbourhood', title: neighbourhood.name, id: neighbourhood.id)
     div(class: 'mb-6') do
       NeighbourhoodHierarchyBadge(
-        neighbourhood: neighbourhood,
+        neighbourhood:,
         link_each: true,
         show_icons: true
       )
     end
-    render Views::Admin::Neighbourhoods::Form.new(neighbourhood: neighbourhood)
+    render Views::Admin::Neighbourhoods::Form.new(neighbourhood:)
   end
 end

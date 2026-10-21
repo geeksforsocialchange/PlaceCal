@@ -16,7 +16,7 @@ RSpec.describe "GraphQL Events", type: :request do
       create_list(:event, 5,
                   organiser: partner,
                   dtstart: Time.current,
-                  address: address)
+                  address:)
     end
 
     let(:query) do
@@ -60,7 +60,7 @@ RSpec.describe "GraphQL Events", type: :request do
              summary: "Test Event Summary",
              description: "Detailed description of the event",
              dtstart: Time.current,
-             address: address)
+             address:)
     end
 
     let(:query) do
@@ -138,7 +138,7 @@ RSpec.describe "GraphQL Events", type: :request do
       create_list(:event, 3,
                   organiser: partner,
                   dtstart: 1.day.from_now,
-                  address: address)
+                  address:)
     end
 
     it "returns events within date range" do
@@ -268,7 +268,7 @@ RSpec.describe "GraphQL Events", type: :request do
   describe "online event details" do
     let!(:online_address) { OnlineAddress.create!(url: "https://zoom.us/j/123456", link_type: "direct") }
     let!(:online_event) do
-      create(:event, organiser: partner, dtstart: Time.current, address: address, online_address: online_address)
+      create(:event, organiser: partner, dtstart: Time.current, address:, online_address:)
     end
 
     let(:query) do

@@ -3,13 +3,13 @@
 # Step definitions for partner management
 
 Given("there is a partner called {string}") do |name|
-  @partner = create(:partner, name: name)
+  @partner = create(:partner, name:)
 end
 
 Given("there is a partner called {string} in {string}") do |name, ward_name|
   ward = Neighbourhood.find_by(name: ward_name) || create(:neighbourhood, name: ward_name)
   address = create(:address, neighbourhood: ward)
-  @partner = create(:partner, name: name, address: address)
+  @partner = create(:partner, name:, address:)
 end
 
 Given("the following partners exist:") do |table|
@@ -87,7 +87,7 @@ Then("I should see the partner {string} in the list") do |name|
 end
 
 Then("the partner {string} should have summary {string}") do |name, summary|
-  partner = Partner.find_by(name: name)
+  partner = Partner.find_by(name:)
   expect(partner.summary).to eq(summary)
 end
 
@@ -102,7 +102,7 @@ end
 
 When("I visit the partner page for {string}") do |name|
   create_default_site
-  partner = Partner.find_by(name: name)
+  partner = Partner.find_by(name:)
   visit "/partners/#{partner.slug}"
 end
 
@@ -111,6 +111,6 @@ Then("I should see a paginator") do
 end
 
 Then("I should still be on the partner page for {string}") do |name|
-  partner = Partner.find_by(name: name)
+  partner = Partner.find_by(name:)
   expect(current_path).to include("/partners/#{partner.slug}")
 end

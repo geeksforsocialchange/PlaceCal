@@ -54,7 +54,7 @@ class Components::Admin::StackedListSelector < Components::Admin::Base
 
   def render_interactive
     wrapper_data = {
-      controller: @controller,
+      :controller => @controller,
       "#{@controller}-permitted-value" => permitted_json,
       "#{@controller}-field-name-value" => @field_name,
       "#{@controller}-icon-value" => @icon_name,

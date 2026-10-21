@@ -27,7 +27,7 @@ class Views::Admin::Tags::Edit < Views::Admin::Base
       end
     else
       PageHeader(model_name: tag_type_name, title: tag.name, id: tag.id)
-      render Views::Admin::Tags::Form.new(tag: tag)
+      render Views::Admin::Tags::Form.new(tag:)
     end
   end
 end

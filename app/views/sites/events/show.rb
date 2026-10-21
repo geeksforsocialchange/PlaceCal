@@ -27,7 +27,7 @@ class Views::Sites::Events::Show < Views::Base
     else
       Sites::Event(
         display_context: :page,
-        event: event,
+        event:,
         primary_neighbourhood: site.primary_neighbourhood,
         site_tagline: site.tagline,
         back: [t('events.show.back'), events_path]
@@ -329,7 +329,7 @@ class Views::Sites::Events::Show < Views::Base
     links << [t('events.show.organiser_events', name: event.organiser.name), partner_path(event.organiser)] if event.organiser
     links << [t('events.show.add_to_calendar'), event_url(event, protocol: :webcal, format: :ics)]
     links << [t('events.show.go_back'), events_path]
-    Sites::PageActions(links: links)
+    Sites::PageActions(links:)
   end
 
   def render_event_meta

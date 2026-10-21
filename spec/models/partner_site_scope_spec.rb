@@ -15,11 +15,11 @@ RSpec.describe PartnersQuery, "site filtering" do
   let(:geocodable_neighbourhood) do
     create(
       :bare_neighbourhood,
-      unit: unit,
-      unit_name: unit_name,
-      unit_code_key: unit_code_key,
+      unit:,
+      unit_name:,
+      unit_code_key:,
       unit_code_value: unit_code,
-      release_date: release_date
+      release_date:
     )
   end
   # Must explicitly set neighbourhood - factory skips geocoding
@@ -30,7 +30,7 @@ RSpec.describe PartnersQuery, "site filtering" do
   end
 
   it "empty site returns nothing" do
-    output = described_class.new(site: site).call
+    output = described_class.new(site:).call
     expect(output).to be_empty
   end
 
@@ -39,7 +39,7 @@ RSpec.describe PartnersQuery, "site filtering" do
 
     create_list(:partner, 5, address: address_one)
 
-    output = described_class.new(site: site).call
+    output = described_class.new(site:).call
     expect(output.count).to eq(5)
   end
 
@@ -58,7 +58,7 @@ RSpec.describe PartnersQuery, "site filtering" do
       partner.save!
     end
 
-    output = described_class.new(site: site).call
+    output = described_class.new(site:).call
     expect(output.count).to eq(5)
   end
 
@@ -77,7 +77,7 @@ RSpec.describe PartnersQuery, "site filtering" do
     # partner by address
     create(:partner, address: address_one)
 
-    output = described_class.new(site: site).call
+    output = described_class.new(site:).call
     expect(output.count).to eq(2)
   end
 
@@ -117,7 +117,7 @@ RSpec.describe PartnersQuery, "site filtering" do
     end
 
     # finds set (neighbourhood_a OR neighbourhood_b)
-    output = described_class.new(site: site).call
+    output = described_class.new(site:).call
     expect(output.count).to eq(10)
   end
 
@@ -149,7 +149,7 @@ RSpec.describe PartnersQuery, "site filtering" do
       # skipped
       create_partner_with_tags(geocodable_neighbourhood)
 
-      found = described_class.new(site: site).call
+      found = described_class.new(site:).call
       expect(found.count).to eq(3)
 
       found_ids = found.map(&:id)

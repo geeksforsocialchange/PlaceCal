@@ -302,19 +302,19 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
     end
 
     it "shows neighbourhood filter when multiple neighbourhoods have events" do
-      render_inline(described_class.new(**future_attrs, site: site))
+      render_inline(described_class.new(**future_attrs, site:))
 
       expect(page).to have_selector("button span.filters__toggle-label", text: "Neighbourhood")
     end
 
     it "shows selected neighbourhood name when a neighbourhood is selected" do
-      render_inline(described_class.new(**future_attrs, site: site, selected_neighbourhood: ward1.id.to_s))
+      render_inline(described_class.new(**future_attrs, site:, selected_neighbourhood: ward1.id.to_s))
 
       expect(page).to have_selector("button span.filters__toggle-value", text: ward1.name)
     end
 
     it "gives the neighbourhood dropdown its own group class alongside filters__group" do
-      render_inline(described_class.new(**future_attrs, site: site))
+      render_inline(described_class.new(**future_attrs, site:))
 
       expect(page).to have_css("div.filters__group.filters__group--neighbourhood")
     end
@@ -337,13 +337,13 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
     end
 
     context "with the event_neighbourhood_filter theme setting" do
-      let(:query) { EventsQuery.new(site: site) }
+      let(:query) { EventsQuery.new(site:) }
 
       before { allow(query).to receive(:neighbourhoods_with_counts).and_call_original }
 
       it "renders the filter and counts neighbourhoods by default" do
         Current.theme = PlaceCal::Theme.new(:fixture)
-        render_inline(described_class.new(**future_attrs, site: site, query: query))
+        render_inline(described_class.new(**future_attrs, site:, query:))
 
         expect(page).to have_css("div.filters__group--neighbourhood")
         expect(query).to have_received(:neighbourhoods_with_counts)
@@ -351,7 +351,7 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
 
       it "renders no filter and skips the neighbourhood count when off" do
         Current.theme = PlaceCal::Theme.new(:fixture).tap { |theme| theme.event_neighbourhood_filter false }
-        render_inline(described_class.new(**future_attrs, site: site, query: query))
+        render_inline(described_class.new(**future_attrs, site:, query:))
 
         expect(page).to have_no_css(".filters__group--neighbourhood")
         expect(query).not_to have_received(:neighbourhoods_with_counts)

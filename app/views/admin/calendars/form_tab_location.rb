@@ -40,7 +40,7 @@ class Views::Admin::Calendars::FormTabLocation < Views::Admin::Base
         legend(class: 'fieldset-legend') { attr_label(:calendar, :strategy) }
         p(class: 'text-sm text-gray-600 mb-4') { t('admin.calendars.fields.strategy_hint') }
         RadioCardGroup(
-          form: form,
+          form:,
           attribute: :strategy,
           values: Calendar.strategy.values,
           i18n_scope: 'admin.calendars.strategy'

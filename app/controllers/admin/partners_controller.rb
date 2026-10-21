@@ -23,7 +23,7 @@ module Admin
         end
         format.json do
           render json: PartnerDatatable.new(params,
-                                            view_context: view_context,
+                                            view_context:,
                                             partners: @partners)
         end
       end
@@ -164,12 +164,12 @@ module Admin
                        .where.not(id: exact_match&.id)
                        .limit(5)
                        .pluck(:id, :name)
-                       .map { |id, n| { id: id, name: n } }
+                       .map { |id, n| { id:, name: n } }
 
       render json: {
         name_available: exact_match.nil?,
         exact_match: exact_match&.slice(:id, :name),
-        similar: similar
+        similar:
       }
     end
 
@@ -193,16 +193,16 @@ module Admin
       email = admin_params[:email]&.strip&.downcase
       return { status: :skipped } if email.blank?
 
-      user = User.find_by(email: email)
+      user = User.find_by(email:)
 
       if user
         # Existing user - just add as partner admin
         user.partners << partner unless user.partners.include?(partner)
-        { status: :existing_user, email: email }
+        { status: :existing_user, email: }
       else
         # New user - create and invite
         user = User.new(
-          email: email,
+          email:,
           first_name: admin_params[:first_name],
           last_name: admin_params[:last_name],
           phone: admin_params[:phone],
@@ -217,10 +217,10 @@ module Admin
           user.skip_invitation = Rails.env.development?
           user.invite!
           invitation_url = accept_user_invitation_url(invitation_token: user.raw_invitation_token)
-          { status: :invited, email: email, invitation_url: invitation_url }
+          { status: :invited, email:, invitation_url: }
         else
           Rails.logger.warn "Failed to invite partner admin: #{user.errors.full_messages.join(', ')}"
-          { status: :failed, email: email, errors: user.errors.full_messages }
+          { status: :failed, email:, errors: user.errors.full_messages }
         end
       end
     end

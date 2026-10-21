@@ -37,7 +37,7 @@ module Admin
         format.json do
           render json: UserDatatable.new(
             params,
-            view_context: view_context,
+            view_context:,
             users: @users.includes(:neighbourhoods, :tags, :partners)
           )
         end

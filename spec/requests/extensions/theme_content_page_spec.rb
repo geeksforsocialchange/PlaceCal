@@ -192,7 +192,7 @@ RSpec.describe Views::ThemeContentPage, type: :component do
     allow(Rails.logger).to receive(:warn)
     described_class.markdown_cache.clear
 
-    render_inline(page.new(site: site))
+    render_inline(page.new(site:))
 
     expect(Rails.logger).to have_received(:warn).with(/content file missing, skipping block/)
     expect(self.page).to have_css(".page--gappy .markdown-content", text: "Fixture markdown intro paragraph.")
@@ -214,7 +214,7 @@ RSpec.describe Views::ThemeContentPage, type: :component do
   it "says which declaration a page is missing" do
     page = Class.new(Views::ThemeContentPage) { slug "sparse" }
 
-    expect { render_inline(page.new(site: site)) }
+    expect { render_inline(page.new(site:)) }
       .to raise_error(NotImplementedError, /declares no title/)
   end
 end

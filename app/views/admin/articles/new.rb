@@ -5,6 +5,6 @@ class Views::Admin::Articles::New < Views::Admin::Base
 
   def view_template
     PageHeader(model_name: 'Article', new_record: true)
-    render Views::Admin::Articles::Form.new(article: article)
+    render Views::Admin::Articles::Form.new(article:)
   end
 end

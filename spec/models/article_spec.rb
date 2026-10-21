@@ -139,7 +139,7 @@ RSpec.describe Article do
           title: "#{n} Article from Partner 1",
           is_draft: false,
           body: "lorem ipsum dorem ditsum",
-          author: author
+          author:
         )
       end
 
@@ -149,7 +149,7 @@ RSpec.describe Article do
           title: "#{n} Article from Partner 2",
           is_draft: false,
           body: "lorem ipsum dorem ditsum",
-          author: author
+          author:
         )
       end
 
@@ -169,7 +169,7 @@ RSpec.describe Article do
           title: "#{n} Article with tag",
           is_draft: false,
           body: "lorem ipsum dorem ditsum",
-          author: author
+          author:
         )
         article.tags << tag
         article.validate!
@@ -191,7 +191,7 @@ RSpec.describe Article do
           title: "#{n} Article from Partner by neighbourhood",
           is_draft: false,
           body: "lorem ipsum dorem ditsum",
-          author: author
+          author:
         )
       end
 
@@ -203,7 +203,7 @@ RSpec.describe Article do
           title: "#{n} Article with tag",
           is_draft: false,
           body: "lorem ipsum dorem ditsum",
-          author: author
+          author:
         )
         article.tags << tag
       end

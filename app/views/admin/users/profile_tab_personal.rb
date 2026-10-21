@@ -31,7 +31,7 @@ class Views::Admin::Users::ProfileTabPersonal < Views::Admin::Base
       end
 
       ImageUpload(
-        form: form,
+        form:,
         attribute: :avatar,
         rounded: 'rounded-xl'
       )

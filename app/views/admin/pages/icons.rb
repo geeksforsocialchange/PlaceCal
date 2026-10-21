@@ -160,7 +160,7 @@ class Views::Admin::Pages::Icons < Views::Admin::Base
           colors.each do |css_class, label_text|
             div(class: 'flex flex-col items-center') do
               div(class: 'flex items-center justify-center p-2 rounded-lg bg-base-200/50 mb-2') do
-                icon(:check_circle, size: '8', css_class: css_class)
+                icon(:check_circle, size: '8', css_class:)
               end
               code(class: 'text-xs font-mono text-gray-600') { "'#{css_class}'" }
               p(class: 'text-xs mt-1') { label_text }

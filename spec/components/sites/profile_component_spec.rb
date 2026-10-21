@@ -13,19 +13,19 @@ RSpec.describe Components::Sites::Profile, type: :component do
   end
 
   it "renders user name" do
-    render_inline(described_class.new(user: user))
+    render_inline(described_class.new(user:))
 
     expect(page).to have_text("Jane Doe")
   end
 
   it "renders user email" do
-    render_inline(described_class.new(user: user))
+    render_inline(described_class.new(user:))
 
     expect(page).to have_text("jane@example.com")
   end
 
   it "renders phone when present" do
-    render_inline(described_class.new(user: user))
+    render_inline(described_class.new(user:))
 
     expect(page).to have_text("01onal234 567890")
   end
@@ -41,14 +41,14 @@ RSpec.describe Components::Sites::Profile, type: :component do
     end
 
     it "does not show call text" do
-      render_inline(described_class.new(user: user))
+      render_inline(described_class.new(user:))
 
       expect(page).not_to have_text("Call on")
     end
   end
 
   it "renders profile structure" do
-    render_inline(described_class.new(user: user))
+    render_inline(described_class.new(user:))
 
     expect(page).to have_css(".profile")
     expect(page).to have_css(".profile__title")

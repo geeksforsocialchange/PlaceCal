@@ -315,7 +315,7 @@ namespace :db do
     bad_events.each do |fields, _|
       uid, dtstart = fields
 
-      event_cluster = Event.where(uid: uid)
+      event_cluster = Event.where(uid:)
 
       start_date = event_cluster.to_h do |event|
         [event.dtstart, out[event.dtstart].to_i + 1]

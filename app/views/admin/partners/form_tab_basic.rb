@@ -19,7 +19,7 @@ class Views::Admin::Partners::FormTabBasic < Views::Admin::Base
       end
 
       ImageUpload(
-        form: form,
+        form:,
         attribute: :image,
         title: t('admin.partners.image.title'),
         aspect: ''

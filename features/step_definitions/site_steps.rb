@@ -4,13 +4,13 @@
 
 Given("there is a site called {string}") do |name|
   slug = name.parameterize
-  @site = create(:site, name: name, slug: slug)
+  @site = create(:site, name:, slug:)
 end
 
 Given("there is a published site called {string}") do |name|
   slug = name.parameterize
   ward = create(:riverside_ward)
-  @site = create(:site, name: name, slug: slug, is_published: true)
+  @site = create(:site, name:, slug:, is_published: true)
   @site.neighbourhoods << ward
 end
 
@@ -18,7 +18,7 @@ Given("there is a partner called {string} in the site {string}") do |partner_nam
   site = Site.find_by(name: site_name) || create(:site, name: site_name, slug: site_name.parameterize, is_published: true)
   ward = create(:riverside_ward)
   address = create(:address, neighbourhood: ward)
-  @partner = create(:partner, name: partner_name, address: address)
+  @partner = create(:partner, name: partner_name, address:)
 
   # Add ward to site to link partner
   site.neighbourhoods << ward unless site.neighbourhoods.include?(ward)
@@ -30,19 +30,19 @@ Given("there is an event called {string} for partner {string}") do |event_name, 
 end
 
 When("I visit the site {string}") do |name|
-  site = Site.find_by(name: name)
+  site = Site.find_by(name:)
   port = Capybara.current_session.server.port
   visit "http://#{site.slug}.lvh.me:#{port}/"
 end
 
 When("I visit the events page for site {string}") do |name|
-  site = Site.find_by(name: name)
+  site = Site.find_by(name:)
   port = Capybara.current_session.server.port
   visit "http://#{site.slug}.lvh.me:#{port}/events"
 end
 
 When("I visit the partners page for site {string}") do |name|
-  site = Site.find_by(name: name)
+  site = Site.find_by(name:)
   port = Capybara.current_session.server.port
   visit "http://#{site.slug}.lvh.me:#{port}/partners"
 end
@@ -74,7 +74,7 @@ Given("there is a partner called {string} in the site {string} with the partners
   neighbourhood = site.neighbourhoods.first
   partnership = Partnership.find_by(name: partnership_name) ||
                 create(:partnership, name: partnership_name)
-  @partner = create(:partner, name: partner_name, address: create(:address, neighbourhood: neighbourhood))
+  @partner = create(:partner, name: partner_name, address: create(:address, neighbourhood:))
   @partner.tags << partnership
 end
 

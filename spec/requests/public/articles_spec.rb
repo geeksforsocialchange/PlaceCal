@@ -15,8 +15,8 @@ RSpec.describe "Public Articles (News)", type: :request do
   describe "GET /news (index)" do
     context "with articles linked to partners" do
       let!(:article) { create(:article, is_draft: false) }
-      let!(:partner1) { create(:partner, address: address) }
-      let!(:partner2) { create(:partner, address: address) }
+      let!(:partner1) { create(:partner, address:) }
+      let!(:partner2) { create(:partner, address:) }
 
       before do
         article.partners << partner1
@@ -51,7 +51,7 @@ RSpec.describe "Public Articles (News)", type: :request do
     end
 
     context "with pagination" do
-      let!(:partner) { create(:partner, address: address) }
+      let!(:partner) { create(:partner, address:) }
 
       def create_published_articles(count)
         count.times do |i|
@@ -115,8 +115,8 @@ RSpec.describe "Public Articles (News)", type: :request do
   describe "GET /news/:id (show)" do
     context "with articles linked to partners" do
       let!(:article) { create(:article, is_draft: false) }
-      let!(:partner1) { create(:partner, address: address) }
-      let!(:partner2) { create(:partner, address: address) }
+      let!(:partner1) { create(:partner, address:) }
+      let!(:partner2) { create(:partner, address:) }
 
       before do
         article.partners << partner1
@@ -157,7 +157,7 @@ RSpec.describe "Public Articles (News)", type: :request do
     end
 
     context "with author name" do
-      let!(:article) { create(:article, is_draft: false, author: author) }
+      let!(:article) { create(:article, is_draft: false, author:) }
 
       it "shows author name" do
         get news_url(article, host: "#{site.slug}.lvh.me")
@@ -211,7 +211,7 @@ RSpec.describe "Public Articles (News)", type: :request do
       # unchanged) is the only way to actually control it.
       def published_article(published_at)
         article = create(:article, is_draft: false, partners: [site_partner])
-        article.update!(published_at: published_at)
+        article.update!(published_at:)
         article
       end
 

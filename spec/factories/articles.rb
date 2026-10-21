@@ -58,7 +58,7 @@ FactoryBot.define do
 
       after(:create) do |article, evaluator|
         evaluator.partner_count.times do
-          create(:article_partner, article: article, partner: create(:partner))
+          create(:article_partner, article:, partner: create(:partner))
         end
       end
     end

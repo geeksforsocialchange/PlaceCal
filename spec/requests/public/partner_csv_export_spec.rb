@@ -10,7 +10,7 @@ RSpec.describe "Partner events CSV export", type: :request do
     let!(:upcoming_event) do
       create(:event,
              organiser: partner,
-             calendar: calendar,
+             calendar:,
              summary: "Tea Dance",
              description: 'Dancing\, tea\; and \"biscuits\"\nAll welcome',
              dtstart: 2.days.from_now.at_beginning_of_hour,
@@ -19,7 +19,7 @@ RSpec.describe "Partner events CSV export", type: :request do
     let!(:past_event) do
       create(:event,
              organiser: partner,
-             calendar: calendar,
+             calendar:,
              summary: "Ancient History",
              dtstart: 2.days.ago.at_beginning_of_hour,
              dtend: 2.days.ago.at_beginning_of_hour + 1.hour)
@@ -96,7 +96,7 @@ RSpec.describe "Partner events CSV export", type: :request do
       let!(:awkward_event) do
         create(:event,
                organiser: partner,
-               calendar: calendar,
+               calendar:,
                summary: %(Knit, natter & "craft" night),
                dtstart: 3.days.from_now.at_beginning_of_hour,
                dtend: 3.days.from_now.at_beginning_of_hour + 1.hour)

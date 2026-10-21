@@ -15,7 +15,7 @@ class Views::Sites::Join < Views::Base
 
     div(class: 'container-editorial py-8') do
       p(class: 'join-note mb-6') { t('sites.join.intro', site: site.name) }
-      Shared::ContactForm(contact_request: contact_request, url: get_in_touch_path, email_cta: false)
+      Shared::ContactForm(contact_request:, url: get_in_touch_path, email_cta: false)
       render_email_cta
     end
   end

@@ -17,7 +17,7 @@ RSpec.describe "Public site navigation", type: :request do
 
   context "with news and a contact email" do
     let(:address) { create(:address, neighbourhood: ward) }
-    let(:partner) { create(:partner, address: address) }
+    let(:partner) { create(:partner, address:) }
 
     before do
       article = create(:article, is_draft: false)

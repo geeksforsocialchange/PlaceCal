@@ -111,7 +111,7 @@ RSpec.describe Calendar, type: :model do
 
       %i[event no_location online_only].each do |strategy|
         it "does not require place for #{strategy} strategy" do
-          calendar = build(:calendar, organiser: partner, strategy: strategy, place: nil)
+          calendar = build(:calendar, organiser: partner, strategy:, place: nil)
           allow(calendar).to receive(:check_source_reachable)
           calendar.valid?
           expect(calendar.errors[:place]).to be_empty
@@ -129,7 +129,7 @@ RSpec.describe Calendar, type: :model do
 
       it "allows valid strategies" do
         %i[event_override event place room_number no_location online_only].each do |strategy|
-          calendar = build(:calendar, strategy: strategy)
+          calendar = build(:calendar, strategy:)
           expect(calendar.strategy.to_sym).to eq(strategy)
         end
       end

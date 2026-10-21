@@ -32,7 +32,7 @@ RSpec.describe PartnerDatatable do
       "order" => { "0" => { "column" => "0", "dir" => "asc" } }
     }.deep_merge(params))
 
-    described_class.new(default_params, view_context: view_context, partners: partners)
+    described_class.new(default_params, view_context:, partners:)
   end
 
   describe "#view_columns" do
@@ -113,7 +113,7 @@ RSpec.describe PartnerDatatable do
       let!(:ward) { create(:neighbourhood, name: "Riverside Ward", unit: "ward") }
       let!(:partner_with_ward) do
         address = create(:address, neighbourhood: ward)
-        create(:partner, name: "Ward Partner", address: address)
+        create(:partner, name: "Ward Partner", address:)
       end
 
       it "shows ward name when partner has address with neighbourhood" do
@@ -143,7 +143,7 @@ RSpec.describe PartnerDatatable do
       it "truncates long ward names" do
         long_ward = create(:neighbourhood, name: "A Very Long Ward Name That Exceeds Twenty Characters", unit: "ward")
         address = create(:address, neighbourhood: long_ward)
-        create(:partner, name: "Long Ward Partner", address: address)
+        create(:partner, name: "Long Ward Partner", address:)
 
         datatable = create_datatable
 
@@ -236,7 +236,7 @@ RSpec.describe PartnerDatatable do
       end
 
       it "shows check icon when has admins" do
-        create(:partner_admin, partner: partner)
+        create(:partner_admin, partner:)
 
         datatable = create_datatable
 
@@ -245,8 +245,8 @@ RSpec.describe PartnerDatatable do
       end
 
       it "includes count in title" do
-        create(:partner_admin, partner: partner)
-        create(:partner_admin, partner: partner)
+        create(:partner_admin, partner:)
+        create(:partner_admin, partner:)
 
         datatable = create_datatable
 

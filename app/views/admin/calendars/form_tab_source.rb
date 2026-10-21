@@ -26,7 +26,7 @@ class Views::Admin::Calendars::FormTabSource < Views::Admin::Base
       render_partner_field(calendar)
 
       SourceInput(
-        form: form,
+        form:,
         test_url: test_source_admin_calendars_path
       )
 

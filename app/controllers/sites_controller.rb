@@ -18,7 +18,7 @@ class SitesController < ApplicationController
       render Views::Sites::Default.new(
         site: @site, places_to_get_computer_access: @places_to_get_computer_access,
         places_with_free_wifi: @places_with_free_wifi,
-        region_tags: region_tags, selected_region: current_region
+        region_tags:, selected_region: current_region
       )
     end
   end
@@ -37,6 +37,6 @@ class SitesController < ApplicationController
   end
 
   def homepage_partners(tag_slug)
-    PartnersQuery.new(site: current_site).call(tag_slug: tag_slug, partnership_id: current_region&.id)
+    PartnersQuery.new(site: current_site).call(tag_slug:, partnership_id: current_region&.id)
   end
 end

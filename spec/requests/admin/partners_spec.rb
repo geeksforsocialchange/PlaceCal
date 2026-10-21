@@ -65,11 +65,11 @@ RSpec.describe "Admin::Partners", type: :request do
       # Must use same ward instance - :riverside_address creates NEW ward via association
       let!(:partner_in_neighbourhood) do
         address = create(:address, neighbourhood: ward)
-        create(:partner, address: address)
+        create(:partner, address:)
       end
       let!(:partner_outside_neighbourhood) do
         address = create(:oldtown_address)
-        create(:partner, address: address)
+        create(:partner, address:)
       end
 
       before { sign_in user }
@@ -234,7 +234,7 @@ RSpec.describe "Admin::Partners", type: :request do
       let(:user) { create(:neighbourhood_admin, neighbourhood: ward) }
       let(:partner) do
         address = create(:address, neighbourhood: ward)
-        create(:partner, address: address)
+        create(:partner, address:)
       end
 
       before { sign_in user }
@@ -324,7 +324,7 @@ RSpec.describe "Admin::Partners", type: :request do
       let(:user) { create(:neighbourhood_admin, neighbourhood: ward) }
       let(:partner) do
         address = create(:address, neighbourhood: ward)
-        create(:partner, address: address)
+        create(:partner, address:)
       end
 
       before { sign_in user }

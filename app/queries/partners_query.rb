@@ -136,7 +136,7 @@ class PartnersQuery
   end
 
   def filter_by_tag(partners, tag_id)
-    partners.where(id: PartnerTag.where(tag_id: tag_id).select(:partner_id))
+    partners.where(id: PartnerTag.where(tag_id:).select(:partner_id))
   end
 
   def filter_by_tag_slug(partners, tag_slug)

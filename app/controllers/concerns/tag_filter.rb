@@ -88,7 +88,7 @@ class TagFilter
     return tag_link_to(page, text, false) if model.count < per_page_value
 
     page_num = (@page_num || 1) + 1
-    tag_link_to page, text, true, page_num: page_num
+    tag_link_to(page, text, true, page_num:)
   end
 
   def prev_page_link(page, _model)
@@ -97,7 +97,7 @@ class TagFilter
 
     return tag_link_to(page, text, false) if page_num < 1
 
-    tag_link_to page, text, true, page_num: page_num
+    tag_link_to(page, text, true, page_num:)
   end
 
   # rubocop:disable Rails/OutputSafety

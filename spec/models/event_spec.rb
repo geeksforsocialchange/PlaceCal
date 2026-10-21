@@ -258,14 +258,14 @@ RSpec.describe Event, type: :model do
       let(:ward) { create(:riverside_ward) }
       let(:site) { create(:site) }
       let(:address) { create(:address, neighbourhood: ward) }
-      let(:partner) { create(:partner, address: address) }
+      let(:partner) { create(:partner, address:) }
       let!(:event1) do
         create(:event,
                organiser: partner,
                summary: "Event in site neighbourhood",
                dtstart: 1.hour.from_now,
                dtend: 2.hours.from_now,
-               address: address)
+               address:)
       end
       let!(:event2) do
         create(:event,
@@ -273,7 +273,7 @@ RSpec.describe Event, type: :model do
                summary: "Second event in site",
                dtstart: 1.hour.from_now,
                dtend: 2.hours.from_now,
-               address: address)
+               address:)
       end
 
       before do
@@ -281,7 +281,7 @@ RSpec.describe Event, type: :model do
       end
 
       it "returns events in the site neighbourhood" do
-        result = EventsQuery.new(site: site).scope
+        result = EventsQuery.new(site:).scope
         expect(result.count).to eq(2)
         expect(result).to include(event1, event2)
       end
@@ -351,20 +351,20 @@ RSpec.describe Event, type: :model do
 
     it "falls back to place address when event has no address" do
       place = create(:partner)
-      event = create(:event, address: nil, place: place)
+      event = create(:event, address: nil, place:)
       expect(event.resolved_address).to eq(place.address)
     end
 
     it "falls back to organiser address when no address or place" do
       organiser = create(:partner)
-      event = create(:event, address: nil, place: nil, organiser: organiser)
+      event = create(:event, address: nil, place: nil, organiser:)
       expect(event.resolved_address).to eq(organiser.address)
     end
 
     it "returns nil when no address is available" do
       online_calendar = create(:calendar, strategy: "online_only")
       organiser = create(:partner, address: nil, service_areas: [create(:service_area)])
-      event = create(:event, address: nil, place: nil, organiser: organiser,
+      event = create(:event, address: nil, place: nil, organiser:,
                              online_address: create(:online_address), calendar: online_calendar)
       expect(event.resolved_address).to be_nil
     end

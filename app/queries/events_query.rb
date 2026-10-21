@@ -65,12 +65,12 @@ class EventsQuery
            organiser_or_place: nil, neighbourhood_id: nil, tag_id: nil, limit: nil)
     # rubocop:enable Metrics/ParameterLists
     events = build_filtered_scope(
-      organiser: organiser,
-      place: place,
-      organiser_or_place: organiser_or_place,
-      neighbourhood_id: neighbourhood_id,
-      tag_id: tag_id,
-      repeating: repeating
+      organiser:,
+      place:,
+      organiser_or_place:,
+      neighbourhood_id:,
+      tag_id:,
+      repeating:
     )
     events = apply_period(events, period)
     events = events.limit(limit) if limit
@@ -126,7 +126,7 @@ class EventsQuery
   end
 
   def show_monthly?(tag_id: nil)
-    monthly_count(tag_id: tag_id) <= FUTURE_LIMIT
+    monthly_count(tag_id:) <= FUTURE_LIMIT
   end
 
   # The soonest event on or after `day`. `future` only filters, so without an
@@ -146,7 +146,7 @@ class EventsQuery
     return [] unless @site
 
     scope = apply_period(filter_by_tag(base_scope, tag_id), period)
-    EventNeighbourhoodCounts.new(scope: scope, site: @site).call
+    EventNeighbourhoodCounts.new(scope:, site: @site).call
   end
 
   # Whether the given event appears on this site — same rules as the event
@@ -198,7 +198,7 @@ class EventsQuery
   def filter_by_tag(events, tag_id)
     return events if tag_id.blank?
 
-    partner_ids = PartnerTag.where(tag_id: tag_id).pluck(:partner_id)
+    partner_ids = PartnerTag.where(tag_id:).pluck(:partner_id)
     events.where(organiser_id: partner_ids).or(events.where(place_id: partner_ids))
   end
 

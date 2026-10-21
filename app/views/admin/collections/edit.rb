@@ -5,6 +5,6 @@ class Views::Admin::Collections::Edit < Views::Admin::Base
 
   def view_template
     PageHeader(model_name: 'Collection', title: collection.name, id: collection.id)
-    render Views::Admin::Collections::Form.new(collection: collection)
+    render Views::Admin::Collections::Form.new(collection:)
   end
 end

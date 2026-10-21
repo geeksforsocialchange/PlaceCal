@@ -5,6 +5,6 @@ class Views::Admin::Supporters::Edit < Views::Admin::Base
 
   def view_template
     PageHeader(model_name: 'Supporter', title: supporter.name, id: supporter.id)
-    render Views::Admin::Supporters::Form.new(supporter: supporter)
+    render Views::Admin::Supporters::Form.new(supporter:)
   end
 end

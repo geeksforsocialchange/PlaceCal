@@ -85,12 +85,12 @@ module CalendarImporter::Events
                                as_plaintext: true),
         description: html_sanitize(description),
         raw_location_from_source: location&.strip,
-        rrule: rrule,
-        place_id: place_id,
-        address_id: address_id,
-        organiser_id: organiser_id,
-        publisher_url: publisher_url,
-        online_address_id: online_address_id }
+        rrule:,
+        place_id:,
+        address_id:,
+        organiser_id:,
+        publisher_url:,
+        online_address_id: }
     end
 
     def footer; end

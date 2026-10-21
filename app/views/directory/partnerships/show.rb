@@ -72,7 +72,7 @@ class Views::Directory::Partnerships::Show < Views::Base
       h2(class: 'allcaps-label text-tertiary mb-4') { t('directory.partnerships.show.partners_heading') }
       div(class: 'grid grid-cols-1 md:grid-cols-2 gap-x-6') do
         displayed_partners.each do |partner|
-          Directory::PartnerMini(partner: partner, event_count: @partner_event_counts[partner.id] || 0)
+          Directory::PartnerMini(partner:, event_count: @partner_event_counts[partner.id] || 0)
         end
       end
       render_see_all_button(t('directory.partnerships.show.see_all_partners', count: partner_count), "#{partnership_base_url}/partners")
@@ -85,10 +85,10 @@ class Views::Directory::Partnerships::Show < Views::Base
     div(class: 'py-6') do
       h2(class: 'allcaps-label text-tertiary mb-4') { t('directory.partnerships.show.upcoming_events') }
       flat_events.first(10).each do |event|
-        Directory::EventRow(event: event)
+        Directory::EventRow(event:)
       end
       Directory::OverflowToggle(items: flat_events.drop(10), label_key: 'directory.partnerships.show.show_more_events') do |event|
-        Directory::EventRow(event: event)
+        Directory::EventRow(event:)
       end
       render_see_all_button(t('directory.partnerships.show.see_all_events'), "#{partnership_base_url}/events")
     end
@@ -96,7 +96,7 @@ class Views::Directory::Partnerships::Show < Views::Base
 
   def render_see_all_button(text, href)
     div(class: 'mt-6') do
-      a(href: href, class: 'btn-dark transition-colors') do
+      a(href:, class: 'btn-dark transition-colors') do
         plain text
         raw(view_context.icon(:external_link, size: nil, css_class: 'w-4 h-4'))
       end
@@ -144,7 +144,7 @@ class Views::Directory::Partnerships::Show < Views::Base
         area_name = @partnership.primary_neighbourhood&.name
         area = area_name ? t('directory.partnerships.show.cta_area', name: area_name) : ''
         div(class: 'text-sm text-tertiary mb-4') do
-          plain t('directory.partnerships.show.cta_text', area: area)
+          plain t('directory.partnerships.show.cta_text', area:)
         end
         if coordinator
           div(class: 'mb-4') do

@@ -57,7 +57,7 @@ class Views::Layouts::Application < Phlex::HTML
           if join_site?
             Join::Header()
           else
-            Shared::Navigation(navigation: navigation, site: site,
+            Shared::Navigation(navigation:, site:,
                                region_tags: view_context.region_tags, selected_region: view_context.current_region)
           end
           # FIXME: move main elem into component to save excess divs
@@ -71,9 +71,9 @@ class Views::Layouts::Application < Phlex::HTML
             Directory::Footer()
           elsif (footer_class = theme.footer_class)
             # Theme footer slot (#3368 D1): the theme owns the whole footer.
-            render footer_class.new(site: site, navigation: navigation)
+            render footer_class.new(site:, navigation:)
           else
-            Sites::Footer(site, navigation: navigation)
+            Sites::Footer(site, navigation:)
           end
         end
       end

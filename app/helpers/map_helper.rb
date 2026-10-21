@@ -42,7 +42,7 @@ module MapHelper
       next group.first if group.length == 1
 
       anchors = group.filter_map { |m| m[:anchor] }
-      merged = { position: position }
+      merged = { position: }
       merged[:anchor] = safe_join(anchors, tag.br) if anchors.any?
       merged
     end

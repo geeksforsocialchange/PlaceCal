@@ -190,7 +190,7 @@ module PlaceCal
     def og_image(path = nil, width: nil, height: nil)
       return @og_image if path.nil?
 
-      @og_image = { path: path.to_s, width: width, height: height }
+      @og_image = { path: path.to_s, width:, height: }
     end
 
     # @param value [String, nil] Phlex component class name rendered in place

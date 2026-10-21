@@ -35,7 +35,7 @@ RSpec.describe "addresses:backfill_city", type: :task do
     result = admin_district.nil? ? {} : { "admin_district" => admin_district }
     body = { "status" => 200, "result" => result }.to_json
     stub_request(:get, "https://api.postcodes.io/postcodes/#{postcode.delete(' ')}")
-      .to_return(status: 200, body: body, headers: { "Content-Type" => "application/json" })
+      .to_return(status: 200, body:, headers: { "Content-Type" => "application/json" })
   end
 
   it "backfills city from the postcodes.io admin_district for NULL-city rows" do

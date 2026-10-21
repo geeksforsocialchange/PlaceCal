@@ -40,7 +40,7 @@ module PlaceCal
 
         boot_rails!(engine, root)
         assert_working_tree!(engine, root)
-        configure_rspec!(system_specs: system_specs)
+        configure_rspec!(system_specs:)
       end
 
       # @return [Pathname]

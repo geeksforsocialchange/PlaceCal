@@ -22,7 +22,7 @@ class Views::Directory::Partnerships::Index < Views::Base
       render_search
       div(class: 'lg:columns-2 gap-x-4') do
         partnership_list.each do |partnership|
-          Directory::PartnershipCard(partnership: partnership)
+          Directory::PartnershipCard(partnership:)
         end
       end
       render_empty_state if partnership_list.empty?

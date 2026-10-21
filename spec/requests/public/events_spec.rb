@@ -7,7 +7,7 @@ RSpec.describe "Public Events", type: :request do
   let(:ward) { create(:riverside_ward) }
   # Must use same ward instance - create partner with address in our ward
   let(:address) { create(:address, neighbourhood: ward) }
-  let(:partner) { create(:partner, address: address) }
+  let(:partner) { create(:partner, address:) }
 
   before do
     site.neighbourhoods << ward
@@ -18,7 +18,7 @@ RSpec.describe "Public Events", type: :request do
       create_list(:event, 5,
                   organiser: partner,
                   dtstart: 1.day.from_now,
-                  address: address)
+                  address:)
     end
 
     it "returns successful response" do
@@ -52,7 +52,7 @@ RSpec.describe "Public Events", type: :request do
              summary: "Tea Dance",
              dtstart: 2.days.from_now.at_beginning_of_hour,
              dtend: 2.days.from_now.at_beginning_of_hour + 2.hours,
-             address: address)
+             address:)
     end
     let!(:past_event) do
       create(:event,
@@ -60,7 +60,7 @@ RSpec.describe "Public Events", type: :request do
              summary: "Ancient History",
              dtstart: 2.days.ago.at_beginning_of_hour,
              dtend: 2.days.ago.at_beginning_of_hour + 1.hour,
-             address: address)
+             address:)
     end
 
     def parsed_csv
@@ -97,7 +97,7 @@ RSpec.describe "Public Events", type: :request do
              organiser: partner,
              summary: "Test Event",
              dtstart: 1.day.from_now,
-             address: address)
+             address:)
     end
 
     it "shows the event details" do
@@ -122,7 +122,7 @@ RSpec.describe "Public Events", type: :request do
                           organiser: partner,
                           dtstart: 2.days.ago,
                           dtend: 2.days.ago + 1.hour,
-                          address: address)
+                          address:)
       get event_url(past_event, host: "#{site.slug}.lvh.me")
       expect(response).to be_successful
       expect(response.body).to include(%(<meta name="robots" content="noindex, noarchive">))
@@ -163,7 +163,7 @@ RSpec.describe "Public Events", type: :request do
       end
 
       it "lists another upcoming event from the same organiser" do
-        create(:event, organiser: partner, summary: "Second Event", dtstart: 2.days.from_now, address: address)
+        create(:event, organiser: partner, summary: "Second Event", dtstart: 2.days.from_now, address:)
         get event_url(event, host: "#{site.slug}.lvh.me")
 
         expect(more_from.at_css("h2").text).to eq(I18n.t("events.show.more_from", name: partner.name))
@@ -178,7 +178,7 @@ RSpec.describe "Public Events", type: :request do
 
       it "leaves out the organiser's events that are not on this site" do
         offsite_organiser = create(:partner, address: create(:address, neighbourhood: create(:oldtown_ward)))
-        onsite_event = create(:event, organiser: offsite_organiser, place: partner, dtstart: 1.day.from_now, address: address)
+        onsite_event = create(:event, organiser: offsite_organiser, place: partner, dtstart: 1.day.from_now, address:)
         create(:event, organiser: offsite_organiser, summary: "Elsewhere Event", dtstart: 2.days.from_now,
                        address: offsite_organiser.address)
         get event_url(onsite_event, host: "#{site.slug}.lvh.me")
@@ -231,14 +231,14 @@ RSpec.describe "Public Events", type: :request do
              organiser: partner,
              summary: "Today Event",
              dtstart: Time.current.beginning_of_day + 10.hours,
-             address: address)
+             address:)
     end
     let!(:future_event) do
       create(:event,
              organiser: partner,
              summary: "Future Event",
              dtstart: 7.days.from_now,
-             address: address)
+             address:)
     end
 
     it "filters events by date" do
@@ -253,7 +253,7 @@ RSpec.describe "Public Events", type: :request do
              organiser: partner,
              summary: "Dated Event",
              dtstart: Time.current.beginning_of_day + 10.hours,
-             address: address)
+             address:)
     end
 
     # Request the .text format so the route is exercised through set_day
@@ -281,13 +281,13 @@ RSpec.describe "Public Events", type: :request do
     let(:tag_site) { create(:site, slug: "tag-site", is_published: true) }
 
     let(:partner_with_tag) do
-      p = create(:partner, name: "Partner with tag", address: address)
+      p = create(:partner, name: "Partner with tag", address:)
       p.tags << tag
       p
     end
 
     let(:partner_without_tag) do
-      create(:partner, name: "Partner without tag", address: address)
+      create(:partner, name: "Partner without tag", address:)
     end
 
     before do
@@ -302,7 +302,7 @@ RSpec.describe "Public Events", type: :request do
                summary: "Event with tagged partner #{n}",
                dtstart: 1.hour.from_now,
                dtend: 2.hours.from_now,
-               address: address)
+               address:)
       end
 
       # Create events for untagged partner
@@ -312,7 +312,7 @@ RSpec.describe "Public Events", type: :request do
                summary: "Event without tagged partner #{n}",
                dtstart: 1.hour.from_now,
                dtend: 2.hours.from_now,
-               address: address)
+               address:)
       end
     end
 
@@ -334,7 +334,7 @@ RSpec.describe "Public Events", type: :request do
                   organiser: partner,
                   dtstart: 1.hour.from_now,
                   dtend: 2.hours.from_now,
-                  address: address)
+                  address:)
     end
 
     it "shows correct page title" do
@@ -355,7 +355,7 @@ RSpec.describe "Public Events", type: :request do
              summary: "Community Workshop",
              dtstart: 1.day.from_now,
              dtend: 1.day.from_now + 2.hours,
-             address: address)
+             address:)
     end
 
     it "shows event in hero section" do
@@ -426,7 +426,7 @@ RSpec.describe "Public Events", type: :request do
     end
 
     it "serves event page on base domain" do
-      event = create(:event, organiser: partner, dtstart: 1.day.from_now, address: address)
+      event = create(:event, organiser: partner, dtstart: 1.day.from_now, address:)
       get event_url(event, host: "lvh.me")
       expect(response).to be_successful
     end
@@ -436,7 +436,7 @@ RSpec.describe "Public Events", type: :request do
                      organiser: partner,
                      dtstart: 1.day.from_now.change(hour: 16, min: 0),
                      dtend: 1.day.from_now.change(hour: 17, min: 0),
-                     address: address)
+                     address:)
       get event_url(event, host: "lvh.me")
       expect(response).to be_successful
 
@@ -454,7 +454,7 @@ RSpec.describe "Public Events", type: :request do
                      organiser: partner,
                      dtstart: 1.day.from_now.change(hour: 16, min: 0),
                      dtend: 1.day.from_now.change(hour: 17, min: 0),
-                     address: address)
+                     address:)
       get event_url(event, host: "lvh.me")
       expect(response.body).to include("Event information")
       expect(response.body).to include(event.dtstart.strftime("%a %-e %b %Y"))
@@ -462,8 +462,8 @@ RSpec.describe "Public Events", type: :request do
     end
 
     it "shows the venue in the event information card, linked to the venue partner" do
-      venue = create(:partner, name: "The Venue", address: address)
-      event = create(:event, organiser: partner, place: venue, dtstart: 1.day.from_now, address: address)
+      venue = create(:partner, name: "The Venue", address:)
+      event = create(:event, organiser: partner, place: venue, dtstart: 1.day.from_now, address:)
       get event_url(event, host: "lvh.me")
 
       info = Nokogiri::HTML(response.body).css(".rounded-card").find { |c| c.text.include?("Event information") }
@@ -474,17 +474,17 @@ RSpec.describe "Public Events", type: :request do
     end
 
     it "shows the organised-by card with a link to the organiser" do
-      event = create(:event, organiser: partner, dtstart: 1.day.from_now, address: address)
+      event = create(:event, organiser: partner, dtstart: 1.day.from_now, address:)
       get event_url(event, host: "lvh.me")
       expect(response.body).to include("Organised by")
       expect(response.body).to include(partner_path(partner))
     end
 
     it "still titles the organiser card when the organiser has no contact details" do
-      organiser = create(:partner, name: "Contactless Org", address: address,
+      organiser = create(:partner, name: "Contactless Org", address:,
                                    public_email: nil, public_phone: nil, url: nil,
                                    facebook_link: nil, twitter_handle: nil, instagram_handle: nil)
-      event = create(:event, organiser: organiser, dtstart: 1.day.from_now, address: address)
+      event = create(:event, organiser:, dtstart: 1.day.from_now, address:)
       get event_url(event, host: "lvh.me")
       expect(response).to be_successful
       expect(response.body).to include("Organised by")
@@ -492,19 +492,19 @@ RSpec.describe "Public Events", type: :request do
     end
 
     it "shows the share card with the canonical URL and iCal link" do
-      event = create(:event, organiser: partner, dtstart: 1.day.from_now, address: address)
+      event = create(:event, organiser: partner, dtstart: 1.day.from_now, address:)
       get event_url(event, host: "lvh.me")
       expect(response.body).to include("placecal.org/events/#{event.id}")
       expect(response.body).to include("Subscribe via iCal")
     end
 
     it "shows other upcoming events from the same organiser" do
-      event = create(:event, organiser: partner, dtstart: 1.day.from_now, address: address)
+      event = create(:event, organiser: partner, dtstart: 1.day.from_now, address:)
       other = create(:event,
                      organiser: partner,
                      summary: "Another Organiser Event",
                      dtstart: 3.days.from_now,
-                     address: address)
+                     address:)
       get event_url(event, host: "lvh.me")
       expect(response.body).to include("Another Organiser Event")
       expect(response.body).to include(event_path(other))
@@ -616,11 +616,11 @@ RSpec.describe "Public Events", type: :request do
     before do
       create(:sites_neighbourhood, site: filter_site, neighbourhood: district)
       %w[Hillcrest Valleyview].each do |name|
-        ward = create(:neighbourhood, name: name, unit: "ward", parent: district)
+        ward = create(:neighbourhood, name:, unit: "ward", parent: district)
         address = create(:address, neighbourhood: ward)
-        organiser = create(:partner, address: address)
+        organiser = create(:partner, address:)
         organiser.service_areas << create(:service_area, neighbourhood: ward)
-        create(:future_event, organiser: organiser, address: address)
+        create(:future_event, organiser:, address:)
       end
     end
 

@@ -9,9 +9,9 @@ Given("there is a user called {string}") do |name|
   email = "#{first_name.downcase}.#{last_name.downcase.gsub(' ', '')}@example.org"
 
   @user = create(:user,
-                 first_name: first_name,
-                 last_name: last_name,
-                 email: email)
+                 first_name:,
+                 last_name:,
+                 email:)
 end
 
 When("I edit the user {string}") do |name|

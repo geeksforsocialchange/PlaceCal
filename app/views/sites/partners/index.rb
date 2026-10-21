@@ -22,13 +22,13 @@ class Views::Sites::Partners::Index < Views::Base
         list_heading('partners.index.list_heading')
         Sites::Breadcrumb(trail: [[t('navigation.site.partners'), partners_path]], site_name: site.name) do
           Sites::PartnerFilter(
-            site: site,
-            selected_category: selected_category,
-            selected_neighbourhood: selected_neighbourhood,
-            region_tags: region_tags,
-            selected_region: selected_region,
-            selected_query: selected_query,
-            query: query
+            site:,
+            selected_category:,
+            selected_neighbourhood:,
+            region_tags:,
+            selected_region:,
+            selected_query:,
+            query:
           )
         end
 
@@ -39,7 +39,7 @@ class Views::Sites::Partners::Index < Views::Base
         else
           ul(class: 'partners reset two-col', id: 'partners') do
             partners.each do |partner|
-              Sites::PartnerPreview(partner: partner, site: site)
+              Sites::PartnerPreview(partner:, site:)
             end
           end
         end

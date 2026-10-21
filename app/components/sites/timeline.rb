@@ -57,13 +57,13 @@ class Components::Sites::Timeline < Components::Base
 
     if @show_upcoming
       css = @period == 'upcoming' ? 'active' : ''
-      pages << { text: 'Upcoming', link: upcoming_url, css: css, data: { paginator_target: 'button' } }
+      pages << { text: 'Upcoming', link: upcoming_url, css:, data: { paginator_target: 'button' } }
     end
 
     current = window_start
     date_steps.times do
       css = date_tab_active?(current) ? 'active' : ''
-      pages << { text: format_date(current), link: url_for(current), css: css, data: { paginator_target: 'button' } }
+      pages << { text: format_date(current), link: url_for(current), css:, data: { paginator_target: 'button' } }
       current = step_forward(current)
     end
 

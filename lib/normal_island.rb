@@ -419,10 +419,10 @@ module NormalIsland
 
       {
         country: COUNTRY,
-        region: region,
-        county: county,
-        district: district,
-        ward: ward
+        region:,
+        county:,
+        district:,
+        ward:
       }
     end
 

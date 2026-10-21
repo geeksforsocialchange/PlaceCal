@@ -172,7 +172,7 @@ class Views::Admin::Articles::FormTabText < Views::Admin::Base
   end
 
   def toolbar_button(action, title, &)
-    button(type: 'button', class: 'btn btn-ghost btn-xs px-2', data: { action: action }, title: title, &)
+    button(type: 'button', class: 'btn btn-ghost btn-xs px-2', data: { action: }, title:, &)
   end
 
   def render_markdown_content
