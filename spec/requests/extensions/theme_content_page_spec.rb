@@ -211,8 +211,6 @@ RSpec.describe Views::ThemeContentPage, type: :component do
     expect(described_class.markdown_html(root, "not-committed.md")).to eq("")
   end
 
-  # A page laid out in its own sections keeps core's wrapper and title without
-  # copying view_template.
   it "lets a page replace the markdown-content column and keep the wrapper" do
     page = Class.new(ExampleTheme::Views::Content) do
       private
