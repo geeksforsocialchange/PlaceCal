@@ -221,7 +221,8 @@ RSpec.describe Components::Sites::Event, type: :component do
 
     it "shows online indicator" do
       rendered
-      expect(page).to have_text("Online")
+      expect(page).to have_css(".event__online", text: "Online")
+      expect(page).to have_no_css(".event__repeats")
     end
   end
 
@@ -231,7 +232,8 @@ RSpec.describe Components::Sites::Event, type: :component do
 
     it "shows repeat frequency" do
       rendered
-      expect(page).to have_text("Weekly")
+      expect(page).to have_css(".event__repeats", text: "Weekly")
+      expect(page).to have_no_css(".event__online")
     end
   end
 

@@ -51,7 +51,7 @@ class Components::Sites::Event < Components::Base
       render_detail('event__duration', :event_duration, duration) if duration
       render_date_detail
       render_detail('event__repeats', :event_repeats, repeats) if repeats
-      render_detail('event__repeats', :event_online, t('events.card.online')) if online?
+      render_detail('event__online', :event_online, t('events.card.online')) if online?
       render_organiser if show_organiser?
       render_place if show_place?
       render_detail('event__neighbourhood-line', :neighbourhood, neighbourhood_line) if page? && @event.neighbourhood
