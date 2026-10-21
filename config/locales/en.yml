@@ -124,9 +124,9 @@ en:
       future: "Show all"
     # "on"/"off" are quoted: YAML would otherwise read them as booleans
     repeating:
-      "on": "Show repeats"
-      "last": "Show repeats last"
-      "off": "Hide repeats"
+      "on": "All events"
+      "off": "Only one-off events"
+      "only": "Only repeating events"
     # Day strip event filter (D22): the Today / Tomorrow / next five days
     # navigation rendered for themes with event_filter_style :day_strip.
     day_strip:
@@ -142,8 +142,8 @@ en:
       from_date: "From %{date}"
       date_format: "%a %-d %b"
       sorted_by_name: "Sorted by name"
-      repeats_last: "Repeats last"
-      repeats_hidden: "Repeats hidden"
+      one_off_only: "One-off events only"
+      repeating_only: "Repeating events only"
       reset: "Reset filters"
 
   # Region selector shown on local sites with more than one Partnership tag
