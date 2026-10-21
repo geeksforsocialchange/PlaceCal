@@ -55,8 +55,7 @@ RSpec.describe JoinMailer, type: :mailer do
     end
   end
 
-  # The mail is rendered in a job, where Current is reset, so the mailer sets it
-  # from the join's own site rather than trusting the caller's (#3368 D19).
+  # Rendered in a job, so the mailer sets Current from the enquiry's own site.
   describe "theme-scoped copy" do
     let(:themed_site) { create(:site, name: "Themed", theme: "example_theme", contact_email: "hello@example.org") }
 

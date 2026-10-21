@@ -137,8 +137,7 @@ class PartnersController < ApplicationController
     @show_monthly = query.show_monthly?
   end
 
-  # Totals come from per-day counts so the header reports the partner's whole
-  # upcoming set; only the first `@days` days of events are loaded.
+  # Totals from per-day counts cover every upcoming event; only the first @days days load.
   def assign_days_windowed_events(sort:, query: EventsQuery.new(site: nil, day: @current_day))
     day_counts = query.future_counts_by_day(organiser_or_place: @partner, repeating: @repeating)
     last_day = day_counts.keys.first(@days).last
