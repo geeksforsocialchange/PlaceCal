@@ -1,9 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-# Opens one PR per extension whose newest release tag is ahead of its Gemfile pin,
-# unless a PR for that version was already opened, merged or closed, and closes
-# the open pin PRs it supersedes. Plain Ruby, no Rails boot; DRY_RUN=1 only prints.
+# Opens a pin PR per extension with a newer tag, once per version. Plain Ruby; DRY_RUN=1 only prints.
 
 require 'json'
 require 'open3'
