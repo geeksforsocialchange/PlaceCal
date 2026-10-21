@@ -19,6 +19,9 @@ proxy:
     - placecal.org
     - "*.placecal.org"
     - www.queerleeds.lgbt
+    # The Trans Dimension, served by its extension theme
+    - transdimension.uk
+    - www.transdimension.uk
 
 accessories:
   db:
