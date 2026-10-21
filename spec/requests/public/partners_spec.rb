@@ -416,6 +416,33 @@ RSpec.describe "Public Partners", type: :request do
         expect(response.body).to include("Show 4 more days")
       end
     end
+
+    context "with more upcoming events than EventsQuery::FUTURE_LIMIT" do
+      before do
+        60.times do |i|
+          start = ((i / 5) + 1).days.from_now.at_beginning_of_day + 9.hours + (i % 5).hours
+          create(:event, organiser: partner, calendar: calendar,
+                         summary: format("Busy Event %02d", i), dtstart: start, dtend: start + 30.minutes)
+        end
+      end
+
+      it "reports the real total, not the capped one" do
+        get partner_url(partner, host: "#{site.slug}.lvh.me")
+
+        expect(response.body).to include("60 events")
+        expect(response.body).to include("across 12 days")
+        expect(events_browser_html.scan("Busy Event").size).to eq(20)
+      end
+
+      it "reveals events past the 50th when more days are requested" do
+        get partner_url(partner, host: "#{site.slug}.lvh.me", params: { days: 12 })
+        html = events_browser_html
+
+        expect(html.scan("Busy Event").size).to eq(60)
+        expect(html).to include("Busy Event 59")
+        expect(html).not_to include("partner-events__more")
+      end
+    end
   end
 
   describe "GET /partners/:id period defaulting" do

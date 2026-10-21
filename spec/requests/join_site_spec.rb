@@ -5,6 +5,8 @@ require "rails_helper"
 # The join marketing site (join.placecal.org, #3163), served entirely from
 # the join subdomain: unknown paths there bounce to the apex.
 RSpec.describe "Join marketing site", type: :request do
+  include ActiveJob::TestHelper
+
   describe "the join subdomain" do
     it "serves the homepage" do
       get "http://join.lvh.me/"
@@ -120,20 +122,33 @@ RSpec.describe "Join marketing site", type: :request do
       post "http://join.lvh.me/book-a-demo", params: { contact_request: params }
     end
 
-    it "sends the enquiry and redirects home" do
+    it "queues the enquiry as a demo and redirects home" do
       expect do
         submit_demo(name: "Test User", email: "test@example.com",
                     job_org: "Test Org", why: "We would like a demo")
-      end.to change { ActionMailer::Base.deliveries.count }.by(1)
+      end.to have_enqueued_mail(JoinMailer, :join_us).with(hash_including(site_id: nil, demo: true))
 
       expect(response).to redirect_to("http://join.lvh.me/")
-      expect(ActionMailer::Base.deliveries.last.subject).to eq(I18n.t("join_mailer.join_us.subject_demo"))
+    end
+
+    it "sends the demo enquiry mail when the queued job runs" do
+      expect do
+        perform_enqueued_jobs do
+          submit_demo(name: "Test User", email: "test@example.com",
+                      job_org: "Test Org", why: "We would like a demo")
+        end
+      end.to change { ActionMailer::Base.deliveries.count }.by(1)
+
+      mail = ActionMailer::Base.deliveries.last
+      expect(mail.subject).to eq(I18n.t("join_mailer.join_us.subject_demo"))
+      expect(mail.to).to eq([ContactRequest::DEFAULT_RECIPIENT])
+      expect(mail.body.encoded).to include("Test Org")
     end
 
     it "re-renders the form when required fields are missing" do
       expect do
         submit_demo(name: "", email: "", why: "")
-      end.not_to(change { ActionMailer::Base.deliveries.count })
+      end.not_to have_enqueued_mail(JoinMailer, :join_us)
 
       expect(response).to have_http_status(:unprocessable_content)
     end

@@ -137,17 +137,14 @@ class PartnersController < ApplicationController
     @show_monthly = query.show_monthly?
   end
 
-  # Fetches the partner's whole upcoming set (after the repeating filter,
-  # capped like any other "future" listing at EventsQuery::FUTURE_LIMIT) and
-  # windows it down to the first `@days` distinct days. The un-windowed
-  # totals are kept so the events browser header can report the full count
-  # ("23 events across 20 days") independent of how many days are on screen.
+  # Totals from per-day counts cover every upcoming event; only the first @days days load.
   def assign_days_windowed_events(sort:, query: EventsQuery.new(site: nil, day: @current_day))
-    full_events = query.call(period: 'future', organiser_or_place: @partner, repeating: @repeating, sort: sort)
-    @events_total_count = full_events.values.sum(&:size)
-    @events_total_days = full_events.size
-    @events = full_events.first(@days).to_h
-    @more_days = @events_total_days - @events.size
+    day_counts = query.future_counts_by_day(organiser_or_place: @partner, repeating: @repeating)
+    last_day = day_counts.keys.first(@days).last
+    @events_total_count = day_counts.values.sum
+    @events_total_days = day_counts.size
+    @more_days = [day_counts.size - @days, 0].max
+    @events = last_day ? query.future_through(last_day, sort: sort, organiser_or_place: @partner, repeating: @repeating) : {}
   end
 
   def clamp_days(raw_days)
