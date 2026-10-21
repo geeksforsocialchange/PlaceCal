@@ -1,0 +1,61 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Opens one PR per extension whose newest release tag is ahead of its Gemfile pin.
+# Plain Ruby, no Rails boot, so CI needs no database; DRY_RUN=1 only prints.
+
+require 'json'
+require 'open3'
+require_relative '../lib/placecal/extension_release'
+
+DRY_RUN = ENV['DRY_RUN'] == '1'
+ENTRY = /gem\s+['"]([^'"]+)['"],\s*github:\s*['"]([^'"]+)['"],\s*tag:\s*['"]v?(\d+\.\d+\.\d+)['"]/
+
+def run!(*cmd)
+  out, status = Open3.capture2(*cmd)
+  abort "#{cmd.join(' ')} failed" unless status.success?
+  out
+end
+
+def newer?(candidate, current)
+  Gem::Version.new(candidate) > Gem::Version.new(current)
+end
+
+def latest_tag(repo)
+  names = run!('gh', 'api', "repos/#{repo}/tags", '--paginate', '--jq', '.[].name').split
+  names.filter_map { |n| n.delete_prefix('v') if n.match?(/\Av\d+\.\d+\.\d+\z/) }
+       .max_by { |v| Gem::Version.new(v) }
+end
+
+def open_pr?(branch)
+  run!('gh', 'pr', 'list', '--head', branch, '--state', 'open', '--json', 'number', '--jq', 'length').to_i.positive?
+end
+
+def pin(name, repo, from, to)
+  branch = "extensions/#{name}-v#{to}"
+  return puts("#{name}: PR for v#{to} already open") if open_pr?(branch)
+  return puts("#{name}: would pin v#{from} -> v#{to} on #{branch}") if DRY_RUN
+
+  base = run!('git', 'rev-parse', '--abbrev-ref', 'HEAD').strip
+  run!('git', 'checkout', '-q', '-B', branch)
+  File.write('Gemfile', PlaceCal::ExtensionRelease.bump(File.read('Gemfile'), name, to))
+  run!('bundle', 'lock', '--update', name)
+  run!('git', 'commit', '-q', '-m', "Pin #{name} at v#{to}", '--', 'Gemfile', 'Gemfile.lock')
+  run!('git', 'push', '-q', '--force', 'origin', branch)
+  run!('gh', 'pr', 'create', '--base', base, '--head', branch, '--label', 'dependencies',
+       '--title', "Pin #{name} at v#{to}",
+       '--body', "Pins [#{name} v#{to}](https://github.com/#{repo}/releases/tag/v#{to}) " \
+                 "(was v#{from}). Merging deploys it to staging.")
+  run!('git', 'checkout', '-q', base)
+  puts "#{name}: opened PR pinning v#{to}"
+end
+
+group = File.read('Gemfile')[/^group :extensions do\n(.*?)^end/m, 1].to_s
+group.scan(ENTRY).each do |name, repo, current|
+  latest = latest_tag(repo)
+  if latest && newer?(latest, current)
+    pin(name, repo, current, latest)
+  else
+    puts "#{name}: v#{current} is the latest"
+  end
+end
