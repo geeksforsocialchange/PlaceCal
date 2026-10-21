@@ -222,7 +222,7 @@ RSpec.describe Article do
 
     # update_published_at overwrites published_at on create, so set it afterwards.
     def article_published(on)
-      described_class.create!(title: "Article", body: "Body", is_draft: false, author: author).tap do |article|
+      described_class.create!(title: "Article", body: "Body", is_draft: false, author:).tap do |article|
         article.update!(published_at: on)
       end
     end
@@ -253,8 +253,8 @@ RSpec.describe Article do
 
     titles.each do |title|
       it "finds #{title.inspect} by its own parameterized slug" do
-        article = described_class.create!(title: title, body: "Body", is_draft: false, author: author)
-        described_class.create!(title: "Unrelated headline", body: "Body", is_draft: false, author: author)
+        article = described_class.create!(title:, body: "Body", is_draft: false, author:)
+        described_class.create!(title: "Unrelated headline", body: "Body", is_draft: false, author:)
 
         found = described_class.title_slug_candidates(title.parameterize)
 

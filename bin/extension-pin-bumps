@@ -66,8 +66,8 @@ group = File.read('Gemfile')[/^group :extensions do\n(.*?)^end/m, 1].to_s
 group.scan(ENTRY).each do |name, repo, current|
   latest = latest_tag(repo)
   target_prs = latest ? prs_from(PlaceCal::ExtensionPinPlan.branch(name, latest)) : []
-  plan = PlaceCal::ExtensionPinPlan.call(name: name, current: current, latest: latest,
-                                         target_prs: target_prs, open_prs: open_prs)
+  plan = PlaceCal::ExtensionPinPlan.call(name:, current:, latest:,
+                                         target_prs:, open_prs:)
 
   if plan.action == :open
     open_pin_pr(name, repo, current, latest, plan.branch)
