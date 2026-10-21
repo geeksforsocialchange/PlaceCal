@@ -30,6 +30,12 @@ RSpec.describe "Public Redirects", type: :request do
       expect(response).to redirect_to("https://wwwtest.lvh.me/events?period=future")
     end
 
+    it "redirects other methods too" do
+      create(:site, slug: "wwwtest", domain: "wwwtest.lvh.me")
+      post "/get-in-touch", headers: { "Host" => "www.wwwtest.lvh.me" }
+      expect(response).to redirect_to("https://wwwtest.lvh.me/get-in-touch")
+    end
+
     it "leaves a site stored with www alone" do
       create(:site, slug: "leedslike", domain: "www.leedslike.lvh.me")
       get "/", headers: { "Host" => "www.leedslike.lvh.me" }
