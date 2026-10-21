@@ -335,6 +335,28 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
 
       expect(page).not_to have_selector("button span.filters__toggle-label", text: "Neighbourhood")
     end
+
+    context "with the event_neighbourhood_filter theme setting" do
+      let(:query) { EventsQuery.new(site: site) }
+
+      before { allow(query).to receive(:neighbourhoods_with_counts).and_call_original }
+
+      it "renders the filter and counts neighbourhoods by default" do
+        Current.theme = PlaceCal::Theme.new(:fixture)
+        render_inline(described_class.new(**future_attrs, site: site, query: query))
+
+        expect(page).to have_css("div.filters__group--neighbourhood")
+        expect(query).to have_received(:neighbourhoods_with_counts)
+      end
+
+      it "renders no filter and skips the neighbourhood count when off" do
+        Current.theme = PlaceCal::Theme.new(:fixture).tap { |theme| theme.event_neighbourhood_filter false }
+        render_inline(described_class.new(**future_attrs, site: site, query: query))
+
+        expect(page).to have_no_css(".filters__group--neighbourhood")
+        expect(query).not_to have_received(:neighbourhoods_with_counts)
+      end
+    end
   end
 
   describe "day strip filter style (D22)" do

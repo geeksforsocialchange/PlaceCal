@@ -608,4 +608,36 @@ RSpec.describe "Public Events", type: :request do
       end
     end
   end
+
+  describe "neighbourhood filter" do
+    let(:district) { create(:neighbourhood, name: "Filter District", unit: "district") }
+    let(:filter_site) { create(:site, slug: "wards") }
+
+    before do
+      create(:sites_neighbourhood, site: filter_site, neighbourhood: district)
+      %w[Hillcrest Valleyview].each do |name|
+        ward = create(:neighbourhood, name: name, unit: "ward", parent: district)
+        address = create(:address, neighbourhood: ward)
+        organiser = create(:partner, address: address)
+        organiser.service_areas << create(:service_area, neighbourhood: ward)
+        create(:future_event, organiser: organiser, address: address)
+      end
+    end
+
+    it "shows the filter when events span two neighbourhoods" do
+      get events_url(host: "wards.lvh.me", period: "future")
+
+      expect(response.body).to include("filters__group--neighbourhood")
+    end
+
+    it "is left out when the theme turns it off", :theme_registry do
+      PlaceCal::Extensions.register_theme(:no_ward_filter_fixture) { |theme| theme.event_neighbourhood_filter false }
+      filter_site.update!(theme: "no_ward_filter_fixture")
+
+      get events_url(host: "wards.lvh.me", period: "future")
+
+      expect(response).to be_successful
+      expect(response.body).not_to include("filters__group--neighbourhood")
+    end
+  end
 end
