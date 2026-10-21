@@ -1,12 +1,14 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-# Opens one PR per extension whose newest release tag is ahead of its Gemfile pin.
-# Plain Ruby, no Rails boot, so CI needs no database; DRY_RUN=1 only prints.
+# Opens one PR per extension whose newest release tag is ahead of its Gemfile pin,
+# unless a PR for that version was already opened, merged or closed, and closes
+# the open pin PRs it supersedes. Plain Ruby, no Rails boot; DRY_RUN=1 only prints.
 
 require 'json'
 require 'open3'
 require_relative '../lib/placecal/extension_release'
+require_relative '../lib/placecal/extension_pin_plan'
 
 DRY_RUN = ENV['DRY_RUN'] == '1'
 ENTRY = /gem\s+['"]([^'"]+)['"],\s*github:\s*['"]([^'"]+)['"],\s*tag:\s*['"]v?(\d+\.\d+\.\d+)['"]/
@@ -17,23 +19,26 @@ def run!(*cmd)
   out
 end
 
-def newer?(candidate, current)
-  Gem::Version.new(candidate) > Gem::Version.new(current)
-end
-
 def latest_tag(repo)
   names = run!('gh', 'api', "repos/#{repo}/tags", '--paginate', '--jq', '.[].name').split
   names.filter_map { |n| n.delete_prefix('v') if n.match?(/\Av\d+\.\d+\.\d+\z/) }
        .max_by { |v| Gem::Version.new(v) }
 end
 
-def open_pr?(branch)
-  run!('gh', 'pr', 'list', '--head', branch, '--state', 'open', '--json', 'number', '--jq', 'length').to_i.positive?
+def gh_json(*)
+  JSON.parse(run!('gh', *), symbolize_names: true)
 end
 
-def pin(name, repo, from, to)
-  branch = "extensions/#{name}-v#{to}"
-  return puts("#{name}: PR for v#{to} already open") if open_pr?(branch)
+def prs_from(branch)
+  gh_json('pr', 'list', '--head', branch, '--state', 'all', '--json', 'number,state')
+end
+
+def open_prs
+  @open_prs ||= gh_json('pr', 'list', '--state', 'open', '--limit', '200', '--json', 'number,headRefName')
+                .map { |pr| { number: pr[:number], head: pr[:headRefName] } }
+end
+
+def open_pin_pr(name, repo, from, to, branch)
   return puts("#{name}: would pin v#{from} -> v#{to} on #{branch}") if DRY_RUN
 
   base = run!('git', 'rev-parse', '--abbrev-ref', 'HEAD').strip
@@ -50,12 +55,26 @@ def pin(name, repo, from, to)
   puts "#{name}: opened PR pinning v#{to}"
 end
 
+def close_superseded(name, plan)
+  plan.close.each do |pr|
+    next puts("#{name}: would close ##{pr[:number]} (v#{pr[:version]}), superseded by v#{plan.superseded_by}") if DRY_RUN
+
+    run!('gh', 'pr', 'close', pr[:number].to_s, '--comment', "Superseded by v#{plan.superseded_by}.")
+    puts "#{name}: closed ##{pr[:number]} (v#{pr[:version]}), superseded by v#{plan.superseded_by}"
+  end
+end
+
 group = File.read('Gemfile')[/^group :extensions do\n(.*?)^end/m, 1].to_s
 group.scan(ENTRY).each do |name, repo, current|
   latest = latest_tag(repo)
-  if latest && newer?(latest, current)
-    pin(name, repo, current, latest)
+  target_prs = latest ? prs_from(PlaceCal::ExtensionPinPlan.branch(name, latest)) : []
+  plan = PlaceCal::ExtensionPinPlan.call(name: name, current: current, latest: latest,
+                                         target_prs: target_prs, open_prs: open_prs)
+
+  if plan.action == :open
+    open_pin_pr(name, repo, current, latest, plan.branch)
   else
-    puts "#{name}: v#{current} is the latest"
+    puts "#{name}: skipping, #{plan.reason}"
   end
+  close_superseded(name, plan)
 end
