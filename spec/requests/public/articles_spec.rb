@@ -245,6 +245,27 @@ RSpec.describe "Public Articles (News)", type: :request do
         expect(page_action_links.map(&:text)).not_to include(I18n.t("news.show.next"))
         expect(page_action_links.map(&:text)).to include(I18n.t("news.show.previous"))
       end
+
+      context "with two articles published on the same day" do
+        let!(:twin_first) { published_article(2.days.ago) }
+        let!(:twin_second) { published_article(2.days.ago) }
+
+        def link_href(text)
+          page_action_links.find { |a| a.text == I18n.t(text) }&.[](:href)
+        end
+
+        it "steps through them in the order the index lists them" do
+          get news_index_url(host: "#{site.slug}.lvh.me")
+          listed = Nokogiri::HTML(response.body).css("h2.articles__title a").pluck(:href)
+          expect(listed).to eq([newest, twin_second, twin_first, middle, oldest].map { |a| news_path(a) })
+
+          listed.each_with_index do |path, index|
+            get path, headers: { "Host" => "#{site.slug}.lvh.me" }
+            expect(link_href("news.show.previous")).to eq(index.positive? ? listed[index - 1] : nil)
+            expect(link_href("news.show.next")).to eq(listed[index + 1])
+          end
+        end
+      end
     end
 
     context "with an image credit" do
