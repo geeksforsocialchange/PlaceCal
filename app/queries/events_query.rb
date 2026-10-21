@@ -50,7 +50,7 @@ class EventsQuery
   #
   # @param period [String] 'day', 'week', or 'future'
   # @param sort [String] 'time' (default) or 'summary'
-  # @param repeating [String] 'on' (default), 'off', or 'last'
+  # @param repeating [String] 'on' (all, default), 'off' (one-off only), or 'only' (repeating only)
   # @param organiser [Partner] filter to events by this organiser
   # @param place [Partner] filter to events at this place
   # @param organiser_or_place [Partner] filter to events by OR at this organiser
@@ -75,6 +75,22 @@ class EventsQuery
     events = apply_period(events, period)
     events = events.limit(limit) if limit
     group_and_sort(events, sort)
+  end
+
+  # Uncapped, unlike period 'future', so callers can total by day without loading rows.
+  def future_counts_by_day(repeating: 'on', organiser_or_place: nil)
+    build_filtered_scope(repeating: repeating, organiser_or_place: organiser_or_place)
+      .future(@day)
+      .reorder(nil)
+      .group_by_day(:dtstart, series: false)
+      .count
+      .sort.to_h
+  end
+
+  # Grouped like #call but uncapped.
+  def future_through(last_day, sort: 'time', repeating: 'on', organiser_or_place: nil)
+    events = build_filtered_scope(repeating: repeating, organiser_or_place: organiser_or_place)
+    group_and_sort(events.future(@day).where(dtstart: ...last_day.next_day.in_time_zone), sort)
   end
 
   # Returns the base scope as a flat relation for further chaining
@@ -218,7 +234,7 @@ class EventsQuery
   def apply_repeating_filter(events, repeating)
     case repeating
     when 'off' then events.one_off_events_only
-    when 'last' then events.one_off_events_first
+    when 'only' then events.repeating_events_only
     else events
     end
   end

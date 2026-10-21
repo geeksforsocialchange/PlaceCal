@@ -106,6 +106,16 @@ RSpec.describe EventsQuery do
           expect(events).not_to include(recurring_event)
         end
       end
+
+      context "with repeating: 'only'" do
+        it "excludes one-off events" do
+          query = described_class.new(site: site, day: today)
+          result = query.call(period: "future", repeating: "only")
+          events = result.values.flatten
+          expect(events).to include(recurring_event)
+          expect(events).not_to include(one_off_event)
+        end
+      end
     end
 
     describe "sort filtering" do
@@ -376,6 +386,38 @@ RSpec.describe EventsQuery do
       events = result.values.flatten
 
       expect(events).to include(event)
+    end
+  end
+
+  describe "#future_counts_by_day and #future_through" do
+    let(:organiser) { create(:partner) }
+    # A BST date, so a UTC day boundary would put both late events on one day.
+    let(:day) { Date.new(2023, 7, 3) }
+    let(:query) { described_class.new(site: nil, day: day) }
+    let!(:late_event) { create(:event, organiser: organiser, dtstart: Time.zone.local(2023, 7, 4, 23, 30)) }
+    let!(:after_midnight_event) { create(:event, organiser: organiser, dtstart: Time.zone.local(2023, 7, 5, 0, 30)) }
+    let!(:repeating_event) do
+      create(:recurring_event, organiser: organiser, dtstart: Time.zone.local(2023, 7, 6, 10))
+    end
+
+    it "counts events per local day, in date order" do
+      counts = query.future_counts_by_day(organiser_or_place: organiser)
+
+      expect(counts).to eq(Date.new(2023, 7, 4) => 1, Date.new(2023, 7, 5) => 1, Date.new(2023, 7, 6) => 1)
+    end
+
+    it "applies the repeating filter" do
+      expect(query.future_counts_by_day(organiser_or_place: organiser, repeating: "off").keys)
+        .to eq([Date.new(2023, 7, 4), Date.new(2023, 7, 5)])
+      expect(query.future_counts_by_day(organiser_or_place: organiser, repeating: "only").keys)
+        .to eq([Date.new(2023, 7, 6)])
+    end
+
+    it "loads events up to the end of the given local day" do
+      events = query.future_through(Date.new(2023, 7, 4), organiser_or_place: organiser).values.flatten
+
+      expect(events).to eq([late_event])
+      expect(events).not_to include(after_midnight_event, repeating_event)
     end
   end
 

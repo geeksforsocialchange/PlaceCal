@@ -3,20 +3,25 @@
 require "rails_helper"
 
 RSpec.describe "Public Joins (Contact Form)", type: :request do
+  include ActiveJob::TestHelper
+
   # invisible_captcha guards the form with a session timestamp, a spinner token
   # and honeypot fields, all of which are seeded by rendering the form. A
   # realistic submission therefore has to GET the page first, carry its session
   # (hence host! rather than a per-request Host header, so the cookie jar
   # matches) and echo back the spinner. The suite freezes the clock, so the
   # "too quick" threshold is dropped to zero rather than moving time forward.
-  def submit_form(host:, params:, honeypot: nil)
+  # Runs the queued mail job unless `perform: false`, so specs can read deliveries.
+  def submit_form(host:, params:, honeypot: nil, perform: true)
     host! host
     get "/get-in-touch"
 
     body = params.deep_dup
     body[:spinner] = response.body[/name="spinner"[^>]*value="([^"]*)"/, 1]
     body[honeypot] = "spam" if honeypot
-    post "/get-in-touch", params: body
+    return post("/get-in-touch", params: body) unless perform
+
+    perform_enqueued_jobs { post "/get-in-touch", params: body }
   end
 
   let(:valid_params) do
@@ -73,6 +78,12 @@ RSpec.describe "Public Joins (Contact Form)", type: :request do
         expect(response).to be_redirect
       end
 
+      it "queues the mail rather than sending it inside the request" do
+        expect { submit_form(host: "lvh.me", params: valid_params, perform: false) }
+          .to have_enqueued_mail(JoinMailer, :join_us)
+        expect(ActionMailer::Base.deliveries).to be_empty
+      end
+
       it "delivers one mail to the default recipient from the directory" do
         submit_form(host: "lvh.me", params: valid_params)
 
@@ -84,6 +95,13 @@ RSpec.describe "Public Joins (Contact Form)", type: :request do
     end
 
     context "on a site host" do
+      it "queues the mail with the site's id" do
+        site = create(:site, contact_email: "hello@example.org")
+
+        expect { submit_form(host: "#{site.slug}.lvh.me", params: valid_params, perform: false) }
+          .to have_enqueued_mail(JoinMailer, :join_us).with(hash_including(site_id: site.id, demo: false))
+      end
+
       it "delivers to the site's contact_email with the site name in the subject" do
         site = create(:site, contact_email: "hello@example.org")
 
@@ -106,14 +124,13 @@ RSpec.describe "Public Joins (Contact Form)", type: :request do
     end
 
     context "with the invisible captcha honeypot filled" do
-      it "is rejected and sends no mail" do
+      it "is rejected and queues no mail" do
         site = create(:site, contact_email: "hello@example.org")
 
-        submit_form(host: "#{site.slug}.lvh.me",
-                    params: valid_params,
-                    honeypot: InvisibleCaptcha.honeypots.first)
-
-        expect(ActionMailer::Base.deliveries).to be_empty
+        expect do
+          submit_form(host: "#{site.slug}.lvh.me", params: valid_params,
+                      honeypot: InvisibleCaptcha.honeypots.first, perform: false)
+        end.not_to have_enqueued_mail(JoinMailer, :join_us)
       end
     end
 
@@ -133,9 +150,9 @@ RSpec.describe "Public Joins (Contact Form)", type: :request do
         expect(response).to have_http_status(:unprocessable_content)
       end
 
-      it "sends no mail" do
-        submit_form(host: "lvh.me", params: invalid_params)
-        expect(ActionMailer::Base.deliveries).to be_empty
+      it "queues no mail" do
+        expect { submit_form(host: "lvh.me", params: invalid_params, perform: false) }
+          .not_to have_enqueued_mail(JoinMailer, :join_us)
       end
     end
   end

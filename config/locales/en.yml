@@ -124,9 +124,9 @@ en:
       future: "Show all"
     # "on"/"off" are quoted: YAML would otherwise read them as booleans
     repeating:
-      "on": "Show repeats"
-      "last": "Show repeats last"
-      "off": "Hide repeats"
+      "on": "All events"
+      "off": "Only one-off events"
+      "only": "Only repeating events"
     # Day strip event filter (D22): the Today / Tomorrow / next five days
     # navigation rendered for themes with event_filter_style :day_strip.
     day_strip:
@@ -142,8 +142,8 @@ en:
       from_date: "From %{date}"
       date_format: "%a %-d %b"
       sorted_by_name: "Sorted by name"
-      repeats_last: "Repeats last"
-      repeats_hidden: "Repeats hidden"
+      one_off_only: "One-off events only"
+      repeating_only: "Repeating events only"
       reset: "Reset filters"
 
   # Region selector shown on local sites with more than one Partnership tag
@@ -456,7 +456,7 @@ en:
       # Hero back link (#3368), above the section name and title.
       back_to_index: "All partners"
       # Page actions row back link (Components::PageActions, #3368).
-      go_back: "Back to partners"
+      go_back: "All partners"
       accessibility_heading: "Accessibility information"
       contact_heading: "Get in touch"
       address_heading: "Address"
@@ -509,14 +509,14 @@ en:
       # Page actions row (Components::PageActions, #3368): previous/next by
       # publish date, and back to the index. Distinct from `back` above, which
       # labels the article's own inline back link.
-      previous: "Previous article"
-      next: "Next article"
+      previous: "Previous"
+      next: "Next"
       go_back: "Back to news"
     index:
       page_title: "News from your area"
       read_more: "Find out more"
       newer: "Recent news"
-      older: "Older news items"
+      older: "Older news"
       # strftime pattern for the article card date; themes may override
       date_format: "%B %Y"
       title: "News from your area"
@@ -597,9 +597,9 @@ en:
       # Line under the event name in the page header; the name is a link
       by_organiser_html: "By %{name}"
       add_to_calendar: "Add to calendar"
-      go_back: "Back to events"
+      go_back: "All events"
     csv_export:
-      link: "Download events as CSV"
+      link: "Download as CSV"
       # Column headers for the events CSV (app/services/events_csv.rb).
       # These double as Canva Bulk Create field names — the shared poster
       # template's fields are connected to them by name, so renaming a
