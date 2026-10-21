@@ -75,15 +75,6 @@ class Views::Sites::Partners::Show < Views::Base
     end
   end
 
-  def render_accessibility_details(summary_class: nil)
-    details(id: 'accessibility-info') do
-      summary(class: summary_class) { t('partners.show.accessibility_heading') }
-      div(class: 'mt-2 text-sm text-foreground') do
-        raw safe(partner.accessibility_info_html.to_s)
-      end
-    end
-  end
-
   # ── Local site layout ──
 
   def render_local_layout
@@ -115,6 +106,7 @@ class Views::Sites::Partners::Show < Views::Base
       div(class: 'gi gi__2-5') do
         render_partner_image
         render_opening_times
+        render_accessibility
       end
     end
   end
@@ -131,8 +123,6 @@ class Views::Sites::Partners::Show < Views::Base
     p { raw(t('partners.show.service_area_html', areas: partner_service_area_text(partner))) } if partner.has_service_areas?
 
     Shared::Address(address: partner.address)
-
-    render_accessibility_details if partner.accessibility_info_html.present?
 
     return unless partner.managees.any?
 
@@ -169,6 +159,16 @@ class Views::Sites::Partners::Show < Views::Base
       times.each do |slot|
         li { slot }
       end
+    end
+  end
+
+  def render_accessibility
+    return if partner.accessibility_info_html.blank?
+
+    br
+    h2(class: 'udl udl--fw allcaps h4', id: 'accessibility-info') { t('partners.show.accessibility_heading') }
+    div(class: 'accessibility_info') do
+      raw safe(partner.accessibility_info_html.to_s)
     end
   end
 

@@ -148,12 +148,35 @@ RSpec.describe "Public Partners", type: :request do
     end
 
     context "with accessibility info" do
+      let(:sidebar_headings) { Nokogiri::HTML(response.body).css(".gi.gi__2-5 > h2").map(&:text) }
+
       before { partner.update!(accessibility_info: "Wheelchair accessible entrance") }
 
-      it "shows accessibility section" do
+      it "shows the accessibility text in full in the sidebar, not in a collapsible" do
         get partner_url(partner, host: "#{site.slug}.lvh.me")
-        expect(response.body).to include("accessibility-info")
-        expect(response.body).to include("Wheelchair accessible entrance")
+        doc = Nokogiri::HTML(response.body)
+
+        heading = doc.at_css(".gi.gi__2-5 > h2#accessibility-info")
+        expect(heading.text).to eq(I18n.t("partners.show.accessibility_heading"))
+        expect(heading[:class]).to eq("udl udl--fw allcaps h4")
+        expect(heading.next_element.text).to include("Wheelchair accessible entrance")
+        expect(doc.css("details#accessibility-info")).to be_empty
+        expect(doc.at_css(".gi.gi__3-5").text).not_to include("Wheelchair accessible entrance")
+      end
+
+      it "places the accessibility section after the opening times" do
+        partner.update!(opening_times: [{ dayOfWeek: "http://schema.org/Monday",
+                                          opens: "09:00:00", closes: "17:00:00" }].to_json)
+        get partner_url(partner, host: "#{site.slug}.lvh.me")
+
+        expect(sidebar_headings).to eq([I18n.t("partners.show.opening_times_heading"),
+                                        I18n.t("partners.show.accessibility_heading")])
+      end
+
+      it "shows the accessibility section when there are no opening times" do
+        get partner_url(partner, host: "#{site.slug}.lvh.me")
+
+        expect(sidebar_headings).to eq([I18n.t("partners.show.accessibility_heading")])
       end
     end
 
