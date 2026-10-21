@@ -172,8 +172,6 @@ class ApplicationController < ActionController::Base
 
   # Sends www.<domain> and a served-domain site's slug subdomain to the site's canonical URL.
   def redirect_to_site_domain
-    return unless request.get? || request.head?
-
     site = www_alias_site || served_site_on_another_host
     return if site.nil? || performed?
 
@@ -185,8 +183,10 @@ class ApplicationController < ActionController::Base
     Site.served_at(request.host.delete_prefix('www.')) if request.host.start_with?('www.')
   end
 
-  # @return [Site, nil] the current site when its domain is served but this request is not on it
+  # @return [Site, nil] the current site when its domain is served but this GET is not on it
   def served_site_on_another_host
+    return unless request.get? || request.head?
+
     site = current_site
     site if site&.served_domain? && request.host.casecmp(site.domain).nonzero?
   end
