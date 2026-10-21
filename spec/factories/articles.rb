@@ -8,8 +8,10 @@
 #  article_image :string
 #  body          :text             not null
 #  body_html     :string
+#  image_credit  :string
 #  is_draft      :boolean          default(TRUE), not null
 #  published_at  :date
+#  pull_quote    :text
 #  slug          :string
 #  title         :text             not null
 #  created_at    :datetime         not null
@@ -56,7 +58,7 @@ FactoryBot.define do
 
       after(:create) do |article, evaluator|
         evaluator.partner_count.times do
-          create(:article_partner, article: article, partner: create(:partner))
+          create(:article_partner, article:, partner: create(:partner))
         end
       end
     end

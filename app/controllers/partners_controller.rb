@@ -12,6 +12,10 @@ class PartnersController < ApplicationController
   before_action :set_title, only: %i[index show]
 
   PAGINATION_THRESHOLD = 30
+  # Default/step size for the days-based "Show N more days" paging on the
+  # events browser, and the upper bound a visitor can page their way out to.
+  DAYS_DEFAULT = 4
+  DAYS_MAX = 52
 
   # GET /partners
   # GET /partners.json
@@ -31,34 +35,8 @@ class PartnersController < ApplicationController
     redirect_offsite_to_permalink(PartnersQuery.new(site: current_site), @partner)
     return if performed?
 
-    upcoming_count = Event.by_organiser_or_place(@partner).upcoming.count
-    if upcoming_count.zero?
-      # If no events, show an appropriate message why
-      @events = []
-      @no_event_message = no_upcoming_events_reason(@partner)
-    elsif upcoming_count < PAGINATION_THRESHOLD
-      # If only a few, show them all with no pagination
-      query = EventsQuery.new(site: nil, day: @current_day)
-      @events = query.call(period: 'future', organiser_or_place: @partner, sort: 'time')
-      @paginator = false
-    else
-      # If a lot, paginate - default to "upcoming" which shows next N events
-      partner_events = Event.by_organiser(@partner)
-      weekly_count = partner_events.find_next_7_days(@current_day).count
-      @date_period = weekly_count >= EventsQuery::WEEKLY_DENSITY_THRESHOLD ? 'week' : 'month'
-      @period = params[:period] || 'upcoming'
-      @sort = params[:sort] || 'time'
-      @repeating = params[:repeating] || 'on'
-      query = EventsQuery.new(site: nil, day: @current_day)
-      @events = query.call(
-        period: @period,
-        organiser_or_place: @partner,
-        repeating: @repeating,
-        sort: @sort
-      )
-      @show_monthly = query.show_monthly?
-      @paginator = true
-    end
+    @days = clamp_days(params[:days])
+    assign_events_for_show
 
     # Map
     @map = get_map_markers([@partner])
@@ -74,7 +52,9 @@ class PartnersController < ApplicationController
           period: @period, date_period: @date_period, sort: @sort,
           repeating: @repeating, no_event_message: @no_event_message,
           paginator: @paginator, show_monthly: @show_monthly || false,
-          containing_sites: @containing_sites
+          containing_sites: @containing_sites,
+          days: @days, more_days: @more_days || 0,
+          events_total_count: @events_total_count, events_total_days: @events_total_days
         )
       end
       format.ics do
@@ -87,7 +67,7 @@ class PartnersController < ApplicationController
         track_csv_download
         events = Event.by_organiser_or_place(@partner).upcoming.sort_by_time
         site_url = current_site&.url || 'https://placecal.org'
-        send_data EventsCsv.new(events, site_url: site_url).call,
+        send_data EventsCsv.new(events, site_url:).call,
                   filename: "#{@partner.slug}-events.csv", type: :csv
       end
     end
@@ -97,12 +77,79 @@ class PartnersController < ApplicationController
     period = params[:period] || 'week'
     limit = params[:limit]&.to_i || 10
     query = EventsQuery.new(site: nil, day: @current_day)
-    @events = query.call(period: period, place: @partner, sort: 'time', limit: limit)
+    @events = query.call(period:, place: @partner, sort: 'time', limit:)
     response.headers.except! 'X-Frame-Options'
     render layout: false
   end
 
   private
+
+  # Splits the partner show page's three event-listing branches out of #show
+  # to keep that action's complexity in check: no events, a handful of events
+  # (flat, day-windowed), or many events (paginated, day-windowed by default
+  # or the older Timeline/EventFilter paginator for an explicit period).
+  def assign_events_for_show
+    upcoming_count = Event.by_organiser_or_place(@partner).upcoming.count
+    if upcoming_count.zero?
+      @events = []
+      @no_event_message = no_upcoming_events_reason(@partner)
+    elsif upcoming_count < PAGINATION_THRESHOLD
+      assign_flat_events
+    else
+      assign_paginated_events
+    end
+  end
+
+  # If only a few events, show them all with no pagination. The local-site
+  # view windows this by day (new events browser); the directory view keeps
+  # its own client-revealed overflow list, so it gets the whole future set.
+  def assign_flat_events
+    @repeating = params[:repeating] || 'on'
+    @paginator = false
+    query = EventsQuery.new(site: nil, day: @current_day)
+    if directory_request?
+      @events = query.call(period: 'future', organiser_or_place: @partner, repeating: @repeating, sort: 'time')
+    else
+      assign_days_windowed_events(sort: 'time', query:)
+    end
+  end
+
+  # If a lot, paginate - default to "upcoming". On the local-site view this
+  # shows the first few days of events, windowed the same way as the flat
+  # branch above; an explicit day/week/month period keeps the older
+  # Timeline/EventFilter paginator instead (see
+  # Views::Partners::Show#render_events_paginator). The directory view isn't
+  # day-windowed - it keeps its original "next 10, reveal more" behaviour.
+  def assign_paginated_events
+    weekly_count = Event.by_organiser(@partner).find_next_7_days(@current_day).count
+    @date_period = weekly_count >= EventsQuery::WEEKLY_DENSITY_THRESHOLD ? 'week' : 'month'
+    @period = params[:period] || 'upcoming'
+    @sort = params[:sort] || 'time'
+    @repeating = params[:repeating] || 'on'
+    @paginator = true
+
+    query = EventsQuery.new(site: nil, day: @current_day)
+    if !directory_request? && @period == 'upcoming'
+      assign_days_windowed_events(sort: @sort, query:)
+    else
+      @events = query.call(period: @period, organiser_or_place: @partner, repeating: @repeating, sort: @sort)
+    end
+    @show_monthly = query.show_monthly?
+  end
+
+  # Totals from per-day counts cover every upcoming event; only the first @days days load.
+  def assign_days_windowed_events(sort:, query: EventsQuery.new(site: nil, day: @current_day))
+    day_counts = query.future_counts_by_day(organiser_or_place: @partner, repeating: @repeating)
+    last_day = day_counts.keys.first(@days).last
+    @events_total_count = day_counts.values.sum
+    @events_total_days = day_counts.size
+    @more_days = [day_counts.size - @days, 0].max
+    @events = last_day ? query.future_through(last_day, sort:, organiser_or_place: @partner, repeating: @repeating) : {}
+  end
+
+  def clamp_days(raw_days)
+    raw_days.presence&.to_i&.clamp(1, DAYS_MAX) || DAYS_DEFAULT
+  end
 
   def no_upcoming_events_reason(partner)
     if partner.calendars.none?
@@ -130,7 +177,8 @@ class PartnersController < ApplicationController
       partnership_id: params[:partnership],
       neighbourhood_id: params[:neighbourhood]
     }
-    partners = query.call(**filters, sort: @sort)
+    # The directory cards show category chips; the site partner cards do not.
+    partners = query.call(**filters, sort: @sort).includes(:categories)
     paginate_with_az_filter(partners)
 
     # Each facet's counts cross-filter on the OTHER active filters but not its
@@ -174,13 +222,15 @@ class PartnersController < ApplicationController
   def render_local_index
     @selected_category = params[:category] if params[:category].present? && Integer(params[:category], exception: false)
     @selected_neighbourhood = params[:neighbourhood] if params[:neighbourhood].present? && Integer(params[:neighbourhood], exception: false)
+    @selected_query = params[:q].presence
 
     @region = current_region
     query = PartnersQuery.new(site: current_site)
     @partners = query.call(
       neighbourhood_id: @selected_neighbourhood,
       tag_id: @selected_category,
-      partnership_id: @region&.id
+      partnership_id: @region&.id,
+      query: @selected_query
     )
 
     @map = get_map_markers(@partners) if @partners.detect(&:address)
@@ -189,8 +239,9 @@ class PartnersController < ApplicationController
       partners: @partners, site: @site,
       map: @map, selected_category: @selected_category,
       selected_neighbourhood: @selected_neighbourhood,
-      region_tags: region_tags, selected_region: @region,
-      query: query
+      region_tags:, selected_region: @region,
+      selected_query: @selected_query,
+      query:
     )
   end
 end

@@ -12,7 +12,7 @@ class PartnerFacets
 
   # @return [Array<Hash>] { neighbourhood:, count: }
   def neighbourhoods_with_counts(scope: nil)
-    pairs = neighbourhood_partner_pairs(scope: scope)
+    pairs = neighbourhood_partner_pairs(scope:)
     return [] if pairs.empty?
 
     direct_ids = pairs.map { |r| r['neighbourhood_id'] }.uniq
@@ -30,7 +30,7 @@ class PartnerFacets
   # @param selected_id keeps that neighbourhood in the tree even when the scope
   #   leaves it empty, so the picker still reflects the active selection
   def neighbourhood_tree(scope: nil, selected_id: nil)
-    pairs = neighbourhood_partner_pairs(scope: scope)
+    pairs = neighbourhood_partner_pairs(scope:)
     direct = Neighbourhood.where(id: pairs.map { |r| r['neighbourhood_id'] }.uniq).to_a
 
     selected = Neighbourhood.find_by(id: selected_id) if selected_id.present?
@@ -61,7 +61,7 @@ class PartnerFacets
   def tags_with_counts(type, scope)
     Tag
       .joins(:partner_tags)
-      .where(partner_tags: { partner_id: (scope || @default_scope).reorder(nil).select(:id) }, type: type)
+      .where(partner_tags: { partner_id: (scope || @default_scope).reorder(nil).select(:id) }, type:)
       .group(:id, :name)
       .order(:name)
       .select('tags.*, COUNT(partner_tags.partner_id) as partner_count')

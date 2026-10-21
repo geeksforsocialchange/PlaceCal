@@ -13,7 +13,7 @@ RSpec.describe MoveMossleyToTheExtensionTheme do
   # Straight to the column, because these are exactly the values the model
   # refuses.
   def site_on(slug, theme)
-    create(:site, slug: slug).tap { |site| site.update_column(:theme, theme) } # rubocop:disable Rails/SkipsModelValidations
+    create(:site, slug:).tap { |site| site.update_column(:theme, theme) } # rubocop:disable Rails/SkipsModelValidations
   end
 
   before { ActiveRecord::Migration.verbose = false }

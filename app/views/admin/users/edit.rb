@@ -24,7 +24,7 @@ class Views::Admin::Users::Edit < Views::Admin::Base
                       display_only: displayable_fields,
                       html: { data: { controller: 'form-tabs live-validation',
                                       'form-tabs-storage-key-value': 'userTabAfterSave' } }) do |form|
-      render Views::Admin::Users::Form.new(form: form, user: user)
+      render Views::Admin::Users::Form.new(form:, user:)
       SaveBar(
         multi_step: true,
         tab_name: 'user_tabs',

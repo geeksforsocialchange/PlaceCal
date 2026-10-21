@@ -35,7 +35,7 @@ class Views::Admin::Users::Profile < Views::Admin::Base
         controller_name: 'form-tabs',
         checked: true
       ) do
-        render Views::Admin::Users::ProfileTabPersonal.new(form: form)
+        render Views::Admin::Users::ProfileTabPersonal.new(form:)
       end
 
       TabPanel(
@@ -44,7 +44,7 @@ class Views::Admin::Users::Profile < Views::Admin::Base
         hash: 'password',
         controller_name: 'form-tabs'
       ) do
-        render Views::Admin::Users::ProfileTabPassword.new(form: form)
+        render Views::Admin::Users::ProfileTabPassword.new(form:)
       end
 
       TabPanel(
@@ -53,7 +53,7 @@ class Views::Admin::Users::Profile < Views::Admin::Base
         hash: 'permissions',
         controller_name: 'form-tabs'
       ) do
-        render Views::Admin::Users::ProfileTabPermissions.new(form: form)
+        render Views::Admin::Users::ProfileTabPermissions.new(form:)
       end
     end
   end

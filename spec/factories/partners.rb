@@ -119,7 +119,7 @@ FactoryBot.define do
 
       after(:create) do |partner, evaluator|
         evaluator.service_area_wards.each do |ward|
-          create(:service_area, partner: partner, neighbourhood: ward)
+          create(:service_area, partner:, neighbourhood: ward)
         end
       end
     end
@@ -131,7 +131,7 @@ FactoryBot.define do
       association :address, factory: :riverside_address
 
       after(:create) do |partner|
-        create(:service_area, partner: partner, neighbourhood: create(:neighbourhood))
+        create(:service_area, partner:, neighbourhood: create(:neighbourhood))
       end
     end
   end

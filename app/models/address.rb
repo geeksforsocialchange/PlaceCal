@@ -56,7 +56,7 @@ class Address < ApplicationRecord
 
   # ==== Scopes ====
   scope :find_by_street_or_postcode, lambda { |street, postcode|
-    where(street_address: street).or(where(postcode: postcode))
+    where(street_address: street).or(where(postcode:))
   }
 
   # ==== Callbacks ====
@@ -75,7 +75,7 @@ class Address < ApplicationRecord
       street_address: components[0],
       street_address2: components[1],
       street_address3: components[2],
-      postcode: postcode
+      postcode:
     )
     address.save ? address : nil
   end

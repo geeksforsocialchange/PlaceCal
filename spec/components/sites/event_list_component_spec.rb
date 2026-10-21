@@ -24,7 +24,7 @@ RSpec.describe Components::Sites::EventList, type: :component do
 
   let(:attrs) do
     {
-      events: events,
+      events:,
       period: "day",
       show_neighbourhoods: false
     }

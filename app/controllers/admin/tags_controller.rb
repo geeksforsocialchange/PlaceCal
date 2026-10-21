@@ -16,7 +16,7 @@ module Admin
         format.json do
           render json: TagDatatable.new(
             params,
-            view_context: view_context,
+            view_context:,
             tags: @tags
           )
         end

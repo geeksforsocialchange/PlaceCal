@@ -63,7 +63,7 @@ class Datatable < AjaxDatatablesRails::ActiveRecord
 
   # Delegate to SvgIconsHelper via view context
   def icon(name, size: '4', css_class: '')
-    @view.icon(name, size: size, css_class: css_class).to_s
+    @view.icon(name, size:, css_class:).to_s
   end
 
   # Shared relative time formatting for datatable cells

@@ -78,7 +78,7 @@ class Views::Directory::Partners::Index < Views::Base
         active: @sort == value
       }
     end
-    Directory::ToggleTabs(items: items, aria_label: t('directory.aria.sort_order'))
+    Directory::ToggleTabs(items:, aria_label: t('directory.aria.sort_order'))
   end
 
   def render_partner_list
@@ -86,7 +86,7 @@ class Views::Directory::Partners::Index < Views::Base
       if @sort == 'name'
         render_alphabetical_list
       else
-        partner_list.each { |partner| Directory::PartnerCard(partner: partner, site: @site, area: @area_labels[partner.id]) }
+        partner_list.each { |partner| Directory::PartnerCard(partner:, site: @site, area: @area_labels[partner.id]) }
       end
     end
 
@@ -112,7 +112,7 @@ class Views::Directory::Partners::Index < Views::Base
         h2(id: "letter-#{letter}",
            class: '[column-span:all] font-serif text-2xl text-foreground mt-8 mb-3 pt-3 border-t-2 border-rules scroll-mt-4') { letter }
       end
-      Directory::PartnerCard(partner: partner, site: @site, area: @area_labels[partner.id])
+      Directory::PartnerCard(partner:, site: @site, area: @area_labels[partner.id])
     end
   end
 

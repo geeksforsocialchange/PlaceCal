@@ -257,7 +257,7 @@ RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
       before do
         calendar.update_column(:calendar_state, "idle")
         calendar.update_column(:last_import_at, Time.current)
-        create(:event, calendar: calendar)
+        create(:event, calendar:)
       end
 
       it "renders calendar name cell with link" do

@@ -5,17 +5,17 @@
 
 # Neighbourhood steps
 Given("there is a neighbourhood called {string}") do |name|
-  create(:neighbourhood, name: name, name_abbr: name, unit: "ward")
+  create(:neighbourhood, name:, name_abbr: name, unit: "ward")
 end
 
 # Collection steps
 Given("there is a collection called {string}") do |name|
-  create(:collection, name: name)
+  create(:collection, name:)
 end
 
 # Supporter steps
 Given("there is a supporter called {string}") do |name|
-  create(:supporter, name: name)
+  create(:supporter, name:)
 end
 
 # Dashboard steps

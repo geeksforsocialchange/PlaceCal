@@ -50,7 +50,7 @@ class EventsQuery
   #
   # @param period [String] 'day', 'week', or 'future'
   # @param sort [String] 'time' (default) or 'summary'
-  # @param repeating [String] 'on' (default), 'off', or 'last'
+  # @param repeating [String] 'on' (all, default), 'off' (one-off only), or 'only' (repeating only)
   # @param organiser [Partner] filter to events by this organiser
   # @param place [Partner] filter to events at this place
   # @param organiser_or_place [Partner] filter to events by OR at this organiser
@@ -65,16 +65,32 @@ class EventsQuery
            organiser_or_place: nil, neighbourhood_id: nil, tag_id: nil, limit: nil)
     # rubocop:enable Metrics/ParameterLists
     events = build_filtered_scope(
-      organiser: organiser,
-      place: place,
-      organiser_or_place: organiser_or_place,
-      neighbourhood_id: neighbourhood_id,
-      tag_id: tag_id,
-      repeating: repeating
+      organiser:,
+      place:,
+      organiser_or_place:,
+      neighbourhood_id:,
+      tag_id:,
+      repeating:
     )
     events = apply_period(events, period)
     events = events.limit(limit) if limit
     group_and_sort(events, sort)
+  end
+
+  # Uncapped, unlike period 'future', so callers can total by day without loading rows.
+  def future_counts_by_day(repeating: 'on', organiser_or_place: nil)
+    build_filtered_scope(repeating:, organiser_or_place:)
+      .future(@day)
+      .reorder(nil)
+      .group_by_day(:dtstart, series: false)
+      .count
+      .sort.to_h
+  end
+
+  # Grouped like #call but uncapped.
+  def future_through(last_day, sort: 'time', repeating: 'on', organiser_or_place: nil)
+    events = build_filtered_scope(repeating:, organiser_or_place:)
+    group_and_sort(events.future(@day).where(dtstart: ...last_day.next_day.in_time_zone), sort)
   end
 
   # Returns the base scope as a flat relation for further chaining
@@ -126,7 +142,7 @@ class EventsQuery
   end
 
   def show_monthly?(tag_id: nil)
-    monthly_count(tag_id: tag_id) <= FUTURE_LIMIT
+    monthly_count(tag_id:) <= FUTURE_LIMIT
   end
 
   # The soonest event on or after `day`. `future` only filters, so without an
@@ -146,7 +162,7 @@ class EventsQuery
     return [] unless @site
 
     scope = apply_period(filter_by_tag(base_scope, tag_id), period)
-    EventNeighbourhoodCounts.new(scope: scope, site: @site).call
+    EventNeighbourhoodCounts.new(scope:, site: @site).call
   end
 
   # Whether the given event appears on this site — same rules as the event
@@ -165,9 +181,9 @@ class EventsQuery
   # ===================
 
   # Events for the whole directory (no site) or, via SiteEventsScope, the ones
-  # that belong to this site. Preloads place and organiser for the cards.
+  # that belong to this site. Preloads what the event card reads per event.
   def base_scope
-    @base_scope ||= events_in_scope.includes(:place, :organiser)
+    @base_scope ||= events_in_scope.includes(:place, :organiser, :online_address, address: :neighbourhood)
   end
 
   def events_in_scope
@@ -198,7 +214,7 @@ class EventsQuery
   def filter_by_tag(events, tag_id)
     return events if tag_id.blank?
 
-    partner_ids = PartnerTag.where(tag_id: tag_id).pluck(:partner_id)
+    partner_ids = PartnerTag.where(tag_id:).pluck(:partner_id)
     events.where(organiser_id: partner_ids).or(events.where(place_id: partner_ids))
   end
 
@@ -218,7 +234,7 @@ class EventsQuery
   def apply_repeating_filter(events, repeating)
     case repeating
     when 'off' then events.one_off_events_only
-    when 'last' then events.one_off_events_first
+    when 'only' then events.repeating_events_only
     else events
     end
   end

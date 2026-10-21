@@ -12,7 +12,7 @@ class Views::Admin::Partners::FormTabTags < Views::Admin::Base
     )
 
     div(class: 'space-y-6 max-w-2xl') do
-      render Views::Admin::Partners::PartnershipFields.new(form: form)
+      render Views::Admin::Partners::PartnershipFields.new(form:)
       render_facilities(partner)
       render_categories(partner)
     end

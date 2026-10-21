@@ -16,7 +16,7 @@ class PartnershipsController < ApplicationController
 
   def show
     @partnership = Site.includes(:site_admin, :primary_neighbourhood).friendly.find(params[:id])
-    @partners = PartnersQuery.new(site: @partnership).call
+    @partners = PartnersQuery.new(site: @partnership).call.includes(:categories)
     @upcoming_events = EventsQuery.new(site: @partnership).call(period: 'future')
 
     flat_partners = Array(@partners.respond_to?(:each_pair) ? @partners.values.flatten : @partners)

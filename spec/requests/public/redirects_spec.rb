@@ -66,10 +66,8 @@ RSpec.describe "Public Redirects", type: :request do
       expect(instantiated).not_to include("Article")
     end
 
-    # Article.for_site joins through partner tags with no DISTINCT, so the row
-    # count is articles times tag matches rather than articles. A scanner
-    # walking /news/wp-admin, /news/backup and the rest runs this once per
-    # request, so it is bounded on both counts.
+    # A scanner walking /news/wp-admin, /news/backup and the rest runs this once
+    # per request, so it reads deduplicated rows, capped.
     it "reads a bounded, deduplicated set of rows" do
       queries = []
       subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*args|
@@ -86,6 +84,38 @@ RSpec.describe "Public Redirects", type: :request do
       sql, binds = queries.find { |(query, _binds)| query.include?('"articles"."title"') && query.include?("LIMIT") }
       expect(sql).to include("SELECT DISTINCT")
       expect(binds).to include(NewsController::FALLBACK_SCAN_LIMIT)
+    end
+
+    it "301s a title whose accents parameterize away" do
+      create(:article, title: "Café Society: crème brûlée", slug: "cafe-night", is_draft: false).tap { |a| a.tags << tag }
+
+      get "/news/cafe-society-creme-brulee", headers: { "Host" => "#{site.slug}.lvh.me" }
+      expect(response).to redirect_to("/news/cafe-night")
+    end
+
+    context "with more published articles than the scan limit" do
+      # insert_all keeps 2,001 rows quick. The target comes last by date and by
+      # insertion, so it is outside any first page.
+      before do
+        now = Time.current
+        filler = Array.new(NewsController::FALLBACK_SCAN_LIMIT + 1) do |n|
+          { title: "Filler article #{n}", slug: "filler-#{n}", body: "Body", is_draft: false,
+            published_at: now.to_date, author_id: article.author_id, created_at: now, updated_at: now }
+        end
+        ids = Article.insert_all(filler, returning: :id).rows.flatten # rubocop:disable Rails/SkipsModelValidations
+        ArticleTag.insert_all(ids.map { |id| { article_id: id, tag_id: tag.id } }) # rubocop:disable Rails/SkipsModelValidations
+
+        create(:article, title: "The one we want", slug: "wanted-canonical", is_draft: false).tap do |target|
+          target.tags << tag
+          target.update!(published_at: 5.years.ago)
+        end
+      end
+
+      it "still finds a match outside the first page" do
+        get "/news/the-one-we-want", headers: { "Host" => "#{site.slug}.lvh.me" }
+        expect(response).to have_http_status(301)
+        expect(response).to redirect_to("/news/wanted-canonical")
+      end
     end
 
     context "on the nationwide directory" do

@@ -8,12 +8,12 @@ end
 
 Given("I am a partner admin for {string}") do |partner_name|
   partner = Partner.find_by(name: partner_name) || create(:partner, name: partner_name)
-  @current_user = create(:partner_admin, partner: partner, password: "password", password_confirmation: "password")
+  @current_user = create(:partner_admin, partner:, password: "password", password_confirmation: "password")
 end
 
 Given("I am a neighbourhood admin for {string}") do |neighbourhood_name|
   neighbourhood = Neighbourhood.find_by(name: neighbourhood_name) || create(:neighbourhood, name: neighbourhood_name)
-  @current_user = create(:neighbourhood_admin, neighbourhood: neighbourhood, password: "password", password_confirmation: "password")
+  @current_user = create(:neighbourhood_admin, neighbourhood:, password: "password", password_confirmation: "password")
 end
 
 Given("I am logged in") do

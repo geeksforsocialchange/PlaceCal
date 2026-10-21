@@ -145,10 +145,10 @@ class Event < ApplicationRecord
   }
 
   # Filter by Place
-  scope :in_place, ->(place) { where(place: place) }
+  scope :in_place, ->(place) { where(place:) }
 
   # Filter by Organiser
-  scope :by_organiser, ->(organiser) { where(organiser: organiser) }
+  scope :by_organiser, ->(organiser) { where(organiser:) }
 
   # Filter by Organiser or Place
   scope :by_organiser_or_place, ->(organiser) { in_place(organiser).or(by_organiser(organiser)) }
@@ -165,9 +165,8 @@ class Event < ApplicationRecord
     where.not(matching)
   }
 
-  # Only events that don't repeat
   scope :one_off_events_only, -> { where(rrule: false) }
-  scope :one_off_events_first, -> { order(rrule: :asc) }
+  scope :repeating_events_only, -> { where.not(rrule: false) }
 
   scope :upcoming, -> { where(dtstart: DateTime.current.beginning_of_day..) }
   scope :past, -> { where(dtstart: ..DateTime.current.beginning_of_day) }
@@ -197,11 +196,20 @@ class Event < ApplicationRecord
     result.cmd_tuples
   end
 
+  # icalendar < 2.13 serialised each rule as an OpenStruct (keys under "table"), 2.13+ as a flat Struct.
+  # @return [String, nil] raw RFC 5545 FREQ value, e.g. "WEEKLY"
+  def self.rrule_frequency(rrule)
+    rule = rrule.is_a?(Array) ? rrule.first : nil
+    return if rule.blank?
+
+    (rule['table'] || rule)['frequency'].presence
+  end
+
   # ==== Instance methods ====
 
   # @return [String, nil] human-readable recurrence label (e.g. "Weekly")
   def repeat_frequency
-    rrule[0]['table']['frequency'].titleize if rrule
+    self.class.rrule_frequency(rrule)&.titleize
   end
 
   # @return [String] formatted time range, e.g. "09:00 – 10:00"
@@ -300,10 +308,10 @@ class Event < ApplicationRecord
   # Ensures that the event added is unique
   # Checks for a duplicate event with the properties dtstart, summary, and calendar_id
   def unique_event
-    return unless Event.where(uid: uid,
-                              dtstart: dtstart,
-                              summary: summary,
-                              calendar_id: calendar_id)
+    return unless Event.where(uid:,
+                              dtstart:,
+                              summary:,
+                              calendar_id:)
                        .any?
 
     errors.add(:base, 'Unfortunately this event is a duplicate of an ' \

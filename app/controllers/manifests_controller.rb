@@ -18,9 +18,9 @@ class ManifestsController < ApplicationController
       start_url: '/',
       scope: '/',
       display: 'standalone',
-      background_color: background_color,
-      theme_color: theme_color,
-      icons: icons
+      background_color:,
+      theme_color:,
+      icons:
     }
     manifest_data[:description] = description if description.present?
 

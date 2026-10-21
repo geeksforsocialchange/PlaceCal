@@ -7,21 +7,76 @@ RSpec.describe Components::Shared::Address, type: :component do
   let(:raw_location) { "Unformatted Address, Ungeolocated Lane" }
 
   it "renders address information" do
-    render_inline(described_class.new(address: address, raw_location: raw_location))
+    render_inline(described_class.new(address:, raw_location:))
 
     expect(page).to have_text(address.street_address)
     expect(page).to have_text(address.postcode)
   end
 
   it "renders with just an address" do
-    render_inline(described_class.new(address: address, raw_location: nil))
+    render_inline(described_class.new(address:, raw_location: nil))
 
     expect(page).to have_text(address.street_address)
   end
 
   it "renders with raw location when no address" do
-    render_inline(described_class.new(address: nil, raw_location: raw_location))
+    render_inline(described_class.new(address: nil, raw_location:))
 
     expect(page).to have_text(raw_location)
+  end
+
+  describe "directions link" do
+    it "links to Google Maps using the coordinates when present" do
+      render_inline(described_class.new(address:, raw_location: nil))
+
+      link = page.find("a.place_info__directions")
+      expect(link[:href]).to eq(
+        "https://www.google.com/maps/dir/?api=1&destination=#{address.latitude},#{address.longitude}"
+      )
+      expect(link.text).to eq("Google Maps")
+      expect(link[:target]).to eq("_blank")
+      expect(link[:rel]).to eq("noopener")
+    end
+
+    it "offers Apple Maps and OpenStreetMap alongside Google when there are coordinates" do
+      render_inline(described_class.new(address:, raw_location: nil))
+
+      list = page.find("div.place_info__directions-list[role='group']")
+      expect(list["aria-label"]).to eq("Directions")
+      expect(list.all("a").map(&:text)).to eq(["Google Maps", "Apple Maps", "OSM"])
+
+      apple = list.find("a.place_info__directions-apple")
+      expect(apple[:href]).to eq("https://maps.apple.com/?daddr=#{address.latitude},#{address.longitude}")
+      expect(apple[:target]).to eq("_blank")
+      expect(apple[:rel]).to eq("noopener")
+
+      osm = list.find("a.place_info__directions-osm")
+      expect(osm[:href]).to eq("https://www.openstreetmap.org/directions?to=#{address.latitude},#{address.longitude}")
+      expect(osm[:title]).to eq("OpenStreetMap")
+      expect(osm[:target]).to eq("_blank")
+      expect(osm[:rel]).to eq("noopener")
+    end
+
+    it "falls back to the postcode-bearing address when there are no coordinates" do
+      address.latitude = nil
+      address.longitude = nil
+
+      render_inline(described_class.new(address:, raw_location: nil))
+
+      link = page.find("a.place_info__directions")
+      expect(link[:href]).to eq(
+        "https://www.google.com/maps/dir/?api=1&destination=#{CGI.escape(address.to_s)}"
+      )
+      expect(link.text).to eq("Directions")
+      expect(page).not_to have_css("a.place_info__directions-apple")
+      expect(page).not_to have_css("a.place_info__directions-osm")
+    end
+
+    it "is absent without an address" do
+      render_inline(described_class.new(address: nil, raw_location:))
+
+      expect(page).not_to have_css("a.place_info__directions")
+      expect(page).not_to have_css(".place_info__directions-list")
+    end
   end
 end

@@ -164,7 +164,7 @@ class Views::Admin::Partners::New < Views::Admin::Base
         div(class: 'grid grid-cols-1 lg:grid-cols-2 gap-6') do
           FormCard(icon: :map, title: attr_label(:partner, :address)) do
             div(data: { 'partner-wizard-target': 'addressFields', action: 'input->partner-wizard#updateContinueButton' }) do
-              AddressFields(form: form, partner: partner)
+              AddressFields(form:, partner:)
               div(class: 'alert alert-warning mt-4 hidden', data: { 'partner-wizard-target': 'addressIncompleteHint' }) do
                 raw icon(:warning, size: '5', css_class: 'shrink-0')
                 span { t('admin.partners.validation.address_incomplete') }
@@ -314,7 +314,7 @@ class Views::Admin::Partners::New < Views::Admin::Base
   def render_contact_field(form, field, label_text, **data)
     fieldset(class: 'fieldset') do
       legend(class: 'fieldset-legend') { label_text }
-      raw form.input_field(field, class: 'input input-bordered w-full bg-base-100', data: data)
+      raw form.input_field(field, class: 'input input-bordered w-full bg-base-100', data:)
     end
   end
 
@@ -445,7 +445,7 @@ class Views::Admin::Partners::New < Views::Admin::Base
 
   def render_after_create_radio(value, icon_name, bg_class, text_class, title, description, checked: false)
     label(class: 'cursor-pointer') do
-      input(type: 'radio', name: 'after_create', value: value, class: 'peer sr-only', **(checked ? { checked: true } : {}))
+      input(type: 'radio', name: 'after_create', value:, class: 'peer sr-only', **(checked ? { checked: true } : {}))
       div(class: 'card bg-base-100 border-2 border-base-300 peer-checked:border-placecal-orange peer-checked:bg-placecal-orange/5 transition-colors') do
         div(class: 'card-body p-4') do
           div(class: 'flex items-center gap-3') do

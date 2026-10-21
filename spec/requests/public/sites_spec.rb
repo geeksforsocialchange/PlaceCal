@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe "Public Sites", type: :request do
   let(:site_admin) { create(:root_user) }
-  let(:site) { create(:site, slug: "hulme", site_admin: site_admin, url: "https://hulme.lvh.me", place_name: "Hulme Community") }
+  let(:site) { create(:site, slug: "hulme", site_admin:, url: "https://hulme.lvh.me", place_name: "Hulme Community") }
   let(:ward) { create(:riverside_ward) }
 
   before do
@@ -83,7 +83,7 @@ RSpec.describe "Public Sites", type: :request do
   end
 
   describe "custom hero text" do
-    let!(:hero_site) { create(:site, hero_text: "Custom Hero Text", slug: "hero", site_admin: site_admin) }
+    let!(:hero_site) { create(:site, hero_text: "Custom Hero Text", slug: "hero", site_admin:) }
 
     it "shows custom hero text when set" do
       get "http://hero.lvh.me"
@@ -134,7 +134,7 @@ RSpec.describe "Public Sites", type: :request do
         let(:computers) { create(:tag, name: "Computers", slug: "computers", type: "Facility") }
 
         def partner_in(region_tag, name)
-          partner = create(:partner, name: name, address: create(:address, neighbourhood: region_ward))
+          partner = create(:partner, name:, address: create(:address, neighbourhood: region_ward))
           partner.tags << [region_tag, computers]
           partner
         end

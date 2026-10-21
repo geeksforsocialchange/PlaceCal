@@ -5,7 +5,7 @@ class Views::Admin::Users::NeighbourhoodsUserFields < Views::Admin::Base
 
   def view_template
     CascadingNeighbourhoodFields(
-      form: form,
+      form:,
       show_remove: true,
       relation_type: nil,
       title: t('admin.users.fields.new_neighbourhood')

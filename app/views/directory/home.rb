@@ -52,7 +52,7 @@ class Views::Directory::Home < Views::Base
         end
         div(class: 'grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-5 lg:mt-0') do
           @partnerships.first(6).each do |partnership|
-            Directory::PartnershipCard(partnership: partnership)
+            Directory::PartnershipCard(partnership:)
           end
         end
       end
@@ -77,7 +77,7 @@ class Views::Directory::Home < Views::Base
       div(class: 'flex flex-col gap-2') do
         partners = @recent_partners.first(5)
         partners.each do |partner|
-          Directory::PartnerRow(partner: partner, event_count: @partner_event_counts[partner.id] || 0)
+          Directory::PartnerRow(partner:, event_count: @partner_event_counts[partner.id] || 0)
         end
       end
       div(class: 'mt-4') do
@@ -96,7 +96,7 @@ class Views::Directory::Home < Views::Base
       h2(class: 'font-serif font-regular text-section text-foreground mb-4') { t('directory.home.events.heading') }
       div do
         flat_events.first(5).each do |event|
-          Directory::EventRow(event: event)
+          Directory::EventRow(event:)
         end
       end
       div(class: 'mt-4') do

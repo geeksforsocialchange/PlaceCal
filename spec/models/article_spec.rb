@@ -8,8 +8,10 @@
 #  article_image :string
 #  body          :text             not null
 #  body_html     :string
+#  image_credit  :string
 #  is_draft      :boolean          default(TRUE), not null
 #  published_at  :date
+#  pull_quote    :text
 #  slug          :string
 #  title         :text             not null
 #  created_at    :datetime         not null
@@ -137,7 +139,7 @@ RSpec.describe Article do
           title: "#{n} Article from Partner 1",
           is_draft: false,
           body: "lorem ipsum dorem ditsum",
-          author: author
+          author:
         )
       end
 
@@ -147,7 +149,7 @@ RSpec.describe Article do
           title: "#{n} Article from Partner 2",
           is_draft: false,
           body: "lorem ipsum dorem ditsum",
-          author: author
+          author:
         )
       end
 
@@ -167,7 +169,7 @@ RSpec.describe Article do
           title: "#{n} Article with tag",
           is_draft: false,
           body: "lorem ipsum dorem ditsum",
-          author: author
+          author:
         )
         article.tags << tag
         article.validate!
@@ -189,7 +191,7 @@ RSpec.describe Article do
           title: "#{n} Article from Partner by neighbourhood",
           is_draft: false,
           body: "lorem ipsum dorem ditsum",
-          author: author
+          author:
         )
       end
 
@@ -201,13 +203,64 @@ RSpec.describe Article do
           title: "#{n} Article with tag",
           is_draft: false,
           body: "lorem ipsum dorem ditsum",
-          author: author
+          author:
         )
         article.tags << tag
       end
 
       found = described_class.for_site(site).select(:id)
       expect(found.count).to eq(8)
+    end
+  end
+
+  describe "publish order neighbours" do
+    let(:author) { create(:root) }
+    let!(:older) { article_published(Date.new(2026, 1, 1)) }
+    let!(:same_day_first) { article_published(Date.new(2026, 2, 1)) }
+    let!(:same_day_second) { article_published(Date.new(2026, 2, 1)) }
+    let!(:undated) { article_published(nil) }
+
+    # update_published_at overwrites published_at on create, so set it afterwards.
+    def article_published(on)
+      described_class.create!(title: "Article", body: "Body", is_draft: false, author:).tap do |article|
+        article.update!(published_at: on)
+      end
+    end
+
+    it "walks the same order as by_publish_date, ties and undated articles included" do
+      listed = described_class.by_publish_date.to_a
+      expect(listed).to eq([undated, same_day_second, same_day_first, older])
+
+      listed.each_with_index do |article, index|
+        expect(described_class.listed_before(article).first).to eq(index.positive? ? listed[index - 1] : nil)
+        expect(described_class.listed_after(article).first).to eq(listed[index + 1])
+      end
+    end
+  end
+
+  describe ".title_slug_candidates" do
+    let(:author) { create(:root) }
+
+    titles = [
+      "Introducting G(END)ER SWAP",
+      "Café Society: crème brûlée night",
+      "Ærø & Straße",
+      "snake_case  -- spaced - hyphens",
+      "100% fun!",
+      "Ünïcödé 🎉 party",
+      "Ꭰ Cherokee only ᏣᎳᎩ title"
+    ]
+
+    titles.each do |title|
+      it "finds #{title.inspect} by its own parameterized slug" do
+        article = described_class.create!(title:, body: "Body", is_draft: false, author:)
+        described_class.create!(title: "Unrelated headline", body: "Body", is_draft: false, author:)
+
+        found = described_class.title_slug_candidates(title.parameterize)
+
+        expect(found).to include(article)
+        expect(found.map(&:title)).not_to include("Unrelated headline")
+      end
     end
   end
 

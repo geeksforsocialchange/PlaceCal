@@ -13,7 +13,7 @@ RSpec.describe Partner, "service_area" do
 
   describe "validations" do
     it "is valid when empty" do
-      partner.address = create(:address, neighbourhood: neighbourhood)
+      partner.address = create(:address, neighbourhood:)
       partner.save!
 
       expect(partner).to be_valid
@@ -40,12 +40,12 @@ RSpec.describe Partner, "service_area" do
     end
 
     it "must be unique" do
-      partner.address = create(:address, neighbourhood: neighbourhood)
+      partner.address = create(:address, neighbourhood:)
       partner.save!
 
       expect do
-        partner.service_areas.create!(neighbourhood: neighbourhood)
-        partner.service_areas.create!(neighbourhood: neighbourhood)
+        partner.service_areas.create!(neighbourhood:)
+        partner.service_areas.create!(neighbourhood:)
       end.to raise_error(ActiveRecord::RecordInvalid)
     end
 
@@ -59,11 +59,11 @@ RSpec.describe Partner, "service_area" do
 
   describe "reading service areas" do
     it "can be read when present" do
-      partner.address = create(:address, neighbourhood: neighbourhood)
+      partner.address = create(:address, neighbourhood:)
       partner.save!
 
       other_neighbourhood = create(:ashton_neighbourhood)
-      partner.service_areas.create!(neighbourhood: neighbourhood)
+      partner.service_areas.create!(neighbourhood:)
       partner.service_areas.create!(neighbourhood: other_neighbourhood)
 
       neighbourhoods = partner.service_area_neighbourhoods.order("neighbourhoods.name").all

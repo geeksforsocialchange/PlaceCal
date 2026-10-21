@@ -45,19 +45,19 @@ class Views::Admin::Tags::Form < Views::Admin::Base
       TabPanel(
         name: 'tag_tabs', label: "\u{1F4CB} Basic Info", hash: 'basic',
         controller_name: 'form-tabs', checked: true
-      ) { render Views::Admin::Tags::FormTabBasic.new(form: form) }
+      ) { render Views::Admin::Tags::FormTabBasic.new(form:) }
 
       TabPanel(
         name: 'tag_tabs', label: "\u{1F3E2} Partners", hash: 'partners',
         controller_name: 'form-tabs'
-      ) { render Views::Admin::Tags::FormTabPartners.new(form: form) }
+      ) { render Views::Admin::Tags::FormTabPartners.new(form:) }
 
       div(class: 'tab flex-1 cursor-default')
 
       TabPanel(
         name: 'tag_tabs', label: "\u{2699}\u{FE0F} Settings", hash: 'settings',
         controller_name: 'form-tabs'
-      ) { render Views::Admin::Tags::FormTabSettings.new(form: form) }
+      ) { render Views::Admin::Tags::FormTabSettings.new(form:) }
     end
   end
 

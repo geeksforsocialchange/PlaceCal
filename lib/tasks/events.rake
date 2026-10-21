@@ -70,7 +70,7 @@ namespace :events do
     force_import = to_boolean(args[:force_import])
     from = to_date(args[:from])
 
-    Calendar.queue_all_for_import!(force: force_import, from: from)
+    Calendar.queue_all_for_import!(force: force_import, from:)
   end
 
   desc 'empty the papertrail table for calendars'

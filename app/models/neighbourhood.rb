@@ -93,7 +93,7 @@ class Neighbourhood < ApplicationRecord
 
   # ==== Scopes ====
   scope :latest_release, -> { where release_date: LATEST_RELEASE_DATE }
-  scope :at_level, ->(level) { where(level: level) }
+  scope :at_level, ->(level) { where(level:) }
   scope :countries, -> { where(level: 5) }
   scope :regions, -> { where(level: 4) }
   scope :counties, -> { where(level: 3) }

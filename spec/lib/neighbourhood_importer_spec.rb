@@ -111,7 +111,7 @@ RSpec.describe NeighbourhoodImporter do
     allow(Rails.root).to receive(:join).and_call_original
     allow(Rails.root).to receive(:join).with("lib/data/#{File.basename(file.path)}").and_return(file.path)
 
-    described_class.send(:load_csv, release_date, File.basename(file.path), county_prefix: county_prefix)
+    described_class.send(:load_csv, release_date, File.basename(file.path), county_prefix:)
   ensure
     file.close
     file.unlink

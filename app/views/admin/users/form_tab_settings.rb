@@ -23,7 +23,7 @@ class Views::Admin::Users::FormTabSettings < Views::Admin::Base
         description: t('admin.users.fields.role_hint')
       ) do
         RadioCardGroup(
-          form: form,
+          form:,
           attribute: :role,
           values: User.role.values,
           i18n_scope: 'admin.users.roles'

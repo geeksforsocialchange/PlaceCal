@@ -8,6 +8,7 @@ class Views::Sites::Partners::Index < Views::Base
   prop :selected_neighbourhood, _Nilable(String), reader: :private
   prop :region_tags, Array, reader: :private, default: -> { [] }
   prop :selected_region, _Nilable(::Tag), reader: :private, default: nil
+  prop :selected_query, _Nilable(String), reader: :private, default: nil
   prop :query, _Nilable(::PartnersQuery), reader: :private, default: nil
 
   def view_template
@@ -21,20 +22,25 @@ class Views::Sites::Partners::Index < Views::Base
         list_heading('partners.index.list_heading')
         Sites::Breadcrumb(trail: [[t('navigation.site.partners'), partners_path]], site_name: site.name) do
           Sites::PartnerFilter(
-            site: site,
-            selected_category: selected_category,
-            selected_neighbourhood: selected_neighbourhood,
-            region_tags: region_tags,
-            selected_region: selected_region,
-            query: query
+            site:,
+            selected_category:,
+            selected_neighbourhood:,
+            region_tags:,
+            selected_region:,
+            selected_query:,
+            query:
           )
         end
 
         hr
 
-        ul(class: 'partners reset two-col', id: 'partners') do
-          partners.each do |partner|
-            Sites::PartnerPreview(partner: partner, site: site)
+        if partners.empty?
+          p(class: 'partners__empty') { t('partners.index.empty') }
+        else
+          ul(class: 'partners reset two-col', id: 'partners') do
+            partners.each do |partner|
+              Sites::PartnerPreview(partner:, site:)
+            end
           end
         end
       end

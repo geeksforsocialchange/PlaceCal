@@ -36,7 +36,7 @@ class Components::Sites::EventList < Components::Base
   def render_event(event)
     Sites::Event(
       display_context: @period&.to_sym,
-      event: event,
+      event:,
       primary_neighbourhood: @primary_neighbourhood,
       show_neighbourhoods: @show_neighbourhoods,
       badge_zoom_level: @badge_zoom_level,

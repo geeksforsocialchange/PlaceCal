@@ -1,0 +1,35 @@
+name: Extension pins
+
+# Opens a PR pinning each extension in the Gemfile to its newest release tag.
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+  repository_dispatch:
+    types: [extension-released]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: extension-pins
+
+jobs:
+  pin:
+    runs-on: ubuntu-latest
+    env:
+      # PRs opened with the built-in token don't trigger CI; EXTENSION_PIN_TOKEN (a PAT) does.
+      GH_TOKEN: ${{ secrets.EXTENSION_PIN_TOKEN || secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          token: ${{ secrets.EXTENSION_PIN_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - uses: ruby/setup-ruby@651ff0d62c5c79bed6d53ec518387aae20e72c1a # v1.329.0
+
+      - name: Open pin PRs for newer extension tags
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          bin/extension-pin-bumps

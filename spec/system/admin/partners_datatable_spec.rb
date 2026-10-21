@@ -19,9 +19,9 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
 
   let!(:partner_alpha) do
     address = create(:address, neighbourhood: ward1)
-    partner = create(:partner, name: "Alpha Community Centre", address: address)
+    partner = create(:partner, name: "Alpha Community Centre", address:)
     create(:calendar, organiser: partner)
-    create(:partner_admin, partner: partner)
+    create(:partner_admin, partner:)
     partner.tags << partnership1
     partner.tags << category1
     partner
@@ -29,7 +29,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
 
   let!(:partner_beta) do
     address = create(:address, neighbourhood: ward2)
-    partner = create(:partner, name: "Beta Youth Club", address: address)
+    partner = create(:partner, name: "Beta Youth Club", address:)
     partner.tags << partnership2
     partner.tags << category2
     partner
@@ -37,7 +37,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
 
   let!(:partner_gamma) do
     address = create(:address, neighbourhood: ward1)
-    create(:partner, name: "Gamma Sports Hall", address: address)
+    create(:partner, name: "Gamma Sports Hall", address:)
   end
 
   before do

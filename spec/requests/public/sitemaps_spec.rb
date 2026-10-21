@@ -138,7 +138,7 @@ RSpec.describe "Public Sitemaps", type: :request do
 
     let!(:site_article) do
       article = create(:article, slug: "site-news", is_draft: false)
-      create(:article_partner, article: article, partner: site_partner)
+      create(:article_partner, article:, partner: site_partner)
       article
     end
 

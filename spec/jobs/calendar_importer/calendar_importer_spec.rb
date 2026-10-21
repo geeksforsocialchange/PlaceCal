@@ -88,6 +88,11 @@ RSpec.describe CalendarImporter::CalendarImporter do
           expect(events.count).to eq(3)
           expect(events.first.summary).to eq("Technical tours of the Martin Harris Centre for Music and Drama")
           expect(events.last.summary).to eq("KIDNAP@20: The Art of Incarceration")
+
+          # Feed gives bare local times; during BST they must come out as +01:00, not UTC
+          first = events.first.occurrences_between(nil, nil).first
+          expect(first.start_time).to eq(Time.zone.parse("2018-07-04 10:00:00"))
+          expect(first.start_time.utc_offset).to eq(3600)
         end
       end
     end

@@ -8,8 +8,10 @@
 #  article_image :string
 #  body          :text             not null
 #  body_html     :string
+#  image_credit  :string
 #  is_draft      :boolean          default(TRUE), not null
 #  published_at  :date
+#  pull_quote    :text
 #  slug          :string
 #  title         :text             not null
 #  created_at    :datetime         not null
@@ -60,7 +62,38 @@ class Article < ApplicationRecord
 
   # ==== Scopes ====
   scope :published, -> { where is_draft: false }
-  scope :by_publish_date, -> { order(published_at: :desc) }
+  # published_at is a date, so same-day ties are common; id keeps the order stable.
+  scope :by_publish_date, -> { order(published_at: :desc, id: :desc) }
+
+  # Articles listed before +article+ in by_publish_date order, nearest first.
+  # Postgres puts NULL published_at first when sorting descending.
+  scope :listed_before, lambda { |article|
+    condition = if article.published_at
+                  where('articles.published_at IS NULL OR articles.published_at > :date ' \
+                        'OR (articles.published_at = :date AND articles.id > :id)',
+                        date: article.published_at, id: article.id)
+                else
+                  where('articles.published_at IS NULL AND articles.id > ?', article.id)
+                end
+    condition.reorder(published_at: :asc, id: :asc)
+  }
+
+  # Articles listed after +article+ in by_publish_date order, nearest first.
+  scope :listed_after, lambda { |article|
+    condition = if article.published_at
+                  where('articles.published_at < :date OR (articles.published_at = :date AND articles.id < :id)',
+                        date: article.published_at, id: article.id)
+                else
+                  where('articles.published_at IS NOT NULL OR articles.id < ?', article.id)
+                end
+    condition.by_publish_date
+  }
+
+  # A superset of the articles whose title parameterizes to +slug+: every ASCII
+  # letter, digit and underscore survives parameterize in order; the rest become wildcards.
+  scope :title_slug_candidates, lambda { |slug|
+    where("? LIKE lower(regexp_replace(articles.title, '[^a-zA-Z0-9_]+', '%', 'g'))", slug)
+  }
 
   scope :global_newsfeed, -> { published.order(published_at: :desc) }
 

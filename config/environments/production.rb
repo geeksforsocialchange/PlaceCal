@@ -4,7 +4,7 @@ require_relative '../log_config'
 
 Rails.application.configure do
   host = ENV.fetch('SITE_DOMAIN', 'placecal.org')
-  routes.default_url_options = { host: host, protocol: 'https' }
+  routes.default_url_options = { host:, protocol: 'https' }
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.

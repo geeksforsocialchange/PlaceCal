@@ -13,7 +13,7 @@ module SitesHelper
         name = ward.contextual_name
         name += " - #{ward.release_date.year}/#{ward.release_date.month}" if ward.legacy_neighbourhood?
 
-        { name: name, id: ward.id }
+        { name:, id: ward.id }
       end
   end
 

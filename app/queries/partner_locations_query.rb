@@ -30,7 +30,7 @@ class PartnerLocationsQuery
     Partner.visible.joins(:address)
            .where.not(addresses: { latitude: nil })
            .pluck(:name, :slug, 'addresses.latitude', 'addresses.longitude')
-           .map { |name, slug, lat, lon| { lat: lat, lon: lon, name: name, slug: slug } }
+           .map { |name, slug, lat, lon| { lat:, lon:, name:, slug: } }
   end
 
   def service_area_partners

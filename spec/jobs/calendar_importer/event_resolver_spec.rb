@@ -36,7 +36,7 @@ RSpec.describe CalendarImporter::EventResolver do
 
   def make_calendar_for_strategy(strategy)
     VCR.use_cassette(:import_test_calendar) do
-      create(:calendar, strategy: strategy)
+      create(:calendar, strategy:)
     end
   end
 
@@ -180,7 +180,7 @@ RSpec.describe CalendarImporter::EventResolver do
   describe "recurring event dedup" do
     def make_recurring_ics_event(uid:, occurrences:)
       event = FakeICSEvent.new(
-        uid: uid,
+        uid:,
         summary: "Recurring Event",
         description: "A recurring event",
         location: "",
@@ -207,7 +207,7 @@ RSpec.describe CalendarImporter::EventResolver do
       occ2_end   = DateTime.new(2024, 1, 15, 11, 0)
 
       occurrences = [[occ1_start, occ1_end], [occ2_start, occ2_end]]
-      event_data = make_recurring_ics_event(uid: "recurring-123", occurrences: occurrences)
+      event_data = make_recurring_ics_event(uid: "recurring-123", occurrences:)
 
       resolver = described_class.new(event_data, calendar, [], occ1_start)
       resolver.determine_location_for_strategy
@@ -216,7 +216,7 @@ RSpec.describe CalendarImporter::EventResolver do
       expect(calendar.events.where(uid: "recurring-123").count).to eq(2)
 
       # Re-import identical data
-      event_data2 = make_recurring_ics_event(uid: "recurring-123", occurrences: occurrences)
+      event_data2 = make_recurring_ics_event(uid: "recurring-123", occurrences:)
       resolver2 = described_class.new(event_data2, calendar, [], occ1_start)
       resolver2.determine_location_for_strategy
       resolver2.save_all_occurences
@@ -233,7 +233,7 @@ RSpec.describe CalendarImporter::EventResolver do
       occ2_end   = DateTime.new(2024, 1, 15, 11, 0)
 
       occurrences = [[occ1_start, occ1_end], [occ2_start, occ2_end]]
-      event_data = make_recurring_ics_event(uid: "recurring-456", occurrences: occurrences)
+      event_data = make_recurring_ics_event(uid: "recurring-456", occurrences:)
 
       resolver = described_class.new(event_data, calendar, [], occ1_start)
       resolver.determine_location_for_strategy
@@ -264,7 +264,7 @@ RSpec.describe CalendarImporter::EventResolver do
       occ2_end   = DateTime.new(2024, 1, 15, 12, 0)
 
       occurrences = [[occ1_start, occ1_end], [occ2_start, occ2_end]]
-      event_data = make_recurring_ics_event(uid: "recurring-789", occurrences: occurrences)
+      event_data = make_recurring_ics_event(uid: "recurring-789", occurrences:)
 
       resolver = described_class.new(event_data, calendar, [], occ1_start)
       resolver.determine_location_for_strategy

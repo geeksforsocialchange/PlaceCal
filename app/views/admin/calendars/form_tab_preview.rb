@@ -76,7 +76,7 @@ class Views::Admin::Calendars::FormTabPreview < Views::Admin::Base
       end
       tbody do
         events.each do |event|
-          render_event_row(event, opacity: opacity)
+          render_event_row(event, opacity:)
         end
       end
     end

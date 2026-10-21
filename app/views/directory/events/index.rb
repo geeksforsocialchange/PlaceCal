@@ -109,7 +109,7 @@ class Views::Directory::Events::Index < Views::Base
         active: @period == value
       }
     end
-    Directory::ToggleTabs(items: items, aria_label: t('directory.aria.time_period'))
+    Directory::ToggleTabs(items:, aria_label: t('directory.aria.time_period'))
   end
 
   def render_results_header
@@ -118,7 +118,7 @@ class Views::Directory::Events::Index < Views::Base
       if count.zero?
         plain t('directory.events.index.results.none', period: period_phrase)
       else
-        plain t('directory.events.index.results.count', count: count, period: period_phrase)
+        plain t('directory.events.index.results.count', count:, period: period_phrase)
       end
     end
   end
@@ -140,7 +140,7 @@ class Views::Directory::Events::Index < Views::Base
       end
       div(class: 'grid md:grid-cols-2 gap-x-6') do
         day_events.each do |event|
-          Directory::EventRow(event: event)
+          Directory::EventRow(event:)
         end
       end
     end

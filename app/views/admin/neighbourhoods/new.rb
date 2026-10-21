@@ -8,6 +8,6 @@ class Views::Admin::Neighbourhoods::New < Views::Admin::Base
       plain 'Warning: neighbourhoods should not be created here and this page is only left as a placeholder!'
     end
     PageHeader(model_name: 'Neighbourhood', new_record: true)
-    render Views::Admin::Neighbourhoods::Form.new(neighbourhood: neighbourhood)
+    render Views::Admin::Neighbourhoods::Form.new(neighbourhood:)
   end
 end

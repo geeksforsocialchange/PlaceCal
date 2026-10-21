@@ -56,11 +56,11 @@ RSpec.describe PartnerPolicy, type: :policy do
     let(:user) { create(:neighbourhood_admin, neighbourhood: ward) }
     let(:partner_in_neighbourhood) do
       address = create(:address, neighbourhood: ward)
-      create(:partner, address: address)
+      create(:partner, address:)
     end
     let(:partner_outside_neighbourhood) do
       address = create(:oldtown_address)
-      create(:partner, address: address)
+      create(:partner, address:)
     end
 
     context "on a partner in their neighbourhood" do
@@ -91,13 +91,13 @@ RSpec.describe PartnerPolicy, type: :policy do
     end
     let(:partner_in_partnership) do
       address = create(:address, neighbourhood: ward)
-      partner = create(:partner, address: address)
+      partner = create(:partner, address:)
       partner.tags << partnership_tag
       partner
     end
     let(:partner_not_in_partnership) do
       address = create(:address, neighbourhood: ward)
-      create(:partner, address: address)
+      create(:partner, address:)
     end
 
     context "on a partner in their partnership" do

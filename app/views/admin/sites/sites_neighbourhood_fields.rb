@@ -11,12 +11,12 @@ class Views::Admin::Sites::SitesNeighbourhoodFields < Views::Admin::Base
         neighbourhood: form.object.neighbourhood,
         show_header: false,
         show_remove: true,
-        form: form
+        form:
       )
       raw(form.hidden_field(:relation_type))
     else
       CascadingNeighbourhoodFields(
-        form: form,
+        form:,
         relation_type: 'Secondary',
         show_remove: true
       )

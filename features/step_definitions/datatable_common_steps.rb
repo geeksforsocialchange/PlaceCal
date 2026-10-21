@@ -32,7 +32,7 @@ end
 Then("the admin table should have {int} row(s)") do |count|
   await_datatables
   within('[data-controller="admin-table"] tbody') do
-    expect(page).to have_selector("tr", count: count)
+    expect(page).to have_selector("tr", count:)
   end
 end
 

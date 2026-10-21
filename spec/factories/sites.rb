@@ -60,7 +60,7 @@ FactoryBot.define do
 
       after(:create) do |site|
         district = create(:millbrook_district)
-        create(:sites_neighbourhood, site: site, neighbourhood: district)
+        create(:sites_neighbourhood, site:, neighbourhood: district)
       end
     end
 
@@ -71,7 +71,7 @@ FactoryBot.define do
 
       after(:create) do |site|
         district = create(:ashdale_district)
-        create(:sites_neighbourhood, site: site, neighbourhood: district)
+        create(:sites_neighbourhood, site:, neighbourhood: district)
       end
     end
 
@@ -82,7 +82,7 @@ FactoryBot.define do
 
       after(:create) do |site|
         county = create(:coastshire_county)
-        create(:sites_neighbourhood, site: site, neighbourhood: county)
+        create(:sites_neighbourhood, site:, neighbourhood: county)
       end
     end
   end

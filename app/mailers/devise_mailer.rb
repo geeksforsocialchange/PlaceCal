@@ -6,14 +6,14 @@ class DeviseMailer < Devise::Mailer
   def confirmation_instructions(record, token, opts = {})
     @token = token
     devise_mail(record, :confirmation_instructions, opts) do |format|
-      format.html { render Views::Mailers::Devise::ConfirmationInstructions.new(resource: record, token: token) }
+      format.html { render Views::Mailers::Devise::ConfirmationInstructions.new(resource: record, token:) }
     end
   end
 
   def reset_password_instructions(record, token, opts = {})
     @token = token
     devise_mail(record, :reset_password_instructions, opts) do |format|
-      format.html { render Views::Mailers::Devise::ResetPasswordInstructions.new(resource: record, token: token) }
+      format.html { render Views::Mailers::Devise::ResetPasswordInstructions.new(resource: record, token:) }
     end
   end
 
@@ -32,15 +32,15 @@ class DeviseMailer < Devise::Mailer
   def unlock_instructions(record, token, opts = {})
     @token = token
     devise_mail(record, :unlock_instructions, opts) do |format|
-      format.html { render Views::Mailers::Devise::UnlockInstructions.new(resource: record, token: token) }
+      format.html { render Views::Mailers::Devise::UnlockInstructions.new(resource: record, token:) }
     end
   end
 
   def invitation_instructions(record, token, opts = {})
     @token = token
     devise_mail(record, :invitation_instructions, opts) do |format|
-      format.html { render Views::Mailers::Devise::InvitationInstructions.new(resource: record, token: token) }
-      format.text { render Views::Mailers::Devise::InvitationInstructionsText.new(resource: record, token: token) }
+      format.html { render Views::Mailers::Devise::InvitationInstructions.new(resource: record, token:) }
+      format.text { render Views::Mailers::Devise::InvitationInstructionsText.new(resource: record, token:) }
     end
   end
 end

@@ -49,12 +49,12 @@ module OgImage
     end
 
     def events_text
-      count = EventsQuery.new(site: site).scope
+      count = EventsQuery.new(site:).scope
                          .where(dtstart: Time.zone.today..30.days.from_now)
                          .count
       return nil if count.zero?
 
-      t('events_this_month', count: count)
+      t('events_this_month', count:)
     end
   end
 end

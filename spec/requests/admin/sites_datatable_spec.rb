@@ -86,7 +86,7 @@ RSpec.describe "Admin::Sites Datatable JSON API", type: :request do
 
     context "site_admin_id filter" do
       let!(:site_admin) { create(:user, first_name: "Admin", last_name: "User") }
-      let!(:site_with_admin) { create(:site, name: "Site With Admin", site_admin: site_admin) }
+      let!(:site_with_admin) { create(:site, name: "Site With Admin", site_admin:) }
       let!(:site_without_admin) { create(:site, name: "Site Without Admin") }
 
       it "filters by site_admin_id" do
@@ -103,8 +103,8 @@ RSpec.describe "Admin::Sites Datatable JSON API", type: :request do
       let!(:neighbourhood) { create(:neighbourhood) }
       let!(:site_admin) { create(:user, first_name: "Test", last_name: "Admin") }
       let!(:site) do
-        site = create(:site, name: "Render Test", slug: "render-test", site_admin: site_admin)
-        site.sites_neighbourhoods.create!(neighbourhood: neighbourhood, relation_type: "Primary")
+        site = create(:site, name: "Render Test", slug: "render-test", site_admin:)
+        site.sites_neighbourhoods.create!(neighbourhood:, relation_type: "Primary")
         site
       end
 

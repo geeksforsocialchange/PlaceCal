@@ -104,7 +104,7 @@ RSpec.describe "Public Partnerships", type: :request do
         12.times do |i|
           create(:event,
                  dtstart: (i + 1).days.from_now,
-                 calendar: calendar,
+                 calendar:,
                  organiser: partner)
         end
       end

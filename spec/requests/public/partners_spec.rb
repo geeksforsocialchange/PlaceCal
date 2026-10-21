@@ -15,7 +15,7 @@ RSpec.describe "Public Partners", type: :request do
     let!(:partners) do
       Array.new(3) do
         address = create(:address, neighbourhood: ward)
-        create(:partner, address: address)
+        create(:partner, address:)
       end
     end
 
@@ -39,6 +39,20 @@ RSpec.describe "Public Partners", type: :request do
                               hidden_blame_id: 1)
       get partners_url(host: "#{site.slug}.lvh.me")
       expect(response.body).not_to include(hidden_partner.name)
+    end
+
+    it "shows the empty-state message in place of the list when the search matches nothing" do
+      get partners_url(host: "#{site.slug}.lvh.me", params: { q: "zzzz-no-such-partner" })
+
+      body = response.parsed_body
+      expect(body.at_css("p.partners__empty").text).to eq(I18n.t("partners.index.empty"))
+      expect(body.at_css("ul#partners")).to be_nil
+    end
+
+    it "does not show the empty-state message when partners match" do
+      get partners_url(host: "#{site.slug}.lvh.me")
+
+      expect(response.parsed_body.at_css("p.partners__empty")).to be_nil
     end
   end
 
@@ -87,6 +101,26 @@ RSpec.describe "Public Partners", type: :request do
       # riverside_partner is "Riverside Community Hub" in the Riverside ward
       get partner_url(partner, host: "#{site.slug}.lvh.me")
       expect(response.body).to include("<title>#{partner.name} | #{site.name}</title>")
+    end
+
+    # Hero back link (#3368): "All partners" above the partner page hero.
+    it "links the hero back link to the partners index" do
+      get partner_url(partner, host: "#{site.slug}.lvh.me")
+
+      back = Nokogiri::HTML(response.body).at_css("a.hero__back")
+      expect(back.text).to eq(I18n.t("partners.show.back_to_index"))
+      expect(back[:href]).to eq(partners_path)
+    end
+
+    # Page actions row (Components::Sites::PageActions, #3368): back, then the feed.
+    it "renders a page actions row with a link back to the partners index and the feed" do
+      get partner_url(partner, host: "#{site.slug}.lvh.me")
+
+      links = Nokogiri::HTML(response.body).css("nav.page-actions a.page-actions__link")
+      expect(links.map(&:text)).to eq([I18n.t("partners.show.go_back"),
+                                       I18n.t("partners.show.subscribe_ical", name: partner.name)])
+      expect(links.first[:href]).to eq(partners_path)
+      expect(links.last[:href]).to start_with("webcal://").and include(".ics")
     end
 
     it "includes Organization JSON-LD structured data" do
@@ -197,7 +231,7 @@ RSpec.describe "Public Partners", type: :request do
     let!(:partners) do
       Array.new(5) do
         address = create(:address, neighbourhood: ward)
-        create(:partner, address: address)
+        create(:partner, address:)
       end
     end
 
@@ -226,14 +260,14 @@ RSpec.describe "Public Partners", type: :request do
     let!(:tagged_partners) do
       Array.new(3) do
         address = create(:address, neighbourhood: ward)
-        partner = create(:partner, address: address)
+        partner = create(:partner, address:)
         partner.tags << tag
         partner
       end
     end
     let!(:untagged_partner) do
       address = create(:address, neighbourhood: ward)
-      create(:partner, address: address)
+      create(:partner, address:)
     end
 
     before do
@@ -263,7 +297,7 @@ RSpec.describe "Public Partners", type: :request do
       31.times do |i|
         create(:event,
                organiser: partner,
-               calendar: calendar,
+               calendar:,
                dtstart: (i + 1).days.from_now.at_beginning_of_hour,
                dtend: (i + 1).days.from_now.at_beginning_of_hour + 2.hours)
       end
@@ -285,6 +319,132 @@ RSpec.describe "Public Partners", type: :request do
     end
   end
 
+  describe "GET /partners/:id events browser" do
+    let(:partner) { create(:riverside_partner, address: create(:riverside_address, neighbourhood: ward)) }
+    let(:calendar) { create(:calendar, organiser: partner) }
+
+    # The full page body also carries a JSON-LD block listing every upcoming
+    # event (unrelated to the day-windowed browser), so assertions on what's
+    # actually shown are scoped to the events-browser turbo frame itself.
+    def events_browser_html
+      response.body[%r{<turbo-frame[^>]*id="events-browser"[^>]*>.*?</turbo-frame>}m]
+    end
+
+    context "with a handful of events across several days (flat branch)" do
+      before do
+        10.times do |i|
+          create(:event,
+                 organiser: partner,
+                 calendar:,
+                 summary: "Day #{i} Event",
+                 dtstart: (i + 1).days.from_now.at_beginning_of_hour,
+                 dtend: (i + 1).days.from_now.at_beginning_of_hour + 1.hour)
+        end
+      end
+
+      it "shows the heading and the total event/day count, before the days limit" do
+        get partner_url(partner, host: "#{site.slug}.lvh.me")
+
+        expect(response.body).to include("Upcoming events")
+        expect(response.body).to include("10 events")
+        expect(response.body).to include("across 10 days")
+      end
+
+      it "shows only the first 4 days by default, with a show-more-days link" do
+        get partner_url(partner, host: "#{site.slug}.lvh.me")
+        html = events_browser_html
+
+        expect(html).to include("Day 0 Event")
+        expect(html).to include("Day 3 Event")
+        expect(html).not_to include("Day 4 Event")
+
+        expect(html).to include("Show 4 more days")
+        expect(html).to include(%(class="partner-events__more"))
+        expect(html).to include("days=8")
+        expect(html).to include(%(data-turbo-frame="events-browser"))
+      end
+
+      it "closes the browser with the show-more link and puts the feed and export in the page actions" do
+        get partner_url(partner, host: "#{site.slug}.lvh.me")
+        actions = Nokogiri::HTML(events_browser_html).at_css(".partner-events__actions")
+        hrefs = Nokogiri::HTML(response.body).css("nav.page-actions a.page-actions__link").map { |a| a[:href] }
+
+        expect(actions.css("a").map { |a| a["class"] }).to eq(%w[partner-events__more])
+        expect(hrefs.size).to eq(3)
+        expect(hrefs[0]).to eq(partners_path)
+        expect(hrefs[1]).to include(".ics")
+        expect(hrefs[2]).to include(".csv")
+        expect(response.body.scan(".ics").size).to eq(1)
+      end
+
+      it "appends the next days when days is requested explicitly" do
+        get partner_url(partner, host: "#{site.slug}.lvh.me", params: { days: 8 })
+        html = events_browser_html
+
+        expect(html).to include("Day 0 Event")
+        expect(html).to include("Day 7 Event")
+        expect(html).not_to include("Day 8 Event")
+        expect(html).to include("Show 2 more days")
+      end
+
+      it "shows a repeating select with the filters.repeating options" do
+        get partner_url(partner, host: "#{site.slug}.lvh.me")
+
+        expect(response.body).to include(%(class="partner-events__repeating"))
+        expect(response.body).to include("All events")
+        expect(response.body).to include("Only one-off events")
+        expect(response.body).to include("Only repeating events")
+      end
+    end
+
+    context "with many events (paginated branch, default upcoming period)" do
+      before do
+        31.times do |i|
+          create(:event,
+                 organiser: partner,
+                 calendar:,
+                 dtstart: (i + 1).days.from_now.at_beginning_of_hour,
+                 dtend: (i + 1).days.from_now.at_beginning_of_hour + 1.hour)
+        end
+      end
+
+      it "still shows the heading and total count, windowed by day" do
+        get partner_url(partner, host: "#{site.slug}.lvh.me")
+
+        expect(response.body).to include("Upcoming events")
+        expect(response.body).to include("across")
+        expect(response.body).to include("Show 4 more days")
+      end
+    end
+
+    context "with more upcoming events than EventsQuery::FUTURE_LIMIT" do
+      before do
+        60.times do |i|
+          start = ((i / 5) + 1).days.from_now.at_beginning_of_day + 9.hours + (i % 5).hours
+          create(:event, organiser: partner, calendar:,
+                         summary: format("Busy Event %02d", i), dtstart: start, dtend: start + 30.minutes)
+        end
+      end
+
+      it "reports the real total, not the capped one" do
+        get partner_url(partner, host: "#{site.slug}.lvh.me")
+
+        expect(response.body).to include("60 events")
+        expect(response.body).to include("across 12 days")
+        expect(events_browser_html.scan("Busy Event").size).to eq(20)
+      end
+
+      it "reveals events past the 50th when more days are requested" do
+        get partner_url(partner, host: "#{site.slug}.lvh.me", params: { days: 12 })
+        html = events_browser_html
+
+        expect(html.scan("Busy Event").size).to eq(60)
+        expect(html).to include("Busy Event 59")
+        expect(html).not_to include("partner-events__more")
+      end
+    end
+  end
+
   describe "GET /partners/:id period defaulting" do
     let(:partner) { create(:riverside_partner, address: create(:riverside_address, neighbourhood: ward)) }
     let(:calendar) { create(:calendar, organiser: partner) }
@@ -294,7 +454,7 @@ RSpec.describe "Public Partners", type: :request do
         31.times do |i|
           create(:event,
                  organiser: partner,
-                 calendar: calendar,
+                 calendar:,
                  dtstart: (i + 1).days.from_now.at_beginning_of_hour,
                  dtend: (i + 1).days.from_now.at_beginning_of_hour + 1.hour)
         end
@@ -317,7 +477,7 @@ RSpec.describe "Public Partners", type: :request do
         31.times do |i|
           create(:event,
                  organiser: partner,
-                 calendar: calendar,
+                 calendar:,
                  dtstart: ((i * 2) + 1).days.from_now.at_beginning_of_hour,
                  dtend: ((i * 2) + 1).days.from_now.at_beginning_of_hour + 1.hour)
         end
@@ -335,7 +495,7 @@ RSpec.describe "Public Partners", type: :request do
         31.times do |i|
           create(:event,
                  organiser: partner,
-                 calendar: calendar,
+                 calendar:,
                  dtstart: ((i % 6) + 1).days.from_now.at_beginning_of_hour + i.hours,
                  dtend: ((i % 6) + 1).days.from_now.at_beginning_of_hour + i.hours + 1.hour)
         end
@@ -353,7 +513,7 @@ RSpec.describe "Public Partners", type: :request do
         31.times do |i|
           create(:event,
                  organiser: partner,
-                 calendar: calendar,
+                 calendar:,
                  dtstart: (35 + i).days.from_now.at_beginning_of_hour,
                  dtend: (35 + i).days.from_now.at_beginning_of_hour + 1.hour)
         end
@@ -378,7 +538,7 @@ RSpec.describe "Public Partners", type: :request do
     context "with A-Z sort" do
       let!(:az_partners) do
         %w[Alpha Bravo Charlie].map do |name|
-          create(:partner, name: name, address: create(:address, neighbourhood: ward))
+          create(:partner, name:, address: create(:address, neighbourhood: ward))
         end
       end
 
@@ -579,7 +739,7 @@ RSpec.describe "Public Partners", type: :request do
         5.times do |i|
           create(:event,
                  organiser: partner,
-                 calendar: calendar,
+                 calendar:,
                  dtstart: (i + 1).days.from_now.at_beginning_of_hour,
                  dtend: (i + 1).days.from_now.at_beginning_of_hour + 1.hour)
         end
@@ -600,7 +760,7 @@ RSpec.describe "Public Partners", type: :request do
         15.times do |i|
           create(:event,
                  organiser: partner,
-                 calendar: calendar,
+                 calendar:,
                  dtstart: (i + 1).days.from_now.at_beginning_of_hour,
                  dtend: (i + 1).days.from_now.at_beginning_of_hour + 1.hour)
         end
@@ -661,6 +821,58 @@ RSpec.describe "Public Partners", type: :request do
         expect(response.body).not_to include("Categories")
         expect(response.body).to include("Share &amp; subscribe")
       end
+    end
+  end
+
+  describe "GET /partners with search" do
+    let!(:food_bank) { create(:partner, name: "Riverside Food Bank", address: create(:address, neighbourhood: ward)) }
+    let!(:youth_club) { create(:partner, name: "Riverside Youth Club", address: create(:address, neighbourhood: ward)) }
+
+    it "narrows the list to matching partners" do
+      get partners_url(host: "#{site.slug}.lvh.me", params: { q: "Food Bank" })
+
+      expect(response).to be_successful
+      expect(response.body).to include(food_bank.name)
+      expect(response.body).not_to include(youth_club.name)
+    end
+
+    it "keeps the searched value in the search field" do
+      get partners_url(host: "#{site.slug}.lvh.me", params: { q: "Food Bank" })
+
+      expect(response.body).to include('name="q"')
+      expect(response.body).to match(/name="q"[^>]*value="Food Bank"/)
+    end
+  end
+
+  describe "GET /partners with search and region" do
+    let(:region_site) { create(:site, slug: "search-regions") }
+    let(:region_ward) { create(:riverside_ward) }
+    let(:north_tag) { create(:partnership, name: "North") }
+    let(:south_tag) { create(:partnership, name: "South") }
+    let!(:north_food_bank) do
+      partner = create(:partner, name: "North Food Bank", address: create(:address, neighbourhood: region_ward))
+      partner.tags << north_tag
+      partner
+    end
+    let!(:south_food_bank) do
+      partner = create(:partner, name: "South Food Bank", address: create(:address, neighbourhood: region_ward))
+      partner.tags << south_tag
+      partner
+    end
+
+    before do
+      region_site.neighbourhoods << region_ward
+      region_site.tags << north_tag
+      region_site.tags << south_tag
+    end
+
+    it "keeps the region filter active alongside a search" do
+      get partners_url(host: "#{region_site.slug}.lvh.me", params: { region: north_tag.slug, q: "Food Bank" })
+
+      expect(response).to be_successful
+      expect(response.body).to include(north_food_bank.name)
+      expect(response.body).not_to include(south_food_bank.name)
+      expect(response.body).to match(/<input[^>]*type="hidden"[^>]*name="region"[^>]*value="#{north_tag.slug}"/)
     end
   end
 
