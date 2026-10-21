@@ -24,7 +24,8 @@
 # Everything is inherited, so a theme with several pages can put `content_root`
 # on an intermediate base class of its own and each page declares only what is
 # its own. A page that wants more than headings and markdown blocks (an intro
-# paragraph, a wrapper around each block) overrides #page_body.
+# paragraph, a wrapper around each block) overrides #page_body, and one that
+# does not want the markdown-content column at all overrides #page_content.
 #
 # The markup is the markup the theme CSS selects on: the `page page--<slug>`
 # wrapper carrying `data-page-slug`, and the `.markdown-content` column.
@@ -187,10 +188,7 @@ class Views::ThemeContentPage < Views::Base
 
     div(class: "container-public py-8 page page--#{page_slug}", data: { page_slug: page_slug }) do
       h1(class: 'h1') { page_title }
-
-      div(class: 'markdown-content max-w-(--width-prose-lg) text-base leading-relaxed') do
-        page_body
-      end
+      page_content
     end
   end
 
@@ -208,6 +206,14 @@ class Views::ThemeContentPage < Views::Base
   def page_description
     key = self.class.description
     t(key) if key
+  end
+
+  # The column page_body renders into. Override for a page laid out in its own
+  # sections, which the markdown-content box would otherwise wrap.
+  def page_content
+    div(class: 'markdown-content max-w-(--width-prose-lg) text-base leading-relaxed') do
+      page_body
+    end
   end
 
   # The declared sections, in order. Override for a page that needs more than
