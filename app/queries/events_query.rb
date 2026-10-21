@@ -50,7 +50,7 @@ class EventsQuery
   #
   # @param period [String] 'day', 'week', or 'future'
   # @param sort [String] 'time' (default) or 'summary'
-  # @param repeating [String] 'on' (default), 'off', or 'last'
+  # @param repeating [String] 'on' (all, default), 'off' (one-off only), or 'only' (repeating only)
   # @param organiser [Partner] filter to events by this organiser
   # @param place [Partner] filter to events at this place
   # @param organiser_or_place [Partner] filter to events by OR at this organiser
@@ -234,7 +234,7 @@ class EventsQuery
   def apply_repeating_filter(events, repeating)
     case repeating
     when 'off' then events.one_off_events_only
-    when 'last' then events.one_off_events_first
+    when 'only' then events.repeating_events_only
     else events
     end
   end

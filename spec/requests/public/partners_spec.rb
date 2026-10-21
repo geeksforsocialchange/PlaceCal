@@ -391,8 +391,9 @@ RSpec.describe "Public Partners", type: :request do
         get partner_url(partner, host: "#{site.slug}.lvh.me")
 
         expect(response.body).to include(%(class="partner-events__repeating"))
-        expect(response.body).to include("Show repeats")
-        expect(response.body).to include("Hide repeats")
+        expect(response.body).to include("All events")
+        expect(response.body).to include("Only one-off events")
+        expect(response.body).to include("Only repeating events")
       end
     end
 
