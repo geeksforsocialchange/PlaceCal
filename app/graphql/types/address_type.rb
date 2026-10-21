@@ -39,11 +39,11 @@ module Types
     end
 
     def address_locality
-      object.neighbourhood.name
+      object.neighbourhood&.name
     end
 
     def address_region
-      object.neighbourhood.region
+      object.neighbourhood&.region
     end
   end
 end
