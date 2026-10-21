@@ -558,6 +558,8 @@ en:
       # strftime patterns for the event list date; themes may override
       date_format: "%e %b"
       date_format_with_year: "%e %b %Y"
+      # A multi-day event's end date, shown before its end time
+      end_date_format: "%-d %b"
       # Text before the organiser link in the event list, blank in core
       organiser_prefix: ""
       online: "Online"
@@ -577,6 +579,8 @@ en:
       # strftime patterns for the event page date; %o is the ordinal day
       date_format: "%e %b"
       date_format_with_year: "%e %b %Y"
+      # A multi-day event's end date, shown before its end time
+      end_date_format: "%-d %b"
     show:
       # Section name above the event page title, blank in core
       section: ""

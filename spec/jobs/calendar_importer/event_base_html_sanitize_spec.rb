@@ -12,6 +12,17 @@ RSpec.describe CalendarImporter::Events::Base do
       expect(output).to eq("")
     end
 
+    it "drops style, script, noscript and template contents" do
+      input = <<~HTML
+        <p>Film night</p>
+        <style id="container-styles">#block-d6dbc5659c1f534ecad7 { --opacity: 100%; }</style>
+        <script>track()</script><noscript>Enable JS</noscript><template><p>Hidden</p></template>
+      HTML
+
+      expect(event.html_sanitize(input).strip).to eq("Film night")
+      expect(event.html_sanitize(input, as_plaintext: true).strip).to eq("Film night")
+    end
+
     it "returns plain text if input" do
       input = "This is plain text"
       output = event.html_sanitize(input)

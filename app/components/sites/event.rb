@@ -65,7 +65,7 @@ class Components::Sites::Event < Components::Base
       time(class: 'dt-start', datetime: @event.dtstart.iso8601) { fmt_time(@event.dtstart) }
       if @event.dtend
         plain " \u2013 "
-        time(class: 'dt-end', datetime: @event.dtend.iso8601) { fmt_time(@event.dtend) }
+        time(class: 'dt-end', datetime: @event.dtend.iso8601) { end_time }
       end
     end
   end
@@ -149,14 +149,20 @@ class Components::Sites::Event < Components::Base
     date.strftime(t("#{scope}.#{key}").gsub('%o', date.day.ordinalize))
   end
 
+  # Always the start day; a multi-day event shows its end date on the time line instead.
   def date
-    return formatted_date(@event.dtstart) if @event.dtend.blank?
+    formatted_date(@event.dtstart)
+  end
 
-    if @event.dtstart.to_date == @event.dtend.to_date
-      formatted_date(@event.dtstart)
-    else
-      "#{formatted_date(@event.dtstart)} - #{formatted_date(@event.dtend)}"
-    end
+  def end_time
+    return fmt_time(@event.dtend) unless multi_day?
+
+    scope = page? ? 'events.page' : 'events.card'
+    "#{@event.dtend.strftime(t("#{scope}.end_date_format"))} #{fmt_time(@event.dtend).strip}"
+  end
+
+  def multi_day?
+    @event.dtend.present? && @event.dtend - @event.dtstart >= 1.day
   end
 
   def page?
