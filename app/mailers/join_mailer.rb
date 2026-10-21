@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 class JoinMailer < ApplicationMailer
-  def join_us(contact_request)
-    site = contact_request.site
+  # Takes plain arguments rather than a ContactRequest so it can be queued.
+  def join_us(attributes:, site_id: nil, demo: false)
+    site = Site.find_by(id: site_id) if site_id
+    contact_request = ContactRequest.new(attributes.merge('site' => site, 'demo' => demo))
     # Mailer views inherit Views::Base, so their `t` resolves against
     # Current.theme. Current is request-scoped and is already reset by the time
     # a queued job runs, so set it here from the enquiry's own site: the copy must
