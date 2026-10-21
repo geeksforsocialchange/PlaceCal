@@ -409,7 +409,8 @@ RSpec.describe EventsQuery do
     it "applies the repeating filter" do
       expect(query.future_counts_by_day(organiser_or_place: organiser, repeating: "off").keys)
         .to eq([Date.new(2023, 7, 4), Date.new(2023, 7, 5)])
-      expect(query.future_counts_by_day(organiser_or_place: organiser, repeating: "last").values.sum).to eq(3)
+      expect(query.future_counts_by_day(organiser_or_place: organiser, repeating: "only").keys)
+        .to eq([Date.new(2023, 7, 6)])
     end
 
     it "loads events up to the end of the given local day" do
