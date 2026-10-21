@@ -109,7 +109,7 @@ RSpec.describe EventsQuery do
 
       context "with repeating: 'only'" do
         it "excludes one-off events" do
-          query = described_class.new(site: site, day: today)
+          query = described_class.new(site:, day: today)
           result = query.call(period: "future", repeating: "only")
           events = result.values.flatten
           expect(events).to include(recurring_event)
