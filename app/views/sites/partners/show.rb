@@ -167,7 +167,8 @@ class Views::Sites::Partners::Show < Views::Base
 
     br
     h2(class: 'udl udl--fw allcaps h4', id: 'accessibility-info') { t('partners.show.accessibility_heading') }
-    div(class: 'accessibility_info') do
+    details(class: 'accessibility_info') do
+      summary { t('partners.show.accessibility_summary') }
       raw safe(partner.accessibility_info_html.to_s)
     end
   end

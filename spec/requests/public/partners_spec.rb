@@ -152,15 +152,17 @@ RSpec.describe "Public Partners", type: :request do
 
       before { partner.update!(accessibility_info: "Wheelchair accessible entrance") }
 
-      it "shows the accessibility text in full in the sidebar, not in a collapsible" do
+      it "shows the accessibility text in a collapsible under its sidebar heading" do
         get partner_url(partner, host: "#{site.slug}.lvh.me")
         doc = Nokogiri::HTML(response.body)
 
         heading = doc.at_css(".gi.gi__2-5 > h2#accessibility-info")
         expect(heading.text).to eq(I18n.t("partners.show.accessibility_heading"))
         expect(heading[:class]).to eq("udl udl--fw allcaps h4")
-        expect(heading.next_element.text).to include("Wheelchair accessible entrance")
-        expect(doc.css("details#accessibility-info")).to be_empty
+        details = heading.next_element
+        expect(details.name).to eq("details")
+        expect(details.at_css("summary").text).to eq(I18n.t("partners.show.accessibility_summary"))
+        expect(details.text).to include("Wheelchair accessible entrance")
         expect(doc.at_css(".gi.gi__3-5").text).not_to include("Wheelchair accessible entrance")
       end
 
