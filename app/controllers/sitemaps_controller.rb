@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Sitemaps for the nationwide directory (everything) and for each local site
-# (its own content only). A site's URLs use Site#directory_url, not the request
+# (its own content only). A site's URLs use Site#canonical_url, not the request
 # host, so an alias hostname still advertises the canonical URLs.
 class SitemapsController < ApplicationController
   CACHE_TTL = 1.day
@@ -44,7 +44,7 @@ class SitemapsController < ApplicationController
   end
 
   def base_url
-    @base_url ||= current_site ? current_site.directory_url.chomp('/') : BASE
+    @base_url ||= current_site ? current_site.canonical_url : BASE
   end
 
   def cached_xml(section, &)
@@ -106,9 +106,9 @@ class SitemapsController < ApplicationController
     urls = []
     urls << url_entry("#{BASE}/partnerships")
 
-    Site.published.pluck(:slug, :url, :updated_at).each do |slug, site_url, updated_at|
-      urls << url_entry("#{BASE}/partnerships/#{slug}", updated_at)
-      urls << url_entry(site_url.chomp('/'), updated_at)
+    Site.published.select(:id, :slug, :domain, :updated_at).order(:id).each do |site|
+      urls << url_entry("#{BASE}/partnerships/#{site.slug}", site.updated_at)
+      urls << url_entry(site.canonical_url, site.updated_at)
     end
 
     wrap_urlset(urls)

@@ -46,9 +46,7 @@ module OgImage
     end
 
     def domain
-      URI.parse(site.url).host || site.url
-    rescue URI::InvalidURIError
-      site.url
+      site.canonical_url.sub(%r{\Ahttps?://}, '')
     end
 
     def compose_watermark(canvas)

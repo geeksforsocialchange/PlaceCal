@@ -8,7 +8,7 @@ class Views::Sites::Collections::Show < Views::Base
   def view_template
     content_for(:title) { collection.name }
     content_for(:description) { collection.description }
-    content_for(:permalink) { collection.permalink(base_url: site&.url) }
+    content_for(:permalink) { collection.permalink(base_url: site&.canonical_url) }
     if collection.image?
       content_for(:image) { image_url(collection.image.standard.url) }
       content_for(:image_alt) { "Image for #{collection.name}" }

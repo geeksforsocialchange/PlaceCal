@@ -9,6 +9,7 @@
 #  contact_email     :string
 #  description       :text
 #  description_html  :string
+#  domain            :string
 #  events_count      :integer          default(0), not null
 #  footer_logo       :string
 #  hero_alttext      :string
@@ -23,7 +24,7 @@
 #  slug              :string           not null
 #  tagline           :string
 #  theme             :string           default("pink")
-#  url               :string           not null
+#  url               :string
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  site_admin_id     :bigint
@@ -31,6 +32,7 @@
 # Indexes
 #
 #  index_sites_is_published       (is_published)
+#  index_sites_on_domain          (domain) UNIQUE WHERE (domain IS NOT NULL)
 #  index_sites_on_events_count    (events_count)
 #  index_sites_on_partners_count  (partners_count)
 #  index_sites_slug               (slug) UNIQUE
@@ -46,7 +48,6 @@ FactoryBot.define do
   factory :site do
     sequence(:name) { |n| "Site #{n}" }
     sequence(:slug) { |n| "site-#{n}" }
-    url { "https://#{slug}.placecal.org" }
     tagline { Faker::Lorem.sentence }
     description { Faker::Lorem.paragraph }
     theme { "pink" }

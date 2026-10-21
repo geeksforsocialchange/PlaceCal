@@ -183,7 +183,7 @@ class EventsController < ApplicationController
   # index action's own period/sort/repeating/neighbourhood/region filters.
   def render_events_csv
     track_csv_download
-    site_url = current_site&.url || 'https://placecal.org'
+    site_url = current_site&.canonical_url || 'https://placecal.org'
     send_data EventsCsv.new(@events.values.flatten, site_url:).call,
               filename: "#{@site&.slug || 'events'}-events.csv", type: :csv
   end

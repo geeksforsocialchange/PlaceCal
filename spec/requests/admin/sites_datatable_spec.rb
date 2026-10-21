@@ -118,6 +118,19 @@ RSpec.describe "Admin::Sites Datatable JSON API", type: :request do
         expect(site_data["name"]).to include("href=")
       end
 
+      it "links each site to its public URL and says whether its domain is served" do
+        serve_hosts("placecal.org", "*.placecal.org", "transdimension.uk")
+        site.update!(domain: "transdimension.uk")
+        create(:site, name: "External Test", domain: "fruitsaladevents.co.uk")
+        datatable_request
+
+        names = response.parsed_body["data"].pluck("name")
+        served = names.find { |cell| cell.include?("Render Test") }
+        external = names.find { |cell| cell.include?("External Test") }
+        expect(served).to include('href="https://transdimension.uk"').and include("Served by PlaceCal")
+        expect(external).to include('href="https://fruitsaladevents.co.uk"').and include("External website")
+      end
+
       it "renders primary neighbourhood cell" do
         datatable_request
 
