@@ -30,6 +30,6 @@ class ContactRequest
   validates :name, :email, :why, presence: true
 
   def submit
-    valid? && JoinMailer.join_us(self).deliver
+    valid? && JoinMailer.join_us(attributes:, site_id: site&.id, demo: demo.present?).deliver_later
   end
 end
