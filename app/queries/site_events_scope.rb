@@ -28,7 +28,7 @@ class SiteEventsScope
     base = Event.left_joins(:address)
     base.where(organiser_id: partner_ids)
         .or(base.where(place_id: partner_ids))
-        .or(base.where(addresses: { neighbourhood_id: @site.owned_neighbourhood_ids }))
+        .or(base.where(addresses: { neighbourhood_id: @site.owned_neighbourhoods_subtree.select(:id) }))
   end
 
   def tagged
