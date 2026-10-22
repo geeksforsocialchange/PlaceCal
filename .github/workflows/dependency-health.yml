@@ -5,8 +5,6 @@ on:
   schedule:
     - cron: "23 6 1 * *"
   workflow_dispatch:
-  push:
-    branches: [ci/monthly-dependency-health]
 
 permissions:
   contents: read
