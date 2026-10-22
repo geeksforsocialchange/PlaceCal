@@ -63,6 +63,7 @@ RSpec.describe "Public Partners", type: :request do
       get partner_url(partner, host: "#{site.slug}.lvh.me")
       expect(response).to be_successful
       expect(response.body).to include(partner.name)
+      expect(response.body).to include('<html lang="en" class="core-theme">')
     end
 
     it "canonicalises to the directory apex, not the site subdomain" do

@@ -17,4 +17,23 @@
 			margin-right: 0;
 		}
 	}
+
+	// The floated permalink then shares the page actions' line
+	.core-theme &:has(+ .page-actions) {
+		padding-bottom: 0;
+	}
+}
+
+// Continues the meta band below it on built-in themes; outranks the Tailwind rule, which loads after this file
+.core-theme .meta + .page-actions {
+	background-color: $base-rules;
+	padding-bottom: 2rem;
+	font-size: $small-font-size;
+
+	ul {
+		max-width: 1240px;
+		margin-inline: auto;
+		padding-inline: 1.25rem;
+		justify-content: flex-start;
+	}
 }
