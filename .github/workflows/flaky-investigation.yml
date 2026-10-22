@@ -11,21 +11,17 @@ permissions:
 jobs:
   system:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 75
     strategy:
       fail-fast: false
       matrix:
         # A: current setup. G: A with Chrome's password manager and leak detection off.
         # Both record Chrome's net-log to see the password leak checks.
         variant: [A, G]
-        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+        shard: [1, 2, 3, 4]
         exclude:
-          - { variant: G, shard: 7 }
-          - { variant: G, shard: 8 }
-          - { variant: G, shard: 9 }
-          - { variant: G, shard: 10 }
-          - { variant: G, shard: 11 }
-          - { variant: G, shard: 12 }
+          - { variant: G, shard: 3 }
+          - { variant: G, shard: 4 }
 
     services:
       postgres:
@@ -86,29 +82,25 @@ jobs:
           bin/rails dartsass:build
           bin/rails assets:precompile
 
-      - name: Run the system suite four times
+      - name: Loop the tabbed-form specs for 50 minutes
         env:
-          BROWSER_PATH: ${{ matrix.variant == 'B' && steps.setup-chrome.outputs.chrome-path || '' }}
           CHROME_NO_PASSWORD_MANAGER: ${{ matrix.variant == 'G' && '1' || '' }}
-          CHROME_EXTRA_ARGS: >-
-            ${{ matrix.variant == 'B' && '--no-sandbox' || '' }}
-            ${{ matrix.variant == 'E' && '--disable-gpu --no-sandbox --disable-dev-shm-usage' || '' }}
-            ${{ matrix.variant == 'F' && '--disable-gpu' || '' }}
         run: |
           mkdir -p results
-          for i in 1 2 3 4; do
-            seed=$(( (${{ matrix.shard }} * 1000 + i * 137 + RANDOM) % 65536 ))
-            start=$(date -u +%H:%M:%S)
+          deadline=$(( $(date +%s) + 3000 ))
+          i=0
+          while [ "$(date +%s)" -lt "$deadline" ]; do
+            i=$((i + 1))
             netlog="$PWD/results/netlog-$i.json"
-            RUN_SLOW_TESTS=true CHROME_EXTRA_ARGS="$CHROME_EXTRA_ARGS --log-net-log=$netlog" bundle exec rspec spec/system --seed "$seed" > "results/run-$i.log" 2>&1 && status=0 || status=$?
+            start=$(date -u +%H:%M:%S)
+            RUN_SLOW_TESTS=true CHROME_EXTRA_ARGS="--log-net-log=$netlog" bundle exec rspec spec/system/admin/tags_spec.rb spec/system/admin/partner_save_bar_spec.rb > "results/run-$i.log" 2>&1 && status=0 || status=$?
             python3 .github/scripts/leakcheck_summary.py "$netlog" > "results/leakcheck-$i.txt" 2>&1 || true
             rm -f "$netlog"
             summary=$(grep -E "^[0-9]+ examples, " "results/run-$i.log" | tail -1)
-            echo "variant=${{ matrix.variant }} shard=${{ matrix.shard }} run=$i start=$start seed=$seed status=$status $summary" | tee -a results/summary.txt
-            cat "results/leakcheck-$i.txt" | tee -a results/summary.txt
-            grep -E "^rspec \./|\[input-diagnostics\]|\[browser-info\]" "results/run-$i.log" | sed -E 's/"console":\[.*\],"native/"native/' | tee -a results/summary.txt || true
+            echo "variant=${{ matrix.variant }} shard=${{ matrix.shard }} run=$i start=$start seed=0 status=$status $summary" | tee -a results/summary.txt
+            grep -v " 429$" "results/leakcheck-$i.txt" | tee -a results/summary.txt
+            grep -E "^rspec \./|\[input-diagnostics\]" "results/run-$i.log" | sed -E 's/"console":\[.*\],"native/"native/' | tee -a results/summary.txt || true
           done
-          cat results/summary.txt >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload results
         if: always()
