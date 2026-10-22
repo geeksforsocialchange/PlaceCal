@@ -56,5 +56,7 @@ ignore_unused:
   # OurStory builds every key from `T = 'directory.pages.our_story'` and
   # interpolated section names (see app/views/directory/our_story.rb).
   - "directory.pages.our_story.*"
+  # The MCP page builds its keys from `T = 'directory.pages.mcp'` (app/views/directory/mcp.rb).
+  - "directory.pages.mcp.*"
   # OG card services resolve keys through a scoped `t` helper (scope: 'og_image').
   - "og_image.*"
