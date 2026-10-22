@@ -331,7 +331,7 @@ RSpec.describe "Admin::Partners", type: :request do
 
       it "prevents updating address outside their neighbourhood" do
         # Create a different neighbourhood for the new address
-        other_ward = create(:oldtown_ward)
+        create(:oldtown_ward)
 
         partner_params = {
           name: partner.name,

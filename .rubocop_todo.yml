@@ -35,23 +35,6 @@ Lint/DuplicateBranch:
   Exclude:
     - 'lib/tasks/db.rake'
 
-# Offense count: 16
-# This cop supports safe autocorrection (--autocorrect).
-Lint/UselessAssignment:
-  Exclude:
-    - 'app/jobs/calendar_importer/parsers/eventbrite.rb'
-    - 'app/jobs/calendar_importer/parsers/manchester_uni.rb'
-    - 'app/jobs/calendar_importer_job.rb'
-    - 'app/models/address.rb'
-    - 'app/models/calendar.rb'
-    - 'app/models/event.rb'
-    - 'app/models/partner.rb'
-    - 'app/policies/calendar_policy.rb'
-    - 'features/step_definitions/calendar_steps.rb'
-    - 'lib/tasks/db.rake'
-    - 'lib/tasks/neighbourhoods.rake'
-    - 'spec/requests/admin/partners_spec.rb'
-
 # Offense count: 1
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Lint/UselessMethodDefinition:

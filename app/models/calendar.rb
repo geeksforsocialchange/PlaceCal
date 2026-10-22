@@ -202,7 +202,7 @@ class Calendar < ApplicationRecord
                                               .where("item_type = 'Event' AND object @> ? AND created_at >= ?",
                                                      { calendar_id: id }.to_json, 2.weeks.ago))
 
-    versions = versions.order(created_at: :desc).group_by { |version| version.created_at.to_date }
+    versions.order(created_at: :desc).group_by { |version| version.created_at.to_date }
   end
 
   # @return [Integer] number of events starting this week
@@ -378,7 +378,7 @@ class Calendar < ApplicationRecord
     CalendarImporter::CalendarImporter.new(self)
   rescue CalendarImporter::Exceptions::InaccessibleFeed => e
     errors.add :source, "The source URL returned an invalid code (#{e})"
-  rescue CalendarImporter::Exceptions::UnsupportedFeed => e
+  rescue CalendarImporter::Exceptions::UnsupportedFeed
     errors.add :source, 'Unable to autodetect calendar format, please pick an option from the list below'
   end
 

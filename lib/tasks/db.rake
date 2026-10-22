@@ -313,7 +313,7 @@ namespace :db do
     puts "Found #{bad_events.count} events with duplicate IDs"
 
     bad_events.each do |fields, _|
-      uid, dtstart = fields
+      uid, _dtstart = fields
 
       event_cluster = Event.where(uid:)
 

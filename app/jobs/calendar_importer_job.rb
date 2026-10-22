@@ -87,7 +87,6 @@ class CalendarImporterJob < ApplicationJob
 
   def report_error(e, message)
     full_message = "#{message} for calendar #{calendar.name} (id #{calendar.id}):  #{e}"
-    backtrace = e.backtrace[...6]
 
     # FIXME: we should not be reloading the calendar here.
     #   see note in Calendar#flag_error_import_job! for details
