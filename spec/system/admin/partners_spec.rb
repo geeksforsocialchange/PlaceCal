@@ -185,6 +185,21 @@ RSpec.describe "Admin Partners", :slow, type: :system do
       end
     end
 
+    it "removes an existing service area on save" do
+      partner.service_areas.create!(neighbourhood: oldtown_ward)
+      click_link "Partners"
+      await_datatables
+      click_link partner.name
+      go_to_place_tab
+
+      find(".nested-form-service-areas a[data-action='nested-form#remove']").click
+      expect(page).to have_no_css(".nested-form-service-areas .nested-fields")
+      click_button "Save"
+
+      assert_has_flash(:success, "Partner was successfully updated.")
+      expect(partner.service_areas.reload).to be_empty
+    end
+
     it "allows adding service areas to new partner" do
       click_link "Partners"
       await_datatables

@@ -30,8 +30,9 @@ class Components::Admin::NeighbourhoodCard < Components::Admin::Base
           end
 
           if @show_remove && @form
-            nested_form_remove_link(@form, capture { icon(:x, size: '4') },
-                                    class: 'btn btn-ghost btn-sm btn-square text-gray-500 hover:text-error hover:bg-error/10')
+            nested_form_remove_link(@form, 'btn btn-ghost btn-sm btn-square text-gray-500 hover:text-error hover:bg-error/10') do
+              icon(:x, size: '4')
+            end
           end
         end
       end
