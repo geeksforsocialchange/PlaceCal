@@ -1,0 +1,29 @@
+name: Dependency health
+
+# Flags stale, archived or vulnerable gems in the Security tab; never blocks a PR.
+on:
+  schedule:
+    - cron: "23 6 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  still-active:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: ruby/setup-ruby@b1da4809b005e0178fe08a1d57317bffc00b7b4c # v1.332.0
+
+      - uses: SeanLF/still_active-action@03e85060785c8769c7e71de7a592719bf41813ea # v0.5.0
+        with:
+          github-token: ${{ github.token }}
+          sarif: still_active.sarif.json
+
+      - uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
+        if: always()
+        with:
+          sarif_file: still_active.sarif.json
