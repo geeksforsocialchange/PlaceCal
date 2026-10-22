@@ -19,6 +19,9 @@ module CalendarImporter::Parsers
       webcal://
     ].freeze
 
+    # Outlook names zones the Windows way, which icalendar can't resolve, so repeats keep one fixed offset
+    WINDOWS_TIME_ZONES = { 'GMT Standard Time' => 'Europe/London' }.freeze
+
     def self.allowlist_pattern
       allowlists = {
         gcal: %r{^https?://calendar\.google\.com.*},
@@ -58,7 +61,7 @@ module CalendarImporter::Parsers
     def parse_remote_calendars(data)
       raise InvalidResponse, 'Source returned empty ICS data' if data.blank?
 
-      Icalendar::Calendar.parse data
+      Icalendar::Calendar.parse with_iana_time_zones(data)
     rescue RuntimeError => e
       # I hope this isn't swallowing up any important exceptions.
 
@@ -72,6 +75,12 @@ module CalendarImporter::Parsers
       #   - IK
 
       raise InvalidResponse, "Could not parse ICS response (#{e})"
+    end
+
+    private
+
+    def with_iana_time_zones(data)
+      data.gsub(/(?<=TZID[=:])#{Regexp.union(WINDOWS_TIME_ZONES.keys)}/, WINDOWS_TIME_ZONES)
     end
   end
 end

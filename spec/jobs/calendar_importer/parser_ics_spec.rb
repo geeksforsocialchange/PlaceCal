@@ -14,6 +14,13 @@ RSpec.describe CalendarImporter::Parsers::Ics do
       expect(events.length).to eq(1)
     end
 
+    it "keeps Outlook's repeating events at the same UK time across the clock change" do
+      event = parser.parse_remote_calendars(file_fixture("outlook-gmt-standard-time.ics").read).first.events.first
+      starts = event.occurrences_between(Time.utc(2026, 10, 20), Time.utc(2026, 11, 2)).map { |o| o.start_time.in_time_zone("Europe/London").strftime("%-d %b %H:%M") }
+
+      expect(starts).to eq(["24 Oct 11:30", "31 Oct 11:30"])
+    end
+
     it "handles missing ICAL data" do
       expect do
         parser.parse_remote_calendars("")
