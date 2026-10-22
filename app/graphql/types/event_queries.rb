@@ -44,7 +44,7 @@ module Types
 
     def events_by_filter(**args)
       query = Event.sort_by_time
-      from_date = DateTime.now.beginning_of_day
+      from_date = Time.current.beginning_of_day
 
       if args[:from_date].present?
         if args[:from_date] =~ /^\s*(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/

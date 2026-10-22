@@ -95,31 +95,26 @@ class Event < ApplicationRecord
   # ==== Scopes ====
   # has_many :service_areas, through: :partner
 
-  # Find events that start on a given day
-  scope :find_by_day, lambda { |day|
-    where('DATE(dtstart) = ?', day.to_date)
+  # Events starting on app-zone dates first..last inclusive. dtstart is stored in UTC,
+  # so SQL DATE(dtstart) would put events from 00:00 to 01:00 BST on the day before.
+  scope :starting_between_days, lambda { |first, last|
+    where(dtstart: first.to_date.in_time_zone...last.to_date.next_day.in_time_zone)
   }
+
+  # Find events that start on a given day
+  scope :find_by_day, ->(day) { starting_between_days(day, day) }
 
   # Find by week (Monday to Sunday)
   scope :find_by_week, lambda { |day|
-    week_start = day.beginning_of_week
-    week_end = day.end_of_week
-    where('(DATE(dtstart) >= (?)) AND (DATE(dtstart) <= (?))', week_start, week_end)
+    date = day.to_date
+    starting_between_days(date.beginning_of_week, date.end_of_week)
   }
 
   # Find next 7 days from given day
-  scope :find_next_7_days, lambda { |day|
-    day_start = day.to_date
-    day_end = day_start + 6.days
-    where('(DATE(dtstart) >= (?)) AND (DATE(dtstart) <= (?))', day_start, day_end)
-  }
+  scope :find_next_7_days, ->(day) { starting_between_days(day, day.to_date + 6.days) }
 
   # Find from given day to end of that month
-  scope :for_month, lambda { |day|
-    day_start = day.to_date
-    month_end = day_start.end_of_month
-    where('(DATE(dtstart) >= (?)) AND (DATE(dtstart) <= (?))', day_start, month_end)
-  }
+  scope :for_month, ->(day) { starting_between_days(day, day.to_date.end_of_month) }
 
   # Find by day onwards
   scope :future, lambda { |day|
@@ -173,7 +168,7 @@ class Event < ApplicationRecord
   scope :past, -> { where(dtstart: ..DateTime.current.beginning_of_day) }
 
   # Global feed
-  scope :ical_feed, -> { where(dtstart: (Time.now - 1.week)..).where(dtend: ...(Time.now + 2.years)) }
+  scope :ical_feed, -> { where(dtstart: 1.week.ago..).where(dtend: ...2.years.from_now) }
 
   # ==== Callbacks ====
   before_save :sanitize_rrule

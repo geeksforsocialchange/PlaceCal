@@ -42,7 +42,7 @@ namespace :db do
     cmd        = nil
 
     with_config do |_app, host, db, user|
-      full_path = "#{backup_dir}/#{Time.now.strftime('%Y%m%d%H%M%S')}_#{db}.#{dump_sfx}"
+      full_path = "#{backup_dir}/#{Time.current.strftime('%Y%m%d%H%M%S')}_#{db}.#{dump_sfx}"
       cmd       = "pg_dump -F #{dump_fmt} -v -O -o --exclude-table-data=solid_cache_entries -U '#{user}' -h '#{host}' -d '#{db}' -f '#{full_path}'"
     end
 
@@ -66,7 +66,7 @@ namespace :db do
         cmd        = nil
 
         with_config do |_app, host, db, user|
-          full_path = "#{backup_dir}/#{Time.now.strftime('%Y%m%d%H%M%S')}_#{db}.#{table_name.parameterize.underscore}.#{dump_sfx}"
+          full_path = "#{backup_dir}/#{Time.current.strftime('%Y%m%d%H%M%S')}_#{db}.#{table_name.parameterize.underscore}.#{dump_sfx}"
           cmd       = "pg_dump -F #{dump_fmt} -v -O -o -U '#{user}' -h '#{host}' -d '#{db}' -t '#{table_name}' -f '#{full_path}'"
         end
 
@@ -151,7 +151,7 @@ namespace :db do
     prod_host = ENV.fetch(PRODUCTION_HOST_KEY) { abort "Set #{PRODUCTION_HOST_KEY} to the production server IP/hostname" }
     staging_host = ENV.fetch(STAGING_HOST_KEY) { abort "Set #{STAGING_HOST_KEY} to the staging server IP/hostname" }
 
-    timestamp = Time.now.strftime('%Y%m%d%H%M%S')
+    timestamp = Time.current.strftime('%Y%m%d%H%M%S')
     dump_file = "/tmp/placecal_prod_#{timestamp}.dump"
 
     pg_user = ENV.fetch('POSTGRES_USER', 'placecal')

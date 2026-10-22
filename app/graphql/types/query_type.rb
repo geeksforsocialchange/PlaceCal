@@ -99,7 +99,7 @@ module Types
     end
 
     def ping
-      "Hello World! The time is #{Time.now}"
+      "Hello World! The time is #{Time.current}"
     end
   end
 
