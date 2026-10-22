@@ -257,7 +257,7 @@ namespace :db do
 
   desc 'Prints out a list of tables and their counts'
   task info: :environment do
-    IGNORE_TABLES = %w[ar_internal_metadata delayed_jobs schema_migrations seed_migration_data_migrations].freeze
+    IGNORE_TABLES = %w[ar_internal_metadata delayed_jobs schema_migrations].freeze
 
     puts 'Database Info:'
     puts "  Rails.env=#{Rails.env}"
