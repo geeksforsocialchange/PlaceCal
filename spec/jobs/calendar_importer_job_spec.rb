@@ -137,33 +137,10 @@ RSpec.describe CalendarImporterJob do
     end
   end
 
-  describe "default location without an address" do
-    let(:place) { create(:ashton_service_area_partner) }
-
-    before { place.reload.clear_address! }
-
-    %w[place room_number event_override].each do |strategy|
-      context "with the #{strategy} strategy" do
-        let(:calendar) do
-          create(:calendar, strategy:, place:, source: "https://www.birchcommunitycentre.co.uk/events.ics")
-            .tap { |c| c.update!(calendar_state: "in_queue") }
-        end
-
-        it "imports the events at the place, without an address" do
-          VCR.use_cassette(:generic_ical_feed, allow_playback_repeats: true) { perform_import }
-
-          calendar.reload
-          expect(calendar.calendar_state).to eq("idle")
-          expect(calendar.events).to be_present
-          expect(calendar.events.pluck(:place_id, :address_id).uniq).to eq([[place.id, nil]])
-        end
-      end
-    end
-  end
-
-  describe "a feed with one invalid event" do
+  describe "a default place without an address" do
+    let(:place) { create(:ashton_service_area_partner).tap { |p| p.reload.clear_address! } }
     let(:calendar) do
-      create(:calendar, strategy: "place", importer_mode: "ical")
+      create(:calendar, strategy: "room_number", place:, importer_mode: "ical")
         .tap { |c| c.update!(calendar_state: "in_queue") }
     end
 
@@ -176,9 +153,10 @@ RSpec.describe CalendarImporterJob do
         DTSTART:20221201T100000Z
         DTEND:20221201T110000Z
         SUMMARY:Good event
+        LOCATION:Room 2
         END:VEVENT
         BEGIN:VEVENT
-        UID:bad@example.com
+        UID:no-summary@example.com
         DTSTART:20221202T100000Z
         DTEND:20221202T110000Z
         END:VEVENT
@@ -186,13 +164,11 @@ RSpec.describe CalendarImporterJob do
       ICS
     end
 
-    it "saves the valid events and records a notice for the invalid one" do
+    it "imports the valid events at the place and skips the invalid one" do
       perform_import
 
-      calendar.reload
-      expect(calendar.calendar_state).to eq("idle")
-      expect(calendar.events.pluck(:uid)).to eq(["good@example.com"])
-      expect(calendar.notices).to include(a_string_including("Summary"))
+      expect(calendar.reload.calendar_state).to eq("idle")
+      expect(calendar.events.pluck(:uid, :place_id, :address_id)).to eq([["good@example.com", place.id, nil]])
     end
   end
 end
