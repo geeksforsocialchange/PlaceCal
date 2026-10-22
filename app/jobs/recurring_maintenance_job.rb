@@ -13,6 +13,7 @@ class RecurringMaintenanceJob < ApplicationJob
     run do
       Appsignal::CheckIn.cron('daily_maintenance') do
         Event.deduplicate!
+        Event.prune_old_versions!
         Site.refresh_all_counts!
         Neighbourhood.refresh_partners_count!
         Address.delete_orphaned!
