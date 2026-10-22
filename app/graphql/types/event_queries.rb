@@ -31,6 +31,23 @@ module Types
         argument :tag_id, Integer,
                  required: false,
                  description: 'Will only show events whose partners have this tag'
+
+        argument :postcode, String,
+                 required: false,
+                 description: 'A UK postcode, e.g. "M15 5FS". Shows events in its ward, or by organisers based or working there when the event has no address.'
+
+        argument :place, String,
+                 required: false,
+                 description: 'A UK place name: ward, district, county or region, e.g. "Hulme" or "Manchester". ' \
+                              'Add the wider area after a comma where names repeat, e.g. "Castle, Cambridge". Matches events like `postcode`.'
+
+        argument :query, String,
+                 required: false,
+                 description: 'Text to find in event titles and descriptions, case-insensitive, e.g. "yoga".'
+
+        argument :category, String,
+                 required: false,
+                 description: 'A category name, e.g. "Health & Wellbeing".'
       end
     end
 
@@ -43,8 +60,8 @@ module Types
     end
 
     def events_by_filter(**args)
-      query = Event.sort_by_time
       from_date = Time.current.beginning_of_day
+      to_date = nil
 
       if args[:from_date].present?
         if args[:from_date] =~ /^\s*(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/
@@ -60,8 +77,6 @@ module Types
           raise GraphQL::ExecutionError, "fromDate not in 'YYYY-MM-DD HH:MM' format"
         end
       end
-
-      query = query.where(dtstart: from_date..)
 
       if args[:to_date].present?
         if args[:to_date] =~ /^\s*(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/
@@ -79,9 +94,9 @@ module Types
         else
           raise GraphQL::ExecutionError, "toDate not in 'YYYY-MM-DD HH:MM' format"
         end
-
-        query = query.where(dtstart: ...to_date)
       end
+
+      query = EventSearch.new(from: from_date, to: to_date, **args.slice(:postcode, :place, :query, :category)).call
 
       if args[:neighbourhood_id].present?
         neighbourhood = Neighbourhood.where(id: args[:neighbourhood_id]).first
@@ -100,6 +115,8 @@ module Types
       end
 
       query.all
+    rescue EventSearch::Error => e
+      raise GraphQL::ExecutionError, e.message
     end
   end
 end

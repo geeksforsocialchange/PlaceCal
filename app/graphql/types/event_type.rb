@@ -42,6 +42,10 @@ module Types
           method: :publisher_url,
           description: 'The URL of the partners original page'
 
+    field :url, String,
+          method: :permalink,
+          description: "The event's page on PlaceCal, with full details"
+
     field :repeatFrequency, String,
           description: 'How often this event repeats, e.g. "Weekly", "Monthly". Null for one-off events', method: :repeat_frequency
 

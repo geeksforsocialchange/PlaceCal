@@ -276,6 +276,13 @@ en:
         information: "Event information"
         organised_by: "Organised by"
     pages:
+      mcp:
+        heading: "For AI assistants"
+        hero_title: "Ask your AI assistant what's on near you"
+        hero_lede: "PlaceCal has an MCP server. Connect it to an AI assistant like ChatGPT or Claude and it can search our local community events and link you to them."
+        address_label: "Server address"
+        copy: "Copy"
+        copied: "Copied"
       privacy:
         title: "PlaceCal Privacy Policy"
         breadcrumb: "Privacy"
@@ -437,6 +444,7 @@ en:
       admin_log_in: "Admin log in"
       about: "About"
       our_story: "Our story"
+      for_ai_assistants: "For AI assistants"
       privacy_policy: "Privacy policy"
       terms_of_use: "Terms of use"
       placecal_logo_alt: "PlaceCal logo"

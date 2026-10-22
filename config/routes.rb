@@ -194,6 +194,9 @@ Rails.application.routes.draw do
 
   get '/api/v1/graphql', to: 'graphql#execute'
   post '/api/v1/graphql', to: 'graphql#execute'
+  # A person opening the MCP address in a browser gets a page; MCP clients don't ask for HTML
+  get '/mcp', to: 'pages#mcp', constraints: ->(req) { req.headers['Accept'].to_s.include?('text/html') }
+  match '/mcp', to: ->(env) { PlacecalMcp.call(env) }, via: %i[get post delete]
 
   mount GraphiQL::Rails::Engine, at: '/graphiql', graphql_path: '/api/v1/graphql' if Rails.env.development?
   # Lookbook auto-mounts at /lookbook in development

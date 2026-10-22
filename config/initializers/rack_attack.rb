@@ -16,6 +16,11 @@ class Rack::Attack
     client_ip(req) if req.path.start_with?('/graphiql')
   end
 
+  # Throttle MCP requests by IP: 60 requests per minute
+  throttle('mcp/ip', limit: 60, period: 60) do |req|
+    client_ip(req) if req.path == '/mcp'
+  end
+
   # Return JSON 429 for API requests
   self.throttled_responder = lambda do |request|
     if request.path.start_with?('/api/')
