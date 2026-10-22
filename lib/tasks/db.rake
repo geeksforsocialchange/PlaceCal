@@ -334,59 +334,46 @@ namespace :db do
       end
     end
   end
+end
 
-  private
+def ensure_format(format)
+  return format if %w[c p t d].include?(format)
 
-  def ensure_format(format)
-    return format if %w[c p t d].include?(format)
+  { 'dump' => 'c', 'sql' => 'p', 'tar' => 't', 'dir' => 'd' }.fetch(format, 'p')
+end
 
-    case format
-    when 'dump' then 'c'
-    when 'sql' then 'p'
-    when 'tar' then 't'
-    when 'dir' then 'd'
-    else 'p'
-    end
+def suffix_for_format(suffix)
+  { 'c' => 'dump', 'p' => 'sql', 't' => 'tar', 'd' => 'dir' }[suffix]
+end
+
+def format_for_file(file)
+  case file
+  when /\.dump$/ then 'c'
+  when /\.sql$/  then 'p'
+  when /\.dir$/  then 'd'
+  when /\.tar$/  then 't'
+  end
+end
+
+def backup_directory(suffix = nil, create: false)
+  backup_dir = Rails.root.join(*['db/backups', suffix].compact).to_s
+
+  if create && !Dir.exist?(backup_dir)
+    puts "Creating #{backup_dir} .."
+    FileUtils.mkdir_p(backup_dir)
   end
 
-  def suffix_for_format(suffix)
-    case suffix
-    when 'c' then 'dump'
-    when 'p' then 'sql'
-    when 't' then 'tar'
-    when 'd' then 'dir'
-    end
-  end
+  backup_dir
+end
 
-  def format_for_file(file)
-    case file
-    when /\.dump$/ then 'c'
-    when /\.sql$/  then 'p'
-    when /\.dir$/  then 'd'
-    when /\.tar$/  then 't'
-    end
-  end
+def with_config
+  db_config = ActiveRecord::Base.connection_db_config.configuration_hash
+  yield Rails.application.class.module_parent_name.underscore,
+        db_config[:host],
+        db_config[:database],
+        db_config[:username]
+end
 
-  def backup_directory(suffix = nil, create: false)
-    backup_dir = Rails.root.join(*['db/backups', suffix].compact).to_s
-
-    if create && !Dir.exist?(backup_dir)
-      puts "Creating #{backup_dir} .."
-      FileUtils.mkdir_p(backup_dir)
-    end
-
-    backup_dir
-  end
-
-  def with_config
-    db_config = ActiveRecord::Base.connection_db_config.configuration_hash
-    yield Rails.application.class.module_parent_name.underscore,
-          db_config[:host],
-          db_config[:database],
-          db_config[:username]
-  end
-
-  def to_boolean(value)
-    (@boolean ||= ActiveModel::Type::Boolean.new).cast value
-  end
+def to_boolean(value)
+  (@boolean ||= ActiveModel::Type::Boolean.new).cast value
 end

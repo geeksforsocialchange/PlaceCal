@@ -29,12 +29,6 @@ GraphQL/ExtractType:
 Layout/LineLength:
   Max: 515
 
-# Offense count: 1
-# Configuration parameters: IgnoreLiteralBranches, IgnoreConstantBranches, IgnoreDuplicateElseBranch.
-Lint/DuplicateBranch:
-  Exclude:
-    - 'lib/tasks/db.rake'
-
 # Offense count: 72
 # Configuration parameters: AllowedMethods, AllowedPatterns, CountRepeatedAttributes.
 Metrics/AbcSize:
@@ -181,12 +175,6 @@ Rails/TimeZone:
     - 'app/models/partner.rb'
     - 'lib/tasks/db.rake'
 
-# Offense count: 8
-Rake/MethodDefinitionInTask:
-  Exclude:
-    - 'lib/tasks/db.rake'
-    - 'lib/tasks/events.rake'
-
 # Offense count: 223
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: EnforcedStyle, EnforcedStyleForClasses, EnforcedStyleForModules.
@@ -203,12 +191,6 @@ Style/GuardClause:
   Exclude:
     - 'app/graphql/types/event_queries.rb'
     - 'db/migrate/20191031170146_add_foreign_key_constraint_to_active_storage_attachments_for_blob_id.active_storage.rb'
-
-# Offense count: 1
-# Configuration parameters: MinBranchesCount.
-Style/HashLikeCase:
-  Exclude:
-    - 'lib/tasks/db.rake'
 
 # Offense count: 4
 # This cop supports safe autocorrection (--autocorrect).

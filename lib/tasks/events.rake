@@ -102,16 +102,14 @@ namespace :events do
     # TODO: For all ICS calendars, check their events and refresh their online event data
     # Currently it is impossible to do this because we don't know what parser an Event used after the fact :(
   end
+end
 
-  private
+def to_boolean(value)
+  (@boolean ||= ActiveModel::Type::Boolean.new).cast value
+end
 
-  def to_boolean(value)
-    (@boolean ||= ActiveModel::Type::Boolean.new).cast value
-  end
+def to_date(value)
+  return Date.current.beginning_of_day if value.blank?
 
-  def to_date(value)
-    return Date.current.beginning_of_day if value.blank?
-
-    Date.parse value
-  end
+  Date.parse value
 end
