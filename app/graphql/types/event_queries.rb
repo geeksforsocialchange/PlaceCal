@@ -38,7 +38,8 @@ module Types
 
         argument :place, String,
                  required: false,
-                 description: 'A UK place name: ward, district, county or region, e.g. "Hulme" or "Manchester". Matches events like `postcode`.'
+                 description: 'A UK place name: ward, district, county or region, e.g. "Hulme" or "Manchester". ' \
+                              'Add the wider area after a comma where names repeat, e.g. "Castle, Cambridge". Matches events like `postcode`.'
 
         argument :query, String,
                  required: false,

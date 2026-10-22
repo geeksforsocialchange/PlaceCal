@@ -15,7 +15,8 @@ module PlacecalMcp
     annotations(read_only_hint: true, open_world_hint: false)
     input_schema(
       properties: {
-        place: { type: 'string', description: 'UK ward, district, county or region name, e.g. "Hulme" or "Manchester"' },
+        place: { type: 'string', description: 'UK ward, district, county or region name, e.g. "Hulme" or "Manchester". ' \
+                                              'Add the wider area after a comma where names repeat, e.g. "Castle, Cambridge"' },
         postcode: { type: 'string', description: 'UK postcode, e.g. "M15 5FS"' },
         from_date: { type: 'string', description: 'Earliest start date, YYYY-MM-DD. Defaults to now' },
         to_date: { type: 'string', description: 'Latest start date, YYYY-MM-DD, inclusive' },
@@ -33,7 +34,7 @@ module PlacecalMcp
           postcode: args[:postcode], place: args[:place], query: args[:keyword], category: args[:category]
         )
         limit = (args[:limit] || 20).to_i.clamp(1, MAX_RESULTS)
-        events = search.call.includes(:organiser, :online_address, address: :neighbourhood).limit(limit).to_a
+        events = search.call.includes(:online_address, :address, organiser: :address, place: :address).limit(limit).to_a
         results = events.map { |event| result(event) }
 
         MCP::Tool::Response.new([{ type: 'text', text: summary(results, search.neighbourhoods) }],
@@ -53,7 +54,7 @@ module PlacecalMcp
           title: event.summary,
           starts_at: event.dtstart.in_time_zone.iso8601,
           ends_at: event.dtend&.in_time_zone&.iso8601,
-          venue: event.partner_at_location&.name,
+          venue: event.place&.name,
           address: event.location.presence,
           online_url: event.online_address&.url,
           organiser: event.organiser&.name,
@@ -63,8 +64,8 @@ module PlacecalMcp
       end
 
       def summary(results, neighbourhoods)
-        area = neighbourhoods.map { |n| "#{n.name} (#{n.unit})" }.uniq.join(', ')
-        heading = area.present? ? "#{results.size} events in #{area}" : "#{results.size} events"
+        area = neighbourhoods.map { |n| "#{n.name} (#{[n.unit, n.parent_name].compact.join(', ')})" }.uniq.join('; ')
+        heading = area.present? ? "Next #{results.size} events in #{area}" : "Next #{results.size} events"
         lines = results.map do |r|
           ["#{r[:starts_at]}: #{r[:title]}", r[:venue] || r[:address], r[:organiser] && "by #{r[:organiser]}", r[:url]].compact.join(' | ')
         end

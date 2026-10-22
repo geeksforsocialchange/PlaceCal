@@ -23,6 +23,14 @@ RSpec.describe EventSearch do
     expect(search(place: "riverside")).to contain_exactly(held_there, based_there, served)
   end
 
+  it "picks one of several same-named places by the wider area after a comma" do
+    in_millbrook = create(:event, organiser: oldtown_partner, address: in_riverside)
+    elsewhere = create(:riverside_ward, parent: create(:seaview_district))
+    create(:event, organiser: oldtown_partner, address: create(:address, neighbourhood: elsewhere))
+
+    expect(search(place: "Riverside, Millbrook")).to eq([in_millbrook])
+  end
+
   it "resolves a postcode to its ward" do
     event = create(:event, organiser: oldtown_partner, address: in_riverside)
     create(:event, organiser: oldtown_partner, address: in_oldtown)
