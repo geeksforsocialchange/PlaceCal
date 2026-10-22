@@ -7,7 +7,7 @@ module PartnersHelper
     existing_ids = partner.user_ids
     User.where.not(id: existing_ids)
         .order(:email)
-        .map { |u| [u.email, u.id] }
+        .map { |u| [u.display_name, u.id] }
   end
 
   def options_for_service_area_neighbourhoods(for_partner)

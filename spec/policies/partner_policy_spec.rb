@@ -118,6 +118,45 @@ RSpec.describe PartnerPolicy, type: :policy do
     end
   end
 
+  describe "assigning partner admins (user_ids)" do
+    let(:ward) { create(:riverside_ward) }
+    let(:partner) { create(:partner, address: create(:address, neighbourhood: ward)) }
+
+    def permits_user_ids?(user)
+      described_class.new(user, partner).permitted_attributes.include?({ user_ids: [] })
+    end
+
+    it "is permitted for root" do
+      expect(permits_user_ids?(create(:root_user))).to be(true)
+    end
+
+    it "is permitted for a neighbourhood admin" do
+      expect(permits_user_ids?(create(:neighbourhood_admin, neighbourhood: ward))).to be(true)
+    end
+
+    it "is permitted for a partnership admin" do
+      expect(permits_user_ids?(create(:partnership_admin))).to be(true)
+    end
+
+    it "is not permitted for a partner admin" do
+      expect(permits_user_ids?(create(:partner_admin, partner:))).to be(false)
+    end
+
+    context "for a site admin with no neighbourhoods" do
+      let(:user) { create(:citizen_user) }
+
+      before do
+        site = create(:site, site_admin: user)
+        create(:sites_neighbourhood, site:, neighbourhood: ward)
+      end
+
+      it "is not permitted, and the partner cannot be edited at all" do
+        expect(permits_user_ids?(user)).to be(false)
+        expect(described_class.new(user, partner)).to forbid_action(:update)
+      end
+    end
+  end
+
   describe "Scope" do
     let!(:partner1) { create(:partner) }
     let!(:partner2) { create(:partner) }

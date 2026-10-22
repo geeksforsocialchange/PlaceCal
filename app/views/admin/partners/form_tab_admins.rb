@@ -23,6 +23,7 @@ class Views::Admin::Partners::FormTabAdmins < Views::Admin::Base
       empty_text: t('admin.empty.none_assigned', items: t('admin.models.admin.other').downcase),
       add_placeholder: t('admin.partners.admins.add_existing'),
       use_tom_select: true,
+      show_all_options: true,
       link_path: :edit_admin_user_path
     )
 

@@ -42,6 +42,21 @@ RSpec.describe PartnersHelper, type: :helper do
     end
   end
 
+  describe "#options_for_partner_users" do
+    let!(:existing_admin) { create(:user) }
+    let!(:other_user) { create(:user) }
+
+    before { partner.users << existing_admin }
+
+    it "labels users by name and email so admins can search by either" do
+      expect(helper.options_for_partner_users(partner)).to include([other_user.display_name, other_user.id])
+    end
+
+    it "leaves out users who already admin the partner" do
+      expect(helper.options_for_partner_users(partner).map(&:last)).not_to include(existing_admin.id)
+    end
+  end
+
   describe "#options_for_partner_partnerships" do
     let(:partnership_admin) { create(:neighbourhood_admin) }
     let(:partnership_tag) { create(:partnership) }
