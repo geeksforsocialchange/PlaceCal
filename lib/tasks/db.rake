@@ -178,7 +178,7 @@ namespace :db do
   desc 'Download production DB dump'
   task dump_production: :environment do
     prod_host = ENV.fetch(PRODUCTION_HOST_KEY) { abort "Set #{PRODUCTION_HOST_KEY} to the production server IP/hostname" }
-    filename = ENV.fetch(DB_DUMP_ENV_KEY) { "#{Rails.root}/dump/production_#{Time.now.to_i}.dump" }
+    filename = ENV.fetch(DB_DUMP_ENV_KEY) { Rails.root.join("dump/production_#{Time.now.to_i}.dump").to_s }
 
     FileUtils.mkdir_p(File.dirname(filename))
 
@@ -368,7 +368,7 @@ namespace :db do
   end
 
   def backup_directory(suffix = nil, create: false)
-    backup_dir = File.join(*[Rails.root, 'db/backups', suffix].compact)
+    backup_dir = Rails.root.join(*['db/backups', suffix].compact).to_s
 
     if create && !Dir.exist?(backup_dir)
       puts "Creating #{backup_dir} .."

@@ -132,17 +132,6 @@ Rails/Date:
     - 'app/controllers/application_controller.rb'
 
 # Offense count: 8
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: slashes, arguments
-Rails/FilePath:
-  Exclude:
-    - 'config/application.rb'
-    - 'config/environments/development.rb'
-    - 'config/initializers/assets.rb'
-    - 'lib/tasks/db.rake'
-
-# Offense count: 8
 Rails/HasAndBelongsToMany:
   Exclude:
     - 'app/models/collection.rb'

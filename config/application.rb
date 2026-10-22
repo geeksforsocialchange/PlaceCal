@@ -30,7 +30,7 @@ module PlaceCal
     config.time_zone = 'Europe/London'
 
     config.paths.add File.join('app', 'api'), glob: File.join('**', '*.rb')
-    config.autoload_paths += Dir[Rails.root.join('app', 'api', '*')]
+    config.autoload_paths += Dir[Rails.root.join('app/api/*')]
 
     # Phlex views: app/views/ (Views::), components: app/components/ (Components::)
     # See config/initializers/phlex.rb for Zeitwerk namespace configuration
