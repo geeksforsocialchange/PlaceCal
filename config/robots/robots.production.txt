@@ -9,6 +9,7 @@ Disallow: /assets/
 
 # https://github.com/ai-robots-txt/ai.robots.txt
 # Training and scraping bots (search-AI bots removed from block list)
+User-agent: AgentDataBot
 User-agent: AgentTimes
 User-agent: AI2Bot
 User-agent: AI2Bot-DeepResearchEval
@@ -29,19 +30,21 @@ User-agent: atlassian-bot
 User-agent: Awario
 User-agent: bedrockbot
 User-agent: bigsur.ai
+User-agent: BixelBot
 User-agent: Brightbot
 User-agent: Brightbot 1.0
 User-agent: BuddyBot
 User-agent: Bytespider
 User-agent: CCBot
 User-agent: ChatGLM-Spider
-User-agent: ChatGPT Agent
 User-agent: Claude-Code
 User-agent: Claude-Web
 User-agent: ClaudeBot
 User-agent: Cloudflare-AutoRAG
+User-agent: CloudflareBrowserRenderingCrawler
 User-agent: CloudVertexBot
 User-agent: Code
+User-agent: Codex
 User-agent: cohere-training-data-crawler
 User-agent: Cotoyogi
 User-agent: CragCrawler
@@ -52,8 +55,12 @@ User-agent: Datenbank Crawler
 User-agent: DeepSeekBot
 User-agent: Devin
 User-agent: Diffbot
+User-agent: Diffbot-User
+User-agent: DoubaoBot
 User-agent: Echobot Bot
 User-agent: EchoboxBot
+User-agent: ERNIEBot
+User-agent: ExaUser
 User-agent: FacebookBot
 User-agent: Factset_spyderbot
 User-agent: FirecrawlAgent
@@ -72,7 +79,9 @@ User-agent: GoogleOther
 User-agent: GoogleOther-Image
 User-agent: GoogleOther-Video
 User-agent: GPTBot
+User-agent: Grok Bot
 User-agent: HenkBot
+User-agent: Hunyuan
 User-agent: iAskBot
 User-agent: iaskspider
 User-agent: iaskspider/2.0
@@ -80,30 +89,37 @@ User-agent: ICC-Crawler
 User-agent: ImagesiftBot
 User-agent: imageSpider
 User-agent: img2dataset
+User-agent: Instinct
 User-agent: ISSCyberRiskCrawler
 User-agent: Kangaroo Bot
+User-agent: KeenableBot
+User-agent: Kimi-Agent
 User-agent: Kimi-User
+User-agent: KimiBot
 User-agent: KlaviyoAIBot
 User-agent: KunatoCrawler
 User-agent: laion-huggingface-processor
 User-agent: LAIONDownloader
 User-agent: LCC
+User-agent: Lightpanda
 User-agent: LinerBot
 User-agent: Linguee Bot
 User-agent: Manus-User
 User-agent: meta-externalagent
 User-agent: Meta-ExternalAgent
-User-agent: meta-externalfetcher
-User-agent: Meta-ExternalFetcher
 User-agent: meta-webindexer
-User-agent: MistralAI-User
+User-agent: MistralAI-Training
+User-agent: MoonshotBot
 User-agent: Mozilla-Tabstack
+User-agent: Muse
 User-agent: MyCentralAIScraperBot
 User-agent: NagetBot
+User-agent: nbot
 User-agent: netEstate Imprint Crawler
 User-agent: newsai
 User-agent: NotebookLM
 User-agent: NovaAct
+User-agent: OAI-AdsBot
 User-agent: omgili
 User-agent: omgilibot
 User-agent: OpenAI
@@ -114,11 +130,14 @@ User-agent: Panscient
 User-agent: panscient.com
 User-agent: Poggio-Citations
 User-agent: Poseidon Research Crawler
+User-agent: qodercli
 User-agent: QualifiedBot
 User-agent: Querit-SearchBot
 User-agent: QueritBot
 User-agent: QuillBot
 User-agent: quillbot.com
+User-agent: QwenBot
+User-agent: Reflectionbot
 User-agent: SBIntuitionsBot
 User-agent: Scrapy
 User-agent: SemrushBot-OCOB
@@ -143,9 +162,11 @@ User-agent: Webzio-Extended
 User-agent: webzio-extended
 User-agent: wpbot
 User-agent: WRTNBot
+User-agent: xAI-Grok
 User-agent: YaK
 User-agent: YandexAdditional
 User-agent: YandexAdditionalBot
+User-agent: YiBot
 User-agent: YiyanBot
 User-agent: YouBot
 User-agent: ZanistaBot
