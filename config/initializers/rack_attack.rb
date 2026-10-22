@@ -1,14 +1,19 @@
 # frozen_string_literal: true
 
 class Rack::Attack
+  # Rails' remote_ip, which knows Cloudflare's proxies; Rack's req.ip would be the edge
+  def self.client_ip(req)
+    req.env['action_dispatch.remote_ip'].to_s.presence || req.ip
+  end
+
   # Throttle API requests by IP: 100 requests per minute
   throttle('api/ip', limit: 100, period: 60) do |req|
-    req.ip if req.path.start_with?('/api/')
+    client_ip(req) if req.path.start_with?('/api/')
   end
 
   # Throttle GraphiQL requests by IP: 20 requests per minute
   throttle('graphiql/ip', limit: 20, period: 60) do |req|
-    req.ip if req.path.start_with?('/graphiql')
+    client_ip(req) if req.path.start_with?('/graphiql')
   end
 
   # Throttle MCP requests by IP: 60 requests per minute
