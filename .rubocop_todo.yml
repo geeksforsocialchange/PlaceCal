@@ -208,21 +208,6 @@ Rails/UnknownEnv:
   Exclude:
     - 'app/controllers/application_controller.rb'
 
-# Offense count: 2
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Rails/WhereEquals:
-  Exclude:
-    - 'app/models/article.rb'
-    - 'app/models/event.rb'
-
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: exists, where
-Rails/WhereExists:
-  Exclude:
-    - 'app/policies/application_policy.rb'
-
 # Offense count: 8
 Rake/MethodDefinitionInTask:
   Exclude:
@@ -237,14 +222,6 @@ Rake/MethodDefinitionInTask:
 # SupportedStylesForModules: ~, nested, compact
 Style/ClassAndModuleChildren:
   Enabled: false
-
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: AllowedReceivers.
-# AllowedReceivers: params
-Style/CollectionCompact:
-  Exclude:
-    - 'app/helpers/map_helper.rb'
 
 # Offense count: 2
 # This cop supports safe autocorrection (--autocorrect).

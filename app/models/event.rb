@@ -138,10 +138,7 @@ class Event < ApplicationRecord
   scope :with_tags, lambda { |tags|
     joins(:organiser)
       .joins('left outer join partner_tags on partners.id = partner_tags.partner_id')
-      .where(
-        'partner_tags.tag_id in (:tag_ids)',
-        tag_ids: tags.map(&:id)
-      )
+      .where(partner_tags: { tag_id: tags.map(&:id) })
   }
 
   # Filter by Place
