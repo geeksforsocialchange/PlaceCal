@@ -194,6 +194,7 @@ Rails.application.routes.draw do
 
   get '/api/v1/graphql', to: 'graphql#execute'
   post '/api/v1/graphql', to: 'graphql#execute'
+  match '/mcp', to: ->(env) { PlacecalMcp.transport.call(env) }, via: %i[get post delete]
 
   mount GraphiQL::Rails::Engine, at: '/graphiql', graphql_path: '/api/v1/graphql' if Rails.env.development?
   # Lookbook auto-mounts at /lookbook in development

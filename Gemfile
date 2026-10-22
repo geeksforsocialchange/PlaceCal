@@ -52,6 +52,7 @@ gem 'uk_postcode'                 # UK postcode validation and parsing
 
 # API
 gem 'graphql'                     # GraphQL API
+gem 'mcp', '~> 1.7.0'             # MCP server for AI assistants (/mcp)
 gem 'rack-attack'                 # API rate limiting and throttling
 gem 'rack-cors', require: 'rack/cors' # Cross-origin request support
 

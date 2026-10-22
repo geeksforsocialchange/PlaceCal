@@ -156,6 +156,28 @@ RSpec.describe "GraphQL Events", type: :request do
     end
   end
 
+  describe "eventsByFilter by place and keyword" do
+    let(:query) do
+      <<-GRAPHQL
+        query($place: String, $query: String) {
+          eventsByFilter(place: $place, query: $query) { summary url }
+        }
+      GRAPHQL
+    end
+
+    it "finds events by place name and text, and explains an unknown place" do
+      address = create(:address, neighbourhood: create(:riverside_ward))
+      repair = create(:event, summary: "Repair cafe", address:)
+      create(:event, summary: "Choir", address:)
+
+      result = execute_query(query, variables: { place: "Riverside", query: "repair" })
+      expect(result["data"]["eventsByFilter"]).to eq([{ "summary" => "Repair cafe", "url" => repair.permalink }])
+
+      error = execute_query(query, variables: { place: "Atlantis" })["errors"].first["message"]
+      expect(error).to include("No PlaceCal area called Atlantis")
+    end
+  end
+
   describe "eventsByFilter with neighbourhood scope" do
     let(:neighbourhood1) { create(:riverside_ward) }
     let(:query) do
