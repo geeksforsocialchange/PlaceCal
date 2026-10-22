@@ -85,8 +85,8 @@ class CalendarImporterJob < ApplicationJob
 
   private
 
-  def report_error(e, message)
-    full_message = "#{message} for calendar #{calendar.name} (id #{calendar.id}):  #{e}"
+  def report_error(exception, message)
+    full_message = "#{message} for calendar #{calendar.name} (id #{calendar.id}):  #{exception}"
 
     # FIXME: we should not be reloading the calendar here.
     #   see note in Calendar#flag_error_import_job! for details
@@ -94,8 +94,8 @@ class CalendarImporterJob < ApplicationJob
     calendar.flag_error_import_job! full_message
   end
 
-  def report_bad_source_error(e)
+  def report_bad_source_error(message)
     # problems with HTTP URLs that don't respond with status==200
-    calendar.flag_bad_source! e
+    calendar.flag_bad_source! message
   end
 end

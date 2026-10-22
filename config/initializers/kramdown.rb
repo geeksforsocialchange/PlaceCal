@@ -7,8 +7,8 @@ module Kramdown
     class Html
       include ActionView::Helpers::AssetTagHelper
 
-      def convert_img(el, _indent)
-        attrs = el.attr.dup
+      def convert_img(element, _indent)
+        attrs = element.attr.dup
         link = attrs.delete 'src'
         image_tag ActionController::Base.helpers.asset_path(link), attrs
       end
