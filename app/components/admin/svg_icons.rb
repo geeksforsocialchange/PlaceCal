@@ -32,11 +32,14 @@ module Components::Admin::SvgIcons
       stroke_linejoin = 'round'
     end
 
-    size_class = SvgIconsHelper::SIZE_CLASSES[size.to_s] || "w-#{size} h-#{size}"
-    classes = css_class.present? ? "#{size_class} #{css_class}" : size_class
+    size_class = SvgIconsHelper::SIZE_CLASSES[size.to_s]
+    # Tailwind only generates classes it finds written out, so other sizes are set inline
+    style = "width: #{0.25 * size.to_f}rem; height: #{0.25 * size.to_f}rem;" unless size_class
+    classes = [size_class, css_class.presence].compact.join(' ')
 
     svg(
       class: classes,
+      style:,
       fill:,
       stroke:,
       viewBox: viewbox
