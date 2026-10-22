@@ -293,6 +293,11 @@ class Site < ApplicationRecord
     PlaceCal::Theme.for(self).stylesheet_path
   end
 
+  # @return [Boolean] whether the site uses a built-in theme rather than an extension's
+  def core_theme?
+    PlaceCal::Theme.for(self).core?
+  end
+
   # @return [String, false] Open Graph image URL, or false
   def og_image
     hero_image&.opengraph&.url ? hero_image.opengraph.url : false
