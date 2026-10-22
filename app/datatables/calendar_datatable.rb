@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable-next Metrics/AbcSize, Rails/OutputSafety
 class CalendarDatatable < Datatable
   def view_columns
     @view_columns ||= {
@@ -33,7 +32,7 @@ class CalendarDatatable < Datatable
     end
   end
 
-  def get_raw_records
+  def get_raw_records # rubocop:disable Metrics/AbcSize
     records = options[:calendars]
               .includes(:organiser, :events)
               .left_joins(:organiser)
@@ -89,7 +88,7 @@ class CalendarDatatable < Datatable
   end
 
   def render_name_cell(record)
-    <<~HTML.html_safe
+    <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
       <div class="flex flex-col">
         <a href="#{edit_admin_calendar_path(record)}" class="font-medium text-gray-900 hover:text-orange-600">
           #{ERB::Util.html_escape(record.name)}
@@ -103,7 +102,7 @@ class CalendarDatatable < Datatable
     partner = record.organiser
     return '<span class="text-gray-500">—</span>'.html_safe unless partner
 
-    <<~HTML.html_safe
+    <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
       <button type="button"
               class="text-gray-600 hover:text-orange-600 hover:underline cursor-pointer text-left"
               data-action="click->admin-table#filterByValue"
@@ -119,7 +118,7 @@ class CalendarDatatable < Datatable
     state = record.calendar_state.to_s
     case state
     when 'idle'
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <span class="inline-flex items-center text-emerald-600" title="Idle - ready for import">
           #{icon(:check)}
         </span>
@@ -131,25 +130,25 @@ class CalendarDatatable < Datatable
         </span>
       HTML
     when 'in_worker'
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <span class="inline-flex items-center text-orange-500" title="Importing...">
           #{icon(:loader, css_class: 'animate-spin')}
         </span>
       HTML
     when 'error'
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <span class="inline-flex items-center text-red-600" title="Import error">
           #{icon(:warning)}
         </span>
       HTML
     when 'bad_source'
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <span class="inline-flex items-center text-red-600" title="Bad source URL">
           #{icon(:link_off)}
         </span>
       HTML
     else
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <span class="inline-flex items-center text-gray-500" title="Unknown state">
           #{icon(:x)}
         </span>
@@ -160,14 +159,14 @@ class CalendarDatatable < Datatable
   def render_notices_cell(record)
     count = record.notice_count || 0
     if count.positive?
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <span class="inline-flex items-center text-amber-700" title="#{count} notice#{'s' if count != 1}">
           #{icon(:warning)}
           <span class="ml-1 text-xs">#{count}</span>
         </span>
       HTML
     else
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <span class="inline-flex items-center text-emerald-600" title="No notices">
           #{icon(:check)}
         </span>
@@ -183,12 +182,12 @@ class CalendarDatatable < Datatable
     parser = CalendarImporter::CalendarImporter::PARSERS.find { |p| p::KEY == importer }
     label = parser ? parser::NAME : importer.titleize
 
-    <<~HTML.html_safe
+    <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
       <button type="button"
               class="text-gray-600 hover:text-orange-600 hover:underline cursor-pointer text-left text-xs"
               data-action="click->admin-table#filterByValue"
               data-filter-column="importer"
-              data-filter-value="#{importer}"
+              data-filter-value="#{ERB::Util.html_escape(importer)}"
               title="Filter by #{ERB::Util.html_escape(label)}">
         #{ERB::Util.html_escape(label)}
       </button>

@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable-next Rails/OutputSafety
 class Datatable < AjaxDatatablesRails::ActiveRecord
   extend Forwardable
 
@@ -51,7 +50,7 @@ class Datatable < AjaxDatatablesRails::ActiveRecord
 
   # Shared actions cell - override for custom behavior
   def render_actions(record)
-    <<~HTML.html_safe
+    <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
       <div class="flex items-center gap-2">
         <a href="#{edit_path_for(record)}"
            class="inline-flex items-center px-2.5 py-1.5 text-xs font-medium rounded text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
@@ -85,7 +84,7 @@ class Datatable < AjaxDatatablesRails::ActiveRecord
                  datetime.strftime('%-d %b %Y')
                end
 
-    <<~HTML.html_safe
+    <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
       <span class="text-gray-500 text-sm whitespace-nowrap" title="#{datetime.strftime('%d %b %Y at %H:%M')}">#{relative}</span>
     HTML
   end
@@ -95,7 +94,7 @@ class Datatable < AjaxDatatablesRails::ActiveRecord
     config = status_icon_config(status)
     title = tooltip || config[:tooltip]
 
-    <<~HTML.html_safe
+    <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
       <span class="inline-flex items-center #{config[:color]}" title="#{title}">
         #{icon(config[:icon])}
       </span>
@@ -105,14 +104,14 @@ class Datatable < AjaxDatatablesRails::ActiveRecord
   # Shared count cell with checkmark/count or dash
   def render_count_cell(count, label)
     if count.positive?
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <span class="inline-flex items-center text-emerald-600" title="#{count} #{label}#{'s' if count != 1}">
           #{icon(:check)}
           <span class="ml-1 text-xs">#{count}</span>
         </span>
       HTML
     else
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <span class="inline-flex items-center text-gray-500" title="No #{label}s">
           #{icon(:x)}
         </span>
