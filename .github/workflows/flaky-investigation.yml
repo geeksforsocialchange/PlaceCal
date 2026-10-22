@@ -1,0 +1,197 @@
+name: Flaky browser test investigation (#3341)
+
+on:
+  push:
+    branches:
+      - ci/flaky-investigation-*
+
+permissions:
+  contents: read
+
+jobs:
+  system:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        # A: current setup (runner image Chrome). B: Chrome for Testing pinned and actually used.
+        # C: A plus renderer/background flags. D: A with Chrome's background networking off.
+        variant: [A, B, C, D]
+        shard: [1, 2, 3, 4, 5, 6, 7, 8]
+
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_DB: placecal_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: foobar
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: postgres
+      PGPASSWORD: foobar
+      RAILS_ENV: test
+      CI: true
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: ruby/setup-ruby@b1da4809b005e0178fe08a1d57317bffc00b7b4c # v1.332.0
+        with:
+          bundler-cache: true
+          cache-version: 3
+
+      - name: Install Imagemagick and libvips
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y imagemagick libvips-dev
+
+      - name: Install pinned Chrome for Testing
+        if: matrix.variant == 'B'
+        uses: browser-actions/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4 # latest
+        id: setup-chrome
+        with:
+          chrome-version: 156.0.8078.47
+          install-chromedriver: true
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: ".node-version"
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+
+      - name: Prepare database
+        run: bin/rails db:test:prepare
+
+      - name: Build assets
+        run: |
+          bin/yarn run build:all
+          bin/rails dartsass:build
+          bin/rails assets:precompile
+
+      - name: Run the system suite four times
+        env:
+          BROWSER_PATH: ${{ matrix.variant == 'B' && steps.setup-chrome.outputs.chrome-path || '' }}
+          CHROME_EXTRA_ARGS: >-
+            ${{ matrix.variant == 'C' && '--disable-renderer-backgrounding --disable-backgrounding-occluded-windows --disable-background-timer-throttling --enable-unsafe-swiftshader' || '' }}
+            ${{ matrix.variant == 'D' && '--disable-background-networking --disable-component-update --disable-sync --password-store=basic --disable-features=PasswordLeakDetection,OptimizationHints,Translate,MediaRouter' || '' }}
+        run: |
+          mkdir -p results
+          for i in 1 2 3 4; do
+            seed=$(( (${{ matrix.shard }} * 1000 + i * 137 + RANDOM) % 65536 ))
+            start=$(date -u +%H:%M:%S)
+            RUN_SLOW_TESTS=true bundle exec rspec spec/system --seed "$seed" > "results/run-$i.log" 2>&1 && status=0 || status=$?
+            summary=$(grep -E "^[0-9]+ examples, " "results/run-$i.log" | tail -1)
+            echo "variant=${{ matrix.variant }} shard=${{ matrix.shard }} run=$i start=$start seed=$seed status=$status $summary" | tee -a results/summary.txt
+            grep -E "^rspec \./|\[input-diagnostics\]|\[browser-info\]" "results/run-$i.log" | cut -c1-2000 | tee -a results/summary.txt || true
+          done
+          cat results/summary.txt >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: system-${{ matrix.variant }}-${{ matrix.shard }}
+          path: |
+            results/
+            tmp/capybara/
+          if-no-files-found: ignore
+
+  cucumber-logout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [A, B]
+        shard: [1, 2, 3, 4]
+
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_DB: placecal_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: foobar
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: postgres
+      PGPASSWORD: foobar
+      RAILS_ENV: test
+      CI: true
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: ruby/setup-ruby@b1da4809b005e0178fe08a1d57317bffc00b7b4c # v1.332.0
+        with:
+          bundler-cache: true
+          cache-version: 3
+
+      - name: Install Imagemagick and libvips
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y imagemagick libvips-dev
+
+      - name: Install pinned Chrome for Testing
+        if: matrix.variant == 'B'
+        uses: browser-actions/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4 # latest
+        id: setup-chrome
+        with:
+          chrome-version: 156.0.8078.47
+          install-chromedriver: true
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: ".node-version"
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+
+      - name: Prepare database
+        run: bin/rails db:test:prepare
+
+      - name: Build assets
+        run: |
+          bin/yarn run build:all
+          bin/rails dartsass:build
+          bin/rails assets:precompile
+
+      - name: Run the user management feature repeatedly
+        env:
+          BROWSER_PATH: ${{ matrix.variant == 'B' && steps.setup-chrome.outputs.chrome-path || '' }}
+        run: |
+          mkdir -p results
+          for i in $(seq 1 12); do
+            bundle exec cucumber --tags "not @wip" features/admin/user_management.feature features/admin/articles.feature > "results/run-$i.log" 2>&1 && status=0 || status=$?
+            summary=$(grep -E "^[0-9]+ scenarios" "results/run-$i.log" | tail -1)
+            echo "variant=${{ matrix.variant }} shard=${{ matrix.shard }} run=$i status=$status $summary" | tee -a results/summary.txt
+            grep -E "^cucumber features|does not belong|ReadTimeout|chrome=" "results/run-$i.log" | tee -a results/summary.txt || true
+          done
+          cat results/summary.txt >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: cucumber-${{ matrix.variant }}-${{ matrix.shard }}
+          path: results/
+          if-no-files-found: ignore

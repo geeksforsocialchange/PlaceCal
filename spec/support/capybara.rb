@@ -28,6 +28,13 @@ RSpec.configure do |config|
   # can leak into the next test and silently switch tabs on page load.
   config.after(type: :system) do |example|
     InputDiagnostics.report(page, example) if example.exception
+    unless InputDiagnostics.instance_variable_get(:@browser_info_printed)
+      caps = page.driver.browser.capabilities
+      info = { browser: caps.browser_version, chromedriver: caps["chrome"]&.dig("chromedriverVersion"),
+               args: page.driver.options[:options]&.args }
+      warn "[browser-info] #{info.to_json}"
+      InputDiagnostics.instance_variable_set(:@browser_info_printed, true)
+    end
 
     begin
       page.execute_script("window.sessionStorage.clear()")
