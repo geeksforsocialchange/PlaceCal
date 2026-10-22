@@ -13,8 +13,7 @@ class RecurringCalendarScanJob < ApplicationJob
   def perform
     run do
       Appsignal::CheckIn.cron('calendar_scan') do
-        # Recover any calendars orphaned in `in_worker` by a dead worker
-        # before scanning, so they get re-queued in this same pass.
+        # Recover orphaned busy calendars first so this same pass requeues them.
         Calendar.reset_stuck_imports!
         Calendar.queue_all_for_import!
       end

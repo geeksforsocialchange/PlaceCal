@@ -25,6 +25,7 @@
 #  strategy             :string
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
+#  import_job_id        :bigint
 #  organiser_id         :bigint           not null
 #  place_id             :bigint
 #
