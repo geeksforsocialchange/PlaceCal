@@ -136,4 +136,63 @@ RSpec.describe CalendarImporterJob do
       expect(calendar.critical_error).to include("boom")
     end
   end
+
+  describe "default location without an address" do
+    let(:place) { create(:ashton_service_area_partner) }
+
+    before { place.reload.clear_address! }
+
+    %w[place room_number event_override].each do |strategy|
+      context "with the #{strategy} strategy" do
+        let(:calendar) do
+          create(:calendar, strategy:, place:, source: "https://www.birchcommunitycentre.co.uk/events.ics")
+            .tap { |c| c.update!(calendar_state: "in_queue") }
+        end
+
+        it "imports the events at the place, without an address" do
+          VCR.use_cassette(:generic_ical_feed, allow_playback_repeats: true) { perform_import }
+
+          calendar.reload
+          expect(calendar.calendar_state).to eq("idle")
+          expect(calendar.events).to be_present
+          expect(calendar.events.pluck(:place_id, :address_id).uniq).to eq([[place.id, nil]])
+        end
+      end
+    end
+  end
+
+  describe "a feed with one invalid event" do
+    let(:calendar) do
+      create(:calendar, strategy: "place", importer_mode: "ical")
+        .tap { |c| c.update!(calendar_state: "in_queue") }
+    end
+
+    before do
+      stub_request(:get, calendar.source).to_return(status: 200, body: <<~ICS)
+        BEGIN:VCALENDAR
+        VERSION:2.0
+        BEGIN:VEVENT
+        UID:good@example.com
+        DTSTART:20221201T100000Z
+        DTEND:20221201T110000Z
+        SUMMARY:Good event
+        END:VEVENT
+        BEGIN:VEVENT
+        UID:bad@example.com
+        DTSTART:20221202T100000Z
+        DTEND:20221202T110000Z
+        END:VEVENT
+        END:VCALENDAR
+      ICS
+    end
+
+    it "saves the valid events and records a notice for the invalid one" do
+      perform_import
+
+      calendar.reload
+      expect(calendar.calendar_state).to eq("idle")
+      expect(calendar.events.pluck(:uid)).to eq(["good@example.com"])
+      expect(calendar.notices).to include(a_string_including("Summary"))
+    end
+  end
 end

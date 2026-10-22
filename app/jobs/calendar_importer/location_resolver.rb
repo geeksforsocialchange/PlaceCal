@@ -62,7 +62,7 @@ class CalendarImporter::LocationResolver
     place = calendar.place
     raise Problem, 'N/A' if place.blank?
 
-    if event_data.has_location?
+    if event_data.has_location? && place.address
       new_address = place.address.dup
       address = new_address.prepend_room_number(event_data.location)
       address.save

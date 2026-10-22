@@ -66,7 +66,8 @@ class CalendarImporter::EventResolver
       # Clean up any remaining duplicates for this specific occurrence
       calendar_events.where(event_time).where.not(id: event.id).delete_all if event&.persisted?
 
-      event ||= calendar.events.new
+      # Not built through calendar.events, where an invalid event would fail the calendar's own save
+      event ||= Event.new(calendar_id: calendar.id)
 
       event_time[:are_spaces_available] = occurence.status if occurence.respond_to?(:status)
 
