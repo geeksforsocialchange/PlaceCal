@@ -1,39 +1,87 @@
 @import "../variables_mixins";
 
-// The partner page's events header, in the built-in themes' section heading style
+// The partner page's events header on the built-in themes: a section heading like Address,
+// with Trans Dimension's "Show" select on its right
 .core-theme {
 	.partner-events__header {
 		display: flex;
 		flex-wrap: wrap;
-		align-items: baseline;
-		column-gap: 1.5rem;
+		align-items: center;
+		gap: 0.5rem 1.5rem;
 		margin: 2rem 0 0.5rem;
-		font-size: $small-font-size;
-	}
-
-	.partner-events__heading {
-		flex-basis: 100%;
-		margin: 0 0 0.75rem;
 		padding-bottom: 0.5rem;
 		border-bottom: 3px solid $base-rules;
 		border-bottom-color: var(--base-rules);
+	}
+
+	.partner-events__heading {
+		margin: 0;
 		font-size: $h3-size;
-		text-transform: uppercase;
 		font-weight: $extra-bold;
 		letter-spacing: $title-letter-spacing;
+		text-transform: uppercase;
+	}
+
+	.partner-events__count {
+		display: none;
+	}
+
+	.partner-events__repeating-filter {
+		margin-left: auto;
+
+		label {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.5rem;
+			font-size: $small-font-size;
+			font-weight: $extra-bold;
+			letter-spacing: $title-letter-spacing;
+			text-transform: uppercase;
+			white-space: nowrap;
+		}
+	}
+
+	// Section heading, then day, then event: day headings drop to the section's size, titles below
+	.g--partner ~ #events-browser {
+		> h2.udl {
+			font-size: $h3-size;
+		}
+
+		h3 {
+			font-size: 1.11111rem;
+		}
 	}
 
 	.partner-events__repeating {
-		margin-left: 0.25em;
-		padding: 0 0.25rem;
-		border: none;
-		border-bottom: 2px solid $base-rules-dark;
-		background: none;
+		appearance: none;
+		padding: 0.2rem 2.2rem 0.3rem 0.75rem;
+		border: 2px solid var(--base-primary);
+		border-radius: 0.3rem;
+		background: $base-background
+			url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9'%3E%3Cpolygon points='0,0 14,0 7,9' fill='%235b4e46'/%3E%3C/svg%3E")
+			no-repeat right 0.7rem center / 0.7rem 0.45rem;
+		color: $base-text;
 		font: inherit;
+		font-weight: $bold;
+		letter-spacing: normal;
+		text-transform: none;
 		cursor: pointer;
 	}
 
 	.partner-events__actions {
+		display: flex;
+		justify-content: center;
 		margin-top: 1.5rem;
+	}
+
+	.partner-events__more {
+		padding: 0.2rem 0.9rem 0.3rem;
+		border: 2px solid var(--base-primary);
+		border-radius: 0.3rem;
+		background-color: var(--base-primary);
+		color: $base-text;
+		font-size: $small-font-size;
+		font-weight: $bold;
+		text-decoration: none;
 	}
 }

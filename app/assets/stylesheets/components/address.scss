@@ -1,5 +1,7 @@
-.core-theme .place_info__directions-list {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 0 1.5rem;
+.core-theme .place_info__directions-list > a + a::before {
+	content: "\00b7";
+	content: "\00b7" / "";
+	display: inline-block;
+	padding-inline: 0.25rem 0.5rem;
+	text-decoration: none;
 }
