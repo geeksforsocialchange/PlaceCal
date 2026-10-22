@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable-next Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety
+# rubocop:disable-next Metrics/AbcSize, Rails/OutputSafety
 class CalendarDatatable < Datatable
   def view_columns
     @view_columns ||= {
