@@ -301,11 +301,7 @@ class Event < ApplicationRecord
     # 'event', 'no_location', and 'online_only' do not require a Location
     return if %w[event no_location online_only].include?(calendar&.strategy)
 
-    # If we have an online address we don't need a physical one
-    return if online_address_id.present?
-
-    # If the address exists then the error doesn't apply
-    return if address_id.present?
+    return if online_address_id || place_id || address_id
 
     errors.add(:base, 'No place or address could be created or found for ' \
                       "the event location: #{raw_location_from_source}")
