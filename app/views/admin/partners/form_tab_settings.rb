@@ -42,6 +42,8 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base
   end
 
   def render_part_of(partner)
+    return unless policy(partner).permitted_attributes.include?(:parent_id)
+
     div(class: 'mb-8') do
       SectionHeader(
         title: t('admin.partners.sections.part_of'),

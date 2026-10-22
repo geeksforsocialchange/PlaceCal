@@ -92,7 +92,7 @@ class Partner < ApplicationRecord
   attribute :is_a_place,              :boolean, default: false     # NOT NULL
   attribute :name,                    :string                      # NOT NULL
   attribute :opening_times,           :json                        # nullable — Array<Hash{dayOfWeek, opens, closes}>, schema.org OpeningHoursSpecification
-  attribute :parent_id,               :integer                     # nullable
+  attribute :parent_id,               :integer, limit: 8           # nullable
   attribute :partner_email,           :string                      # nullable
   attribute :partner_name,            :string                      # nullable
   attribute :partner_phone,           :string                      # nullable
