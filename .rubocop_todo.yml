@@ -185,13 +185,6 @@ Rails/TimeZone:
     - 'app/models/partner.rb'
     - 'lib/tasks/db.rake'
 
-# Offense count: 1
-# Configuration parameters: Environments.
-# Environments: development, test, production
-Rails/UnknownEnv:
-  Exclude:
-    - 'app/controllers/application_controller.rb'
-
 # Offense count: 8
 Rake/MethodDefinitionInTask:
   Exclude:
