@@ -127,12 +127,12 @@ class Views::Sites::Partners::Show < Views::Base
   # straight to the buffer, ahead of the sentence the links are interpolated into.
   def render_family_sentence
     if visible_parent
-      p(class: 'small') do
+      div(class: 'partner__family small') do
         raw(t('partners.show.part_of_html', parent: view_context.link_to(visible_parent.name, partner_path(visible_parent))))
       end
     elsif visible_children.any?
       places = safe_join(visible_children.map { |child| view_context.link_to(child.name, partner_path(child)) }, ', ')
-      p(class: 'small') do
+      div(class: 'partner__family small') do
         raw(t('partners.show.children_html', name: partner.name, places:))
       end
     end
@@ -205,9 +205,11 @@ class Views::Sites::Partners::Show < Views::Base
           raw safe(place.summary_html.to_s) if place.summary_html.present?
         end
         div(class: 'gi gi__1-2') do
-          h2(class: 'udl udl--fw allcaps h4') { t('partners.show.address_heading') }
-          div(class: 'small') do
-            Shared::Address(address: place.address)
+          if place.address
+            h2(class: 'udl udl--fw allcaps h4') { t('partners.show.address_heading') }
+            div(class: 'small') do
+              Shared::Address(address: place.address)
+            end
           end
           h2(class: 'udl udl--fw allcaps h4') { t('partners.show.place_contact_heading') }
           div(class: 'small') do
