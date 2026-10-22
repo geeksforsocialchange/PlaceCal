@@ -191,11 +191,10 @@ class Views::Admin::Users::New < Views::Admin::Base
         render_permission_header(:map_pin, 'from-sky-100 to-blue-100', 'text-sky-600',
                                  Neighbourhood.model_name.human(count: 2), neighbourhoods_hint)
         if current_user.root?
-          nested_form_for(form, :neighbourhoods_users,
-                          add_text: t('admin.actions.add_model', model: Neighbourhood.model_name.human.downcase),
-                          add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange mt-2',
-                          partial: 'neighbourhoods_user_fields') do
-            raw form.simple_fields_for(:neighbourhoods_users) { |nuf| view_context.render('neighbourhoods_user_fields', f: nuf) }
+          NestedForm(form:, association: :neighbourhoods_users,
+                     add_text: t('admin.actions.add_model', model: Neighbourhood.model_name.human.downcase),
+                     add_class: "#{Components::Admin::NestedForm::ADD_CLASS} mt-2") do |neighbourhood|
+            render Views::Admin::Users::NeighbourhoodsUserFields.new(form: neighbourhood)
           end
         else
           ItemBadgeList(

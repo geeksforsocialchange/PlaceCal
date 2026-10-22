@@ -178,11 +178,8 @@ class Views::Admin::Partners::New < Views::Admin::Base
           ) do
             div(data: { 'partner-wizard-target': 'serviceAreasContainer',
                         action: 'nested-form:added->partner-wizard#updateContinueButton nested-form:removed->partner-wizard#updateContinueButton change->partner-wizard#updateContinueButton' }) do
-              nested_form_for(form, :service_areas,
-                              add_text: t('admin.service_areas.add'),
-                              add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange',
-                              partial: 'service_area_fields') do
-                raw form.simple_fields_for(:service_areas) { |nf| view_context.render('service_area_fields', f: nf) }
+              NestedForm(form:, association: :service_areas, add_text: t('admin.service_areas.add')) do |area|
+                render Views::Admin::Partners::ServiceAreaFields.new(form: area, partner: form.object)
               end
             end
           end
@@ -197,7 +194,7 @@ class Views::Admin::Partners::New < Views::Admin::Base
         render_step_header(:tag, 'Tags & Categories',
                            'Add partnerships and categories for this partner.')
         div(class: 'space-y-6') do
-          raw view_context.render('partnership_fields', f: form)
+          render Views::Admin::Partners::PartnershipFields.new(form:)
           render_categories_field
           render_facilities_field
         end

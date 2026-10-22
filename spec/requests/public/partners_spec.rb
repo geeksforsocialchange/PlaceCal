@@ -63,6 +63,13 @@ RSpec.describe "Public Partners", type: :request do
       get partner_url(partner, host: "#{site.slug}.lvh.me")
       expect(response).to be_successful
       expect(response.body).to include(partner.name)
+      expect(response.body).to include('<html lang="en" class="core-theme">')
+    end
+
+    it "names social accounts by handle on a built-in theme" do
+      partner.update!(twitter_handle: "riverside_hub")
+      get partner_url(partner, host: "#{site.slug}.lvh.me")
+      expect(response.body).to include(">@riverside_hub</a>")
     end
 
     it "canonicalises to the directory apex, not the site subdomain" do

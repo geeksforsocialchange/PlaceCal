@@ -136,4 +136,39 @@ RSpec.describe CalendarImporterJob do
       expect(calendar.critical_error).to include("boom")
     end
   end
+
+  describe "a default place without an address" do
+    let(:place) { create(:ashton_service_area_partner).tap { |p| p.reload.clear_address! } }
+    let(:calendar) do
+      create(:calendar, strategy: "room_number", place:, importer_mode: "ical")
+        .tap { |c| c.update!(calendar_state: "in_queue") }
+    end
+
+    before do
+      stub_request(:get, calendar.source).to_return(status: 200, body: <<~ICS)
+        BEGIN:VCALENDAR
+        VERSION:2.0
+        BEGIN:VEVENT
+        UID:good@example.com
+        DTSTART:20221201T100000Z
+        DTEND:20221201T110000Z
+        SUMMARY:Good event
+        LOCATION:Room 2
+        END:VEVENT
+        BEGIN:VEVENT
+        UID:no-summary@example.com
+        DTSTART:20221202T100000Z
+        DTEND:20221202T110000Z
+        END:VEVENT
+        END:VCALENDAR
+      ICS
+    end
+
+    it "imports the valid events at the place and skips the invalid one" do
+      perform_import
+
+      expect(calendar.reload.calendar_state).to eq("idle")
+      expect(calendar.events.pluck(:uid, :place_id, :address_id)).to eq([["good@example.com", place.id, nil]])
+    end
+  end
 end

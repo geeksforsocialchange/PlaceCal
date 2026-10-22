@@ -50,13 +50,10 @@ class Views::Admin::Users::FormTabRoles < Views::Admin::Base
       description: neighbourhoods_hint
     ) do
       if current_user.root?
-        nested_form_for(form, :neighbourhoods_users,
-                        add_text: t('admin.actions.add_model', model: Neighbourhood.model_name.human.downcase),
-                        add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange mt-2',
-                        partial: 'neighbourhoods_user_fields') do
-          raw form.simple_fields_for(:neighbourhoods_users) { |nuf|
-            raw view_context.render('neighbourhoods_user_fields', f: nuf)
-          }
+        NestedForm(form:, association: :neighbourhoods_users,
+                   add_text: t('admin.actions.add_model', model: Neighbourhood.model_name.human.downcase),
+                   add_class: "#{Components::Admin::NestedForm::ADD_CLASS} mt-2") do |neighbourhood|
+          render Views::Admin::Users::NeighbourhoodsUserFields.new(form: neighbourhood)
         end
       else
         ItemBadgeList(

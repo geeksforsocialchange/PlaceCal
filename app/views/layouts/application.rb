@@ -17,7 +17,8 @@ class Views::Layouts::Application < Phlex::HTML
 
   def view_template
     doctype
-    html(lang: 'en') do
+    # Lets SCSS aimed at the built-in themes stay off extension themes, which share the markup
+    html(lang: 'en', class: ('core-theme' if site&.core_theme?)) do
       head do
         csrf_meta_tags
         stylesheet_link_tag 'application', media: 'all', 'data-turbo-track': 'reload'

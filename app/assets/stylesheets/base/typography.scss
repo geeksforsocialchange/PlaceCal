@@ -69,6 +69,12 @@ h2.serif {
 	font-size: 1.4444444rem;
 }
 
+// Partner page section headings are h2s for heading order, drawn at the h3 size
+.udl.h4 {
+	font-size: $h3-size;
+	margin-block: 1em;
+}
+
 .udl {
 	padding-bottom: 0.5rem;
 	border-bottom: 3px solid $base-rules;

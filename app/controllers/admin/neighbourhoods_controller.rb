@@ -45,15 +45,17 @@ module Admin
 
       neighbourhood = Neighbourhood.find(params[:ward_id] || params[:neighbourhood_id])
       ancestors = neighbourhood.ancestors.order(:ancestry)
+      # Includes the neighbourhood itself, so a saved district (or region, county) is selected at its own level
+      path = [*ancestors, neighbourhood]
 
       render json: {
         neighbourhood_id: neighbourhood.id,
         neighbourhood_level: neighbourhood.level,
         hierarchy: ancestors.map { |a| { id: a.id, level: a.level, name: a.name } },
-        country_id: ancestors.find { |a| a.level == 5 }&.id,
-        region_id: ancestors.find { |a| a.level == 4 }&.id,
-        county_id: ancestors.find { |a| a.level == 3 }&.id,
-        district_id: ancestors.find { |a| a.level == 2 }&.id
+        country_id: path.find { |a| a.level == 5 }&.id,
+        region_id: path.find { |a| a.level == 4 }&.id,
+        county_id: path.find { |a| a.level == 3 }&.id,
+        district_id: path.find { |a| a.level == 2 }&.id
       }
     end
 

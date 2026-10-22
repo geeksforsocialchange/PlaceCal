@@ -67,6 +67,7 @@ export function markDirty(controller) {
  * @param {Controller} controller - Stimulus controller instance
  */
 export function markClean(controller) {
+	controller._formTracking.rowsChanged = false;
 	controller._formTracking.dirty = false;
 	controller._formTracking.onDirtyChange(false);
 }
@@ -78,7 +79,8 @@ export function markClean(controller) {
  */
 export function checkDirty(controller) {
 	const { initialValues, tabName, form } = controller._formTracking;
-	let hasChanges = false;
+	// Added or removed rows have no field value to compare, so they stay dirty
+	let hasChanges = controller._formTracking.rowsChanged === true;
 
 	getTrackableInputs(form, tabName).forEach((input) => {
 		const initial = initialValues.get(input);
@@ -130,6 +132,8 @@ function getTrackableInputs(form, tabName) {
 			"input:not([type=hidden]):not([type=file]), textarea, select",
 		),
 	).filter((input) => {
+		// Unnamed inputs (e.g. Tom Select's own) aren't submitted, and appear after the initial values are taken
+		if (!input.name) return false;
 		if (tabName && input.name === tabName) return false;
 		if (input.type === "hidden") return false;
 		return true;
@@ -182,6 +186,7 @@ function bindFormChangeListeners(controller) {
 	form.addEventListener("change", (event) => {
 		// Only handle if event target is the form itself (not bubbled from inputs)
 		if (event.target === form) {
+			controller._formTracking.rowsChanged = true;
 			markDirty(controller);
 		}
 	});

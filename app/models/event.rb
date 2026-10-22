@@ -250,7 +250,8 @@ class Event < ApplicationRecord
 
   # @return [Address, nil] the best available address for this event
   def resolved_address
-    address || partner_at_location&.address || organiser&.address
+    # A place without an address mustn't borrow the organiser's, which would be shown as the place's
+    address || (partner_at_location || organiser)&.address
   end
 
   # @return [String] human-readable address string, or empty string
@@ -300,11 +301,7 @@ class Event < ApplicationRecord
     # 'event', 'no_location', and 'online_only' do not require a Location
     return if %w[event no_location online_only].include?(calendar&.strategy)
 
-    # If we have an online address we don't need a physical one
-    return if online_address_id.present?
-
-    # If the address exists then the error doesn't apply
-    return if address_id.present?
+    return if online_address_id || place_id || address_id
 
     errors.add(:base, 'No place or address could be created or found for ' \
                       "the event location: #{raw_location_from_source}")

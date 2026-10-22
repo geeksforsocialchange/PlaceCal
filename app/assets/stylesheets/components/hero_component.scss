@@ -48,6 +48,13 @@
 		}
 	}
 
+	&__back {
+		display: block;
+		width: fit-content;
+		margin: 0 auto 0.5rem;
+		font-size: $small-font-size;
+	}
+
 	// Divider between the two headers
 	&__divider {
 		margin: 0 auto;

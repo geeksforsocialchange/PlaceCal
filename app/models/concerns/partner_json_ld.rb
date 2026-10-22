@@ -106,7 +106,7 @@ module PartnerJsonLd
   end
 
   def build_json_ld_events(data, base_url)
-    upcoming = events.upcoming.sort_by_time.limit(10)
+    upcoming = events.upcoming.sort_by_time.limit(10).includes(:address, :online_address, :place)
     return unless upcoming.any?
 
     data['event'] = upcoming.map do |event|

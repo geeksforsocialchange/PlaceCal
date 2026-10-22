@@ -18,7 +18,8 @@ class Views::Admin::Sites::SitesNeighbourhoodFields < Views::Admin::Base
       CascadingNeighbourhoodFields(
         form:,
         relation_type: 'Secondary',
-        show_remove: true
+        show_remove: true,
+        title: t('admin.cascading_neighbourhood.new_neighbourhood')
       )
     end
   end

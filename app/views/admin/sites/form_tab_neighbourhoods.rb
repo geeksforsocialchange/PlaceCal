@@ -67,13 +67,9 @@ class Views::Admin::Sites::FormTabNeighbourhoods < Views::Admin::Base
       description: t('admin.sites.sections.other_neighbourhoods_description')
     ) do
       if policy(site).permitted_attributes.include?(:sites_neighbourhoods)
-        nested_form_for(form, :sites_neighbourhoods,
-                        add_text: t('admin.actions.add_model', model: Neighbourhood.model_name.human.downcase),
-                        add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange',
-                        partial: 'sites_neighbourhood_fields') do
-          raw form.simple_fields_for(:sites_neighbourhoods) { |neighbourhood|
-            raw view_context.render('sites_neighbourhood_fields', f: neighbourhood)
-          }
+        NestedForm(form:, association: :sites_neighbourhoods,
+                   add_text: t('admin.actions.add_model', model: Neighbourhood.model_name.human.downcase)) do |neighbourhood|
+          render Views::Admin::Sites::SitesNeighbourhoodFields.new(form: neighbourhood)
         end
       else
         secondary_neighbourhoods = site.sites_neighbourhoods.where.not(relation_type: 'Primary').map(&:neighbourhood)

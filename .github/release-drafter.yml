@@ -50,7 +50,6 @@ autolabeler:
   - label: docs
     title: ["/^docs/i"]
     branch: ["/^docs/i"]
-    files: ["doc/**", "**/*.md"]
   - label: maintenance
     title:
       [

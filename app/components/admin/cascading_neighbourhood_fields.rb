@@ -40,10 +40,7 @@ class Components::Admin::CascadingNeighbourhoodFields < Components::Admin::Base
       div(class: 'flex items-center gap-1') do
         span(class: 'loading loading-spinner loading-xs hidden',
              data_cascading_neighbourhood_target: 'loading')
-        if @show_remove
-          nested_form_remove_link(@form, capture { icon(:trash, size: '4') },
-                                  class: 'btn btn-ghost btn-sm btn-square text-error')
-        end
+        nested_form_remove_link(@form, 'btn btn-ghost btn-sm btn-square text-error') { icon(:trash, size: '4') } if @show_remove
       end
     end
   end

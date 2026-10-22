@@ -40,6 +40,7 @@ RSpec.describe Components::Admin::SaveBar, type: :phlex do
       expect(page).to have_css("[data-save-bar-tab-name-value='partner_tabs']")
       expect(page).to have_css("[data-save-bar-settings-hash-value='settings']")
       expect(page).to have_css("[data-save-bar-storage-key-value='partnerTab']")
+      expect(page).to have_css("[data-save-bar-confirm-tab-switch-value='#{I18n.t('admin.save_bar.confirm_tab_switch')}']")
     end
 
     it "renders unsaved changes indicator" do
