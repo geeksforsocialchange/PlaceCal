@@ -6,7 +6,8 @@ on:
     branches:
       - main
   # Autolabel PRs from their title/branch (see .github/release-drafter.yml).
-  pull_request:
+  # _target so fork PRs get a token that can label; the job never checks out PR code.
+  pull_request_target:
     types: [opened, reopened, synchronize]
 
 permissions:
@@ -30,7 +31,7 @@ jobs:
   # longer labels, so without this job PRs stay unlabelled and the draft can't
   # categorise them or resolve the version bump. Reads .github/release-drafter.yml.
   autolabel:
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request_target'
     permissions:
       contents: read # read the config
       pull-requests: write # apply labels
