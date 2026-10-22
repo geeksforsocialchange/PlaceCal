@@ -52,10 +52,42 @@ module InputDiagnostics
     result[:page] = page.evaluate_script(PAGE_STATE_JS)
     result[:console] = page.driver.browser.logs.get(:browser).last(10).map(&:message)
     result.merge!(probes(page))
+    result.merge!(recovery_probes(page)) if result[:native_click_works] == false
   rescue StandardError => e
     result = (result || {}).merge(error: "#{e.class}: #{e.message}".truncate(300))
   ensure
     warn "[input-diagnostics] #{result.to_json}"
+  end
+
+  def native_click_ok?(page)
+    page.execute_script("document.getElementById('input-probe-button')?.remove(); document.getElementById('input-probe-text')?.remove()")
+    page.execute_script(ADD_PROBES_JS)
+    page.find_by_id("input-probe-button").click
+    page.evaluate_script("document.getElementById('input-probe-button').dataset.clicked === 'true'")
+  rescue StandardError => e
+    "#{e.class}: #{e.message}".truncate(200)
+  end
+
+  # Investigation only: which actions bring native input back.
+  def recovery_probes(page)
+    browser = page.driver.browser
+    out = {}
+    out[:targets] = browser.execute_cdp("Target.getTargets")["targetInfos"].map { |t| "#{t['type']}:#{t['attached']}:#{t['url']}" }
+    rect = page.evaluate_script("(() => { const b = document.getElementById('input-probe-button').getBoundingClientRect(); return [b.x + 10, b.y + 10]; })()")
+    %w[mousePressed mouseReleased].each do |type|
+      browser.execute_cdp("Input.dispatchMouseEvent", type:, x: rect[0], y: rect[1], button: "left", clickCount: 1)
+    end
+    out[:cdp_click_works] = page.evaluate_script("document.getElementById('input-probe-button').dataset.clicked === 'true'")
+    out[:after_wait_5s] = (sleep(5) && native_click_ok?(page))
+    browser.execute_cdp("Page.bringToFront")
+    out[:after_bring_to_front] = native_click_ok?(page)
+    browser.manage.window.resize_to(1300, 1300)
+    out[:after_resize] = native_click_ok?(page)
+    browser.navigate.refresh
+    out[:after_reload] = native_click_ok?(page)
+    out
+  rescue StandardError => e
+    out.merge(recovery_error: "#{e.class}: #{e.message}".truncate(300))
   end
 
   def probes(page)

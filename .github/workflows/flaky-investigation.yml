@@ -16,8 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         # A: current setup. B: pinned Chrome for Testing actually used (needs --no-sandbox).
-        # E: A plus Cucumber's flags. F: A plus --disable-gpu only.
-        variant: [A, B, E, F]
+        variant: [A, B]
         shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
     services:
@@ -91,7 +90,9 @@ jobs:
           for i in 1 2 3 4; do
             seed=$(( (${{ matrix.shard }} * 1000 + i * 137 + RANDOM) % 65536 ))
             start=$(date -u +%H:%M:%S)
+            export CHROMEDRIVER_LOG="$PWD/results/chromedriver-$i.log"
             RUN_SLOW_TESTS=true bundle exec rspec spec/system --seed "$seed" > "results/run-$i.log" 2>&1 && status=0 || status=$?
+            if [ "$status" = 0 ]; then rm -f "$CHROMEDRIVER_LOG"; else gzip -f "$CHROMEDRIVER_LOG"; fi
             summary=$(grep -E "^[0-9]+ examples, " "results/run-$i.log" | tail -1)
             echo "variant=${{ matrix.variant }} shard=${{ matrix.shard }} run=$i start=$start seed=$seed status=$status $summary" | tee -a results/summary.txt
             grep -E "^rspec \./|\[input-diagnostics\]|\[browser-info\]" "results/run-$i.log" | sed -E 's/"console":\[.*\],"native/"native/' | tee -a results/summary.txt || true

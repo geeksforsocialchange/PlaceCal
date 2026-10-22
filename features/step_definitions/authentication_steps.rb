@@ -42,6 +42,7 @@ Then("I should be logged in") do
 end
 
 Then("I should be logged out") do
-  # After logout, redirected to public site which may have Sign in link or just not show Sign out
+  # Wait for the redirect off the admin host first: querying nodes mid-navigation makes chromedriver raise (#3341).
+  expect(page).to have_no_current_path(/admin\.lvh\.me/, url: true)
   expect(page).not_to have_button("Sign out")
 end
