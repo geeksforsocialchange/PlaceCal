@@ -5,7 +5,7 @@
 #
 # Creates: sites (published + themed), partners with addresses,
 # calendars, events, tags, and neighbourhoods.
-RSpec.shared_context "normal island data" do # rubocop:disable RSpec/MultipleMemoizedHelpers
+RSpec.shared_context "normal island data" do
   # Sites
   let!(:millbrook_site) { create(:millbrook_site, is_published: true) }
   let!(:ashdale_site) { create(:ashdale_site, is_published: true) }

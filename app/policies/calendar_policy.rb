@@ -37,29 +37,27 @@ class CalendarPolicy < ApplicationPolicy
 
       if user.partnership_admin?
         user_partnership_tag_ids = user.tags.map(&:id)
-        partnership_calendars =
-          Calendar.left_joins(organiser: %i[address service_areas partnerships])
-                  .where(
-                    'calendars.organiser_id IN (:partner_ids) OR
+        Calendar.left_joins(organiser: %i[address service_areas partnerships])
+                .where(
+                  'calendars.organiser_id IN (:partner_ids) OR
                       ( partner_tags.tag_id IN (:tags) AND
                        (addresses.neighbourhood_id in (:neighbourhood_ids) OR
                       service_areas.neighbourhood_id in (:neighbourhood_ids)))',
-                    neighbourhood_ids: user.owned_neighbourhood_ids,
-                    partner_ids: user.partner_ids,
-                    tags: user_partnership_tag_ids
-                  )
-                  .distinct
+                  neighbourhood_ids: user.owned_neighbourhood_ids,
+                  partner_ids: user.partner_ids,
+                  tags: user_partnership_tag_ids
+                )
+                .distinct
       else
-        neighbourhood_calendars =
-          Calendar.left_joins(organiser: %i[address service_areas])
-                  .where(
-                    '(addresses.neighbourhood_id in (:neighbourhood_ids) OR '\
-                    'service_areas.neighbourhood_id in (:neighbourhood_ids) OR '\
-                    'calendars.organiser_id IN (:partner_ids))',
-                    neighbourhood_ids: user.owned_neighbourhood_ids,
-                    partner_ids: user.partner_ids
-                  )
-                  .distinct
+        Calendar.left_joins(organiser: %i[address service_areas])
+                .where(
+                  '(addresses.neighbourhood_id in (:neighbourhood_ids) OR '\
+                  'service_areas.neighbourhood_id in (:neighbourhood_ids) OR '\
+                  'calendars.organiser_id IN (:partner_ids))',
+                  neighbourhood_ids: user.owned_neighbourhood_ids,
+                  partner_ids: user.partner_ids
+                )
+                .distinct
       end
     end
   end

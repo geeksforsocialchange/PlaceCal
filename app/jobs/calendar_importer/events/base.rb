@@ -60,7 +60,6 @@ module CalendarImporter::Events
           # if we get HTML then remove all the attributes from all of
           # the tags so it doesn't interfere with the kramdown step
           doc.css('*').each do |tag|
-            # rubocop:disable-next Style/HashEachMethods
             tag.keys.each do |attribute_name|
               next if tag.name == 'a' && attribute_name == 'href'
 

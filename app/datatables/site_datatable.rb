@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable-next Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety
+# rubocop:disable-next Rails/OutputSafety
 class SiteDatatable < Datatable
   def view_columns
     @view_columns ||= {

@@ -100,7 +100,7 @@ class Article < ApplicationRecord
   scope :with_partner_tag, lambda { |tag_id|
     joins('left outer join article_partners on articles.id=article_partners.article_id')
       .joins('left outer join partner_tags on article_partners.partner_id = partner_tags.partner_id')
-      .where('partner_tags.tag_id = ?', tag_id)
+      .where(partner_tags: { tag_id: })
   }
 
   scope :with_tags, lambda { |tag_ids|

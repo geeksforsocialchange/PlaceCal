@@ -460,13 +460,13 @@ class Partner < ApplicationRecord
     address&.neighbourhood&.refresh_partners_count!
 
     # If address_id changed, also refresh the old neighbourhood
-    if previous_changes.key?('address_id')
-      old_address_id = previous_changes['address_id'].first
-      if old_address_id
-        old_address = Address.find_by(id: old_address_id)
-        old_address&.neighbourhood&.refresh_partners_count!
-      end
-    end
+    return unless previous_changes.key?('address_id')
+
+    old_address_id = previous_changes['address_id'].first
+    return unless old_address_id
+
+    old_address = Address.find_by(id: old_address_id)
+    old_address&.neighbourhood&.refresh_partners_count!
   end
 
   def neighbourhood_admin_address_access
@@ -520,7 +520,6 @@ class Partner < ApplicationRecord
 
     partner_service_areas = service_areas&.map(&:neighbourhood_id) || []
     new_service_areas = partner_service_areas.reject { |e| e == service_area_to_remove.neighbourhood_id }
-    user_neighbourhoods = accessed_by_user.owned_neighbourhood_ids
 
     in_user_neighbourhood = accessed_by_user.assigned_to_postcode?(address&.postcode)
     services_user_neighbourhood = new_service_areas.present?

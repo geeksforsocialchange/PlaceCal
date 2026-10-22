@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class PagesController < ApplicationController
-  before_action :set_primary_neighbourhood, only: [:site]
   before_action :set_site
 
   # Only reached on the apex: every other host has its own root route.

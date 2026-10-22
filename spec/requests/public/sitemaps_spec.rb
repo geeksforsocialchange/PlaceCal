@@ -22,7 +22,7 @@ RSpec.describe "Public Sitemaps", type: :request do
     end
 
     it "404s when the request reaches the controller anyway" do
-      allow_any_instance_of(SitemapsController).to receive(:directory_request?).and_return(false) # rubocop:disable RSpec/AnyInstance
+      allow_any_instance_of(SitemapsController).to receive(:directory_request?).and_return(false)
 
       get "/sitemap.xml", headers: { "Host" => "lvh.me" }
 

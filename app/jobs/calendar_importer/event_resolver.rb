@@ -64,9 +64,7 @@ class CalendarImporter::EventResolver
       end
 
       # Clean up any remaining duplicates for this specific occurrence
-      if event&.persisted?
-        calendar_events.where(event_time).where.not(id: event.id).delete_all
-      end
+      calendar_events.where(event_time).where.not(id: event.id).delete_all if event&.persisted?
 
       event ||= calendar.events.new
 
@@ -74,15 +72,11 @@ class CalendarImporter::EventResolver
 
       attributes = data.attributes.merge(event_time)
       begin
-        unless event.update(attributes)
-          notices << event.errors.full_messages.join(', ')
-        end
+        notices << event.errors.full_messages.join(', ') unless event.update(attributes)
       rescue ActiveRecord::RecordNotUnique
         # Duplicate detected by DB constraint — find and update existing instead
         existing = calendar.events.find_by!(uid: data.uid, dtstart: event_time[:dtstart], dtend: event_time[:dtend])
-        unless existing.update(attributes)
-          notices << existing.errors.full_messages.join(', ')
-        end
+        notices << existing.errors.full_messages.join(', ') unless existing.update(attributes)
       end
     end
   end

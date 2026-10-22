@@ -2,7 +2,7 @@
 
 module MapHelper
   def args_for_map(map_points, style_mode, compact_mode)
-    data_for_markers = map_points.dup.reject(&:nil?).map do |mrkr|
+    data_for_markers = map_points.dup.compact.map do |mrkr|
       {}.tap do |pin|
         pin[:position] = [mrkr[:lat], mrkr[:lon]]
         pin[:anchor] = link_to(mrkr[:name], partner_path(mrkr[:id]), data: { turbo_frame: '_top', turbo_action: 'replace' }) if mrkr[:id]

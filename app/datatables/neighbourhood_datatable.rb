@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable-next Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety
+# rubocop:disable-next Rails/OutputSafety
 class NeighbourhoodDatatable < Datatable
   LATEST_RELEASE_DATE = Neighbourhood::LATEST_RELEASE_DATE
 
