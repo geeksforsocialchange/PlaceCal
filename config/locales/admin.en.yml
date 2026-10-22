@@ -27,7 +27,6 @@ en:
       danger_zone: "Danger Zone"
       details: "Details"
       images_theme: "Images & Theme"
-      location_settings: "Location Settings"
       online_presence: "Online Presence"
       opening_times: "Opening Times"
       public_contact: "Public Contact"
@@ -53,7 +52,6 @@ en:
       name: "Name"
       partner: "Partner"
       state: "State"
-      status: "Status"
       strategy: "Strategy"
 
     # Action buttons and links
@@ -111,7 +109,6 @@ en:
     hints:
       email_validation: "Enter a valid email address"
       leave_blank_to_autogenerate: "Leave blank to auto-generate from name"
-      select_to_add: "Select to add to this tag"
       shown_publicly: "Shown on PlaceCal to the public."
       url_validation: "Enter a valid URL (including https://)"
 
@@ -125,10 +122,7 @@ en:
     # Time phrases
     time:
       ago: "%{time} ago"
-      added_ago: "Added %{time} ago"
-      events_in_days: "Events in the next %{days} days"
       no_upcoming_in_days: "No upcoming events in the next %{days} days"
-      updated_ago: "Updated %{time} ago"
 
     # =========================================================================
     # COMPONENTS
@@ -154,7 +148,6 @@ en:
       loading: "Loading data..."
       reset_sort: "Reset sort"
       search: "Search"
-      showing: "Showing %{start} to %{end} of %{total} entries"
 
     images:
       choose_file: "Choose file"
@@ -207,7 +200,6 @@ en:
         action_items: "Action Items"
         add_first_partner: "Add your first partner"
         all_healthy: "All calendars healthy"
-        bad_url: "Bad URL"
         no_calendars: "No calendars yet"
         no_issues: "No issues to fix"
         no_partners: "No partners yet"
@@ -286,7 +278,6 @@ en:
           code: "Code"
       image:
         title: "Article Image"
-        description: "This image will appear at the top of the article and in social media previews."
         credit_label: "Image credit"
         credit_placeholder: "e.g. Photo by Jane Smith"
 
@@ -332,10 +323,8 @@ en:
         source: "Source"
         location: "Location"
         contact: "Contact"
-        preview: "Preview"
       sections:
         contact_description: 'Shown on event pages in the "Problem with this listing?" link.'
-        details_description: "Basic information about this event source."
         events_description: "Events imported from this calendar source."
         last_imported_using: "Last imported using: %{importer}"
         location_description: "How should location information be handled for events?"
@@ -422,10 +411,6 @@ en:
       form:
         admins_description: "The list of users with admin rights to this neighbourhood."
         admins_title: "Neighbourhood admins"
-        contains: "Contains…"
-        geography_title: "Geography"
-        is_part_of: "Is a part of…"
-        level: "Level"
         name_abbr_hint: "Optional short version for display in compact layouts"
         name_description: "This can be anything but is almost always the ward name. It's what shows up in the user frontend. If the neighbourhood name is long, add an abbreviation too."
         name_title: "Neighbourhood name"
@@ -526,20 +511,11 @@ en:
       warnings:
         outdated_neighbourhood: 'Outdated neighbourhood. Contact <a href="mailto:%{email}" class="link">support</a> to reassign.'
         unmappable_postcode: "Postcode not in our system yet."
-      danger_zone:
-        no_permission: "You don't have permission to delete this partner."
 
     # -------------------------------------------------------------------------
     # Partnerships
     # -------------------------------------------------------------------------
     partnerships:
-      warning:
-        system_tag: "WARNING: This partnership is used by the PlaceCal backend so you cannot change the Name or Slug values."
-      sections:
-        partnership_admins: "Partnership Admins"
-        partnership_admins_hint: "Grant permission to manage this partnership"
-        tagged_partners: "Tagged Partners"
-        tagged_partners_hint: "Apply this partnership to the given partners"
       fields:
         system_tag_hint: "This partnership is read only and should not be edited"
 
@@ -606,13 +582,6 @@ en:
     # Users
     # -------------------------------------------------------------------------
     users:
-      sections:
-        direct_access_description: "Grant direct editing access to specific partners or neighbourhood-wide permissions."
-        partners_neighbourhoods: "Partners & Neighbourhoods"
-        personal_description: "Basic information about this user."
-        personal_details: "Personal Details"
-        role_description: "What this user can access and manage."
-        role_permissions: "Role & Permissions"
       fields:
         neighbourhoods_hint: "Neighbourhoods this user has access to."
         neighbourhoods_hint_root: "Grants access to every partner and calendar in these neighbourhoods. Use with care!"

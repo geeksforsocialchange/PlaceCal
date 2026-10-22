@@ -53,6 +53,13 @@ ignore_unused:
   # Built from interpolated values in code:
   - "directory.events.index.periods.*" # period_option_label("#{value}")
   - "directory.events.index.period_phrases.*" # period_phrase("#{@period}")
+  # RadioCardGroup interpolates its i18n_scope and each enumerized value;
+  # calendar and user forms pass these scopes for the option descriptions.
+  - "admin.calendars.strategy.*"
+  - "admin.users.roles.*"
+  # Explicit .one/.other lookups in partner/site forms are used, but the
+  # scanner reports the parent pluralization key as unused.
+  - "admin.models.admin.{one,other}"
   # OurStory builds every key from `T = 'directory.pages.our_story'` and
   # interpolated section names (see app/views/directory/our_story.rb).
   - "directory.pages.our_story.*"
