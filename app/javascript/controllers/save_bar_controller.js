@@ -29,6 +29,7 @@ export default class extends Controller {
 		settingsHash: { type: String, default: "settings" },
 		previewHash: { type: String, default: "preview" },
 		storageKey: { type: String, default: "tabAfterSave" },
+		confirmTabSwitch: String,
 	};
 
 	connect() {
@@ -57,9 +58,7 @@ export default class extends Controller {
 			.forEach((tab) => {
 				tab.addEventListener("click", (event) => {
 					if (isDirty(this) && !this.confirmingTabChange) {
-						const confirmed = confirm(
-							"You have unsaved changes. Are you sure you want to switch tabs?",
-						);
+						const confirmed = confirm(this.confirmTabSwitchValue);
 						if (!confirmed) {
 							event.preventDefault();
 							event.stopPropagation();

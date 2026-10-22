@@ -45,7 +45,7 @@ class Components::Admin::SaveBar < Components::Admin::Base
   def stimulus_data_attributes
     return {} unless @multi_step
 
-    attrs = { controller: 'save-bar' }
+    attrs = { controller: 'save-bar', 'save-bar-confirm-tab-switch-value': t('admin.save_bar.confirm_tab_switch') }
     attrs['save-bar-tab-name-value'] = @tab_name if @tab_name
     attrs['save-bar-settings-hash-value'] = @settings_hash if @settings_hash
     attrs['save-bar-preview-hash-value'] = @preview_hash if @preview_hash

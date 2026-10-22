@@ -90,6 +90,9 @@ RSpec.describe "Admin nested form rows", type: :request do
         .to include('name="user[neighbourhoods_users_attributes][NEW_RECORD][neighbourhood_id]"')
       expect(response.body).to include('name="user[neighbourhoods_users_attributes][2][id]"')
       expect(response.body).to include('name="user[neighbourhoods_users_attributes][2][_destroy]"')
+      saved_rows = Nokogiri::HTML(response.body).css(".nested-form-neighbourhoods-users [data-nested-form-target='container']")
+      expect(saved_rows.css("[data-controller='cascading-neighbourhood']")).to be_empty
+      expect(saved_rows.css("a[aria-label='#{I18n.t('admin.actions.remove')}']").size).to eq(3)
 
       put admin_user_url(user, host: admin_host), params: {
         user: {
