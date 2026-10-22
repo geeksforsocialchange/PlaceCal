@@ -279,6 +279,18 @@ RSpec.describe "Admin::Partners", type: :request do
       expect(select["data-tom-select-show-all-value"]).to eq("true")
       expect(select.css("option").map(&:text)).to include(user.display_name)
     end
+
+    it "shows a partner admin their partner's admins without the list of every user" do
+      partner_admin = create(:partner_admin, partner:)
+      other_user = create(:user, email: "someone-else@example.org")
+      sign_in partner_admin
+
+      get edit_admin_partner_url(partner, host: admin_host)
+
+      expect(response.body).to include(partner_admin.full_name)
+      expect(response.body).not_to include(other_user.email)
+      expect(Nokogiri::HTML(response.body).at_css('select[data-stacked-list-selector-target="select"]')).to be_nil
+    end
   end
 
   describe "PUT /admin/partners/:id" do
