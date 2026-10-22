@@ -40,20 +40,17 @@
 #  updated_at              :datetime         not null
 #  address_id              :bigint
 #  hidden_blame_id         :integer
-#  parent_id               :bigint
 #
 # Indexes
 #
 #  index_partners_hidden         (hidden)
 #  index_partners_lower_name_    (lower((name)::text)) UNIQUE
 #  index_partners_on_address_id  (address_id)
-#  index_partners_on_parent_id   (parent_id)
 #  index_partners_on_slug        (slug) UNIQUE
 #
 # Foreign Keys
 #
 #  fk_rails_...  (address_id => addresses.id)
-#  fk_rails_...  (parent_id => partners.id)
 #
 require "rails_helper"
 
@@ -71,8 +68,6 @@ RSpec.describe Partner, type: :model do
     it { is_expected.to have_many(:service_areas).dependent(:destroy) }
     it { is_expected.to have_many(:article_partners).dependent(:destroy) }
     it { is_expected.to have_many(:articles).through(:article_partners) }
-    it { is_expected.to belong_to(:parent).class_name("Partner").optional }
-    it { is_expected.to have_many(:children).class_name("Partner").dependent(:nullify) }
   end
 
   describe "defaults" do
@@ -509,16 +504,6 @@ RSpec.describe Partner, type: :model do
                       public_email: nil, public_phone: nil, url: nil,
                       facebook_link: nil, twitter_handle: nil, instagram_handle: nil)
       expect(partner.contactable?).to be false
-    end
-  end
-
-  describe "parent" do
-    let(:parent) { create(:partner) }
-    let(:child) { create(:partner, parent:) }
-
-    it "links a child to its parent and back" do
-      expect(child.parent).to eq(parent)
-      expect(parent.children).to contain_exactly(child)
     end
   end
 end
