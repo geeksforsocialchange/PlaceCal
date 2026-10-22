@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_22_160200) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_22_170000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -92,22 +92,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_160200) do
     t.index ["source"], name: "index_calendars_source", unique: true
   end
 
-  create_table "collections", force: :cascade do |t|
-    t.datetime "created_at", precision: nil, null: false
-    t.text "description"
-    t.string "image"
-    t.string "name"
-    t.string "route"
-    t.datetime "updated_at", precision: nil, null: false
-  end
-
-  create_table "collections_events", id: false, force: :cascade do |t|
-    t.bigint "collection_id", null: false
-    t.bigint "event_id", null: false
-    t.index ["collection_id", "event_id"], name: "index_collections_events_on_collection_id_and_event_id"
-    t.index ["event_id", "collection_id"], name: "index_collections_events_on_event_id_and_collection_id"
-  end
-
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer "attempts", default: 0, null: false
     t.datetime "created_at", precision: nil
@@ -186,14 +170,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_160200) do
     t.string "link_type"
     t.datetime "updated_at", null: false
     t.string "url"
-  end
-
-  create_table "organisation_relationships", force: :cascade do |t|
-    t.bigint "partner_object_id", null: false
-    t.bigint "partner_subject_id", null: false
-    t.string "verb", null: false
-    t.index ["partner_object_id"], name: "index_organisation_relationships_on_partner_object_id"
-    t.index ["partner_subject_id", "verb", "partner_object_id"], name: "unique_organisation_relationship_row", unique: true
   end
 
   create_table "partner_tags", force: :cascade do |t|
@@ -420,8 +396,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_160200) do
   add_foreign_key "events", "partners", column: "place_id"
   add_foreign_key "neighbourhoods_users", "neighbourhoods"
   add_foreign_key "neighbourhoods_users", "users"
-  add_foreign_key "organisation_relationships", "partners", column: "partner_object_id"
-  add_foreign_key "organisation_relationships", "partners", column: "partner_subject_id"
   add_foreign_key "partner_tags", "partners"
   add_foreign_key "partner_tags", "tags"
   add_foreign_key "partners", "addresses"
