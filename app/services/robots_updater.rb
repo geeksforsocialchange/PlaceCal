@@ -20,31 +20,39 @@ class RobotsUpdater
   #   1. Training: collects data for model training or dataset building
   #   2. Enterprise AI platform: feeds an AI-as-a-service product
   #   3. Unknown/undocumented: default to block
-  SEARCH_ALLOW_LIST = %w[
-    AddSearchBot
-    Amzn-SearchBot
-    Amzn-User
-    Andibot
-    Applebot
-    AzureAI-SearchBot
-    Bravebot
-    Channel3Bot
-    ChatGPT-User
-    Claude-SearchBot
-    Claude-User
-    cohere-ai
-    DuckAssistBot
-    ExaBot
-    facebookexternalhit
-    IbouBot
-    kagi-fetcher
-    LinkupBot
-    MistralAI-User/1.0
-    OAI-SearchBot
-    Perplexity-User
-    PerplexityBot
-    PetalBot
-    PhindBot
+  SEARCH_ALLOW_LIST = [
+    'AddSearchBot',
+    'Amzn-SearchBot',
+    'Amzn-User',
+    'Andibot',
+    'Applebot',
+    'AzureAI-SearchBot',
+    'Bravebot',
+    'Channel3Bot',
+    'ChatGPT Agent',
+    'ChatGPT-User',
+    'Claude-SearchBot',
+    'Claude-User',
+    'cohere-ai',
+    'DuckAssistBot',
+    'ExaBot',
+    'ExaSearchBot',
+    'facebookexternalhit',
+    'GrokAppAndroid',
+    'GrokBot',
+    'kagi-fetcher',
+    'Kimi-SearchBot',
+    'LinkupBot',
+    'Meta-ExternalFetcher',
+    'meta-externalfetcher',
+    'MistralAI-Index',
+    'MistralAI-User',
+    'MistralAI-User/1.0',
+    'OAI-SearchBot',
+    'Perplexity-User',
+    'PerplexityBot',
+    'PetalBot',
+    'PhindBot'
   ].freeze
 
   # Upstream function values that indicate a bot should be allowed.
