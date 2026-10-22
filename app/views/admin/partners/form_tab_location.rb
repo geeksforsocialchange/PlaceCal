@@ -73,13 +73,8 @@ class Views::Admin::Partners::FormTabLocation < Views::Admin::Base
       description: "#{t('admin.partners.sections.service_areas_description')} #{t('admin.partners.sections.service_areas_hint')}",
       fit_height: true
     ) do
-      nested_form_for(form, :service_areas,
-                      add_text: t('admin.service_areas.add'),
-                      add_class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange',
-                      partial: 'service_area_fields') do
-        raw form.simple_fields_for(:service_areas) { |neighbourhood|
-          view_context.render('service_area_fields', f: neighbourhood)
-        }
+      NestedForm(form:, association: :service_areas, add_text: t('admin.service_areas.add')) do |area|
+        render Views::Admin::Partners::ServiceAreaFields.new(form: area, partner: form.object)
       end
     end
   end
