@@ -40,7 +40,7 @@ class Components::Admin::StackedListSelector < Components::Admin::Base
           @items.each { |item| render_read_only_item(item) }
         end
       else
-        render_empty_state(size: '14')
+        render_empty_state
       end
     end
   end
@@ -67,7 +67,7 @@ class Components::Admin::StackedListSelector < Components::Admin::Base
     div(class: @wrapper_class, data: wrapper_data) do
       input(type: 'hidden', name: @field_name, value: '')
       render_selected_items
-      render_empty_state(size: '14')
+      render_empty_state
       render_add_dropdown
       render_template
     end
@@ -117,13 +117,13 @@ class Components::Admin::StackedListSelector < Components::Admin::Base
     end
   end
 
-  def render_empty_state(size:)
+  def render_empty_state
     hidden = @items.any? ? 'hidden' : ''
     div(
       class: "text-center py-8 #{hidden}",
       **(@read_only ? {} : { "data-#{@controller}-target" => 'empty' })
     ) do
-      div(class: "inline-flex items-center justify-center w-#{size} h-#{size} rounded-2xl bg-base-200 mb-3") do
+      div(class: 'inline-flex items-center justify-center size-14 rounded-2xl bg-base-200 mb-3') do
         icon(@icon_name, size: '7', css_class: 'text-gray-400')
       end
       p(class: 'text-sm text-gray-600') { @empty_text }
