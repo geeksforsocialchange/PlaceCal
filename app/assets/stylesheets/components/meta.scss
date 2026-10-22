@@ -30,10 +30,19 @@
 	padding-bottom: 2rem;
 	font-size: $small-font-size;
 
+	// Same inset as the band's .container-public (app/tailwind/public/_utilities.css)
 	ul {
 		max-width: 1240px;
 		margin-inline: auto;
-		padding-inline: 1.25rem;
+		padding-inline: 0.75rem;
 		justify-content: flex-start;
+
+		@media (min-width: 48rem) {
+			padding-inline: 1.25rem;
+		}
+
+		@media (min-width: 64rem) {
+			padding-inline: 2.5rem;
+		}
 	}
 }

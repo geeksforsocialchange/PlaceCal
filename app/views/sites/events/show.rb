@@ -274,7 +274,7 @@ class Views::Sites::Events::Show < Views::Base
         h2(class: 'h4 udl') { t('events.show.contact_heading') }
         div(class: 'small') do
           p(class: 'contact_details__partner') { link_to(event.organiser.name, partner_path(event.organiser)) }
-          Shared::ContactDetails(partner: event.organiser, social_labels: :network)
+          Shared::ContactDetails(partner: event.organiser, social_labels: site&.core_theme? ? :handle : :network)
         end
       end
     end

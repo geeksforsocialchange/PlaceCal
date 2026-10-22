@@ -93,7 +93,7 @@ class Views::Sites::Partners::Show < Views::Base
         render_events_section
       end
       # Under the whole box, not in the sidebar, so a theme can run it full width
-      Shared::Map(points: map, compact: true)
+      Shared::Map(points: map, compact: true) unless site.core_theme?
     end
   end
 
@@ -105,6 +105,7 @@ class Views::Sites::Partners::Show < Views::Base
       end
       div(class: 'gi gi__2-5') do
         render_partner_image
+        Shared::Map(points: map, compact: true) if site.core_theme?
         render_opening_times
         render_accessibility
       end
@@ -117,7 +118,7 @@ class Views::Sites::Partners::Show < Views::Base
   # inherited size with no margin, so an h2 and an h3 here draw identically.
   def render_contact_and_address
     h2(class: 'udl udl--fw allcaps h4') { t('partners.show.contact_heading') }
-    Shared::ContactDetails(partner:, social_labels: :network)
+    Shared::ContactDetails(partner:, social_labels: site&.core_theme? ? :handle : :network)
 
     render_address
     render_family_sentence
