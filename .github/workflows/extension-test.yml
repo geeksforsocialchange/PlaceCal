@@ -141,7 +141,7 @@ jobs:
         timeout-minutes: 8
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends imagemagick libvips-dev
+          sudo apt-get install -y --no-install-recommends imagemagick libvips42t64
 
       - name: Read core's Ruby version
         id: ruby

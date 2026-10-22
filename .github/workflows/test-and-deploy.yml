@@ -132,7 +132,7 @@ jobs:
         timeout-minutes: 8
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends imagemagick libvips-dev
+          sudo apt-get install -y --no-install-recommends imagemagick libvips42t64
 
       - name: Install Chrome for browser tests
         if: matrix.suite == 'system' || startsWith(matrix.suite, 'cucumber')
