@@ -85,6 +85,10 @@ module InputDiagnostics
     out[:after_resize] = native_click_ok?(page)
     browser.navigate.refresh
     out[:after_reload] = native_click_ok?(page)
+    url = page.current_url
+    page.visit(url.sub("lvh.me", "127.0.0.1"))
+    page.visit(url)
+    out[:after_other_domain_and_back] = native_click_ok?(page)
     out
   rescue StandardError => e
     out.merge(recovery_error: "#{e.class}: #{e.message}".truncate(300))

@@ -83,6 +83,10 @@ RSpec.configure do |config|
     driven_by :selenium, using: :headless_chrome, screen_size: [1400, 1400], options: service do |options|
       options.binary = ENV["BROWSER_PATH"] if ENV["BROWSER_PATH"].present?
       ENV["CHROME_EXTRA_ARGS"].to_s.split.each { |arg| options.add_argument(arg) }
+      if ENV["CHROME_NO_PASSWORD_MANAGER"].present?
+        options.add_preference(:credentials_enable_service, false)
+        options.add_preference(:profile, password_manager_enabled: false, password_manager_leak_detection: false)
+      end
     end
   end
 
