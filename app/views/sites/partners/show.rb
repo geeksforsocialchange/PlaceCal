@@ -119,10 +119,7 @@ class Views::Sites::Partners::Show < Views::Base
     h2(class: 'udl udl--fw allcaps h4') { t('partners.show.contact_heading') }
     Shared::ContactDetails(partner:, social_labels: :network)
 
-    h2(class: 'udl udl--fw allcaps h4') { t('partners.show.address_heading') }
-    p { raw(t('partners.show.service_area_html', areas: partner_service_area_text(partner))) } if partner.has_service_areas?
-
-    Shared::Address(address: partner.address)
+    render_address
 
     return unless partner.managees.any?
 
@@ -134,6 +131,16 @@ class Views::Sites::Partners::Show < Views::Base
     p(class: 'small') do
       raw(t('partners.show.managed_by_html', name: partner.name, places:))
     end
+  end
+
+  def render_address
+    h2(class: 'udl udl--fw allcaps h4') { t('partners.show.address_heading') }
+    if partner.has_service_areas?
+      p(class: 'place_info__service_area') do
+        raw(t('partners.show.service_area_html', areas: partner_service_area_text(partner)))
+      end
+    end
+    Shared::Address(address: partner.address) if partner.address
   end
 
   def render_partner_image
