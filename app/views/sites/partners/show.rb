@@ -89,7 +89,7 @@ class Views::Sites::Partners::Show < Views::Base
         )
 
         render_partner_details
-        render_managees
+        render_children
         render_events_section
       end
       # Under the whole box, not in the sidebar, so a theme can run it full width
@@ -120,17 +120,32 @@ class Views::Sites::Partners::Show < Views::Base
     Shared::ContactDetails(partner:, social_labels: :network)
 
     render_address
+    render_family_sentence
+  end
 
-    return unless partner.managees.any?
-
-    # view_context.link_to, not the registered output helper: the helper
-    # writes straight to the buffer, so building the list as an interpolation
-    # argument would emit the links ahead of the sentence that contains them.
-    places = safe_join(partner.managees.map { |place| view_context.link_to(place.name, place) }, ', ')
-
-    p(class: 'small') do
-      raw(t('partners.show.managed_by_html', name: partner.name, places:))
+  # view_context.link_to, not the registered output helper: the helper writes
+  # straight to the buffer, ahead of the sentence the links are interpolated into.
+  def render_family_sentence
+    if visible_parent
+      div(class: 'partner__family small') do
+        raw(t('partners.show.part_of_html', parent: view_context.link_to(visible_parent.name, partner_path(visible_parent))))
+      end
+    elsif visible_children.any?
+      places = safe_join(visible_children.map { |child| view_context.link_to(child.name, partner_path(child)) }, ', ')
+      div(class: 'partner__family small') do
+        raw(t('partners.show.children_html', name: partner.name, places:))
+      end
     end
+  end
+
+  def visible_parent
+    return @visible_parent if defined?(@visible_parent)
+
+    @visible_parent = partner.parent unless partner.parent&.hidden
+  end
+
+  def visible_children
+    @visible_children ||= partner.children.visible.includes(:address).order(:name).to_a
   end
 
   def render_address
@@ -180,8 +195,8 @@ class Views::Sites::Partners::Show < Views::Base
     end
   end
 
-  def render_managees
-    partner.managees.each do |place|
+  def render_children
+    visible_children.each do |place|
       hr
 
       h2(class: 'place__title') { link_to place.name, partner_path(place), class: 'udl udl--red' }
@@ -190,18 +205,15 @@ class Views::Sites::Partners::Show < Views::Base
           raw safe(place.summary_html.to_s) if place.summary_html.present?
         end
         div(class: 'gi gi__1-2') do
-          h2(class: 'udl udl--fw allcaps h4') { t('partners.show.address_heading') }
-          div(class: 'small') do
-            Shared::Address(address: place.address)
+          if place.address
+            h2(class: 'udl udl--fw allcaps h4') { t('partners.show.address_heading') }
+            div(class: 'small') do
+              Shared::Address(address: place.address)
+            end
           end
           h2(class: 'udl udl--fw allcaps h4') { t('partners.show.place_contact_heading') }
           div(class: 'small') do
-            Shared::ContactDetails(
-              partner:,
-              email: place.public_email,
-              phone: place.public_phone,
-              url: place.url
-            )
+            Shared::ContactDetails(partner: place)
           end
         end
       end

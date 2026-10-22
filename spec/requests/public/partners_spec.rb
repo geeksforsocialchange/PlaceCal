@@ -488,6 +488,48 @@ RSpec.describe "Public Partners", type: :request do
     end
   end
 
+  describe "GET /partners/:id for a parent and its child" do
+    let(:parent) { create(:partner, name: "Riverside University", address: create(:address, neighbourhood: ward)) }
+    let!(:child) { create(:partner, name: "Riverside Museum", parent:, address: create(:address, neighbourhood: ward)) }
+
+    def event_for(partner, summary)
+      create(:event, organiser: partner, calendar: create(:calendar, organiser: partner), summary:,
+                     dtstart: 1.day.from_now.at_beginning_of_hour, dtend: 1.day.from_now.at_beginning_of_hour + 1.hour)
+    end
+
+    before do
+      event_for(parent, "University Lecture")
+      event_for(child, "Museum Tour")
+    end
+
+    def events_browser_html
+      response.body[%r{<turbo-frame[^>]*id="events-browser"[^>]*>.*?</turbo-frame>}m]
+    end
+
+    it "lists the child and includes the child's events on the parent page" do
+      get partner_url(parent, host: "#{site.slug}.lvh.me")
+
+      expect(response.parsed_body.at_css("h2.place__title a").text).to eq("Riverside Museum")
+      expect(events_browser_html).to include("University Lecture", "Museum Tour")
+      expect(response.body).to include("2 events")
+    end
+
+    it "includes the child's events in the parent's CSV export" do
+      get partner_url(parent, host: "lvh.me", format: :csv)
+
+      expect(CSV.parse(response.body, headers: true).pluck("Title")).to contain_exactly("University Lecture", "Museum Tour")
+    end
+
+    it "links the child page to its parent and shows only the child's events" do
+      get partner_url(child, host: "#{site.slug}.lvh.me")
+
+      expect(response.parsed_body.at_css("a[href='/partners/#{parent.slug}']").text).to eq("Riverside University")
+      expect(response.body).to include("Part of")
+      expect(events_browser_html).to include("Museum Tour")
+      expect(events_browser_html).not_to include("University Lecture")
+    end
+  end
+
   describe "GET /partners/:id period defaulting" do
     let(:partner) { create(:riverside_partner, address: create(:riverside_address, neighbourhood: ward)) }
     let(:calendar) { create(:calendar, organiser: partner) }

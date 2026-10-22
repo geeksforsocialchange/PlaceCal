@@ -53,7 +53,7 @@ class EventsQuery
   # @param repeating [String] 'on' (all, default), 'off' (one-off only), or 'only' (repeating only)
   # @param organiser [Partner] filter to events by this organiser
   # @param place [Partner] filter to events at this place
-  # @param organiser_or_place [Partner] filter to events by OR at this organiser
+  # @param organiser_or_place [Partner, Array<Integer>] filter to events by OR at this organiser (or these partner ids)
   # @param neighbourhood_id [Integer] filter to events in this neighbourhood
   # @param tag_id [Integer] filter to events whose organiser or place carries
   #   this tag (used by the public region filter, see #3368 D7)

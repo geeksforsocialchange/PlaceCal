@@ -36,6 +36,8 @@ class PartnersController < ApplicationController
     return if performed?
 
     @days = clamp_days(params[:days])
+    # A parent partner's page also lists its children's events.
+    @event_partner_ids = @partner.self_and_child_ids
     assign_events_for_show
 
     # Map
@@ -59,13 +61,13 @@ class PartnersController < ApplicationController
       end
       format.ics do
         track_ical_download
-        cal = create_calendar(Event.by_organiser_or_place(@partner).ical_feed, "#{@partner} - Powered by PlaceCal")
+        cal = create_calendar(Event.by_organiser_or_place(@event_partner_ids).ical_feed, "#{@partner} - Powered by PlaceCal")
         cal.publish
         render plain: cal.to_ical
       end
       format.csv do
         track_csv_download
-        events = Event.by_organiser_or_place(@partner).upcoming.sort_by_time
+        events = Event.by_organiser_or_place(@event_partner_ids).upcoming.sort_by_time
         site_url = current_site&.canonical_url || 'https://placecal.org'
         send_data EventsCsv.new(events, site_url:).call,
                   filename: "#{@partner.slug}-events.csv", type: :csv
@@ -89,7 +91,7 @@ class PartnersController < ApplicationController
   # (flat, day-windowed), or many events (paginated, day-windowed by default
   # or the older Timeline/EventFilter paginator for an explicit period).
   def assign_events_for_show
-    upcoming_count = Event.by_organiser_or_place(@partner).upcoming.count
+    upcoming_count = Event.by_organiser_or_place(@event_partner_ids).upcoming.count
     if upcoming_count.zero?
       @events = []
       @no_event_message = no_upcoming_events_reason(@partner)
@@ -108,7 +110,7 @@ class PartnersController < ApplicationController
     @paginator = false
     query = EventsQuery.new(site: nil, day: @current_day)
     if directory_request?
-      @events = query.call(period: 'future', organiser_or_place: @partner, repeating: @repeating, sort: 'time')
+      @events = query.call(period: 'future', organiser_or_place: @event_partner_ids, repeating: @repeating, sort: 'time')
     else
       assign_days_windowed_events(sort: 'time', query:)
     end
@@ -121,7 +123,7 @@ class PartnersController < ApplicationController
   # Views::Partners::Show#render_events_paginator). The directory view isn't
   # day-windowed - it keeps its original "next 10, reveal more" behaviour.
   def assign_paginated_events
-    weekly_count = Event.by_organiser(@partner).find_next_7_days(@current_day).count
+    weekly_count = Event.by_organiser(@event_partner_ids).find_next_7_days(@current_day).count
     @date_period = weekly_count >= EventsQuery::WEEKLY_DENSITY_THRESHOLD ? 'week' : 'month'
     @period = params[:period] || 'upcoming'
     @sort = params[:sort] || 'time'
@@ -132,19 +134,19 @@ class PartnersController < ApplicationController
     if !directory_request? && @period == 'upcoming'
       assign_days_windowed_events(sort: @sort, query:)
     else
-      @events = query.call(period: @period, organiser_or_place: @partner, repeating: @repeating, sort: @sort)
+      @events = query.call(period: @period, organiser_or_place: @event_partner_ids, repeating: @repeating, sort: @sort)
     end
     @show_monthly = query.show_monthly?
   end
 
   # Totals from per-day counts cover every upcoming event; only the first @days days load.
   def assign_days_windowed_events(sort:, query: EventsQuery.new(site: nil, day: @current_day))
-    day_counts = query.future_counts_by_day(organiser_or_place: @partner, repeating: @repeating)
+    day_counts = query.future_counts_by_day(organiser_or_place: @event_partner_ids, repeating: @repeating)
     last_day = day_counts.keys.first(@days).last
     @events_total_count = day_counts.values.sum
     @events_total_days = day_counts.size
     @more_days = [day_counts.size - @days, 0].max
-    @events = last_day ? query.future_through(last_day, sort:, organiser_or_place: @partner, repeating: @repeating) : {}
+    @events = last_day ? query.future_through(last_day, sort:, organiser_or_place: @event_partner_ids, repeating: @repeating) : {}
   end
 
   def clamp_days(raw_days)
