@@ -460,13 +460,13 @@ class Partner < ApplicationRecord
     address&.neighbourhood&.refresh_partners_count!
 
     # If address_id changed, also refresh the old neighbourhood
-    if previous_changes.key?('address_id')
-      old_address_id = previous_changes['address_id'].first
-      if old_address_id
-        old_address = Address.find_by(id: old_address_id)
-        old_address&.neighbourhood&.refresh_partners_count!
-      end
-    end
+    return unless previous_changes.key?('address_id')
+
+    old_address_id = previous_changes['address_id'].first
+    return unless old_address_id
+
+    old_address = Address.find_by(id: old_address_id)
+    old_address&.neighbourhood&.refresh_partners_count!
   end
 
   def neighbourhood_admin_address_access
