@@ -3,7 +3,7 @@
 class CollectionsController < ApplicationController
   include MapMarkers
 
-  before_action :set_collection, only: %i[show edit update destroy]
+  before_action :set_collection, only: %i[show]
   before_action :set_site
 
   def index
