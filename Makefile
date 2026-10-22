@@ -1,6 +1,6 @@
 TIME := $(shell command -v time 2>/dev/null || echo "")
 
-#REQUIREMENTS BEFORE RUNNING MAKE ALL: ruby, yarn, docker, graphviz, imagemagick, nvm, postgres
+#REQUIREMENTS BEFORE RUNNING MAKE ALL: ruby, yarn, docker, imagemagick, nvm, postgres
 .PHONY: test setup
 
 all: test

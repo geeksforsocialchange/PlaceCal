@@ -346,6 +346,40 @@ RSpec.describe "Admin::Partners", type: :request do
         expect(response.body).to include("Partners cannot have an address outside of your ward")
       end
     end
+
+    context "neighbourhood admin service area removal" do
+      let(:ward) { create(:riverside_ward) }
+      let(:outside_ward) { create(:hillcrest_ward) }
+      let(:user) { create(:neighbourhood_admin, neighbourhood: ward) }
+      let(:partner) do
+        partner = build(:partner, address: nil)
+        partner.service_areas.build(neighbourhood: ward)
+        partner.service_areas.build(neighbourhood: outside_ward)
+        partner.save!
+        partner
+      end
+
+      before { sign_in user }
+
+      it "keeps the area when the remaining areas are outside their neighbourhoods" do
+        service_area = partner.service_areas.find_by(neighbourhood: ward)
+
+        put admin_partner_url(partner, host: admin_host), params: {
+          partner: {
+            name: partner.name,
+            service_areas_attributes: {
+              "0" => { id: service_area.id, neighbourhood_id: ward.id, _destroy: "1" },
+              "1" => { id: partner.service_areas.find_by(neighbourhood: outside_ward).id,
+                       neighbourhood_id: outside_ward.id, _destroy: "false" }
+            }
+          }
+        }
+
+        expect(response).to redirect_to(edit_admin_partner_url(partner, host: admin_host))
+        expect(flash[:danger]).to eq("Partners must have an address or a service area inside your neighbourhood")
+        expect(partner.service_areas.reload.map(&:neighbourhood_id)).to contain_exactly(ward.id, outside_ward.id)
+      end
+    end
   end
 
   describe "POST /admin/partners" do
