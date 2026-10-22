@@ -475,12 +475,14 @@ en:
       show_more_days:
         one: "Show %{count} more day"
         other: "Show %{count} more days"
-      # Headings in a managed place's block, which repeats the partner's own
+      # Heading in each child partner's block, which repeats the partner's own
       place_contact_heading: "Contact"
       # %{areas} is the rendered list of service areas, already escaped
       service_area_html: "We operate in %{areas}."
-      # %{places} is the rendered list of links to the places this partner runs
-      managed_by_html: "%{name} manage %{places}."
+      # %{places} is the rendered list of links to this partner's child partners
+      children_html: "%{name} manage %{places}."
+      # %{parent} is a link to the partner this one is part of
+      part_of_html: "Part of %{parent}."
       image_alt: "Image for %{name}"
       subscribe_ical: "Subscribe to %{name}'s events with iCal"
       # Empty states for the partner page's event list, one per period
@@ -828,6 +830,7 @@ en:
         tag_ids: ""
         accessibility_info: "Accessibility Information"
         hidden_reason: "Reason for Hiding"
+        parent_id: "Part of"
         facebook: "Facebook"
         twitter: "X (Twitter)"
         instagram: "Instagram"
@@ -876,3 +879,8 @@ en:
             opening_times:
               end_before_start: "has a closing time that is not after its opening time"
               overlapping: "has overlapping times on the same day"
+            parent_id:
+              self: "can't be the partner itself"
+              nested: "must be a partner that isn't itself part of another partner"
+              has_children: "can't be set on a partner that other partners are part of"
+              not_editable: "must be a partner you can edit"

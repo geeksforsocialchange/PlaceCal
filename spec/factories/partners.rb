@@ -40,17 +40,20 @@
 #  updated_at              :datetime         not null
 #  address_id              :bigint
 #  hidden_blame_id         :integer
+#  parent_id               :bigint
 #
 # Indexes
 #
 #  index_partners_hidden         (hidden)
 #  index_partners_lower_name_    (lower((name)::text)) UNIQUE
 #  index_partners_on_address_id  (address_id)
+#  index_partners_on_parent_id   (parent_id)
 #  index_partners_on_slug        (slug) UNIQUE
 #
 # Foreign Keys
 #
 #  fk_rails_...  (address_id => addresses.id)
+#  fk_rails_...  (parent_id => partners.id)
 #
 require_relative "../../lib/normal_island"
 

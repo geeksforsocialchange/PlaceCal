@@ -8,10 +8,6 @@ CollectionEvent:
 SitesSupporter:
   enabled: false # This is a HABTM join table (sites_supporters), not a standalone model
 
-# OrganisationRelationship table exists but has no model - may be legacy/unused
-OrganisationRelationship:
-  enabled: false
-
 # User model - Devise manages these token uniqueness constraints
 User:
   index_users_on_invitation_token:
@@ -55,5 +51,10 @@ Address:
     ForeignKeyCascadeChecker:
       enabled: false # Using model-level dependent: :nullify
   partners:
+    ForeignKeyCascadeChecker:
+      enabled: false # Using model-level dependent: :nullify
+
+Partner:
+  children:
     ForeignKeyCascadeChecker:
       enabled: false # Using model-level dependent: :nullify

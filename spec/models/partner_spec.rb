@@ -40,17 +40,20 @@
 #  updated_at              :datetime         not null
 #  address_id              :bigint
 #  hidden_blame_id         :integer
+#  parent_id               :bigint
 #
 # Indexes
 #
 #  index_partners_hidden         (hidden)
 #  index_partners_lower_name_    (lower((name)::text)) UNIQUE
 #  index_partners_on_address_id  (address_id)
+#  index_partners_on_parent_id   (parent_id)
 #  index_partners_on_slug        (slug) UNIQUE
 #
 # Foreign Keys
 #
 #  fk_rails_...  (address_id => addresses.id)
+#  fk_rails_...  (parent_id => partners.id)
 #
 require "rails_helper"
 
@@ -68,6 +71,8 @@ RSpec.describe Partner, type: :model do
     it { is_expected.to have_many(:service_areas).dependent(:destroy) }
     it { is_expected.to have_many(:article_partners).dependent(:destroy) }
     it { is_expected.to have_many(:articles).through(:article_partners) }
+    it { is_expected.to belong_to(:parent).class_name("Partner").optional }
+    it { is_expected.to have_many(:children).class_name("Partner").dependent(:nullify) }
   end
 
   describe "defaults" do
@@ -504,6 +509,38 @@ RSpec.describe Partner, type: :model do
                       public_email: nil, public_phone: nil, url: nil,
                       facebook_link: nil, twitter_handle: nil, instagram_handle: nil)
       expect(partner.contactable?).to be false
+    end
+  end
+
+  describe "parent" do
+    let(:parent) { create(:partner) }
+    let(:child) { create(:partner, parent:) }
+
+    it "links a child to its parent and back" do
+      expect(child.parent).to eq(parent)
+      expect(parent.children).to contain_exactly(child)
+    end
+
+    it "can't be the partner itself" do
+      child.parent = child
+
+      expect(child).not_to be_valid
+      expect(child.errors.details[:parent_id]).to include(error: :self)
+    end
+
+    it "can't be a partner that has a parent" do
+      grandchild = build(:partner, parent: child)
+
+      expect(grandchild).not_to be_valid
+      expect(grandchild.errors.details[:parent_id]).to include(error: :nested)
+    end
+
+    it "can't be given to a partner that has children" do
+      child
+      parent.parent = create(:partner)
+
+      expect(parent).not_to be_valid
+      expect(parent.errors.details[:parent_id]).to include(error: :has_children)
     end
   end
 end

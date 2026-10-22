@@ -7,6 +7,7 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base
     partner = form.object
 
     render_url_settings(partner)
+    render_part_of(partner)
     render_event_matching(partner)
 
     return if partner.new_record?
@@ -37,6 +38,37 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base
           p(class: 'fieldset-label') { t('admin.hints.leave_blank_to_autogenerate') }
         end
       end
+    end
+  end
+
+  def render_part_of(partner)
+    div(class: 'mb-8') do
+      SectionHeader(
+        title: t('admin.partners.sections.part_of'),
+        description: t('admin.partners.sections.part_of_description'),
+        margin: 4
+      )
+      div(class: 'max-w-md') do
+        if partner.children.any?
+          p(class: 'text-sm text-base-content/70') do
+            t('admin.partners.part_of.has_children', children: partner.children.order(:name).pluck(:name).to_sentence)
+          end
+        else
+          render_parent_field(partner)
+        end
+      end
+    end
+  end
+
+  def render_parent_field(partner)
+    fieldset(class: 'fieldset') do
+      raw form.label(:parent_id, attr_label(:partner, :parent_id), class: 'fieldset-legend')
+      raw form.input_field(:parent_id,
+                           as: :select,
+                           collection: options_for_parent_partner(partner),
+                           include_blank: t('admin.partners.part_of.blank'),
+                           class: 'select select-bordered w-full')
+      p(class: 'fieldset-label') { t('admin.partners.part_of.hint') }
     end
   end
 

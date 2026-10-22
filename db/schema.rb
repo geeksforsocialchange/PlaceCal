@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_22_140000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_22_150200) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -239,6 +239,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_140000) do
     t.boolean "is_a_place", default: false, null: false
     t.string "name", null: false
     t.jsonb "opening_times"
+    t.bigint "parent_id"
     t.string "partner_email"
     t.string "partner_name"
     t.string "partner_phone"
@@ -254,6 +255,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_140000) do
     t.index "lower((name)::text)", name: "index_partners_lower_name_", unique: true
     t.index ["address_id"], name: "index_partners_on_address_id"
     t.index ["hidden"], name: "index_partners_hidden"
+    t.index ["parent_id"], name: "index_partners_on_parent_id"
     t.index ["slug"], name: "index_partners_on_slug", unique: true
   end
 
@@ -441,6 +443,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_140000) do
   add_foreign_key "partner_tags", "partners"
   add_foreign_key "partner_tags", "tags"
   add_foreign_key "partners", "addresses"
+  add_foreign_key "partners", "partners", column: "parent_id"
   add_foreign_key "partners_users", "partners"
   add_foreign_key "partners_users", "users"
   add_foreign_key "service_areas", "neighbourhoods"

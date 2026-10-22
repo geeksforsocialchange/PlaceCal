@@ -40,17 +40,20 @@
 #  updated_at              :datetime         not null
 #  address_id              :bigint
 #  hidden_blame_id         :integer
+#  parent_id               :bigint
 #
 # Indexes
 #
 #  index_partners_hidden         (hidden)
 #  index_partners_lower_name_    (lower((name)::text)) UNIQUE
 #  index_partners_on_address_id  (address_id)
+#  index_partners_on_parent_id   (parent_id)
 #  index_partners_on_slug        (slug) UNIQUE
 #
 # Foreign Keys
 #
 #  fk_rails_...  (address_id => addresses.id)
+#  fk_rails_...  (parent_id => partners.id)
 #
 class Partner < ApplicationRecord
   # ==== Includes / Extends ====
@@ -89,6 +92,7 @@ class Partner < ApplicationRecord
   attribute :is_a_place,              :boolean, default: false     # NOT NULL
   attribute :name,                    :string                      # NOT NULL
   attribute :opening_times,           :json                        # nullable — Array<Hash{dayOfWeek, opens, closes}>, schema.org OpeningHoursSpecification
+  attribute :parent_id,               :integer                     # nullable
   attribute :partner_email,           :string                      # nullable
   attribute :partner_name,            :string                      # nullable
   attribute :partner_phone,           :string                      # nullable
@@ -134,17 +138,8 @@ class Partner < ApplicationRecord
   has_many :article_partners, dependent: :destroy
   has_many :articles, through: :article_partners
 
-  has_and_belongs_to_many :objects,
-                          class_name: 'Partner',
-                          join_table: :organisation_relationships,
-                          foreign_key: 'partner_subject_id',
-                          association_foreign_key: 'partner_object_id'
-
-  has_and_belongs_to_many :subjects,
-                          class_name: 'Partner',
-                          join_table: :organisation_relationships,
-                          foreign_key: 'partner_object_id',
-                          association_foreign_key: 'partner_subject_id'
+  belongs_to :parent, class_name: 'Partner', optional: true, inverse_of: :children
+  has_many :children, class_name: 'Partner', foreign_key: :parent_id, inverse_of: :parent, dependent: :nullify
 
   accepts_nested_attributes_for :calendars, allow_destroy: true
 
@@ -220,6 +215,8 @@ class Partner < ApplicationRecord
   validate :partnership_admins_must_add_partnership, on: %i[create]
   validate :must_give_reason_to_hide
   validate :must_record_who_has_hidden
+  validate :parent_is_one_level_up
+  validate :parent_editable_by_user, if: :parent_id_changed?
 
   # ==== Scopes ====
   scope :visible, -> { where(hidden: false) }
@@ -228,12 +225,6 @@ class Partner < ApplicationRecord
   # only select partners that have addresses
   scope :with_address, lambda {
     where.not(address_id: nil)
-  }
-
-  # Get all Partners that manage at least one other Partner.
-  scope :managers, lambda {
-    joins('JOIN organisation_relationships o_r on o_r.partner_subject_id = partners.id')
-      .where(o_r: { verb: :manages }).distinct
   }
 
   # ==== Delegates ====
@@ -269,14 +260,9 @@ class Partner < ApplicationRecord
     super(handle&.gsub('@', ''))
   end
 
-  # @return [ActiveRecord::Relation<Partner>] partners that manage this one
-  def managers
-    subjects.where(organisation_relationships: { verb: :manages })
-  end
-
-  # @return [ActiveRecord::Relation<Partner>] partners this one manages
-  def managees
-    objects.where(organisation_relationships: { verb: :manages })
+  # @return [Array<Integer>] this partner's id and its visible children's ids
+  def self_and_child_ids
+    [id, *children.visible.ids]
   end
 
   # @return [Array<Neighbourhood>] unique neighbourhoods from address + service areas
@@ -644,5 +630,25 @@ class Partner < ApplicationRecord
     return if hidden && hidden_blame_id.present?
 
     errors.add :base, 'You must record who has hidden the partner'
+  end
+
+  # Parents are one level deep: no self-parenting, no grandparents.
+  def parent_is_one_level_up
+    return if parent_id.nil?
+
+    if parent_id == id
+      errors.add :parent_id, :self
+    elsif parent&.parent_id.present?
+      errors.add :parent_id, :nested
+    elsif children.exists?
+      errors.add :parent_id, :has_children
+    end
+  end
+
+  def parent_editable_by_user
+    return if parent_id.nil? || accessed_by_user.nil?
+    return if PartnerPolicy::Scope.new(accessed_by_user, Partner).resolve.exists?(id: parent_id)
+
+    errors.add :parent_id, :not_editable
   end
 end

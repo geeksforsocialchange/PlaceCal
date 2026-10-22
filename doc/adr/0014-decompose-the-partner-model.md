@@ -14,7 +14,7 @@ The result is that `app/models/partner.rb` is now ~524 lines and carries at leas
 2. **Venue / place**: `is_a_place`, `address`, `opening_times` (+ `opening_times_data`, `human_readable_opening_times`), `accessibility_info`, `booking_info`, `matching_venue_for`, `location_name`, and the address-clearing logic (`can_clear_address?`, `warn_user_clear_address?`, `clear_address!`).
 3. **Public directory listing**: contact and social fields (`public_*`, `partner_*`, `twitter_handle`, `instagram_handle`, `facebook_link`, `url`) with their format validations and URL helpers, `description`/`summary` HTML caching, the CarrierWave `image`/`logo_url`, tags/categories/facilities/partnerships, and the moderation fields (`hidden`, `hidden_reason`, `hidden_blame_id`).
 4. **Geography / service areas**: `service_areas`, `service_area_neighbourhoods`, `neighbourhoods`, `owned_neighbourhood_ids`, `neighbourhood_name_for_site`, and `refresh_neighbourhood_partners_count`.
-5. **Organisation graph**: the self-referential `objects`/`subjects` relationship via `organisation_relationships`, plus `managers`/`managees`.
+5. **Organisation graph**: the self-referential `parent`/`children` association on `parent_id`.
 
 Cutting across all of these is a sixth cluster: **neighbourhood-admin access control** (`accessed_by_user`, `check_neighbourhood_access`, `neighbourhood_admin_address_access`, `check_remove_service_area`, `partnership_admins_must_add_partnership`). This is authorization logic embedded in model validations.
 
@@ -44,7 +44,7 @@ Adopt **option 2**. Decompose `Partner` into role concerns, keeping the single t
 - `Partner::Venue` (address, opening times, accessibility, venue matching, address clearing)
 - `Partner::DirectoryListing` (contact and social fields, descriptions, image, tags, moderation)
 - `Partner::ServiceAreas` (service areas, neighbourhoods, partner-count refresh)
-- `Partner::Relationships` (the organisation graph, managers/managees)
+- `Partner::Relationships` (the organisation graph: parent and children)
 
 Treat the **access-control cluster separately**. The `accessed_by_user` neighbourhood-admin validations are authorization, not Partner data, and are the strongest candidate to move out of the model entirely into a policy or validator object rather than into a concern. Doing this as a follow-up step is acceptable; the point is not to bury it inside `Partner::ServiceAreas` by default.
 
