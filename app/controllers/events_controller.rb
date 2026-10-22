@@ -14,6 +14,8 @@ class EventsController < ApplicationController
   # GET /events
   # GET /events.json
   def index
+    return render_ical if request.format.ics?
+
     if directory_request? && html_format? && params[:simple].blank?
       render_directory_index
     else
@@ -159,7 +161,6 @@ class EventsController < ApplicationController
         end
       end
       format.text { render Views::Sites::Events::IndexText.new(events: @events), layout: false }
-      format.ics { render_ical }
       format.csv { render_events_csv }
     end
   end
@@ -172,10 +173,19 @@ class EventsController < ApplicationController
 
   def render_ical
     track_ical_download
-    query = EventsQuery.new(site: @site)
-    cal = create_calendar(query.for_ical)
-    cal.publish
-    render plain: cal.to_ical
+    events = EventsQuery.new(site: @site).for_ical
+    key = ical_feed_key(events)
+    return unless stale?(etag: key)
+
+    ics = Rails.cache.fetch(key, expires_in: 1.day) { create_calendar(events).tap(&:publish).to_ical }
+    render plain: ics
+  end
+
+  # Addresses have no updated_at, so the date caps how long an edited address can stay stale
+  def ical_feed_key(events)
+    count, latest = events.unscope(:includes).pick(Arel.sql('count(*)'), Arel.sql('max(events.updated_at)'))
+    ['ical_feed', @site&.cache_key_with_version, Date.current, count, latest&.iso8601(6),
+     Partner.maximum(:updated_at)&.iso8601(6)]
   end
 
   # The same builder as the partner page's CSV export (app/services/events_csv.rb),
