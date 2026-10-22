@@ -183,6 +183,13 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
       # Switch tabs without making changes - no prompt expected
       go_to_place_tab
     end
+
+    it "stays clean when a field fires a change event without changing" do
+      expect(page).to have_css(".ts-wrapper", visible: :all)
+      page.execute_script("document.querySelector('input[name=\"partner[name]\"]').dispatchEvent(new Event('change', { bubbles: true }))")
+
+      go_to_place_tab
+    end
   end
 
   describe "navigation with Continue/Back buttons" do
