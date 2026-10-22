@@ -309,29 +309,17 @@ namespace :db do
       sleep 5
     end
 
-    bad_events = Event.group(:uid, :dtstart).count.keep_if { |_, count| count > 1 }
+    # Manually entered events have no uid, so grouping on it would lump unrelated events together
+    bad_events = Event.where.not(uid: [nil, '']).group(:uid, :dtstart).count.keep_if { |_, count| count > 1 }
     puts "Found #{bad_events.count} events with duplicate IDs"
 
-    bad_events.each do |fields, _|
-      uid, _dtstart = fields
+    bad_events.each_key do |uid, dtstart|
+      duplicates = Event.where(uid:, dtstart:).order(updated_at: :desc, id: :desc).offset(1)
 
-      event_cluster = Event.where(uid:)
+      puts "#{uid} has duplicate count: #{duplicates.count} for date #{dtstart}"
+      puts "  #{duplicates.map(&:id).to_json}"
 
-      start_date = event_cluster.to_h do |event|
-        [event.dtstart, out[event.dtstart].to_i + 1]
-      end
-
-      bad_dates = start_date.keep_if { |_date, count| count > 1 }
-      next if bad_dates.empty?
-
-      bad_dates.each do |date, _count|
-        bad_event_cluster = event_cluster.where(dtstart: date).order(updated_at: :desc).offset(1)
-
-        puts "#{uid} has duplicate count: #{bad_event_cluster.count} for date #{date}"
-        puts "  #{bad_event_cluster.all.map(&:id).to_json}"
-
-        bad_event_cluster.destroy_all if destroy
-      end
+      duplicates.destroy_all if destroy
     end
   end
 end
