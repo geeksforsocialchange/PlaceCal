@@ -10,16 +10,6 @@ module PartnersHelper
         .sort_by { |label, _id| label.downcase }
   end
 
-  # Top-level partners the current user can edit, as [name, id] pairs.
-  # The current parent stays listed so saving the form never drops it.
-  def options_for_parent_partner(partner)
-    options = policy_scope(Partner).where(parent_id: nil).where.not(id: partner.id).order(:name).pluck(:name, :id)
-    parent = partner.parent
-    return options if parent.nil? || options.any? { |_name, id| id == parent.id }
-
-    (options << [parent.name, parent.id]).sort_by { |name, _id| name.downcase }
-  end
-
   def options_for_service_area_neighbourhoods(for_partner)
     legacy_neighbourhoods = for_partner.service_area_neighbourhoods.where.not(release_date: Neighbourhood::LATEST_RELEASE_DATE)
 

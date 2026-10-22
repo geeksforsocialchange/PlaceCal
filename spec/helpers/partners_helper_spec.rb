@@ -99,27 +99,4 @@ RSpec.describe PartnersHelper, type: :helper do
       end
     end
   end
-
-  describe "#options_for_parent_partner" do
-    let(:user) { create(:partner_admin, partner:) }
-    let(:editable) { create(:partner).tap { |p| user.partners << p } }
-
-    before do
-      allow(helper).to receive(:policy_scope) { |scope| Pundit.policy_scope!(user, scope) }
-    end
-
-    it "leaves out partners that are part of another partner" do
-      nested = create(:partner, parent: editable).tap { |p| user.partners << p }
-
-      expect(helper.options_for_parent_partner(partner)).to include([editable.name, editable.id])
-      expect(helper.options_for_parent_partner(partner)).not_to include([nested.name, nested.id])
-    end
-
-    it "keeps the current parent listed when the user can't edit it" do
-      outside_parent = create(:partner)
-      partner.update!(parent: outside_parent)
-
-      expect(helper.options_for_parent_partner(partner)).to include([outside_parent.name, outside_parent.id])
-    end
-  end
 end

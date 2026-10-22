@@ -824,7 +824,6 @@ en:
         tag_ids: ""
         accessibility_info: "Accessibility Information"
         hidden_reason: "Reason for Hiding"
-        parent_id: "Part of"
         facebook: "Facebook"
         twitter: "X (Twitter)"
         instagram: "Instagram"
@@ -873,8 +872,3 @@ en:
             opening_times:
               end_before_start: "has a closing time that is not after its opening time"
               overlapping: "has overlapping times on the same day"
-            parent_id:
-              self: "can't be the partner itself"
-              nested: "must be a partner that isn't itself part of another partner"
-              has_children: "can't be set on a partner that other partners are part of"
-              not_editable: "must be a partner you can edit"

@@ -473,8 +473,6 @@ en:
         location_description: "Partners need at least one place - either a fixed address or a service area."
         moderation: "Moderation"
         online_presence_description: "Website and social media links."
-        part_of: "Part of"
-        part_of_description: "The organisation this partner belongs to, such as a university that runs a museum. Its page lists this partner and its events."
         partnership_contact: "Partnership Contact"
         partnership_contact_description: "Internal contact for PlaceCal team. Leave blank to use public contact."
         preview_description: "How this partner appears on PlaceCal."
@@ -491,11 +489,6 @@ en:
         website_placeholder: "https://your-website.org"
       image:
         title: "Partner Image"
-      part_of:
-        blank: "Not part of another partner"
-        hint: "Only partners you can edit, and that aren't part of another partner themselves, are listed."
-        # %{children} is a list of partner names
-        has_children: "Other partners are part of this one (%{children}), so it can't be part of another partner."
       validation:
         name_min_length: "Name must be at least 5 characters"
         name_required: "Partner name is required"

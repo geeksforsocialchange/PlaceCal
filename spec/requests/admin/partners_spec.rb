@@ -410,44 +410,6 @@ RSpec.describe "Admin::Partners", type: :request do
     end
   end
 
-  describe "Part of (parent partner)" do
-    let(:user) { create(:partner_admin) }
-    let(:partner) { user.partners.first }
-    let(:own_parent) { create(:partner, name: "Editable Parent").tap { |p| user.partners << p } }
-    let!(:other_partner) { create(:partner, name: "Someone Else's Partner") }
-
-    before { sign_in user }
-
-    def update_parent(parent_id)
-      put admin_partner_url(partner, host: admin_host), params: { partner: { name: partner.name, parent_id: } }
-    end
-
-    it "offers only partners the user can edit" do
-      own_parent
-      get edit_admin_partner_url(partner, host: admin_host)
-
-      options = response.parsed_body.css("select#partner_parent_id option").map(&:text)
-      expect(options).to include("Editable Parent")
-      expect(options).not_to include(other_partner.name, partner.name)
-    end
-
-    it "saves and clears the parent" do
-      update_parent(own_parent.id)
-      expect(partner.reload.parent).to eq(own_parent)
-
-      update_parent("")
-      expect(partner.reload.parent).to be_nil
-    end
-
-    it "rejects a parent the user can't edit" do
-      update_parent(other_partner.id)
-
-      expect(response).to have_http_status(:unprocessable_content)
-      expect(response.body).to include(I18n.t("activerecord.errors.models.partner.attributes.parent_id.not_editable"))
-      expect(partner.reload.parent).to be_nil
-    end
-  end
-
   describe "POST /admin/partners" do
     context "as a neighbourhood admin" do
       let(:ward) { create(:riverside_ward) }

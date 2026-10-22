@@ -215,8 +215,6 @@ class Partner < ApplicationRecord
   validate :partnership_admins_must_add_partnership, on: %i[create]
   validate :must_give_reason_to_hide
   validate :must_record_who_has_hidden
-  validate :parent_is_one_level_up
-  validate :parent_editable_by_user, if: :parent_id_changed?
 
   # ==== Scopes ====
   scope :visible, -> { where(hidden: false) }
@@ -630,25 +628,5 @@ class Partner < ApplicationRecord
     return if hidden && hidden_blame_id.present?
 
     errors.add :base, 'You must record who has hidden the partner'
-  end
-
-  # Parents are one level deep: no self-parenting, no grandparents.
-  def parent_is_one_level_up
-    return if parent_id.nil?
-
-    if parent_id == id
-      errors.add :parent_id, :self
-    elsif parent&.parent_id.present?
-      errors.add :parent_id, :nested
-    elsif children.exists?
-      errors.add :parent_id, :has_children
-    end
-  end
-
-  def parent_editable_by_user
-    return if parent_id.nil? || accessed_by_user.nil?
-    return if PartnerPolicy::Scope.new(accessed_by_user, Partner).resolve.exists?(id: parent_id)
-
-    errors.add :parent_id, :not_editable
   end
 end

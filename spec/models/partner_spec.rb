@@ -520,27 +520,5 @@ RSpec.describe Partner, type: :model do
       expect(child.parent).to eq(parent)
       expect(parent.children).to contain_exactly(child)
     end
-
-    it "can't be the partner itself" do
-      child.parent = child
-
-      expect(child).not_to be_valid
-      expect(child.errors.details[:parent_id]).to include(error: :self)
-    end
-
-    it "can't be a partner that has a parent" do
-      grandchild = build(:partner, parent: child)
-
-      expect(grandchild).not_to be_valid
-      expect(grandchild.errors.details[:parent_id]).to include(error: :nested)
-    end
-
-    it "can't be given to a partner that has children" do
-      child
-      parent.parent = create(:partner)
-
-      expect(parent).not_to be_valid
-      expect(parent.errors.details[:parent_id]).to include(error: :has_children)
-    end
   end
 end
