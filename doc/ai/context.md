@@ -30,6 +30,14 @@ When working on this project:
 
 Every PR gets exactly one Release Drafter category label, or it lands uncategorised in the release notes: `enhancement`, `fix`, `security`, `maintenance` or `docs` (see `.github/release-drafter.yml`). The autolabeler only matches title prefixes like `fix`, `feat` and `chore`, so add the label yourself with `gh pr create --label <label>` or `gh pr edit <number> --add-label <label>`. `enhancement` makes the next release a minor version; the others are patches.
 
+## Releases
+
+Production deploys only when a GitHub release is published; merging to `main` deploys staging. Release Drafter keeps a draft release whose body is the categorised list of merged PRs.
+
+- **Notes:** before publishing, add a short plain-language summary of the release (a few sentences or bullets on what changed for people using PlaceCal) at the top of the draft body, above Release Drafter's `## What's changed` list. Keep that list and the "Full changelog" link exactly as generated; never replace the body with only the summary.
+- **Publishing:** set `tag_name` and `target_commitish` to the full SHA of the commit to release in the same API call that publishes, then check the tag exists (`gh api repos/:owner/:repo/git/ref/tags/<tag>`).
+- **Version:** any `enhancement` PR makes it a minor release; otherwise it's a patch.
+
 ## CRITICAL: Internationalization (i18n)
 
 **NEVER hardcode user-facing strings in views, components, controllers, or JavaScript.** Always use locale keys.
