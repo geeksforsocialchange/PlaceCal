@@ -166,8 +166,8 @@ class Event < ApplicationRecord
   scope :upcoming, -> { where(dtstart: DateTime.current.beginning_of_day..) }
   scope :past, -> { where(dtstart: ..DateTime.current.beginning_of_day) }
 
-  # Global feed
-  scope :ical_feed, -> { where(dtstart: 1.week.ago..).where(dtend: ...2.years.from_now) }
+  # Global feed; six months ahead keeps busy sites' subscriptions small enough for calendar apps
+  scope :ical_feed, -> { where(dtstart: 1.week.ago..).where(dtend: ...6.months.from_now) }
 
   # ==== Callbacks ====
   before_save :sanitize_rrule

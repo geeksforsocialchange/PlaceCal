@@ -17,6 +17,16 @@ RSpec.describe "Event iCal export", type: :request do
     expect(uids).to match_array(events.map { |event| "event-#{event.id}@placecal.org" })
   end
 
+  it "covers the last week to six months ahead" do
+    inside = create(:event, organiser: partner, address: partner.address, dtstart: 5.months.from_now, dtend: 5.months.from_now + 1.hour)
+    beyond = create(:event, organiser: partner, address: partner.address, dtstart: 7.months.from_now, dtend: 7.months.from_now + 1.hour)
+
+    get events_url(host: "lvh.me", format: :ics)
+
+    expect(response.body).to include("event-#{inside.id}@placecal.org")
+    expect(response.body).not_to include("event-#{beyond.id}@placecal.org")
+  end
+
   it "doesn't rebuild an unchanged events feed for a repeat request" do
     event = create(:event, organiser: partner, address: partner.address,
                            dtstart: 1.day.from_now, dtend: 1.day.from_now + 1.hour)
