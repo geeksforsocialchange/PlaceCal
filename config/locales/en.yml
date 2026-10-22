@@ -738,9 +738,6 @@ en:
       calendar:
         one: "Calendar"
         other: "Calendars"
-      collection:
-        one: "Collection"
-        other: "Collections"
       event:
         one: "Event"
         other: "Events"
@@ -813,9 +810,6 @@ en:
         public_contact_name: "Contact Name"
         public_contact_email: "Contact Email"
         public_contact_phone: "Contact Phone"
-
-      collection:
-        <<: *default_attrs
 
       neighbourhood:
         <<: *default_attrs

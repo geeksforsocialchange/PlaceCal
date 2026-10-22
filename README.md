@@ -167,7 +167,6 @@ If you are working with the code and are completely lost you can also try the [G
 │   ├── validators              # Custom validators (e.g. postcode)
 │   └── views
 │       ├── admin               # Admin area
-│       ├── collections         # Deprecated feature to create arbitrary event collections
 │       ├── devise              # Authentication
 │       ├── events              # Event indexes and show page
 │       ├── join_mailer         # Templates for creating accounts

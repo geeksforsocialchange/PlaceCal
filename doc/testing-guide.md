@@ -440,7 +440,6 @@ create(:millbrook_together_tag)
 create(:article)
 create(:article, partners: [partner1, partner2])
 
-create(:collection)
 create(:online_address)
 create(:service_area, partner: partner, neighbourhood: ward)
 ```

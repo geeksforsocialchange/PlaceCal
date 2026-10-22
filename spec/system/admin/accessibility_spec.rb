@@ -13,7 +13,6 @@ RSpec.describe "Admin Accessibility", :slow, type: :system do
   let!(:calendar) { create(:calendar, organiser: partner) }
   let!(:neighbourhood) { create(:neighbourhood) }
   let!(:partnership) { create(:partnership) }
-  let!(:collection) { create(:collection) }
   let!(:supporter) { create(:supporter) }
 
   describe "index pages" do
@@ -67,11 +66,6 @@ RSpec.describe "Admin Accessibility", :slow, type: :system do
     it "partnerships index has no accessibility violations" do
       visit admin_url("/partnerships")
       await_datatables
-      expect(page).to be_axe_clean
-    end
-
-    it "collections index has no accessibility violations" do
-      visit admin_url("/collections")
       expect(page).to be_axe_clean
     end
 
