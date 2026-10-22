@@ -27,6 +27,7 @@ class Components::Directory::Footer < Components::Directory::Base
                          ])
       render_link_column(t('directory.footer.about'), [
                            [t('directory.footer.our_story'), :our_story_path],
+                           [t('directory.footer.for_ai_assistants'), '/mcp'],
                            [t('directory.footer.privacy_policy'), :privacy_path],
                            [t('directory.footer.terms_of_use'), :terms_of_use_path]
                          ])

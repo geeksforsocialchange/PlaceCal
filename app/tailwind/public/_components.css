@@ -64,7 +64,7 @@ a.btn-dark-outline:hover {
 	box-shadow: var(--shadow-dot);
 }
 
-/* Rendered markdown documents (legal pages — privacy, terms of use) */
+/* Rendered markdown documents from app/content (privacy, terms, the MCP page) */
 .markdown-content > :first-child {
 	@apply mt-0;
 }
