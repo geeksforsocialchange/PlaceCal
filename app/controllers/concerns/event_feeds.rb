@@ -23,7 +23,8 @@ module EventFeeds
   def create_ical_event(source, site_url)
     event_url = "#{site_url}/events/#{source.id}"
     event = Icalendar::Event.new
-    event.uid = source.uid.presence || "event-#{source.id}@placecal.org"
+    # Imported recurring occurrences share a source UID, but are exported as separate events.
+    event.uid = "event-#{source.id}@placecal.org"
     event.dtstart = source.dtstart
     event.dtend = source.dtend
     event.summary = source.summary
