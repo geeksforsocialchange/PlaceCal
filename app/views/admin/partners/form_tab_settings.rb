@@ -73,12 +73,16 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base
           plain is_enabled ? t('admin.partners.event_matching.enabled') : t('admin.partners.event_matching.disabled')
         end
         div(class: 'flex items-center gap-3') do
-          span(class: 'label-text text-sm font-medium text-gray-600') { t('admin.labels.disabled') }
+          span(class: 'label-text text-sm font-medium text-base-content/40', id: 'event-matching-label-disabled') do
+            t('admin.labels.disabled')
+          end
           raw form.check_box(:can_be_assigned_events,
                              class: 'toggle toggle-success',
                              id: 'partner_can_be_assigned_events',
                              onchange: 'updateEventMatchingTitle(this.checked)')
-          span(class: 'label-text text-sm font-medium text-success') { t('admin.labels.enabled') }
+          span(class: toggle_on_label_class(is_enabled), id: 'event-matching-label-enabled') do
+            t('admin.labels.enabled')
+          end
         end
       end
 
@@ -86,6 +90,10 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base
 
       render_event_matching_benefits
     end
+  end
+
+  def toggle_on_label_class(on)
+    "label-text text-sm font-medium #{on ? 'text-success' : 'text-base-content/40'}"
   end
 
   def render_event_matching_benefits
@@ -114,6 +122,11 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base
         function updateEventMatchingTitle(isEnabled) {
           const title = document.getElementById('event-matching-title');
           title.textContent = isEnabled ? '#{t('admin.partners.event_matching.enabled')}' : '#{t('admin.partners.event_matching.disabled')}';
+
+          const faded = 'text-base-content/40';
+          const enabledLabel = document.getElementById('event-matching-label-enabled');
+          enabledLabel.classList.toggle('text-success', isEnabled);
+          enabledLabel.classList.toggle(faded, !isEnabled);
         }
       JS
     end
@@ -160,14 +173,16 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base
           plain partner.hidden? ? t('admin.partners.moderation.hidden_label') : t('admin.partners.moderation.visible_label')
         end
         div(class: 'flex items-center gap-3') do
-          span(class: 'label-text text-sm font-medium text-error') { t('admin.labels.hidden') }
+          span(class: 'label-text text-sm font-medium text-base-content/40') { t('admin.labels.hidden') }
           raw form.hidden_field(:hidden,
                                 value: partner.hidden? ? '1' : '0',
                                 data: { inverted_toggle_target: 'hidden' })
           raw safe('<input type="checkbox" id="partner_hidden_toggle" class="toggle toggle-success" ' \
                    'data-inverted-toggle-target="checkbox" data-action="change->inverted-toggle#toggle" ' \
                    'onchange="updateVisibilityTitle(this.checked)" />')
-          span(class: 'label-text text-sm font-medium text-success') { t('admin.labels.visible') }
+          span(class: toggle_on_label_class(!partner.hidden?), id: 'partner-visibility-label-visible') do
+            t('admin.labels.visible')
+          end
         end
       end
 
@@ -226,6 +241,10 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base
         function updateVisibilityTitle(isVisible) {
           const title = document.getElementById('partner-visibility-title');
           title.textContent = isVisible ? '#{t('admin.partners.moderation.visible_label')}' : '#{t('admin.partners.moderation.hidden_label')}';
+
+          const visibleLabel = document.getElementById('partner-visibility-label-visible');
+          visibleLabel.classList.toggle('text-success', isVisible);
+          visibleLabel.classList.toggle('text-base-content/40', !isVisible);
         }
       JS
     end
