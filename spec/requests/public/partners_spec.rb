@@ -182,6 +182,24 @@ RSpec.describe "Public Partners", type: :request do
       end
     end
 
+    context "with a service area and no address" do
+      let(:area_partner) do
+        partner = build(:partner, address: nil)
+        partner.service_areas.build(neighbourhood: ward)
+        partner.tap(&:save!)
+      end
+
+      it "puts the service area under the Address heading with no empty postal address" do
+        get partner_url(area_partner, host: "#{site.slug}.lvh.me")
+        doc = Nokogiri::HTML(response.body)
+
+        heading = doc.css(".gi.gi__3-5 > h2").find { |h| h.text == I18n.t("partners.show.address_heading") }
+        expect(heading.next_element[:class]).to eq("place_info__service_area")
+        expect(heading.next_element.text).to include(ward.name)
+        expect(doc.css(".place_info__address")).to be_empty
+      end
+    end
+
     context "without calendar" do
       it "shows no events message" do
         get partner_url(partner, host: "#{site.slug}.lvh.me")
