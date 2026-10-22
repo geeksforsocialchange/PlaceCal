@@ -2,7 +2,6 @@
 
 require "rails_helper"
 
-# rubocop:disable-next Rails/SkipsModelValidations
 RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
   let(:admin_user) { create(:root_user) }
   # Define columns for this datatable
@@ -54,8 +53,8 @@ RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
       let!(:calendar_error) { create(:calendar, name: "Error Calendar") }
 
       before do
-        calendar_idle.update_column(:calendar_state, "idle")
-        calendar_error.update_column(:calendar_state, "error")
+        calendar_idle.update_column(:calendar_state, "idle") # rubocop:disable Rails/SkipsModelValidations
+        calendar_error.update_column(:calendar_state, "error") # rubocop:disable Rails/SkipsModelValidations
       end
 
       it "recordsTotal remains constant when filters applied" do
@@ -127,8 +126,8 @@ RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
       let!(:queued_calendar) { create(:calendar, name: "Queued Calendar") }
 
       before do
-        idle_calendar.update_column(:calendar_state, "idle")
-        error_calendar.update_column(:calendar_state, "error")
+        idle_calendar.update_column(:calendar_state, "idle") # rubocop:disable Rails/SkipsModelValidations
+        error_calendar.update_column(:calendar_state, "error") # rubocop:disable Rails/SkipsModelValidations
       end
 
       it "filters by idle state" do
@@ -255,8 +254,8 @@ RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
       let!(:calendar) { create(:calendar, name: "Render Test", organiser: partner, notice_count: 3) }
 
       before do
-        calendar.update_column(:calendar_state, "idle")
-        calendar.update_column(:last_import_at, Time.current)
+        calendar.update_column(:calendar_state, "idle") # rubocop:disable Rails/SkipsModelValidations
+        calendar.update_column(:last_import_at, Time.current) # rubocop:disable Rails/SkipsModelValidations
         create(:event, calendar:)
       end
 

@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable-next Rails/OutputSafety
 class PartnershipDatatable < Datatable
   def view_columns
     @view_columns ||= {
@@ -67,7 +66,7 @@ class PartnershipDatatable < Datatable
   end
 
   def render_name_cell(record)
-    <<~HTML.html_safe
+    <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
       <div class="flex flex-col">
         <a href="#{edit_admin_partnership_path(record)}" class="font-medium text-gray-900 hover:text-orange-600">
           #{ERB::Util.html_escape(record.name)}
@@ -83,7 +82,7 @@ class PartnershipDatatable < Datatable
     truncated = record.description.truncate(50)
     tooltip = ERB::Util.html_escape(record.description)
 
-    <<~HTML.html_safe
+    <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
       <span class="text-gray-600 text-sm" title="#{tooltip}">
         #{ERB::Util.html_escape(truncated)}
       </span>
@@ -92,13 +91,13 @@ class PartnershipDatatable < Datatable
 
   def render_system_tag_cell(record)
     if record.system_tag?
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <span class="inline-flex items-center text-amber-700" title="System tag">
           #{icon(:lock)}
         </span>
       HTML
     else
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <span class="inline-flex items-center text-gray-300" title="User-created">
           #{icon(:unlock)}
         </span>
@@ -110,7 +109,7 @@ class PartnershipDatatable < Datatable
     admins = record.users
     count = admins.size
 
-    return <<~HTML.html_safe if count.zero?
+    return <<~HTML.html_safe if count.zero? # rubocop:disable Rails/OutputSafety
       <span class="inline-flex items-center text-gray-500" title="No admins">
         #{icon(:x)}
       </span>
@@ -123,12 +122,12 @@ class PartnershipDatatable < Datatable
     end
 
     if count <= 2
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <span class="text-sm">#{links.join(', ')}</span>
       HTML
     else
       remaining = count - 2
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <span class="text-sm">
           #{links.join(', ')}
           <a href="#{edit_admin_partnership_path(record)}" class="text-gray-500 hover:text-orange-600">

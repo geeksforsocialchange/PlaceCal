@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable-next Rails/OutputSafety
 class SiteDatatable < Datatable
   def view_columns
     @view_columns ||= {
@@ -72,7 +71,7 @@ class SiteDatatable < Datatable
       #{render_domain_status(record)}
     URL_HTML
 
-    <<~HTML.html_safe
+    <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
       <div class="flex flex-col gap-0.5">
         <a href="#{edit_admin_site_path(record)}" class="font-medium text-gray-900 hover:text-orange-600">
           #{ERB::Util.html_escape(record.name)}
@@ -93,7 +92,7 @@ class SiteDatatable < Datatable
     neighbourhood = record.primary_neighbourhood
     return empty_cell unless neighbourhood
 
-    <<~HTML.html_safe
+    <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
       <a href="#{admin_neighbourhood_path(neighbourhood)}" class="text-gray-600 hover:text-orange-600 hover:underline">
         #{ERB::Util.html_escape(neighbourhood.shortname)}
       </a>
@@ -102,14 +101,14 @@ class SiteDatatable < Datatable
 
   def render_count_cell(count, label)
     if count.positive?
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <span class="inline-flex items-center text-emerald-600" title="#{count} #{label}#{'s' if count != 1}">
           #{icon(:check)}
           <span class="ml-1 text-xs">#{count}</span>
         </span>
       HTML
     else
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <span class="inline-flex items-center text-gray-500" title="No #{label}s">
           #{icon(:x)}
         </span>
@@ -121,7 +120,7 @@ class SiteDatatable < Datatable
     admin = record.site_admin
     return empty_cell unless admin
 
-    <<~HTML.html_safe
+    <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
       <button type="button"
               class="text-left text-gray-600 hover:text-orange-600 hover:underline cursor-pointer"
               data-action="click->admin-table#filterByValue"

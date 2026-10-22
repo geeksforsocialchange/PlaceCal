@@ -2,7 +2,6 @@
 
 require "rails_helper"
 
-# rubocop:disable-next Rails/SkipsModelValidations
 RSpec.describe PartnerDatatable do
   # Create a view context with access to URL helpers using a real controller
   let(:view_context) do
@@ -127,7 +126,7 @@ RSpec.describe PartnerDatatable do
         # Create a partner with only a service area (no neighbourhood)
         partner_no_ward = create(:partner, name: "No Ward Partner")
         # Remove the address to force no neighbourhood
-        partner_no_ward.update_columns(address_id: nil)
+        partner_no_ward.update_columns(address_id: nil) # rubocop:disable Rails/SkipsModelValidations
         partner_no_ward.service_areas.destroy_all
         # Add a service area without neighbourhood to pass validation
         neighbourhood_without_ward = create(:neighbourhood, unit: "district")
@@ -218,7 +217,7 @@ RSpec.describe PartnerDatatable do
       it "shows error icon when calendar has errors" do
         calendar = create(:calendar, organiser: partner)
         # Update calendar state after creation to ensure it's persisted
-        calendar.update_column(:calendar_state, "error")
+        calendar.update_column(:calendar_state, "error") # rubocop:disable Rails/SkipsModelValidations
 
         datatable = create_datatable
 
@@ -286,7 +285,7 @@ RSpec.describe PartnerDatatable do
       end
 
       it "shows 'Yesterday' for updates yesterday" do
-        partner.update_column(:updated_at, 1.day.ago)
+        partner.update_column(:updated_at, 1.day.ago) # rubocop:disable Rails/SkipsModelValidations
 
         datatable = create_datatable
 
@@ -295,7 +294,7 @@ RSpec.describe PartnerDatatable do
       end
 
       it "shows 'X days ago' for recent updates" do
-        partner.update_column(:updated_at, 3.days.ago)
+        partner.update_column(:updated_at, 3.days.ago) # rubocop:disable Rails/SkipsModelValidations
 
         datatable = create_datatable
 
@@ -304,7 +303,7 @@ RSpec.describe PartnerDatatable do
       end
 
       it "shows 'X weeks ago' for updates within a month" do
-        partner.update_column(:updated_at, 2.weeks.ago)
+        partner.update_column(:updated_at, 2.weeks.ago) # rubocop:disable Rails/SkipsModelValidations
 
         datatable = create_datatable
 
@@ -313,7 +312,7 @@ RSpec.describe PartnerDatatable do
       end
 
       it "shows formatted date for older updates" do
-        partner.update_column(:updated_at, 2.months.ago)
+        partner.update_column(:updated_at, 2.months.ago) # rubocop:disable Rails/SkipsModelValidations
 
         datatable = create_datatable
 
