@@ -93,4 +93,81 @@ RSpec.describe Partner, "service_area" do
       expect(neighbourhood_count).to eq(1)
     end
   end
+
+  describe "removing service areas" do
+    let(:ward) { create(:riverside_ward) }
+    let(:other_ward) { create(:oldtown_ward) }
+    let(:outside_ward) { create(:hillcrest_ward) }
+    let(:message) { "Partners must have an address or a service area inside your neighbourhood" }
+    let(:admin) { create(:neighbourhood_admin, neighbourhood: ward) }
+
+    def create_partner(*neighbourhoods, address: nil)
+      partner = build(:partner, address:)
+      neighbourhoods.each { |n| partner.service_areas.build(neighbourhood: n) }
+      partner.save!
+      partner
+    end
+
+    def remove_area(partner, user, neighbourhood)
+      partner.accessed_by_user = user
+      partner.service_areas.destroy(partner.service_areas.find_by(neighbourhood:))
+    end
+
+    def remaining_ids(partner)
+      partner.service_areas.reload.map(&:neighbourhood_id)
+    end
+
+    it "lets a neighbourhood admin remove an area when the remaining areas are inside their neighbourhoods" do
+      admin.neighbourhoods << other_ward
+      partner = create_partner(ward, other_ward)
+
+      remove_area(partner, admin, ward)
+
+      expect(remaining_ids(partner)).to eq([other_ward.id])
+      expect(partner.errors[:service_areas]).to be_empty
+    end
+
+    it "stops a neighbourhood admin removing an area when a remaining area is outside their neighbourhoods" do
+      partner = create_partner(ward, outside_ward)
+
+      remove_area(partner, admin, ward)
+
+      expect(remaining_ids(partner)).to contain_exactly(ward.id, outside_ward.id)
+      expect(partner.errors[:service_areas]).to include(message)
+    end
+
+    it "stops a neighbourhood admin removing the last area when the partner has no address" do
+      partner = create_partner(ward)
+
+      remove_area(partner, admin, ward)
+
+      expect(remaining_ids(partner)).to eq([ward.id])
+      expect(partner.errors[:service_areas]).to include(message)
+    end
+
+    it "lets a neighbourhood admin remove an area when the partner's address is in their neighbourhood" do
+      partner = create_partner(ward, outside_ward, address: create(:address, neighbourhood: ward))
+
+      remove_area(partner, admin, ward)
+
+      expect(remaining_ids(partner)).to eq([outside_ward.id])
+      expect(partner.errors[:service_areas]).to be_empty
+    end
+
+    it "lets a root user remove an area outside their neighbourhoods" do
+      partner = create_partner(ward, outside_ward)
+
+      remove_area(partner, create(:root), ward)
+
+      expect(remaining_ids(partner)).to eq([outside_ward.id])
+    end
+
+    it "lets a partner admin remove an area outside their neighbourhoods" do
+      partner = create_partner(ward, outside_ward)
+
+      remove_area(partner, create(:partner_admin, partner:), ward)
+
+      expect(remaining_ids(partner)).to eq([outside_ward.id])
+    end
+  end
 end
