@@ -39,7 +39,7 @@ RSpec.describe "Admin::Neighbourhoods", type: :request do
     end
   end
 
-  describe "GET /admin/neighbourhoods/children" do
+  describe "GET /admin/neighbourhoods/children and /hierarchy" do
     let!(:country) { create(:normal_island_country, level: 5) }
     let!(:region) { create(:northvale_region, parent: country, level: 4) }
     let!(:county) { create(:greater_millbrook_county, parent: region, level: 3) }
@@ -120,6 +120,14 @@ RSpec.describe "Admin::Neighbourhoods", type: :request do
       ids = response.parsed_body.map { |n| n["id"] }
       expect(ids).to include(district_under_county.id)
       expect(ids).to include(district_under_region.id)
+    end
+
+    it "gives a district's hierarchy with the district itself at its own level" do
+      get hierarchy_admin_neighbourhoods_url(host: admin_host, params: { neighbourhood_id: district_under_county.id }),
+          headers: { "Accept" => "application/json" }
+
+      expect(response.parsed_body.values_at("country_id", "region_id", "county_id", "district_id"))
+        .to eq([country.id, region.id, county.id, district_under_county.id])
     end
   end
 

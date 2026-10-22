@@ -136,6 +136,7 @@ en:
 
     save_bar:
       unsaved_changes: "Unsaved changes"
+      confirm_tab_switch: "You have unsaved changes. Are you sure you want to switch tabs?"
 
     cascading_neighbourhood:
       country: "Country"
@@ -148,6 +149,7 @@ en:
       select_county: "Select county (optional)..."
       select_area: "Select district (optional)..."
       select_ward: "Select ward (optional)..."
+      new_neighbourhood: "New Neighbourhood"
 
     datatable:
       clear_filters: "Clear filters"
@@ -617,7 +619,6 @@ en:
         neighbourhoods_hint: "Neighbourhoods this user has access to."
         neighbourhoods_hint_root: "Grants access to every partner and calendar in these neighbourhoods. Use with care!"
         partners_hint: "Partners this user can edit, as well as their associated calendars."
-        new_neighbourhood: "New Neighbourhood"
         partnerships_hint: "Grants access to add or remove partners from partnerships"
         sites_hint: "Sites where this user is assigned as admin"
         role_hint: "Determines the user's system-wide access level and permissions."

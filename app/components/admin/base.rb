@@ -11,6 +11,6 @@ class Components::Admin::Base < Components::Base
 
   def nested_form_remove_link(form, css_class, &)
     raw form.hidden_field(:_destroy, value: false)
-    a(href: '#', class: css_class, data_action: 'nested-form#remove', &)
+    a(href: '#', class: css_class, aria_label: t('admin.actions.remove'), data_action: 'nested-form#remove', &)
   end
 end
