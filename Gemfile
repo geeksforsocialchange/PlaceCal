@@ -66,6 +66,7 @@ gem 'csv'                         # CSV parsing (neighbourhood data imports)
 gem 'enumerize'                   # Enumerated attributes (site theme, badge zoom)
 gem 'invisible_captcha'           # Spam protection on contact form
 gem 'paper_trail'                 # Event version tracking and audit log
+gem 'solid_cache'                 # Rails.cache backed by Postgres in staging and production
 gem 'strong_migrations'           # Catch unsafe migrations before they reach production
 
 # Installation-specific extensions for placecal.org (see doc/extensions.md).
