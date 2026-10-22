@@ -76,7 +76,7 @@ class ApplicationController < ActionController::Base
   # Falls back to today if the URL params don't form a valid date
   # (e.g. month=13, day=32 from crawlers hitting random URLs).
   def set_day
-    @today = Date.today
+    @today = Time.zone.today
     @current_day =
       if params[:year] && params[:month] && params[:day]
         begin

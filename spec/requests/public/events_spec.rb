@@ -276,6 +276,45 @@ RSpec.describe "Public Events", type: :request do
     end
   end
 
+  describe "today's date when the server clock is UTC" do
+    around do |example|
+      original_tz = ENV.fetch("TZ", nil)
+      ENV["TZ"] = "UTC"
+      example.run
+    ensure
+      ENV["TZ"] = original_tz
+    end
+
+    def day_listing_at(now, today:, yesterday:)
+      create(:event, organiser: partner, address:, summary: "Today's event", dtstart: today.in_time_zone + 10.hours)
+      create(:event, organiser: partner, address:, summary: "Yesterday's event",
+                     dtstart: yesterday.in_time_zone + 10.hours)
+      Timecop.freeze(now)
+      get events_url(host: "#{site.slug}.lvh.me", period: "day", format: :text)
+    end
+
+    it "uses the London date at 00:30 BST" do
+      now = Time.zone.local(2026, 7, 15, 0, 30)
+      Timecop.freeze(now) do
+        # Guard: the system clock really is a day behind the app's
+        expect(Date.today).to eq(Date.new(2026, 7, 14)) # rubocop:disable Rails/Date
+        expect(Time.zone.today).to eq(Date.new(2026, 7, 15))
+      end
+
+      day_listing_at(now, today: Date.new(2026, 7, 15), yesterday: Date.new(2026, 7, 14))
+
+      expect(response.body).to include("Today's event")
+      expect(response.body).not_to include("Yesterday's event")
+    end
+
+    it "uses the same date at 00:30 GMT, when London and UTC agree" do
+      day_listing_at(Time.zone.local(2026, 1, 15, 0, 30), today: Date.new(2026, 1, 15), yesterday: Date.new(2026, 1, 14))
+
+      expect(response.body).to include("Today's event")
+      expect(response.body).not_to include("Yesterday's event")
+    end
+  end
+
   describe "GET /events with partner tag filtering" do
     let(:tag) { create(:tag, type: "Facility", name: "Test Facility", slug: "test-facility") }
     let(:tag_site) { create(:site, slug: "tag-site", is_published: true) }

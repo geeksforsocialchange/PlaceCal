@@ -207,7 +207,7 @@ class Calendar < ApplicationRecord
 
   # @return [Integer] number of events starting this week
   def events_this_week
-    events.find_by_week(Time.now).count
+    events.find_by_week(Time.zone.today).count
   end
 
   # @return [Array(String, String), false] [email, name] pair, or false if none available
@@ -231,7 +231,7 @@ class Calendar < ApplicationRecord
 
   # @return [void]
   def automatically_queue_calendar
-    queue_for_import! false, DateTime.now
+    queue_for_import! false, Time.current
   end
 
   #
@@ -242,7 +242,7 @@ class Calendar < ApplicationRecord
   # @param force_import [Boolean] bypass redundant-import checks
   # @param from_date [Time] start point for the import window
   # @return [void]
-  def queue_for_import!(force_import, from_date = Time.now)
+  def queue_for_import!(force_import, from_date = Time.current)
     without_timestamps do
       return if is_busy?
 
