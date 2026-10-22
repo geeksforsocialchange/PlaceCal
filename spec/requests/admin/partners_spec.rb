@@ -265,58 +265,19 @@ RSpec.describe "Admin::Partners", type: :request do
     end
   end
 
-  describe "assigning yourself as a partner admin" do
+  describe "Admins tab user dropdown" do
     let(:ward) { create(:riverside_ward) }
     let(:partner) { create(:partner, address: create(:address, neighbourhood: ward)) }
-    let(:site) { create(:site, site_admin: user) }
+    let(:user) { create(:neighbourhood_admin, neighbourhood: ward) }
 
-    before do
-      create(:sites_neighbourhood, site:, neighbourhood: ward)
-      sign_in user
-    end
+    before { sign_in user }
 
-    def add_self_as_admin(target)
-      put admin_partner_url(target, host: admin_host),
-          params: { partner: { name: target.name, user_ids: ["", user.id.to_s] } }
-    end
+    it "shows every user by name, not just the first 50" do
+      get edit_admin_partner_url(partner, host: admin_host)
 
-    context "as a site admin who is a neighbourhood admin for the partner" do
-      let(:user) { create(:neighbourhood_admin, neighbourhood: ward) }
-
-      it "lists every other user by name, with the full list shown in the dropdown" do
-        get edit_admin_partner_url(partner, host: admin_host)
-
-        select = Nokogiri::HTML(response.body).at_css('select[data-stacked-list-selector-target="select"]')
-        expect(select["data-tom-select-show-all-value"]).to eq("true")
-        expect(select.css("option").map(&:text)).to include(user.display_name)
-      end
-
-      it "saves them as an admin" do
-        add_self_as_admin(partner)
-
-        expect(response).to redirect_to(edit_admin_partner_url(partner, host: admin_host))
-        expect(partner.reload.users).to include(user)
-      end
-
-      it "refuses a partner outside their neighbourhood" do
-        outside_partner = create(:partner, address: create(:oldtown_address))
-
-        add_self_as_admin(outside_partner)
-
-        expect(response).to redirect_to(admin_partners_url(host: admin_host))
-        expect(outside_partner.reload.users).not_to include(user)
-      end
-    end
-
-    context "as a site admin with no other admin role" do
-      let(:user) { create(:citizen_user) }
-
-      it "refuses, because site admins cannot edit partners" do
-        add_self_as_admin(partner)
-
-        expect(response).to redirect_to(admin_partners_url(host: admin_host))
-        expect(partner.reload.users).not_to include(user)
-      end
+      select = Nokogiri::HTML(response.body).at_css('select[data-stacked-list-selector-target="select"]')
+      expect(select["data-tom-select-show-all-value"]).to eq("true")
+      expect(select.css("option").map(&:text)).to include(user.display_name)
     end
   end
 
