@@ -26,6 +26,10 @@ When working on this project:
 - Ensure proper database indexing for foreign keys and queries
 - For site-specific features: see @doc/extensions.md. Extensions are Rails engines with no models or migrations; they register themes (stylesheets, views, components, locales)
 
+## Pull requests
+
+Every PR gets exactly one Release Drafter category label, or it lands uncategorised in the release notes: `enhancement`, `fix`, `security`, `maintenance` or `docs` (see `.github/release-drafter.yml`). The autolabeler only matches title prefixes like `fix`, `feat` and `chore`, so add the label yourself with `gh pr create --label <label>` or `gh pr edit <number> --add-label <label>`. `enhancement` makes the next release a minor version; the others are patches.
+
 ## CRITICAL: Internationalization (i18n)
 
 **NEVER hardcode user-facing strings in views, components, controllers, or JavaScript.** Always use locale keys.
