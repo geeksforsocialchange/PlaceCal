@@ -136,4 +136,34 @@ RSpec.describe CalendarImporterJob do
       expect(calendar.critical_error).to include("boom")
     end
   end
+
+  describe "default location without an address" do
+    let(:place) { create(:ashton_service_area_partner) }
+
+    %w[place room_number event_override].each do |strategy|
+      context "with the #{strategy} strategy" do
+        let(:calendar) do
+          create(:calendar, strategy:, place:, source: "https://www.birchcommunitycentre.co.uk/events.ics")
+            .tap { |c| c.update!(calendar_state: "in_queue") }
+        end
+
+        before do
+          calendar
+          place.reload.clear_address!
+        end
+
+        it "stops the import with an error explaining why" do
+          VCR.use_cassette(:generic_ical_feed, allow_playback_repeats: true) do
+            expect { perform_import }.not_to raise_error
+          end
+
+          calendar.reload
+          expect(calendar.calendar_state).to eq("error")
+          expect(calendar.critical_error)
+            .to eq(I18n.t("admin.calendars.importer.default_location_without_address", place: place.name))
+          expect(calendar.events).to be_empty
+        end
+      end
+    end
+  end
 end

@@ -72,6 +72,13 @@ class CalendarImporterJob < ApplicationJob
 
     calendar.flag_start_import_job!
 
+    if calendar.requires_default_location? && calendar.place&.address.blank?
+      calendar.flag_error_import_job!(
+        I18n.t('admin.calendars.importer.default_location_without_address', place: calendar.place&.name)
+      )
+      return
+    end
+
     message = "Importing events for calendar #{calendar.name} (ID #{calendar.id})"
     message += " for place #{calendar.place.name} (ID #{calendar.place.id})" if calendar.place
     message += ' is forced' if force_import

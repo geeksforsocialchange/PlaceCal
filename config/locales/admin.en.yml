@@ -367,6 +367,7 @@ en:
         no_location: "No location"
         past: "Recent Past Events"
       importer:
+        default_location_without_address: "The default location %{place} has no address, so events could not be imported. Choose a default location that has an address, or a location strategy that does not need one."
         importing: "Importing..."
         last_import: "Last import:"
         notices: "Import notices"
