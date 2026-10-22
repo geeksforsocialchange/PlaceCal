@@ -35,12 +35,6 @@ Lint/DuplicateBranch:
   Exclude:
     - 'lib/tasks/db.rake'
 
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Lint/UselessMethodDefinition:
-  Exclude:
-    - 'app/graphql/place_cal_schema.rb'
-
 # Offense count: 72
 # Configuration parameters: AllowedMethods, AllowedPatterns, CountRepeatedAttributes.
 Metrics/AbcSize:
