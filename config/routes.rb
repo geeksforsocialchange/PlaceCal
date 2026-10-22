@@ -46,7 +46,6 @@ Rails.application.routes.draw do
         post :import
       end
     end
-    resources :collections
     resources :neighbourhoods do
       collection do
         get :children
@@ -181,11 +180,6 @@ Rails.application.routes.draw do
       "#{join_url.call(request)}/who-its-for/#{audience_slug}"
     }
   end
-
-  # Deprecated: collections
-  resources :collections, only: %i[show]
-  get 'winter2017', to: 'collections#show', id: 1
-  get 'winter2018', to: 'collections#show', id: 2
 
   # ============================================================
   # Technical (SEO, API, dev tools)

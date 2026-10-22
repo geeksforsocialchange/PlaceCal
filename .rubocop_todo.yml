@@ -107,11 +107,9 @@ Rails/CreateTableWithTimestamps:
     - 'db/migrate/20170726032515_create_initial_tables.rb'
     - 'db/migrate/20181009162402_add_organisation_relationships_table.rb'
 
-# Offense count: 8
+# Offense count: 6
 Rails/HasAndBelongsToMany:
   Exclude:
-    - 'app/models/collection.rb'
-    - 'app/models/event.rb'
     - 'app/models/partner.rb'
     - 'app/models/site.rb'
     - 'app/models/supporter.rb'
