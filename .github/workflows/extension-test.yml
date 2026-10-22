@@ -138,9 +138,10 @@ jobs:
       # Core's image processing needs libvips at boot and imagemagick behind
       # CarrierWave, the same pair core's own CI installs.
       - name: Install Imagemagick and libvips
+        timeout-minutes: 8
         run: |
           sudo apt-get update
-          sudo apt-get install -y imagemagick libvips-dev
+          sudo apt-get install -y --no-install-recommends imagemagick libvips42t64
 
       - name: Read core's Ruby version
         id: ruby
