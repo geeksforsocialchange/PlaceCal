@@ -72,10 +72,10 @@ class CalendarImporterJob < ApplicationJob
 
     calendar.flag_start_import_job!
 
-    print "Importing events for calendar #{calendar.name} (ID #{calendar.id})"
-    print " for place #{calendar.place.name} (ID #{calendar.place.id})" if calendar.place
-    print ' is forced' if force_import
-    print "\n"
+    message = "Importing events for calendar #{calendar.name} (ID #{calendar.id})"
+    message += " for place #{calendar.place.name} (ID #{calendar.place.id})" if calendar.place
+    message += ' is forced' if force_import
+    Rails.logger.info message
 
     # calendar.import_events(from)
     CalendarImporter::CalendarImporterTask

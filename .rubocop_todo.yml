@@ -158,12 +158,6 @@ Rails/NotNullColumn:
   Exclude:
     - 'db/migrate/20181009162402_add_organisation_relationships_table.rb'
 
-# Offense count: 4
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Rails/Output:
-  Exclude:
-    - 'app/jobs/calendar_importer_job.rb'
-
 # Offense count: 6
 Rails/ReversibleMigration:
   Exclude:
