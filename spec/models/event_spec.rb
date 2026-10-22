@@ -239,6 +239,34 @@ RSpec.describe Event, type: :model do
       end
     end
 
+    describe "London day boundaries" do
+      let!(:just_after_midnight) do
+        create(:event, organiser: partner, dtstart: Time.zone.local(2026, 7, 15, 0, 30))
+      end
+      let!(:late_previous_night) do
+        create(:event, organiser: partner, dtstart: Time.zone.local(2026, 7, 14, 23, 30))
+      end
+      let(:day) { Date.new(2026, 7, 15) }
+
+      it "puts an event at 00:30 BST on that London day, not the UTC one" do
+        expect(described_class.find_by_day(day)).to contain_exactly(just_after_midnight)
+        expect(described_class.find_by_day(day - 1)).to contain_exactly(late_previous_night)
+      end
+
+      it "starts the 7 day window and the month at London midnight" do
+        expect(described_class.find_next_7_days(day)).to contain_exactly(just_after_midnight)
+        expect(described_class.for_month(day)).to contain_exactly(just_after_midnight)
+      end
+
+      it "starts the week at London midnight on Monday" do
+        monday_early = create(:event, organiser: partner, dtstart: Time.zone.local(2026, 7, 13, 0, 30))
+        sunday_late = create(:event, organiser: partner, dtstart: Time.zone.local(2026, 7, 12, 23, 30))
+
+        expect(described_class.find_by_week(day)).to include(monday_early)
+        expect(described_class.find_by_week(day)).not_to include(sunday_late)
+      end
+    end
+
     describe ".future" do
       let!(:past_event) do
         create(:event, organiser: partner, dtstart: 1.day.ago, dtend: 1.day.ago + 2.hours)

@@ -107,14 +107,6 @@ Rails/CreateTableWithTimestamps:
     - 'db/migrate/20170726032515_create_initial_tables.rb'
     - 'db/migrate/20181009162402_add_organisation_relationships_table.rb'
 
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: EnforcedStyle, AllowToTime.
-# SupportedStyles: strict, flexible
-Rails/Date:
-  Exclude:
-    - 'app/controllers/application_controller.rb'
-
 # Offense count: 8
 Rails/HasAndBelongsToMany:
   Exclude:
@@ -161,19 +153,6 @@ Rails/SkipsModelValidations:
     - 'db/migrate/20240125175508_partner_hidden_attribute_set_value.rb'
     - 'db/migrate/20240411200641_partner_can_be_assigned_events_set_value.rb'
     - 'db/migrate/20240422092628_set_calendar_checksum_date.rb'
-
-# Offense count: 12
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: strict, flexible
-Rails/TimeZone:
-  Exclude:
-    - 'app/graphql/types/query_type.rb'
-    - 'app/jobs/calendar_importer/events/ticketsolve_event.rb'
-    - 'app/models/calendar.rb'
-    - 'app/models/event.rb'
-    - 'app/models/partner.rb'
-    - 'lib/tasks/db.rake'
 
 # Offense count: 223
 # This cop supports unsafe autocorrection (--autocorrect-all).

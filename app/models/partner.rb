@@ -13,7 +13,7 @@
 #  calendar_email          :string
 #  calendar_name           :string
 #  calendar_phone          :string
-#  can_be_assigned_events  :boolean          default(FALSE), not null
+#  can_be_assigned_events  :boolean          default(TRUE), not null
 #  description             :text
 #  description_html        :string
 #  facebook_link           :string
@@ -76,7 +76,7 @@ class Partner < ApplicationRecord
   attribute :calendar_email,          :string                      # nullable
   attribute :calendar_name,           :string                      # nullable
   attribute :calendar_phone,          :string                      # nullable
-  attribute :can_be_assigned_events,  :boolean, default: false     # NOT NULL
+  attribute :can_be_assigned_events,  :boolean, default: true      # NOT NULL
   attribute :description,             :text                        # nullable
   attribute :description_html,        :string                      # nullable, populated by HtmlRenderCache
   attribute :facebook_link,           :string                      # nullable
@@ -374,7 +374,7 @@ class Partner < ApplicationRecord
 
   # @return [Integer] number of events starting this week
   def events_this_week
-    events.find_by_week(Time.now).count
+    events.find_by_week(Time.zone.today).count
   end
 
   # @return [String] JSON string of opening times, or "[]" if blank/invalid
@@ -395,8 +395,8 @@ class Partner < ApplicationRecord
 
     JSON.parse(opening_times).map do |s|
       d = s['dayOfWeek'].split('/').last
-      o = Time.parse(s['opens']).strftime('%-l:%M%P')
-      c = Time.parse(s['closes']).strftime('%-l:%M%P')
+      o = Time.zone.parse(s['opens']).strftime('%-l:%M%P')
+      c = Time.zone.parse(s['closes']).strftime('%-l:%M%P')
       %( <span class='opening_times--day'>#{d}</span>
          <span class='opening_times--time'>#{o} &ndash; #{c}</span>
       ).html_safe
