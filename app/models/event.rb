@@ -250,7 +250,8 @@ class Event < ApplicationRecord
 
   # @return [Address, nil] the best available address for this event
   def resolved_address
-    address || partner_at_location&.address || organiser&.address
+    # A place without an address mustn't borrow the organiser's, which would be shown as the place's
+    address || (partner_at_location || organiser)&.address
   end
 
   # @return [String] human-readable address string, or empty string
