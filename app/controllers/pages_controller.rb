@@ -46,6 +46,10 @@ class PagesController < ApplicationController
     render Views::Directory::OurStory.new
   end
 
+  def mcp
+    render Views::Directory::Mcp.new(server_url: "#{Site::DIRECTORY_URL.chomp('/')}/mcp")
+  end
+
   def robots
     # One path, a different body per host, the same as the sitemap and the
     # manifest: a shared cache keying on the path alone would hand one site's

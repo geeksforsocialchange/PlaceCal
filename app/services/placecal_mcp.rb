@@ -11,6 +11,11 @@ module PlacecalMcp
 
   # Stateless with plain JSON replies: each request stands alone, so any Puma worker can answer it
   # and nothing is held open. No Host check, as this is a public read-only server, not a local one.
+  def self.call(env)
+    Appsignal::Transaction.current.set_action('PlacecalMcp#call')
+    transport.call(env)
+  end
+
   def self.transport
     @transport ||= MCP::Server::Transports::StreamableHTTPTransport.new(
       MCP::Server.new(name: 'placecal', title: 'PlaceCal', instructions: INSTRUCTIONS, tools: [SearchEventsTool]),

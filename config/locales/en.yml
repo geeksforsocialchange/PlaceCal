@@ -276,6 +276,25 @@ en:
         information: "Event information"
         organised_by: "Organised by"
     pages:
+      mcp:
+        heading: "For AI assistants"
+        hero_title: "Ask your AI assistant what's on near you"
+        hero_lede: "PlaceCal has an MCP server. Connect it to an AI assistant like ChatGPT or Claude and it can search our local community events and link you to them."
+        address_label: "Server address"
+        copy: "Copy"
+        copied: "Copied"
+        connect_heading: "Connect it"
+        chatgpt_html: "<strong>ChatGPT:</strong> in Settings, open Connectors, turn on Developer mode under Advanced, then create a connector with this address and no authentication."
+        claude_html: "<strong>Claude:</strong> in Settings, open Connectors, choose Add custom connector and paste this address."
+        gemini_html: "<strong>Gemini:</strong> on the Gemini website, open Settings, then Connected apps, and choose Add a custom app with this address."
+        others: "Other assistants and tools that support remote MCP servers can use the same address. Custom connectors aren't available on every plan yet."
+        try_heading: "Then ask"
+        examples:
+          - "What's on in Hulme this weekend?"
+          - "Is there any yoga near M15 5FS next week?"
+          - "Family events in Manchester on Saturday"
+        developers_html: "Building something? %{link} explains the MCP tool, our GraphQL API and calendar feeds."
+        developers_link: "Our guide for AI agents"
       privacy:
         title: "PlaceCal Privacy Policy"
         breadcrumb: "Privacy"

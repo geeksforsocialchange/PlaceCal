@@ -1,9 +1,11 @@
 /* Button components */
-a.btn-primary-outline {
+a.btn-primary-outline,
+button.btn-primary-outline {
 	@apply inline-flex items-center gap-2 bg-home-background border-2 border-primary rounded-full px-5 py-2 text-detail font-bold no-underline;
 	color: var(--color-foreground);
 }
-a.btn-primary-outline:hover {
+a.btn-primary-outline:hover,
+button.btn-primary-outline:hover {
 	@apply bg-primary;
 }
 

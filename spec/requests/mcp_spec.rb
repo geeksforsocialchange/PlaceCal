@@ -23,4 +23,13 @@ RSpec.describe "MCP server", type: :request do
   it "explains an unknown place" do
     expect(call_tool(place: "Atlantis")).to include("isError" => true)
   end
+
+  it "shows a person in a browser how to connect it, leaving MCP clients the protocol" do
+    get "/mcp", headers: { "Accept" => "text/html", "Host" => "lvh.me" }
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to include(ERB::Util.html_escape(I18n.t("directory.pages.mcp.hero_title")), "#{Site::DIRECTORY_URL}/mcp")
+
+    get "/mcp", headers: { "Accept" => "application/json, text/event-stream", "Host" => "lvh.me" }
+    expect(response).to have_http_status(:method_not_allowed)
+  end
 end
