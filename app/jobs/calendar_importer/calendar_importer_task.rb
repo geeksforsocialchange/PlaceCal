@@ -49,7 +49,7 @@ class CalendarImporter::CalendarImporterTask
     @calendar_source ||= parser.new(
       calendar,
       from: from_date,
-      force_import: force_import
+      force_import:
     ).calendar_to_events
   end
 

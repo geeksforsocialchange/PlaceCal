@@ -10,14 +10,14 @@ Given("there is an article called {string}") do |title|
     # Create partner in site's neighbourhood so articles show up on site
     ward = @site.neighbourhoods.first || create(:riverside_ward)
     address = create(:address, neighbourhood: ward)
-    partner = create(:partner, address: address)
+    partner = create(:partner, address:)
     @site.neighbourhoods << ward unless @site.neighbourhoods.include?(ward)
   else
     partner = create(:partner)
   end
   author = @current_user || create(:root_user)
-  @article = create(:article, title: title, author: author, is_draft: false)
-  create(:article_partner, article: @article, partner: partner)
+  @article = create(:article, title:, author:, is_draft: false)
+  create(:article_partner, article: @article, partner:)
 end
 
 Given("there is an article called {string} authored by {string}") do |title, author_name|
@@ -28,15 +28,15 @@ Given("there is an article called {string} authored by {string}") do |title, aut
     # Create partner in site's neighbourhood so articles show up on site
     ward = @site.neighbourhoods.first || create(:riverside_ward)
     address = create(:address, neighbourhood: ward)
-    partner = create(:partner, address: address)
+    partner = create(:partner, address:)
     @site.neighbourhoods << ward unless @site.neighbourhoods.include?(ward)
   else
     partner = create(:partner)
   end
   first_name, last_name = author_name.split(" ", 2)
-  author = create(:root_user, first_name: first_name, last_name: last_name || "")
-  @article = create(:article, title: title, author: author, is_draft: false)
-  create(:article_partner, article: @article, partner: partner)
+  author = create(:root_user, first_name:, last_name: last_name || "")
+  @article = create(:article, title:, author:, is_draft: false)
+  create(:article_partner, article: @article, partner:)
 end
 
 Given("there is an article called {string} published today") do |title|
@@ -47,18 +47,18 @@ Given("there is an article called {string} published today") do |title|
     # Create partner in site's neighbourhood so articles show up on site
     ward = @site.neighbourhoods.first || create(:riverside_ward)
     address = create(:address, neighbourhood: ward)
-    partner = create(:partner, address: address)
+    partner = create(:partner, address:)
     @site.neighbourhoods << ward unless @site.neighbourhoods.include?(ward)
   else
     partner = create(:partner)
   end
   author = @current_user || create(:root_user)
-  @article = create(:article, title: title, author: author, is_draft: false, published_at: Time.current)
-  create(:article_partner, article: @article, partner: partner)
+  @article = create(:article, title:, author:, is_draft: false, published_at: Time.current)
+  create(:article_partner, article: @article, partner:)
 end
 
 When("I view the article {string}") do |title|
-  article = Article.find_by(title: title)
+  article = Article.find_by(title:)
   visit "/news/#{article.id}"
 end
 

@@ -15,7 +15,7 @@ module CalendarImporter::Parsers
     end
 
     def import_events_from(data)
-      events = data.xpath('//ns:event').map do |event|
+      data.xpath('//ns:event').map do |event|
         CalendarImporter::Events::ManchesterUniEvent.new(event)
       end
     end

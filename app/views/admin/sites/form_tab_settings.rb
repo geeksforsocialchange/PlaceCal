@@ -13,7 +13,7 @@ class Views::Admin::Sites::FormTabSettings < Views::Admin::Base
 
     div(class: 'max-w-xl space-y-8') do
       render_publishing_status
-      render_url_slug_fields(site)
+      render_domain_slug_fields(site)
       render_danger_zone(site)
     end
   end
@@ -24,7 +24,7 @@ class Views::Admin::Sites::FormTabSettings < Views::Admin::Base
     fieldset(class: 'fieldset') do
       legend(class: 'fieldset-legend') { t('admin.sites.fields.publishing_status') }
       ToggleCard(
-        form: form,
+        form:,
         attribute: :is_published,
         title: t('admin.sites.fields.published'),
         description: t('admin.sites.fields.published_hint')
@@ -32,19 +32,17 @@ class Views::Admin::Sites::FormTabSettings < Views::Admin::Base
     end
   end
 
-  def render_url_slug_fields(site)
+  def render_domain_slug_fields(site)
     div(class: 'grid grid-cols-1 md:grid-cols-2 gap-4') do
       fieldset(class: 'fieldset') do
-        legend(class: 'fieldset-legend') do
-          plain attr_label(:site, :url)
-          whitespace
-          span(class: 'text-error') { t('admin.labels.required') }
-        end
-        if policy(site).permitted_attributes.include?(:url)
-          raw form.input_field(:url, class: 'input input-bordered w-full font-mono text-sm')
+        legend(class: 'fieldset-legend') { plain attr_label(:site, :domain) }
+        if policy(site).permitted_attributes.include?(:domain)
+          raw form.input_field(:domain, class: 'input input-bordered w-full font-mono text-sm', placeholder: t('admin.sites.fields.domain_placeholder'))
         else
-          raw form.input_field(:url, class: 'input input-bordered w-full font-mono text-sm bg-base-200', disabled: true)
+          raw form.input_field(:domain, class: 'input input-bordered w-full font-mono text-sm bg-base-200', disabled: true)
         end
+        p(class: 'fieldset-label whitespace-normal') { t('admin.sites.fields.domain_hint', subdomain: subdomain_host(site)) }
+        render_domain_status(site)
       end
 
       fieldset(class: 'fieldset') do
@@ -57,6 +55,25 @@ class Views::Admin::Sites::FormTabSettings < Views::Admin::Base
         p(class: 'fieldset-label') { t('admin.hints.leave_blank_to_autogenerate') }
       end
     end
+  end
+
+  # Reflects the saved domain, not one just typed into the form.
+  def render_domain_status(site)
+    domain = site.domain_in_database
+    return if domain.blank?
+
+    if PlaceCal::ServedHosts.current.serves?(domain)
+      p(class: 'fieldset-label whitespace-normal text-success') { t('admin.sites.fields.domain_served', domain:) }
+    else
+      p(class: 'fieldset-label whitespace-normal') do
+        t('admin.sites.fields.domain_external', domain:, subdomain: subdomain_host(site))
+      end
+    end
+  end
+
+  def subdomain_host(site)
+    slug = site.slug_in_database.presence || t('admin.sites.fields.slug_placeholder')
+    Site.subdomain_url_for(slug).sub(%r{\Ahttps?://}, '')
   end
 
   def render_danger_zone(site)

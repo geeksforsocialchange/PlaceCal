@@ -15,7 +15,6 @@ To run PlaceCal locally you will need to install the following dependencies:
 - [Node.js](https://nodejs.org/en/download) (see `.node-version`) & (optional) [nvm](https://github.com/nvm-sh/nvm) to manage it
 - [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
 - [ImageMagick](https://imagemagick.org/index.php) for image manipulation
-- [Graphviz](https://voormedia.github.io/rails-erd/install.html) for documentation diagrams
 - [Chrome/Chromium](https://www.chromium.org/chromium-projects/) for system tests along with a matching version of [Chromedriver](https://chromedriver.chromium.org/)
 
 ## Quickstart
@@ -130,6 +129,8 @@ bundle exec cucumber                     # Cucumber features
 Further documentation for PlaceCal is in the [PlaceCal Handbook](https://handbook.placecal.org/).
 
 The developer Procfile will load a `yard` language server, this is visible at `http://localhost:8808`.
+
+`bin/rails erd` writes a [Mermaid](https://mermaid.js.org/) entity-relationship diagram of the models to `erd.mmd` (configured in `.erdconfig`). It is also regenerated after every `db:migrate` in development. Open it in the [Mermaid Live Editor](https://mermaid.live/) or any editor with a Mermaid preview.
 
 If you are working with the code and are completely lost you can also try the [GFSC discord server](http://discord.gfsc.studio) where you can prod a human for answers.
 

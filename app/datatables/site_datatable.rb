@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable-next Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety
 class SiteDatatable < Datatable
   def view_columns
     @view_columns ||= {
@@ -64,21 +63,15 @@ class SiteDatatable < Datatable
   end
 
   def render_name_cell(record)
-    site_url = record.url.presence
-    url_display = if site_url
-                    # Show just the domain part for cleaner display
-                    domain = site_url.gsub(%r{^https?://}, '').chomp('/')
-                    <<~URL_HTML
-                      <a href="#{ERB::Util.html_escape(site_url)}" target="_blank" class="text-xs text-gray-500 font-mono hover:text-orange-600 flex items-center gap-1">
-                        #{ERB::Util.html_escape(domain)}
-                        #{icon(:external_link, size: '3')}
-                      </a>
-                    URL_HTML
-                  else
-                    "<span class=\"text-xs text-gray-500 font-mono\">##{record.id} · /#{ERB::Util.html_escape(record.slug)}</span>"
-                  end
+    url_display = <<~URL_HTML
+      <a href="#{ERB::Util.html_escape(record.public_url)}" target="_blank" class="text-xs text-gray-500 font-mono hover:text-orange-600 flex items-center gap-1">
+        #{ERB::Util.html_escape(record.display_url)}
+        #{icon(:external_link, size: '3')}
+      </a>
+      #{render_domain_status(record)}
+    URL_HTML
 
-    <<~HTML.html_safe
+    <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
       <div class="flex flex-col gap-0.5">
         <a href="#{edit_admin_site_path(record)}" class="font-medium text-gray-900 hover:text-orange-600">
           #{ERB::Util.html_escape(record.name)}
@@ -88,11 +81,18 @@ class SiteDatatable < Datatable
     HTML
   end
 
+  def render_domain_status(record)
+    return '' if record.domain.blank?
+
+    status = record.served_domain? ? I18n.t('admin.sites.domain_status.served') : I18n.t('admin.sites.domain_status.external')
+    "<span class=\"text-xs text-gray-500\">#{ERB::Util.html_escape(status)}</span>"
+  end
+
   def render_primary_neighbourhood_cell(record)
     neighbourhood = record.primary_neighbourhood
     return empty_cell unless neighbourhood
 
-    <<~HTML.html_safe
+    <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
       <a href="#{admin_neighbourhood_path(neighbourhood)}" class="text-gray-600 hover:text-orange-600 hover:underline">
         #{ERB::Util.html_escape(neighbourhood.shortname)}
       </a>
@@ -101,14 +101,14 @@ class SiteDatatable < Datatable
 
   def render_count_cell(count, label)
     if count.positive?
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <span class="inline-flex items-center text-emerald-600" title="#{count} #{label}#{'s' if count != 1}">
           #{icon(:check)}
           <span class="ml-1 text-xs">#{count}</span>
         </span>
       HTML
     else
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <span class="inline-flex items-center text-gray-500" title="No #{label}s">
           #{icon(:x)}
         </span>
@@ -120,7 +120,7 @@ class SiteDatatable < Datatable
     admin = record.site_admin
     return empty_cell unless admin
 
-    <<~HTML.html_safe
+    <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
       <button type="button"
               class="text-left text-gray-600 hover:text-orange-600 hover:underline cursor-pointer"
               data-action="click->admin-table#filterByValue"

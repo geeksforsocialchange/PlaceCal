@@ -10,7 +10,7 @@ RSpec.describe "Admin Users", :slow, type: :system do
   let!(:oldtown_ward) { create(:oldtown_ward) }
   let!(:neighbourhood_admin) { create(:neighbourhood_admin, neighbourhood: riverside_ward) }
   let!(:partner) { create(:riverside_community_hub, address: create(:address, neighbourhood: riverside_ward)) }
-  let!(:partner_admin) { create(:partner_admin, partner: partner) }
+  let!(:partner_admin) { create(:partner_admin, partner:) }
   let!(:partner_two) { create(:oldtown_library, address: create(:address, neighbourhood: oldtown_ward)) }
   let!(:partnership) { create(:partnership) }
 

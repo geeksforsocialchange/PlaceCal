@@ -16,12 +16,12 @@ RSpec.describe "Theme slots", type: :request do
   # Built only by the examples that assert an event's date formats.
   let(:event) do
     organiser = create(:riverside_partner, address: create(:riverside_address, neighbourhood: ward))
-    create(:event, organiser: organiser, address: nil,
+    create(:event, organiser:, address: nil,
                    dtstart: Time.zone.local(2022, 11, 9, 10), dtend: Time.zone.local(2022, 11, 9, 11))
   end
 
   def site_on(theme, slug)
-    site = create(:site, slug: slug, theme: theme, url: "https://#{slug}.lvh.me")
+    site = create(:site, slug:, theme:)
     site.neighbourhoods << ward
     site
   end
@@ -224,7 +224,7 @@ RSpec.describe "Theme slots", type: :request do
     get "http://themed.lvh.me/sitemap/pages.xml"
 
     expect(response).to have_http_status(:ok)
-    expect(response.body).to include("<loc>#{themed_site.directory_url.chomp('/')}/proof</loc>")
+    expect(response.body).to include("<loc>#{themed_site.canonical_url}/proof</loc>")
   end
 
   # A theme's branding CSS needs a hook that does not move when an admin
@@ -301,7 +301,7 @@ RSpec.describe "Theme nav_join", :theme_registry, type: :request do
   let(:ward) { create(:riverside_ward) }
 
   def site_on(theme, slug)
-    site = create(:site, slug: slug, theme: theme, url: "https://#{slug}.lvh.me",
+    site = create(:site, slug:, theme:,
                          contact_email: "hello@example.org")
     site.neighbourhoods << ward
     site

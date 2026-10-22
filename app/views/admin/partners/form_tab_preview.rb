@@ -104,7 +104,7 @@ class Views::Admin::Partners::FormTabPreview < Views::Admin::Base
         end
       end
 
-      if partner.public_phone.present? # rubocop:disable Style/GuardClause
+      if partner.public_phone.present?
         div do
           div(class: 'font-semibold text-xs uppercase text-gray-600 mb-1') { attr_label(:partner, :phone) }
           p { partner.public_phone }

@@ -66,6 +66,7 @@ gem 'csv'                         # CSV parsing (neighbourhood data imports)
 gem 'enumerize'                   # Enumerated attributes (site theme, badge zoom)
 gem 'invisible_captcha'           # Spam protection on contact form
 gem 'paper_trail'                 # Event version tracking and audit log
+gem 'solid_cache'                 # Rails.cache backed by Postgres in staging and production
 gem 'strong_migrations'           # Catch unsafe migrations before they reach production
 
 # Installation-specific extensions for placecal.org (see doc/extensions.md).
@@ -75,7 +76,7 @@ gem 'strong_migrations'           # Catch unsafe migrations before they reach pr
 # release a new version of an extension.
 group :extensions do
   gem 'placecal-theme-mossley', github: 'geeksforsocialchange/placecal-theme-mossley', tag: 'v0.1.4'
-  gem 'placecal-theme-transdimension', github: 'geeksforsocialchange/placecal-theme-transdimension', tag: 'v0.4.0'
+  gem 'placecal-theme-transdimension', github: 'geeksforsocialchange/placecal-theme-transdimension', tag: 'v0.5.7'
 end
 
 group :development, :test do
@@ -99,7 +100,7 @@ group :development do
   gem 'rack-mini-profiler'        # In-page performance profiler (?pp=help in dev)
   gem 'rails-erd'                 # Entity-relationship diagrams
   gem 'rdoc'                      # Documentation generator
-  gem 'rubocop', '1.91.0', require: false
+  gem 'rubocop', '1.92.0', require: false
   gem 'rubocop-graphql', '1.8.0', require: false
   gem 'rubocop-performance', '1.27.0', require: false
   gem 'rubocop-rails', '2.38.0', require: false

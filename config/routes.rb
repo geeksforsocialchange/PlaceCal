@@ -174,7 +174,7 @@ Rails.application.routes.draw do
   get 'our-story', to: 'pages#our_story'
 
   # Retired pages. The pitches redirect temporarily while the join site is a draft.
-  get 'find-placecal', to: redirect('/')
+  get 'find-placecal', to: redirect('/partnerships')
   %w[community-groups metropolitan-areas vcses housing-providers
      social-prescribers culture-tourism].each do |audience_slug|
     get audience_slug, to: redirect(status: 302) { |_params, request|

@@ -72,10 +72,10 @@ class CalendarImporterJob < ApplicationJob
 
     calendar.flag_start_import_job!
 
-    print "Importing events for calendar #{calendar.name} (ID #{calendar.id})"
-    print " for place #{calendar.place.name} (ID #{calendar.place.id})" if calendar.place
-    print ' is forced' if force_import
-    print "\n"
+    message = "Importing events for calendar #{calendar.name} (ID #{calendar.id})"
+    message += " for place #{calendar.place.name} (ID #{calendar.place.id})" if calendar.place
+    message += ' is forced' if force_import
+    Rails.logger.info message
 
     # calendar.import_events(from)
     CalendarImporter::CalendarImporterTask
@@ -85,9 +85,8 @@ class CalendarImporterJob < ApplicationJob
 
   private
 
-  def report_error(e, message)
-    full_message = "#{message} for calendar #{calendar.name} (id #{calendar.id}):  #{e}"
-    backtrace = e.backtrace[...6]
+  def report_error(exception, message)
+    full_message = "#{message} for calendar #{calendar.name} (id #{calendar.id}):  #{exception}"
 
     # FIXME: we should not be reloading the calendar here.
     #   see note in Calendar#flag_error_import_job! for details
@@ -95,8 +94,8 @@ class CalendarImporterJob < ApplicationJob
     calendar.flag_error_import_job! full_message
   end
 
-  def report_bad_source_error(e)
+  def report_bad_source_error(message)
     # problems with HTTP URLs that don't respond with status==200
-    calendar.flag_bad_source! e
+    calendar.flag_bad_source! message
   end
 end

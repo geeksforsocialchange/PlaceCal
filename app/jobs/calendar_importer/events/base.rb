@@ -37,6 +37,8 @@ module CalendarImporter::Events
 
       # do we have HTML? yeah let's get rid of that
       doc = Nokogiri::HTML.fragment(clean_text)
+      # Their contents are code, not copy; left in they become text (Squarespace sends inline <style>).
+      doc.css('style, script, noscript, template').remove
 
       if as_plaintext
         doc.text
@@ -58,7 +60,6 @@ module CalendarImporter::Events
           # if we get HTML then remove all the attributes from all of
           # the tags so it doesn't interfere with the kramdown step
           doc.css('*').each do |tag|
-            # rubocop:disable-next Style/HashEachMethods
             tag.keys.each do |attribute_name|
               next if tag.name == 'a' && attribute_name == 'href'
 
@@ -85,12 +86,12 @@ module CalendarImporter::Events
                                as_plaintext: true),
         description: html_sanitize(description),
         raw_location_from_source: location&.strip,
-        rrule: rrule,
-        place_id: place_id,
-        address_id: address_id,
-        organiser_id: organiser_id,
-        publisher_url: publisher_url,
-        online_address_id: online_address_id }
+        rrule:,
+        place_id:,
+        address_id:,
+        organiser_id:,
+        publisher_url:,
+        online_address_id: }
     end
 
     def footer; end

@@ -7,7 +7,7 @@ RSpec.describe "Admin::Home", type: :request do
   let!(:citizen_user) { create(:citizen_user) }
   let!(:site_admin) { create(:user, role: "root") }
   let!(:site) { create(:site) }
-  let!(:site_admin_site) { create(:site, name: "Site Admin Site", site_admin: site_admin) }
+  let!(:site_admin_site) { create(:site, name: "Site Admin Site", site_admin:) }
 
   describe "GET /admin (dashboard)" do
     context "without authentication" do

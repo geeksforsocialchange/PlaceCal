@@ -2,7 +2,6 @@
 
 require "rails_helper"
 
-# rubocop:disable-next Rails/SkipsModelValidations
 RSpec.describe CalendarDatatable do
   # Create a view context with access to URL helpers using a real controller
   let(:view_context) do
@@ -33,7 +32,7 @@ RSpec.describe CalendarDatatable do
       "order" => { "0" => { "column" => "0", "dir" => "asc" } }
     }.deep_merge(params))
 
-    described_class.new(default_params, view_context: view_context, calendars: calendars)
+    described_class.new(default_params, view_context:, calendars:)
   end
 
   describe "#view_columns" do
@@ -83,7 +82,7 @@ RSpec.describe CalendarDatatable do
 
     before do
       # Set to idle state for consistent testing (after_create sets to in_queue)
-      calendar.update_column(:calendar_state, "idle")
+      calendar.update_column(:calendar_state, "idle") # rubocop:disable Rails/SkipsModelValidations
     end
 
     it "returns array of hashes with all column keys" do
@@ -148,7 +147,7 @@ RSpec.describe CalendarDatatable do
       end
 
       it "shows orange spinner for in_queue state" do
-        calendar.update_column(:calendar_state, "in_queue")
+        calendar.update_column(:calendar_state, "in_queue") # rubocop:disable Rails/SkipsModelValidations
         datatable = create_datatable
 
         state_html = datatable.data.first[:state]
@@ -157,7 +156,7 @@ RSpec.describe CalendarDatatable do
       end
 
       it "shows red icon for error state" do
-        calendar.update_column(:calendar_state, "error")
+        calendar.update_column(:calendar_state, "error") # rubocop:disable Rails/SkipsModelValidations
         datatable = create_datatable
 
         state_html = datatable.data.first[:state]
@@ -176,7 +175,7 @@ RSpec.describe CalendarDatatable do
       end
 
       it "shows green check when no notices" do
-        calendar.update_column(:notice_count, 0)
+        calendar.update_column(:notice_count, 0) # rubocop:disable Rails/SkipsModelValidations
         datatable = create_datatable
 
         notices_html = datatable.data.first[:notices]
@@ -186,7 +185,7 @@ RSpec.describe CalendarDatatable do
 
     context "events cell rendering" do
       it "shows check for calendar with events" do
-        create(:event, calendar: calendar)
+        create(:event, calendar:)
         datatable = create_datatable
 
         events_html = datatable.data.first[:events]
@@ -219,8 +218,8 @@ RSpec.describe CalendarDatatable do
     let!(:calendar2) { create(:calendar, name: "Calendar 2", organiser: partner2, notice_count: 0) }
 
     before do
-      calendar1.update_column(:calendar_state, "idle")
-      calendar2.update_column(:calendar_state, "error")
+      calendar1.update_column(:calendar_state, "idle") # rubocop:disable Rails/SkipsModelValidations
+      calendar2.update_column(:calendar_state, "error") # rubocop:disable Rails/SkipsModelValidations
     end
 
     context "state filter" do

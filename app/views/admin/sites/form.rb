@@ -14,7 +14,7 @@ class Views::Admin::Sites::Form < Views::Admin::Base
           { label: "\u{1F4CB} Basic Info", hash: 'basic', component: Views::Admin::Sites::FormTabBasic },
           { label: "\u{1F5BC}\u{FE0F} Images", hash: 'images', component: Views::Admin::Sites::FormTabImages },
           { label: "\u{1F4CD} Neighbourhoods", hash: 'neighbourhoods', component: Views::Admin::Sites::FormTabNeighbourhoods,
-            props: { all_neighbourhoods: all_neighbourhoods, primary_neighbourhood_id: primary_neighbourhood_id } },
+            props: { all_neighbourhoods:, primary_neighbourhood_id: } },
           { label: "\u{1F3F7}\u{FE0F} Partnerships", hash: 'partnerships', component: Views::Admin::Sites::FormTabPartnerships },
           { label: "\u{1F441}\u{FE0F} Preview", hash: 'preview', component: Views::Admin::Sites::FormTabPreview, persisted_only: true },
           { label: "\u{2699}\u{FE0F} Settings", hash: 'settings', component: Views::Admin::Sites::FormTabSettings, spacer_before: true }
@@ -23,7 +23,7 @@ class Views::Admin::Sites::Form < Views::Admin::Base
         storage_key: 'siteTabAfterSave',
         settings_hash: 'settings',
         preview_hash: 'preview',
-        form: form,
+        form:,
         record: site
       )
     end

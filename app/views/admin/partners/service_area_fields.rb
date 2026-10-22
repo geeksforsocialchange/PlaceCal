@@ -13,10 +13,10 @@ class Views::Admin::Partners::ServiceAreaFields < Views::Admin::Base
         neighbourhood: form.object.neighbourhood,
         show_header: false,
         show_remove: can_remove,
-        form: form
+        form:
       )
     else
-      CascadingNeighbourhoodFields(form: form, show_remove: can_remove)
+      CascadingNeighbourhoodFields(form:, show_remove: can_remove)
     end
   end
 end

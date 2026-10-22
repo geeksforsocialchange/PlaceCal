@@ -20,7 +20,7 @@ class Components::Shared::ContactForm < Components::Base
 
   # Plain form-builder helpers, not f.input, so the label and chip markup stay ours.
   def render_form
-    simple_form_for contact_request, url: url do |f|
+    simple_form_for(contact_request, url:) do |f|
       invisible_captcha
 
       div(class: 'join-card') do

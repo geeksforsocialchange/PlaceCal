@@ -374,14 +374,14 @@ RSpec.describe Partner, type: :model do
         { opens: "09:00", closes: "17:00" }
       ].to_json
 
-      partner = described_class.new(opening_times: opening_times)
+      partner = described_class.new(opening_times:)
       found = JSON.parse(partner.opening_times_data)
       expect(found.length).to eq(2)
     end
 
     describe "validation" do
       def spec(day, opens, closes)
-        { dayOfWeek: "http://schema.org/#{day}", opens: opens, closes: closes }
+        { dayOfWeek: "http://schema.org/#{day}", opens:, closes: }
       end
 
       it "is valid with non-overlapping times across different days" do

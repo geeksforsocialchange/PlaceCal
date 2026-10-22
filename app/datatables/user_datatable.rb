@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable-next Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety
 class UserDatatable < Datatable
   def view_columns
     # NOTE: name searchable is false because we override filter_records to search
@@ -53,7 +52,7 @@ class UserDatatable < Datatable
     filtered
   end
 
-  def get_raw_records
+  def get_raw_records # rubocop:disable Metrics/AbcSize
     # Use includes for eager loading, but NOT left_joins which causes duplicates
     # when users have multiple partners/neighbourhoods
     records = options[:users]
@@ -131,7 +130,7 @@ class UserDatatable < Datatable
                   "<a href=\"#{edit_admin_user_path(record)}\" class=\"italic text-gray-500 hover:text-orange-600\">No name</a>"
                 end
 
-    <<~HTML.html_safe
+    <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
       <div class="flex flex-col">
         #{name_html}
         <span class="text-xs text-gray-500 font-mono">##{record.id} · #{ERB::Util.html_escape(record.email)}</span>
@@ -158,7 +157,7 @@ class UserDatatable < Datatable
 
     return '<span class="text-gray-500">—</span>'.html_safe if roles.empty?
 
-    <<~HTML.html_safe
+    <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
       <div class="flex flex-wrap gap-1">
         #{roles.join("\n")}
       </div>
@@ -183,7 +182,7 @@ class UserDatatable < Datatable
       relative = datetime.strftime('%-d %b %Y')
     end
 
-    <<~HTML.html_safe
+    <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
       <span class="text-gray-500 text-sm whitespace-nowrap" title="#{datetime.strftime('%d %b %Y at %H:%M')}">#{relative}</span>
     HTML
   end

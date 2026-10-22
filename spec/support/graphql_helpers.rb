@@ -5,8 +5,8 @@ module GraphQLHelpers
   def execute_query(query, variables: {}, context: {})
     PlaceCalSchema.execute(
       query,
-      variables: variables,
-      context: context
+      variables:,
+      context:
     )
   end
 

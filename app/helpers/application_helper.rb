@@ -52,9 +52,9 @@ module ApplicationHelper
     return if uploader_field.nil?
 
     format(
-      'Supported file formats: %s. Max file size: %s',
-      uploader_field.extension_allowlist.to_sentence,
-      number_to_human_size(uploader_field.size_range.max)
+      'Supported file formats: %<formats>s. Max file size: %<size>s',
+      formats: uploader_field.extension_allowlist.to_sentence,
+      size: number_to_human_size(uploader_field.size_range.max)
     )
   end
 
@@ -109,7 +109,7 @@ module ApplicationHelper
   # Usage: human_model_name(Partner) => "Partner"
   # Usage: human_model_name(Partner, count: 2) => "Partners"
   def human_model_name(klass, count: 1)
-    klass.model_name.human(count: count)
+    klass.model_name.human(count:)
   end
 
   # Convenience wrapper for attribute labels from activerecord.attributes

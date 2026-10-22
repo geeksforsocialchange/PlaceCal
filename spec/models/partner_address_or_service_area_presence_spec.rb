@@ -50,14 +50,14 @@ RSpec.describe Partner, "address or service area presence validation" do
     end
 
     it "is valid with owned service_area set" do
-      new_partner.service_areas.build(neighbourhood: neighbourhood)
+      new_partner.service_areas.build(neighbourhood:)
       new_partner.validate
 
       expect(new_partner).to be_valid
     end
 
     it "is valid with owned address set" do
-      address = build(:address, neighbourhood: neighbourhood)
+      address = build(:address, neighbourhood:)
 
       new_partner.address = address
       new_partner.save!

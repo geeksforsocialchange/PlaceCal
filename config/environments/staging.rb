@@ -4,7 +4,7 @@ require_relative '../log_config'
 
 Rails.application.configure do
   host = ENV.fetch('SITE_DOMAIN', 'placecal-staging.org')
-  routes.default_url_options = { host: host, protocol: 'https' }
+  routes.default_url_options = { host:, protocol: 'https' }
 
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -45,8 +45,7 @@ Rails.application.configure do
 
   LogConfig.apply(config)
 
-  # Use a different cache store in production.
-  # config.cache_store = :mem_cache_store
+  config.cache_store = :solid_cache_store
 
   # Use a real queuing backend for Active Job (and separate queues per environment)
   # config.active_job.queue_adapter     = :resque

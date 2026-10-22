@@ -6,8 +6,15 @@ export default class extends Controller {
 
 	open(event) {
 		event.preventDefault();
-		if (this.hasInputTarget) {
+		if (!this.hasInputTarget) return;
+
+		// showPicker() needs a live user gesture; a re-dispatched click (a
+		// proxy, a test driver) loses it, so fall back to the native control.
+		try {
 			this.inputTarget.showPicker();
+		} catch {
+			this.inputTarget.focus();
+			this.inputTarget.click();
 		}
 	}
 

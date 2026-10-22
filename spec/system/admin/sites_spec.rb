@@ -10,7 +10,7 @@ RSpec.describe "Admin Sites", :slow, type: :system do
   let!(:riverside_ward) { create(:riverside_ward) }
   let!(:oldtown_ward) { create(:oldtown_ward) }
   let!(:sites_neighbourhood) do
-    create(:sites_neighbourhood, site: site, neighbourhood: riverside_ward)
+    create(:sites_neighbourhood, site:, neighbourhood: riverside_ward)
   end
 
   describe "tom-select inputs on site form" do

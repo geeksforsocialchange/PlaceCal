@@ -26,7 +26,7 @@ namespace :events do
     puts "Running in '#{Rails.env}' environment"
 
     Calendar.find_each do |calendar|
-      calendar.update calendar_state: :in_queue
+      calendar.update calendar_state: :in_queue, import_job_id: nil
       CalendarImporterJob.perform_now calendar.id, from, force_import, silence_db_exceptions
 
     rescue StandardError => e
@@ -70,7 +70,7 @@ namespace :events do
     force_import = to_boolean(args[:force_import])
     from = to_date(args[:from])
 
-    Calendar.queue_all_for_import!(force: force_import, from: from)
+    Calendar.queue_all_for_import!(force: force_import, from:)
   end
 
   desc 'empty the papertrail table for calendars'
@@ -102,16 +102,14 @@ namespace :events do
     # TODO: For all ICS calendars, check their events and refresh their online event data
     # Currently it is impossible to do this because we don't know what parser an Event used after the fact :(
   end
+end
 
-  private
+def to_boolean(value)
+  (@boolean ||= ActiveModel::Type::Boolean.new).cast value
+end
 
-  def to_boolean(value)
-    (@boolean ||= ActiveModel::Type::Boolean.new).cast value
-  end
+def to_date(value)
+  return Date.current.beginning_of_day if value.blank?
 
-  def to_date(value)
-    return Date.current.beginning_of_day if value.blank?
-
-    Date.parse value
-  end
+  Date.parse value
 end

@@ -50,7 +50,7 @@ module CalendarImporter
           "#{self.class::NAME} API request",
           retry_if: ->(r) { TRANSIENT_HTTP_STATUSES.include?(r.code) }
         ) do
-          HTTParty.get(url, headers: headers)
+          HTTParty.get(url, headers:)
         end
 
         unless response.success?

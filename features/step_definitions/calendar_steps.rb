@@ -8,12 +8,11 @@ Given("there is a calendar called {string} for partner {string}") do |calendar_n
 end
 
 Given("the calendar {string} has URL {string}") do |name, url|
-  calendar = Calendar.find_by(name: name)
+  calendar = Calendar.find_by(name:)
   calendar.update!(source: url)
 end
 
-When("I create a new calendar with name {string} for {string}") do |name, partner_name|
-  partner = Partner.find_by(name: partner_name)
+When("I create a new calendar with name {string} for {string}") do |name, _partner_name|
   click_link "Calendars"
   await_datatables
   click_link "Add Calendar"

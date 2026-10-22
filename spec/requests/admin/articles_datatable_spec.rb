@@ -111,7 +111,7 @@ RSpec.describe "Admin::Articles Datatable JSON API", type: :request do
       let!(:author) { create(:user, first_name: "Test", last_name: "Author") }
       let!(:partner) { create(:partner, name: "Test Partner") }
       let!(:article) do
-        article = create(:article, title: "Render Test", author: author, is_draft: false, published_at: Time.zone.today)
+        article = create(:article, title: "Render Test", author:, is_draft: false, published_at: Time.zone.today)
         article.partners << partner
         article
       end

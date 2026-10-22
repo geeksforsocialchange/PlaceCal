@@ -20,10 +20,10 @@ module NeighbourhoodImporter
       return if @ons_data && @ons_data[:release_date] && @ons_data[:release_date] >= release_date
 
       @ons_data = {
-        type: type,
-        ons_id_key: ons_id_key,
-        release_date: release_date,
-        name: name,
+        type:,
+        ons_id_key:,
+        release_date:,
+        name:,
         parent_id: parent_ons_id
       }
     end

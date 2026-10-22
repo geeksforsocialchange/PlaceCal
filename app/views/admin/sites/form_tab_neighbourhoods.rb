@@ -96,7 +96,7 @@ class Views::Admin::Sites::FormTabNeighbourhoods < Views::Admin::Base
       fit_height: true
     ) do
       RadioCardGroup(
-        form: form,
+        form:,
         attribute: :badge_zoom_level,
         values: Site.badge_zoom_level.values
       )

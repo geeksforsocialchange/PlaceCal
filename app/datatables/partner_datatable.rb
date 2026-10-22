@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable-next Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety
-class PartnerDatatable < Datatable
+class PartnerDatatable < Datatable # rubocop:disable Metrics/ClassLength
   def view_columns
     # Order must match columns array in index.html.erb
     @view_columns ||= {
@@ -130,7 +129,7 @@ class PartnerDatatable < Datatable
   end
 
   def render_name_cell(record)
-    <<~HTML.html_safe
+    <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
       <div class="flex flex-col">
         <a href="#{edit_admin_partner_path(record)}" class="font-medium text-gray-900 hover:text-orange-600">
           #{ERB::Util.html_escape(record.name)}
@@ -174,7 +173,7 @@ class PartnerDatatable < Datatable
 
       more_text = remaining.positive? ? "<span class=\"text-gray-500 text-xs\">and #{remaining} more...</span>" : ''
 
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <div class="text-sm space-y-0.5">
           #{buttons.join("\n")}
           #{more_text}
@@ -187,7 +186,7 @@ class PartnerDatatable < Datatable
     calendars = record.calendars
 
     if calendars.empty?
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <span class="inline-flex items-center text-gray-500" title="No calendars">
           #{icon(:x)}
         </span>
@@ -197,13 +196,13 @@ class PartnerDatatable < Datatable
       error_calendars = calendars.select { |c| c.calendar_state.to_s.in?(%w[error bad_source]) }
 
       if error_calendars.any?
-        <<~HTML.html_safe
+        <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
           <span class="inline-flex items-center text-red-600" title="#{error_calendars.size} calendar#{'s' if error_calendars.size != 1} with errors">
             #{icon(:warning)}
           </span>
         HTML
       else
-        <<~HTML.html_safe
+        <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
           <span class="inline-flex items-center text-emerald-600" title="#{count} calendar#{'s' if count != 1} connected">
             #{icon(:check)}
           </span>
@@ -214,13 +213,13 @@ class PartnerDatatable < Datatable
 
   def render_tick_cross(has_items, title_yes, title_no)
     if has_items
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <span class="inline-flex items-center text-emerald-600" title="#{title_yes}">
           #{icon(:check)}
         </span>
       HTML
     else
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <span class="inline-flex items-center text-gray-500" title="#{title_no}">
           #{icon(:x)}
         </span>
@@ -230,7 +229,7 @@ class PartnerDatatable < Datatable
 
   def render_partnerships(partnerships)
     if partnerships.empty?
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <span class="inline-flex items-center text-gray-500" title="No partnerships">
           #{icon(:x)}
         </span>
@@ -256,7 +255,7 @@ class PartnerDatatable < Datatable
 
       more_text = remaining.positive? ? "<span class=\"text-gray-500 text-xs\">and #{remaining} more...</span>" : ''
 
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <div class="text-sm space-y-0.5">
           #{buttons.join("\n")}
           #{more_text}
@@ -270,7 +269,7 @@ class PartnerDatatable < Datatable
   end
 
   def render_actions(record)
-    <<~HTML.html_safe
+    <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
       <div class="flex items-center gap-2">
         <a href="#{edit_admin_partner_path(record)}"
            class="inline-flex items-center px-2.5 py-1.5 text-xs font-medium rounded text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">

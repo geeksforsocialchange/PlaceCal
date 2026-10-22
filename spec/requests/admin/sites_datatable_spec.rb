@@ -86,7 +86,7 @@ RSpec.describe "Admin::Sites Datatable JSON API", type: :request do
 
     context "site_admin_id filter" do
       let!(:site_admin) { create(:user, first_name: "Admin", last_name: "User") }
-      let!(:site_with_admin) { create(:site, name: "Site With Admin", site_admin: site_admin) }
+      let!(:site_with_admin) { create(:site, name: "Site With Admin", site_admin:) }
       let!(:site_without_admin) { create(:site, name: "Site Without Admin") }
 
       it "filters by site_admin_id" do
@@ -103,8 +103,8 @@ RSpec.describe "Admin::Sites Datatable JSON API", type: :request do
       let!(:neighbourhood) { create(:neighbourhood) }
       let!(:site_admin) { create(:user, first_name: "Test", last_name: "Admin") }
       let!(:site) do
-        site = create(:site, name: "Render Test", slug: "render-test", site_admin: site_admin)
-        site.sites_neighbourhoods.create!(neighbourhood: neighbourhood, relation_type: "Primary")
+        site = create(:site, name: "Render Test", slug: "render-test", site_admin:)
+        site.sites_neighbourhoods.create!(neighbourhood:, relation_type: "Primary")
         site
       end
 
@@ -116,6 +116,19 @@ RSpec.describe "Admin::Sites Datatable JSON API", type: :request do
         expect(site_data["name"]).to include("Render Test")
         expect(site_data["name"]).to include("render-test")
         expect(site_data["name"]).to include("href=")
+      end
+
+      it "links each site to its public URL and says whether its domain is served" do
+        serve_hosts("placecal.org", "*.placecal.org", "transdimension.uk")
+        site.update!(domain: "transdimension.uk")
+        create(:site, name: "External Test", domain: "fruitsaladevents.co.uk")
+        datatable_request
+
+        names = response.parsed_body["data"].pluck("name")
+        served = names.find { |cell| cell.include?("Render Test") }
+        external = names.find { |cell| cell.include?("External Test") }
+        expect(served).to include('href="https://transdimension.uk"').and include("Served by PlaceCal")
+        expect(external).to include('href="https://fruitsaladevents.co.uk"').and include("External website")
       end
 
       it "renders primary neighbourhood cell" do

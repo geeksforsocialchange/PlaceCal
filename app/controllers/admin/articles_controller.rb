@@ -16,7 +16,7 @@ module Admin
         format.json do
           render json: ArticleDatatable.new(
             params,
-            view_context: view_context,
+            view_context:,
             articles: @articles
           )
         end

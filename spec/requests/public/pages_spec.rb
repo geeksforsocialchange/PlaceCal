@@ -109,9 +109,10 @@ RSpec.describe "Public Pages", type: :request do
 
   # The legacy informational pages are deleted (#3163); their URLs 301.
   describe "GET /find-placecal" do
-    it "redirects to the directory homepage" do
+    it "permanently redirects to the partnerships index" do
       get "/find-placecal", headers: { "Host" => "lvh.me" }
-      expect(response).to redirect_to("/")
+      expect(response).to have_http_status(:moved_permanently)
+      expect(response).to redirect_to("/partnerships")
     end
   end
 

@@ -95,6 +95,60 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
     end
   end
 
+  describe "active state on the filter toggle" do
+    it "is absent with the default sort, period and repeating" do
+      render_inline(described_class.new(**base_attrs))
+
+      expect(page).to have_no_css(".filters__toggle-button--active")
+    end
+
+    it "marks the toggle when the sort is not the default" do
+      render_inline(described_class.new(**base_attrs, sort: "summary"))
+
+      expect(page).to have_css("button.filters__toggle-button--active")
+    end
+
+    it "marks the toggle when only one-off events are shown" do
+      render_inline(described_class.new(**base_attrs, repeating: "off"))
+
+      expect(page).to have_css("button.filters__toggle-button--active")
+    end
+  end
+
+  describe "applied filters line" do
+    before do
+      theme = PlaceCal::Theme.new(:fixture)
+      theme.event_filter_style(:day_strip_with_date_picker)
+      Current.theme = theme
+    end
+
+    it "is absent with the defaults" do
+      render_inline(described_class.new(**base_attrs, period: "future"))
+
+      expect(page).to have_no_css(".filters__applied")
+    end
+
+    it "sends the picker to a single day" do
+      render_inline(described_class.new(**base_attrs, period: "future"))
+
+      expect(page).to have_css("input[name='period'][value='day'][data-date-picker-target='period']", visible: :all)
+    end
+
+    it "names a picked date on the from-this-date listing" do
+      render_inline(described_class.new(**base_attrs, period: "future", pointer: today + 5))
+
+      expect(page).to have_css(".filters__applied-text", text: "From Sun 13 Nov")
+      expect(page).to have_link("Reset filters", href: "/events#paginator")
+    end
+
+    it "names the day, the sort and the repeats setting, with a reset link" do
+      render_inline(described_class.new(**base_attrs, sort: "summary", repeating: "off"))
+
+      expect(page).to have_css(".filters__applied-text", text: "Showing today, Sorted by name, One-off events only")
+      expect(page).to have_link("Reset filters", href: "/events#paginator")
+    end
+  end
+
   describe "filter dropdown" do
     it "renders Filter and sort toggle" do
       render_inline(described_class.new(**base_attrs))
@@ -160,25 +214,25 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
     end
 
     describe "repeating options" do
-      it "renders Show repeats option" do
+      it "renders All events option" do
         render_inline(described_class.new(**base_attrs))
 
         expect(page).to have_field("repeating_on", type: "radio")
-        expect(page).to have_text("Show repeats")
+        expect(page).to have_text("All events")
       end
 
-      it "renders Show repeats last option" do
-        render_inline(described_class.new(**base_attrs))
-
-        expect(page).to have_field("repeating_last", type: "radio")
-        expect(page).to have_text("Show repeats last")
-      end
-
-      it "renders Hide repeats option" do
+      it "renders Only one-off events option" do
         render_inline(described_class.new(**base_attrs))
 
         expect(page).to have_field("repeating_off", type: "radio")
-        expect(page).to have_text("Hide repeats")
+        expect(page).to have_text("Only one-off events")
+      end
+
+      it "renders Only repeating events option" do
+        render_inline(described_class.new(**base_attrs))
+
+        expect(page).to have_field("repeating_only", type: "radio")
+        expect(page).to have_text("Only repeating events")
       end
 
       it "checks current repeating option" do
@@ -248,15 +302,21 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
     end
 
     it "shows neighbourhood filter when multiple neighbourhoods have events" do
-      render_inline(described_class.new(**future_attrs, site: site))
+      render_inline(described_class.new(**future_attrs, site:))
 
-      expect(page).to have_selector("button span.filters__link", text: "Neighbourhood")
+      expect(page).to have_selector("button span.filters__toggle-label", text: "Neighbourhood")
     end
 
     it "shows selected neighbourhood name when a neighbourhood is selected" do
-      render_inline(described_class.new(**future_attrs, site: site, selected_neighbourhood: ward1.id.to_s))
+      render_inline(described_class.new(**future_attrs, site:, selected_neighbourhood: ward1.id.to_s))
 
-      expect(page).to have_selector("button span.filters__link", text: ward1.name)
+      expect(page).to have_selector("button span.filters__toggle-value", text: ward1.name)
+    end
+
+    it "gives the neighbourhood dropdown its own group class alongside filters__group" do
+      render_inline(described_class.new(**future_attrs, site:))
+
+      expect(page).to have_css("div.filters__group.filters__group--neighbourhood")
     end
 
     it "does not show neighbourhood filter when only one neighbourhood has events" do
@@ -273,7 +333,29 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
 
       render_inline(described_class.new(**future_attrs, site: single_site))
 
-      expect(page).not_to have_selector("button span.filters__link", text: "Neighbourhood")
+      expect(page).not_to have_selector("button span.filters__toggle-label", text: "Neighbourhood")
+    end
+
+    context "with the event_neighbourhood_filter theme setting" do
+      let(:query) { EventsQuery.new(site:) }
+
+      before { allow(query).to receive(:neighbourhoods_with_counts).and_call_original }
+
+      it "renders the filter and counts neighbourhoods by default" do
+        Current.theme = PlaceCal::Theme.new(:fixture)
+        render_inline(described_class.new(**future_attrs, site:, query:))
+
+        expect(page).to have_css("div.filters__group--neighbourhood")
+        expect(query).to have_received(:neighbourhoods_with_counts)
+      end
+
+      it "renders no filter and skips the neighbourhood count when off" do
+        Current.theme = PlaceCal::Theme.new(:fixture).tap { |theme| theme.event_neighbourhood_filter false }
+        render_inline(described_class.new(**future_attrs, site:, query:))
+
+        expect(page).to have_no_css(".filters__group--neighbourhood")
+        expect(query).not_to have_received(:neighbourhoods_with_counts)
+      end
     end
   end
 
@@ -340,6 +422,20 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
       expect(page).not_to have_css("a[aria-current='date']")
       expect(page).to have_css("a[aria-current='true']", text: "All upcoming")
     end
+
+    it "gives the All upcoming item its own class hook, leaving day items with theirs" do
+      render_inline(described_class.new(**day_strip_attrs))
+
+      expect(page).to have_css("li.day-strip__all", count: 1)
+      expect(page).to have_css("nav.day-strip li.shrink-0", count: 8)
+    end
+
+    it "does not add the toggle-row button classes to the sort toggle" do
+      render_inline(described_class.new(**day_strip_attrs))
+
+      expect(page).to have_no_css("button.filters__toggle-button")
+      expect(page).to have_no_css("div.filters__toggles")
+    end
   end
 
   describe "date picker filter style" do
@@ -348,6 +444,65 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
 
       expect(page).not_to have_css("nav.day-strip")
       expect(page).to have_button("Go to date")
+    end
+
+    it "does not add the toggle-row button classes to the date toggle" do
+      render_inline(described_class.new(**base_attrs))
+
+      expect(page).to have_no_css("button.filters__toggle-button")
+      expect(page).to have_no_css("div.filters__toggles")
+    end
+  end
+
+  describe "day strip with date picker filter style" do
+    let(:theme) do
+      PlaceCal::Theme.new(:day_strip_with_date_picker_fixture).tap { |t| t.event_filter_style(:day_strip_with_date_picker) }
+    end
+
+    before { Current.theme = theme }
+
+    it "renders the day strip" do
+      render_inline(described_class.new(**base_attrs))
+
+      expect(page).to have_css("nav.day-strip")
+      expect(page).to have_link("Today")
+      expect(page).to have_link("All upcoming")
+    end
+
+    it "renders the sort and date toggles side by side in filters__toggles" do
+      render_inline(described_class.new(**base_attrs))
+
+      expect(page).to have_css("div.filters__toggles button.filters__toggle-button--filters", text: "Filter and sort")
+      expect(page).to have_css("div.filters__toggles button.filters__toggle-button--date", text: "Pick a date")
+    end
+
+    it "labels the date toggle Pick a date instead of Go to date" do
+      render_inline(described_class.new(**base_attrs))
+
+      expect(page).not_to have_button("Go to date")
+      expect(page).to have_button("Pick a date")
+    end
+
+    it "drops the date picker's own Today link, since the strip already has one" do
+      render_inline(described_class.new(**base_attrs))
+
+      expect(page).to have_no_css("[data-controller='date-picker'] a", text: "Today")
+    end
+
+    it "still renders the date picker's hidden date field" do
+      render_inline(described_class.new(**base_attrs))
+
+      expect(page).to have_css("input[type='date'].filters__date-input", visible: :all)
+    end
+  end
+
+  describe "filters__group modifier classes" do
+    it "adds a modifier alongside filters__group on the sort, period and repeating groups" do
+      render_inline(described_class.new(**base_attrs))
+
+      expect(page).to have_css("div.filters__group.filters__group--sort")
+      expect(page).to have_css("div.filters__group.filters__group--period")
+      expect(page).to have_css("div.filters__group.filters__group--repeating")
     end
   end
 

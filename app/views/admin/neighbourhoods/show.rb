@@ -21,7 +21,7 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base
         h1(class: 'text-2xl font-semibold') { safe_neighbourhood_name(neighbourhood) }
         div(class: 'mt-1') do
           NeighbourhoodHierarchyBadge(
-            neighbourhood: neighbourhood, link_each: true, show_icons: true
+            neighbourhood:, link_each: true, show_icons: true
           )
         end
       end
@@ -259,7 +259,7 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base
               div(class: 'flex-1 min-w-0') do
                 span(class: 'text-sm font-medium text-base-content group-hover:text-placecal-orange ' \
                             'transition-colors truncate block') { site.name }
-                span(class: 'text-xs text-gray-600') { "#{site.slug}.placecal.org" }
+                span(class: 'text-xs text-gray-600') { site.display_url }
               end
             end
           end

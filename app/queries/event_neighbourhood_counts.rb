@@ -45,7 +45,7 @@ class EventNeighbourhoodCounts
       next unless (node.ancestor_ids & site_root_ids).any?
 
       count = event_hoods.sum { |h| h.path_ids.include?(node.id) ? raw_counts[h.id] : 0 }
-      { neighbourhood: node, count: count } if count.positive?
+      { neighbourhood: node, count: } if count.positive?
     end
   end
 end

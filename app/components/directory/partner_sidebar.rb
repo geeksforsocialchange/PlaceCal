@@ -33,15 +33,14 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
     count = Array(@containing_sites).size
     Directory::SidebarCard(
       eyebrow: t('directory.sidebar.part_of'),
-      title: t('directory.sidebar.partnerships', count: count)
+      title: t('directory.sidebar.partnerships', count:)
     ) do
       div(class: 'text-xs text-tertiary mb-3') do
         plain t('directory.sidebar.partnerships_description', name: @partner.name)
       end
       Array(@containing_sites).each do |site_record|
-        # Relative to the current host so the links work in development
-        # (slug.lvh.me) as well as production (slug.placecal.org)
-        a(href: root_url(subdomain: site_record.slug),
+        # The site's own domain when it has one, served or external.
+        a(href: site_record.public_url,
           class: 'flex items-center justify-between py-2 no-underline text-foreground hover:bg-background/50 transition-colors rounded px-1') do
           div do
             div(class: 'font-extra-bold text-sm') { site_record.name }

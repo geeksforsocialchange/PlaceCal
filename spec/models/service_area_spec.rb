@@ -28,14 +28,14 @@ RSpec.describe ServiceArea do
 
   describe "validations" do
     it "is valid with a partner and neighbourhood" do
-      service_area = build(:service_area, partner: partner, neighbourhood: neighbourhood)
+      service_area = build(:service_area, partner:, neighbourhood:)
 
       expect(service_area).to be_valid
     end
 
     it "is invalid when the same neighbourhood is added twice for the same partner" do
-      create(:service_area, partner: partner, neighbourhood: neighbourhood)
-      duplicate = build(:service_area, partner: partner, neighbourhood: neighbourhood)
+      create(:service_area, partner:, neighbourhood:)
+      duplicate = build(:service_area, partner:, neighbourhood:)
 
       expect(duplicate).not_to be_valid
       expect(duplicate.errors[:neighbourhood_id])
@@ -44,16 +44,16 @@ RSpec.describe ServiceArea do
 
     it "is valid when a partner has two different neighbourhoods" do
       other_neighbourhood = create(:oldtown_ward)
-      create(:service_area, partner: partner, neighbourhood: neighbourhood)
-      second = build(:service_area, partner: partner, neighbourhood: other_neighbourhood)
+      create(:service_area, partner:, neighbourhood:)
+      second = build(:service_area, partner:, neighbourhood: other_neighbourhood)
 
       expect(second).to be_valid
     end
 
     it "allows the same neighbourhood for two different partners" do
       other_partner = create(:partner)
-      create(:service_area, partner: partner, neighbourhood: neighbourhood)
-      other = build(:service_area, partner: other_partner, neighbourhood: neighbourhood)
+      create(:service_area, partner:, neighbourhood:)
+      other = build(:service_area, partner: other_partner, neighbourhood:)
 
       expect(other).to be_valid
     end

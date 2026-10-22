@@ -57,7 +57,8 @@ class Views::Layouts::Application < Phlex::HTML
           if join_site?
             Join::Header()
           else
-            Shared::Navigation(navigation: navigation, site: site)
+            Shared::Navigation(navigation:, site:,
+                               region_tags: view_context.region_tags, selected_region: view_context.current_region)
           end
           # FIXME: move main elem into component to save excess divs
           main do
@@ -70,9 +71,9 @@ class Views::Layouts::Application < Phlex::HTML
             Directory::Footer()
           elsif (footer_class = theme.footer_class)
             # Theme footer slot (#3368 D1): the theme owns the whole footer.
-            render footer_class.new(site: site, navigation: navigation)
+            render footer_class.new(site:, navigation:)
           else
-            Sites::Footer(site, navigation: navigation)
+            Sites::Footer(site, navigation:)
           end
         end
       end
@@ -142,7 +143,7 @@ class Views::Layouts::Application < Phlex::HTML
     meta(name: 'robots', content: robots_content)
 
     unless join_site?
-      json_ld = site ? site.to_json_ld(base_url: request.base_url) : Site.directory_json_ld(request.base_url)
+      json_ld = site ? site.to_json_ld : Site.directory_json_ld(request.base_url)
       script(type: 'application/ld+json') { raw safe(json_ld.to_json) }
     end
     return unless content_for?(:json_ld)

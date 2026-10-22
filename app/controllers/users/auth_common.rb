@@ -58,10 +58,10 @@ module Users
         flash.now.flash.delete :notice
       end
 
-      if flash.now.flash.key?(:alert)
-        flash.now[:danger] = flash.now[:alert]
-        flash.now.flash.delete :alert
-      end
+      return unless flash.now.flash.key?(:alert)
+
+      flash.now[:danger] = flash.now[:alert]
+      flash.now.flash.delete :alert
     end
 
     # when we logging the user in- take them to the admin site

@@ -13,8 +13,8 @@
 #   # Default: uses the directory apex URL (https://placecal.org)
 #   event.permalink  # => "https://placecal.org/events/42"
 #
-#   # With site context: pass the site's URL for subdomain-aware links
-#   event.permalink(base_url: site.url)  # => "https://mossley.placecal.org/events/42"
+#   # With site context: pass the site's canonical URL for subdomain-aware links
+#   event.permalink(base_url: site.canonical_url)  # => "https://mossley.placecal.org/events/42"
 module Permalinkable
   extend ActiveSupport::Concern
 

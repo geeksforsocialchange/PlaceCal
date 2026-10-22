@@ -115,7 +115,7 @@ module CalendarImporter::Parsers
     # Get full event description
     def get_event_description(token, event_id)
       resource = RestClient::Resource.new("https://www.eventbriteapi.com/v3/events/#{event_id}/description/")
-      response = resource.get(:Authorization => "Bearer #{token}")
+      response = resource.get(Authorization: "Bearer #{token}")
       Base.safely_parse_json(response)['description']
     end
   end

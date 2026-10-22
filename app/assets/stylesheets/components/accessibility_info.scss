@@ -1,0 +1,12 @@
+// Partner-written text often carries bare URLs, which would otherwise widen the narrow sidebar
+.accessibility_info {
+	overflow-wrap: anywhere;
+
+	summary {
+		cursor: pointer;
+	}
+
+	&[open] summary {
+		margin-bottom: 0.75em;
+	}
+}

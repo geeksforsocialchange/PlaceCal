@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable-next Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety
 class ArticleDatatable < Datatable
   def view_columns
     @view_columns ||= {
@@ -72,7 +71,7 @@ class ArticleDatatable < Datatable
   end
 
   def render_title_cell(record)
-    <<~HTML.html_safe
+    <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
       <div class="flex flex-col">
         <a href="#{edit_admin_article_path(record)}" class="font-medium text-gray-900 hover:text-orange-600">
           #{ERB::Util.html_escape(record.title)}
@@ -88,7 +87,7 @@ class ArticleDatatable < Datatable
     author = record.author
     display_name = author.full_name.presence || author.email
 
-    <<~HTML.html_safe
+    <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
       <a href="#{edit_admin_user_path(author)}" class="link link-hover text-placecal-orange-dark">
         #{ERB::Util.html_escape(display_name)}
       </a>
@@ -101,13 +100,13 @@ class ArticleDatatable < Datatable
 
     if partners.size == 1
       partner = partners.first
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <a href="#{edit_admin_partner_path(partner)}" class="text-gray-600 hover:text-orange-600">
           #{ERB::Util.html_escape(partner.name)}
         </a>
       HTML
     else
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <span class="inline-flex items-center text-gray-600" title="#{ERB::Util.html_escape(partners.map(&:name).join(', '))}">
           #{partners.size} partners
         </span>
@@ -118,7 +117,7 @@ class ArticleDatatable < Datatable
   def render_published_at_cell(record)
     return '<span class="text-gray-500">—</span>'.html_safe unless record.published_at
 
-    <<~HTML.html_safe
+    <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
       <span class="text-gray-600 text-sm whitespace-nowrap">
         #{record.published_at.strftime('%-d %b %Y')}
       </span>
@@ -159,7 +158,7 @@ class ArticleDatatable < Datatable
       relative = datetime.strftime('%-d %b %Y')
     end
 
-    <<~HTML.html_safe
+    <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
       <span class="text-gray-500 text-sm whitespace-nowrap" title="#{datetime.strftime('%d %b %Y at %H:%M')}">#{relative}</span>
     HTML
   end

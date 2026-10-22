@@ -9,7 +9,7 @@ RSpec.describe "Theme-scoped translations", type: :request do
   let(:manchester) { create(:partnership, name: "Manchester") }
 
   def tagged_site(slug, theme)
-    site = create(:site, slug: slug, theme: theme, url: "https://#{slug}.lvh.me")
+    site = create(:site, slug:, theme:)
     site.neighbourhoods << ward
     site.tags << [london, manchester]
     site
@@ -43,7 +43,7 @@ end
 RSpec.describe PlaceCal::ThemeTranslation do
   let(:ward) { create(:riverside_ward) }
   let(:themed_site) do
-    site = create(:site, slug: "themed", theme: "example_theme", url: "https://themed.lvh.me")
+    site = create(:site, slug: "themed", theme: "example_theme")
     site.neighbourhoods << ward
     site
   end

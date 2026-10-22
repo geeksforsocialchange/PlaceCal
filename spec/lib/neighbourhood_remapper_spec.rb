@@ -67,8 +67,8 @@ RSpec.describe NeighbourhoodRemapper do
     it "deletes the stale row when the owner is already linked to the replacement" do
       new_ward
       site = create(:site)
-      stale_link = create(:sites_neighbourhood, site: site, neighbourhood: old_ward)
-      create(:sites_neighbourhood, site: site, neighbourhood: new_ward, relation_type: "Secondary")
+      stale_link = create(:sites_neighbourhood, site:, neighbourhood: old_ward)
+      create(:sites_neighbourhood, site:, neighbourhood: new_ward, relation_type: "Secondary")
 
       summary = described_class.run
 
@@ -80,8 +80,8 @@ RSpec.describe NeighbourhoodRemapper do
     it "promotes the surviving link to Primary when the deleted duplicate was Primary" do
       new_ward
       site = create(:site)
-      create(:sites_neighbourhood, site: site, neighbourhood: old_ward, relation_type: "Primary")
-      survivor = create(:sites_neighbourhood, site: site, neighbourhood: new_ward, relation_type: "Secondary")
+      create(:sites_neighbourhood, site:, neighbourhood: old_ward, relation_type: "Primary")
+      survivor = create(:sites_neighbourhood, site:, neighbourhood: new_ward, relation_type: "Secondary")
 
       described_class.run
 

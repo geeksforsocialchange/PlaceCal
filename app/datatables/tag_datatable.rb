@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable-next Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety
 class TagDatatable < Datatable
   def view_columns
     @view_columns ||= {
@@ -71,7 +70,7 @@ class TagDatatable < Datatable
   def render_name_cell(record)
     system_icon = record.system_tag? ? %(<span class="text-amber-500 ml-1" title="System tag">#{icon(:lock, size: '3')}</span>) : ''
 
-    <<~HTML.html_safe
+    <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
       <div class="flex flex-col">
         <a href="#{edit_admin_tag_path(record)}" class="font-medium text-gray-900 hover:text-orange-600 inline-flex items-center">
           #{ERB::Util.html_escape(record.name)}#{system_icon}
@@ -85,7 +84,7 @@ class TagDatatable < Datatable
     type = record.type || 'Tag'
     color_class = type_color(type)
 
-    <<~HTML.html_safe
+    <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
       <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium #{color_class}">
         #{ERB::Util.html_escape(type)}
       </span>
@@ -111,7 +110,7 @@ class TagDatatable < Datatable
     truncated = record.description.truncate(50)
     tooltip = ERB::Util.html_escape(record.description)
 
-    <<~HTML.html_safe
+    <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
       <span class="text-gray-600 text-sm" title="#{tooltip}">
         #{ERB::Util.html_escape(truncated)}
       </span>
@@ -120,13 +119,13 @@ class TagDatatable < Datatable
 
   def render_system_tag_cell(record)
     if record.system_tag?
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <span class="inline-flex items-center text-amber-700" title="System tag">
           #{icon(:lock)}
         </span>
       HTML
     else
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <span class="inline-flex items-center text-gray-300" title="User-created tag">
           #{icon(:unlock)}
         </span>

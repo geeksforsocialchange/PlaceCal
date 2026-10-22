@@ -8,10 +8,10 @@ GIT
 
 GIT
   remote: https://github.com/geeksforsocialchange/placecal-theme-transdimension.git
-  revision: 18a585c2c9af769dde31bcb199271c0ee2b6aabe
-  tag: v0.4.0
+  revision: 17d9100d3f51facf66b40c463d85804c6b592b4c
+  tag: v0.5.7
   specs:
-    placecal-theme-transdimension (0.4.0)
+    placecal-theme-transdimension (0.5.7)
       rails (>= 8.0)
 
 GEM
@@ -102,16 +102,16 @@ GEM
     annotaterb (4.25.0)
       activerecord (>= 6.0.0)
       activesupport (>= 6.0.0)
-    appsignal (5.0.1)
+    appsignal (5.0.5)
       logger
       rack (>= 2.0.0)
     ast (2.4.3)
     auto_strip_attributes (3.0.0)
       activerecord (>= 7.1, < 9)
-    axe-core-api (4.13.0)
+    axe-core-api (4.14.0)
       dumb_delegator
-    axe-core-rspec (4.13.0)
-      axe-core-api (= 4.13.0)
+    axe-core-rspec (4.14.0)
+      axe-core-api (= 4.14.0)
     base64 (0.3.0)
     bcp47_spec (0.2.1)
     bcrypt (3.1.22)
@@ -130,7 +130,7 @@ GEM
     brakeman (8.1.0)
       racc
     builder (3.3.0)
-    bullet (8.2.0)
+    bullet (8.3.0)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
     byebug (13.0.0)
@@ -159,8 +159,8 @@ GEM
     crack (1.0.1)
       bigdecimal
       rexml
-    crass (1.0.7)
-    css_parser (3.2.0)
+    crass (1.0.8)
+    css_parser (3.3.0)
       addressable
       base64
       ssrf_filter (~> 1.5)
@@ -201,9 +201,9 @@ GEM
       activerecord (>= 5.a)
       database_cleaner-core (~> 2.0)
     database_cleaner-core (2.1.0)
-    database_consistency (3.0.14)
+    database_consistency (3.0.16)
       activerecord (>= 3.2)
-    date (3.5.1)
+    date (3.6.0)
     debug_inspector (1.2.0)
     delayed_job (4.2.0)
       activesupport (>= 3.0, < 9.0)
@@ -222,7 +222,7 @@ GEM
       actionmailer (>= 5.0)
       devise (>= 4.6)
     diff-lcs (1.6.2)
-    domain_name (0.6.20260921)
+    domain_name (0.7.20261007)
     dotenv (3.2.0)
     dotenv-rails (3.2.0)
       dotenv (= 3.2.0)
@@ -284,7 +284,7 @@ GEM
       rake (~> 13.3)
     graphiql-rails (1.10.5)
       railties
-    graphql (2.6.11)
+    graphql (2.6.12)
       base64
       fiber-storage
       logger
@@ -319,11 +319,10 @@ GEM
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.8, >= 1.8.1)
       terminal-table (>= 1.5.1)
-    icalendar (2.12.5)
+    icalendar (2.13.0)
       base64
       ice_cube (~> 0.16)
       logger
-      ostruct
     icalendar-recurrence (1.2.1)
       icalendar (~> 2.0)
       ice_cube (~> 0.16)
@@ -345,7 +344,7 @@ GEM
       prism (>= 1.3.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
-    json (3.0.2)
+    json (3.1.0)
     json-canonicalization (1.0.0)
     json-ld (3.3.2)
       htmlentities (~> 4.3)
@@ -408,7 +407,7 @@ GEM
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2026.0929)
+    mime-types-data (3.2026.1013)
     mini_magick (5.4.0)
       logger
     mini_mime (1.1.5)
@@ -420,7 +419,7 @@ GEM
     multi_test (1.1.0)
     multi_xml (0.9.1)
       bigdecimal (>= 3.1, < 5)
-    net-imap (0.6.7)
+    net-imap (0.6.8)
       date
       net-protocol
     net-pop (0.1.2)
@@ -433,7 +432,7 @@ GEM
       net-ssh (>= 5.0.0, < 8.0.0)
     net-smtp (0.5.2)
       net-protocol
-    net-ssh (7.3.4)
+    net-ssh (7.3.6)
     netrc (0.11.0)
     nio4r (2.7.5)
     nokogiri (1.19.4-aarch64-linux-gnu)
@@ -454,7 +453,7 @@ GEM
       racc (~> 1.4)
     orm_adapter (0.5.0)
     ostruct (0.6.3)
-    pagy (43.7.0)
+    pagy (43.8.1)
       json
       uri
       yaml
@@ -481,7 +480,7 @@ GEM
       zeitwerk (~> 2.7)
     pp (0.6.4)
       prettyprint
-    prettyprint (0.2.0)
+    prettyprint (0.2.1)
     prism (1.9.0)
     propshaft (1.3.2)
       actionpack (>= 7.0.0)
@@ -509,7 +508,7 @@ GEM
     rack-session (2.1.2)
       base64 (>= 0.1.0)
       rack (>= 3.0.0)
-    rack-test (2.2.0)
+    rack-test (2.3.0)
       rack (>= 1.3)
     rackup (2.3.1)
       rack (>= 3)
@@ -611,14 +610,14 @@ GEM
       rspec-mocks (>= 3.13.0, < 5.0.0)
       rspec-support (>= 3.13.0, < 5.0.0)
     rspec-support (3.13.7)
-    rubocop (1.91.0)
+    rubocop (1.92.0)
       json (>= 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
       parallel (>= 1.10)
       parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
-      regexp_parser (>= 2.9.3, < 3.0)
+      regexp_parser (>= 2.11.3, < 3.0)
       rubocop-ast (>= 1.49.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 4.0)
@@ -656,24 +655,24 @@ GEM
       ffi (~> 1.12)
       logger
     rubyzip (3.7.0)
-    sass-embedded (1.105.1-aarch64-linux-gnu)
+    sass-embedded (1.105.2-aarch64-linux-gnu)
       google-protobuf (~> 4.31)
-    sass-embedded (1.105.1-aarch64-linux-musl)
+    sass-embedded (1.105.2-aarch64-linux-musl)
       google-protobuf (~> 4.31)
-    sass-embedded (1.105.1-arm-linux-gnueabihf)
+    sass-embedded (1.105.2-arm-linux-gnueabihf)
       google-protobuf (~> 4.31)
-    sass-embedded (1.105.1-arm-linux-musleabihf)
+    sass-embedded (1.105.2-arm-linux-musleabihf)
       google-protobuf (~> 4.31)
-    sass-embedded (1.105.1-arm64-darwin)
+    sass-embedded (1.105.2-arm64-darwin)
       google-protobuf (~> 4.31)
-    sass-embedded (1.105.1-x86_64-darwin)
+    sass-embedded (1.105.2-x86_64-darwin)
       google-protobuf (~> 4.31)
-    sass-embedded (1.105.1-x86_64-linux-gnu)
+    sass-embedded (1.105.2-x86_64-linux-gnu)
       google-protobuf (~> 4.31)
-    sass-embedded (1.105.1-x86_64-linux-musl)
+    sass-embedded (1.105.2-x86_64-linux-musl)
       google-protobuf (~> 4.31)
     securerandom (0.4.1)
-    selenium-webdriver (4.50.0)
+    selenium-webdriver (4.51.0)
       base64 (~> 0.2)
       logger (~> 1.4)
       rubyzip (>= 1.2.2, < 4.0)
@@ -684,6 +683,10 @@ GEM
       actionpack (>= 7.0)
       activemodel (>= 7.0)
     simplecov (1.3.2)
+    solid_cache (1.0.10)
+      activejob (>= 7.2)
+      activerecord (>= 7.2)
+      railties (>= 7.2)
     spring (4.7.0)
     sshkit (1.25.1)
       base64
@@ -706,7 +709,7 @@ GEM
       memoist3 (~> 1.0.0)
     terminal-table (4.0.0)
       unicode-display_width (>= 1.1.1, < 4)
-    test-prof (1.6.3)
+    test-prof (1.6.4)
       logger
     thor (1.5.0)
     timecop (0.9.11)
@@ -721,8 +724,8 @@ GEM
     unicode-display_width (3.3.0)
       unicode-emoji (~> 4.3)
     unicode-emoji (4.3.0)
-    uniform_notifier (1.18.0)
-    uri (1.1.1)
+    uniform_notifier (1.18.1)
+    uri (1.1.2)
     useragent (0.16.11)
     vcr (6.4.0)
     warden (1.2.9)
@@ -731,7 +734,7 @@ GEM
       actionview (>= 8.0.0)
       bindex (>= 0.4.0)
       railties (>= 8.0.0)
-    webmock (3.26.4)
+    webmock (3.34.0)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
@@ -828,7 +831,7 @@ DEPENDENCIES
   rails-erd
   rdoc
   rspec-rails (~> 8.0)
-  rubocop (= 1.91.0)
+  rubocop (= 1.92.0)
   rubocop-graphql (= 1.8.0)
   rubocop-performance (= 1.27.0)
   rubocop-rails (= 2.38.0)
@@ -841,6 +844,7 @@ DEPENDENCIES
   shoulda-matchers (~> 8.0)
   simple_form
   simplecov
+  solid_cache
   spring
   stimulus-rails
   strict_ivars

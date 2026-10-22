@@ -59,7 +59,7 @@ RSpec.describe CalendarPolicy, type: :policy do
 
     context "on calendar for partner in their neighbourhood" do
       let(:address) { create(:address, neighbourhood: ward) }
-      let(:partner) { create(:partner, address: address) }
+      let(:partner) { create(:partner, address:) }
 
       it { is_expected.to permit_action(:index) }
       it { is_expected.to permit_action(:show) }

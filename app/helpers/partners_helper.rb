@@ -22,7 +22,7 @@ module PartnersHelper
         name = ward.contextual_name
         name += " - #{ward.release_date.year}/#{ward.release_date.month}" if ward.legacy_neighbourhood?
 
-        { name: name, id: ward.id }
+        { name:, id: ward.id }
       end
   end
 
@@ -78,7 +78,7 @@ module PartnersHelper
     return if @sites.blank? || @partner.blank?
 
     @sites
-      .map { |site| link_to site.name, "#{site.url.chomp('/')}/partners/#{@partner.slug}", target: '_blank', rel: 'noopener' }
+      .map { |site| link_to site.name, "#{site.canonical_url}/partners/#{@partner.slug}", target: '_blank', rel: 'noopener' }
       .join(', ')
       .html_safe
   end

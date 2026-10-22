@@ -63,7 +63,7 @@ RSpec.describe "Admin::Sites", type: :request do
         expect(response.body).to include("Name")
         expect(response.body).to include("Place Name")
         expect(response.body).to include("Tagline")
-        expect(response.body).to include("URL")
+        expect(response.body).to include("Domain")
         expect(response.body).to include("Slug")
         expect(response.body).to include("Description")
         expect(response.body).to include("Site Admin")
@@ -137,6 +137,35 @@ RSpec.describe "Admin::Sites", type: :request do
     end
   end
 
+  describe "domain field" do
+    before do
+      serve_hosts("placecal.org", "*.placecal.org", "transdimension.uk")
+      sign_in root_user
+    end
+
+    it "explains what a blank domain means for this site" do
+      get edit_admin_site_url(site, host: admin_host)
+      expect(response.body).to include("Leave blank to use #{site.slug}.placecal.org")
+    end
+
+    it "says when the domain is served by PlaceCal" do
+      site.update!(domain: "transdimension.uk")
+      get edit_admin_site_url(site, host: admin_host)
+      expect(response.body).to include("Served by PlaceCal at transdimension.uk.")
+    end
+
+    it "says when the domain is an external website" do
+      site.update!(domain: "fruitsaladevents.co.uk")
+      get edit_admin_site_url(site, host: admin_host)
+      expect(response.body).to include("External website: fruitsaladevents.co.uk.")
+    end
+
+    it "saves a pasted URL as a bare domain" do
+      put admin_site_url(site, host: admin_host), params: { site: { domain: "https://Example.org/" } }
+      expect(site.reload.domain).to eq("example.org")
+    end
+  end
+
   describe "POST /admin/sites" do
     context "with a blank slug" do
       before { sign_in root_user }
@@ -144,7 +173,6 @@ RSpec.describe "Admin::Sites", type: :request do
       it "auto-generates the slug from the name" do
         new_site_params = {
           name: "My Brand New Site",
-          url: "https://brand-new.placecal.org",
           slug: ""
         }
 
@@ -162,7 +190,6 @@ RSpec.describe "Admin::Sites", type: :request do
       it "shows errors for invalid image types" do
         new_site_params = {
           name: "a new site",
-          url: "https://a-domain.placecal.org",
           slug: "a-slug",
           logo: fixture_file_upload("bad-cat-picture.bmp"),
           footer_logo: fixture_file_upload("bad-cat-picture.bmp"),
@@ -219,7 +246,6 @@ RSpec.describe "Admin::Sites", type: :request do
       it "shows errors for invalid image types" do
         site_params = {
           name: "updated site",
-          url: "https://a-domain.placecal.org",
           slug: "a-slug",
           logo: fixture_file_upload("bad-cat-picture.bmp"),
           footer_logo: fixture_file_upload("bad-cat-picture.bmp"),
@@ -246,7 +272,7 @@ end
 # installations that ship that gem, so they are root's to set (#3368, WP 4.5).
 # Site admins keep the core themes and the fields they already had.
 RSpec.describe "Admin::Sites theme and contact authorisation", type: :request do
-  let!(:themed_site) { create(:site, slug: "themed-site", theme: "pink", site_admin: site_admin) }
+  let!(:themed_site) { create(:site, slug: "themed-site", theme: "pink", site_admin:) }
   let(:site_admin) { create(:citizen_user) }
   let(:root_user) { create(:root_user) }
 

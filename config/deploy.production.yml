@@ -12,13 +12,16 @@ servers:
     hosts:
       - <%= ENV["PRODUCTION_HOST"] %>
 
-# Cloudflare handles routing/SSL — list all hostnames served by this app
-# Custom domains (e.g. queerleeds.lgbt) need adding here and redeploying
+# Cloudflare handles routing/SSL. List every hostname served by this app.
+# The app reads this list too: a site's domain is served by PlaceCal only once it is here (PlaceCal::ServedHosts).
 proxy:
   hosts:
     - placecal.org
     - "*.placecal.org"
     - www.queerleeds.lgbt
+    # The Trans Dimension, served by its extension theme
+    - transdimension.uk
+    - www.transdimension.uk
 
 accessories:
   db:

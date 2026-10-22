@@ -20,7 +20,7 @@ class Views::Admin::Articles::Form < Views::Admin::Base
   def render_new_layout(form)
     div(class: 'card bg-base-100 border border-base-300 shadow-sm') do
       div(class: 'card-body p-6') do
-        render Views::Admin::Articles::FormTabText.new(form: form)
+        render Views::Admin::Articles::FormTabText.new(form:)
       end
     end
 
@@ -31,7 +31,7 @@ class Views::Admin::Articles::Form < Views::Admin::Base
           description: 'Image will be cropped to 16:9 ratio.',
           margin: 4
         )
-        render Views::Admin::Articles::FormTabImage.new(form: form)
+        render Views::Admin::Articles::FormTabImage.new(form:)
       end
     end
 
@@ -42,7 +42,7 @@ class Views::Admin::Articles::Form < Views::Admin::Base
           description: 'Link this article to partners and partnerships.',
           margin: 4
         )
-        render Views::Admin::Articles::FormTabReferences.new(form: form)
+        render Views::Admin::Articles::FormTabReferences.new(form:)
       end
     end
 
@@ -62,7 +62,7 @@ class Views::Admin::Articles::Form < Views::Admin::Base
       tab_name: 'article_tabs',
       storage_key: 'articleTabAfterSave',
       settings_hash: 'settings',
-      form: form,
+      form:,
       record: article
     )
   end

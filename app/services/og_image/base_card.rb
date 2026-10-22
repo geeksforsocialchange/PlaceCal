@@ -231,7 +231,7 @@ module OgImage
     # Category pill: extrabold uppercase with 2.5px tracking on a rounded bar.
     # rubocop:disable-next Metrics/ParameterLists -- keyword args mirroring CSS pill properties
     def pill(text_value, background, foreground, size: 22, pad: 24, height: PILL_HEIGHT)
-      label_img = text(text_value.upcase, size: size, face: 'Rawline ExtraBold', colour: foreground,
+      label_img = text(text_value.upcase, size:, face: 'Rawline ExtraBold', colour: foreground,
                                           letter_spacing: 2.5)
       width = label_img.width + (pad * 2)
       bar = svg(<<~SVG)
@@ -248,7 +248,7 @@ module OgImage
     # - fit: :contain shrinks the whole image to fit on a cream tile, so
     #   wide logos stay intact instead of being cropped (matches the site).
     def photo(path, width:, height:, radius: nil, fit: :cover)
-      img = fitted_photo(path, width: width, height: height, fit: fit)
+      img = fitted_photo(path, width:, height:, fit:)
       return img.bandjoin(255) unless radius
 
       mask = svg(<<~SVG)
@@ -262,14 +262,14 @@ module OgImage
     # Returns an opaque 3-band sRGB image of exactly width x height.
     def fitted_photo(path, width:, height:, fit:)
       if fit == :contain
-        img = Vips::Image.thumbnail(path, width, height: height, size: :down)
+        img = Vips::Image.thumbnail(path, width, height:, size: :down)
         img = img.colourspace(:srgb) unless img.interpretation == :srgb
         img = img.flatten(background: hex_to_rgb(CREAM)) if img.has_alpha?
         left = ((width - img.width) / 2.0).round
         top = ((height - img.height) / 2.0).round
         img.embed(left, top, width, height, extend: :background, background: hex_to_rgb(CREAM))
       else
-        img = Vips::Image.thumbnail(path, width, height: height, crop: :centre)
+        img = Vips::Image.thumbnail(path, width, height:, crop: :centre)
         img = img.colourspace(:srgb) unless img.interpretation == :srgb
         img = img.flatten(background: hex_to_rgb(CREAM)) if img.has_alpha?
         img
@@ -277,8 +277,8 @@ module OgImage
     end
 
     def title_text(value, size: 76, line_height: 1.04)
-      text(value, size: size, face: 'Trocchi', colour: BROWN,
-                  wrap_width: TITLE_MAX_WIDTH, max_height: TITLE_MAX_HEIGHT, line_height: line_height)
+      text(value, size:, face: 'Trocchi', colour: BROWN,
+                  wrap_width: TITLE_MAX_WIDTH, max_height: TITLE_MAX_HEIGHT, line_height:)
     end
 
     # Render text via pango. Returns an RGBA image in the given colour.
@@ -318,7 +318,7 @@ module OgImage
       # Point sizes at 72dpi render 1pt == 1px. With autofit the dpi is left
       # for vips to choose: it picks the largest that fits width x height,
       # shrinking overlong titles to fit.
-      options = { font: size.to_s, align: align }
+      options = { font: size.to_s, align: }
       options[:width] = wrap_width if wrap_width
       if autofit
         options[:height] = max_height
@@ -339,7 +339,7 @@ module OgImage
     end
 
     def svg(markup, scale: 1.0, opacity: nil)
-      img = Vips::Image.new_from_buffer(markup, '', scale: scale)
+      img = Vips::Image.new_from_buffer(markup, '', scale:)
       img = apply_opacity(img, opacity) if opacity
       img
     end
@@ -354,7 +354,7 @@ module OgImage
               else
                 1.0
               end
-      img = Vips::Image.new_from_buffer(buffer, '', scale: scale)
+      img = Vips::Image.new_from_buffer(buffer, '', scale:)
       img = apply_opacity(img, opacity) if opacity
       img
     end

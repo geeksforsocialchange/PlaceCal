@@ -47,7 +47,7 @@ class Views::Directory::Partnerships::Show < Views::Base
   private
 
   def render_visit_button
-    a(href: @partnership.directory_url,
+    a(href: @partnership.public_url,
       class: 'inline-flex items-center gap-2 bg-primary text-foreground font-bold rounded-full px-5 py-2 no-underline hover:brightness-110 transition-all') do
       raw(view_context.icon(:external_link, size: nil, css_class: 'w-4 h-4'))
       plain t('directory.partnerships.show.visit', url: @partnership.display_url)
@@ -72,7 +72,7 @@ class Views::Directory::Partnerships::Show < Views::Base
       h2(class: 'allcaps-label text-tertiary mb-4') { t('directory.partnerships.show.partners_heading') }
       div(class: 'grid grid-cols-1 md:grid-cols-2 gap-x-6') do
         displayed_partners.each do |partner|
-          Directory::PartnerMini(partner: partner, event_count: @partner_event_counts[partner.id] || 0)
+          Directory::PartnerMini(partner:, event_count: @partner_event_counts[partner.id] || 0)
         end
       end
       render_see_all_button(t('directory.partnerships.show.see_all_partners', count: partner_count), "#{partnership_base_url}/partners")
@@ -85,10 +85,10 @@ class Views::Directory::Partnerships::Show < Views::Base
     div(class: 'py-6') do
       h2(class: 'allcaps-label text-tertiary mb-4') { t('directory.partnerships.show.upcoming_events') }
       flat_events.first(10).each do |event|
-        Directory::EventRow(event: event)
+        Directory::EventRow(event:)
       end
       Directory::OverflowToggle(items: flat_events.drop(10), label_key: 'directory.partnerships.show.show_more_events') do |event|
-        Directory::EventRow(event: event)
+        Directory::EventRow(event:)
       end
       render_see_all_button(t('directory.partnerships.show.see_all_events'), "#{partnership_base_url}/events")
     end
@@ -96,7 +96,7 @@ class Views::Directory::Partnerships::Show < Views::Base
 
   def render_see_all_button(text, href)
     div(class: 'mt-6') do
-      a(href: href, class: 'btn-dark transition-colors') do
+      a(href:, class: 'btn-dark transition-colors') do
         plain text
         raw(view_context.icon(:external_link, size: nil, css_class: 'w-4 h-4'))
       end
@@ -144,7 +144,7 @@ class Views::Directory::Partnerships::Show < Views::Base
         area_name = @partnership.primary_neighbourhood&.name
         area = area_name ? t('directory.partnerships.show.cta_area', name: area_name) : ''
         div(class: 'text-sm text-tertiary mb-4') do
-          plain t('directory.partnerships.show.cta_text', area: area)
+          plain t('directory.partnerships.show.cta_text', area:)
         end
         if coordinator
           div(class: 'mb-4') do
@@ -165,8 +165,9 @@ class Views::Directory::Partnerships::Show < Views::Base
     end
   end
 
+  # PlaceCal's own pages for the site, which an external site may not have.
   def partnership_base_url
-    @partnership.directory_url
+    @partnership.canonical_url
   end
 
   def partner_list

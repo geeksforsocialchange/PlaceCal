@@ -460,13 +460,13 @@ class Partner < ApplicationRecord
     address&.neighbourhood&.refresh_partners_count!
 
     # If address_id changed, also refresh the old neighbourhood
-    if previous_changes.key?('address_id')
-      old_address_id = previous_changes['address_id'].first
-      if old_address_id
-        old_address = Address.find_by(id: old_address_id)
-        old_address&.neighbourhood&.refresh_partners_count!
-      end
-    end
+    return unless previous_changes.key?('address_id')
+
+    old_address_id = previous_changes['address_id'].first
+    return unless old_address_id
+
+    old_address = Address.find_by(id: old_address_id)
+    old_address&.neighbourhood&.refresh_partners_count!
   end
 
   def neighbourhood_admin_address_access
@@ -502,14 +502,7 @@ class Partner < ApplicationRecord
     return if accessed_by_user.admin_for_partner?(id)
 
     partner_service_areas = service_areas&.map(&:neighbourhood_id) || []
-    user_neighbourhoods = accessed_by_user.owned_neighbourhood_ids
-
-    in_user_neighbourhood = accessed_by_user.assigned_to_postcode?(address&.postcode)
-    services_user_neighbourhood =
-      Set.new(user_neighbourhoods).superset?(Set.new(partner_service_areas)) &&
-      partner_service_areas.any?
-
-    return if in_user_neighbourhood || services_user_neighbourhood
+    return if address_or_service_areas_in_user_neighbourhoods?(partner_service_areas)
 
     errors.add :base, 'Partners must have an address or a service area inside your neighbourhood'
   end
@@ -518,17 +511,21 @@ class Partner < ApplicationRecord
     return if accessed_by_user.nil? || accessed_by_user.root?
     return if accessed_by_user.admin_for_partner?(id)
 
-    partner_service_areas = service_areas&.map(&:neighbourhood_id) || []
-    new_service_areas = partner_service_areas.reject { |e| e == service_area_to_remove.neighbourhood_id }
-    user_neighbourhoods = accessed_by_user.owned_neighbourhood_ids
-
-    in_user_neighbourhood = accessed_by_user.assigned_to_postcode?(address&.postcode)
-    services_user_neighbourhood = new_service_areas.present?
-
-    return if in_user_neighbourhood || services_user_neighbourhood
+    # Areas marked for destruction in the same form submission are going too
+    remaining_service_areas = service_areas
+                              .reject { |sa| sa.marked_for_destruction? || sa.neighbourhood_id == service_area_to_remove.neighbourhood_id }
+                              .map(&:neighbourhood_id)
+    return if address_or_service_areas_in_user_neighbourhoods?(remaining_service_areas)
 
     errors.add :service_areas, 'Partners must have an address or a service area inside your neighbourhood'
     throw :abort
+  end
+
+  def address_or_service_areas_in_user_neighbourhoods?(service_area_neighbourhood_ids)
+    return true if accessed_by_user.assigned_to_postcode?(address&.postcode)
+
+    service_area_neighbourhood_ids.any? &&
+      Set.new(accessed_by_user.owned_neighbourhood_ids).superset?(Set.new(service_area_neighbourhood_ids))
   end
 
   def must_have_address_or_service_area

@@ -10,6 +10,7 @@ class Views::Admin::Articles::FormTabText < Views::Admin::Base
     div(class: 'space-y-6') do
       render_details_section(article, disabled_fields)
       render_body_section
+      render_pull_quote_section
     end
   end
 
@@ -108,6 +109,15 @@ class Views::Admin::Articles::FormTabText < Views::Admin::Base
     end
   end
 
+  def render_pull_quote_section
+    fieldset(class: 'fieldset') do
+      raw form.label(:pull_quote, t('admin.articles.fields.pull_quote_label'), class: 'fieldset-legend')
+      p(class: 'text-sm text-gray-600 mb-2') { t('admin.articles.fields.pull_quote_hint') }
+      raw form.input_field(:pull_quote, as: :text, class: 'textarea textarea-bordered w-full',
+                                        placeholder: t('admin.articles.fields.pull_quote_placeholder'))
+    end
+  end
+
   def render_markdown_header
     div(class: 'flex items-center gap-0 mb-2', data: { markdown_preview_target: 'container' }) do
       div(class: 'flex-1 min-w-64 flex items-center justify-between', data: { markdown_preview_target: 'editorPane' }) do
@@ -162,7 +172,7 @@ class Views::Admin::Articles::FormTabText < Views::Admin::Base
   end
 
   def toolbar_button(action, title, &)
-    button(type: 'button', class: 'btn btn-ghost btn-xs px-2', data: { action: action }, title: title, &)
+    button(type: 'button', class: 'btn btn-ghost btn-xs px-2', data: { action: }, title:, &)
   end
 
   def render_markdown_content

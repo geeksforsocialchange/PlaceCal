@@ -37,10 +37,10 @@ class GraphqlController < ApplicationController
     # Trans Dimension queries score ~100 each.
     max_complexity = introspection ? nil : 1500
 
-    result = PlaceCalSchema.execute(query, variables: variables, context: context,
-                                           operation_name: operation_name,
-                                           max_depth: max_depth,
-                                           max_complexity: max_complexity)
+    result = PlaceCalSchema.execute(query, variables:, context:,
+                                           operation_name:,
+                                           max_depth:,
+                                           max_complexity:)
     render json: result
   rescue StandardError => e
     raise e unless Rails.env.development?
@@ -73,10 +73,10 @@ class GraphqlController < ApplicationController
     end
   end
 
-  def handle_error_in_development(e)
-    logger.error e.message
-    logger.error e.backtrace.join("\n")
+  def handle_error_in_development(error)
+    logger.error error.message
+    logger.error error.backtrace.join("\n")
 
-    render json: { errors: [{ message: e.message, backtrace: e.backtrace }], data: {} }, status: :internal_server_error
+    render json: { errors: [{ message: error.message, backtrace: error.backtrace }], data: {} }, status: :internal_server_error
   end
 end

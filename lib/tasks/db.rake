@@ -43,7 +43,7 @@ namespace :db do
 
     with_config do |_app, host, db, user|
       full_path = "#{backup_dir}/#{Time.now.strftime('%Y%m%d%H%M%S')}_#{db}.#{dump_sfx}"
-      cmd       = "pg_dump -F #{dump_fmt} -v -O -o -U '#{user}' -h '#{host}' -d '#{db}' -f '#{full_path}'"
+      cmd       = "pg_dump -F #{dump_fmt} -v -O -o --exclude-table-data=solid_cache_entries -U '#{user}' -h '#{host}' -d '#{db}' -f '#{full_path}'"
     end
 
     puts cmd
@@ -159,7 +159,7 @@ namespace :db do
     staging_db = ENV.fetch('STAGING_DB', 'placecal_staging')
 
     $stdout.puts 'Dumping production database...'
-    system("ssh root@#{prod_host} 'docker exec #{REMOTE_DB_CONTAINER} pg_dump -U #{pg_user} -Fc #{prod_db}' > #{dump_file}")
+    system("ssh root@#{prod_host} 'docker exec #{REMOTE_DB_CONTAINER} pg_dump -U #{pg_user} -Fc --exclude-table-data=solid_cache_entries #{prod_db}' > #{dump_file}")
     abort 'Failed to dump production database!' unless $CHILD_STATUS.success?
 
     $stdout.puts 'Restoring to staging database...'
@@ -178,7 +178,7 @@ namespace :db do
   desc 'Download production DB dump'
   task dump_production: :environment do
     prod_host = ENV.fetch(PRODUCTION_HOST_KEY) { abort "Set #{PRODUCTION_HOST_KEY} to the production server IP/hostname" }
-    filename = ENV.fetch(DB_DUMP_ENV_KEY) { "#{Rails.root}/dump/production_#{Time.now.to_i}.dump" }
+    filename = ENV.fetch(DB_DUMP_ENV_KEY) { Rails.root.join("dump/production_#{Time.now.to_i}.dump").to_s }
 
     FileUtils.mkdir_p(File.dirname(filename))
 
@@ -186,7 +186,7 @@ namespace :db do
     pg_db = ENV.fetch('POSTGRES_DB', 'placecal_production')
 
     $stdout.puts "Downloading production db to #{filename} (May take a while.) ..."
-    system("ssh root@#{prod_host} 'docker exec #{REMOTE_DB_CONTAINER} pg_dump -U #{pg_user} -Fc #{pg_db}' > #{filename}")
+    system("ssh root@#{prod_host} 'docker exec #{REMOTE_DB_CONTAINER} pg_dump -U #{pg_user} -Fc --exclude-table-data=solid_cache_entries #{pg_db}' > #{filename}")
     if $CHILD_STATUS.success?
       $stdout.puts "Downloaded production db to #{filename}"
       ENV[DB_DUMP_ENV_KEY] = filename
@@ -309,84 +309,59 @@ namespace :db do
       sleep 5
     end
 
-    bad_events = Event.group(:uid, :dtstart).count.keep_if { |_, count| count > 1 }
+    # Manually entered events have no uid, so grouping on it would lump unrelated events together
+    bad_events = Event.where.not(uid: [nil, '']).group(:uid, :dtstart).count.keep_if { |_, count| count > 1 }
     puts "Found #{bad_events.count} events with duplicate IDs"
 
-    bad_events.each do |fields, _|
-      uid, dtstart = fields
+    bad_events.each_key do |uid, dtstart|
+      duplicates = Event.where(uid:, dtstart:).order(updated_at: :desc, id: :desc).offset(1)
 
-      event_cluster = Event.where(uid: uid)
+      puts "#{uid} has duplicate count: #{duplicates.count} for date #{dtstart}"
+      puts "  #{duplicates.map(&:id).to_json}"
 
-      start_date = event_cluster.to_h do |event|
-        [event.dtstart, out[event.dtstart].to_i + 1]
-      end
-
-      bad_dates = start_date.keep_if { |_date, count| count > 1 }
-      next if bad_dates.empty?
-
-      bad_dates.each do |date, _count|
-        bad_event_cluster = event_cluster.where(dtstart: date).order(updated_at: :desc).offset(1)
-
-        puts "#{uid} has duplicate count: #{bad_event_cluster.count} for date #{date}"
-        puts "  #{bad_event_cluster.all.map(&:id).to_json}"
-
-        bad_event_cluster.destroy_all if destroy
-      end
+      duplicates.destroy_all if destroy
     end
   end
+end
 
-  private
+def ensure_format(format)
+  return format if %w[c p t d].include?(format)
 
-  def ensure_format(format)
-    return format if %w[c p t d].include?(format)
+  { 'dump' => 'c', 'sql' => 'p', 'tar' => 't', 'dir' => 'd' }.fetch(format, 'p')
+end
 
-    case format
-    when 'dump' then 'c'
-    when 'sql' then 'p'
-    when 'tar' then 't'
-    when 'dir' then 'd'
-    else 'p'
-    end
+def suffix_for_format(suffix)
+  { 'c' => 'dump', 'p' => 'sql', 't' => 'tar', 'd' => 'dir' }[suffix]
+end
+
+def format_for_file(file)
+  case file
+  when /\.dump$/ then 'c'
+  when /\.sql$/  then 'p'
+  when /\.dir$/  then 'd'
+  when /\.tar$/  then 't'
+  end
+end
+
+def backup_directory(suffix = nil, create: false)
+  backup_dir = Rails.root.join(*['db/backups', suffix].compact).to_s
+
+  if create && !Dir.exist?(backup_dir)
+    puts "Creating #{backup_dir} .."
+    FileUtils.mkdir_p(backup_dir)
   end
 
-  def suffix_for_format(suffix)
-    case suffix
-    when 'c' then 'dump'
-    when 'p' then 'sql'
-    when 't' then 'tar'
-    when 'd' then 'dir'
-    end
-  end
+  backup_dir
+end
 
-  def format_for_file(file)
-    case file
-    when /\.dump$/ then 'c'
-    when /\.sql$/  then 'p'
-    when /\.dir$/  then 'd'
-    when /\.tar$/  then 't'
-    end
-  end
+def with_config
+  db_config = ActiveRecord::Base.connection_db_config.configuration_hash
+  yield Rails.application.class.module_parent_name.underscore,
+        db_config[:host],
+        db_config[:database],
+        db_config[:username]
+end
 
-  def backup_directory(suffix = nil, create: false)
-    backup_dir = File.join(*[Rails.root, 'db/backups', suffix].compact)
-
-    if create && !Dir.exist?(backup_dir)
-      puts "Creating #{backup_dir} .."
-      FileUtils.mkdir_p(backup_dir)
-    end
-
-    backup_dir
-  end
-
-  def with_config
-    db_config = ActiveRecord::Base.connection_db_config.configuration_hash
-    yield Rails.application.class.module_parent_name.underscore,
-          db_config[:host],
-          db_config[:database],
-          db_config[:username]
-  end
-
-  def to_boolean(value)
-    (@boolean ||= ActiveModel::Type::Boolean.new).cast value
-  end
+def to_boolean(value)
+  (@boolean ||= ActiveModel::Type::Boolean.new).cast value
 end

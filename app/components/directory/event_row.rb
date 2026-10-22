@@ -110,7 +110,7 @@ class Components::Directory::EventRow < Components::Directory::Base
   end
 
   def repeats
-    @event.rrule.present? ? @event.rrule[0]['table']['frequency'].titleize : nil
+    ::Event.rrule_frequency(@event.rrule)&.titleize
   end
 
   def fmt_time(time)

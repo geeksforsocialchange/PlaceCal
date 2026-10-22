@@ -268,6 +268,9 @@ en:
         title_placeholder: "Enter article title..."
         published: "Published"
         not_published: "Not published"
+        pull_quote_label: "Pull quote"
+        pull_quote_hint: "Optional. Shown as a highlighted quote after the third paragraph of the article."
+        pull_quote_placeholder: "Enter a short quote to pull out..."
       markdown:
         write: "Write"
         preview: "Preview"
@@ -284,6 +287,8 @@ en:
       image:
         title: "Article Image"
         description: "This image will appear at the top of the article and in social media previews."
+        credit_label: "Image credit"
+        credit_placeholder: "e.g. Photo by Jane Smith"
 
     # -------------------------------------------------------------------------
     # Calendars
@@ -550,7 +555,7 @@ en:
     # -------------------------------------------------------------------------
     sites:
       sections:
-        admin_description: "Publishing, URLs, and site management options."
+        admin_description: "Publishing, domain, and site management options."
         basic_info_description: "Core details about this site."
         display_level: "Display Level"
         display_level_description: "What level of geographical zoom should PlaceCal display in badges next to partners and events?"
@@ -566,6 +571,10 @@ en:
       fields:
         alt_text_hint: "How should a screen reader describe this image?"
         contact_email_hint: 'Where "get in touch" enquiries from this site are sent, and shown publicly as an email link on the Get in touch page. Setting this also adds the Get in touch link to the site navigation. Leave blank to send to PlaceCal support.'
+        domain_external: "External website: %{domain}. Links from the PlaceCal directory go there, and PlaceCal keeps serving this site at %{subdomain}."
+        domain_hint: "Leave blank to use %{subdomain}. Set it for a custom domain, or for the site's own external website. PlaceCal serves a domain only once it is in the production host list and its DNS points at PlaceCal."
+        domain_placeholder: "example.org"
+        domain_served: "Served by PlaceCal at %{domain}."
         hero_handbook_link: "See handbook for guidance"
         hero_image_description: "The large image at the top of your site's homepage."
         hero_text_hint: "Large text for the homepage banner"
@@ -577,6 +586,10 @@ en:
         published_hint: "Advertise this site on the PlaceCal homepage"
         publishing_status: "Publishing Status"
         site_admin: "Site Admin"
+        slug_placeholder: "your-site"
+      domain_status:
+        external: "External website"
+        served: "Served by PlaceCal"
       neighbourhoods:
         legacy_warning: "This neighbourhood is not from the current release. Please contact a PlaceCal admin."
       preview:

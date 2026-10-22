@@ -8,7 +8,7 @@
 # ===========================================
 
 Given("there is a partner called {string} with a calendar") do |name|
-  partner = create(:partner, name: name)
+  partner = create(:partner, name:)
   create(:calendar, organiser: partner, name: "#{name} Calendar")
 end
 

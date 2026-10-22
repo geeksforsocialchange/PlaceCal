@@ -13,7 +13,7 @@ RSpec.describe CalendarImporter::Parsers::LdJson do
       )
       expect(calendar).to be_valid
 
-      parser = described_class.new(calendar, url: url)
+      parser = described_class.new(calendar, url:)
 
       # we are only checking for RDF records extracted from response
       records = parser.download_calendar

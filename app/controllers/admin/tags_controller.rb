@@ -2,7 +2,7 @@
 
 module Admin
   class TagsController < Admin::ApplicationController
-    before_action :set_tag, only: %i[show edit update destroy]
+    before_action :set_tag, only: %i[edit update destroy]
 
     def index
       @tags = policy_scope(Tag)
@@ -16,7 +16,7 @@ module Admin
         format.json do
           render json: TagDatatable.new(
             params,
-            view_context: view_context,
+            view_context:,
             tags: @tags
           )
         end

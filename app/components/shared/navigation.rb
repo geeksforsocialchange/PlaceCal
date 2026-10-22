@@ -5,6 +5,9 @@
 class Components::Shared::Navigation < Components::Base
   prop :navigation, Array # Array of tuples of [name, URL]
   prop :site, _Nilable(::Site), default: nil
+  # Passed down from the layout so the component stays a pure renderer.
+  prop :region_tags, Array, default: -> { [] }
+  prop :selected_region, _Nilable(::Tag), default: nil
   # Optional override for the nil-site CTA pill (defaults to "Join us" →
   # get-in-touch). The join marketing site swaps in "Book a demo".
   prop :cta_label, _Nilable(String), default: nil
@@ -102,8 +105,22 @@ class Components::Shared::Navigation < Components::Base
           li(class: menu_li_classes) { active_link_to(link_text, link_path, data: { turbolinks: false }, base_css_class: menu_link_classes, active_css_class: menu_active_classes) }
         end
         render_join_button if @site.nil?
+        render_region_filter if show_region_filter?
         render_theme_cta if theme_cta
       end
+    end
+  end
+
+  # Theme region control (#3368): a theme may opt in with `nav_region_filter
+  # true`, and even then it only actually shows once the site has something
+  # to filter by, same as the region filter rendered above a listing.
+  def show_region_filter?
+    Current.theme.nav_region_filter? && @region_tags.size >= 2
+  end
+
+  def render_region_filter
+    li(class: 'header__region') do
+      RegionFilter(tags: @region_tags, selected: @selected_region, embedded: true)
     end
   end
 

@@ -12,7 +12,7 @@
 # during re-enqueue, or DJ exhausting retries on a failed job).
 
 Rails.application.config.after_initialize do
-  next unless Rails.env.production? || Rails.env.staging? # rubocop:disable Rails/UnknownEnv
+  next unless Rails.env.production? || Rails.env.staging?
   next unless defined?(Delayed::Job)
 
   begin

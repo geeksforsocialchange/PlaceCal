@@ -27,12 +27,15 @@ class Views::Sites::Events::Show < Views::Base
     else
       Sites::Event(
         display_context: :page,
-        event: event,
+        event:,
         primary_neighbourhood: site.primary_neighbourhood,
-        site_tagline: site.tagline
+        site_tagline: site.tagline,
+        back: [t('events.show.back'), events_path]
       )
       render_event_details
       Shared::Map(points: map, style: :multi)
+      render_site_more_from_organiser if Array(more_from_organiser).any?
+      render_page_actions
       render_event_meta
     end
   end
@@ -270,7 +273,8 @@ class Views::Sites::Events::Show < Views::Base
       if event.organiser
         h2(class: 'h4 udl') { t('events.show.contact_heading') }
         div(class: 'small') do
-          Shared::ContactDetails(partner: event.organiser)
+          p(class: 'contact_details__partner') { link_to(event.organiser.name, partner_path(event.organiser)) }
+          Shared::ContactDetails(partner: event.organiser, social_labels: :network)
         end
       end
     end
@@ -305,6 +309,27 @@ class Views::Sites::Events::Show < Views::Base
         span { link_to event.place, event.place }
       end
     end
+  end
+
+  def render_site_more_from_organiser
+    section(class: 'container-narrowish event__more') do
+      h2(class: 'udl') { t('events.show.more_from', name: event.organiser.name) }
+      ul(class: 'events reset') do
+        Array(more_from_organiser).each do |other_event|
+          li { Sites::Event(event: other_event, context_partner: event.organiser) }
+        end
+      end
+    end
+  end
+
+  # Page actions row (Components::Sites::PageActions, #3368): organiser's other
+  # events (when there is an organiser), add to calendar, back to the index.
+  def render_page_actions
+    links = []
+    links << [t('events.show.organiser_events', name: event.organiser.name), partner_path(event.organiser)] if event.organiser
+    links << [t('events.show.add_to_calendar'), event_url(event, protocol: :webcal, format: :ics)]
+    links << [t('events.show.go_back'), events_path]
+    Sites::PageActions(links:)
   end
 
   def render_event_meta

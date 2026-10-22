@@ -37,14 +37,14 @@ module Components::Admin::SvgIcons
 
     svg(
       class: classes,
-      fill: fill,
-      stroke: stroke,
+      fill:,
+      stroke:,
       viewBox: viewbox
     ) do |s|
       s.path(
-        stroke_linecap: stroke_linecap,
-        stroke_linejoin: stroke_linejoin,
-        stroke_width: stroke_width,
+        stroke_linecap:,
+        stroke_linejoin:,
+        stroke_width:,
         d: path_data
       )
     end

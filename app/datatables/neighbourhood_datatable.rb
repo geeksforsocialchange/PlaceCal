@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable-next Metrics/ClassLength, Metrics/AbcSize, Rails/OutputSafety
 class NeighbourhoodDatatable < Datatable
   LATEST_RELEASE_DATE = Neighbourhood::LATEST_RELEASE_DATE
 
@@ -81,7 +80,7 @@ class NeighbourhoodDatatable < Datatable
     subtitle = "##{record.id}"
     subtitle += " · §#{ERB::Util.html_escape(record.unit_code_value)}" if record.unit_code_value.present?
     if can_view?(record)
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <div class="flex flex-col">
           <a href="#{admin_neighbourhood_path(record)}" class="font-medium text-gray-900 hover:text-orange-600">
             #{ERB::Util.html_escape(record.name)}
@@ -90,7 +89,7 @@ class NeighbourhoodDatatable < Datatable
         </div>
       HTML
     else
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <div class="flex flex-col">
           <span class="font-medium text-gray-900">#{ERB::Util.html_escape(record.name)}</span>
           <span class="text-xs text-gray-500 font-mono">#{subtitle}</span>
@@ -102,7 +101,7 @@ class NeighbourhoodDatatable < Datatable
   def render_unit_cell(record)
     colour_class = neighbourhood_colour(record.unit)
 
-    <<~HTML.html_safe
+    <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
       <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium #{colour_class}">
         #{ERB::Util.html_escape(record.unit&.titleize || 'Unknown')}
       </span>
@@ -131,7 +130,7 @@ class NeighbourhoodDatatable < Datatable
     count = record.try(:partners_count).to_i
 
     if count.positive?
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <span class="inline-flex items-center justify-center min-w-[2rem] px-2 py-0.5 rounded-full text-sm font-medium bg-emerald-100 text-emerald-800">
           #{count}
         </span>
@@ -148,7 +147,7 @@ class NeighbourhoodDatatable < Datatable
     badge_class = is_current ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-600'
     badge_text = is_current ? 'Current' : 'Legacy'
 
-    <<~HTML.html_safe
+    <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
       <div class="flex flex-col gap-1 whitespace-nowrap">
         <span class="text-gray-500 text-sm">#{record.release_date.strftime('%-d %b %Y')}</span>
         <span class="inline-flex items-center w-fit px-1.5 py-0.5 rounded text-xs font-medium #{badge_class}">
@@ -160,7 +159,7 @@ class NeighbourhoodDatatable < Datatable
 
   def render_actions(record)
     if can_view?(record)
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <div class="flex items-center gap-2">
           <a href="#{admin_neighbourhood_path(record)}"
              class="inline-flex items-center px-2.5 py-1.5 text-xs font-medium rounded text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">

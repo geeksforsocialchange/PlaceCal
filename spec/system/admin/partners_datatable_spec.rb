@@ -2,7 +2,6 @@
 
 require "rails_helper"
 
-# rubocop:disable-next Rails/SkipsModelValidations
 RSpec.describe "Admin Partners Datatable", :slow, type: :system do
   include_context "admin login"
 
@@ -19,9 +18,9 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
 
   let!(:partner_alpha) do
     address = create(:address, neighbourhood: ward1)
-    partner = create(:partner, name: "Alpha Community Centre", address: address)
+    partner = create(:partner, name: "Alpha Community Centre", address:)
     create(:calendar, organiser: partner)
-    create(:partner_admin, partner: partner)
+    create(:partner_admin, partner:)
     partner.tags << partnership1
     partner.tags << category1
     partner
@@ -29,7 +28,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
 
   let!(:partner_beta) do
     address = create(:address, neighbourhood: ward2)
-    partner = create(:partner, name: "Beta Youth Club", address: address)
+    partner = create(:partner, name: "Beta Youth Club", address:)
     partner.tags << partnership2
     partner.tags << category2
     partner
@@ -37,7 +36,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
 
   let!(:partner_gamma) do
     address = create(:address, neighbourhood: ward1)
-    create(:partner, name: "Gamma Sports Hall", address: address)
+    create(:partner, name: "Gamma Sports Hall", address:)
   end
 
   before do
@@ -174,9 +173,9 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     # columns rendered data-column="updated-at" and the JS fell back to sorting
     # by the first column (#3336)
     it "sorts by a multi-word column (updated_at) when clicking its header" do
-      partner_gamma.update_columns(updated_at: 3.days.ago)
-      partner_beta.update_columns(updated_at: 2.days.ago)
-      partner_alpha.update_columns(updated_at: 1.day.ago)
+      partner_gamma.update_columns(updated_at: 3.days.ago) # rubocop:disable Rails/SkipsModelValidations
+      partner_beta.update_columns(updated_at: 2.days.ago) # rubocop:disable Rails/SkipsModelValidations
+      partner_alpha.update_columns(updated_at: 1.day.ago) # rubocop:disable Rails/SkipsModelValidations
 
       # Default sort is already updated_at desc, so one click toggles to asc
       find("th[data-column='updated_at']").click
@@ -379,7 +378,7 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
 
   describe "updated at column" do
     it "shows relative time for recent updates" do
-      partner_alpha.touch
+      partner_alpha.touch # rubocop:disable Rails/SkipsModelValidations
 
       # Reload the page (use admin link to maintain session)
       click_link "Partners"

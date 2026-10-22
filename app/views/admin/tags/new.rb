@@ -5,6 +5,6 @@ class Views::Admin::Tags::New < Views::Admin::Base
 
   def view_template
     PageHeader(model_name: 'Tag', new_record: true)
-    render Views::Admin::Tags::Form.new(tag: tag)
+    render Views::Admin::Tags::Form.new(tag:)
   end
 end

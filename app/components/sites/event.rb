@@ -10,6 +10,9 @@ class Components::Sites::Event < Components::Base
   # When rendered on a partner page, set this to that partner so we don't
   # redundantly show "By X" or "at X" when X is the page we're already on.
   prop :context_partner, _Nilable(::Partner), default: nil
+  # [label, path] back link, threaded through to Hero on the page layout
+  # (Views::Events::Show renders its hero here, not directly).
+  prop :back, _Nilable(Array), default: nil
 
   def view_template
     div(class: "h-event event #{page? ? 'event--full' : 'event--list'}") do
@@ -20,7 +23,7 @@ class Components::Sites::Event < Components::Base
   private
 
   def render_page_layout
-    Shared::Hero(summary, @site_tagline, section: t('events.show.section'))
+    Shared::Hero(summary, @site_tagline, section: t('events.show.section'), back: @back, standfirst: organiser_line)
     a(class: 'p-name u-url', href: event_path(id), hidden: true) { summary }
     div(class: 'container-public') { render_event_details }
   end
@@ -48,9 +51,10 @@ class Components::Sites::Event < Components::Base
       render_detail('event__duration', :event_duration, duration) if duration
       render_date_detail
       render_detail('event__repeats', :event_repeats, repeats) if repeats
-      render_detail('event__repeats', :event_online, t('events.card.online')) if online?
+      render_detail('event__online', :event_online, t('events.card.online')) if online?
       render_organiser if show_organiser?
       render_place if show_place?
+      render_detail('event__neighbourhood-line', :neighbourhood, neighbourhood_line) if page? && @event.neighbourhood
     end
   end
 
@@ -61,7 +65,7 @@ class Components::Sites::Event < Components::Base
       time(class: 'dt-start', datetime: @event.dtstart.iso8601) { fmt_time(@event.dtstart) }
       if @event.dtend
         plain " \u2013 "
-        time(class: 'dt-end', datetime: @event.dtend.iso8601) { fmt_time(@event.dtend) }
+        time(class: 'dt-end', datetime: @event.dtend.iso8601) { end_time }
       end
     end
   end
@@ -104,7 +108,8 @@ class Components::Sites::Event < Components::Base
       # Optional prefix such as "by ", blank in core; themes set it.
       prefix = t('events.card.organiser_prefix')
       span(class: 'event__organiser-prefix') { prefix } if prefix.present?
-      link_to(organiser.name.truncate(25), partner_path(organiser), data: { turbo_frame: '_top' })
+      # The card truncates to keep its row; the page has room for the whole name.
+      link_to(page? ? organiser.name : organiser.name.truncate(25), partner_path(organiser), data: { turbo_frame: '_top' })
     end
   end
 
@@ -144,14 +149,20 @@ class Components::Sites::Event < Components::Base
     date.strftime(t("#{scope}.#{key}").gsub('%o', date.day.ordinalize))
   end
 
+  # Always the start day; a multi-day event shows its end date on the time line instead.
   def date
-    return formatted_date(@event.dtstart) if @event.dtend.blank?
+    formatted_date(@event.dtstart)
+  end
 
-    if @event.dtstart.to_date == @event.dtend.to_date
-      formatted_date(@event.dtstart)
-    else
-      "#{formatted_date(@event.dtstart)} - #{formatted_date(@event.dtend)}"
-    end
+  def end_time
+    return fmt_time(@event.dtend) unless multi_day?
+
+    scope = page? ? 'events.page' : 'events.card'
+    "#{@event.dtend.strftime(t("#{scope}.end_date_format"))} #{fmt_time(@event.dtend).strip}"
+  end
+
+  def multi_day?
+    @event.dtend.present? && @event.dtend - @event.dtstart >= 1.day
   end
 
   def page?
@@ -165,10 +176,20 @@ class Components::Sites::Event < Components::Base
   # The frequency comes from the calendar feed (RFC 5545 FREQ), so an
   # unmapped value falls back to the raw word rather than a missing key.
   def repeats
-    return false if @event.rrule.blank?
+    frequency = ::Event.rrule_frequency(@event.rrule)
+    return false if frequency.blank?
 
-    frequency = @event.rrule[0]['table']['frequency'].to_s
     t("events.card.frequency.#{frequency.downcase}", default: frequency.titleize)
+  end
+
+  # "By <organiser>" under the title, the name linked; the hero's standfirst slot is free here.
+  def organiser_line
+    organiser = @event.organiser
+    organiser && t('events.show.by_organiser_html', name: view_context.link_to(organiser.name, partner_path(organiser)))
+  end
+
+  def neighbourhood_line
+    [@event.neighbourhood.shortname, @event.neighbourhood.district&.shortname].compact.join(', ')
   end
 
   def neighbourhood_name

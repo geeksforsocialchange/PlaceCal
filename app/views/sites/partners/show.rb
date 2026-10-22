@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class Views::Sites::Partners::Show < Views::Base
+  include Phlex::Rails::Helpers::SelectTag
+  include Phlex::Rails::Helpers::OptionsForSelect
+
   register_value_helper :partner_service_area_text
 
   prop :partner, Partner, reader: :private
@@ -16,11 +19,21 @@ class Views::Sites::Partners::Show < Views::Base
   prop :date_period, _Nilable(String), reader: :private, default: nil
   prop :show_monthly, _Boolean, reader: :private, default: true
   prop :containing_sites, _Nilable(_Interface(:each)), reader: :private, default: nil
+  # Days-based "Show more days" paging for the events browser (see
+  # PartnersController#show). `events_total_count`/`events_total_days` are
+  # the whole upcoming set after the repeating filter but before the days
+  # limit is applied, so the header can report a total independent of what's
+  # actually on screen.
+  prop :days, Integer, reader: :private, default: 4
+  prop :more_days, Integer, reader: :private, default: 0
+  prop :events_total_count, _Nilable(Integer), reader: :private, default: nil
+  prop :events_total_days, _Nilable(Integer), reader: :private, default: nil
 
   def view_template
     set_content_for_tags
     render_local_layout
     render_meta_section
+    render_page_actions
   end
 
   private
@@ -62,20 +75,12 @@ class Views::Sites::Partners::Show < Views::Base
     end
   end
 
-  def render_accessibility_details(summary_class: nil)
-    details(id: 'accessibility-info') do
-      summary(class: summary_class) { t('partners.show.accessibility_heading') }
-      div(class: 'mt-2 text-sm text-foreground') do
-        raw safe(partner.accessibility_info_html.to_s)
-      end
-    end
-  end
-
   # ── Local site layout ──
 
   def render_local_layout
     div do
-      Shared::Hero(partner.name, site.tagline, section: t('partners.show.section'))
+      Shared::Hero(partner.name, site.tagline, section: t('partners.show.section'),
+                                               back: [t('partners.show.back_to_index'), partners_path])
 
       div(class: 'container-public mb-32') do
         Sites::Breadcrumb(
@@ -87,6 +92,8 @@ class Views::Sites::Partners::Show < Views::Base
         render_managees
         render_events_section
       end
+      # Under the whole box, not in the sidebar, so a theme can run it full width
+      Shared::Map(points: map, compact: true)
     end
   end
 
@@ -98,8 +105,8 @@ class Views::Sites::Partners::Show < Views::Base
       end
       div(class: 'gi gi__2-5') do
         render_partner_image
-        Shared::Map(points: map, compact: true)
         render_opening_times
+        render_accessibility
       end
     end
   end
@@ -110,14 +117,9 @@ class Views::Sites::Partners::Show < Views::Base
   # inherited size with no margin, so an h2 and an h3 here draw identically.
   def render_contact_and_address
     h2(class: 'udl udl--fw allcaps h4') { t('partners.show.contact_heading') }
-    Shared::ContactDetails(partner: partner)
+    Shared::ContactDetails(partner:, social_labels: :network)
 
-    h2(class: 'udl udl--fw allcaps h4') { t('partners.show.address_heading') }
-    p { raw(t('partners.show.service_area_html', areas: partner_service_area_text(partner))) } if partner.has_service_areas?
-
-    Shared::Address(address: partner.address)
-
-    render_accessibility_details if partner.accessibility_info_html.present?
+    render_address
 
     return unless partner.managees.any?
 
@@ -127,8 +129,18 @@ class Views::Sites::Partners::Show < Views::Base
     places = safe_join(partner.managees.map { |place| view_context.link_to(place.name, place) }, ', ')
 
     p(class: 'small') do
-      raw(t('partners.show.managed_by_html', name: partner.name, places: places))
+      raw(t('partners.show.managed_by_html', name: partner.name, places:))
     end
+  end
+
+  def render_address
+    h2(class: 'udl udl--fw allcaps h4') { t('partners.show.address_heading') }
+    if partner.has_service_areas?
+      p(class: 'place_info__service_area') do
+        raw(t('partners.show.service_area_html', areas: partner_service_area_text(partner)))
+      end
+    end
+    Shared::Address(address: partner.address) if partner.address
   end
 
   def render_partner_image
@@ -157,6 +169,17 @@ class Views::Sites::Partners::Show < Views::Base
     end
   end
 
+  def render_accessibility
+    return if partner.accessibility_info_html.blank?
+
+    br
+    h2(class: 'udl udl--fw allcaps h4', id: 'accessibility-info') { t('partners.show.accessibility_heading') }
+    details(class: 'accessibility_info') do
+      summary { t('partners.show.accessibility_summary') }
+      raw safe(partner.accessibility_info_html.to_s)
+    end
+  end
+
   def render_managees
     partner.managees.each do |place|
       hr
@@ -174,7 +197,7 @@ class Views::Sites::Partners::Show < Views::Base
           h2(class: 'udl udl--fw allcaps h4') { t('partners.show.place_contact_heading') }
           div(class: 'small') do
             Shared::ContactDetails(
-              partner: partner,
+              partner:,
               email: place.public_email,
               phone: place.public_phone,
               url: place.url
@@ -187,12 +210,13 @@ class Views::Sites::Partners::Show < Views::Base
 
   def render_events_section
     turbo_frame_tag 'events-browser', data: { turbo_action: 'advance' } do
+      render_events_header if events_total_count&.positive?
       render_events_paginator if paginator
 
       if events.any?
         Sites::EventList(
-          events: events,
-          period: period,
+          events:,
+          period:,
           primary_neighbourhood: site.primary_neighbourhood,
           show_neighbourhoods: site.show_neighbourhoods?,
           badge_zoom_level: site.badge_zoom_level&.to_s,
@@ -202,7 +226,69 @@ class Views::Sites::Partners::Show < Views::Base
       else
         p { em { no_event_message || empty_period_message } }
       end
+      render_events_actions
     end
+  end
+
+  # Closes the event browser with the next page of days, inside the frame it pages.
+  def render_events_actions
+    return unless more_days.positive?
+
+    div(class: 'partner-events__actions') { render_show_more_days }
+  end
+
+  def render_events_header
+    div(class: 'partner-events__header') do
+      h2(class: 'partner-events__heading') { t('partners.show.upcoming_events') }
+      span(class: 'partner-events__count') { events_count_text }
+      render_repeating_filter
+    end
+  end
+
+  def events_count_text
+    events_text = t('partners.show.events_count_events', count: events_total_count)
+    days_text = t('partners.show.events_count_days', count: events_total_days)
+    "#{events_text} #{days_text}"
+  end
+
+  def render_repeating_filter
+    div(class: 'partner-events__repeating-filter', data: { controller: 'filters' }) do
+      form_tag('', method: :get, class: 'partner-events__repeating-form', enforce_utf8: false,
+                   data: { turbo_frame: 'events-browser', turbo_action: 'advance',
+                           filters_target: 'form', action: 'change->filters#submit' }) do
+        hidden_field_tag(:days, days, id: nil)
+        hidden_field_tag(:period, period, id: nil) if period.present?
+        hidden_field_tag(:sort, sort, id: nil) if sort.present?
+        # The select is wrapped in its label (implicit association) rather
+        # than paired by id: the paginator's own repeating radios reuse
+        # "repeating"-derived ids, and this form can render alongside them.
+        label do
+          plain t('partners.show.show_label')
+          select_tag(:repeating, class: 'partner-events__repeating', id: nil) do
+            options_for_select(repeating_options, repeating)
+          end
+        end
+      end
+    end
+  end
+
+  def repeating_options
+    %w[on off only].map { |value| [t("filters.repeating.#{value}"), value] }
+  end
+
+  def render_show_more_days
+    count = [more_days, 4].min
+    a(href: show_more_days_url, class: 'partner-events__more', data: { turbo_frame: 'events-browser' }) do
+      t('partners.show.show_more_days', count:)
+    end
+  end
+
+  def show_more_days_url
+    url_params = { days: days + 4 }
+    url_params[:period] = period if period.present?
+    url_params[:sort] = sort if sort.present?
+    url_params[:repeating] = repeating if repeating.present?
+    partner_path(partner, **url_params)
   end
 
   def render_events_paginator
@@ -212,11 +298,11 @@ class Views::Sites::Partners::Show < Views::Base
     div(class: 'paginator', id: 'paginator') do
       Sites::Timeline(
         pointer: current_day,
-        period: period,
-        date_period: date_period,
-        sort: sort,
-        repeating: repeating,
-        path: path,
+        period:,
+        date_period:,
+        sort:,
+        repeating:,
+        path:,
         show_upcoming: true
       )
       div(class: 'paginator__actions') do
@@ -224,11 +310,11 @@ class Views::Sites::Partners::Show < Views::Base
         Sites::EventFilter(
           pointer: current_day,
           period: filter_period,
-          sort: sort,
-          repeating: repeating,
-          today_url: today_url,
+          sort:,
+          repeating:,
+          today_url:,
           today: current_day == today,
-          show_monthly: show_monthly
+          show_monthly:
         )
       end
     end
@@ -243,16 +329,17 @@ class Views::Sites::Partners::Show < Views::Base
     end
   end
 
+  # Page actions row (Components::Sites::PageActions, #3368): back to the index,
+  # the feed, then the export when there is something to export.
+  def render_page_actions
+    links = [[t('partners.show.go_back'), partners_path],
+             [t('partners.show.subscribe_ical', name: partner.name), partner_url(partner, protocol: :webcal, format: :ics)]]
+    links << [t('events.csv_export.link'), partner_url(partner, format: :csv)] if events.any?
+    Sites::PageActions(links:)
+  end
+
+  # Meta carries the permalink alone; the feed and export are page actions.
   def render_meta_section
-    Sites::Meta("/partners/#{partner.id}") do |component|
-      component.with_link do
-        link_to t('partners.show.subscribe_ical', name: partner.name),
-                partner_url(partner, protocol: :webcal, format: :ics)
-        if events.any?
-          whitespace
-          link_to t('events.csv_export.link'), partner_url(partner, format: :csv)
-        end
-      end
-    end
+    Sites::Meta("/partners/#{partner.id}")
   end
 end

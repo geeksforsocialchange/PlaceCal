@@ -84,7 +84,7 @@ RSpec.describe Site, type: :model do
   describe "reserved subdomains" do
     it "refuses a slug another host already answers on" do
       %w[join www].each do |slug|
-        expect(build(:site, slug: slug)).not_to be_valid
+        expect(build(:site, slug:)).not_to be_valid
       end
     end
 
@@ -156,22 +156,91 @@ RSpec.describe Site, type: :model do
     end
   end
 
-  describe "#directory_url" do
-    it "returns the url when present" do
-      site = build(:site, url: "https://example.org")
-      expect(site.directory_url).to eq("https://example.org")
+  describe "domain" do
+    it "saves a pasted URL as its bare, lowercased host" do
+      site = create(:site, domain: " HTTPS://Fruitsaladevents.co.uk/events?x=1 ")
+      expect(site.domain).to eq("fruitsaladevents.co.uk")
     end
 
-    it "falls back to the placecal.org subdomain when the url is blank" do
-      site = build(:site, slug: "manchester", url: "")
-      expect(site.directory_url).to eq("https://manchester.placecal.org")
+    it "drops a port and a trailing dot" do
+      expect(build(:site, domain: "example.org.:443").domain).to eq("example.org")
+    end
+
+    it "stores a blank domain as nil" do
+      expect(build(:site, domain: "  ").domain).to be_nil
+    end
+
+    it "rejects something that is not a host name" do
+      site = build(:site, domain: "not a domain")
+      expect(site).not_to be_valid
+      expect(site.errors[:domain]).to be_present
+    end
+
+    it "rejects a single label" do
+      expect(build(:site, domain: "localhost")).not_to be_valid
+    end
+
+    it "is unique" do
+      create(:site, domain: "example.org")
+      expect(build(:site, domain: "Example.org")).not_to be_valid
+    end
+
+    it "lets any number of sites have no domain" do
+      create(:site)
+      expect(build(:site)).to be_valid
     end
   end
 
-  describe "#display_url" do
-    it "strips the scheme and trailing slash" do
-      site = build(:site, url: "https://example.org/")
-      expect(site.display_url).to eq("example.org")
+  describe "URLs" do
+    before { serve_hosts("placecal.org", "*.placecal.org", "www.queerleeds.lgbt", "transdimension.uk", "www.transdimension.uk") }
+
+    let(:plain) { build(:site, slug: "hulme") }
+    let(:served) { build(:site, slug: "trans-dimension", domain: "transdimension.uk") }
+    let(:served_www) { build(:site, slug: "queerleeds", domain: "www.queerleeds.lgbt") }
+    let(:external) { build(:site, slug: "fruitsaladevents", domain: "fruitsaladevents.co.uk") }
+
+    it "knows which domains this deploy serves" do
+      expect([plain, served, served_www, external].map(&:served_domain?)).to eq([false, true, true, false])
+    end
+
+    it "uses a served domain as the canonical URL, else the slug subdomain" do
+      expect(plain.canonical_url).to eq("https://hulme.placecal.org")
+      expect(served.canonical_url).to eq("https://transdimension.uk")
+      expect(served_www.canonical_url).to eq("https://www.queerleeds.lgbt")
+      expect(external.canonical_url).to eq("https://fruitsaladevents.placecal.org")
+    end
+
+    it "sends people to any domain, served or external" do
+      expect(plain.public_url).to eq("https://hulme.placecal.org")
+      expect(served.public_url).to eq("https://transdimension.uk")
+      expect(served_www.public_url).to eq("https://www.queerleeds.lgbt")
+      expect(external.public_url).to eq("https://fruitsaladevents.co.uk")
+    end
+
+    it "displays the public URL without its scheme" do
+      expect(plain.display_url).to eq("hulme.placecal.org")
+      expect(external.display_url).to eq("fruitsaladevents.co.uk")
+    end
+
+    it "keeps the slug subdomain where the deploy does not serve the domain" do
+      serve_hosts("placecal-staging.org", "*.placecal-staging.org")
+      expect(served.served_domain?).to be(false)
+      expect(served.canonical_url).to eq("https://trans-dimension.placecal.org")
+      expect(served.public_url).to eq("https://transdimension.uk")
+    end
+  end
+
+  describe ".served_at" do
+    before { serve_hosts("*.placecal.org", "transdimension.uk") }
+
+    it "finds a site by its served domain" do
+      site = create(:site, domain: "transdimension.uk")
+      expect(described_class.served_at("TransDimension.uk")).to eq(site)
+    end
+
+    it "ignores a domain this deploy does not serve" do
+      create(:site, domain: "fruitsaladevents.co.uk")
+      expect(described_class.served_at("fruitsaladevents.co.uk")).to be_nil
     end
   end
 
@@ -341,8 +410,8 @@ RSpec.describe Site, type: :model do
   describe "#events_this_week" do
     let(:neighbourhood) { create(:neighbourhood) }
     let(:site) { create(:site, neighbourhoods: [neighbourhood]) }
-    let(:address) { create(:address, neighbourhood: neighbourhood) }
-    let(:partner) { create(:partner, address: address) }
+    let(:address) { create(:address, neighbourhood:) }
+    let(:partner) { create(:partner, address:) }
 
     it "counts events in the current week" do
       create(:event, organiser: partner, dtstart: Time.zone.now)
@@ -361,11 +430,11 @@ RSpec.describe Site, type: :model do
   describe "#refresh_partners_count!" do
     let(:neighbourhood) { create(:neighbourhood) }
     let(:site) { create(:site, neighbourhoods: [neighbourhood]) }
-    let(:address) { create(:address, neighbourhood: neighbourhood) }
+    let(:address) { create(:address, neighbourhood:) }
 
     it "updates the cached partners_count" do
-      create(:partner, address: address)
-      create(:partner, address: address)
+      create(:partner, address:)
+      create(:partner, address:)
 
       site.refresh_partners_count!
       expect(site.reload.partners_count).to eq(2)
@@ -375,8 +444,8 @@ RSpec.describe Site, type: :model do
   describe "#refresh_events_count!" do
     let(:neighbourhood) { create(:neighbourhood) }
     let(:site) { create(:site, neighbourhoods: [neighbourhood]) }
-    let(:address) { create(:address, neighbourhood: neighbourhood) }
-    let(:partner) { create(:partner, address: address) }
+    let(:address) { create(:address, neighbourhood:) }
+    let(:partner) { create(:partner, address:) }
 
     it "updates the cached events_count" do
       create(:event, organiser: partner, dtstart: Time.zone.now)
@@ -389,8 +458,8 @@ RSpec.describe Site, type: :model do
 
   describe ".sites_that_contain_partner" do
     let(:neighbourhood) { create(:neighbourhood) }
-    let(:address) { create(:address, neighbourhood: neighbourhood) }
-    let(:partner) { create(:partner, address: address) }
+    let(:address) { create(:address, neighbourhood:) }
+    let(:partner) { create(:partner, address:) }
 
     it "returns published sites that contain the partner" do
       site = create(:site, is_published: true, neighbourhoods: [neighbourhood])

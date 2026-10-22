@@ -48,25 +48,24 @@ module SeedSites # rubocop:disable Metrics/ModuleLength
   def self.ensure_primary_neighbourhood(site, neighbourhood)
     return unless neighbourhood
 
-    existing = SitesNeighbourhood.find_by(site: site, neighbourhood: neighbourhood)
+    existing = SitesNeighbourhood.find_by(site:, neighbourhood:)
     if existing
       existing.update!(relation_type: 'Primary')
     else
-      SitesNeighbourhood.create!(site: site, neighbourhood: neighbourhood, relation_type: 'Primary')
+      SitesNeighbourhood.create!(site:, neighbourhood:, relation_type: 'Primary')
     end
   end
 
-  def self.create_site(slug:, name:, tagline:, url:, data_key:, neighbourhood: nil, published: true) # rubocop:disable Metrics/ParameterLists
-    site = Site.find_or_create_by!(slug: slug) do |s|
+  def self.create_site(slug:, name:, tagline:, data_key:, neighbourhood: nil, published: true) # rubocop:disable Metrics/ParameterLists
+    site = Site.find_or_create_by!(slug:) do |s|
       s.name = name
       s.tagline = tagline
-      s.url = url
       s.is_published = published
     end
 
     data = SITE_DATA[data_key]
     site.update!(
-      name: name,
+      name:,
       place_name: data[:place_name],
       hero_text: data[:hero_text],
       theme: data[:theme],
@@ -82,7 +81,7 @@ module SeedSites # rubocop:disable Metrics/ModuleLength
     tag = Tag.find_by(name: tag_name, type: 'Partnership')
     return unless tag
 
-    SitesTag.find_or_create_by!(site: site, tag: tag)
+    SitesTag.find_or_create_by!(site:, tag:)
   end
 
   def self.run
@@ -93,7 +92,6 @@ module SeedSites # rubocop:disable Metrics/ModuleLength
       slug: 'normal-island',
       name: 'Normal Island (country)',
       tagline: 'Everything happening across Normal Island',
-      url: 'http://normal-island.lvh.me:3000',
       data_key: :normal_island_country,
       neighbourhood: Neighbourhood.find_by(name: 'Normal Island', unit: 'country')
     )
@@ -103,7 +101,6 @@ module SeedSites # rubocop:disable Metrics/ModuleLength
       slug: 'coastshire',
       name: 'Coastshire (county)',
       tagline: 'Events and activities on the coast',
-      url: 'http://coastshire.lvh.me:3000',
       data_key: :coastshire_county,
       neighbourhood: Neighbourhood.find_by(name: 'Coastshire', unit: 'county')
     )
@@ -113,7 +110,6 @@ module SeedSites # rubocop:disable Metrics/ModuleLength
       slug: 'millbrook',
       name: 'Millbrook (district)',
       tagline: 'What\'s on in Millbrook',
-      url: 'http://millbrook.lvh.me:3000',
       data_key: :millbrook_district,
       neighbourhood: Neighbourhood.find_by(name: 'Millbrook', unit: 'district')
     )
@@ -123,7 +119,6 @@ module SeedSites # rubocop:disable Metrics/ModuleLength
       slug: 'book-clubs',
       name: 'Normal Island Book Clubs (partnership)',
       tagline: 'Reading groups and literary events across Normal Island',
-      url: 'http://book-clubs.lvh.me:3000',
       data_key: :book_clubs_partnership,
       neighbourhood: Neighbourhood.find_by(name: 'Normal Island', unit: 'country')
     )

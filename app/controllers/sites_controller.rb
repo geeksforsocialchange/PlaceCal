@@ -2,7 +2,6 @@
 
 # app/controllers/sites_controller.rb
 class SitesController < ApplicationController
-  before_action :set_primary_neighbourhood, only: [:site]
   before_action :set_site, only: [:index]
   before_action :set_places_to_get_computer_access, only: [:index]
   before_action :set_places_with_free_wifi, only: [:index]
@@ -18,7 +17,7 @@ class SitesController < ApplicationController
       render Views::Sites::Default.new(
         site: @site, places_to_get_computer_access: @places_to_get_computer_access,
         places_with_free_wifi: @places_with_free_wifi,
-        region_tags: region_tags, selected_region: current_region
+        region_tags:, selected_region: current_region
       )
     end
   end
@@ -37,6 +36,6 @@ class SitesController < ApplicationController
   end
 
   def homepage_partners(tag_slug)
-    PartnersQuery.new(site: current_site).call(tag_slug: tag_slug, partnership_id: current_region&.id)
+    PartnersQuery.new(site: current_site).call(tag_slug:, partnership_id: current_region&.id)
   end
 end

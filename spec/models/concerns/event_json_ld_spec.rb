@@ -9,7 +9,7 @@ RSpec.describe EventJsonLd do
 
   describe "#to_json_ld" do
     let(:event) { create(:event) }
-    let(:data) { event.to_json_ld(base_url: base_url) }
+    let(:data) { event.to_json_ld(base_url:) }
 
     it "validates against the schema.org Event JSON Schema" do
       errors = JSON::Validator.fully_validate(schema, data)
@@ -32,7 +32,7 @@ RSpec.describe EventJsonLd do
 
       it "omits endDate when dtend is nil" do
         event.update!(dtend: nil)
-        expect(event.to_json_ld(base_url: base_url)).not_to have_key("endDate")
+        expect(event.to_json_ld(base_url:)).not_to have_key("endDate")
       end
     end
 
@@ -45,7 +45,7 @@ RSpec.describe EventJsonLd do
 
       it "omits description when blank" do
         event.update!(description: "")
-        expect(event.reload.to_json_ld(base_url: base_url)).not_to have_key("description")
+        expect(event.reload.to_json_ld(base_url:)).not_to have_key("description")
       end
     end
 
@@ -60,7 +60,7 @@ RSpec.describe EventJsonLd do
       it "includes geo coordinates when present" do
         address = event.address
         address.update!(latitude: 53.4808, longitude: -2.2426)
-        result = event.reload.to_json_ld(base_url: base_url)
+        result = event.reload.to_json_ld(base_url:)
         geo = result["location"]["geo"]
         expect(geo["@type"]).to eq("GeoCoordinates")
         expect(geo["latitude"]).to eq(53.4808)
@@ -85,7 +85,7 @@ RSpec.describe EventJsonLd do
 
     context "with no direct address but with a place" do
       let(:place) { create(:partner) }
-      let(:event) { create(:event, address: nil, place: place) }
+      let(:event) { create(:event, address: nil, place:) }
 
       it "falls back to place address for location" do
         location = data["location"]
@@ -119,13 +119,13 @@ RSpec.describe EventJsonLd do
       it "is OnlineEventAttendanceMode for online-only events" do
         online_event = create(:event, address: nil, online_address: create(:online_address),
                                       calendar: create(:calendar, strategy: "online_only"))
-        result = online_event.to_json_ld(base_url: base_url)
+        result = online_event.to_json_ld(base_url:)
         expect(result["eventAttendanceMode"]).to eq("https://schema.org/OnlineEventAttendanceMode")
       end
 
       it "is MixedEventAttendanceMode for hybrid events" do
         hybrid_event = create(:event, online_address: create(:online_address))
-        result = hybrid_event.to_json_ld(base_url: base_url)
+        result = hybrid_event.to_json_ld(base_url:)
         expect(result["eventAttendanceMode"]).to eq("https://schema.org/MixedEventAttendanceMode")
       end
     end
@@ -136,18 +136,18 @@ RSpec.describe EventJsonLd do
         fake_image = instance_double(ImageUploader, url: "https://example.com/organiser.jpg")
         allow(organiser).to receive_messages(image?: true, image: fake_image)
 
-        result = event.to_json_ld(base_url: base_url)
+        result = event.to_json_ld(base_url:)
         expect(result["image"]).to eq("https://example.com/organiser.jpg")
       end
 
       it "falls back to partner_at_location image" do
         place = create(:partner)
-        event_with_place = create(:event, place: place)
+        event_with_place = create(:event, place:)
         fake_image = instance_double(ImageUploader, url: "https://example.com/venue.jpg")
         allow(event_with_place.organiser).to receive(:image?).and_return(false)
         allow(place).to receive_messages(image?: true, image: fake_image)
 
-        result = event_with_place.to_json_ld(base_url: base_url)
+        result = event_with_place.to_json_ld(base_url:)
         expect(result["image"]).to eq("https://example.com/venue.jpg")
       end
 

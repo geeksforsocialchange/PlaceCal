@@ -8,7 +8,7 @@ class Views::Sites::Collections::Show < Views::Base
   def view_template
     content_for(:title) { collection.name }
     content_for(:description) { collection.description }
-    content_for(:permalink) { collection.permalink(base_url: site&.url) }
+    content_for(:permalink) { collection.permalink(base_url: site&.canonical_url) }
     if collection.image?
       content_for(:image) { image_url(collection.image.standard.url) }
       content_for(:image_alt) { "Image for #{collection.name}" }
@@ -50,7 +50,7 @@ class Views::Sites::Collections::Show < Views::Base
 
   def render_events
     Sites::EventList(
-      events: events,
+      events:,
       primary_neighbourhood: site&.primary_neighbourhood,
       show_neighbourhoods: site ? site.show_neighbourhoods? : false,
       badge_zoom_level: site&.badge_zoom_level&.to_s,

@@ -9,7 +9,7 @@ RSpec.describe "Theme content page", type: :request do
   let(:ward) { create(:riverside_ward) }
 
   let!(:themed_site) do
-    site = create(:site, slug: "themed", theme: "example_theme", url: "https://themed.lvh.me")
+    site = create(:site, slug: "themed", theme: "example_theme")
     site.neighbourhoods << ward
     site
   end
@@ -55,11 +55,11 @@ RSpec.describe "Theme content page", type: :request do
     get "http://themed.lvh.me/sitemap/pages.xml"
 
     expect(response).to have_http_status(:ok)
-    expect(response.body).to include("<loc>#{themed_site.directory_url.chomp('/')}/fixture-content</loc>")
+    expect(response.body).to include("<loc>#{themed_site.canonical_url}/fixture-content</loc>")
   end
 
   it "does not serve it on a site whose theme did not register it" do
-    core_site = create(:site, slug: "plain", theme: "pink", url: "https://plain.lvh.me")
+    core_site = create(:site, slug: "plain", theme: "pink")
     core_site.neighbourhoods << ward
 
     get "http://plain.lvh.me/fixture-content"
@@ -69,7 +69,7 @@ RSpec.describe "Theme content page", type: :request do
 end
 
 RSpec.describe Views::ThemeContentPage, type: :component do
-  let(:site) { create(:site, slug: "themed", theme: "example_theme", url: "https://themed.lvh.me") }
+  let(:site) { create(:site, slug: "themed", theme: "example_theme") }
 
   describe "the declarations" do
     it "reads back what the page declared" do
@@ -192,7 +192,7 @@ RSpec.describe Views::ThemeContentPage, type: :component do
     allow(Rails.logger).to receive(:warn)
     described_class.markdown_cache.clear
 
-    render_inline(page.new(site: site))
+    render_inline(page.new(site:))
 
     expect(Rails.logger).to have_received(:warn).with(/content file missing, skipping block/)
     expect(self.page).to have_css(".page--gappy .markdown-content", text: "Fixture markdown intro paragraph.")
@@ -211,10 +211,26 @@ RSpec.describe Views::ThemeContentPage, type: :component do
     expect(described_class.markdown_html(root, "not-committed.md")).to eq("")
   end
 
+  it "lets a page replace the markdown-content column and keep the wrapper" do
+    page = Class.new(ExampleTheme::Views::Content) do
+      private
+
+      def page_content
+        section(class: "own-section") { markdown("intro.md") }
+      end
+    end
+
+    render_inline(page.new(site:))
+
+    expect(self.page).to have_css(".page--fixture-content > h1", text: "Fixture content page")
+    expect(self.page).to have_css(".page--fixture-content > section.own-section", text: "Fixture markdown intro paragraph.")
+    expect(self.page).to have_no_css(".markdown-content")
+  end
+
   it "says which declaration a page is missing" do
     page = Class.new(Views::ThemeContentPage) { slug "sparse" }
 
-    expect { render_inline(page.new(site: site)) }
+    expect { render_inline(page.new(site:)) }
       .to raise_error(NotImplementedError, /declares no title/)
   end
 end

@@ -16,17 +16,17 @@ RSpec.describe Components::Shared::Map, type: :phlex do
   end
 
   it "renders a div with leaflet controller when points present" do
-    render_inline(described_class.new(points: points))
+    render_inline(described_class.new(points:))
     expect(page).to have_css('[data-controller="leaflet"]')
   end
 
   it "sets the leaflet args data attribute" do
-    render_inline(described_class.new(points: points))
+    render_inline(described_class.new(points:))
     expect(page).to have_css("[data-leaflet-args-value]")
   end
 
   it "passes style to the map helper" do
-    render_inline(described_class.new(points: points, style: :multi))
+    render_inline(described_class.new(points:, style: :multi))
     args = page.find("[data-leaflet-args-value]")["data-leaflet-args-value"]
     expect(args).to include("map--multiple")
   end
@@ -45,7 +45,7 @@ RSpec.describe Components::Shared::Map, type: :phlex do
   end
 
   it "passes compact to the map helper" do
-    render_inline(described_class.new(points: points, compact: true))
+    render_inline(described_class.new(points:, compact: true))
     args = page.find("[data-leaflet-args-value]")["data-leaflet-args-value"]
     expect(args).to include("map--compact")
   end

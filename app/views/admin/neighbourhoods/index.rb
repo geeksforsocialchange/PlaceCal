@@ -60,13 +60,13 @@ class Views::Admin::Neighbourhoods::Index < Views::Admin::Base
 
     [
       { column: 'country_id', label: t('admin.neighbourhoods.index.levels.country'), width: 'min-w-40',
-        type: :hierarchical, level: 5, endpoint: endpoint, options: country_options },
+        type: :hierarchical, level: 5, endpoint:, options: country_options },
       { column: 'region_id', label: t('admin.neighbourhoods.index.levels.region'), width: 'min-w-48',
-        type: :hierarchical, level: 4, parent_filter: 'country_id', endpoint: endpoint },
+        type: :hierarchical, level: 4, parent_filter: 'country_id', endpoint: },
       { column: 'county_id', label: t('admin.neighbourhoods.index.levels.county'), width: 'min-w-48',
-        type: :hierarchical, level: 3, parent_filter: 'region_id', endpoint: endpoint },
+        type: :hierarchical, level: 3, parent_filter: 'region_id', endpoint: },
       { column: 'district_id', label: t('admin.neighbourhoods.index.levels.district'), width: 'min-w-48',
-        type: :hierarchical, level: 2, parent_filter: 'county_id', endpoint: endpoint }
+        type: :hierarchical, level: 2, parent_filter: 'county_id', endpoint: }
     ]
   end
 

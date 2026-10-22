@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module SeedCalendarsAndEvents
+module SeedCalendarsAndEvents # rubocop:disable Metrics/ModuleLength
   module BypassCalendarRemoteChecks
     def check_source_reachable; end
   end
@@ -67,6 +67,17 @@ module SeedCalendarsAndEvents
     { hour: 19, min: 0 }
   ].freeze
 
+  # Stored the way the ICS importer stores Icalendar::Values::Recur; the fortnightly rule still reads as "Weekly".
+  RRULES = %w[FREQ=WEEKLY FREQ=MONTHLY;BYDAY=1SA FREQ=WEEKLY;INTERVAL=2].map do |rule|
+    Icalendar::Values::Recur.new(rule).as_json
+  end.freeze
+
+  MEETING_URLS = %w[
+    https://meet.jit.si/placecal-seed-%d
+    https://zoom.us/j/9%09d
+    https://meet.google.com/plc-seed-%03d
+  ].freeze
+
   def self.run
     $stdout.puts 'Calendars and Events'
 
@@ -101,13 +112,19 @@ module SeedCalendarsAndEvents
         title = EVENT_TITLES[(partner_idx + i) % EVENT_TITLES.length]
 
         start = (today + day_offset.days).to_datetime.change(hour: time[:hour], min: time[:min])
+        k = partner_idx + i
+        # Odd multiples of 5 are online only; repeating online events (multiples of 20) keep their address.
+        online = (k % 5).zero?
+        online_address = OnlineAddress.find_or_create_by!(url: format(MEETING_URLS[(k / 5) % MEETING_URLS.length], k)) if online
         Event.create!(
           uid: "seed_event_#{partner.id}_#{i}", summary: title,
           description: "#{title} at #{partner.name}. Everyone welcome!",
           dtstart: start, dtend: start + 90.minutes,
           organiser: partner,
-          calendar: calendar,
-          address: partner.address
+          calendar:,
+          address: online && k % 10 == 5 ? nil : partner.address,
+          online_address:,
+          rrule: (k % 4).zero? ? [RRULES[(k / 4) % RRULES.length]] : nil
         )
         event_count += 1
       end

@@ -33,10 +33,10 @@ RSpec.describe CalendarImporter::LocationResolver do
   let(:other_neighbourhood) { create(:neighbourhood, unit_code_value: "E05000800") }
   let(:start_date) { Date.new(1990, 1, 1) }
   let(:end_date) { Date.new(1990, 1, 2) }
-  let(:address) { create(:address, street_address: "123 alpha", neighbourhood: neighbourhood, postcode: "M15 5DD") }
+  let(:address) { create(:address, street_address: "123 alpha", neighbourhood:, postcode: "M15 5DD") }
   let(:other_address) { create(:address, street_address: "456 beta", neighbourhood: other_neighbourhood, postcode: "OL6 8BH") }
-  let(:venue_address) { create(:address, street_address: "Community Hall", neighbourhood: neighbourhood, postcode: "M15 5DD") }
-  let(:address_partner) { create(:partner, name: "Address Partner", address: address) }
+  let(:venue_address) { create(:address, street_address: "Community Hall", neighbourhood:, postcode: "M15 5DD") }
+  let(:address_partner) { create(:partner, name: "Address Partner", address:) }
   let(:other_address_partner) { create(:partner, name: "Other Address Partner", address: other_address) }
   let(:venue_partner) { create(:partner, name: "Community Hall", address: venue_address, can_be_assigned_events: true) }
   let(:event_data) do

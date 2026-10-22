@@ -139,14 +139,25 @@ RSpec.describe "Directory Partners", type: :request do
       expect(response).to be_successful
     end
 
-    it "links partnerships in the sidebar relative to the current host" do
+    it "links partnerships in the sidebar to the site's subdomain on this environment's apex" do
       site = create(:site, is_published: true)
       site.neighbourhoods << partner.address.neighbourhood
 
       get partner_url(partner, host: "lvh.me")
 
-      expect(response.body).to include("http://#{site.slug}.lvh.me")
-      expect(response.body).not_to include("#{site.slug}.placecal.org")
+      expect(response.body).to include(%(href="https://#{site.slug}.placecal.org"))
+    end
+
+    it "links partnerships in the sidebar to a site's domain, served or external" do
+      serve_hosts("placecal.org", "*.placecal.org", "transdimension.uk")
+      served = create(:site, is_published: true, domain: "transdimension.uk")
+      external = create(:site, is_published: true, domain: "fruitsaladevents.co.uk")
+      [served, external].each { |site| site.neighbourhoods << partner.address.neighbourhood }
+
+      get partner_url(partner, host: "lvh.me")
+
+      expect(response.body).to include('href="https://transdimension.uk"')
+      expect(response.body).to include('href="https://fruitsaladevents.co.uk"')
     end
 
     it "lists a tag-only partnership site the partner belongs to" do
@@ -224,7 +235,7 @@ RSpec.describe "Directory Partners", type: :request do
         12.times do |i|
           create(:event,
                  dtstart: (i + 1).days.from_now,
-                 calendar: calendar,
+                 calendar:,
                  organiser: partner)
         end
       end
