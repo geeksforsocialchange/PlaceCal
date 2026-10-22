@@ -54,6 +54,10 @@ class Event < ApplicationRecord
   include EventJsonLd
   include Permalinkable
 
+  # ==== Constants ====
+  VERSION_RETENTION = 1.year
+  VERSION_PRUNE_BATCH_SIZE = 5_000
+
   # ==== Attributes ====
   # Columns marked (nullable) have no NOT NULL constraint in the DB.
   attribute :are_spaces_available,     :string                      # nullable
@@ -194,6 +198,16 @@ class Event < ApplicationRecord
       )
     SQL
     result.cmd_tuples
+  end
+
+  # Deletes PaperTrail versions older than VERSION_RETENTION.
+  # @return [Integer] number of deleted versions
+  def self.prune_old_versions!
+    count = PaperTrail::Version.where(item_type: name, created_at: ...VERSION_RETENTION.ago)
+                               .in_batches(of: VERSION_PRUNE_BATCH_SIZE)
+                               .delete_all
+    Rails.logger.info("[Event] Pruned #{count} version(s) older than #{VERSION_RETENTION.inspect}")
+    count
   end
 
   # icalendar < 2.13 serialised each rule as an OpenStruct (keys under "table"), 2.13+ as a flat Struct.
