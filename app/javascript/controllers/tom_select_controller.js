@@ -4,6 +4,8 @@ import TomSelect from "tom-select";
 // Tom Select controller - vanilla JS replacement for Select2
 // Supports single and multiple selections based on the select element's "multiple" attribute
 export default class extends Controller {
+	static values = { showAll: Boolean };
+
 	connect() {
 		// Get placeholder from the first empty option
 		const firstOption = this.element.querySelector('option[value=""]');
@@ -18,6 +20,8 @@ export default class extends Controller {
 			closeAfterSelect: !this.element.multiple,
 			placeholder: placeholder,
 			hidePlaceholder: true,
+			// Tom Select otherwise lists only the first 50 options until you type
+			...(this.showAllValue && { maxOptions: null }),
 		});
 
 		// Copy aria-label to the generated control input for accessibility

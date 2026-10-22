@@ -14,16 +14,21 @@ class Views::Admin::Partners::FormTabAdmins < Views::Admin::Base
     end
     p(class: 'text-sm text-gray-600 mb-6') { t('admin.partners.sections.admins_description') }
 
+    # Only roles that may assign admins get the dropdown, which lists every user
+    can_assign = policy(partner).permitted_attributes.include?({ user_ids: [] })
+
     StackedListSelector(
       field_name: 'partner[user_ids][]',
       items: partner.users,
-      options: options_for_partner_users(partner),
+      options: can_assign ? options_for_partner_users(partner) : [],
+      read_only: !can_assign,
       icon_name: :user,
       icon_color: 'bg-blue-100 text-blue-600',
       empty_text: t('admin.empty.none_assigned', items: t('admin.models.admin.other').downcase),
       add_placeholder: t('admin.partners.admins.add_existing'),
       use_tom_select: true,
-      link_path: :edit_admin_user_path
+      show_all_options: true,
+      link_path: (:edit_admin_user_path if can_assign)
     )
 
     return unless policy(User).create?

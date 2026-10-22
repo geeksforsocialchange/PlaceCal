@@ -42,6 +42,15 @@ RSpec.describe PartnersHelper, type: :helper do
     end
   end
 
+  describe "#options_for_partner_users" do
+    it "labels users by name and sorts them by it" do
+      zed = create(:user, first_name: "Zed", email: "a@example.org")
+      amy = create(:user, first_name: "amy", email: "z@example.org")
+      expect(helper.options_for_partner_users(partner).map(&:last)).to eq([amy.id, zed.id])
+      expect(helper.options_for_partner_users(partner)).to include([amy.display_name, amy.id])
+    end
+  end
+
   describe "#options_for_partner_partnerships" do
     let(:partnership_admin) { create(:neighbourhood_admin) }
     let(:partnership_tag) { create(:partnership) }

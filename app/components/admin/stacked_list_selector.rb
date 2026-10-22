@@ -13,6 +13,7 @@ class Components::Admin::StackedListSelector < Components::Admin::Base
   prop :cannot_remove_message, _Nilable(String), default: nil
   prop :controller, String, default: 'stacked-list-selector'
   prop :use_tom_select, _Boolean, default: false
+  prop :show_all_options, _Boolean, default: false
   prop :wrapper_class, _Nilable(String), default: nil
   prop :link_path, _Nilable(Symbol), default: nil
   prop :read_only, _Boolean, default: false
@@ -136,7 +137,8 @@ class Components::Admin::StackedListSelector < Components::Admin::Base
         aria_label: @add_placeholder,
         **{ "data-#{@controller}-target" => 'select' },
         data_action: "change->#{@controller}#add",
-        data_controller: 'tom-select'
+        data_controller: 'tom-select',
+        **(@show_all_options ? { data_tom_select_show_all_value: 'true' } : {})
       ) do
         option(value: '') { @add_placeholder }
         @options.each do |name, id|
