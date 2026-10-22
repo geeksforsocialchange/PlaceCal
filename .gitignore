@@ -45,8 +45,8 @@ notes.md
 # Coverage
 coverage
 
-# ERD pdf as it's messing up diffs
-erd.pdf
+# Schema diagram, regenerated on every db:migrate
+erd.mmd
 
 # Ignore the dump directory
 dump/
