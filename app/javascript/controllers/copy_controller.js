@@ -5,12 +5,20 @@ export default class extends Controller {
 	static targets = ["source", "button"];
 	static values = { copiedLabel: String };
 
+	connect() {
+		this.label = this.buttonTarget.textContent;
+	}
+
 	async copy() {
 		await navigator.clipboard.writeText(this.sourceTarget.value);
-		const label = this.buttonTarget.textContent;
 		this.buttonTarget.textContent = this.copiedLabelValue;
-		setTimeout(() => {
-			this.buttonTarget.textContent = label;
+		clearTimeout(this.reset);
+		this.reset = setTimeout(() => {
+			this.buttonTarget.textContent = this.label;
 		}, 2000);
+	}
+
+	disconnect() {
+		clearTimeout(this.reset);
 	}
 }
