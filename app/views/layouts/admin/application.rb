@@ -155,12 +155,11 @@ class Views::Layouts::Admin::Application < Phlex::HTML
   end
 
   def leftbar_dev_links
-    return unless policy(Article).index? || policy(Tag).index? || policy(Collection).index? || policy(Supporter).index?
+    return unless policy(Article).index? || policy(Tag).index? || policy(Supporter).index?
 
     leftbar_section(t('admin.leftbar.in_development')) do
       admin_nav_link(human_model_name(Tag, count: 2), admin_tags_path, :tag, root_only: true) if policy(Tag).index?
       admin_nav_link(human_model_name(Article, count: 2), admin_articles_path, :article) if policy(Article).index?
-      admin_nav_link(human_model_name(Collection, count: 2), admin_collections_path, :list, root_only: true) if policy(Collection).index?
       admin_nav_link(human_model_name(Supporter, count: 2), admin_supporters_path, :credit_card, root_only: true) if policy(Supporter).index?
       admin_nav_link(t('admin.leftbar.import_status'), admin_jobs_path, :cog, root_only: true) if current_user.root?
     end

@@ -2,9 +2,6 @@
 # https://github.com/djezzzl/database_consistency
 
 # Exclude models that don't have corresponding tables (HABTM join tables)
-CollectionEvent:
-  enabled: false # This is a HABTM join table (collections_events), not a standalone model
-
 SitesSupporter:
   enabled: false # This is a HABTM join table (sites_supporters), not a standalone model
 

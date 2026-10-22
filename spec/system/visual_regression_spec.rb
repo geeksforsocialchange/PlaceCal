@@ -186,9 +186,5 @@ RSpec.describe "Visual regression screenshots", :visual_regression, type: :syste
     it "news show", skip: "News not yet a supported feature" do
       screenshot_page(site_url(millbrook_site, "/news/#{article_one.friendly_id}"), "news_show")
     end
-
-    it "collection show", skip: "Collections not yet a supported feature" do
-      screenshot_page(site_url(millbrook_site, "/collections/#{collection.id}"), "collection_show")
-    end
   end
 end

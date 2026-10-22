@@ -56,7 +56,6 @@ RSpec.describe Event, type: :model do
     it { is_expected.to belong_to(:address).optional }
     it { is_expected.to belong_to(:online_address).optional }
     it { is_expected.to belong_to(:calendar).optional }
-    it { is_expected.to have_and_belong_to_many(:collections) }
   end
 
   describe "validations" do

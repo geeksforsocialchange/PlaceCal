@@ -57,13 +57,12 @@ bin/visual-regression clean
 
 ## What it covers
 
-13 pages at 4 viewports (450px, 650px, 950px, 1250px) = 52 screenshots:
+12 pages at 4 viewports (450px, 650px, 950px, 1250px) = 48 screenshots:
 
 - **Static pages**: homepage, our-story, privacy, terms-of-use, get-in-touch
 - **Events**: index, show
 - **Partners**: index, show
 - **News**: index, show
-- **Collections**: show
 - **Partner-themed site**: homepage (subdomain routing)
 
 ## Running the spec directly
