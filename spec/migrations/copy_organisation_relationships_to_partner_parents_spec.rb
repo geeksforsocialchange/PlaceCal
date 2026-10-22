@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "rails_helper"
-require Rails.root.join("db/migrate/20261022150200_copy_organisation_relationships_to_partner_parents.rb")
+require Rails.root.join("db/migrate/20261022160200_copy_organisation_relationships_to_partner_parents.rb")
 
 RSpec.describe CopyOrganisationRelationshipsToPartnerParents do
   subject(:migration) { described_class.new }
