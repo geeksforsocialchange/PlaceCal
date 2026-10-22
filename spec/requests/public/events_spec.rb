@@ -197,6 +197,23 @@ RSpec.describe "Public Events", type: :request do
     end
   end
 
+  describe "GET /events/:id for an event at a place with no address" do
+    let(:place) { create(:ashton_service_area_partner, name: "Addressless Place").tap { |p| p.reload.clear_address! } }
+    let(:event) do
+      create(:event, organiser: partner, place:, address: nil, dtstart: 1.day.from_now,
+                     calendar: create(:calendar, strategy: "place", place:))
+    end
+
+    ["test-site.lvh.me", "lvh.me"].each do |host|
+      it "renders the place without a map on #{host}" do
+        get event_url(event, host:)
+        expect(response).to be_successful
+        expect(response.body).to include("Addressless Place")
+        expect(response.body).not_to include('data-controller="leaflet"')
+      end
+    end
+  end
+
   describe "GET /events/:id for an event not on this site" do
     # Organised by a partner in a ward the site does not own (issue #1722)
     let(:offsite_address) { create(:address, neighbourhood: create(:oldtown_ward)) }

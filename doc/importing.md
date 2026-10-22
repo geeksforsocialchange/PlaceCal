@@ -45,6 +45,8 @@ Each Calendar has a `strategy` that determines how imported events get their pla
 | `no_location`    | None                                | None                                | Events without physical location         |
 | `online_only`    | None                                | None                                | Purely online events                     |
 
+When the default place has no address (a partner with only a service area), the `place`, `event_override` and `room_number` strategies import events at that place with no address. An event that fails validation is skipped and recorded as an import notice on the calendar.
+
 ## Online Detection
 
 `OnlineDetector` checks event data for online meeting links:
