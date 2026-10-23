@@ -5,8 +5,8 @@ class PartnersController < ApplicationController
   include OffsiteRedirect
   include Pagy::Offset::Method
 
-  before_action :set_partner, only: %i[show embed]
-  before_action :set_day, only: %i[show embed]
+  before_action :set_partner, only: [:show]
+  before_action :set_day, only: [:show]
   before_action :set_primary_neighbourhood, only: [:index]
   before_action :set_site
   before_action :set_title, only: %i[index show]
@@ -73,15 +73,6 @@ class PartnersController < ApplicationController
                   filename: "#{@partner.slug}-events.csv", type: :csv
       end
     end
-  end
-
-  def embed
-    period = params[:period] || 'week'
-    limit = params[:limit]&.to_i || 10
-    query = EventsQuery.new(site: nil, day: @current_day)
-    @events = query.call(period:, place: @partner, sort: 'time', limit:)
-    response.headers.except! 'X-Frame-Options'
-    render layout: false
   end
 
   private
