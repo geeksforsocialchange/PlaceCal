@@ -270,7 +270,7 @@ write_summary() {
     fi
     if [ "$noise" -gt 0 ]; then
       echo
-      echo "$noise more differ by $NOISE pixels or fewer at the same height, which is usually font anti-aliasing:" \
+      echo "Not counted, $NOISE pixels or fewer at the same height (usually font anti-aliasing):" \
         "$(awk -F'\t' '$1 == "noise" { printf "%s%s (%s px)", sep, $2, $3; sep = ", " }' "$results")."
     fi
   } >"$summary"

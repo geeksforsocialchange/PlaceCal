@@ -37,6 +37,8 @@ module VisualRegression
 
   # Capped waits: a stalled third-party font or image should cost a diff, not hang the run.
   LOAD_TIMEOUT_MS = 15_000
+  STABLE_INTERVAL_MS = 300
+  STABLE_ATTEMPTS = 5
 
   SETTLE_SCRIPT = <<~JS
     async () => {
@@ -96,8 +98,23 @@ module VisualRegression
         warn "visual regression: #{url} did not finish loading third-party resources"
       end
       pw.evaluate(SETTLE_SCRIPT)
-      pw.screenshot(path: file.to_s, fullPage: true, animations: "disabled", caret: "hide", style: SCREENSHOT_STYLE)
+      File.binwrite(file, stable_screenshot(pw, url))
     end
+  end
+
+  # WebKit can paint glyphs from a system fallback font a moment after load, so wait for two identical screenshots.
+  def stable_screenshot(pw_page, url)
+    options = { fullPage: true, animations: "disabled", caret: "hide", style: SCREENSHOT_STYLE }
+    previous = pw_page.screenshot(**options)
+    STABLE_ATTEMPTS.times do
+      pw_page.wait_for_timeout(STABLE_INTERVAL_MS)
+      current = pw_page.screenshot(**options)
+      return current if current == previous
+
+      previous = current
+    end
+    warn "visual regression: #{url} was still changing after #{STABLE_ATTEMPTS} screenshots"
+    previous
   end
 
   # The fixed clock is for Stimulus controllers, which Timecop cannot reach.
