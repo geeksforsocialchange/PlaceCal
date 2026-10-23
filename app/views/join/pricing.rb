@@ -56,7 +56,7 @@ class Views::Join::Pricing < Views::Join::Base
 
   # Hidden under 900px so it never squishes: the cards take over there.
   def render_compare_table
-    div(class: 'hidden min-[900px]:block') do
+    div(class: 'hidden lg:block') do
       table(class: 'w-full border-collapse table-fixed') do
         caption(class: 'sr-only') { t('join.pricing.table.caption') }
         colgroup do
@@ -86,25 +86,25 @@ class Views::Join::Pricing < Views::Join::Base
   def render_tier_column_header(tier)
     th(scope: 'col', class: 'text-left align-top px-4 pb-4 border-b-2 border-foreground') do
       div(class: 'allcaps-label text-secondary-strong') { t("join.pricing.tiers.#{tier}.name") }
-      p(class: 'font-serif text-[1.02rem] leading-tight text-foreground mt-2 mb-2.5 min-h-[2.4em]') do
+      p(class: 'font-serif text-base leading-tight text-foreground mt-2 mb-2.5 min-h-[2.4em]') do
         t("join.pricing.tiers.#{tier}.who")
       end
-      div(class: 'font-serif text-[2rem] leading-none text-foreground whitespace-nowrap') do
-        span(class: 'text-[0.95rem] text-tertiary') { "#{t('join.pricing.from')} " } if tier_from?(tier)
+      div(class: 'font-serif text-stat leading-none text-foreground whitespace-nowrap') do
+        span(class: 'text-detail text-tertiary') { "#{t('join.pricing.from')} " } if tier_from?(tier)
         plain t("join.pricing.tiers.#{tier}.price")
-        span(class: 'text-[0.95rem] text-tertiary') { t('join.pricing.per_month') }
+        span(class: 'text-detail text-tertiary') { t('join.pricing.per_month') }
       end
-      div(class: 'text-[0.85rem] text-tertiary mt-2 whitespace-nowrap') { t("join.pricing.tiers.#{tier}.setup") }
+      div(class: 'text-sm text-tertiary mt-2 whitespace-nowrap') { t("join.pricing.tiers.#{tier}.setup") }
     end
   end
 
   def render_compare_row(row)
     tr do
-      th(scope: 'row', class: 'text-left align-top font-bold text-foreground text-[0.98rem] px-4 py-3.5 border-b border-rules') do
+      th(scope: 'row', class: 'text-left align-top font-bold text-foreground text-base px-4 py-3.5 border-b border-rules') do
         row[:label]
       end
       row[:values].each do |value|
-        td(class: 'align-top px-4 py-3.5 border-b border-rules text-[0.98rem] leading-normal') do
+        td(class: 'align-top px-4 py-3.5 border-b border-rules text-base leading-normal') do
           case value
           when true then included_mark
           when false then excluded_mark
@@ -121,7 +121,7 @@ class Views::Join::Pricing < Views::Join::Base
   end
 
   def excluded_mark
-    span(class: 'text-rules text-[1.1rem]', aria_hidden: 'true') { '–' }
+    span(class: 'text-rules text-md', aria_hidden: 'true') { '–' }
     span(class: 'sr-only') { t('join.pricing.table.not_included') }
   end
 
@@ -135,7 +135,7 @@ class Views::Join::Pricing < Views::Join::Base
 
   # Mobile (<900px): one stacked card per paid tier. No buttons on cards.
   def render_tier_cards
-    div(class: 'grid gap-4 min-[900px]:hidden') do
+    div(class: 'grid gap-4 lg:hidden') do
       TIER_KEYS.each { |tier| render_tier_card(tier) }
     end
   end
@@ -143,24 +143,24 @@ class Views::Join::Pricing < Views::Join::Base
   def render_tier_card(tier)
     article(class: 'flex flex-col bg-cream border-2 border-rules rounded-card p-6') do
       div(class: 'allcaps-label text-secondary-strong') { t("join.pricing.tiers.#{tier}.name") }
-      p(class: 'font-serif text-[1.24rem] leading-snug text-foreground mt-2.5 mb-3') do
+      p(class: 'font-serif text-lg leading-snug text-foreground mt-2.5 mb-3') do
         t("join.pricing.tiers.#{tier}.who_card")
       end
-      div(class: 'font-serif text-[2.3rem] leading-none text-foreground') do
-        span(class: 'block text-[0.95rem] text-tertiary mb-0.5') { t('join.pricing.from') } if tier_from?(tier)
+      div(class: 'font-serif text-3xl leading-none text-foreground') do
+        span(class: 'block text-detail text-tertiary mb-0.5') { t('join.pricing.from') } if tier_from?(tier)
         plain t("join.pricing.tiers.#{tier}.price")
-        span(class: 'text-[0.95rem] text-tertiary') { " #{t('join.pricing.per_month')}" }
+        span(class: 'text-detail text-tertiary') { " #{t('join.pricing.per_month')}" }
       end
-      div(class: 'text-[0.85rem] text-tertiary mt-1.5 pb-4 border-b-2 border-rules mb-4') do
+      div(class: 'text-sm text-tertiary mt-1.5 pb-4 border-b-2 border-rules mb-4') do
         t("join.pricing.tiers.#{tier}.setup_card")
       end
-      div(class: 'text-[0.85rem] text-tertiary mb-4') do
-        b(class: 'font-serif font-regular text-[1.15rem] text-foreground') { t("join.pricing.tiers.#{tier}.spec_strong") }
+      div(class: 'text-sm text-tertiary mb-4') do
+        b(class: 'font-serif font-regular text-md text-foreground') { t("join.pricing.tiers.#{tier}.spec_strong") }
         plain t("join.pricing.tiers.#{tier}.spec_rest")
       end
       ul(class: 'list-none p-0 m-0 flex flex-col gap-2.5') do
         t("join.pricing.tiers.#{tier}.bullets").each do |bullet|
-          li(class: 'flex gap-2.5 text-[0.94rem] leading-snug') do
+          li(class: 'flex gap-2.5 text-detail leading-snug') do
             tick(size: 18)
             plain bullet
           end
@@ -175,7 +175,7 @@ class Views::Join::Pricing < Views::Join::Base
     aside(class: 'bg-cream-warm border-2 border-rules rounded-card px-7 py-6 mt-6 grid min-[680px]:grid-cols-[auto_1fr] gap-x-10 gap-y-3 items-center') do
       div do
         div(class: 'allcaps-label text-secondary-strong') { t('join.pricing.starter.name') }
-        div(class: 'font-serif text-[1.8rem] leading-tight text-foreground') { t('join.pricing.starter.price') }
+        div(class: 'font-serif text-2xl leading-tight text-foreground') { t('join.pricing.starter.price') }
       end
       div do
         t('join.pricing.starter.body').each_with_index do |paragraph, index|
@@ -201,11 +201,11 @@ class Views::Join::Pricing < Views::Join::Base
 
   def render_addon(addon)
     div(class: 'flex flex-col bg-cream border-2 border-rules rounded-card p-6') do
-      h3(class: 'font-serif font-regular text-[1.5rem] text-foreground mt-0 mb-1.5') { addon[:title] }
-      p(class: 'text-[0.98rem] leading-relaxed text-tertiary mt-0 mb-4') { addon[:body] }
-      div(class: 'font-serif text-[1.35rem] text-foreground mt-auto') do
+      h3(class: 'font-serif font-regular text-subhead text-foreground mt-0 mb-1.5') { addon[:title] }
+      p(class: 'text-base leading-relaxed text-tertiary mt-0 mb-4') { addon[:body] }
+      div(class: 'font-serif text-xl text-foreground mt-auto') do
         plain t('join.pricing.extras.poa')
-        small(class: 'block font-sans text-[0.85rem] font-semibold text-tertiary mt-0.5') do
+        small(class: 'block font-sans text-sm font-semibold text-tertiary mt-0.5') do
           t('join.pricing.extras.poa_note')
         end
       end
@@ -215,14 +215,14 @@ class Views::Join::Pricing < Views::Join::Base
   def render_training_addon
     training = t('join.pricing.extras.training')
     div(class: 'flex flex-col bg-cream border-2 border-rules rounded-card p-6') do
-      h3(class: 'font-serif font-regular text-[1.5rem] text-foreground mt-0 mb-1.5') { training[:title] }
-      p(class: 'text-[0.98rem] leading-relaxed text-tertiary mt-0 mb-2') { training[:body] }
+      h3(class: 'font-serif font-regular text-subhead text-foreground mt-0 mb-1.5') { training[:title] }
+      p(class: 'text-base leading-relaxed text-tertiary mt-0 mb-2') { training[:body] }
       ul(class: 'list-none p-0 mt-auto mb-0') do
         training[:rows].each do |row|
           muted = row[:standard] ? 'text-tertiary' : ''
-          li(class: 'flex justify-between items-baseline py-2 border-b border-rules last:border-b-0 text-[0.95rem]') do
+          li(class: 'flex justify-between items-baseline py-2 border-b border-rules last:border-b-0 text-detail') do
             span(class: muted) { row[:label] }
-            span(class: "font-serif text-[1.15rem] #{muted}") { row[:amount] }
+            span(class: "font-serif text-md #{muted}") { row[:amount] }
           end
         end
       end
@@ -249,7 +249,7 @@ class Views::Join::Pricing < Views::Join::Base
                'before:content-[""] before:absolute before:top-0 before:bottom-0 before:left-[23px] min-[680px]:before:left-[31px] before:w-[2px] before:bg-rules ' \
                'first:before:top-1/2 last:before:bottom-1/2') do
       div(class: 'relative self-stretch row-span-2 min-[680px]:row-span-1 flex justify-center') do
-        div(class: 'relative z-1 self-center w-11 h-11 min-[680px]:w-14 min-[680px]:h-14 rounded-full bg-secondary text-foreground-dark grid place-items-center font-serif text-[1.2rem] min-[680px]:text-2xl') do
+        div(class: 'relative z-1 self-center w-11 h-11 min-[680px]:w-14 min-[680px]:h-14 rounded-full bg-secondary text-foreground-dark grid place-items-center font-serif text-lg min-[680px]:text-2xl') do
           plain (index + 1).to_s
         end
       end
@@ -259,8 +259,8 @@ class Views::Join::Pricing < Views::Join::Base
         image_tag(ROLLOUT_ART[index], alt: '', class: 'w-[150px] min-[680px]:w-[190px] h-auto') if ROLLOUT_ART[index]
       end
       div(class: 'col-start-2 min-[680px]:col-start-auto') do
-        h3(class: 'font-serif font-regular text-[1.55rem] text-foreground mt-0 mb-1') { step[:title] }
-        p(class: 'text-[1.05rem] leading-relaxed text-tertiary m-0 max-w-[46ch]') { step[:body] }
+        h3(class: 'font-serif font-regular text-subhead text-foreground mt-0 mb-1') { step[:title] }
+        p(class: 'text-base leading-relaxed text-tertiary m-0 max-w-[46ch]') { step[:body] }
       end
     end
   end
@@ -273,12 +273,12 @@ class Views::Join::Pricing < Views::Join::Base
         div(class: 'max-w-[820px]') do
           t('join.pricing.faq.items').each_with_index do |item, index|
             details(class: 'group border-b-2 border-rules', open: index.zero?) do
-              summary(class: 'cursor-pointer list-none py-4 font-serif text-[1.25rem] text-foreground flex justify-between items-center gap-4 ' \
+              summary(class: 'cursor-pointer list-none py-4 font-serif text-lg text-foreground flex justify-between items-center gap-4 ' \
                              '[&::-webkit-details-marker]:hidden after:content-["+"] after:font-sans after:font-bold after:text-2xl ' \
                              'after:text-secondary-strong after:transition-transform group-open:after:rotate-45') do
                 item[:question]
               end
-              p(class: 'mt-0 pb-4 text-[1.02rem] leading-relaxed text-tertiary max-w-(--width-prose)') { item[:answer] }
+              p(class: 'mt-0 pb-4 text-base leading-relaxed text-tertiary max-w-(--width-prose)') { item[:answer] }
             end
           end
         end
