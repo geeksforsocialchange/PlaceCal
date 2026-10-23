@@ -117,12 +117,14 @@ end
 group :test do
   gem 'axe-core-rspec', '~> 4.8'  # Accessibility testing
   gem 'capybara'                  # Browser simulation
+  gem 'capybara-playwright-driver', require: false # Chromium + WebKit for visual regression screenshots
   gem 'cucumber-rails', require: false # BDD acceptance tests
   gem 'database_cleaner-active_record' # Clean DB between tests
   gem 'factory_bot_rails'         # Test data factories
   gem 'faker'                     # Fake data generation
   gem 'graphql-client'            # GraphQL API test client
   gem 'json-schema'               # JSON Schema validation for structured data tests
+  gem 'playwright-ruby-client', '~> 1.58.0', require: false # Keep in step with the playwright npm package
   gem 'pundit-matchers', '~> 4.0' # Policy spec matchers
   gem 'rspec-rails', '~> 8.0'     # Test framework
   gem 'selenium-webdriver'        # Browser driver for system tests
