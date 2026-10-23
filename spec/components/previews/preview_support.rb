@@ -14,7 +14,9 @@ module PreviewSupport
     :id, :dtstart, :dtend, :summary, :description,
     :partner_at_location, :address, :rrule, :neighbourhood,
     :online_address
-  )
+  ) do
+    def to_param = id.to_s
+  end
 
   RetinaMock = Struct.new(:url)
   AvatarMock = Struct.new(:retina)
