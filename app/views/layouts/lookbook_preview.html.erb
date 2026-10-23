@@ -1,14 +1,22 @@
+<% theme = PlaceCal::Extensions.find_theme(lookbook_display(:theme)) %>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="<%= 'core-theme' if theme&.core? %>">
 <head>
   <%= csrf_meta_tags %>
   <%= stylesheet_link_tag 'application', media: 'all' %>
   <%= stylesheet_link_tag 'public_tailwind', media: 'all' %>
+  <% if theme %>
+    <%= stylesheet_link_tag theme.stylesheet_path, media: 'all' if theme.stylesheet_path %>
+    <% if (font = theme.font_stylesheet) %>
+      <link rel="stylesheet" href="<%= font[:url] %>">
+    <% end %>
+    <%= render theme.head_class.new if theme.head_class %>
+  <% end %>
   <link rel="stylesheet" href="/vendor/maplibre-gl.css" media="all">
   <%= javascript_importmap_tags %>
 </head>
 <body>
-  <div class="background">
+  <div class="page bg-background" style="min-height: 100vh; display: flow-root">
     <%= yield %>
   </div>
 </body>
