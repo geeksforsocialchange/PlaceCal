@@ -33,6 +33,13 @@ RSpec.describe "Lookbook previews", type: :request do
     expect(failures).to be_empty
   end
 
+  it "shows every scenario on a component's own page" do
+    get "/lookbook/previews/event"
+    expect(response).to be_successful
+    expect(Nokogiri::HTML(response.body).css("lookbook-embed").map { it["scenario"] })
+      .to contain_exactly("list_view", "page_view", "online_event", "repeating_event")
+  end
+
   it "opens on the overview page, and the overview renders" do
     get "/lookbook"
     expect(response).to redirect_to(%r{/lookbook/pages/overview})
