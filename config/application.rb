@@ -59,6 +59,8 @@ module PlaceCal
       config.lookbook.preview_paths = ['spec/components/previews']
       config.lookbook.page_paths = ['spec/components/docs']
       config.lookbook.preview_layout = 'lookbook_preview'
+      # Embedded previews (overview and component pages) show the component only, no code panels
+      config.lookbook.preview_embed_panels = []
       # Themes register in initializers, so the dropdown can only be built after them
       config.after_initialize do
         config.lookbook.preview_display_options = { theme: PlaceCal::Extensions.theme_names }
