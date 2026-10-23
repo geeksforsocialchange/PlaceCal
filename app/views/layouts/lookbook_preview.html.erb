@@ -1,4 +1,5 @@
-<% theme = PlaceCal::Extensions.find_theme(lookbook_display(:theme)) %>
+<%# Directory and join components only appear on placecal.org, so they ignore the Theme menu (`@display context directory`) %>
+<% theme = PlaceCal::Extensions.find_theme(lookbook_display(:theme)) unless lookbook_display(:context) == 'directory' %>
 <!DOCTYPE html>
 <html lang="en" class="<%= 'core-theme' if theme&.core? %>">
 <head>

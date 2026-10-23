@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# @display context directory
 class DirectoryPartnerCardPreview < Lookbook::Preview
   # @label Grid of cards
   # @notes Two columns, as on the directory partners page. Uses unsaved models.
