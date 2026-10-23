@@ -18,6 +18,6 @@ class HeroPreview < Lookbook::Preview
 
   # @label With schema property
   def with_schema
-    render Components::Shared::Hero.new("Yoga for Beginners", nil, "name")
+    render Components::Shared::Hero.new("Yoga for Beginners", nil, schema: "name")
   end
 end

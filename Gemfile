@@ -84,6 +84,7 @@ group :development, :test do
   gem 'byebug'                    # Debugger
   gem 'dotenv-rails'              # Load .env files
   gem 'i18n-tasks', require: false # Find missing/unused locale keys (CLI + guard spec)
+  gem 'lookbook', '>= 2.3.14'     # Component previews; in test too so a spec renders every one
 end
 
 group :development do
@@ -97,7 +98,6 @@ group :development do
   gem 'graphiql-rails'            # GraphQL IDE at /graphiql
   gem 'letter_opener'             # Preview emails in browser
   gem 'listen'                    # File-watching for Lookbook live reload
-  gem 'lookbook', '>= 2.3.14'    # Component preview UI (Storybook for Rails)
   gem 'rack-mini-profiler'        # In-page performance profiler (?pp=help in dev)
   gem 'rails-erd'                 # Entity-relationship diagrams
   gem 'rdoc'                      # Documentation generator
