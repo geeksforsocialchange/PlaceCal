@@ -130,9 +130,7 @@ jobs:
 
       - name: Install Imagemagick and libvips
         timeout-minutes: 8
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends imagemagick libvips42t64
+        uses: ./.github/actions/install-image-libraries
 
       - name: Install Chrome for browser tests
         if: matrix.suite == 'system' || startsWith(matrix.suite, 'cucumber')
