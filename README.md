@@ -37,6 +37,8 @@ bin/setup
 
 This will install dependencies, create the database, and seed it with development data.
 
+When `.ruby-version` changes, run `bin/ruby-update`. It installs the new Ruby with rbenv, runs `bin/setup`, then removes older patch versions of that Ruby (0.5 to 1GB each) unless another project next to this one uses them.
+
 - **Login**: `root@placecal.org` / `password`
 
 See [SEEDS.md](SEEDS.md) for full details on what gets created (users, sites, partners, events).

@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Installs the Ruby in .ruby-version, runs bin/setup, then removes older patches of the same Ruby that no sibling project pins
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+want=$(cat .ruby-version)
+rbenv install --skip-existing "$want"
+bin/setup
+
+pinned=$(cat ../*/.ruby-version 2>/dev/null; rbenv global)
+for version in $(rbenv versions --bare); do
+  [[ $version == "${want%.*}".* && $version != "$want" ]] || continue
+  if grep -qx "$version" <<<"$pinned"; then
+    echo "Keeping Ruby $version, another project uses it"
+  else
+    echo "Removing Ruby $version"
+    rbenv uninstall -f "$version"
+  fi
+done

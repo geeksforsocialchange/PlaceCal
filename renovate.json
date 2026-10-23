@@ -33,6 +33,28 @@
 			"minimumReleaseAge": "7 days"
 		},
 		{
+			"description": "Ruby patches wait a week so CI and Docker have builds, and land with the setup-ruby action that knows them",
+			"matchDepNames": ["ruby"],
+			"matchUpdateTypes": ["patch"],
+			"groupName": "ruby",
+			"minimumReleaseAge": "7 days"
+		},
+		{
+			"matchDepNames": ["ruby/setup-ruby"],
+			"groupName": "ruby"
+		},
+		{
+			"description": "New Ruby minors are reviewed by hand, from their first patch release",
+			"matchDepNames": ["ruby"],
+			"matchUpdateTypes": ["minor", "major"],
+			"automerge": false,
+			"minimumReleaseAge": "7 days"
+		},
+		{
+			"matchDepNames": ["ruby"],
+			"allowedVersions": "!/^\\d+\\.\\d+\\.0$/"
+		},
+		{
 			"groupName": "node version",
 			"matchDepNames": ["node"],
 			"matchManagers": ["nodenv", "npm", "custom.regex"]
