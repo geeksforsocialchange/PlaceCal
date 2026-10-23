@@ -280,6 +280,7 @@ run_comparison() {
   head_label="\`$(git rev-parse --short=8 HEAD)\`"
   git diff --quiet HEAD || head_label="$head_label plus uncommitted changes"
 
+  rm -rf "$OUT_DIR/current" "$OUT_DIR/diff" "$OUT_DIR/results.tsv" "$OUT_DIR/summary.md"
   log "Base: $base_ref, merge base ${base_sha:0:8}"
   log "Head: $head_label"
 

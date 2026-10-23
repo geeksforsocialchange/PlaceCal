@@ -35,7 +35,7 @@ RSpec.describe "Visual regression screenshots", :visual_regression, type: :syste
     context "in #{browser}" do
       before do
         driven_by :"playwright_#{browser}"
-        freeze_browser_clock
+        prepare_browser
       end
 
       VisualRegression.themes.each do |theme|

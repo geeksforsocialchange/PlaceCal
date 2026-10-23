@@ -32,9 +32,16 @@ module VisualRegression
     *, *::before, *::after { caret-color: transparent !important; }
   CSS
 
+  # Map tiles are hidden in the screenshot, so fetching them only adds third-party requests that can stall.
+  BLOCKED_REQUESTS = %r{\Ahttps?://([a-z0-9-]+\.)*(openfreemap\.org|openstreetmap\.org)/}
+
+  # Capped waits: a stalled third-party font or image should cost a diff, not hang the run.
+  LOAD_TIMEOUT_MS = 15_000
+
   SETTLE_SCRIPT = <<~JS
     async () => {
-      await document.fonts.ready;
+      const timeout = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+      await Promise.race([document.fonts.ready, timeout(10000)]);
       const images = [...document.images].filter((img) => !img.complete);
       await Promise.all(images.map((img) => new Promise((resolve) => {
         img.addEventListener("load", resolve, { once: true });
@@ -69,15 +76,23 @@ module VisualRegression
     FileUtils.mkdir_p(file.dirname)
     page.driver.with_playwright_page do |pw|
       pw.viewport_size = { width:, height: VIEWPORT_HEIGHT }
-      response = pw.goto(url, waitUntil: "load")
+      response = pw.goto(url, waitUntil: "domcontentloaded")
       warn "visual regression: #{url} returned #{response&.status}" unless response&.ok?
+      begin
+        pw.wait_for_load_state(state: "load", timeout: LOAD_TIMEOUT_MS)
+      rescue Playwright::TimeoutError
+        warn "visual regression: #{url} did not finish loading third-party resources"
+      end
       pw.evaluate(SETTLE_SCRIPT)
       pw.screenshot(path: file.to_s, fullPage: true, animations: "disabled", caret: "hide", style: SCREENSHOT_STYLE)
     end
   end
 
-  # Stimulus controllers read the browser clock, which Timecop cannot reach.
-  def freeze_browser_clock
-    page.driver.with_playwright_page { |pw| pw.clock.set_fixed_time(Time.current.iso8601) }
+  # The fixed clock is for Stimulus controllers, which Timecop cannot reach.
+  def prepare_browser
+    page.driver.with_playwright_page do |pw|
+      pw.clock.set_fixed_time(Time.current.iso8601)
+      pw.context.route(BLOCKED_REQUESTS, ->(route, _request) { route.abort })
+    end
   end
 end
