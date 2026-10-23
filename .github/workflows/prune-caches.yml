@@ -1,0 +1,24 @@
+name: Prune CI caches
+
+# Gem caches are keyed by Ruby version and lockfile, and CodeQL caches per commit; without this they fill the 10GB limit.
+on:
+  schedule:
+    - cron: "41 4 * * *"
+  workflow_dispatch:
+
+permissions:
+  actions: write
+
+jobs:
+  prune:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Keep the two newest caches of each kind on main
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh cache list --ref refs/heads/main --limit 1000 --sort last_accessed_at --order desc --json id,key \
+            --jq '.[] | [.id, (.key | sub("-[0-9a-f]{20,}.*$"; "") | gsub("[0-9]+\\.[0-9]+\\.[0-9]+"; "X"))] | @tsv' |
+            awk -F'\t' 'seen[$2]++ >= 2 { print $1 }' |
+            xargs -r -n1 gh cache delete
