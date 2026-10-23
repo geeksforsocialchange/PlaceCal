@@ -89,4 +89,8 @@ Rails.application.configure do
   config.lookbook.project_name = 'PlaceCal'
   config.lookbook.preview_paths = ['spec/components/previews']
   config.lookbook.preview_layout = 'lookbook_preview'
+  # Themes register in initializers, so the dropdown can only be built after them
+  config.after_initialize do
+    config.lookbook.preview_display_options = { theme: PlaceCal::Extensions.theme_names }
+  end
 end
