@@ -144,6 +144,10 @@ GEM
       rack-test (>= 0.6.3)
       regexp_parser (>= 1.5, < 3.0)
       xpath (~> 3.2)
+    capybara-playwright-driver (0.5.13)
+      addressable
+      capybara
+      playwright-ruby-client (>= 1.16.0)
     carrierwave (3.1.4)
       activemodel (>= 6.0.0)
       activesupport (>= 6.0.0)
@@ -486,6 +490,10 @@ GEM
       phlex (~> 2.4.0)
       railties (>= 7.1, < 9)
       zeitwerk (~> 2.7)
+    playwright-ruby-client (1.58.1)
+      base64
+      concurrent-ruby (>= 1.1.6)
+      mime-types (>= 3.0)
     pp (0.6.4)
       prettyprint
     prettyprint (0.2.1)
@@ -784,6 +792,7 @@ DEPENDENCIES
   bullet
   byebug
   capybara
+  capybara-playwright-driver
   carrierwave
   csv
   cucumber-rails
@@ -830,6 +839,7 @@ DEPENDENCIES
   phlex-rails (~> 2.3)
   placecal-theme-mossley!
   placecal-theme-transdimension!
+  playwright-ruby-client (~> 1.58.0)
   propshaft
   puma
   pundit

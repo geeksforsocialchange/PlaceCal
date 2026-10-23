@@ -2,291 +2,344 @@
 set -euo pipefail
 
 PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-BASE_DIR="$PROJECT_ROOT/tmp/visual_regression"
-BASELINE_DIR="$BASE_DIR/baselines"
-CURRENT_DIR="$BASE_DIR/current"
-DIFF_DIR="$BASE_DIR/diff"
+SCRIPT="$PROJECT_ROOT/bin/visual-regression"
+OUT_DIR="${VR_OUT_DIR:-$PROJECT_ROOT/tmp/visual_regression}"
 SPEC_FILE="spec/system/visual_regression_spec.rb"
-SHARED_CONTEXT_FILE="spec/support/shared_contexts/normal_island_data.rb"
-BACKUP_DIR="$PROJECT_ROOT/tmp/.vr_backup"
-
-# Layout-level fuzz: ignore anti-aliasing and font rendering differences
-FUZZ_PERCENT="5%"
-
-# State for cleanup trap
-_VR_ORIGINAL_BRANCH=""
-_VR_STASHED=false
-_VR_FILES_COPIED=false
+# Copied into the base worktree so both sides are captured by the same harness.
+HARNESS_FILES=(
+  "$SPEC_FILE"
+  spec/support/visual_regression.rb
+  spec/support/playwright.rb
+  spec/support/shared_contexts/normal_island_data.rb
+)
+FUZZ="${VR_FUZZ:-1%}"
+JOBS="${VR_JOBS:-4}"
+NOISE="${VR_NOISE_PIXELS:-250}"
+BROWSERS="${VR_BROWSERS:-chromium webkit}"
+DATABASE_URL_HEAD="${VR_DATABASE_URL:-postgres:///placecal_vr}"
+DATABASE_URL_BASE="${DATABASE_URL_HEAD}_base"
+# ImageMagick 7 has one `magick` entry point; Ubuntu's apt package is still 6, with separate commands.
+if command -v magick >/dev/null; then
+  im_identify() { magick identify "$@"; }
+  im_convert() { magick "$@"; }
+  im_compare() { magick compare "$@"; }
+elif command -v compare >/dev/null; then
+  im_identify() { identify "$@"; }
+  im_convert() { convert "$@"; }
+  im_compare() { compare "$@"; }
+fi
 
 usage() {
   cat <<HELP
-Visual regression testing for PlaceCal
+Visual regression screenshots for PlaceCal public pages, under core and installed extension themes.
 
 Usage:
-  bin/visual-regression [--base <branch>]   Compare current branch against base (default: main)
-  bin/visual-regression clean               Remove all cached screenshots
-  bin/visual-regression help                Show this help
+  bin/visual-regression [--base <ref>] [--fresh]   Compare the working tree against the merge base with <ref> (default: main)
+  bin/visual-regression clean                      Remove screenshots, diffs and cached baselines
+  bin/visual-regression help                       Show this help
 
-Examples:
-  bin/visual-regression                              # compare against main
-  bin/visual-regression --base refactor/my-branch    # compare against a specific branch
+<ref> is any commit-ish (a branch, origin/main, a SHA, HEAD). A bare branch name prefers its
+remote-tracking branch when one exists. The base is captured in a temporary git worktree, so the
+working tree is never touched. Baselines are cached by base SHA and harness version; --fresh
+recaptures.
 
-How it works:
-  1. Resolves the HEAD SHA of the base branch
-  2. If no cached baseline for that SHA, stashes changes, checks out
-     the base branch, captures screenshots, then restores your branch
-  3. Captures screenshots for your current branch
-  4. Diffs the two sets with ImageMagick (${FUZZ_PERCENT} fuzz)
+Environment:
+  VR_BROWSERS       Browsers to capture (default: "chromium webkit")
+  VR_DATABASE_URL   Test database for the current side (default: postgres:///placecal_vr);
+                    the base side uses the same URL with a _base suffix and is dropped on exit
+  VR_FUZZ           ImageMagick colour fuzz before a pixel counts as changed (default: 1%)
+  VR_JOBS           Parallel image comparisons (default: 4)
+  VR_NOISE_PIXELS   Changed pixels at or below which a diff is listed as likely noise (default: 250)
 
-Baselines are cached in tmp/visual_regression/baselines/{sha}/
-and reused until the base branch moves forward.
+Output (tmp/visual_regression/):
+  base/<key>/<browser>/*.png   current/<browser>/*.png   diff/<browser>/*.png   summary.md
 
-Prerequisites:
-  brew install imagemagick
+Exits non-zero only when capture fails; visual differences are reported, not failed.
+Prerequisites: ImageMagick, yarn, PostgreSQL, Playwright browsers (npx playwright install chromium webkit).
 HELP
 }
 
-# Restore branch and stash if the script exits unexpectedly during baseline capture
-cleanup_baseline() {
-  # Remove files we copied onto main before switching back
-  if [ "$_VR_FILES_COPIED" = true ]; then
-    rm -f "$PROJECT_ROOT/$SPEC_FILE"
-    rm -f "$PROJECT_ROOT/$SHARED_CONTEXT_FILE"
-    git checkout --quiet -- spec/rails_helper.rb 2>/dev/null || true
-    _VR_FILES_COPIED=false
-  fi
-  if [ -n "$_VR_ORIGINAL_BRANCH" ]; then
-    echo ""
-    echo "Restoring branch $_VR_ORIGINAL_BRANCH..."
-    git checkout --quiet "$_VR_ORIGINAL_BRANCH" 2>/dev/null || true
-    _VR_ORIGINAL_BRANCH=""
-  fi
-  if [ "$_VR_STASHED" = true ]; then
-    echo "Restoring stashed changes..."
-    git stash pop --quiet 2>/dev/null || true
-    _VR_STASHED=false
-  fi
-  rm -rf "$BACKUP_DIR"
+log() { echo "==> $*"; }
+
+die() {
+  echo "Error: $*" >&2
+  exit 1
 }
 
-get_base_sha() {
-  local base_branch="$1"
-  # Try to fetch and resolve as a remote branch first, then fall back to local
-  git fetch origin "$base_branch" --quiet 2>/dev/null || true
-  git rev-parse "origin/$base_branch" 2>/dev/null || git rev-parse "$base_branch"
+with_locale() { LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 "$@"; }
+
+resolve_base() {
+  local ref="$1" remote
+  if ! [[ "$ref" == */* ]] && [[ "$ref" != HEAD* ]]; then
+    for remote in $(git -C "$PROJECT_ROOT" remote); do
+      if git -C "$PROJECT_ROOT" rev-parse --verify --quiet "refs/remotes/$remote/$ref^{commit}" >/dev/null; then
+        echo "$remote/$ref"
+        return
+      fi
+    done
+  fi
+  git -C "$PROJECT_ROOT" rev-parse --verify --quiet "$ref^{commit}" >/dev/null || die "cannot resolve base '$ref'"
+  echo "$ref"
 }
 
-capture_screenshots() {
-  local dest_dir="$1"
-  local screenshot_tmp="$PROJECT_ROOT/tmp/screenshots"
+build_assets() {
+  local dir="$1"
+  (
+    cd "$dir"
+    yarn install --frozen-lockfile --silent >/dev/null
+    yarn --silent build >/dev/null
+    with_locale bin/rails dartsass:build >/dev/null
+  )
+}
 
-  rm -rf "$screenshot_tmp"
+prepare_db() {
+  local dir="$1" url="$2"
+  (cd "$dir" && with_locale env RAILS_ENV=test DATABASE_URL="$url" bin/rails db:create db:schema:load >/dev/null)
+}
 
-  echo "  Running visual regression specs..."
-  VISUAL_REGRESSION=1 bundle exec rspec "$SPEC_FILE" --format progress --order defined 2>&1
-
-  if [ ! -d "$screenshot_tmp" ] || [ -z "$(ls -A "$screenshot_tmp" 2>/dev/null)" ]; then
-    echo "  Error: No screenshots were captured"
-    return 1
-  fi
-
-  rm -rf "$dest_dir"
-  mkdir -p "$dest_dir"
-  mv "$screenshot_tmp"/* "$dest_dir"/
-  rm -rf "$screenshot_tmp"
-
+capture() {
+  local dir="$1" url="$2" dest="$3"
+  rm -rf "$dest"
+  mkdir -p "$dest"
+  (
+    cd "$dir"
+    with_locale env RAILS_ENV=test DATABASE_URL="$url" VISUAL_REGRESSION=1 VR_OUTPUT_DIR="$dest" \
+      VR_BROWSERS="$BROWSERS" PLAYWRIGHT_CLI_EXECUTABLE_PATH="$PROJECT_ROOT/node_modules/.bin/playwright" \
+      bundle exec rspec "$SPEC_FILE" --format progress --order defined
+  )
   local count
-  count=$(find "$dest_dir" -name '*.png' | wc -l | tr -d ' ')
-  echo "  Captured $count screenshots"
+  count=$(find "$dest" -name '*.png' | wc -l | tr -d ' ')
+  [ "$count" -gt 0 ] || die "no screenshots captured in $dest"
+  log "Captured $count screenshots"
 }
 
-capture_baseline() {
-  local sha="$1"
-  local dest_dir="$BASELINE_DIR/$sha"
-
-  if [ -d "$dest_dir" ]; then
-    local count
-    count=$(find "$dest_dir" -name '*.png' | wc -l | tr -d ' ')
-    echo "Baseline: using cached ($count screenshots for ${sha:0:8})"
-    return 0
+# The base commit may not have the Playwright gems yet; layer them on without changing its own lockfile pins.
+bundle_base() {
+  local dir="$1"
+  if grep -q '^    capybara-playwright-driver ' "$dir/Gemfile.lock"; then
+    export BUNDLE_GEMFILE="$dir/Gemfile"
+  else
+    local driver client
+    driver=$(sed -n 's/^    capybara-playwright-driver (\(.*\))$/\1/p' "$PROJECT_ROOT/Gemfile.lock")
+    client=$(sed -n 's/^    playwright-ruby-client (\(.*\))$/\1/p' "$PROJECT_ROOT/Gemfile.lock")
+    cat >"$dir/Gemfile.vr" <<RUBY
+eval_gemfile File.expand_path('Gemfile', __dir__)
+group :test do
+  gem 'capybara-playwright-driver', '$driver', require: false
+  gem 'playwright-ruby-client', '$client', require: false
+end
+RUBY
+    cp "$dir/Gemfile.lock" "$dir/Gemfile.vr.lock"
+    export BUNDLE_GEMFILE="$dir/Gemfile.vr"
   fi
-
-  echo "Baseline: capturing for ${BASE_BRANCH} (${sha:0:8})..."
-
-  _VR_ORIGINAL_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-  trap cleanup_baseline EXIT
-
-  # Save spec file, shared context, and rails_helper — they may not exist or differ on the base branch
-  mkdir -p "$BACKUP_DIR"
-  cp "$PROJECT_ROOT/$SPEC_FILE" "$BACKUP_DIR/visual_regression_spec.rb"
-  cp "$PROJECT_ROOT/$SHARED_CONTEXT_FILE" "$BACKUP_DIR/normal_island_data.rb"
-  cp "$PROJECT_ROOT/spec/rails_helper.rb" "$BACKUP_DIR/rails_helper.rb"
-
-  # Stash uncommitted changes to tracked files
-  if ! git diff --quiet || ! git diff --cached --quiet; then
-    git stash push --quiet -m "visual-regression: auto-stash"
-    _VR_STASHED=true
+  local path
+  path=$(cd "$PROJECT_ROOT" && bundle config get path --parseable 2>/dev/null | sed -n 's/^path=//p')
+  if [ -n "$path" ]; then
+    [[ "$path" = /* ]] || path="$PROJECT_ROOT/$path"
+    export BUNDLE_PATH="$path"
   fi
-
-  # Checkout base branch (removes feature-branch-only files like the spec)
-  git checkout --quiet "$sha"
-
-  # Copy spec file, shared context, and rails_helper onto base branch so we can run the spec
-  mkdir -p "$(dirname "$PROJECT_ROOT/$SPEC_FILE")"
-  mkdir -p "$(dirname "$PROJECT_ROOT/$SHARED_CONTEXT_FILE")"
-  cp "$BACKUP_DIR/visual_regression_spec.rb" "$PROJECT_ROOT/$SPEC_FILE"
-  cp "$BACKUP_DIR/normal_island_data.rb" "$PROJECT_ROOT/$SHARED_CONTEXT_FILE"
-  cp "$BACKUP_DIR/rails_helper.rb" "$PROJECT_ROOT/spec/rails_helper.rb"
-  _VR_FILES_COPIED=true
-
-  capture_screenshots "$dest_dir"
-
-  # Clean up copied files before switching back
-  rm -f "$PROJECT_ROOT/$SPEC_FILE"
-  rm -f "$PROJECT_ROOT/$SHARED_CONTEXT_FILE"
-  git checkout --quiet -- spec/rails_helper.rb
-  _VR_FILES_COPIED=false
-
-  # Restore original branch
-  git checkout --quiet "$_VR_ORIGINAL_BRANCH"
-  _VR_ORIGINAL_BRANCH=""
-
-  if [ "$_VR_STASHED" = true ]; then
-    git stash pop --quiet
-    _VR_STASHED=false
-  fi
-
-  trap - EXIT
-  rm -rf "$BACKUP_DIR"
-
-  echo "  Baseline cached"
+  (cd "$dir" && with_locale env BUNDLE_FROZEN=false BUNDLE_DEPLOYMENT=false bundle install --quiet)
 }
 
-capture_current() {
-  echo "Current branch: capturing screenshots..."
-  capture_screenshots "$CURRENT_DIR"
+BASE_WORKTREE=""
+cleanup() {
+  if [ -n "$BASE_WORKTREE" ]; then
+    (cd "$BASE_WORKTREE" && with_locale env RAILS_ENV=test DATABASE_URL="$DATABASE_URL_BASE" \
+      DISABLE_DATABASE_ENVIRONMENT_CHECK=1 bin/rails db:drop >/dev/null 2>&1) || true
+    git -C "$PROJECT_ROOT" worktree remove --force "$BASE_WORKTREE" 2>/dev/null || rm -rf "$BASE_WORKTREE"
+    git -C "$PROJECT_ROOT" worktree prune
+    BASE_WORKTREE=""
+  fi
+}
+
+capture_base() {
+  local sha="$1" dest="$2"
+  BASE_WORKTREE="$(mktemp -d "${TMPDIR:-/tmp}/placecal-vr-base.XXXXXX")"
+  trap cleanup EXIT INT TERM
+  log "Creating base worktree at ${sha:0:8}"
+  git -C "$PROJECT_ROOT" worktree add --quiet --detach "$BASE_WORKTREE" "$sha"
+  local file
+  for file in "${HARNESS_FILES[@]}"; do
+    mkdir -p "$(dirname "$BASE_WORKTREE/$file")"
+    cp "$PROJECT_ROOT/$file" "$BASE_WORKTREE/$file"
+  done
+  (
+    log "Installing base gems"
+    bundle_base "$BASE_WORKTREE"
+    log "Building base assets"
+    build_assets "$BASE_WORKTREE"
+    log "Preparing base database"
+    prepare_db "$BASE_WORKTREE" "$DATABASE_URL_BASE"
+    log "Capturing base"
+    capture "$BASE_WORKTREE" "$DATABASE_URL_BASE" "$dest.partial"
+  )
+  rm -rf "$dest"
+  mv "$dest.partial" "$dest"
+  cleanup
+  trap - EXIT INT TERM
+}
+
+# Prints one tab-separated result line: status, path, changed pixels, percent, height delta.
+diff_one() {
+  local base_dir="$1" current_dir="$2" diff_dir="$3" rel="$4"
+  local before="$base_dir/$rel" after="$current_dir/$rel" diff="$diff_dir/$rel"
+  if [ ! -f "$after" ]; then
+    printf 'removed\t%s\t\t\t\n' "$rel"
+    return
+  fi
+  if [ ! -f "$before" ]; then
+    printf 'new\t%s\t\t\t\n' "$rel"
+    return
+  fi
+  local bw bh aw ah w h tmp
+  read -r bw bh < <(im_identify -format '%w %h\n' "$before")
+  read -r aw ah < <(im_identify -format '%w %h\n' "$after")
+  w=$((bw > aw ? bw : aw))
+  h=$((bh > ah ? bh : ah))
+  tmp="$(mktemp -d)"
+  # Padding is magenta, so extra height on either side counts as changed pixels.
+  im_convert "$before" -background '#ff00ff' -gravity northwest -extent "${w}x${h}" "$tmp/before.png"
+  im_convert "$after" -background '#ff00ff' -gravity northwest -extent "${w}x${h}" "$tmp/after.png"
+  mkdir -p "$(dirname "$diff")"
+  local output status=0 pixels percent
+  output=$(im_compare -fuzz "$FUZZ" "$tmp/before.png" "$tmp/after.png" "$diff" 2>&1) || status=$?
+  if [ "$status" -gt 1 ]; then
+    rm -rf "$tmp"
+    printf 'error\t%s\t\t\t%s\n' "$rel" "$(echo "$output" | tr '\t\n' '  ')"
+    return
+  fi
+  # Not compare's AE metric: ImageMagick 7.1 averages it over channels, so it undercounts changed pixels.
+  pixels=$(im_convert "$tmp/before.png" "$tmp/after.png" -alpha off -compose difference -composite \
+    -separate -evaluate-sequence max -threshold "$FUZZ" -format '%[fx:round(mean*w*h)]' info:)
+  rm -rf "$tmp"
+  percent=$(awk -v p="$pixels" -v t="$((w * h))" 'BEGIN { printf "%.2f", p * 100 / t }')
+  if [ "$pixels" -eq 0 ]; then
+    rm -f "$diff"
+    printf 'same\t%s\t0\t0.00\t0\n' "$rel"
+  elif [ "$pixels" -le "$NOISE" ] && [ "$ah" -eq "$bh" ]; then
+    printf 'noise\t%s\t%s\t%s\t0\n' "$rel" "$pixels" "$percent"
+  else
+    printf 'changed\t%s\t%s\t%s\t%s\n' "$rel" "$pixels" "$percent" "$((ah - bh))"
+  fi
 }
 
 generate_diffs() {
-  local baseline="$1"
+  local base_dir="$1" current_dir="$2" diff_dir="$3" results="$4"
+  rm -rf "$diff_dir"
+  mkdir -p "$diff_dir"
+  { (cd "$base_dir" && find . -name '*.png'); (cd "$current_dir" && find . -name '*.png'); } |
+    sed 's|^\./||' | sort -u |
+    xargs -P "$JOBS" -I{} "$SCRIPT" __diff-one "$base_dir" "$current_dir" "$diff_dir" {} |
+    sort >"$results"
+}
 
-  rm -rf "$DIFF_DIR"
-  mkdir -p "$DIFF_DIR"
-
-  declare -i changed=0
-  declare -i unchanged=0
-  declare -i missing=0
-
-  for before_file in "$baseline"/*.png; do
-    [ -f "$before_file" ] || continue
-    local name
-    name=$(basename "$before_file")
-    local after_file="$CURRENT_DIR/$name"
-    local diff_file="$DIFF_DIR/$name"
-
-    if [ ! -f "$after_file" ]; then
-      echo "  MISSING: $name"
-      missing+=1
-      continue
-    fi
-
-    local raw_diff
-    declare -i pixel_diff
-    raw_diff=$(compare -metric AE -fuzz "$FUZZ_PERCENT" \
-      "$before_file" "$after_file" "$diff_file" 2>&1 || true)
-    # ImageMagick may output "RMSE (AE)" or just "AE" — extract the number
-    pixel_diff=$(echo "$raw_diff" | grep -oE '[0-9]+' | tail -1)
-    pixel_diff="${pixel_diff:-0}"
-
-    if [[ $pixel_diff -eq 0 ]]; then
-      rm -f "$diff_file"
-      unchanged+=1
+write_summary() {
+  local results="$1" summary="$2" base_label="$3" base_sha="$4" head_label="$5"
+  local total changed new removed errors noise
+  total=$(wc -l <"$results" | tr -d ' ')
+  changed=$(grep -c '^changed' "$results" || true)
+  new=$(grep -c '^new' "$results" || true)
+  removed=$(grep -c '^removed' "$results" || true)
+  errors=$(grep -c '^error' "$results" || true)
+  noise=$(grep -c '^noise' "$results" || true)
+  {
+    echo "<!-- visual-regression-summary -->"
+    echo "## Visual regression"
+    echo
+    echo "Base \`${base_sha:0:8}\` (merge base with \`$base_label\`) against $head_label. $total screenshots: $BROWSERS at 450/950/1250px, full page."
+    echo
+    if [ "$((changed + new + removed + errors))" -eq 0 ]; then
+      echo "No visual changes."
     else
-      echo "  CHANGED: $name ($pixel_diff pixels)"
-      changed+=1
+      echo "**$changed changed**, $new new, $removed removed, $errors errors."
+      echo
+      echo "| Page | Browser | Width | Changed | Height |"
+      echo "| --- | --- | --- | --- | --- |"
+      awk -F'\t' '$1 == "changed"' "$results" | sort -t$'\t' -k4,4gr |
+        while IFS=$'\t' read -r _status rel _pixels percent delta; do
+          browser="${rel%%/*}"
+          name="$(basename "$rel" .png)"
+          width="${name##*__}"
+          name="${name%__*}"
+          [ "$delta" -gt 0 ] && delta="+$delta"
+          echo "| ${name//__/ / } | $browser | $width | $percent% | ${delta}px |"
+        done
+      awk -F'\t' '$1 == "new" || $1 == "removed" || $1 == "error" { printf "| %s | | | %s | |\n", $2, $1 }' "$results"
+      echo
+      echo "Diff images (changed pixels in red) are in the \`visual-regression\` artifact."
     fi
-  done
-
-  for after_file in "$CURRENT_DIR"/*.png; do
-    [ -f "$after_file" ] || continue
-    local name
-    name=$(basename "$after_file")
-    if [ ! -f "$baseline/$name" ]; then
-      echo "  NEW: $name"
-      cp "$after_file" "$DIFF_DIR/$name"
-      changed+=1
+    if [ "$noise" -gt 0 ]; then
+      echo
+      echo "Not counted, $NOISE pixels or fewer at the same height (usually font anti-aliasing):" \
+        "$(awk -F'\t' '$1 == "noise" { printf "%s%s (%s px)", sep, $2, $3; sep = ", " }' "$results")."
     fi
-  done
-
-  echo ""
-  echo "Results: $changed changed, $unchanged unchanged, $missing missing"
-
-  if [ "$changed" -gt 0 ]; then
-    echo "Diff images in tmp/visual_regression/diff/ (red pixels = layout differences)"
-  else
-    echo "No visual differences detected."
-  fi
+  } >"$summary"
 }
 
 run_comparison() {
-  # Check ImageMagick is available before doing any work
-  if ! command -v compare &>/dev/null; then
-    echo "Error: ImageMagick 'compare' not found. Install with: brew install imagemagick"
-    exit 1
+  declare -F im_compare >/dev/null || die "ImageMagick not found (brew install imagemagick)"
+  cd "$PROJECT_ROOT"
+  unset APP_VERSION GIT_REV
+  export LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
+
+  local base_ref base_sha harness_key key head_label
+  base_ref=$(resolve_base "$BASE")
+  base_sha=$(git merge-base HEAD "$base_ref") || die "no merge base between HEAD and $base_ref"
+  harness_key=$(cat "${HARNESS_FILES[@]}" <(echo "$BROWSERS $FUZZ") | git hash-object --stdin)
+  key="${base_sha}-${harness_key:0:8}"
+  head_label="\`$(git rev-parse --short=8 HEAD)\`"
+  git diff --quiet HEAD || head_label="$head_label plus uncommitted changes"
+
+  rm -rf "$OUT_DIR/current" "$OUT_DIR/diff" "$OUT_DIR/results.tsv" "$OUT_DIR/summary.md"
+  log "Base: $base_ref, merge base ${base_sha:0:8}"
+  log "Head: $head_label"
+
+  # The base capture runs this checkout's Playwright CLI, so install it first.
+  log "Building current assets"
+  build_assets "$PROJECT_ROOT"
+
+  local base_dir="$OUT_DIR/base/$key"
+  if [ -n "$FRESH" ] || [ ! -d "$base_dir" ]; then
+    capture_base "$base_sha" "$base_dir"
+  else
+    log "Using cached baseline $base_dir"
   fi
 
-  local base_sha
-  base_sha=$(get_base_sha "$BASE_BRANCH")
-  local current_branch
-  current_branch=$(git rev-parse --abbrev-ref HEAD)
+  log "Preparing current database"
+  prepare_db "$PROJECT_ROOT" "$DATABASE_URL_HEAD"
+  log "Capturing current"
+  capture "$PROJECT_ROOT" "$DATABASE_URL_HEAD" "$OUT_DIR/current"
 
-  echo "=== Visual Regression Test ==="
-  echo "Base:   ${BASE_BRANCH} (${base_sha:0:8})"
-  echo "Branch: $current_branch"
-  echo ""
-
-  if [ "$current_branch" = "$BASE_BRANCH" ] || [ "$current_branch" = "HEAD" ]; then
-    echo "Note: You're on the base branch — baseline and current will be identical."
-    echo ""
-  fi
-
-  mkdir -p "$BASELINE_DIR"
-
-  capture_baseline "$base_sha"
-  echo ""
-
-  capture_current
-  echo ""
-
-  echo "Comparing..."
-  generate_diffs "$BASELINE_DIR/$base_sha"
+  log "Comparing"
+  generate_diffs "$base_dir" "$OUT_DIR/current" "$OUT_DIR/diff" "$OUT_DIR/results.tsv"
+  write_summary "$OUT_DIR/results.tsv" "$OUT_DIR/summary.md" "$base_ref" "$base_sha" "$head_label"
+  cat "$OUT_DIR/summary.md"
 }
 
-clean_all() {
-  rm -rf "$BASE_DIR" "$PROJECT_ROOT/tmp/screenshots" "$BACKUP_DIR"
-  echo "Cleaned all visual regression data."
-}
-
-# Parse arguments
-BASE_BRANCH="main"
+BASE="main"
+FRESH=""
 COMMAND="run"
-
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --base)
-      BASE_BRANCH="${2:?'--base requires a branch name'}"
+      BASE="${2:?--base requires a ref}"
       shift 2
       ;;
-    clean|help|--help|-h)
+    --fresh)
+      FRESH=1
+      shift
+      ;;
+    __diff-one)
+      shift
+      diff_one "$@"
+      exit 0
+      ;;
+    clean | help | --help | -h)
       COMMAND="$1"
       shift
       ;;
-    run|"")
-      COMMAND="run"
-      shift
-      ;;
     *)
-      echo "Unknown argument: $1"
+      echo "Unknown argument: $1" >&2
       usage
       exit 1
       ;;
@@ -294,13 +347,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 case "$COMMAND" in
-  run)
-    run_comparison
-    ;;
-  clean)
-    clean_all
-    ;;
-  help|--help|-h)
-    usage
-    ;;
+  run) run_comparison ;;
+  clean) rm -rf "$OUT_DIR" && echo "Removed $OUT_DIR" ;;
+  *) usage ;;
 esac
