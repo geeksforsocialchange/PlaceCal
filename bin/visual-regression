@@ -17,7 +17,16 @@ JOBS="${VR_JOBS:-4}"
 BROWSERS="${VR_BROWSERS:-chromium webkit}"
 DATABASE_URL_HEAD="${VR_DATABASE_URL:-postgres:///placecal_vr}"
 DATABASE_URL_BASE="${DATABASE_URL_HEAD}_base"
-MAGICK="$(command -v magick || true)"
+# ImageMagick 7 has one `magick` entry point; Ubuntu's apt package is still 6, with separate commands.
+if command -v magick >/dev/null; then
+  im_identify() { magick identify "$@"; }
+  im_convert() { magick "$@"; }
+  im_compare() { magick compare "$@"; }
+elif command -v compare >/dev/null; then
+  im_identify() { identify "$@"; }
+  im_convert() { convert "$@"; }
+  im_compare() { compare "$@"; }
+fi
 
 usage() {
   cat <<HELP
@@ -44,7 +53,7 @@ Output (tmp/visual_regression/):
   base/<key>/<browser>/*.png   current/<browser>/*.png   diff/<browser>/*.png   summary.md
 
 Exits non-zero only when capture fails; visual differences are reported, not failed.
-Prerequisites: ImageMagick 7, yarn, PostgreSQL, Playwright browsers (npx playwright install chromium webkit).
+Prerequisites: ImageMagick, yarn, PostgreSQL, Playwright browsers (npx playwright install chromium webkit).
 HELP
 }
 
@@ -181,25 +190,26 @@ diff_one() {
     return
   fi
   local bw bh aw ah w h tmp
-  read -r bw bh < <("$MAGICK" identify -format '%w %h\n' "$before")
-  read -r aw ah < <("$MAGICK" identify -format '%w %h\n' "$after")
+  read -r bw bh < <(im_identify -format '%w %h\n' "$before")
+  read -r aw ah < <(im_identify -format '%w %h\n' "$after")
   w=$((bw > aw ? bw : aw))
   h=$((bh > ah ? bh : ah))
   tmp="$(mktemp -d)"
   # Padding is magenta, so extra height on either side counts as changed pixels.
-  "$MAGICK" "$before" -background '#ff00ff' -gravity northwest -extent "${w}x${h}" "$tmp/before.png"
-  "$MAGICK" "$after" -background '#ff00ff' -gravity northwest -extent "${w}x${h}" "$tmp/after.png"
+  im_convert "$before" -background '#ff00ff' -gravity northwest -extent "${w}x${h}" "$tmp/before.png"
+  im_convert "$after" -background '#ff00ff' -gravity northwest -extent "${w}x${h}" "$tmp/after.png"
   mkdir -p "$(dirname "$diff")"
-  local output status=0
-  output=$("$MAGICK" compare -metric AE -fuzz "$FUZZ" "$tmp/before.png" "$tmp/after.png" "$diff" 2>&1) || status=$?
-  rm -rf "$tmp"
+  local output status=0 pixels percent
+  output=$(im_compare -fuzz "$FUZZ" "$tmp/before.png" "$tmp/after.png" "$diff" 2>&1) || status=$?
   if [ "$status" -gt 1 ]; then
+    rm -rf "$tmp"
     printf 'error\t%s\t\t\t%s\n' "$rel" "$(echo "$output" | tr '\t\n' '  ')"
     return
   fi
-  # AE prints large counts in e-notation, e.g. "6.00254e+06 (0.31)"; take the first field as a number.
-  local pixels percent
-  pixels=$(echo "$output" | awk '{ printf "%.0f", $1 }')
+  # Not compare's AE metric: ImageMagick 7.1 averages it over channels, so it undercounts changed pixels.
+  pixels=$(im_convert "$tmp/before.png" "$tmp/after.png" -alpha off -compose difference -composite \
+    -separate -evaluate-sequence max -threshold "$FUZZ" -format '%[fx:round(mean*w*h)]' info:)
+  rm -rf "$tmp"
   percent=$(awk -v p="$pixels" -v t="$((w * h))" 'BEGIN { printf "%.2f", p * 100 / t }')
   if [ "$pixels" -eq 0 ]; then
     rm -f "$diff"
@@ -257,7 +267,7 @@ write_summary() {
 }
 
 run_comparison() {
-  [ -n "$MAGICK" ] || die "ImageMagick 7 'magick' not found (brew install imagemagick)"
+  declare -F im_compare >/dev/null || die "ImageMagick not found (brew install imagemagick)"
   cd "$PROJECT_ROOT"
   unset APP_VERSION GIT_REV
   export LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
