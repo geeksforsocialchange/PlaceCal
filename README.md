@@ -37,6 +37,8 @@ bin/setup
 
 This will install dependencies, create the database, and seed it with development data.
 
+When `.ruby-version` changes, install that Ruby first (with rbenv, `rbenv install --skip-existing`), then run `bin/setup` again. Once it works, remove the previous Ruby if no other project uses it (`rbenv uninstall <old version>`); each one takes 0.5 to 1GB.
+
 - **Login**: `root@placecal.org` / `password`
 
 See [SEEDS.md](SEEDS.md) for full details on what gets created (users, sites, partners, events).
