@@ -27,7 +27,7 @@
 		}
 
 		svg {
-			color: $base-primary;
+			color: var(--base-primary);
 			width: 2.5rem;
 			height: 2.5rem;
 			flex-shrink: 0;
@@ -41,7 +41,7 @@
 	}
 
 	cite {
-		color: $base-primary;
+		color: var(--base-primary);
 		display: contents;
 		font-style: normal;
 	}

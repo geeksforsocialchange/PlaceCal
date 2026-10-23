@@ -51,7 +51,7 @@
 			width: 1em;
 			height: 1em;
 			flex-shrink: 0;
-			color: $base-primary;
+			color: var(--base-primary);
 		}
 
 		&--last {
