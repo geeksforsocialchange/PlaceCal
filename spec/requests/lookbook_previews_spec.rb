@@ -33,6 +33,15 @@ RSpec.describe "Lookbook previews", type: :request do
     expect(failures).to be_empty
   end
 
+  it "keeps directory previews off local-site themes" do
+    get "/lookbook/previews/directory_footer/default/preview?_display=#{CGI.escape({ theme: 'transdimension' }.to_json)}"
+    expect(response).to be_successful
+    expect(response.body).not_to include("transdimension/theme")
+
+    get "/lookbook/previews/event/list_view/preview?_display=#{CGI.escape({ theme: 'transdimension' }.to_json)}"
+    expect(response.body).to include("transdimension/theme")
+  end
+
   it "shows every scenario on a component's own page" do
     get "/lookbook/previews/event"
     expect(response).to be_successful

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# @display context directory
 class DirectoryEventRowPreview < Lookbook::Preview
   include PreviewSupport
 
