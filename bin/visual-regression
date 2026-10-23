@@ -14,6 +14,7 @@ HARNESS_FILES=(
 )
 FUZZ="${VR_FUZZ:-1%}"
 JOBS="${VR_JOBS:-4}"
+NOISE="${VR_NOISE_PIXELS:-250}"
 BROWSERS="${VR_BROWSERS:-chromium webkit}"
 DATABASE_URL_HEAD="${VR_DATABASE_URL:-postgres:///placecal_vr}"
 DATABASE_URL_BASE="${DATABASE_URL_HEAD}_base"
@@ -48,6 +49,7 @@ Environment:
                     the base side uses the same URL with a _base suffix and is dropped on exit
   VR_FUZZ           ImageMagick colour fuzz before a pixel counts as changed (default: 1%)
   VR_JOBS           Parallel image comparisons (default: 4)
+  VR_NOISE_PIXELS   Changed pixels at or below which a diff is listed as likely noise (default: 250)
 
 Output (tmp/visual_regression/):
   base/<key>/<browser>/*.png   current/<browser>/*.png   diff/<browser>/*.png   summary.md
@@ -214,6 +216,8 @@ diff_one() {
   if [ "$pixels" -eq 0 ]; then
     rm -f "$diff"
     printf 'same\t%s\t0\t0.00\t0\n' "$rel"
+  elif [ "$pixels" -le "$NOISE" ] && [ "$ah" -eq "$bh" ]; then
+    printf 'noise\t%s\t%s\t%s\t0\n' "$rel" "$pixels" "$percent"
   else
     printf 'changed\t%s\t%s\t%s\t%s\n' "$rel" "$pixels" "$percent" "$((ah - bh))"
   fi
@@ -231,12 +235,13 @@ generate_diffs() {
 
 write_summary() {
   local results="$1" summary="$2" base_label="$3" base_sha="$4" head_label="$5"
-  local total changed new removed errors
+  local total changed new removed errors noise
   total=$(wc -l <"$results" | tr -d ' ')
   changed=$(grep -c '^changed' "$results" || true)
   new=$(grep -c '^new' "$results" || true)
   removed=$(grep -c '^removed' "$results" || true)
   errors=$(grep -c '^error' "$results" || true)
+  noise=$(grep -c '^noise' "$results" || true)
   {
     echo "<!-- visual-regression-summary -->"
     echo "## Visual regression"
@@ -262,6 +267,11 @@ write_summary() {
       awk -F'\t' '$1 == "new" || $1 == "removed" || $1 == "error" { printf "| %s | | | %s | |\n", $2, $1 }' "$results"
       echo
       echo "Diff images (changed pixels in red) are in the \`visual-regression\` artifact."
+    fi
+    if [ "$noise" -gt 0 ]; then
+      echo
+      echo "$noise more differ by $NOISE pixels or fewer at the same height, which is usually font anti-aliasing:" \
+        "$(awk -F'\t' '$1 == "noise" { printf "%s%s (%s px)", sep, $2, $3; sep = ", " }' "$results")."
     fi
   } >"$summary"
 }

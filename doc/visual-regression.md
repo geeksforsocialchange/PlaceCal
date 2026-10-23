@@ -26,7 +26,7 @@ A bare branch name prefers its remote-tracking branch from whichever remote has 
 
 It exits non-zero only when capture fails. A full run with a fresh baseline takes about two and a half minutes on a recent Mac; with a cached baseline, about one and a half.
 
-Environment variables: `VR_BROWSERS` (default `chromium webkit`), `VR_DATABASE_URL` (default `postgres:///placecal_vr`), `VR_FUZZ` (per-channel tolerance before a pixel counts as changed, default `1%`), `VR_JOBS` (parallel comparisons, default 4).
+Environment variables: `VR_BROWSERS` (default `chromium webkit`), `VR_DATABASE_URL` (default `postgres:///placecal_vr`), `VR_FUZZ` (per-channel tolerance before a pixel counts as changed, default `1%`), `VR_JOBS` (parallel comparisons, default 4), `VR_NOISE_PIXELS` (a diff of this many pixels or fewer, with no height change, is listed separately as likely anti-aliasing rather than counted as a change, default 250).
 
 ## Output
 
