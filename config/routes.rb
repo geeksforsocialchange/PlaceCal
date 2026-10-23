@@ -146,7 +146,6 @@ Rails.application.routes.draw do
   get '/partners/:id/events', to: 'partners#show'
   get '/partners/:id/events/:year/:month/:day', to: 'partners#show', constraints: ymd
   get '/places', to: 'partners#index'
-  get '/partners/:id/embed', to: 'places#embed'
 
   # News
   resources :news, only: %i[index show]
@@ -168,7 +167,6 @@ Rails.application.routes.draw do
   get '/places/:id', to: 'partners#show'
   get '/places/:id/events', to: 'partners#show'
   get '/places/:id/events/:year/:month/:day', to: 'partners#show', constraints: ymd
-  get '/places/:id/embed', to: 'places#embed'
 
   get 'our-story', to: 'pages#our_story'
 
