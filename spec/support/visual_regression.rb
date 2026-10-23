@@ -24,9 +24,9 @@ module VisualRegression
     "join_home" => -> { vr_url("join", "/") }
   }.freeze
 
-  # Maps load third-party tiles at their own pace, so the screenshot shows only the map's box.
+  # Leaflet arrives from a CDN and may or may not have initialised the map by capture time, so keep only its space.
   SCREENSHOT_STYLE = <<~CSS
-    [data-controller~="leaflet"] * { visibility: hidden !important; }
+    [data-controller~="leaflet"], [data-controller~="leaflet"] * { visibility: hidden !important; }
     *, *::before, *::after { caret-color: transparent !important; }
   CSS
 
