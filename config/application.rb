@@ -52,5 +52,18 @@ module PlaceCal
         resource '/widget.js', headers: :any, methods: %i[get options]
       end
     end
+
+    # Lookbook component previews (http://lvh.me:3000/lookbook); the gem loads in development and test only
+    if defined?(Lookbook)
+      config.lookbook.project_name = 'PlaceCal'
+      config.lookbook.preview_paths = ['spec/components/previews']
+      config.lookbook.page_paths = ['spec/components/docs']
+      config.lookbook.preview_layout = 'lookbook_preview'
+      # Themes register in initializers, so the dropdown can only be built after them
+      config.after_initialize do
+        config.lookbook.preview_display_options = { theme: PlaceCal::Extensions.theme_names }
+        Rack::MiniProfiler.config.skip_paths << '/lookbook' if defined?(Rack::MiniProfiler)
+      end
+    end
   end
 end
