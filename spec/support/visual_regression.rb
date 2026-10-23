@@ -24,9 +24,11 @@ module VisualRegression
     "join_home" => -> { vr_url("join", "/") }
   }.freeze
 
-  # Leaflet arrives from a CDN and may or may not have initialised the map by capture time, so keep only its space.
-  SCREENSHOT_STYLE = <<~CSS
-    [data-controller~="leaflet"], [data-controller~="leaflet"] * { visibility: hidden !important; }
+  # Leaflet arrives from a CDN and may or may not have initialised a map by capture time, so keep only its space.
+  MAP_SELECTORS = %w[[data-controller~="leaflet"] [data-controller~="cluster-map"] .leaflet-container].freeze
+
+  SCREENSHOT_STYLE = <<~CSS.freeze
+    #{MAP_SELECTORS.flat_map { |selector| [selector, "#{selector} *"] }.join(', ')} { visibility: hidden !important; }
     *, *::before, *::after { caret-color: transparent !important; }
   CSS
 
