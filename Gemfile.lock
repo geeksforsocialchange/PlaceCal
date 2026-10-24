@@ -419,7 +419,7 @@ GEM
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2026.1013)
+    mime-types-data (3.2026.1020)
     mini_magick (5.4.0)
       logger
     mini_mime (1.1.5)
@@ -490,7 +490,7 @@ GEM
       phlex (~> 2.4.0)
       railties (>= 7.1, < 9)
       zeitwerk (~> 2.7)
-    playwright-ruby-client (1.58.1)
+    playwright-ruby-client (1.64.0)
       base64
       concurrent-ruby (>= 1.1.6)
       mime-types (>= 3.0)
@@ -839,7 +839,7 @@ DEPENDENCIES
   phlex-rails (~> 2.3)
   placecal-theme-mossley!
   placecal-theme-transdimension!
-  playwright-ruby-client (~> 1.58.0)
+  playwright-ruby-client (~> 1.64.0)
   propshaft
   puma
   pundit
