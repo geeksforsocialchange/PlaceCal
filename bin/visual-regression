@@ -9,6 +9,7 @@ SPEC_FILE="spec/system/visual_regression_spec.rb"
 HARNESS_FILES=(
   "$SPEC_FILE"
   spec/support/visual_regression.rb
+  spec/support/visual_regression_settle.js
   spec/support/playwright.rb
   spec/support/shared_contexts/normal_island_data.rb
 )
