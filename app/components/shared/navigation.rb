@@ -187,7 +187,7 @@ class Components::Shared::Navigation < Components::Base
       *(if @site.nil?
           [
             'text-foreground font-bold',
-            'after:h-[3.5px] after:mt-0.5 after:transition-colors after:duration-300',
+            'after:h-0.75 after:mt-0.5 after:transition-colors after:duration-300',
             'hover:after:bg-foreground'
           ]
         else

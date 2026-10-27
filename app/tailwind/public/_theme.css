@@ -242,6 +242,9 @@ this file).
 	/* Map heights */
 	--height-map: 280px;
 	--height-map-lg: 360px;
+	/* Local-site event and partner maps */
+	--height-map-compact: 330px;
+	--height-map-full: 500px;
 	--height-field: var(--height-field);
 
 	/* Border radii */
