@@ -29,8 +29,8 @@ class Views::Join::Audience < Views::Join::Base
         h1(class: 'join-headline max-w-(--width-prose-lg) m-0 mb-4') { t("#{prefix}.hero") }
         p(class: 'text-base leading-relaxed text-foreground-dark max-w-(--width-prose) mt-0 mb-6') { t("#{prefix}.subhero") }
         div(class: 'flex gap-2.5 flex-wrap items-center') do
-          a(href: join_demo_path, class: 'btn-dark') { t('join.audiences.cta_demo') }
-          a(href: join_features_path, class: 'btn-primary-outline') { t('join.audiences.cta_features') }
+          UI::Button(variant: :dark, href: join_demo_path) { t('join.audiences.cta_demo') }
+          UI::Button(variant: :outline, href: join_features_path) { t('join.audiences.cta_features') }
         end
       end
     end

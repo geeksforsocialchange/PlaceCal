@@ -88,16 +88,8 @@ class Views::Directory::Events::Index < Views::Base
 
   def render_buttons
     div(class: 'flex gap-2 items-end') do
-      button(type: 'submit',
-             class: 'bg-foreground text-background rounded-full px-5 py-2 text-sm font-bold border-0 cursor-pointer hover:bg-tertiary transition-colors') do
-        plain t('directory.filters.apply')
-      end
-      if any_filter_active?
-        a(href: events_path,
-          class: 'inline-flex items-center rounded-full px-4 py-2 text-sm font-bold text-tertiary border-2 border-rules no-underline hover:border-foreground transition-colors') do
-          plain t('directory.filters.clear')
-        end
-      end
+      UI::Button(variant: :dark, size: :sm, shape: :field, type: 'submit') { t('directory.filters.apply') }
+      UI::Button(variant: :dark_outline, size: :sm, shape: :field, href: events_path) { t('directory.filters.clear') } if any_filter_active?
     end
   end
 

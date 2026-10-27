@@ -152,8 +152,7 @@ class Views::Directory::OurStory < Views::Base
           h2(class: 'my-0 font-serif font-regular text-display leading-tight text-foreground') do
             t("#{T}.cta.heading")
           end
-          link_to @cta_path || get_in_touch_path,
-                  class: 'with-no-sass btn-home-outline' do
+          UI::Button(variant: :light, size: :lg, href: @cta_path || get_in_touch_path) do
             plain @cta_label || t("#{T}.cta.button")
             span(aria_hidden: 'true') { safe('→') }
           end

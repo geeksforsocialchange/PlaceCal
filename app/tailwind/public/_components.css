@@ -1,31 +1,3 @@
-/* Button components */
-a.btn-primary-outline,
-button.btn-primary-outline {
-	@apply inline-flex items-center gap-2 bg-home-background border-2 border-primary rounded-full px-5 py-2 text-detail font-bold no-underline;
-	color: var(--color-foreground);
-}
-a.btn-primary-outline:hover,
-button.btn-primary-outline:hover {
-	@apply bg-primary;
-}
-
-a.btn-dark {
-	@apply inline-flex items-center gap-2 bg-foreground font-bold rounded-full px-6 py-3 text-sm no-underline;
-	color: var(--color-background);
-}
-a.btn-dark:hover {
-	@apply bg-tertiary;
-}
-
-a.btn-dark-outline {
-	@apply inline-flex items-center gap-2 border-2 border-foreground rounded-full px-5 py-2 text-detail font-bold no-underline;
-	color: var(--color-foreground);
-}
-a.btn-dark-outline:hover {
-	@apply bg-foreground;
-	color: var(--color-background);
-}
-
 /* Custom select dropdown option states */
 .custom-select-option {
 	color: var(--color-background);
@@ -319,31 +291,6 @@ textarea.join-control {
 	color: var(--color-foreground);
 }
 
-/* Join site primary CTA. Element-qualified so it outranks the legacy a:not(.with-no-sass) colour. */
-a.btn-join,
-input.btn-join {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.5rem;
-	background: var(--color-secondary-strong);
-	color: var(--color-background);
-	font-weight: 700;
-	font-size: var(--text-base);
-	padding: 0.7rem 1.5rem;
-	border: 0;
-	border-radius: 9999px;
-	box-shadow: 0 0 0 2px var(--color-secondary-strong);
-	text-decoration: none;
-	cursor: pointer;
-	transition: 0.2s;
-}
-a.btn-join:hover,
-input.btn-join:hover {
-	background: var(--color-foreground);
-	box-shadow: 0 0 0 2px var(--color-foreground);
-	color: var(--color-background);
-}
-
 /* Flash messages — distinct success / error states (Components::Shared::Flash) */
 .flash-message {
 	border-radius: var(--radius-card);
@@ -377,14 +324,6 @@ input.btn-join:hover {
 }
 .badge--tight {
 	@apply px-2;
-}
-
-/* Inverting outline button on cream sections (e.g. Our Story "show more"). */
-a.btn-home-outline {
-	@apply inline-flex items-center gap-2 rounded-full border-2 border-home-background bg-home-background px-6 py-[0.7rem] text-base font-bold text-foreground no-underline transition-colors;
-}
-a.btn-home-outline:hover {
-	@apply border-foreground bg-foreground text-background;
 }
 
 /* Override leaflet.markercluster default styles */

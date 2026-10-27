@@ -1,0 +1,49 @@
+# frozen_string_literal: true
+
+class Components::UI::Button < Components::Base
+  BASE = 'inline-flex items-center justify-center gap-2 border-2 font-bold no-underline cursor-pointer transition-colors duration-150'
+
+  VARIANTS = {
+    primary: 'bg-primary border-primary text-foreground hover:bg-primary-light hover:border-primary-light',
+    dark: 'bg-foreground border-foreground text-background hover:bg-tertiary hover:border-tertiary',
+    outline: 'bg-home-background border-primary text-foreground hover:bg-primary',
+    dark_outline: 'bg-transparent border-foreground text-foreground hover:bg-foreground hover:text-background',
+    # Cream fill for coloured panels, e.g. the Our Story call to action.
+    light: 'bg-home-background border-home-background text-foreground hover:bg-foreground hover:border-foreground hover:text-background',
+    join: 'bg-secondary-strong border-secondary-strong text-background hover:bg-foreground hover:border-foreground'
+  }.freeze
+
+  SIZES = {
+    sm: 'px-4 text-sm',
+    md: 'px-5 text-detail',
+    lg: 'px-6 text-base'
+  }.freeze
+
+  PILL_PADDING = { sm: 'py-1.5', md: 'py-2', lg: 'py-3' }.freeze
+
+  prop :variant, _Union(*VARIANTS.keys)
+  prop :size, _Union(*SIZES.keys), default: :md
+  # :field squares the corners and matches the height of the filter form controls.
+  prop :shape, _Union(:pill, :field), default: :pill
+  prop :href, _Nilable(String), default: nil
+  prop :type, String, default: 'button'
+  prop :attributes, Hash, :**
+
+  def view_template(&)
+    attributes = @attributes.except(:class)
+
+    if @href
+      # with-no-sass keeps the legacy SCSS link colour off.
+      a(href: @href, class: "with-no-sass #{css}", **attributes, &)
+    else
+      button(type: @type, class: css, **attributes, &)
+    end
+  end
+
+  private
+
+  def css
+    shape = @shape == :field ? 'h-(--height-field) rounded-sm' : "#{PILL_PADDING[@size]} rounded-pill"
+    [BASE, VARIANTS[@variant], SIZES[@size], shape, @attributes[:class]].compact.join(' ')
+  end
+end

@@ -10,7 +10,7 @@
 @source "../views/{directory,join,sites,shared,devise}/**/*.rb";
 @source "../views/layouts/application.rb";
 @source "../views/*.rb";
-@source "../components/{shared,sites,directory,join}/**/*.rb";
+@source "../components/{ui,shared,sites,directory,join}/**/*.rb";
 @source "../components/*.rb";
 @source "../helpers/**/*.rb";
 @source "../javascript/**/*.js";
