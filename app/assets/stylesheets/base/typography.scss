@@ -2,14 +2,16 @@
 // note that this will increase the selector specificity so it's still not ideal
 
 // Large titles at the top of the page
-h1 {
-	font-family: $serif;
-	font-weight: normal;
-	font-size: $h1-size;
-	line-height: 1;
+@layer legacy {
+	h1 {
+		font-family: $serif;
+		font-weight: normal;
+		font-size: $h1-size;
+		line-height: 1;
 
-	@include for-tablet-portrait-up {
-		line-height: 1.25;
+		@include for-tablet-portrait-up {
+			line-height: 1.25;
+		}
 	}
 }
 
@@ -196,7 +198,9 @@ br.half {
 	font-weight: $regular;
 }
 
-input {
-	font-family: $sans-serif;
-	font-size: inherit;
+@layer legacy {
+	input {
+		font-family: $sans-serif;
+		font-size: inherit;
+	}
 }

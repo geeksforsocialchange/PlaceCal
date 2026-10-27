@@ -1,11 +1,13 @@
-button {
-	font-size: 100%;
-	margin: 0;
-	overflow: visible;
-	text-transform: none;
-	-webkit-appearance: button;
-	cursor: pointer;
-	border: 0;
+@layer legacy {
+	button {
+		font-size: 100%;
+		margin: 0;
+		overflow: visible;
+		text-transform: none;
+		-webkit-appearance: button;
+		cursor: pointer;
+		border: 0;
+	}
 }
 
 .btn {
