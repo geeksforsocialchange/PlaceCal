@@ -97,6 +97,10 @@
 	/* pills: buttons, chips, badges */
 	--radius-pill: 9999px;
 
+	/* Sizes */
+	/* filter-row form controls and the buttons beside them */
+	--height-field: 42px;
+
 	/* Colours */
 
 	/* app/assets/stylesheets/variables/colours.scss and app/assets/stylesheets/application.scss */
@@ -238,6 +242,7 @@ this file).
 	/* Map heights */
 	--height-map: 280px;
 	--height-map-lg: 360px;
+	--height-field: var(--height-field);
 
 	/* Border radii */
 	--radius-card: var(--radius-card);
