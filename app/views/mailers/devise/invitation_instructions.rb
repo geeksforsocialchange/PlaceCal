@@ -9,20 +9,19 @@ class Views::Mailers::Devise::InvitationInstructions < Views::Mailers::Base
 
     p { "#{greeting_text(resource)}," }
 
-    p { "You've been invited to join PlaceCal! You can accept this invite by clicking the link below." }
+    p { t('mailers.invitation_instructions.intro') }
 
-    p { link_to 'Join PlaceCal', accept_invitation_url(resource, invitation_token: token) }
+    p { link_to t('mailers.invitation_instructions.link'), accept_invitation_url(resource, invitation_token: token) }
 
-    p { "If you don't want to accept the invitation, please ignore this email." }
+    p { t('mailers.invitation_instructions.ignore') }
 
-    p { "Your account won't be created until you access the link above and set your password." }
+    p { t('mailers.invitation_instructions.not_created') }
 
     p do
-      plain 'By accepting the invitation and finalising your PlaceCal account you hereby agree to the PlaceCal '
-      link_to 'Terms of Use', terms_of_use_url
-      plain '.'
+      raw t('mailers.invitation_instructions.terms_html',
+            terms_link: view_context.link_to(t('mailers.invitation_instructions.terms_link'), terms_of_use_url))
     end
 
-    p { '- The PlaceCal Team' }
+    p { t('mailers.sign_off') }
   end
 end

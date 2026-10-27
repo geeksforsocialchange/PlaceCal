@@ -3,13 +3,6 @@
 class DeviseMailer < Devise::Mailer
   helper MailerHelper
 
-  def confirmation_instructions(record, token, opts = {})
-    @token = token
-    devise_mail(record, :confirmation_instructions, opts) do |format|
-      format.html { render Views::Mailers::Devise::ConfirmationInstructions.new(resource: record, token:) }
-    end
-  end
-
   def reset_password_instructions(record, token, opts = {})
     @token = token
     devise_mail(record, :reset_password_instructions, opts) do |format|
@@ -26,13 +19,6 @@ class DeviseMailer < Devise::Mailer
   def email_changed(record, opts = {})
     devise_mail(record, :email_changed, opts) do |format|
       format.html { render Views::Mailers::Devise::EmailChanged.new(resource: record) }
-    end
-  end
-
-  def unlock_instructions(record, token, opts = {})
-    @token = token
-    devise_mail(record, :unlock_instructions, opts) do |format|
-      format.html { render Views::Mailers::Devise::UnlockInstructions.new(resource: record, token:) }
     end
   end
 

@@ -2,6 +2,7 @@
 
 module MailerHelper
   def greeting_text(user)
-    ['Hello', user.full_name].join(' ').strip
+    name = user.full_name.to_s.strip
+    name.empty? ? I18n.t('mailers.greeting') : I18n.t('mailers.greeting_with_name', name:)
   end
 end

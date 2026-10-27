@@ -7,9 +7,9 @@ class Views::Mailers::Devise::EmailChanged < Views::Mailers::Base
     p { "#{greeting_text(resource)}," }
 
     if resource.try(:unconfirmed_email?)
-      p { "We're contacting you to notify you that your email is being changed to #{resource.unconfirmed_email}." }
+      p { t('mailers.email_changed.changing', email: resource.unconfirmed_email) }
     else
-      p { "We're contacting you to notify you that your email has been changed to #{resource.email}." }
+      p { t('mailers.email_changed.changed', email: resource.email) }
     end
   end
 end

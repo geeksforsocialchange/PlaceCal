@@ -1,30 +1,18 @@
 # frozen_string_literal: true
 
-class Views::Mailers::Moderation::HiddenStaffAlert < Views::Mailers::Base
-  prop :partner, Partner, reader: :private
-  prop :reason, String, reader: :private
+class Views::Mailers::Moderation::HiddenStaffAlert < Views::Mailers::Moderation::Base
   prop :moderator, User, reader: :private
 
   def email_content
     div { image_tag(image_url('logo.png'), height: '75') }
 
     p do
-      "A partner (#{partner.name}, id: #{partner.id}) has been hidden by an admin user (#{moderator.email}, id: #{moderator.id}). " \
-        "Below is a copy of the email sent to that partner's admins, with the reason given for taking this action."
+      t('mailers.moderation.hidden_staff_alert.intro', name: partner.name, id: partner.id,
+                                                       moderator_email: moderator.email, moderator_id: moderator.id)
     end
 
     p { '---------------------------' }
 
-    p { "Your partner (#{partner.name}, id: #{partner.id}) has been hidden from PlaceCal for the following reasons:" }
-
-    raw safe(reason.to_s)
-
-    p do
-      plain 'Once you have fixed this issue get in touch with '
-      a(href: 'mailto:support@placecal.org') { 'support@placecal.org' }
-      plain ' so that we can make you public again. If you feel this was in error, or that this action is unreasonable, you can raise a support ticket with PlaceCal here: '
-      a(href: 'mailto:support@placecal.org') { 'support@placecal.org' }
-      plain '.'
-    end
+    render_hidden_notice
   end
 end
