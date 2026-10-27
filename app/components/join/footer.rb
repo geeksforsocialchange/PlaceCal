@@ -11,7 +11,7 @@ class Components::Join::Footer < Components::Join::Base
   private
 
   def render_grid
-    div(class: 'container-public grid grid-cols-1 md:grid-cols-[1.4fr_1fr_1fr_1fr] gap-8') do
+    div(class: 'container-public grid grid-cols-1 md:grid-cols-footer gap-8') do
       render_brand_column
       render_link_column(t('join.footer.audiences'), audience_links)
       render_link_column(t('join.footer.product'), [

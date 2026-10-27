@@ -101,3 +101,8 @@
 @utility grid-cols-rollout-wide {
 	grid-template-columns: --spacing(14) --spacing(44) 1fr;
 }
+
+/* Brand column, then three link columns */
+@utility grid-cols-footer {
+	grid-template-columns: 1.4fr 1fr 1fr 1fr;
+}

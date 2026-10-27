@@ -58,8 +58,8 @@ class Views::Join::Audience < Views::Join::Base
       steps = t('join.rollout.steps')
       steps.each_with_index do |step, index|
         last = index == steps.length - 1
-        div(class: "grid grid-cols-[60px_1fr] gap-5 items-start py-4 #{'border-b-2 border-rules' unless last}") do
-          div(class: 'size-13 rounded-full bg-home-background text-foreground grid place-items-center font-serif text-subhead') do
+        div(class: "flex gap-5 items-start py-4 #{'border-b-2 border-rules' unless last}") do
+          div(class: 'size-13 shrink-0 rounded-full bg-home-background text-foreground grid place-items-center font-serif text-subhead') do
             plain (index + 1).to_s
           end
           div do
