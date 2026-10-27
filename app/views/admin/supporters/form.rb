@@ -50,7 +50,8 @@ class Views::Admin::Supporters::Form < Views::Admin::Base
 
   def render_submit_buttons(form)
     div(class: 'flex items-center gap-4 pt-4') do
-      raw form.button(:submit, class: 'inline-flex justify-center rounded-md bg-placecal-orange px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-placecal-orange focus:ring-offset-2')
+      raw form.button(:submit, class: 'inline-flex justify-center rounded-md bg-placecal-orange px-4 py-2 text-sm font-semibold text-white ' \
+                                      'shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-placecal-orange focus:ring-offset-2')
       unless supporter.new_record?
         link_to('Destroy Supporter', admin_supporter_path(supporter),
                 method: :delete,

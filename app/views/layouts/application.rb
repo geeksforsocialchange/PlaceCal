@@ -32,7 +32,10 @@ class Views::Layouts::Application < Phlex::HTML
         preload_font('trocchi/Trocchi-Regular.woff2')
         render_meta
         shim_url = asset_path('es-module-shims.js')
-        script { raw safe("if(!HTMLScriptElement.supports||!HTMLScriptElement.supports('importmap')){var s=document.createElement('script');s.src='#{shim_url}';s.async=true;document.head.appendChild(s)}") }
+        script do
+          raw safe("if(!HTMLScriptElement.supports||!HTMLScriptElement.supports('importmap')){" \
+                   "var s=document.createElement('script');s.src='#{shim_url}';s.async=true;document.head.appendChild(s)}")
+        end
         javascript_importmap_tags
         script { raw safe(matomo_tracking_js) } if Rails.env.production?
         meta(name: 'turbo-refresh-method', content: 'morph')

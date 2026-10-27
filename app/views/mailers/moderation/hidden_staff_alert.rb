@@ -8,7 +8,10 @@ class Views::Mailers::Moderation::HiddenStaffAlert < Views::Mailers::Base
   def email_content
     div { image_tag(image_url('logo.png'), height: '75') }
 
-    p { "A partner (#{partner.name}, id: #{partner.id}) has been hidden by an admin user (#{moderator.email}, id: #{moderator.id}). Below is a copy of the email sent to that partner's admins, with the reason given for taking this action." }
+    p do
+      "A partner (#{partner.name}, id: #{partner.id}) has been hidden by an admin user (#{moderator.email}, id: #{moderator.id}). " \
+        "Below is a copy of the email sent to that partner's admins, with the reason given for taking this action."
+    end
 
     p { '---------------------------' }
 

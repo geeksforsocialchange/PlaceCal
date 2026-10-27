@@ -28,7 +28,10 @@ class Views::Layouts::Admin::Application < Phlex::HTML
         csrf_meta_tags
         stylesheet_link_tag 'admin_tailwind', media: 'all', 'data-turbo-track': 'reload'
         shim_url = asset_path('es-module-shims.js')
-        script { raw safe("if(!HTMLScriptElement.supports||!HTMLScriptElement.supports('importmap')){var s=document.createElement('script');s.src='#{shim_url}';s.async=true;document.head.appendChild(s)}") }
+        script do
+          raw safe("if(!HTMLScriptElement.supports||!HTMLScriptElement.supports('importmap')){" \
+                   "var s=document.createElement('script');s.src='#{shim_url}';s.async=true;document.head.appendChild(s)}")
+        end
         javascript_importmap_tags
         render_meta
       end

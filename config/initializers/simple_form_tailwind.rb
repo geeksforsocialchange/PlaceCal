@@ -64,7 +64,8 @@ SimpleForm.setup do |config|
     b.use :html5
     b.optional :readonly
     b.use :label, class: 'block text-sm font-medium text-gray-700 mb-1'
-    b.use :input, class: 'block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-placecal-orange file:text-white hover:file:bg-orange-600',
+    b.use :input, class: 'block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm ' \
+                         'file:font-semibold file:bg-placecal-orange file:text-white hover:file:bg-orange-600',
                   error_class: 'border-red-500'
     b.use :full_error, wrap_with: { tag: 'p', class: 'mt-1 text-sm text-red-600' }
     b.use :hint, wrap_with: { tag: 'p', class: 'mt-1 text-sm text-gray-500' }

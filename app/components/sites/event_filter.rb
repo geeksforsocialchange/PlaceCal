@@ -210,7 +210,9 @@ class Components::Sites::EventFilter < Components::Base
   end
 
   def build_sort_filter_form
-    view_context.form_tag('', method: :get, class: 'filters__form', enforce_utf8: false, data: { turbo_frame: 'events-browser', turbo_action: 'advance', filters_target: 'form', action: 'change->filters#submit' }) do
+    view_context.form_tag('', method: :get, class: 'filters__form', enforce_utf8: false,
+                              data: { turbo_frame: 'events-browser', turbo_action: 'advance',
+                                      filters_target: 'form', action: 'change->filters#submit' }) do
       buf = ActiveSupport::SafeBuffer.new
       buf << view_context.hidden_field_tag(:region, @selected_region.slug, id: nil) if @selected_region
       buf << build_sort_toggle
