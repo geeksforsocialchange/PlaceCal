@@ -12,23 +12,8 @@ class Components::Directory::ToggleTabs < Components::Directory::Base
   def view_template
     nav(class: 'flex gap-1 flex-wrap py-2', aria_label: @aria_label) do
       @items.each do |item|
-        if item[:active]
-          span(class: active_class) { plain item[:label] }
-        else
-          a(href: item[:href], class: inactive_class) { plain item[:label] }
-        end
+        UI::Pill(selected: item[:active], href: item[:href]) { plain item[:label] }
       end
     end
-  end
-
-  private
-
-  def active_class
-    'inline-flex items-center px-4 py-1.5 rounded-full text-sm font-bold bg-foreground text-background'
-  end
-
-  def inactive_class
-    'inline-flex items-center px-4 py-1.5 rounded-full text-sm font-bold bg-home-background-3 ' \
-      'text-foreground no-underline hover:bg-primary transition-colors'
   end
 end

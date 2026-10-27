@@ -317,15 +317,6 @@ textarea.join-control {
 	@apply inline-flex items-center justify-center min-w-9 h-9 px-2 rounded-full text-sm font-bold text-background no-underline bg-foreground;
 }
 
-/* Small rounded pill badge (event counts, category chips on partner/partnership
-   cards). Colours stay inline at the call site; --tight trims the padding. */
-.badge {
-	@apply inline-flex items-center text-2xs font-bold rounded-full px-2.5 py-0.5;
-}
-.badge--tight {
-	@apply px-2;
-}
-
 /* Override leaflet.markercluster default styles */
 .marker-cluster-small,
 .marker-cluster-medium,

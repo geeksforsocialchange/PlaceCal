@@ -32,9 +32,7 @@ class Components::Directory::PartnerCard < Components::Directory::Base
 
     div(class: 'flex flex-wrap gap-1 mt-2.5') do
       chips.each do |label|
-        span(class: 'badge badge--tight bg-home-background-3 text-tertiary') do
-          plain label
-        end
+        UI::Pill(variant: :muted) { plain label }
       end
     end
   end

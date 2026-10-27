@@ -39,9 +39,7 @@ class Components::Directory::PartnerRow < Components::Directory::Base
     return unless @event_count.positive?
 
     div(class: 'text-right') do
-      span(class: 'badge bg-primary-light text-foreground') do
-        plain "#{@event_count} #{'event'.pluralize(@event_count)}"
-      end
+      UI::Pill(variant: :count) { t('directory.event_count', count: @event_count) }
     end
   end
 
