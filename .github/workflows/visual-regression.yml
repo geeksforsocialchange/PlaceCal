@@ -35,7 +35,7 @@ concurrency:
 jobs:
   screenshots:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     permissions:
       contents: read
       pull-requests: write
@@ -81,8 +81,9 @@ jobs:
         run: echo "version=$(node -p "require('playwright/package.json').version")" >> "$GITHUB_OUTPUT"
 
       # The browsers' system libraries come from the same .deb cache as ImageMagick and libvips.
+      # A cache miss downloads about 150 packages, which can be slow on the Ubuntu mirror.
       - name: Install Imagemagick, libvips and browser libraries
-        timeout-minutes: 8
+        timeout-minutes: 20
         uses: ./.github/actions/install-apt-packages
         with:
           packages: imagemagick libvips42t64
