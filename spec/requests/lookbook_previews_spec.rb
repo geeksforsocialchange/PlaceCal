@@ -4,11 +4,16 @@ require "rails_helper"
 
 # Previews break silently when a component's props change, so render every one.
 RSpec.describe "Lookbook previews", type: :request do
-  def lookbook_links(path, depth)
-    get path
+  def preview_path(lookup_path)
+    Lookbook::Previews.all.find { it.lookup_path == lookup_path }.url_path
+  end
+
+  # Scenarios are the leaves of the preview tree: links no other link extends.
+  def scenario_links
+    get "/lookbook"
     follow_redirect! while response.redirect?
-    Nokogiri::HTML(response.body).css("a[href^='/lookbook/']").map { it["href"].split("?").first }
-            .select { it.count("/") == depth }.uniq
+    links = Nokogiri::HTML(response.body).css("a[href^='/lookbook/previews/']").map { it["href"].split("?").first }.uniq
+    links.reject { |link| links.any? { it.start_with?("#{link}/") } }
   end
 
   def render_failure(path)
@@ -18,8 +23,14 @@ RSpec.describe "Lookbook previews", type: :request do
     "#{path} raised #{e.class}: #{e.message.lines.first&.strip}"
   end
 
+  it "gives every preview its own URL" do
+    paths = Lookbook::Previews.all.map(&:url_path)
+
+    expect(paths.tally.select { |_, count| count > 1 }).to be_empty
+  end
+
   it "renders every scenario" do
-    scenarios = lookbook_links("/lookbook", 4)
+    scenarios = scenario_links
     expect(scenarios.size).to be > 50
 
     expect(scenarios.filter_map { render_failure("#{it}/preview") }).to be_empty
@@ -27,23 +38,23 @@ RSpec.describe "Lookbook previews", type: :request do
 
   it "renders a preview under every installed theme" do
     failures = PlaceCal::Extensions.theme_names.filter_map do |theme|
-      render_failure("/lookbook/previews/event/list_view/preview?_display=#{CGI.escape({ theme: }.to_json)}")
+      render_failure("#{preview_path('sites/event')}/list_view/preview?_display=#{CGI.escape({ theme: }.to_json)}")
     end
 
     expect(failures).to be_empty
   end
 
   it "keeps directory previews off local-site themes" do
-    get "/lookbook/previews/directory_footer/default/preview?_display=#{CGI.escape({ theme: 'transdimension' }.to_json)}"
+    get "#{preview_path('directory/footer')}/default/preview?_display=#{CGI.escape({ theme: 'transdimension' }.to_json)}"
     expect(response).to be_successful
     expect(response.body).not_to include("transdimension/theme")
 
-    get "/lookbook/previews/event/list_view/preview?_display=#{CGI.escape({ theme: 'transdimension' }.to_json)}"
+    get "#{preview_path('sites/event')}/list_view/preview?_display=#{CGI.escape({ theme: 'transdimension' }.to_json)}"
     expect(response.body).to include("transdimension/theme")
   end
 
   it "shows every scenario on a component's own page" do
-    get "/lookbook/previews/event"
+    get preview_path("sites/event")
     expect(response).to be_successful
     expect(Nokogiri::HTML(response.body).css("lookbook-embed").map { it["scenario"] })
       .to contain_exactly("list_view", "page_view", "online_event", "repeating_event")

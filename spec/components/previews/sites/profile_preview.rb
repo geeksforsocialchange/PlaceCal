@@ -1,0 +1,13 @@
+# frozen_string_literal: true
+
+class Sites::ProfilePreview < Lookbook::Preview
+  # @label With all details
+  def with_all_details
+    render Components::Sites::Profile.new(user: PreviewSupport.sample_user)
+  end
+
+  # @label Without phone
+  def without_phone
+    render Components::Sites::Profile.new(user: PreviewSupport.sample_user_minimal)
+  end
+end
