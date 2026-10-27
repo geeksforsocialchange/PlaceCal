@@ -3,7 +3,7 @@
 # Cascading neighbourhood filter for the directory site.
 #
 # Renders one styled dropdown per geographic level (region > county > district >
-# ward) using the same CustomSelect widget as the other filters, so the open
+# ward) using the same UI::Select widget as the other filters, so the open
 # dropdown looks identical. Every level submits under the `neighbourhood` name;
 # the `neighbourhood-cascade` Stimulus controller disables the other levels on
 # change so only the one you touched is applied. Selecting any level filters its
@@ -22,7 +22,7 @@ class Components::Directory::NeighbourhoodCascade < Components::Directory::Base
       div(class: 'flex flex-wrap gap-2') do
         cascade_levels.each do |level|
           div(class: 'flex-1 min-w-0 md:flex-none md:w-56') do
-            Directory::CustomSelect(
+            UI::Select(
               name: 'neighbourhood',
               label_text: nil,
               options: level[:options],

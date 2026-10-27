@@ -57,18 +57,14 @@ class Views::Directory::Events::Index < Views::Base
   def render_search_field
     div(class: 'flex-1 min-w-50') do
       label(for: 'q', class: 'block allcaps-label text-tertiary mb-1') { t('directory.filters.search') }
-      input(
-        type: 'text', name: 'q', id: 'q', value: @query,
-        placeholder: t('directory.events.index.search_placeholder'),
-        class: 'w-full border-2 border-rules rounded-full px-4 py-2 text-sm bg-background text-foreground outline-none focus:border-foreground transition-colors'
-      )
+      UI::Input(name: 'q', id: 'q', value: @query, placeholder: t('directory.events.index.search_placeholder'))
     end
   end
 
   def render_partnership_select
     return if @partnerships_list.none?
 
-    Directory::CustomSelect(
+    UI::Select(
       name: 'partnership',
       label_text: t('directory.filters.partnership'),
       options: @partnerships_list.map { |item| { id: item[:slug], name: item[:name] } },
@@ -77,7 +73,7 @@ class Views::Directory::Events::Index < Views::Base
   end
 
   def render_period_select
-    Directory::CustomSelect(
+    UI::Select(
       name: 'period',
       label_text: t('directory.events.index.period_label'),
       options: SELECT_PERIODS.map { |value| { id: value, name: period_option_label(value) } },

@@ -29,7 +29,7 @@ class Views::Devise::Base < Views::Base
 
     div(class: 'rounded-card bg-secondary px-4 py-3 mb-4') do
       h2(class: 'font-bold text-sm text-foreground mb-1') do
-        plain "#{resource.errors.count} error(s) prevented this form from being saved:"
+        plain t('errors.messages.not_saved', count: resource.errors.count, resource: resource.model_name.human.downcase)
       end
       ul(class: 'list-disc pl-5 text-sm text-foreground') do
         resource.errors.full_messages.each { |msg| li { msg } }
@@ -41,21 +41,21 @@ class Views::Devise::Base < Views::Base
     div(class: 'flex flex-col gap-1 text-sm') do
       if controller_name != 'sessions'
         a(href: new_session_path(resource_name),
-          class: 'text-foreground underline hover:decoration-primary') { 'Log in' }
+          class: 'text-foreground underline hover:decoration-primary') { t('devise.shared.links.log_in') }
       end
 
       if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations'
         a(href: new_password_path(resource_name),
-          class: 'text-foreground underline hover:decoration-primary') { 'Forgot your password?' }
+          class: 'text-foreground underline hover:decoration-primary') { t('devise.shared.links.forgot_your_password') }
       end
     end
   end
 
-  def input_class
-    'w-full border-2 border-rules rounded-card px-4 py-2 text-sm bg-background text-foreground outline-none focus:border-foreground transition-colors'
+  def render_label(form, attribute, text = resource.class.human_attribute_name(attribute))
+    label(for: form.field_id(attribute), class: 'allcaps-label text-tertiary mb-1 block') { text }
   end
 
-  def submit_class
-    'bg-foreground text-background rounded-card px-6 py-3 text-sm font-bold border-0 cursor-pointer hover:bg-tertiary transition-colors'
+  def render_input(form, attribute, type:, **)
+    UI::Input(type:, name: form.field_name(attribute), id: form.field_id(attribute), **)
   end
 end

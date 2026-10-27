@@ -2,12 +2,12 @@
 
 class Views::Devise::Passwords::Edit < Views::Devise::Base
   def view_template
-    content_for(:title) { 'Change your password' }
+    content_for(:title) { t('devise.passwords.edit.title') }
 
     Directory::PageHero(
-      title: 'Change your password',
-      kicker: 'Account',
-      breadcrumb_label: 'Reset password'
+      title: t('devise.passwords.edit.title'),
+      kicker: t('devise.shared.kicker'),
+      breadcrumb_label: t('devise.passwords.edit.breadcrumb')
     )
 
     div(class: 'container-public py-8') do
@@ -20,24 +20,18 @@ class Views::Devise::Passwords::Edit < Views::Devise::Base
           raw form.hidden_field(:reset_password_token)
 
           div do
-            label(for: 'user_password', class: 'allcaps-label text-tertiary mb-1 block') do
-              plain 'New password'
-            end
+            render_label(form, :password, t('devise.passwords.edit.new_password'))
             min_length = resource.class.password_length.min
-            p(class: 'text-sm text-tertiary mb-1') { "(#{min_length} characters minimum)" } if min_length
-            raw form.password_field(:password, autofocus: true, autocomplete: 'off', class: input_class)
+            p(class: 'text-sm text-tertiary mb-1') { t('devise.passwords.edit.minimum_length', count: min_length) } if min_length
+            render_input(form, :password, type: 'password', autofocus: true, autocomplete: 'new-password')
           end
 
           div do
-            label(for: 'user_password_confirmation', class: 'allcaps-label text-tertiary mb-1 block') do
-              plain 'Confirm new password'
-            end
-            raw form.password_field(:password_confirmation, autocomplete: 'off', class: input_class)
+            render_label(form, :password_confirmation, t('devise.passwords.edit.confirm_new_password'))
+            render_input(form, :password_confirmation, type: 'password', autocomplete: 'new-password')
           end
 
-          div do
-            raw form.submit('Change my password', class: submit_class)
-          end
+          div { UI::Button(variant: :dark, type: 'submit') { t('devise.passwords.edit.submit') } }
         end
 
         div(class: 'mt-6') do

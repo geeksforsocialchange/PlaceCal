@@ -18,8 +18,8 @@ class Components::Directory::PartnerFilter < Components::Directory::Base
          class: 'bg-home-background-3 rounded-card p-4 mb-4 text-sm') do
       div(class: 'flex flex-wrap lg:flex-nowrap gap-3 items-end') do
         render_search_field
-        Directory::CustomSelect(name: 'category', label_text: t('directory.filters.category'), default_label: t('directory.filters.all_categories'), options: @categories, selected: @selected_category) if @categories.any?
-        Directory::CustomSelect(name: 'partnership', label_text: t('directory.filters.partnership'), default_label: t('directory.filters.all_partnerships'), options: @partnerships_list, selected: @selected_partnership) if @partnerships_list.any?
+        UI::Select(name: 'category', label_text: t('directory.filters.category'), default_label: t('directory.filters.all_categories'), options: @categories, selected: @selected_category) if @categories.any?
+        UI::Select(name: 'partnership', label_text: t('directory.filters.partnership'), default_label: t('directory.filters.all_partnerships'), options: @partnerships_list, selected: @selected_partnership) if @partnerships_list.any?
       end
       div(class: 'flex flex-wrap gap-3 items-end mt-3') do
         Directory::NeighbourhoodCascade(tree: @neighbourhoods_tree, selected: @selected_neighbourhood, label_text: t('directory.filters.neighbourhood')) if @neighbourhoods_tree.any?
@@ -35,11 +35,7 @@ class Components::Directory::PartnerFilter < Components::Directory::Base
     # roomy half each instead of three cramped columns; shares the row on lg.
     div(class: 'flex-1 basis-full lg:basis-auto min-w-35') do
       label(for: 'q', class: 'block allcaps-label text-tertiary mb-1') { t('directory.filters.search') }
-      input(
-        type: 'text', name: 'q', id: 'q', value: @query,
-        placeholder: t('directory.filters.search_placeholder'),
-        class: 'w-full h-(--height-field) border-2 border-rules rounded-sm px-4 text-sm bg-background text-foreground outline-none focus:border-foreground transition-colors'
-      )
+      UI::Input(name: 'q', id: 'q', value: @query, placeholder: t('directory.filters.search_placeholder'))
     end
   end
 

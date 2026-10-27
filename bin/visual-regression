@@ -9,6 +9,7 @@ SPEC_FILE="spec/system/visual_regression_spec.rb"
 HARNESS_FILES=(
   "$SPEC_FILE"
   spec/support/visual_regression.rb
+  spec/support/visual_regression_settle.js
   spec/support/playwright.rb
   spec/support/shared_contexts/normal_island_data.rb
 )
@@ -216,7 +217,7 @@ diff_one() {
   fi
   # Not compare's AE metric: ImageMagick 7.1 averages it over channels, so it undercounts changed pixels.
   pixels=$(im_convert "$tmp/before.png" "$tmp/after.png" -alpha off -compose difference -composite \
-    -separate -evaluate-sequence max -threshold "$FUZZ" -format '%[fx:round(mean*w*h)]' info:)
+    -separate -evaluate-sequence max -threshold "$FUZZ" -precision 15 -format '%[fx:round(mean*w*h)]' info:)
   rm -rf "$tmp"
   percent=$(awk -v p="$pixels" -v t="$((w * h))" 'BEGIN { printf "%.2f", p * 100 / t }')
   if [ "$pixels" -eq 0 ]; then

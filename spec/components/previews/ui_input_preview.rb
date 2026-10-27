@@ -1,0 +1,37 @@
+# frozen_string_literal: true
+
+# @display context directory
+class UIInputPreview < Lookbook::Preview
+  # @label Text
+  def text
+    render(Frame.new { |f| f.render Components::UI::Input.new(placeholder: "Search partners") })
+  end
+
+  # @label Filled
+  def filled
+    render(Frame.new { |f| f.render Components::UI::Input.new(type: "email", value: "someone@example.org") })
+  end
+
+  # @label Password
+  def password
+    render(Frame.new { |f| f.render Components::UI::Input.new(type: "password", value: "hunter22") })
+  end
+
+  # @label Filter row
+  # @notes Input, select and field-shaped buttons share one height, as in the partner and event filters.
+  def filter_row
+    render(Frame.new do |f|
+      f.div(style: "display: flex; gap: 0.5rem; align-items: end") do
+        f.div(style: "flex: 1") { f.render Components::UI::Input.new(placeholder: "Search events") }
+        f.render Components::UI::Select.new(name: "period", options: [{ id: "week", name: "This week" }], selected: "week", include_blank: false)
+        f.render Components::UI::Button.new(variant: :dark, size: :sm, shape: :field, type: "submit") { "Filter" }
+      end
+    end)
+  end
+
+  class Frame < Phlex::HTML
+    def view_template(&content)
+      div(style: "min-height: 100vh; padding: 2rem; background: var(--color-background); max-width: 40rem") { yield(self) }
+    end
+  end
+end

@@ -14,6 +14,9 @@ en:
         submit_button: "Send an invitation"
       edit:
         header: "Set your password"
+        breadcrumb: "Accept invitation"
+        new_password: "New password"
+        repeat_password: "Repeat password"
         submit_button: "Set my password"
     mailer:
       invitation_instructions:
