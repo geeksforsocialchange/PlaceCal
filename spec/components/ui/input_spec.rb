@@ -17,11 +17,9 @@ RSpec.describe Components::UI::Input, type: :component do
     expect(input[:autocomplete]).to eq("email")
   end
 
-  it "applies the shared box and keeps extra classes" do
+  it "keeps extra classes alongside its own" do
     render_inline(described_class.new(class: "mt-2"))
 
-    input = page.find("input")
-    expect(input[:class]).to include(described_class::BOX)
-    expect(input[:class]).to include("mt-2")
+    expect(page).to have_css("input.mt-2.rounded-sm")
   end
 end
