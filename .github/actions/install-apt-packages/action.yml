@@ -30,15 +30,18 @@ runs:
         EXTRA: ${{ inputs.extra-packages-command }}
         KEY: ${{ inputs.key }}
       run: |
-        image="${ImageOS:-unknown}-${ImageVersion:-unknown}"
         packages=$(printf '%s\n%s\n%s' "$PACKAGES" "$EXTRA" "$KEY" | sha256sum | cut -c1-12)
-        echo "key=apt-debs-$image-$packages-v1" >> "$GITHUB_OUTPUT"
+        prefix="apt-debs-${ImageOS:-unknown}-$packages-"
+        echo "prefix=$prefix" >> "$GITHUB_OUTPUT"
+        echo "key=$prefix${ImageVersion:-unknown}-v2" >> "$GITHUB_OUTPUT"
 
     - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       id: debs
       with:
         path: ~/apt-debs
         key: ${{ steps.key.outputs.key }}
+        # A new runner image starts from the last one's debs and only downloads what changed.
+        restore-keys: ${{ steps.key.outputs.prefix }}
 
     - name: Download from the Ubuntu mirror
       if: steps.debs.outputs.cache-hit != 'true'
@@ -49,12 +52,26 @@ runs:
       run: |
         debs="$HOME/apt-debs"
         mkdir -p "$debs/partial"
-        sudo apt-get update
+        # A stalled mirror connection otherwise hangs until the job times out.
+        apt_opts=(-o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 -o Acquire::Retries=5)
+        sudo apt-get "${apt_opts[@]}" update
         extra=""
         if [ -n "$EXTRA" ]; then extra=$(bash -c "$EXTRA"); fi
+        # Drop debs left from an older image whose versions no longer match, so dpkg gets one version of each.
         # shellcheck disable=SC2086
-        sudo apt-get install -y --no-install-recommends --download-only \
+        empty=$(mktemp -d) && mkdir "$empty/partial"
+        wanted=$(sudo apt-get install -y --no-install-recommends --print-uris -o Dir::Cache::Archives="$empty" \
+          $PACKAGES $extra | awk '/\.deb/ { print $2 }')
+        echo "$(printf '%s\n' "$wanted" | grep -c .) packages wanted, $(find "$debs" -name '*.deb' | wc -l) debs restored"
+        for f in "$debs"/*.deb; do
+          [ -e "$f" ] || continue
+          printf '%s\n' "$wanted" | grep -qxF "$(basename "$f")" || rm -f "$f"
+        done
+        # shellcheck disable=SC2086
+        sudo apt-get "${apt_opts[@]}" install -y --no-install-recommends --download-only \
           -o Dir::Cache::Archives="$debs" $PACKAGES $extra
+        missing=$(printf '%s\n' "$wanted" | while read -r f; do [ -z "$f" ] || [ -e "$debs/$f" ] || echo "$f"; done | wc -l)
+        echo "$missing wanted debs missing after download"
         sudo rm -rf "$debs/partial" "$debs/lock"
         sudo chown -R "$USER" "$debs"
 
