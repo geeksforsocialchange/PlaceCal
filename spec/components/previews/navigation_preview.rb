@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# @display padding false
 class NavigationPreview < Lookbook::Preview
   # @label Directory (no site)
   def directory

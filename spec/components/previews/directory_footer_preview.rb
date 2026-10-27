@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # @display context directory
+# @display padding false
 class DirectoryFooterPreview < Lookbook::Preview
   # @label Default
   def default

@@ -24,7 +24,7 @@ class UIFieldPreview < Lookbook::Preview
 
   class Frame < Phlex::HTML
     def view_template(&)
-      div(style: "min-height: 100vh; padding: 2rem; background: var(--color-background); max-width: 30rem") { yield(self) }
+      div(style: "max-width: 30rem") { yield(self) }
     end
   end
 end

@@ -55,7 +55,7 @@ class TokensPreview < Lookbook::Preview
     end
 
     def view_template
-      div(style: "min-height: 100vh; padding: 2rem; display: grid; align-content: start; gap: 1.5rem; background: var(--color-background); color: var(--color-foreground)") do
+      div(style: "display: grid; align-content: start; gap: 1.5rem; color: var(--color-foreground)") do
         rows.each { |name, value| row(name, value) }
       end
     end

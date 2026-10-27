@@ -1,5 +1,7 @@
 <%# Directory and join components only appear on placecal.org, so they ignore the Theme menu (`@display context directory`) %>
 <% theme = PlaceCal::Extensions.find_theme(lookbook_display(:theme)) unless lookbook_display(:context) == 'directory' %>
+<%# Every preview gets the same padding; full-width pieces opt out with `@display padding false` %>
+<% padded = !lookbook_display(:padding).in?([false, 'false']) %>
 <!DOCTYPE html>
 <html lang="en" class="<%= 'core-theme' if theme&.core? %>">
 <head>
@@ -17,7 +19,7 @@
   <%= javascript_importmap_tags %>
 </head>
 <body>
-  <div class="page bg-background" style="min-height: 100vh; display: flow-root">
+  <div class="page bg-background" style="min-height: 100vh; display: flow-root<%= '; padding: 2rem' if padded %>">
     <%= yield %>
   </div>
 </body>
