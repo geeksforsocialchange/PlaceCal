@@ -15,8 +15,14 @@ class Components::Directory::PartnerFilter < Components::Directory::Base
     UI::Card(variant: :panel, padding: :sm, tag: :form, action: partners_path, method: 'get', class: 'mb-4 text-sm') do
       div(class: 'flex flex-wrap lg:flex-nowrap gap-3 items-end') do
         render_search_field
-        UI::Select(name: 'category', label_text: t('directory.filters.category'), default_label: t('directory.filters.all_categories'), options: @categories, selected: @selected_category) if @categories.any?
-        UI::Select(name: 'partnership', label_text: t('directory.filters.partnership'), default_label: t('directory.filters.all_partnerships'), options: @partnerships_list, selected: @selected_partnership) if @partnerships_list.any?
+        if @categories.any?
+          UI::Select(name: 'category', label_text: t('directory.filters.category'),
+                     default_label: t('directory.filters.all_categories'), options: @categories, selected: @selected_category)
+        end
+        if @partnerships_list.any?
+          UI::Select(name: 'partnership', label_text: t('directory.filters.partnership'),
+                     default_label: t('directory.filters.all_partnerships'), options: @partnerships_list, selected: @selected_partnership)
+        end
       end
       div(class: 'flex flex-wrap gap-3 items-end mt-3') do
         Directory::NeighbourhoodCascade(tree: @neighbourhoods_tree, selected: @selected_neighbourhood, label_text: t('directory.filters.neighbourhood')) if @neighbourhoods_tree.any?
