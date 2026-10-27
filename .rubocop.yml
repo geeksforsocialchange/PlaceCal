@@ -60,6 +60,9 @@ Layout/LineContinuationLeadingSpace:
 Layout/LineContinuationSpacing:
   Enabled: false
 
+Layout/LineLength:
+  Max: 150
+
 # Enforce consistent section ordering in model files.
 # Maps to the section template defined in #3081.
 Layout/ClassStructure:
