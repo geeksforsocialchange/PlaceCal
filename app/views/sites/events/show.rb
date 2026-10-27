@@ -57,7 +57,7 @@ class Views::Sites::Events::Show < Views::Base
     end
 
     div(class: 'container-public py-6') do
-      div(class: 'lg:grid lg:grid-cols-[1fr_var(--width-sidebar)] lg:gap-8') do
+      div(class: 'lg:grid lg:grid-cols-sidebar lg:gap-8') do
         div do
           render_about_section
           render_where_section if map || event.address

@@ -17,6 +17,7 @@ FUZZ="${VR_FUZZ:-1%}"
 JOBS="${VR_JOBS:-4}"
 NOISE="${VR_NOISE_PIXELS:-250}"
 BROWSERS="${VR_BROWSERS:-chromium webkit}"
+WIDTHS="${VR_WIDTHS:-450 950 1250}"
 DATABASE_URL_HEAD="${VR_DATABASE_URL:-postgres:///placecal_vr}"
 DATABASE_URL_BASE="${DATABASE_URL_HEAD}_base"
 # ImageMagick 7 has one `magick` entry point; Ubuntu's apt package is still 6, with separate commands.
@@ -46,6 +47,7 @@ recaptures.
 
 Environment:
   VR_BROWSERS       Browsers to capture (default: "chromium webkit")
+  VR_WIDTHS         Viewport widths in px (default: "450 950 1250")
   VR_DATABASE_URL   Test database for the current side (default: postgres:///placecal_vr);
                     the base side uses the same URL with a _base suffix and is dropped on exit
   VR_FUZZ           ImageMagick colour fuzz before a pixel counts as changed (default: 1%)
@@ -105,7 +107,7 @@ capture() {
   (
     cd "$dir"
     with_locale env RAILS_ENV=test DATABASE_URL="$url" VISUAL_REGRESSION=1 VR_OUTPUT_DIR="$dest" \
-      VR_BROWSERS="$BROWSERS" PLAYWRIGHT_CLI_EXECUTABLE_PATH="$PROJECT_ROOT/node_modules/.bin/playwright" \
+      VR_BROWSERS="$BROWSERS" VR_WIDTHS="$WIDTHS" PLAYWRIGHT_CLI_EXECUTABLE_PATH="$PROJECT_ROOT/node_modules/.bin/playwright" \
       bundle exec rspec "$SPEC_FILE" --format progress --order defined
   )
   local count
@@ -253,7 +255,7 @@ write_summary() {
     echo "<!-- visual-regression-summary -->"
     echo "## Visual regression"
     echo
-    echo "Base \`${base_sha:0:8}\` (merge base with \`$base_label\`) against $head_label. $total screenshots: $BROWSERS at 450/950/1250px, full page."
+    echo "Base \`${base_sha:0:8}\` (merge base with \`$base_label\`) against $head_label. $total screenshots: $BROWSERS at ${WIDTHS// //}px, full page."
     echo
     if [ "$((changed + new + removed + errors))" -eq 0 ]; then
       echo "No visual changes."
@@ -292,7 +294,7 @@ run_comparison() {
   local base_ref base_sha harness_key key head_label
   base_ref=$(resolve_base "$BASE")
   base_sha=$(git merge-base HEAD "$base_ref") || die "no merge base between HEAD and $base_ref"
-  harness_key=$(cat "${HARNESS_FILES[@]}" <(echo "$BROWSERS $FUZZ") | git hash-object --stdin)
+  harness_key=$(cat "${HARNESS_FILES[@]}" <(echo "$BROWSERS $WIDTHS $FUZZ") | git hash-object --stdin)
   key="${base_sha}-${harness_key:0:8}"
   head_label="\`$(git rev-parse --short=8 HEAD)\`"
   git diff --quiet HEAD || head_label="$head_label plus uncommitted changes"

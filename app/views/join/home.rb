@@ -92,7 +92,7 @@ class Views::Join::Home < Views::Join::Base
   end
 
   def render_quote
-    blockquote(class: 'bg-home-background border-l-[5px] border-secondary-deep rounded-sm p-6 m-0') do
+    blockquote(class: 'bg-home-background border-l-5 border-secondary-deep rounded-sm p-6 m-0') do
       p(class: 'font-serif text-card leading-snug m-0') { t('join.home.why.quote') }
       footer(class: 'allcaps-label text-tertiary mt-3') { t('join.home.why.quote_by') }
     end

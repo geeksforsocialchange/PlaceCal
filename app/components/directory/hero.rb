@@ -10,7 +10,7 @@ class Components::Directory::Hero < Components::Directory::Base
   def view_template
     section(class: 'bg-foreground py-10 lg:py-14', style: 'color: var(--color-background)') do
       div(class: 'container-public') do
-        div(class: 'lg:grid lg:grid-cols-[1fr_var(--width-sidebar-lg)] lg:gap-8') do
+        div(class: 'lg:grid lg:grid-cols-sidebar-lg lg:gap-8') do
           render_content
           render_map_placeholder
         end
@@ -33,7 +33,7 @@ class Components::Directory::Hero < Components::Directory::Base
     form(action: @search_path, method: 'get',
          class: 'flex items-center bg-background rounded-full p-1 pl-2 max-w-(--width-search-hero) shadow-hero-search') do
       div(class: 'px-2 text-tertiary') do
-        raw(view_context.icon(:search, size: nil, css_class: 'w-[18px] h-[18px]'))
+        raw(view_context.icon(:search, size: nil, css_class: 'size-4'))
       end
       input(
         type: 'text', name: 'q',
