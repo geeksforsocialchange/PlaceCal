@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Components::Directory::CustomSelect < Components::Directory::Base
+class Components::UI::Select < Components::Base
   prop :name, String
   prop :label_text, _Nilable(String), default: nil
   prop :options, _Interface(:each)
@@ -37,7 +37,7 @@ class Components::Directory::CustomSelect < Components::Directory::Base
     button(
       type: 'button',
       data: { custom_select_target: 'trigger', action: 'custom-select#toggle' },
-      class: 'w-full h-(--height-field) flex items-center gap-2 border-2 border-rules rounded-sm px-4 text-sm bg-background text-foreground cursor-pointer hover:border-foreground transition-colors'
+      class: "#{UI::Input::BOX} flex items-center gap-2 cursor-pointer hover:border-foreground"
     ) do
       span(class: 'flex-1 min-w-0 truncate text-left', data: { role: 'label' }) { selected_label }
       span(

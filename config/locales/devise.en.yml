@@ -34,6 +34,18 @@ en:
       send_paranoid_instructions: "If your email address exists in our database, you will receive a password recovery link at your email address in a few minutes."
       updated: "Your password has been changed successfully. You are now signed in."
       updated_not_active: "Your password has been changed successfully."
+      new:
+        title: "Forgot your password?"
+        breadcrumb: "Forgot password"
+        intro: "Enter the email address associated with your PlaceCal account and we will send you an email with password reset instructions."
+        submit: "Submit"
+      edit:
+        title: "Change your password"
+        breadcrumb: "Reset password"
+        new_password: "New password"
+        minimum_length: "(%{count} characters minimum)"
+        confirm_new_password: "Confirm new password"
+        submit: "Change my password"
     registrations:
       destroyed: "Bye! Your account has been successfully cancelled. We hope to see you again soon."
       signed_up: "Welcome! You have signed up successfully."
@@ -46,6 +58,14 @@ en:
       signed_in: "Signed in successfully."
       signed_out: "Signed out successfully."
       already_signed_out: "Signed out successfully."
+      new:
+        title: "Log in"
+        submit: "Log in"
+    shared:
+      kicker: "Account"
+      links:
+        log_in: "Log in"
+        forgot_your_password: "Forgot your password?"
     unlocks:
       send_instructions: "You will receive an email with instructions for how to unlock your account in a few minutes."
       send_paranoid_instructions: "If your account exists, you will receive an email with instructions for how to unlock it in a few minutes."

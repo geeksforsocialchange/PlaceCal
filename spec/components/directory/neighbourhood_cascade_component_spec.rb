@@ -29,7 +29,7 @@ RSpec.describe Components::Directory::NeighbourhoodCascade, type: :component do
   it "renders a root dropdown of regions, styled like the other filters" do
     render_inline(described_class.new(tree:))
 
-    # Same CustomSelect widget — a hidden select plus a styled trigger button.
+    # Same UI::Select widget — a hidden select plus a styled trigger button.
     expect(page).to have_css("[data-controller='custom-select'] select[name='neighbourhood']")
     expect(page).to have_text("All neighbourhoods")
     expect(page).to have_text("Northvale (3)")

@@ -6,8 +6,8 @@ class Views::Devise::Invitations::Edit < Views::Devise::Base
 
     Directory::PageHero(
       title: t('devise.invitations.edit.header'),
-      kicker: 'Account',
-      breadcrumb_label: 'Accept invitation'
+      kicker: t('devise.shared.kicker'),
+      breadcrumb_label: t('devise.invitations.edit.breadcrumb')
     )
 
     div(class: 'container-public py-8') do
@@ -20,20 +20,16 @@ class Views::Devise::Invitations::Edit < Views::Devise::Base
           raw form.hidden_field(:invitation_token)
 
           div do
-            label(for: 'user_password', class: 'allcaps-label text-tertiary mb-1 block') { 'New password' }
-            raw form.password_field(:password, class: input_class)
+            render_label(form, :password, t('devise.invitations.edit.new_password'))
+            render_input(form, :password, type: 'password', autocomplete: 'new-password')
           end
 
           div do
-            label(for: 'user_password_confirmation', class: 'allcaps-label text-tertiary mb-1 block') do
-              plain 'Repeat password'
-            end
-            raw form.password_field(:password_confirmation, class: input_class)
+            render_label(form, :password_confirmation, t('devise.invitations.edit.repeat_password'))
+            render_input(form, :password_confirmation, type: 'password', autocomplete: 'new-password')
           end
 
-          div do
-            raw form.submit('Set password', class: submit_class)
-          end
+          div { UI::Button(variant: :dark, type: 'submit') { t('devise.invitations.edit.submit_button') } }
         end
       end
     end

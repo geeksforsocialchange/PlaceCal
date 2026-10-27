@@ -2,31 +2,27 @@
 
 class Views::Devise::Passwords::New < Views::Devise::Base
   def view_template
-    content_for(:title) { 'Forgot your password?' }
+    content_for(:title) { t('devise.passwords.new.title') }
 
     Directory::PageHero(
-      title: 'Forgot your password?',
-      kicker: 'Account',
-      breadcrumb_label: 'Forgot password'
+      title: t('devise.passwords.new.title'),
+      kicker: t('devise.shared.kicker'),
+      breadcrumb_label: t('devise.passwords.new.breadcrumb')
     )
 
     div(class: 'container-public py-8') do
       div(class: 'max-w-(--width-prose) mx-auto') do
-        p(class: 'mb-6') do
-          plain 'Enter the email address associated with your PlaceCal account and we will send you an email with password reset instructions.'
-        end
+        p(class: 'mb-6') { t('devise.passwords.new.intro') }
 
         form_for(resource, as: resource_name,
                            url: password_path(resource_name),
                            html: { method: :post, class: 'space-y-4', data: { turbo: 'false' } }) do |form|
           div do
-            label(for: 'user_email', class: 'allcaps-label text-tertiary mb-1 block') { 'Email' }
-            raw form.email_field(:email, autofocus: true, class: input_class)
+            render_label(form, :email)
+            render_input(form, :email, type: 'email', value: resource.email, autofocus: true, autocomplete: 'email')
           end
 
-          div do
-            raw form.submit('Submit', class: submit_class)
-          end
+          div { UI::Button(variant: :dark, type: 'submit') { t('devise.passwords.new.submit') } }
         end
 
         div(class: 'mt-6') do
