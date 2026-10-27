@@ -24,6 +24,21 @@ RSpec.describe "Authentication", :slow, type: :system do
     end
   end
 
+  describe "password field" do
+    it "shows and hides the password" do
+      visit public_url("/users/sign_in")
+      fill_in "Password", with: "password"
+
+      click_button "Show"
+      expect(page).to have_field("Password", type: "text", with: "password")
+      expect(page).to have_css("button[aria-label='Hide password']", text: "Hide")
+      expect(page).to have_css("[aria-live='polite']", text: "Your password is visible", visible: :all)
+
+      click_button "Hide"
+      expect(page).to have_field("Password", type: "password")
+    end
+  end
+
   describe "password reset" do
     # This test is flaky in CI - the Submit button is sometimes not found
     # TODO: Investigate CI-specific Devise form rendering issues

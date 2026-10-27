@@ -22,4 +22,11 @@ RSpec.describe Components::UI::Input, type: :component do
 
     expect(page).to have_css("input.mt-2.rounded-sm")
   end
+
+  it "adds a Show button for the password field, hidden until JavaScript connects" do
+    render_inline(described_class.new(type: "password", reveal: true, id: "user_password"))
+
+    expect(page).to have_css("[data-controller='password-reveal'] input[type='password']#user_password")
+    expect(page).to have_css("button[hidden][aria-controls='user_password']", text: "Show", visible: :all)
+  end
 end
