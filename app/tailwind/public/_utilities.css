@@ -83,3 +83,12 @@
 	background-size: 1rem;
 	padding-right: 2.5rem;
 }
+
+/* Main content beside a fixed-width sidebar */
+@utility grid-cols-sidebar {
+	grid-template-columns: 1fr var(--width-sidebar);
+}
+
+@utility grid-cols-sidebar-lg {
+	grid-template-columns: 1fr var(--width-sidebar-lg);
+}

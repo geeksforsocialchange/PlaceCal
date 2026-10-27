@@ -4,7 +4,7 @@ class Components::Directory::Footer < Components::Directory::Base
   include Phlex::Rails::Helpers::MailTo
 
   def view_template
-    footer(class: 'bg-home-background border-t-[5px] border-rules mt-16 pt-10 pb-6') do
+    footer(class: 'bg-home-background border-t-5 border-rules mt-16 pt-10 pb-6') do
       render_grid
       render_impressum
     end

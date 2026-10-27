@@ -2,7 +2,7 @@
 
 # Settings and helpers for spec/system/visual_regression_spec.rb, run by bin/visual-regression.
 module VisualRegression
-  VIEWPORT_WIDTHS = [450, 950, 1250].freeze
+  VIEWPORT_WIDTHS = ENV.fetch("VR_WIDTHS", "450 950 1250").split.map(&:to_i).freeze
   VIEWPORT_HEIGHT = 900
   BROWSERS = ENV.fetch("VR_BROWSERS", "chromium webkit").split.freeze
   OUTPUT_DIR = Pathname.new(ENV.fetch("VR_OUTPUT_DIR") { Rails.root.join("tmp/visual_regression/current").to_s })
@@ -25,7 +25,9 @@ module VisualRegression
     "directory_events" => -> { vr_url(nil, "/events") },
     "sign_in" => -> { vr_url("admin", "/users/sign_in") },
     "forgot_password" => -> { vr_url("admin", "/users/password/new") },
-    "join_home" => -> { vr_url("join", "/") }
+    "directory_our_story" => -> { vr_url(nil, "/our-story") },
+    "join_home" => -> { vr_url("join", "/") },
+    "join_pricing" => -> { vr_url("join", "/pricing") }
   }.freeze
 
   # Leaflet arrives from a CDN and may or may not have initialised a map by capture time, so keep only its space.

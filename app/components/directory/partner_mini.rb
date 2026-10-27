@@ -12,7 +12,7 @@ class Components::Directory::PartnerMini < Components::Directory::Base
           span(class: 'font-bold text-base leading-tight') { @partner.name }
           render_event_badge
         end
-        div(class: 'border-b-[3px] border-rules group-hover:border-tertiary/20 pb-1 mb-1.5')
+        div(class: 'border-b-3 border-rules group-hover:border-tertiary/20 pb-1 mb-1.5')
         div(class: 'text-sm text-tertiary font-bold mb-0.5') { area_text } if area_text.present?
         div(class: 'text-foreground text-sm leading-snug mt-1 line-clamp-2') { @partner.summary.truncate(120) } if @partner.summary.present?
         render_chips

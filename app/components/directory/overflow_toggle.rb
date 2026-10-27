@@ -27,7 +27,7 @@ class Components::Directory::OverflowToggle < Components::Directory::Base
 
     batch = remaining.first(@batch_size)
     details(class: 'group') do
-      summary(class: 'list-none pt-3 border-t border-rules cursor-pointer [&::-webkit-details-marker]:hidden') do
+      summary(class: 'list-none pt-3 border-t border-rules cursor-pointer details-marker:hidden') do
         span(class: 'inline-flex items-center gap-1.5 text-sm font-bold text-foreground group-open:hidden') do
           plain t(@label_key, count: [@batch_size, remaining.size].min)
           span(class: 'text-tertiary') { safe('&#9660;') }

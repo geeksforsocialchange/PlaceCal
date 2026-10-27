@@ -59,7 +59,7 @@ class Views::Join::Audience < Views::Join::Base
       steps.each_with_index do |step, index|
         last = index == steps.length - 1
         div(class: "grid grid-cols-[60px_1fr] gap-5 items-start py-4 #{'border-b-2 border-rules' unless last}") do
-          div(class: 'w-[60px] h-[60px] rounded-full bg-home-background text-foreground grid place-items-center font-serif text-subhead') do
+          div(class: 'size-13 rounded-full bg-home-background text-foreground grid place-items-center font-serif text-subhead') do
             plain (index + 1).to_s
           end
           div do

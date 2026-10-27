@@ -24,6 +24,11 @@
 @import "./public/_utilities.css";
 @import "./public/_components.css";
 
+/* mobile_menu_controller toggles .is-hidden on the collapsible menu */
+@custom-variant is-hidden (&.is-hidden);
+@custom-variant details-marker (&::-webkit-details-marker);
+@custom-variant logo (& > :is(svg, img));
+
 /* base overrides for things which aren't yet componentised */
 @layer base {
 	body {

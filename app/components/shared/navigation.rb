@@ -40,7 +40,7 @@ class Components::Shared::Navigation < Components::Base
               ("header__branding--#{@site.slug}" if @site&.slug.presence),
               ("header__branding--theme-#{branding_theme_name}" if branding_theme_name),
               # svg/img classes are here because partner svgs are inlined with File.read
-              '[&>svg,&>img]:object-contain [&>svg,&>img]:max-w-full [&>svg,&>img]:max-h-full',
+              'logo:object-contain logo:max-w-full logo:max-h-full',
               *(if @site.nil?
                   ['w-32 h-10 md:w-42 md:h-12']
                 else
@@ -217,17 +217,17 @@ class Components::Shared::Navigation < Components::Base
             '-mx-3 md:-mx-5',
             'pt-4 gap-0.5  lg:row-start-1 lg:col-start-2 lg:col-span-1',
             'md:flex-row md:gap-8 md:pt-3 md:pb-4 md:mt-6',
-            'md:max-lg:[&:is(.is-hidden)]:py-0 md:max-lg:[&:is(.is-hidden)]:mt-4.5 md:max-lg:bg-home-background',
+            'md:max-lg:is-hidden:py-0 md:max-lg:is-hidden:mt-4.5 md:max-lg:bg-home-background',
             # invisible alongside h-0 so the collapsed menu's links leave the
             # tab order instead of being reachable but off-screen.
-            'max-lg:[&:is(.is-hidden)]:h-0 max-lg:[&:is(.is-hidden)]:invisible',
+            'max-lg:is-hidden:h-0 max-lg:is-hidden:invisible',
             'lg:justify-end lg:items-baseline lg:mx-0 lg:mt-1.5 lg:py-0'
           ]
         else
           [
             '-mx-6 gap-1 mt-4',
-            'max-md:pb-1 max-md:bg-tertiary max-md:[&:is(.is-hidden)]:h-0 max-md:[&:is(.is-hidden)]:pb-0',
-            'max-md:[&:is(.is-hidden)]:invisible',
+            'max-md:pb-1 max-md:bg-tertiary max-md:is-hidden:h-0 max-md:is-hidden:pb-0',
+            'max-md:is-hidden:invisible',
             'md:-mx-6',
             'md:max-lg:px-2 md:max-lg:bg-foreground',
             'lg:row-start-1 lg:col-start-2 lg:col-span-1 lg:gap-8 lg:m-0'

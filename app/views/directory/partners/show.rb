@@ -12,7 +12,7 @@ class Views::Directory::Partners::Show < Views::Sites::Partners::Show
     )
 
     div(class: 'container-public py-6') do
-      div(class: 'lg:grid lg:grid-cols-[1fr_var(--width-sidebar)] lg:gap-8') do
+      div(class: 'lg:grid lg:grid-cols-sidebar lg:gap-8') do
         div do
           render_directory_about
           render_directory_events

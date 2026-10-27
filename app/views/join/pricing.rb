@@ -274,7 +274,7 @@ class Views::Join::Pricing < Views::Join::Base
           t('join.pricing.faq.items').each_with_index do |item, index|
             details(class: 'group border-b-2 border-rules', open: index.zero?) do
               summary(class: 'cursor-pointer list-none py-4 font-serif text-lg text-foreground flex justify-between items-center gap-4 ' \
-                             '[&::-webkit-details-marker]:hidden after:content-["+"] after:font-sans after:font-bold after:text-2xl ' \
+                             'details-marker:hidden after:content-["+"] after:font-sans after:font-bold after:text-2xl ' \
                              'after:text-secondary-strong after:transition-transform group-open:after:rotate-45') do
                 item[:question]
               end
