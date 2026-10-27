@@ -13,13 +13,16 @@ class Components::UI::Input < Components::Base
     return render_input unless @reveal
 
     div(class: 'relative', data: { controller: 'password-reveal', **reveal_values }) do
-      render_input('pr-20', password_reveal_target: 'input')
+      render_input('pr-12', password_reveal_target: 'input')
       button(
         type: 'button', hidden: true,
-        class: 'absolute inset-y-0 right-0 px-4 text-sm font-bold text-foreground underline cursor-pointer hover:decoration-primary',
+        class: 'absolute inset-y-0 right-0 px-3 flex items-center text-tertiary hover:text-foreground cursor-pointer',
         aria: { controls: @attributes[:id], label: t('components.password_reveal.show_label') },
         data: { password_reveal_target: 'button', action: 'password-reveal#toggle' }
-      ) { t('components.password_reveal.show') }
+      ) do
+        span(data: { password_reveal_target: 'showIcon' }) { raw(view_context.icon(:eye, size: nil, css_class: 'size-5')) }
+        span(hidden: true, data: { password_reveal_target: 'hideIcon' }) { raw(view_context.icon(:eye_off, size: nil, css_class: 'size-5')) }
+      end
       span(class: 'sr-only', aria: { live: 'polite' }, data: { password_reveal_target: 'status' })
     end
   end
@@ -32,7 +35,7 @@ class Components::UI::Input < Components::Base
   end
 
   def reveal_values
-    %i[show hide show_label hide_label shown hidden].to_h do |key|
+    %i[show_label hide_label shown hidden].to_h do |key|
       [:"password_reveal_#{key}_value", t("components.password_reveal.#{key}")]
     end
   end
