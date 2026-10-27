@@ -15,15 +15,9 @@ class Views::Devise::Sessions::New < Views::Devise::Base
         form_for(resource, as: resource_name,
                            url: session_path(resource_name),
                            html: { class: 'space-y-4', data: { turbo: 'false' } }) do |form|
-          div do
-            render_label(form, :email)
-            render_input(form, :email, type: 'email', value: resource.email, autofocus: true, autocomplete: 'email')
-          end
+          render_field(form, :email, type: 'email', value: resource.email, autofocus: true, autocomplete: 'email')
 
-          div do
-            render_label(form, :password)
-            render_input(form, :password, type: 'password', reveal: true, autocomplete: 'current-password')
-          end
+          render_field(form, :password, type: 'password', reveal: true, autocomplete: 'current-password')
 
           if devise_mapping.rememberable?
             div(class: 'flex items-center gap-2') do

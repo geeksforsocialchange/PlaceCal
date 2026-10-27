@@ -19,15 +19,9 @@ class Views::Devise::Invitations::Edit < Views::Devise::Base
                            html: { method: :put, class: 'space-y-4', data: { turbo: 'false' } }) do |form|
           raw form.hidden_field(:invitation_token)
 
-          div do
-            render_label(form, :password, t('devise.invitations.edit.new_password'))
-            render_input(form, :password, type: 'password', reveal: true, autocomplete: 'new-password')
-          end
+          render_field(form, :password, label: t('devise.invitations.edit.new_password'), type: 'password', reveal: true, autocomplete: 'new-password')
 
-          div do
-            render_label(form, :password_confirmation, t('devise.invitations.edit.repeat_password'))
-            render_input(form, :password_confirmation, type: 'password', reveal: true, autocomplete: 'new-password')
-          end
+          render_field(form, :password_confirmation, label: t('devise.invitations.edit.repeat_password'), type: 'password', reveal: true, autocomplete: 'new-password')
 
           div { UI::Button(variant: :dark, type: 'submit') { t('devise.invitations.edit.submit_button') } }
         end

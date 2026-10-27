@@ -29,12 +29,12 @@ RSpec.describe "Authentication", :slow, type: :system do
       visit public_url("/users/sign_in")
       fill_in "Password", with: "password"
 
-      click_button "Show"
+      find("button[aria-label='Show password']").click
       expect(page).to have_field("Password", type: "text", with: "password")
-      expect(page).to have_css("button[aria-label='Hide password']", text: "Hide")
+      expect(page).to have_css("button[aria-label='Hide password']")
       expect(page).to have_css("[aria-live='polite']", text: "Your password is visible", visible: :all)
 
-      click_button "Hide"
+      find("button[aria-label='Hide password']").click
       expect(page).to have_field("Password", type: "password")
     end
   end

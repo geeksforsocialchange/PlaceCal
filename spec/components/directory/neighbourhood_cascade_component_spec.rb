@@ -14,10 +14,11 @@ RSpec.describe Components::Directory::NeighbourhoodCascade, type: :component do
     ]
   end
 
-  it "labels the control once" do
+  it "labels the group of dropdowns once" do
     render_inline(described_class.new(tree:))
 
-    expect(page).to have_css("label", text: "Neighbourhood", count: 1)
+    expect(page).to have_css("[role='group'][aria-labelledby='neighbourhood_cascade_label']")
+    expect(page).to have_css("#neighbourhood_cascade_label", text: "Neighbourhood", count: 1)
   end
 
   it "wires up the cascade controller" do

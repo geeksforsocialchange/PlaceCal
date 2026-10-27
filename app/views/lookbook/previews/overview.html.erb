@@ -1,4 +1,6 @@
 <%# Replaces Lookbook's table of links: a component's page shows every scenario rendered %>
+<%# Lookbook's wrapper grows with its content, so a page of rendered scenarios would never scroll %>
+<style>.page-content-wrapper { height: 100%; }</style>
 <%= markdown(preview.notes) %>
 
 <% targets.filter(&:visible?).each do |target| %>

@@ -2,10 +2,8 @@ import { Controller } from "@hotwired/stimulus";
 
 // Toggles a password field between hidden and visible text
 export default class extends Controller {
-	static targets = ["input", "button", "status"];
+	static targets = ["input", "button", "showIcon", "hideIcon", "status"];
 	static values = {
-		show: String,
-		hide: String,
 		showLabel: String,
 		hideLabel: String,
 		shown: String,
@@ -33,22 +31,18 @@ export default class extends Controller {
 	}
 
 	reveal() {
-		this.render("text", this.hideValue, this.hideLabelValue, this.shownValue);
+		this.render("text", this.hideLabelValue, this.shownValue);
 	}
 
 	conceal() {
 		if (this.inputTarget.type === "password") return;
-		this.render(
-			"password",
-			this.showValue,
-			this.showLabelValue,
-			this.hiddenValue,
-		);
+		this.render("password", this.showLabelValue, this.hiddenValue);
 	}
 
-	render(type, text, label, status) {
+	render(type, label, status) {
 		this.inputTarget.type = type;
-		this.buttonTarget.textContent = text;
+		this.showIconTarget.hidden = type === "text";
+		this.hideIconTarget.hidden = type === "password";
 		this.buttonTarget.setAttribute("aria-label", label);
 		this.statusTarget.textContent = status;
 	}

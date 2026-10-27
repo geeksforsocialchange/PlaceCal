@@ -19,17 +19,9 @@ class Views::Devise::Passwords::Edit < Views::Devise::Base
 
           raw form.hidden_field(:reset_password_token)
 
-          div do
-            render_label(form, :password, t('devise.passwords.edit.new_password'))
-            min_length = resource.class.password_length.min
-            p(class: 'text-sm text-tertiary mb-1') { t('devise.passwords.edit.minimum_length', count: min_length) } if min_length
-            render_input(form, :password, type: 'password', reveal: true, autofocus: true, autocomplete: 'new-password')
-          end
+          render_field(form, :password, label: t('devise.passwords.edit.new_password'), hint: minimum_length_hint, type: 'password', reveal: true, autofocus: true, autocomplete: 'new-password')
 
-          div do
-            render_label(form, :password_confirmation, t('devise.passwords.edit.confirm_new_password'))
-            render_input(form, :password_confirmation, type: 'password', reveal: true, autocomplete: 'new-password')
-          end
+          render_field(form, :password_confirmation, label: t('devise.passwords.edit.confirm_new_password'), type: 'password', reveal: true, autocomplete: 'new-password')
 
           div { UI::Button(variant: :dark, type: 'submit') { t('devise.passwords.edit.submit') } }
         end
@@ -39,5 +31,12 @@ class Views::Devise::Passwords::Edit < Views::Devise::Base
         end
       end
     end
+  end
+
+  private
+
+  def minimum_length_hint
+    min = resource.class.password_length.min
+    t('devise.passwords.edit.minimum_length', count: min) if min
   end
 end

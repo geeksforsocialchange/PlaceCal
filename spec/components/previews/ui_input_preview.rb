@@ -13,8 +13,9 @@ class UIInputPreview < Lookbook::Preview
   end
 
   # @label Password
+  # @notes `reveal: true` adds the eye button that shows and hides the password.
   def password
-    render(Frame.new { |f| f.render Components::UI::Input.new(type: "password", value: "hunter22") })
+    render(Frame.new { |f| f.render Components::UI::Input.new(type: "password", reveal: true, id: "password", value: "hunter22") })
   end
 
   # @label Filter row
