@@ -45,7 +45,7 @@ class Views::Directory::OurStory < Views::Base
 
   # Decisively narrower than the hero: a near-equal width reads as misaligned.
   def narrow(classes = '', &)
-    div(class: "mx-auto max-w-[820px] px-6 #{classes}".strip, &)
+    div(class: "mx-auto max-w-(--width-prose-lg) px-6 #{classes}".strip, &)
   end
 
   def render_start
@@ -78,11 +78,11 @@ class Views::Directory::OurStory < Views::Base
   def render_quote
     section(class: 'pb-10') do
       narrow do
-        figure(class: 'border-l-[6px] border-primary m-0') do
+        figure(class: 'border-l-6 border-primary m-0') do
           blockquote(class: 'mx-0 mt-0 mb-3.5 pl-8 font-serif text-display leading-tight text-foreground text-balance') do
             t("#{T}.quote.text")
           end
-          figcaption(class: 'pl-8 text-base text-tertiary max-w-[560px] leading-relaxed') { t("#{T}.quote.caption") }
+          figcaption(class: 'pl-8 text-base text-tertiary max-w-(--width-prose) leading-relaxed') { t("#{T}.quote.caption") }
         end
       end
     end
@@ -90,7 +90,7 @@ class Views::Directory::OurStory < Views::Base
 
   def render_problems
     feature_section(:problems, PROBLEMS, eyebrow_class: 'text-tertiary',
-                                         wrapper_class: 'bg-home-background border-t-[5px] border-rules py-11')
+                                         wrapper_class: 'bg-home-background border-t-5 border-rules py-11')
   end
 
   def render_solutions
@@ -112,16 +112,16 @@ class Views::Directory::OurStory < Views::Base
   def render_feature(section_key, feature)
     base = "#{T}.#{section_key}.#{feature[:key]}"
 
-    div(class: 'grid md:grid-cols-[0.85fr_1fr] gap-11 items-center') do
+    div(class: 'grid md:grid-cols-2 gap-11 items-center') do
       div(class: "grid place-items-center p-2 #{'md:order-2' if feature[:flip]}".strip) do
         image_tag "#{IMAGE_BASE}/#{feature[:image]}",
                   alt: t("#{base}.image_alt"),
-                  class: 'w-full max-w-[340px] h-auto object-contain'
+                  class: 'w-full max-w-76 h-auto object-contain'
       end
       div do
         div(class: 'flex items-baseline gap-2.5 mb-2') do
           # Deepened coral (vs --color-secondary-deep) so the large numeral clears WCAG AA (3:1) on cream.
-          span(class: 'font-serif text-2xl leading-none -tracking-[0.02em]', style: 'color: var(--color-secondary-dark)') { feature[:num] } if feature[:num]
+          span(class: 'font-serif text-2xl leading-none', style: 'color: var(--color-secondary-dark)') { feature[:num] } if feature[:num]
           span(class: 'allcaps-label text-tertiary') { t("#{base}.kicker") }
         end
         h3(class: 'mt-0 mb-2 text-subhead leading-tight font-bold text-foreground') { t("#{base}.title") }
@@ -131,16 +131,16 @@ class Views::Directory::OurStory < Views::Base
   end
 
   def render_turning
-    section(class: 'bg-secondary text-foreground py-[3.25rem]') do
+    section(class: 'bg-secondary text-foreground py-13') do
       narrow('text-center') do
-        h2(class: 'mx-auto mt-0 mb-4 max-w-[760px] font-serif font-regular text-display leading-tight text-foreground text-balance') do
+        h2(class: 'mx-auto mt-0 mb-4 max-w-(--width-prose-lg) font-serif font-regular text-display leading-tight text-foreground text-balance') do
           t("#{T}.turning.heading")
         end
         # --color-foreground-dark (the design's text-on-colour brown) clears WCAG AA on the pink panel; the prior opacity-85 brown did not.
-        p(class: 'mx-auto my-0 max-w-[560px] text-base leading-relaxed', style: 'color: var(--color-foreground-dark)') do
+        p(class: 'mx-auto my-0 max-w-(--width-prose) text-base leading-relaxed', style: 'color: var(--color-foreground-dark)') do
           t("#{T}.turning.body")
         end
-        image_tag "#{IMAGE_BASE}/logo_onpink.svg", alt: t("#{T}.turning.logo_alt"), class: 'inline h-[46px] mt-7'
+        image_tag "#{IMAGE_BASE}/logo_onpink.svg", alt: t("#{T}.turning.logo_alt"), class: 'inline h-10 mt-7'
       end
     end
   end
@@ -148,7 +148,7 @@ class Views::Directory::OurStory < Views::Base
   def render_cta
     section(class: 'pt-12 pb-4') do
       narrow do
-        div(class: 'flex flex-wrap items-center justify-between gap-6 rounded-card bg-secondary text-foreground px-[2.4rem] py-[2.1rem]') do
+        div(class: 'flex flex-wrap items-center justify-between gap-6 rounded-card bg-secondary text-foreground px-10 py-8') do
           h2(class: 'my-0 font-serif font-regular text-display leading-tight text-foreground') do
             t("#{T}.cta.heading")
           end
