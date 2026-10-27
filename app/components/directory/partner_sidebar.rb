@@ -59,7 +59,7 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
   end
 
   def render_opening_times
-    div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
+    UI::Card(variant: :panel, padding: :sm) do
       sidebar_heading(t('directory.sidebar.opening_times'))
       ul(class: 'text-sm text-foreground space-y-1 list-none pl-0') do
         opening_times.each { |slot| li { slot } }
@@ -68,7 +68,7 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
   end
 
   def render_categories
-    div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
+    UI::Card(variant: :panel, padding: :sm) do
       sidebar_heading(t('directory.sidebar.categories'))
       div(class: 'flex flex-wrap gap-1.5 mt-1') do
         @partner.categories.each do |cat|
@@ -82,7 +82,7 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
     neighbourhood = @partner.address.neighbourhood
     path = neighbourhood.path
 
-    div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
+    UI::Card(variant: :panel, padding: :sm) do
       sidebar_heading(Neighbourhood.model_name.human)
       div(class: 'flex flex-wrap items-center gap-1 text-sm') do
         path.each_with_index do |ancestor, i|
@@ -98,7 +98,7 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
   end
 
   def render_share
-    div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
+    UI::Card(variant: :panel, padding: :sm) do
       sidebar_heading(t('directory.sidebar.share_subscribe'))
 
       div do

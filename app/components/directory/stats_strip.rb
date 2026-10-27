@@ -19,7 +19,7 @@ class Components::Directory::StatsStrip < Components::Directory::Base
     # min-w-0 lets the bead shrink below its content in the 2-col mobile grid;
     # wrap-anywhere breaks long single-word labels (e.g. "Neighbourhoods") so the
     # letter-spaced uppercase text can't overflow the cell and widen the page
-    div(class: 'flex flex-col bg-home-background border-2 border-rules rounded-card py-3.5 px-4.5 min-w-0') do
+    UI::Card(padding: :sm, class: 'flex flex-col min-w-0') do
       span(class: 'font-serif text-stat leading-none text-foreground') do
         plain ActiveSupport::NumberHelper.number_to_delimited(value)
       end

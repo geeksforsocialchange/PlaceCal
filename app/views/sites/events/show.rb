@@ -162,7 +162,7 @@ class Views::Sites::Events::Show < Views::Base
   # sidebar_heading and simple icon + value rows at text-sm.
 
   def render_information_card
-    div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
+    UI::Card(variant: :panel, padding: :sm) do
       sidebar_heading(t('directory.events.show.information'))
       div(class: 'flex flex-col gap-2') do
         info_row(:event_date) { event.dtstart.strftime('%a %-e %b %Y') }
@@ -205,7 +205,7 @@ class Views::Sites::Events::Show < Views::Base
   end
 
   def render_share_card
-    div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
+    UI::Card(variant: :panel, padding: :sm) do
       sidebar_heading(t('directory.sidebar.share_subscribe'))
       div do
         a(href: "https://placecal.org/events/#{event.id}",

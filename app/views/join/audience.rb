@@ -53,7 +53,7 @@ class Views::Join::Audience < Views::Join::Base
   end
 
   def render_rollout
-    aside(class: 'bg-secondary rounded-card p-5 text-foreground-dark') do
+    UI::Card(variant: :highlight, tag: :aside, class: 'text-foreground-dark') do
       h2(class: 'font-serif font-regular text-card text-foreground-dark m-0') { t('join.rollout.heading') }
       steps = t('join.rollout.steps')
       steps.each_with_index do |step, index|
