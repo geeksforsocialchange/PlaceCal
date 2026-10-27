@@ -1,3 +1,6 @@
+// Bare element rules sit in the legacy layer: above Tailwind's base, below its utilities.
+@layer theme, base, legacy, components, utilities;
+
 @import "globals";
 
 :root {

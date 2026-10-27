@@ -2,19 +2,21 @@
 $bg-top: 103px;
 $bg-offset: 725px;
 
-body {
-	color: $base-text;
-	background-color: $base-tertiary;
-	margin: 0;
+@layer legacy {
+	body {
+		color: $base-text;
+		background-color: $base-tertiary;
+		margin: 0;
 
-	@include for-desktop-up {
-		background-image:
-			url("/images/patterns/widescreen.svg"),
-			url("/images/patterns/widescreen.svg");
-		background-position:
-			calc(50% - #{$bg-offset}) $bg-top,
-			calc(50% + #{$bg-offset}) $bg-top;
-		background-repeat: no-repeat, no-repeat;
+		@include for-desktop-up {
+			background-image:
+				url("/images/patterns/widescreen.svg"),
+				url("/images/patterns/widescreen.svg");
+			background-position:
+				calc(50% - #{$bg-offset}) $bg-top,
+				calc(50% + #{$bg-offset}) $bg-top;
+			background-repeat: no-repeat, no-repeat;
+		}
 	}
 }
 
