@@ -5,22 +5,30 @@ require "rails_helper"
 # Public markup builds from the tokens in app/tailwind/public/_theme.css. An arbitrary value or variant
 # (`w-[42px]`, `[&>svg]:`, `min-[680px]:`) needs a token, a named utility, or an allowlist entry with a reason.
 RSpec.describe "Public Tailwind classes" do
-  # Keyed by the class without its variant prefixes.
-  let(:allowed) do
+  # Genuine exceptions, keyed by the class without its variant prefixes.
+  let(:exceptions) do
     {
       "grid-cols-[1fr_auto]" => "content beside a control that keeps its own width",
-      "grid-cols-[64px_1fr]" => "the event row's fixed date tile",
-      "grid-cols-[44px_1fr_auto]" => "the partner row's fixed avatar column",
-      "grid-cols-[1.4fr_1fr]" => "join audience page's uneven two-column split",
-      "grid-cols-[1.3fr_1fr]" => "join home page's uneven two-column split",
-      "grid-cols-[1fr_1.2fr]" => "join home page's uneven two-column split",
       "max-h-[60vh]" => "keeps an open select list inside the viewport",
       "[column-span:all]" => "Tailwind has no column-span utility",
       "border-x-[calc(--spacing(8))]" => "border widths are px; this one follows the spacing scale so it scales with the root size",
-      "transition-[display,height,margin-top,padding-block]" => "the mobile menu animates exactly these properties together",
-      "min-h-[2.4em]" => "reserves two lines of a plan subtitle so the pricing cards line up"
+      "transition-[display,height,margin-top,padding-block]" => "the mobile menu animates exactly these properties together"
     }
   end
+
+  # Debt to replace with tokens or named utilities. Don't add to this list.
+  let(:to_replace) do
+    {
+      "grid-cols-[64px_1fr]" => "the event row's date tile column: move to the spacing scale",
+      "grid-cols-[44px_1fr_auto]" => "the partner row's avatar column: move to the spacing scale",
+      "grid-cols-[1.4fr_1fr]" => "join audience split: grid-cols-2 or a named utility",
+      "grid-cols-[1.3fr_1fr]" => "join home split: grid-cols-2 or a named utility",
+      "grid-cols-[1fr_1.2fr]" => "join home split: grid-cols-2 or a named utility",
+      "min-h-[2.4em]" => "pricing card subtitles: line the cards up with subgrid instead"
+    }
+  end
+
+  let(:allowed) { exceptions.merge(to_replace) }
 
   let(:files) { Dir[Rails.root.join("app/{components,views}/**/*.rb")].grep_v(%r{/(admin|mailers?)/}) }
 
@@ -44,7 +52,7 @@ RSpec.describe "Public Tailwind classes" do
   it "uses no arbitrary values or variants outside the allowlist" do
     offences = found.reject { |_, _, key| allowed.key?(key) }.map { |file, match, _| "#{file}: #{match}" }
 
-    expect(offences).to be_empty, "Use a token, a named utility or a plain class instead, or allowlist with a reason:\n#{offences.join("\n")}"
+    expect(offences).to be_empty, "Use a token, a named utility or a plain class instead, or add a genuine exception with a reason:\n#{offences.join("\n")}"
   end
 
   it "keeps no allowlist entries that nothing uses" do
