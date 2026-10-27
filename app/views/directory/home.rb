@@ -44,7 +44,7 @@ class Views::Directory::Home < Views::Base
             div(class: 'allcaps-label text-tertiary') { t('directory.home.partnerships.kicker') }
             h2(class: 'font-serif font-regular text-section text-foreground') { t('directory.home.partnerships.heading') }
           end
-          Shared::Button(variant: :outline, href: partnerships_path) do
+          UI::Button(variant: :outline, href: partnerships_path) do
             plain t('directory.home.partnerships.see_all')
             span { safe('&rarr;') }
           end
@@ -80,7 +80,7 @@ class Views::Directory::Home < Views::Base
         end
       end
       div(class: 'mt-4') do
-        Shared::Button(variant: :outline, href: partners_path) do
+        UI::Button(variant: :outline, href: partners_path) do
           plain t('directory.home.activity.browse_all')
           span { safe('&rarr;') }
         end
@@ -98,7 +98,7 @@ class Views::Directory::Home < Views::Base
         end
       end
       div(class: 'mt-4') do
-        Shared::Button(variant: :outline, href: events_path) do
+        UI::Button(variant: :outline, href: events_path) do
           plain t('directory.home.events.filter_by_place')
           span { safe('&rarr;') }
         end
@@ -134,7 +134,7 @@ class Views::Directory::Home < Views::Base
       end
       div(class: 'bg-home-background-3 px-5 py-4 flex-1') do
         p(class: 'text-detail leading-relaxed text-tertiary mb-4') { body }
-        Shared::Button(variant: :dark_outline, href: link_path) { link_text }
+        UI::Button(variant: :dark_outline, href: link_path) { link_text }
       end
     end
   end

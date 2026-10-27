@@ -27,7 +27,7 @@ class Views::Directory::Mcp < Views::Base
         input(id: 'mcp-server-url', type: 'text', readonly: true, value: @server_url,
               class: 'flex-1 min-w-0 rounded-card border border-rules bg-background px-4 py-3 font-mono text-foreground',
               data: { copy_target: 'source' })
-        Shared::Button(variant: :outline, data: { copy_target: 'button', action: 'copy#copy' }) { t("#{T}.copy") }
+        UI::Button(variant: :outline, data: { copy_target: 'button', action: 'copy#copy' }) { t("#{T}.copy") }
       end
     end
   end

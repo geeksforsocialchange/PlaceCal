@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # @display context directory
-class SharedButtonPreview < Lookbook::Preview
+class UIButtonPreview < Lookbook::Preview
   # @label Links
   # @notes Every variant at every size, rendered as `<a>` (an `href` is given).
   def links
@@ -42,12 +42,12 @@ class SharedButtonPreview < Lookbook::Preview
 
     def view_template
       div(style: "#{PAGE_STYLE}; display: grid; gap: 1rem; align-content: start") do
-        Components::Shared::Button::VARIANTS.each do |variant|
+        Components::UI::Button::VARIANTS.each_key do |variant|
           div(style: "display: grid; grid-template-columns: 8rem 1fr; align-items: center; gap: 1rem") do
             code { ":#{variant}" }
             div(style: "display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; padding: 0.75rem; border-radius: 0.5rem; #{PANEL_STYLE[variant]}") do
-              Components::Shared::Button::SIZES.each do |size|
-                render Components::Shared::Button.new(variant:, size:, href: @href) { "#{size.to_s.upcase} button" }
+              Components::UI::Button::SIZES.each_key do |size|
+                render Components::UI::Button.new(variant:, size:, href: @href) { "#{size.to_s.upcase} button" }
               end
             end
           end
@@ -62,8 +62,8 @@ class SharedButtonPreview < Lookbook::Preview
         div(style: "display: flex; gap: 0.5rem; align-items: end; padding: 1rem; border-radius: 1rem; background: var(--color-home-background-3); font-size: var(--text-sm)") do
           input(type: "text", placeholder: "Search partners",
                 style: "height: var(--height-field); padding: 0 1rem; border: 2px solid var(--color-rules); border-radius: var(--radius-sm); background: var(--color-background)")
-          render Components::Shared::Button.new(variant: :dark, size: :sm, shape: :field) { "Apply" }
-          render Components::Shared::Button.new(variant: :dark_outline, size: :sm, shape: :field, href: "#") { "Clear" }
+          render Components::UI::Button.new(variant: :dark, size: :sm, shape: :field) { "Apply" }
+          render Components::UI::Button.new(variant: :dark_outline, size: :sm, shape: :field, href: "#") { "Clear" }
         end
       end
     end
@@ -78,7 +78,7 @@ class SharedButtonPreview < Lookbook::Preview
 
     def view_template
       div(style: "#{PAGE_STYLE}; #{PANEL_STYLE[@button[:variant]]}") do
-        render Components::Shared::Button.new(**@button) { @label }
+        render Components::UI::Button.new(**@button) { @label }
       end
     end
   end

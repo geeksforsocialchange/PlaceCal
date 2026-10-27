@@ -88,8 +88,8 @@ class Views::Directory::Events::Index < Views::Base
 
   def render_buttons
     div(class: 'flex gap-2 items-end') do
-      Shared::Button(variant: :dark, size: :sm, shape: :field, type: 'submit') { t('directory.filters.apply') }
-      Shared::Button(variant: :dark_outline, size: :sm, shape: :field, href: events_path) { t('directory.filters.clear') } if any_filter_active?
+      UI::Button(variant: :dark, size: :sm, shape: :field, type: 'submit') { t('directory.filters.apply') }
+      UI::Button(variant: :dark_outline, size: :sm, shape: :field, href: events_path) { t('directory.filters.clear') } if any_filter_active?
     end
   end
 

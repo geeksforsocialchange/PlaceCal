@@ -45,8 +45,8 @@ class Components::Directory::PartnerFilter < Components::Directory::Base
 
   def render_buttons
     div(class: 'flex gap-2 items-end') do
-      Shared::Button(variant: :dark, size: :sm, shape: :field, type: 'submit') { t('directory.filters.apply') }
-      Shared::Button(variant: :dark_outline, size: :sm, shape: :field, href: partners_path) { t('directory.filters.clear') } if any_filter_active?
+      UI::Button(variant: :dark, size: :sm, shape: :field, type: 'submit') { t('directory.filters.apply') }
+      UI::Button(variant: :dark_outline, size: :sm, shape: :field, href: partners_path) { t('directory.filters.clear') } if any_filter_active?
     end
   end
 

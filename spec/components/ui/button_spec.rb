@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe Components::Shared::Button, type: :component do
+RSpec.describe Components::UI::Button, type: :component do
   describe "element" do
     it "renders a link when given an href" do
       render_inline(described_class.new(variant: :dark, href: "/events")) { "All events" }
@@ -14,7 +14,7 @@ RSpec.describe Components::Shared::Button, type: :component do
     it "marks links with-no-sass so the legacy link colour does not apply" do
       render_inline(described_class.new(variant: :dark, href: "/events")) { "All events" }
 
-      expect(page).to have_css("a.with-no-sass.button")
+      expect(page).to have_css("a.with-no-sass")
     end
 
     it "renders a type=button button without an href" do
@@ -35,7 +35,7 @@ RSpec.describe Components::Shared::Button, type: :component do
       component = described_class.new(variant: :dark, href: "/partners")
       render_inline(component) { component.span(class: "icon") { "→" } }
 
-      expect(page).to have_css("a.button span.icon", text: "→")
+      expect(page).to have_css("a span.icon", text: "→")
     end
   end
 
@@ -43,26 +43,28 @@ RSpec.describe Components::Shared::Button, type: :component do
     it "defaults to the medium pill" do
       render_inline(described_class.new(variant: :outline)) { "Go" }
 
-      expect(page).to have_css("button.button.button--outline.button--md")
-      expect(page).not_to have_css(".button--field")
+      expect(page).to have_css("button.rounded-pill.py-2.px-5.text-detail")
     end
 
-    it "dasherizes the variant and applies the size" do
+    it "applies the variant colours" do
       render_inline(described_class.new(variant: :dark_outline, size: :lg)) { "Go" }
 
-      expect(page).to have_css("button.button--dark-outline.button--lg")
+      expect(page).to have_css("button.bg-transparent.border-foreground.text-base")
     end
 
-    it "adds the field shape" do
+    it "squares the field shape and sets its height" do
       render_inline(described_class.new(variant: :dark, size: :sm, shape: :field)) { "Apply" }
 
-      expect(page).to have_css("button.button--dark.button--sm.button--field")
+      expect(page).to have_css("button.rounded-sm")
+      expect(page.find("button")[:class]).to include("h-(--height-field)")
+      expect(page).not_to have_css("button.rounded-pill")
+      expect(page).not_to have_css("button.py-1\\.5")
     end
 
     it "keeps extra classes alongside its own" do
       render_inline(described_class.new(variant: :join, href: "/demo", class: "mt-4")) { "Book a demo" }
 
-      expect(page).to have_css("a.button.button--join.mt-4")
+      expect(page).to have_css("a.bg-secondary-strong.mt-4")
     end
 
     it "rejects an unknown variant" do
@@ -80,21 +82,6 @@ RSpec.describe Components::Shared::Button, type: :component do
       expect(link[:target]).to eq("_blank")
       expect(link["data-copy-target"]).to eq("button")
       expect(link["aria-label"]).to eq("Visit site")
-    end
-  end
-
-  describe ".classes" do
-    it "returns the class string for form helpers" do
-      expect(described_class.classes(variant: :dark)).to eq("button button--dark button--md")
-    end
-
-    it "includes size and shape" do
-      expect(described_class.classes(variant: :dark_outline, size: :sm, shape: :field))
-        .to eq("button button--dark-outline button--sm button--field")
-    end
-
-    it "raises on an unknown variant" do
-      expect { described_class.classes(variant: :ghost) }.to raise_error(ArgumentError)
     end
   end
 end

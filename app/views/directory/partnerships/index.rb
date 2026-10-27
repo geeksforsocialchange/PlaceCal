@@ -43,7 +43,7 @@ class Views::Directory::Partnerships::Index < Views::Base
           placeholder: t('directory.partnerships.index.search_placeholder'),
           class: 'flex-1 border-0 bg-transparent py-2 text-foreground text-sm outline-none placeholder:text-tertiary'
         )
-        Shared::Button(variant: :dark, size: :sm, type: 'submit') { t('directory.partnerships.index.search_button') }
+        UI::Button(variant: :dark, size: :sm, type: 'submit') { t('directory.partnerships.index.search_button') }
       end
     end
   end
