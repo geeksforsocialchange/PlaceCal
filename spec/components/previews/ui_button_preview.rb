@@ -30,7 +30,7 @@ class UIButtonPreview < Lookbook::Preview
     render Single.new(variant: variant.to_sym, size: size.to_sym, shape: shape.to_sym, href: (link ? "#" : nil), label:)
   end
 
-  PAGE_STYLE = "min-height: 100vh; padding: 2rem; background: var(--color-background); color: var(--color-foreground)"
+  PAGE_STYLE = "color: var(--color-foreground)"
   # :light is a cream button, so it is shown on the salmon panel it is made for.
   PANEL_STYLE = { light: "background: var(--color-secondary)" }.freeze
 

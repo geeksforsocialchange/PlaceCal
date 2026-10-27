@@ -197,7 +197,8 @@ end
 
 - **Public site** styles: Tailwind 4 (`app/tailwind/public_tailwind.css`), plus legacy SCSS (`app/assets/stylesheets/`) for local-site components not yet migrated. The SCSS's bare element rules sit in a `legacy` cascade layer below Tailwind's utilities.
 - **Use the token scale** from `app/tailwind/public/_theme.css`, not arbitrary values or variants (`w-[42px]`, `[&>svg]:`, `min-[680px]:`). Add a token, a named `@utility` or `@custom-variant` instead. `spec/public_tailwind_classes_spec.rb` fails on new ones; genuine exceptions go on its allowlist with a reason.
-- **Design-system primitives** (`UI::Button`, `UI::Input`, `UI::Select`) live in `app/components/ui/`, styled with utility classes inside the component.
+- **Design-system primitives** (`UI::Button`, `UI::Input`, `UI::Select`, `UI::Field`) live in `app/components/ui/`, styled with utility classes inside the component.
+- **Components own their inside, not their outside.** A component sets its own padding but no margin on its outer element; the page or parent spaces components with `gap` or `space-y`. Lookbook previews follow the same rule: the preview layout pads every preview, and a full-width piece opts out with `# @display padding false`.
 - **Admin** styles: Tailwind 4 (`app/tailwind/admin_tailwind.css` → `yarn build`)
 - **JavaScript**: importmap + Stimulus, no build step (see `stimulus.md` and the asset notes in `context.md`)
 

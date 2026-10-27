@@ -35,7 +35,7 @@ class DirectoryPartnerCardPreview < Lookbook::Preview
     end
 
     def view_template
-      div(style: "min-height: 100vh; align-content: start; padding: 2rem; background: var(--color-background); color: var(--color-foreground); max-width: 760px; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); column-gap: 2rem") do
+      div(style: "align-content: start; color: var(--color-foreground); max-width: 760px; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); column-gap: 2rem") do
         @partners.each do |partner|
           render Components::Directory::PartnerCard.new(partner:, site: nil, area: "Coastshire › Seaview › Beachfront")
         end

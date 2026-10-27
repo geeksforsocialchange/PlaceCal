@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# @display padding false
 class HeroPreview < Lookbook::Preview
   # @label Default
   def default

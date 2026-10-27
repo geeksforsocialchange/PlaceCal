@@ -32,7 +32,7 @@ class UIInputPreview < Lookbook::Preview
 
   class Frame < Phlex::HTML
     def view_template(&content)
-      div(style: "min-height: 100vh; padding: 2rem; background: var(--color-background); max-width: 40rem") { yield(self) }
+      div(style: "max-width: 40rem") { yield(self) }
     end
   end
 end
