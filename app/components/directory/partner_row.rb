@@ -28,7 +28,7 @@ class Components::Directory::PartnerRow < Components::Directory::Base
   def render_info
     div do
       div(class: 'font-extra-bold text-base leading-tight mb-0.5') { @partner.name }
-      div(class: 'text-xs text-tertiary leading-snug') do
+      div(class: 'text-sm text-tertiary leading-snug') do
         parts = [area_text, category_text].compact_blank
         plain parts.join(' · ')
       end

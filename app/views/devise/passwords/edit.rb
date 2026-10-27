@@ -24,7 +24,7 @@ class Views::Devise::Passwords::Edit < Views::Devise::Base
               plain 'New password'
             end
             min_length = resource.class.password_length.min
-            p(class: 'text-xs text-tertiary mb-1') { "(#{min_length} characters minimum)" } if min_length
+            p(class: 'text-sm text-tertiary mb-1') { "(#{min_length} characters minimum)" } if min_length
             raw form.password_field(:password, autofocus: true, autocomplete: 'off', class: input_class)
           end
 

@@ -6,7 +6,7 @@ class Components::Directory::PartnerMini < Components::Directory::Base
 
   def view_template
     a(href: partner_path(@partner),
-      class: 'group block py-2.5 pb-5 no-underline text-foreground hover:bg-home-background-3 transition-colors rounded-lg px-2 -mx-2') do
+      class: 'group block py-2.5 pb-5 no-underline text-foreground hover:bg-home-background-3 transition-colors rounded-sm px-2 -mx-2') do
       div do
         div(class: 'flex items-start justify-between gap-2') do
           span(class: 'font-bold text-base leading-tight') { @partner.name }
