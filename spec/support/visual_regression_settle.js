@@ -1,4 +1,4 @@
-async () => {
+export default async () => {
 	const timeout = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 	await Promise.race([document.fonts.ready, timeout(10000)]);
 	document.querySelectorAll("img[loading=lazy]").forEach((img) => {
