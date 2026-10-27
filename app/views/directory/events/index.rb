@@ -43,8 +43,7 @@ class Views::Directory::Events::Index < Views::Base
   end
 
   def render_filters
-    form(action: events_path, method: 'get',
-         class: 'bg-home-background-3 rounded-card p-4 mb-4') do
+    UI::Card(variant: :panel, padding: :sm, tag: :form, action: events_path, method: 'get', class: 'mb-4') do
       div(class: 'flex flex-wrap gap-3 items-end') do
         render_search_field
         render_partnership_select

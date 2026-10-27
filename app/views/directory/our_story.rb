@@ -69,7 +69,7 @@ class Views::Directory::OurStory < Views::Base
   # foreground numeral on a bordered cream card. The foreground brown also
   # clears WCAG AA on cream, unlike the previous lime/green.
   def render_stat(stat)
-    div(class: 'flex flex-col bg-home-background border-2 border-rules rounded-card py-3.5 px-4.5 min-w-0') do
+    UI::Card(padding: :sm, class: 'flex flex-col min-w-0') do
       span(class: 'font-serif text-stat leading-none text-foreground') { stat[:value] }
       span(class: 'allcaps-label text-tertiary mt-1.5 wrap-anywhere') { stat[:label] }
     end
@@ -148,7 +148,7 @@ class Views::Directory::OurStory < Views::Base
   def render_cta
     section(class: 'pt-12 pb-4') do
       narrow do
-        div(class: 'flex flex-wrap items-center justify-between gap-6 rounded-card bg-secondary text-foreground px-10 py-8') do
+        UI::Card(variant: :highlight, padding: :none, class: 'flex flex-wrap items-center justify-between gap-6 text-foreground px-10 py-8') do
           h2(class: 'my-0 font-serif font-regular text-display leading-tight text-foreground') do
             t("#{T}.cta.heading")
           end

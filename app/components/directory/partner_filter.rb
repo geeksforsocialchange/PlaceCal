@@ -12,10 +12,7 @@ class Components::Directory::PartnerFilter < Components::Directory::Base
   prop :selected_neighbourhood, _Nilable(String), default: nil
 
   def view_template
-    # text-sm on the form so buttons/inputs (which an unlayered `font-size:100%`
-    # reset pins to the base size) inherit the same size as the native selects.
-    form(action: partners_path, method: 'get',
-         class: 'bg-home-background-3 rounded-card p-4 mb-4 text-sm') do
+    UI::Card(variant: :panel, padding: :sm, tag: :form, action: partners_path, method: 'get', class: 'mb-4 text-sm') do
       div(class: 'flex flex-wrap lg:flex-nowrap gap-3 items-end') do
         render_search_field
         UI::Select(name: 'category', label_text: t('directory.filters.category'), default_label: t('directory.filters.all_categories'), options: @categories, selected: @selected_category) if @categories.any?

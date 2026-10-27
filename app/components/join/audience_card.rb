@@ -7,8 +7,7 @@ class Components::Join::AudienceCard < Components::Join::Base
   prop :heading_level, Integer, default: 3
 
   def view_template
-    a(href: audience_path(audience),
-      class: 'with-no-sass flex flex-col gap-2 bg-home-background border-2 border-rules rounded-card p-5 no-underline text-foreground transition-all hover:border-secondary-deep hover:-translate-y-0.5') do
+    UI::Card(href: audience_path(audience), class: 'flex flex-col gap-2') do
       div(class: 'aspect-square rounded-sm overflow-hidden bg-home-background-3') do
         image_tag(AUDIENCES.fetch(audience), class: 'w-full h-full object-cover', alt: t("join.audiences.#{audience}.image_alt"))
       end

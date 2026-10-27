@@ -27,7 +27,7 @@ class Views::Devise::Base < Views::Base
   def render_error_messages
     return if resource.errors.empty?
 
-    div(class: 'rounded-card bg-secondary px-4 py-3 mb-4') do
+    UI::Card(variant: :highlight, padding: :sm, class: 'mb-4') do
       h2(class: 'font-bold text-sm text-foreground mb-1') do
         plain t('errors.messages.not_saved', count: resource.errors.count, resource: resource.model_name.human.downcase)
       end

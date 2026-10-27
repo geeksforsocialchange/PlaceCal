@@ -141,7 +141,7 @@ class Views::Join::Pricing < Views::Join::Base
   end
 
   def render_tier_card(tier)
-    article(class: 'flex flex-col bg-cream border-2 border-rules rounded-card p-6') do
+    UI::Card(tag: :article, padding: :lg, class: 'flex flex-col') do
       div(class: 'allcaps-label text-secondary-strong') { t("join.pricing.tiers.#{tier}.name") }
       p(class: 'font-serif text-lg leading-snug text-foreground mt-2.5 mb-3') do
         t("join.pricing.tiers.#{tier}.who_card")
@@ -172,7 +172,7 @@ class Views::Join::Pricing < Views::Join::Base
   # The free tier is deliberately pulled out of the comparison, not a
   # fourth column.
   def render_starter_strip
-    aside(class: 'bg-cream-warm border-2 border-rules rounded-card px-7 py-6 mt-6 flex flex-col lg:flex-row lg:items-center gap-x-10 gap-y-3') do
+    UI::Card(variant: :featured, tag: :aside, padding: :lg, class: 'mt-6 flex flex-col lg:flex-row lg:items-center gap-x-10 gap-y-3') do
       div(class: 'shrink-0') do
         div(class: 'allcaps-label text-secondary-strong') { t('join.pricing.starter.name') }
         div(class: 'font-serif text-2xl leading-tight text-foreground') { t('join.pricing.starter.price') }
@@ -200,7 +200,7 @@ class Views::Join::Pricing < Views::Join::Base
   end
 
   def render_addon(addon)
-    div(class: 'flex flex-col bg-cream border-2 border-rules rounded-card p-6') do
+    UI::Card(padding: :lg, class: 'flex flex-col') do
       h3(class: 'font-serif font-regular text-subhead text-foreground mt-0 mb-1.5') { addon[:title] }
       p(class: 'text-base leading-relaxed text-tertiary mt-0 mb-4') { addon[:body] }
       div(class: 'font-serif text-xl text-foreground mt-auto') do
@@ -214,7 +214,7 @@ class Views::Join::Pricing < Views::Join::Base
 
   def render_training_addon
     training = t('join.pricing.extras.training')
-    div(class: 'flex flex-col bg-cream border-2 border-rules rounded-card p-6') do
+    UI::Card(padding: :lg, class: 'flex flex-col') do
       h3(class: 'font-serif font-regular text-subhead text-foreground mt-0 mb-1.5') { training[:title] }
       p(class: 'text-base leading-relaxed text-tertiary mt-0 mb-2') { training[:body] }
       ul(class: 'list-none p-0 mt-auto mb-0') do

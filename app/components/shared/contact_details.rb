@@ -35,7 +35,7 @@ class Components::Shared::ContactDetails < Components::Base
   def render_tailwind
     return unless contact?
 
-    div(class: 'rounded-card bg-home-background-3 px-4 py-4') do
+    UI::Card(variant: :panel, padding: :sm) do
       sidebar_heading(t('directory.contact.get_in_touch'))
       render_tailwind_rows
     end

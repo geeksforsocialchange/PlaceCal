@@ -43,7 +43,7 @@ class Views::Join::Home < Views::Join::Base
   end
 
   def stat_tile(value, label)
-    div(class: 'bg-secondary rounded-card p-5') do
+    UI::Card(variant: :highlight) do
       div(class: 'font-serif text-3xl leading-none text-foreground-dark') do
         plain value.is_a?(Numeric) ? value.to_fs(:delimited) : value.to_s
       end
