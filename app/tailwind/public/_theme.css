@@ -39,19 +39,19 @@
 	/* preloaded in Views::Layouts::Application#view_template */
 	--font-sans: Rawline, sans-serif;
 	--font-serif: Trocchi, Georgia, serif;
+	/* URLs and code: system fonts, so nothing extra downloads */
+	--font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 	--font-weight-extra-bold: 800;
 	--font-weight-bold: 700;
 	--font-weight-regular: 500;
 	/* this one only from app/assets/stylesheets/components/navigation_component.scss */
 	--font-weight-semibold: 600;
 
-	/* Type scale */
+	/* Type scale. Themes override these by name, so a name never changes meaning: add or retire, don't reuse. */
 
 	/* allcaps kickers, tiny badges, micro labels */
 	--text-2xs: 0.72rem;
 	/* meta text, secondary info */
-	--text-xs: 0.78rem;
-	/* small */
 	--text-sm: 0.8rem;
 	/* button text, body-adjacent links */
 	--text-detail: 0.92rem;
@@ -59,18 +59,18 @@
 	--text-base: 1rem;
 	/* lead paragraphs, emphasised body */
 	--text-md: 1.1rem;
-	/* card headings */
-	--text-card: 1.3rem;
-	/* h3.5 - not certain that this is used */
+	/* h4 */
 	--text-lg: 1.222222222rem;
 	/* h3 */
 	--text-xl: 1.33333rem;
+	/* card headings */
+	--text-card: var(--text-xl);
 	/* subheadings on marketing pages */
 	--text-subhead: 1.5rem;
-	/* section headings on directory */
-	--text-section: 1.8rem;
 	/* h2 */
 	--text-2xl: 1.77778rem;
+	/* section headings on directory */
+	--text-section: var(--text-2xl);
 	/* stat numbers */
 	--text-stat: 2rem;
 	/* h1 */
@@ -167,6 +167,9 @@
 	/* map cluster bubbles and partner dots */
 	--shadow-marker: 0 2px 6px var(--color-marker-shadow);
 	--shadow-dot: 0 1px 3px var(--color-dot-shadow);
+	/* raised panels: dropdowns, hovered cards */
+	--shadow-lg:
+		0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 
 /* base theme
@@ -188,6 +191,7 @@ this file).
 	/* Fonts */
 	--font-sans: var(--font-sans);
 	--font-serif: var(--font-serif);
+	--font-mono: var(--font-mono);
 	--font-weight-extra-bold: var(--font-weight-extra-bold);
 	--font-weight-bold: var(--font-weight-bold);
 	--font-weight-regular: var(--font-weight-regular);
@@ -195,7 +199,6 @@ this file).
 
 	/* Type scale */
 	--text-2xs: var(--text-2xs);
-	--text-xs: var(--text-xs);
 	--text-sm: var(--text-sm);
 	--text-detail: var(--text-detail);
 	--text-base: var(--text-base);
@@ -293,6 +296,7 @@ this file).
 	--shadow-hero-search: var(--shadow-hero-search);
 	--shadow-marker: var(--shadow-marker);
 	--shadow-dot: var(--shadow-dot);
+	--shadow-lg: var(--shadow-lg);
 
 	/* app/assets/stylesheets/modules/breakpoints.scss
 		tablet portrait, landscape, desktop

@@ -57,7 +57,7 @@ class Components::Join::Footer < Components::Join::Base
   end
 
   def render_impressum
-    div(class: 'container-public mt-6 pt-5 border-t-2 border-rules text-xs text-tertiary font-serif',
+    div(class: 'container-public mt-6 pt-5 border-t-2 border-rules text-sm text-tertiary font-serif',
         data_nosnippet: true) do
       Shared::Impressum()
     end

@@ -10,7 +10,7 @@ class Views::Join::Base < Views::Base
   # on_secondary swaps to the darker ink, since taupe fails contrast on salmon.
   def breadcrumb(*crumbs, on_secondary: false)
     tone = on_secondary ? 'text-foreground-dark' : 'text-tertiary'
-    nav(class: "text-xs #{tone} mb-3", aria_label: t('join.aria.breadcrumb')) do
+    nav(class: "text-sm #{tone} mb-3", aria_label: t('join.aria.breadcrumb')) do
       a(href: join_root_path, class: "with-no-sass #{tone} no-underline hover:underline") { t('join.breadcrumbs.root') }
       crumbs.each do |label, path|
         span(class: 'mx-1.5 opacity-60') { safe('&rsaquo;') }

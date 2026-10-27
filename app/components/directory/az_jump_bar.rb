@@ -43,7 +43,7 @@ class Components::Directory::AzJumpBar < Components::Directory::Base
   end
 
   def letter_base
-    'w-7 h-7 flex items-center justify-center rounded-sm text-xs font-bold no-underline transition-colors'
+    'w-7 h-7 flex items-center justify-center rounded-sm text-sm font-bold no-underline transition-colors'
   end
 
   def letter_selected
