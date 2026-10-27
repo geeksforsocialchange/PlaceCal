@@ -30,13 +30,13 @@ class Components::Directory::PartnershipCard < Components::Directory::Base
     div(class: 'bg-home-background-3 px-5 py-4 flex-1') do
       div(class: 'flex flex-wrap gap-1.5 mb-2') do
         if @partnership.primary_neighbourhood
-          span(class: 'badge gap-1 bg-rules-dark text-foreground') do
-            raw(view_context.icon(:neighbourhood, size: nil, css_class: 'w-3 h-3'))
+          UI::Pill(variant: :tag) do
+            raw(view_context.icon(:neighbourhood, size: nil, css_class: 'size-3'))
             plain @partnership.primary_neighbourhood.name
           end
         end
-        span(class: 'badge gap-1 bg-primary-light text-foreground') do
-          raw(view_context.icon(:partner, size: nil, css_class: 'w-3 h-3'))
+        UI::Pill(variant: :count) do
+          raw(view_context.icon(:partner, size: nil, css_class: 'size-3'))
           plain "#{@partnership.partners_count} #{Partner.model_name.human(count: @partnership.partners_count).downcase}"
         end
       end

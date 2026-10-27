@@ -189,6 +189,9 @@ en:
   directory:
     breadcrumbs:
       root: "Directory"
+    event_count:
+      one: "%{count} event"
+      other: "%{count} events"
     aria:
       breadcrumb: "Breadcrumb"
       time_period: "Time period"

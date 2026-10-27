@@ -12,10 +12,13 @@ class UIPillPreview < Lookbook::Preview
     end)
   end
 
-  # @label Tags
-  def tags
+  # @label Small
+  # @notes `:tag` for category links, `:count` for counts, `:muted` for categories on cream cards.
+  def small
     render(Row.new do |r|
-      %w[Arts Health Housing].each { |name| r.render(Components::UI::Pill.new(variant: :tag, href: "#")) { name } }
+      r.render(Components::UI::Pill.new(variant: :tag, href: "#")) { "Arts" }
+      r.render(Components::UI::Pill.new(variant: :count)) { "3 events" }
+      r.render(Components::UI::Pill.new(variant: :muted)) { "Health" }
     end)
   end
 
