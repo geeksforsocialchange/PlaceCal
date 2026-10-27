@@ -1,0 +1,63 @@
+name: Install apt packages from cache
+description: >-
+  Installs apt packages from cached .deb files, so the Ubuntu mirror is only
+  used when the runner image or the package list changes.
+
+inputs:
+  packages:
+    description: Space-separated apt packages to install.
+    required: true
+  extra-packages-command:
+    description: >-
+      Shell command run after apt-get update on a cache miss; any package names
+      it prints are installed too.
+    required: false
+    default: ""
+  key:
+    description: Extra cache key part, for anything that changes the package list.
+    required: false
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    # The cached .debs only fit the runner image they were downloaded on.
+    - name: Work out cache key
+      id: key
+      shell: bash
+      env:
+        PACKAGES: ${{ inputs.packages }}
+        EXTRA: ${{ inputs.extra-packages-command }}
+        KEY: ${{ inputs.key }}
+      run: |
+        image="${ImageOS:-unknown}-${ImageVersion:-unknown}"
+        packages=$(printf '%s\n%s\n%s' "$PACKAGES" "$EXTRA" "$KEY" | sha256sum | cut -c1-12)
+        echo "key=apt-debs-$image-$packages-v1" >> "$GITHUB_OUTPUT"
+
+    - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      id: debs
+      with:
+        path: ~/apt-debs
+        key: ${{ steps.key.outputs.key }}
+
+    - name: Download from the Ubuntu mirror
+      if: steps.debs.outputs.cache-hit != 'true'
+      shell: bash
+      env:
+        PACKAGES: ${{ inputs.packages }}
+        EXTRA: ${{ inputs.extra-packages-command }}
+      run: |
+        debs="$HOME/apt-debs"
+        mkdir -p "$debs/partial"
+        sudo apt-get update
+        extra=""
+        if [ -n "$EXTRA" ]; then extra=$(bash -c "$EXTRA"); fi
+        # shellcheck disable=SC2086
+        sudo apt-get install -y --no-install-recommends --download-only \
+          -o Dir::Cache::Archives="$debs" $PACKAGES $extra
+        sudo rm -rf "$debs/partial" "$debs/lock"
+        sudo chown -R "$USER" "$debs"
+
+    - name: Install
+      shell: bash
+      run: sudo dpkg -i "$HOME"/apt-debs/*.deb

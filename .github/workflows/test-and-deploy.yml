@@ -130,7 +130,9 @@ jobs:
 
       - name: Install Imagemagick and libvips
         timeout-minutes: 8
-        uses: ./.github/actions/install-image-libraries
+        uses: ./.github/actions/install-apt-packages
+        with:
+          packages: imagemagick libvips42t64
 
       - name: Install Chrome for browser tests
         if: matrix.suite == 'system' || startsWith(matrix.suite, 'cucumber')
