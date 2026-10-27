@@ -44,7 +44,7 @@ module VisualRegression
   STABLE_INTERVAL_MS = 300
   STABLE_ATTEMPTS = 5
 
-  SETTLE_SCRIPT = File.read(File.join(__dir__, "visual_regression_settle.js"))
+  SETTLE_SCRIPT = File.read(File.join(__dir__, "visual_regression_settle.js")).delete_prefix("export default ")
 
   # Core's pink plus every installed extension theme, so a newly installed theme is captured without editing this list.
   def self.themes
