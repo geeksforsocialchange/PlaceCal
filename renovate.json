@@ -33,6 +33,11 @@
 			"minimumReleaseAge": "7 days"
 		},
 		{
+			"description": "The Ruby client drives the npm package's Playwright, so they update together",
+			"matchPackageNames": ["playwright", "playwright-ruby-client"],
+			"groupName": "playwright"
+		},
+		{
 			"description": "Ruby patches wait a week so CI and Docker have builds, and land with the setup-ruby action that knows them",
 			"matchDepNames": ["ruby"],
 			"matchUpdateTypes": ["patch"],

@@ -35,7 +35,7 @@ concurrency:
 jobs:
   screenshots:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     permissions:
       contents: read
       pull-requests: write
@@ -70,20 +70,37 @@ jobs:
           bundler-cache: true
           cache-version: 3
 
-      - name: Install Imagemagick and libvips
-        timeout-minutes: 8
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends imagemagick libvips42t64
-
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: ".node-version"
           cache: yarn
       - run: yarn install --frozen-lockfile
 
+      - name: Read Playwright version
+        id: playwright
+        run: echo "version=$(node -p "require('playwright/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      # The browsers' system libraries come from the same .deb cache as ImageMagick and libvips.
+      # A cache miss downloads about 150 packages, which can be slow on the Ubuntu mirror.
+      - name: Install Imagemagick, libvips and browser libraries
+        timeout-minutes: 20
+        uses: ./.github/actions/install-apt-packages
+        with:
+          packages: imagemagick libvips42t64
+          key: playwright-${{ steps.playwright.outputs.version }}
+          extra-packages-command: >-
+            yarn -s playwright install-deps --dry-run chromium webkit
+            | awk '/^Missing system dependencies/ { found = 1; sub(/^[^:]*:/, "") } found'
+            | tr -s ' ' '\n' | grep -E '^[a-z0-9][a-z0-9.+-]+$' || true
+
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-browsers-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+
       - name: Install Playwright browsers
-        run: yarn playwright install --with-deps chromium webkit
+        timeout-minutes: 8
+        run: yarn playwright install chromium webkit
 
       - name: Capture and compare
         run: bin/visual-regression --base "origin/$BASE_REF"

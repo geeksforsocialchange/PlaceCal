@@ -113,10 +113,16 @@ capture() {
   log "Captured $count screenshots"
 }
 
-# The base commit may not have the Playwright gems yet; layer them on without changing its own lockfile pins.
+# Bundles the base with this checkout's Playwright client, layering the gems on if the base predates them.
 bundle_base() {
   local dir="$1"
+  # The base renders on this job's Ruby, which differs from the base's own on a Ruby upgrade PR.
+  cp "$PROJECT_ROOT/.ruby-version" "$dir/.ruby-version"
   if grep -q '^    capybara-playwright-driver ' "$dir/Gemfile.lock"; then
+    # Both sides drive this checkout's Playwright CLI, so the base takes this checkout's client version too.
+    local client_line
+    client_line=$(grep -E "^[[:space:]]*gem 'playwright-ruby-client'" "$PROJECT_ROOT/Gemfile")
+    sed -i.bak -E "s|^[[:space:]]*gem 'playwright-ruby-client'.*$|$client_line|" "$dir/Gemfile"
     export BUNDLE_GEMFILE="$dir/Gemfile"
   else
     local driver client
