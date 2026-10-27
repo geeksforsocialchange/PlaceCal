@@ -48,7 +48,7 @@ class Views::Join::Pricing < Views::Join::Base
         render_tier_cards
         render_starter_strip
         div(class: 'text-center mt-7') do
-          a(href: join_demo_path, class: 'btn-join') { t('join.pricing.cta') }
+          Shared::Button(variant: :join, size: :lg, href: join_demo_path) { t('join.pricing.cta') }
         end
       end
     end

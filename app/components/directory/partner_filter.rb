@@ -38,23 +38,15 @@ class Components::Directory::PartnerFilter < Components::Directory::Base
       input(
         type: 'text', name: 'q', id: 'q', value: @query,
         placeholder: t('directory.filters.search_placeholder'),
-        class: 'w-full h-[42px] border-2 border-rules rounded-sm px-4 text-sm bg-background text-foreground outline-none focus:border-foreground transition-colors'
+        class: 'w-full h-(--height-field) border-2 border-rules rounded-sm px-4 text-sm bg-background text-foreground outline-none focus:border-foreground transition-colors'
       )
     end
   end
 
   def render_buttons
     div(class: 'flex gap-2 items-end') do
-      button(type: 'submit',
-             class: 'inline-flex items-center justify-center h-[42px] bg-foreground text-background rounded-sm px-5 text-sm font-bold border-2 border-foreground cursor-pointer hover:bg-tertiary hover:border-tertiary transition-colors') do
-        plain t('directory.filters.apply')
-      end
-      if any_filter_active?
-        a(href: partners_path,
-          class: 'with-no-sass inline-flex items-center justify-center h-[42px] rounded-sm px-4 text-sm font-bold bg-background text-foreground border-2 border-foreground no-underline hover:bg-foreground hover:text-background transition-colors') do
-          plain t('directory.filters.clear')
-        end
-      end
+      Shared::Button(variant: :dark, size: :sm, shape: :field, type: 'submit') { t('directory.filters.apply') }
+      Shared::Button(variant: :dark_outline, size: :sm, shape: :field, href: partners_path) { t('directory.filters.clear') } if any_filter_active?
     end
   end
 

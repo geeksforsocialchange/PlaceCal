@@ -40,10 +40,7 @@ class Components::Directory::Hero < Components::Directory::Base
         placeholder: t('directory.hero.search_placeholder'),
         class: 'flex-1 border-0 bg-transparent py-2 text-foreground text-detail outline-none placeholder:text-tertiary'
       )
-      button(type: 'submit',
-             class: 'bg-primary text-foreground rounded-full px-5 py-2 text-detail font-bold border-0 cursor-pointer hover:bg-primary/80 transition-colors') do
-        plain t('directory.hero.search_button')
-      end
+      Shared::Button(variant: :primary, type: 'submit') { t('directory.hero.search_button') }
     end
   end
 

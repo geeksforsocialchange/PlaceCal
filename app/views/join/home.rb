@@ -24,8 +24,8 @@ class Views::Join::Home < Views::Join::Base
           h1(class: 'join-headline m-0 mb-4') { t('join.home.hero.title') }
           p(class: 'text-base leading-relaxed max-w-(--width-prose) mt-0 mb-6') { t('join.home.hero.intro') }
           div(class: 'flex gap-2.5 flex-wrap items-center') do
-            a(href: join_demo_path, class: 'btn-join') { t('join.home.hero.cta_demo') }
-            a(href: join_our_story_path, class: 'btn-primary-outline') { t('join.home.hero.cta_how') }
+            Shared::Button(variant: :join, size: :lg, href: join_demo_path) { t('join.home.hero.cta_demo') }
+            Shared::Button(variant: :outline, href: join_our_story_path) { t('join.home.hero.cta_how') }
           end
         end
         render_stats
@@ -83,7 +83,7 @@ class Views::Join::Home < Views::Join::Base
             end
           end
           div(class: 'mt-5') do
-            a(href: join_our_story_path, class: 'btn-dark-outline') { t('join.home.why.cta') }
+            Shared::Button(variant: :dark_outline, href: join_our_story_path) { t('join.home.why.cta') }
           end
         end
         render_quote
@@ -112,7 +112,7 @@ class Views::Join::Home < Views::Join::Base
           end
         end
         div(class: 'text-center mt-6') do
-          a(href: join_features_path, class: 'btn-primary-outline') do
+          Shared::Button(variant: :outline, href: join_features_path) do
             plain t('join.home.features.see_all')
             span { safe(' &rarr;') }
           end
@@ -126,7 +126,7 @@ class Views::Join::Home < Views::Join::Base
       div(class: 'container-narrow text-center') do
         h2(class: 'font-serif font-regular text-3xl leading-tight text-foreground-dark m-0 mb-3') { t('join.home.cta.heading') }
         p(class: 'text-base leading-relaxed text-foreground-dark mt-0 mb-6') { t('join.home.cta.body') }
-        a(href: join_demo_path, class: 'btn-dark') { t('join.home.cta.button') }
+        Shared::Button(variant: :dark, href: join_demo_path) { t('join.home.cta.button') }
       end
     end
   end

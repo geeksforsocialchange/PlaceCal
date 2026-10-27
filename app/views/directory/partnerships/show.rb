@@ -47,8 +47,7 @@ class Views::Directory::Partnerships::Show < Views::Base
   private
 
   def render_visit_button
-    a(href: @partnership.public_url,
-      class: 'inline-flex items-center gap-2 bg-primary text-foreground font-bold rounded-full px-5 py-2 no-underline hover:brightness-110 transition-all') do
+    Shared::Button(variant: :primary, href: @partnership.public_url) do
       raw(view_context.icon(:external_link, size: nil, css_class: 'w-4 h-4'))
       plain t('directory.partnerships.show.visit', url: @partnership.display_url)
     end
@@ -96,7 +95,7 @@ class Views::Directory::Partnerships::Show < Views::Base
 
   def render_see_all_button(text, href)
     div(class: 'mt-6') do
-      a(href:, class: 'btn-dark transition-colors') do
+      Shared::Button(variant: :dark, href:) do
         plain text
         raw(view_context.icon(:external_link, size: nil, css_class: 'w-4 h-4'))
       end
@@ -157,10 +156,7 @@ class Views::Directory::Partnerships::Show < Views::Base
           end
         end
         contact_href = coordinator&.email.present? ? "mailto:#{coordinator.email}" : '/get-in-touch'
-        a(href: contact_href,
-          class: 'btn-dark-outline transition-colors') do
-          plain t('directory.partnerships.show.contact_coordinator')
-        end
+        Shared::Button(variant: :dark_outline, href: contact_href) { t('directory.partnerships.show.contact_coordinator') }
       end
     end
   end
