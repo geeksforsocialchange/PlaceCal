@@ -35,7 +35,7 @@ class Views::Join::Pricing < Views::Join::Base
             h1(class: 'join-headline m-0') { t('join.pricing.title') }
           end
           image_tag('home/our_story/collective_ownership.png', alt: '',
-                                                               class: 'hidden min-[680px]:block shrink-0 w-[clamp(140px,18vw,220px)] h-auto')
+                                                               class: 'hidden md:block shrink-0 w-36 xl:w-48 h-auto')
         end
       end
     end
@@ -172,8 +172,8 @@ class Views::Join::Pricing < Views::Join::Base
   # The free tier is deliberately pulled out of the comparison, not a
   # fourth column.
   def render_starter_strip
-    aside(class: 'bg-cream-warm border-2 border-rules rounded-card px-7 py-6 mt-6 grid min-[680px]:grid-cols-[auto_1fr] gap-x-10 gap-y-3 items-center') do
-      div do
+    aside(class: 'bg-cream-warm border-2 border-rules rounded-card px-7 py-6 mt-6 flex flex-col lg:flex-row lg:items-center gap-x-10 gap-y-3') do
+      div(class: 'shrink-0') do
         div(class: 'allcaps-label text-secondary-strong') { t('join.pricing.starter.name') }
         div(class: 'font-serif text-2xl leading-tight text-foreground') { t('join.pricing.starter.price') }
       end
@@ -191,7 +191,7 @@ class Views::Join::Pricing < Views::Join::Base
     section(class: 'py-10 bg-cream') do
       div(class: 'container-public') do
         h2(class: 'font-serif font-regular text-section text-foreground mt-0 mb-7') { t('join.pricing.extras.heading') }
-        div(class: 'grid min-[760px]:grid-cols-2 gap-4') do
+        div(class: 'grid lg:grid-cols-2 gap-4') do
           t('join.pricing.extras.addons').each { |addon| render_addon(addon) }
           render_training_addon
         end
@@ -235,7 +235,7 @@ class Views::Join::Pricing < Views::Join::Base
     section(class: 'py-10') do
       div(class: 'container-public') do
         h2(class: 'font-serif font-regular text-section text-foreground mt-0 mb-4') { t('join.rollout.heading') }
-        div(class: 'max-w-[880px]') do
+        div(class: 'max-w-(--width-prose-lg)') do
           t('join.rollout.steps').each_with_index do |step, index|
             render_rollout_step(step, index)
           end
@@ -245,22 +245,20 @@ class Views::Join::Pricing < Views::Join::Base
   end
 
   def render_rollout_step(step, index)
-    div(class: 'relative grid grid-cols-[48px_1fr] min-[680px]:grid-cols-[64px_200px_1fr] gap-x-5 min-[680px]:gap-x-9 items-center py-6 ' \
-               'before:content-[""] before:absolute before:top-0 before:bottom-0 before:left-[23px] min-[680px]:before:left-[31px] before:w-[2px] before:bg-rules ' \
-               'first:before:top-1/2 last:before:bottom-1/2') do
-      div(class: 'relative self-stretch row-span-2 min-[680px]:row-span-1 flex justify-center') do
-        div(class: 'relative z-1 self-center w-11 h-11 min-[680px]:w-14 min-[680px]:h-14 rounded-full bg-secondary text-foreground-dark grid place-items-center font-serif text-lg min-[680px]:text-2xl') do
+    div(class: 'group/step grid grid-cols-rollout md:grid-cols-rollout-wide gap-x-5 md:gap-x-9 items-center py-6') do
+      div(class: 'relative self-stretch row-span-2 md:row-span-1 flex justify-center') do
+        # The spine runs through the row padding so the steps join up, and stops at the first and last circles.
+        span(class: 'absolute -inset-y-6 group-first/step:top-1/2 group-last/step:bottom-1/2 left-1/2 -translate-x-1/2 w-0.5 bg-rules')
+        div(class: 'relative z-1 self-center size-11 md:size-14 rounded-full bg-secondary text-foreground-dark grid place-items-center font-serif text-lg md:text-2xl') do
           plain (index + 1).to_s
         end
       end
-      div(class: 'col-start-2 min-[680px]:col-start-auto mb-3 min-[680px]:mb-0 flex justify-start min-[680px]:justify-center') do
-        # Width, not max-width: the legacy unlayered img { max-width: 100% }
-        # rule outranks layered Tailwind utilities and would undo a cap.
-        image_tag(ROLLOUT_ART[index], alt: '', class: 'w-[150px] min-[680px]:w-[190px] h-auto') if ROLLOUT_ART[index]
+      div(class: 'col-start-2 md:col-start-auto mb-3 md:mb-0 flex justify-start md:justify-center') do
+        image_tag(ROLLOUT_ART[index], alt: '', class: 'w-32 md:w-42 h-auto') if ROLLOUT_ART[index]
       end
-      div(class: 'col-start-2 min-[680px]:col-start-auto') do
+      div(class: 'col-start-2 md:col-start-auto') do
         h3(class: 'font-serif font-regular text-subhead text-foreground mt-0 mb-1') { step[:title] }
-        p(class: 'text-base leading-relaxed text-tertiary m-0 max-w-[46ch]') { step[:body] }
+        p(class: 'text-base leading-relaxed text-tertiary m-0') { step[:body] }
       end
     end
   end
@@ -270,13 +268,13 @@ class Views::Join::Pricing < Views::Join::Base
     section(class: 'py-10 bg-cream') do
       div(class: 'container-public') do
         h2(class: 'font-serif font-regular text-section text-foreground mt-0 mb-4') { t('join.pricing.faq.heading') }
-        div(class: 'max-w-[820px]') do
+        div(class: 'max-w-(--width-prose-lg)') do
           t('join.pricing.faq.items').each_with_index do |item, index|
             details(class: 'group border-b-2 border-rules', open: index.zero?) do
               summary(class: 'cursor-pointer list-none py-4 font-serif text-lg text-foreground flex justify-between items-center gap-4 ' \
-                             'details-marker:hidden after:content-["+"] after:font-sans after:font-bold after:text-2xl ' \
-                             'after:text-secondary-strong after:transition-transform group-open:after:rotate-45') do
-                item[:question]
+                             'details-marker:hidden') do
+                plain item[:question]
+                span(class: 'font-sans font-bold text-2xl text-secondary-strong transition-transform group-open:rotate-45', aria_hidden: 'true') { '+' }
               end
               p(class: 'mt-0 pb-4 text-base leading-relaxed text-tertiary max-w-(--width-prose)') { item[:answer] }
             end
