@@ -47,6 +47,13 @@ en:
     details:
       open: "Open to read more"
       close: "Close"
+    password_reveal:
+      show: "Show"
+      hide: "Hide"
+      show_label: "Show password"
+      hide_label: "Hide password"
+      shown: "Your password is visible"
+      hidden: "Your password is hidden"
 
   # app/components/address.rb
   address:

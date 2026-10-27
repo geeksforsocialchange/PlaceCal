@@ -21,12 +21,12 @@ class Views::Devise::Invitations::Edit < Views::Devise::Base
 
           div do
             render_label(form, :password, t('devise.invitations.edit.new_password'))
-            render_input(form, :password, type: 'password', autocomplete: 'new-password')
+            render_input(form, :password, type: 'password', reveal: true, autocomplete: 'new-password')
           end
 
           div do
             render_label(form, :password_confirmation, t('devise.invitations.edit.repeat_password'))
-            render_input(form, :password_confirmation, type: 'password', autocomplete: 'new-password')
+            render_input(form, :password_confirmation, type: 'password', reveal: true, autocomplete: 'new-password')
           end
 
           div { UI::Button(variant: :dark, type: 'submit') { t('devise.invitations.edit.submit_button') } }

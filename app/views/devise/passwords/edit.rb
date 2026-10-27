@@ -23,12 +23,12 @@ class Views::Devise::Passwords::Edit < Views::Devise::Base
             render_label(form, :password, t('devise.passwords.edit.new_password'))
             min_length = resource.class.password_length.min
             p(class: 'text-sm text-tertiary mb-1') { t('devise.passwords.edit.minimum_length', count: min_length) } if min_length
-            render_input(form, :password, type: 'password', autofocus: true, autocomplete: 'new-password')
+            render_input(form, :password, type: 'password', reveal: true, autofocus: true, autocomplete: 'new-password')
           end
 
           div do
             render_label(form, :password_confirmation, t('devise.passwords.edit.confirm_new_password'))
-            render_input(form, :password_confirmation, type: 'password', autocomplete: 'new-password')
+            render_input(form, :password_confirmation, type: 'password', reveal: true, autocomplete: 'new-password')
           end
 
           div { UI::Button(variant: :dark, type: 'submit') { t('devise.passwords.edit.submit') } }

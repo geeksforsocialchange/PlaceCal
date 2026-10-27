@@ -22,7 +22,7 @@ class Views::Devise::Sessions::New < Views::Devise::Base
 
           div do
             render_label(form, :password)
-            render_input(form, :password, type: 'password', autocomplete: 'current-password')
+            render_input(form, :password, type: 'password', reveal: true, autocomplete: 'current-password')
           end
 
           if devise_mapping.rememberable?

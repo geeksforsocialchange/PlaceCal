@@ -5,10 +5,35 @@ class Components::UI::Input < Components::Base
   BOX = 'w-full h-(--height-field) border-2 border-rules rounded-sm px-4 text-sm bg-background text-foreground transition-colors'
 
   prop :type, String, default: 'text'
+  # Adds a Show/Hide button to a password field.
+  prop :reveal, _Boolean, default: false
   prop :attributes, Hash, :**
 
   def view_template
-    input(type: @type, class: [BOX, 'outline-none focus:border-foreground', @attributes[:class]].compact.join(' '),
-          **@attributes.except(:class))
+    return render_input unless @reveal
+
+    div(class: 'relative', data: { controller: 'password-reveal', **reveal_values }) do
+      render_input('pr-20', password_reveal_target: 'input')
+      button(
+        type: 'button', hidden: true,
+        class: 'absolute inset-y-0 right-0 px-4 text-sm font-bold text-foreground underline cursor-pointer hover:decoration-primary',
+        aria: { controls: @attributes[:id], label: t('components.password_reveal.show_label') },
+        data: { password_reveal_target: 'button', action: 'password-reveal#toggle' }
+      ) { t('components.password_reveal.show') }
+      span(class: 'sr-only', aria: { live: 'polite' }, data: { password_reveal_target: 'status' })
+    end
+  end
+
+  private
+
+  def render_input(extra_class = nil, **data)
+    input(type: @type, class: [BOX, 'outline-none focus:border-foreground', extra_class, @attributes[:class]].compact.join(' '),
+          **@attributes.except(:class, :data), data: { **@attributes.fetch(:data, {}), **data })
+  end
+
+  def reveal_values
+    %i[show hide show_label hide_label shown hidden].to_h do |key|
+      [:"password_reveal_#{key}_value", t("components.password_reveal.#{key}")]
+    end
   end
 end
