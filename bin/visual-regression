@@ -116,6 +116,8 @@ capture() {
 # The base commit may not have the Playwright gems yet; layer them on without changing its own lockfile pins.
 bundle_base() {
   local dir="$1"
+  # The base renders on this job's Ruby, which differs from the base's own on a Ruby upgrade PR.
+  cp "$PROJECT_ROOT/.ruby-version" "$dir/.ruby-version"
   if grep -q '^    capybara-playwright-driver ' "$dir/Gemfile.lock"; then
     export BUNDLE_GEMFILE="$dir/Gemfile"
   else
