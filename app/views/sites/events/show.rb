@@ -91,14 +91,14 @@ class Views::Sites::Events::Show < Views::Base
   end
 
   def hero_chip(icon_name, text)
-    span(class: 'inline-flex items-center gap-1.5 rounded-full bg-background/15 px-3 py-1 text-sm') do
+    UI::Pill(variant: :overlay) do
       raw(view_context.icon(icon_name, size: nil, css_class: 'w-3.5 h-3.5 shrink-0 opacity-80'))
       plain text
     end
   end
 
   def render_hero_time
-    span(class: 'inline-flex items-center gap-1.5 rounded-full bg-background/15 px-3 py-1 text-sm') do
+    UI::Pill(variant: :overlay) do
       raw(view_context.icon(:event_time, size: nil, css_class: 'w-3.5 h-3.5 shrink-0 opacity-80'))
       time(class: 'dt-start', datetime: event.dtstart.iso8601) { event.dtstart.strftime('%H:%M') }
       if event.dtend

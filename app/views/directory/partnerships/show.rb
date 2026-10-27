@@ -60,8 +60,8 @@ class Views::Directory::Partnerships::Show < Views::Base
   end
 
   def chip(text, icon_name: nil)
-    span(class: 'inline-flex items-center gap-1.5 text-sm font-bold rounded-full px-3 py-1', style: 'background: var(--color-overlay-light); color: var(--color-background)') do
-      raw(view_context.icon(icon_name, size: nil, css_class: 'w-4 h-4')) if icon_name
+    UI::Pill(variant: :overlay) do
+      raw(view_context.icon(icon_name, size: nil, css_class: 'size-4')) if icon_name
       plain text
     end
   end

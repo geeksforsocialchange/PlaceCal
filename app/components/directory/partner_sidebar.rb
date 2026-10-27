@@ -72,10 +72,7 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
       sidebar_heading(t('directory.sidebar.categories'))
       div(class: 'flex flex-wrap gap-1.5 mt-1') do
         @partner.categories.each do |cat|
-          a(href: partners_path(category: cat.id),
-            class: 'inline-flex items-center bg-primary text-foreground text-2xs font-bold rounded-full px-2.5 py-0.5 no-underline hover:brightness-110 transition-colors') do
-            plain cat.name
-          end
+          UI::Pill(variant: :tag, href: partners_path(category: cat.id)) { plain cat.name }
         end
       end
     end
