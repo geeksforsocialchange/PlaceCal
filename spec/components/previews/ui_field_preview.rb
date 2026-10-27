@@ -11,8 +11,8 @@ class UIFieldPreview < Lookbook::Preview
   # @notes The hint is linked to the input with aria-describedby.
   def with_hint
     render(Frame.new do |f|
-      f.render(Components::UI::Field.new(label: "New password", id: "pw", hint: "(8 characters minimum)")) do |field|
-        f.render Components::UI::Input.new(type: "password", reveal: true, id: "pw", aria: { describedby: field.hint_id })
+      f.render(Components::UI::Field.new(label: "Email", id: "email", hint: "We only use this to send you a login link.")) do |field|
+        f.render Components::UI::Input.new(type: "email", id: "email", aria: { describedby: field.hint_id })
       end
     end)
   end
