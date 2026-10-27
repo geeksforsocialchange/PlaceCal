@@ -33,8 +33,7 @@ class Components::Directory::PartnerFilter < Components::Directory::Base
   def render_search_field
     # Full width on its own line when wrapped, so Category and Partnership get a
     # roomy half each instead of three cramped columns; shares the row on lg.
-    div(class: 'flex-1 basis-full lg:basis-auto min-w-35') do
-      label(for: 'q', class: 'block allcaps-label text-tertiary mb-1') { t('directory.filters.search') }
+    UI::Field(label: t('directory.filters.search'), id: 'q', class: 'flex-1 basis-full lg:basis-auto min-w-35') do
       UI::Input(name: 'q', id: 'q', value: @query, placeholder: t('directory.filters.search_placeholder'))
     end
   end

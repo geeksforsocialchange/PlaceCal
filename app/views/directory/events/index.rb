@@ -55,8 +55,7 @@ class Views::Directory::Events::Index < Views::Base
   end
 
   def render_search_field
-    div(class: 'flex-1 min-w-50') do
-      label(for: 'q', class: 'block allcaps-label text-tertiary mb-1') { t('directory.filters.search') }
+    UI::Field(label: t('directory.filters.search'), id: 'q', class: 'flex-1 min-w-50') do
       UI::Input(name: 'q', id: 'q', value: @query, placeholder: t('directory.events.index.search_placeholder'))
     end
   end

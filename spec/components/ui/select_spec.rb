@@ -17,4 +17,13 @@ RSpec.describe Components::UI::Select, type: :component do
     trigger = page.find("button[data-custom-select-target='trigger']")
     expect(trigger).to have_text("Health")
   end
+
+  it "names the trigger by its label and current value" do
+    render_inline(described_class.new(name: "category", label_text: "Category", options:, selected: "health"))
+
+    trigger = page.find("button#category_select")
+    expect(trigger["aria-labelledby"]).to eq("category_select_label category_select_value")
+    expect(page).to have_css("label#category_select_label[for='category_select']", text: "Category")
+    expect(page).to have_css("span#category_select_value", text: "Health")
+  end
 end

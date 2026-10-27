@@ -22,12 +22,13 @@ class Views::Directory::Mcp < Views::Base
 
   def render_address
     section(class: 'max-w-(--width-prose-lg)', data: { controller: 'copy', copy_copied_label_value: t("#{T}.copied") }) do
-      label(for: 'mcp-server-url', class: 'allcaps-label text-tertiary block mb-2') { t("#{T}.address_label") }
-      div(class: 'flex gap-2') do
-        input(id: 'mcp-server-url', type: 'text', readonly: true, value: @server_url,
-              class: 'flex-1 min-w-0 rounded-card border border-rules bg-background px-4 py-3 font-mono text-foreground',
-              data: { copy_target: 'source' })
-        UI::Button(variant: :outline, data: { copy_target: 'button', action: 'copy#copy' }) { t("#{T}.copy") }
+      UI::Field(label: t("#{T}.address_label"), id: 'mcp-server-url') do
+        div(class: 'flex gap-2') do
+          input(id: 'mcp-server-url', type: 'text', readonly: true, value: @server_url,
+                class: 'flex-1 min-w-0 rounded-card border border-rules bg-background px-4 py-3 font-mono text-foreground',
+                data: { copy_target: 'source' })
+          UI::Button(variant: :outline, data: { copy_target: 'button', action: 'copy#copy' }) { t("#{T}.copy") }
+        end
       end
     end
   end

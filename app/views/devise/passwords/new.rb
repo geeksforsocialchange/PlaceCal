@@ -17,10 +17,7 @@ class Views::Devise::Passwords::New < Views::Devise::Base
         form_for(resource, as: resource_name,
                            url: password_path(resource_name),
                            html: { method: :post, class: 'space-y-4', data: { turbo: 'false' } }) do |form|
-          div do
-            render_label(form, :email)
-            render_input(form, :email, type: 'email', value: resource.email, autofocus: true, autocomplete: 'email')
-          end
+          render_field(form, :email, type: 'email', value: resource.email, autofocus: true, autocomplete: 'email')
 
           div { UI::Button(variant: :dark, type: 'submit') { t('devise.passwords.new.submit') } }
         end

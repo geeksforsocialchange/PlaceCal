@@ -9,15 +9,25 @@ class Components::UI::Select < Components::Base
   prop :include_blank, _Boolean, default: true
 
   def view_template
-    div(class: 'min-w-0 flex-1 relative', data: { controller: 'custom-select' }) do
-      label(class: 'block allcaps-label text-tertiary mb-1') { @label_text } if @label_text.present?
-      render_hidden_select
-      render_trigger
-      render_panel
+    wrapper = { class: 'min-w-0 flex-1 relative', data: { controller: 'custom-select' } }
+    if labelled?
+      UI::Field(label: @label_text, id: trigger_id, **wrapper) { render_controls }
+    else
+      div(**wrapper) { render_controls }
     end
   end
 
   private
+
+  def render_controls
+    render_hidden_select
+    render_trigger
+    render_panel
+  end
+
+  def labelled? = @label_text.present?
+
+  def trigger_id = "#{@name.parameterize(separator: '_')}_select"
 
   def render_hidden_select
     select(
@@ -36,10 +46,13 @@ class Components::UI::Select < Components::Base
   def render_trigger
     button(
       type: 'button',
+      # Named by the label and the current value, so both are announced.
+      id: (trigger_id if labelled?),
+      aria: { labelledby: ("#{trigger_id}_label #{trigger_id}_value" if labelled?) },
       data: { custom_select_target: 'trigger', action: 'custom-select#toggle' },
       class: "#{UI::Input::BOX} flex items-center gap-2 cursor-pointer hover:border-foreground"
     ) do
-      span(class: 'flex-1 min-w-0 truncate text-left', data: { role: 'label' }) { selected_label }
+      span(id: ("#{trigger_id}_value" if labelled?), class: 'flex-1 min-w-0 truncate text-left', data: { role: 'label' }) { selected_label }
       span(
         data: { custom_select_target: 'arrow' },
         class: 'transition-transform duration-200 shrink-0'

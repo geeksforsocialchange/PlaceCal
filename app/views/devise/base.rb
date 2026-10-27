@@ -51,11 +51,9 @@ class Views::Devise::Base < Views::Base
     end
   end
 
-  def render_label(form, attribute, text = resource.class.human_attribute_name(attribute))
-    label(for: form.field_id(attribute), class: 'allcaps-label text-tertiary mb-1 block') { text }
-  end
-
-  def render_input(form, attribute, type:, **)
-    UI::Input(type:, name: form.field_name(attribute), id: form.field_id(attribute), **)
+  def render_field(form, attribute, type:, label: resource.class.human_attribute_name(attribute), hint: nil, **)
+    UI::Field(label:, id: form.field_id(attribute), hint:) do |field|
+      UI::Input(type:, name: form.field_name(attribute), id: form.field_id(attribute), aria: { describedby: field.hint_id }, **)
+    end
   end
 end
