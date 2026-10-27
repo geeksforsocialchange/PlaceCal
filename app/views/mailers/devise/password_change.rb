@@ -6,6 +6,6 @@ class Views::Mailers::Devise::PasswordChange < Views::Mailers::Base
   def email_content
     p { "#{greeting_text(resource)}," }
 
-    p { "We're contacting you to notify you that your password has been changed." }
+    p { t('mailers.password_change.notice') }
   end
 end

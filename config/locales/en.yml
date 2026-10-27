@@ -35,6 +35,38 @@ en:
   contact:
     email: "support@placecal.org"
 
+  mailers:
+    greeting: "Hello"
+    greeting_with_name: "Hello %{name}"
+    sign_off: "- The PlaceCal Team"
+    email_changed:
+      changing: "We're contacting you to notify you that your email is being changed to %{email}."
+      changed: "We're contacting you to notify you that your email has been changed to %{email}."
+    password_change:
+      notice: "We're contacting you to notify you that your password has been changed."
+    reset_password_instructions:
+      intro: "Someone has requested a link to change your password. You can do this through the link below."
+      link: "Change my password"
+      ignore: "If you didn't request this, please ignore this email."
+      unchanged: "Your password won't change until you access the link above and create a new one."
+    invitation_instructions:
+      intro: "You've been invited to join PlaceCal! You can accept this invite by clicking the link below."
+      intro_text: "You've been invited to join PlaceCal! You can accept this invite by copying the link below into your browser."
+      link: "Join PlaceCal"
+      ignore: "If you don't want to accept the invitation, please ignore this email."
+      not_created: "Your account won't be created until you access the link above and set your password."
+      terms_html: "By accepting the invitation and finalising your PlaceCal account you hereby agree to the PlaceCal %{terms_link}."
+      terms_link: "Terms of Use"
+      terms_text: "By accepting the invitation and finalising your PlaceCal account you hereby agree to the PlaceCal 'Terms of Use' policy as laid out here: %{url}."
+    moderation:
+      hidden_message:
+        subject: "Your partner has been hidden from PlaceCal"
+        hidden: "Your partner (%{name}, id: %{id}) has been hidden from PlaceCal for the following reasons:"
+        support_html: "Once you have fixed this issue get in touch with %{support} so that we can make you public again. If you feel this was in error, or that this action is unreasonable, you can raise a support ticket with PlaceCal here: %{support}."
+      hidden_staff_alert:
+        subject: "A partner has been hidden from PlaceCal"
+        intro: "A partner (%{name}, id: %{id}) has been hidden by an admin user (%{moderator_email}, id: %{moderator_id}). Below is a copy of the email sent to that partner's admins, with the reason given for taking this action."
+
   join_mailer:
     join_us:
       subject: "New Join Request"

@@ -7,11 +7,11 @@ class Views::Mailers::Devise::ResetPasswordInstructions < Views::Mailers::Base
   def email_content
     p { "#{greeting_text(resource)}," }
 
-    p { 'Someone has requested a link to change your password. You can do this through the link below.' }
+    p { t('mailers.reset_password_instructions.intro') }
 
-    p { link_to 'Change my password', edit_password_url(resource, reset_password_token: token) }
+    p { link_to t('mailers.reset_password_instructions.link'), edit_password_url(resource, reset_password_token: token) }
 
-    p { "If you didn't request this, please ignore this email." }
-    p { "Your password won't change until you access the link above and create a new one." }
+    p { t('mailers.reset_password_instructions.ignore') }
+    p { t('mailers.reset_password_instructions.unchanged') }
   end
 end
