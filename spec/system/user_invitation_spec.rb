@@ -53,7 +53,7 @@ RSpec.describe "User Invitation Flow", :slow, type: :system do
     visit public_url("/users/invitation/accept?invitation_token=#{invitation_token}")
     fill_in "New password", with: "password123"
     fill_in "Repeat password", with: "password123"
-    click_button "Set password"
+    click_button "Set my password"
 
     expect(page).to have_selector("[role='alert']", text: "Your password was set successfully. You are now signed in")
   end
