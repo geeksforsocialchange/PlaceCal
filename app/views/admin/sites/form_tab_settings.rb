@@ -37,7 +37,8 @@ class Views::Admin::Sites::FormTabSettings < Views::Admin::Base
       fieldset(class: 'fieldset') do
         legend(class: 'fieldset-legend') { plain attr_label(:site, :domain) }
         if policy(site).permitted_attributes.include?(:domain)
-          raw form.input_field(:domain, class: 'input input-bordered w-full font-mono text-sm', placeholder: t('admin.sites.fields.domain_placeholder'))
+          raw form.input_field(:domain, class: 'input input-bordered w-full font-mono text-sm',
+                                        placeholder: t('admin.sites.fields.domain_placeholder'))
         else
           raw form.input_field(:domain, class: 'input input-bordered w-full font-mono text-sm bg-base-200', disabled: true)
         end

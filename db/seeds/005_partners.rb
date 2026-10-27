@@ -73,7 +73,8 @@ module SeedPartners # rubocop:disable Metrics/ModuleLength
       ],
       description: [
         'We open three mornings a week from the hall on our street and run a delivery round for people who cannot get to us.',
-        'Everything we hand out is donated by neighbours, local shops and the supermarket on the high street. If you can spare an hour, we always need volunteers to sort and pack.'
+        'Everything we hand out is donated by neighbours, local shops and the supermarket on the high street. ' \
+        'If you can spare an hour, we always need volunteers to sort and pack.'
       ],
       categories: ['Food', 'Community Events'],
       facilities: ['Wheelchair Accessible', 'Parking Available'],
@@ -86,7 +87,8 @@ module SeedPartners # rubocop:disable Metrics/ModuleLength
       ],
       description: [
         'Classes run on weekday evenings and Saturday mornings, and every pose has a seated or supported option.',
-        'Our teachers keep groups small so they can learn your name and what your body needs. Tell us about injuries or access needs and we will plan around them.'
+        'Our teachers keep groups small so they can learn your name and what your body needs. ' \
+        'Tell us about injuries or access needs and we will plan around them.'
       ],
       categories: ['Health & Wellbeing', 'Sports & Fitness'],
       facilities: ['Wheelchair Accessible'],

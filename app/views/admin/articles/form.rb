@@ -4,7 +4,9 @@ class Views::Admin::Articles::Form < Views::Admin::Base
   prop :article, Article, reader: :private
 
   def view_template
-    simple_form_for([:admin, article], html: { class: 'space-y-6', data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'articleTabAfterSave' } }) do |form|
+    simple_form_for([:admin, article],
+                    html: { class: 'space-y-6',
+                            data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'articleTabAfterSave' } }) do |form|
       Error(article)
 
       if article.new_record?

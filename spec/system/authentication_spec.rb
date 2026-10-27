@@ -51,7 +51,8 @@ RSpec.describe "Authentication", :slow, type: :system do
 
       # Should stay on password reset page with success message (flash uses Tailwind classes with role="alert")
       expect(page).to have_css("[role='alert']",
-                               text: "If a PlaceCal account is associated with the submitted email address, password reset instructions have been sent.")
+                               text: "If a PlaceCal account is associated with the submitted email address, " \
+                                     "password reset instructions have been sent.")
 
       # Get the reset email and extract the link
       email = last_email_delivered

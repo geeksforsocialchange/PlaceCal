@@ -159,11 +159,13 @@ namespace :db do
     staging_db = ENV.fetch('STAGING_DB', 'placecal_staging')
 
     $stdout.puts 'Dumping production database...'
-    system("ssh root@#{prod_host} 'docker exec #{REMOTE_DB_CONTAINER} pg_dump -U #{pg_user} -Fc --exclude-table-data=solid_cache_entries #{prod_db}' > #{dump_file}")
+    system("ssh root@#{prod_host} 'docker exec #{REMOTE_DB_CONTAINER} pg_dump -U #{pg_user} -Fc " \
+           "--exclude-table-data=solid_cache_entries #{prod_db}' > #{dump_file}")
     abort 'Failed to dump production database!' unless $CHILD_STATUS.success?
 
     $stdout.puts 'Restoring to staging database...'
-    system("cat #{dump_file} | ssh root@#{staging_host} 'docker exec -i #{REMOTE_DB_CONTAINER} pg_restore -U #{pg_user} -d #{staging_db} --clean --no-owner'")
+    system("cat #{dump_file} | ssh root@#{staging_host} 'docker exec -i #{REMOTE_DB_CONTAINER} pg_restore " \
+           "-U #{pg_user} -d #{staging_db} --clean --no-owner'")
 
     if $CHILD_STATUS.success?
       $stdout.puts 'Replicated production to staging. You may need to run migrations:'
@@ -186,7 +188,8 @@ namespace :db do
     pg_db = ENV.fetch('POSTGRES_DB', 'placecal_production')
 
     $stdout.puts "Downloading production db to #{filename} (May take a while.) ..."
-    system("ssh root@#{prod_host} 'docker exec #{REMOTE_DB_CONTAINER} pg_dump -U #{pg_user} -Fc --exclude-table-data=solid_cache_entries #{pg_db}' > #{filename}")
+    system("ssh root@#{prod_host} 'docker exec #{REMOTE_DB_CONTAINER} pg_dump -U #{pg_user} -Fc " \
+           "--exclude-table-data=solid_cache_entries #{pg_db}' > #{filename}")
     if $CHILD_STATUS.success?
       $stdout.puts "Downloaded production db to #{filename}"
       ENV[DB_DUMP_ENV_KEY] = filename

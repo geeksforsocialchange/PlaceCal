@@ -53,7 +53,8 @@ class Components::Sites::Timeline < Components::Base
 
     # Arrow pointer: for 'upcoming', use the first visible date tab as the reference
     arrow_ref = @period == 'upcoming' ? window_start : @pointer
-    pages << { svg: view_context.icon(:triangle_left, size: nil), link: url_for(step_back(arrow_ref)), css: 'paginator__arrow paginator__arrow--back', data: {} }
+    pages << { svg: view_context.icon(:triangle_left, size: nil), link: url_for(step_back(arrow_ref)),
+               css: 'paginator__arrow paginator__arrow--back', data: {} }
 
     if @show_upcoming
       css = @period == 'upcoming' ? 'active' : ''
@@ -67,7 +68,8 @@ class Components::Sites::Timeline < Components::Base
       current = step_forward(current)
     end
 
-    pages << { svg: view_context.icon(:triangle_right, size: nil), link: url_for(step_forward(arrow_ref)), css: 'paginator__arrow paginator__arrow--forwards', data: { paginator_target: 'forward' } }
+    pages << { svg: view_context.icon(:triangle_right, size: nil), link: url_for(step_forward(arrow_ref)),
+               css: 'paginator__arrow paginator__arrow--forwards', data: { paginator_target: 'forward' } }
   end
 
   def date_steps

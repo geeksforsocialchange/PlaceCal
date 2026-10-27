@@ -76,7 +76,8 @@ class Views::Admin::Sites::FormTabImages < Views::Admin::Base
   end
 
   def render_upload_label(attribute, hint_uploader)
-    label(class: 'flex items-center gap-3 p-3 rounded-lg border-2 border-dashed border-base-300 hover:border-placecal-orange transition-colors cursor-pointer mb-3') do
+    label(class: 'flex items-center gap-3 p-3 rounded-lg border-2 border-dashed border-base-300 hover:border-placecal-orange ' \
+                 'transition-colors cursor-pointer mb-3') do
       div(class: 'flex-shrink-0 w-10 h-10 rounded-lg bg-placecal-orange/10 flex items-center justify-center') do
         raw icon(:upload, size: '5', css_class: 'text-placecal-orange')
       end
@@ -113,7 +114,8 @@ class Views::Admin::Sites::FormTabImages < Views::Admin::Base
   end
 
   def render_hero_upload_label(site)
-    label(class: 'flex items-center gap-3 p-3 rounded-lg border-2 border-dashed border-base-300 hover:border-placecal-orange transition-colors cursor-pointer bg-base-100 mb-4') do
+    label(class: 'flex items-center gap-3 p-3 rounded-lg border-2 border-dashed border-base-300 hover:border-placecal-orange ' \
+                 'transition-colors cursor-pointer bg-base-100 mb-4') do
       div(class: 'flex-shrink-0 w-10 h-10 rounded-lg bg-placecal-orange/10 flex items-center justify-center') do
         raw icon(:upload, size: '5', css_class: 'text-placecal-orange')
       end

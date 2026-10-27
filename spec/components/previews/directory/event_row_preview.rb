@@ -40,7 +40,8 @@ class Directory::EventRowPreview < Lookbook::Preview
     end
 
     def view_template
-      div(style: "align-content: start; color: var(--color-foreground); max-width: 760px; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); column-gap: 2rem") do
+      div(style: "align-content: start; color: var(--color-foreground); max-width: 760px; " \
+                 "display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); column-gap: 2rem") do
         @events.each { render Components::Directory::EventRow.new(event: it) }
       end
     end

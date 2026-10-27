@@ -35,7 +35,10 @@ class Components::Directory::PageHero < Components::Directory::Base
     )
     div(
       class: 'absolute inset-0',
-      style: 'background: linear-gradient(to right, var(--color-foreground) 50%, color-mix(in srgb, var(--color-foreground) 75%, transparent) 62%, color-mix(in srgb, var(--color-foreground) 40%, transparent) 75%, color-mix(in srgb, var(--color-foreground) 15%, transparent) 88%, transparent 100%)'
+      style: 'background: linear-gradient(to right, var(--color-foreground) 50%, ' \
+             'color-mix(in srgb, var(--color-foreground) 75%, transparent) 62%, ' \
+             'color-mix(in srgb, var(--color-foreground) 40%, transparent) 75%, ' \
+             'color-mix(in srgb, var(--color-foreground) 15%, transparent) 88%, transparent 100%)'
     )
   end
 
@@ -63,6 +66,9 @@ class Components::Directory::PageHero < Components::Directory::Base
   end
 
   def render_subtitle
-    div(class: "text-base leading-relaxed max-w-(--width-prose-md) mb-2 #{'bg-foreground/80 rounded px-2 py-1.5 -mx-2' if @background_image_url}", style: @background_image_url ? nil : 'opacity: 0.8') { @subtitle }
+    div(class: "text-base leading-relaxed max-w-(--width-prose-md) mb-2 #{'bg-foreground/80 rounded px-2 py-1.5 -mx-2' if @background_image_url}",
+        style: @background_image_url ? nil : 'opacity: 0.8') do
+      @subtitle
+    end
   end
 end

@@ -20,7 +20,8 @@ class Views::Admin::Tags::Form < Views::Admin::Base
                end
 
     simple_form_for(tag, as: :tag, url: form_url,
-                         html: { class: 'space-y-6', data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'tagTabAfterSave' } }) do |form|
+                         html: { class: 'space-y-6',
+                                 data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'tagTabAfterSave' } }) do |form|
       Error(tag)
 
       if tag.new_record?

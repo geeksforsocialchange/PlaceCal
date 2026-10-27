@@ -79,7 +79,8 @@ class Components::Sites::PartnerFilter < Components::Base
 
   def render_reset_link
     div(class: 'breadcrumb__filters') do
-      link_to(t('filters.reset'), partners_path(@selected_region ? { region: @selected_region.slug } : {}), class: 'filters__link', data: { turbo_frame: 'partner_previews' })
+      link_to(t('filters.reset'), partners_path(@selected_region ? { region: @selected_region.slug } : {}), class: 'filters__link',
+                                                                                                            data: { turbo_frame: 'partner_previews' })
     end
   end
 

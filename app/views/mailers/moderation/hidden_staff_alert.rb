@@ -8,7 +8,10 @@ class Views::Mailers::Moderation::HiddenStaffAlert < Views::Mailers::Base
   def email_content
     div { image_tag(image_url('logo.png'), height: '75') }
 
-    p { "A partner (#{partner.name}, id: #{partner.id}) has been hidden by an admin user (#{moderator.email}, id: #{moderator.id}). Below is a copy of the email sent to that partner's admins, with the reason given for taking this action." }
+    p do
+      "A partner (#{partner.name}, id: #{partner.id}) has been hidden by an admin user (#{moderator.email}, id: #{moderator.id}). " \
+        "Below is a copy of the email sent to that partner's admins, with the reason given for taking this action."
+    end
 
     p { '---------------------------' }
 
@@ -19,7 +22,8 @@ class Views::Mailers::Moderation::HiddenStaffAlert < Views::Mailers::Base
     p do
       plain 'Once you have fixed this issue get in touch with '
       a(href: 'mailto:support@placecal.org') { 'support@placecal.org' }
-      plain ' so that we can make you public again. If you feel this was in error, or that this action is unreasonable, you can raise a support ticket with PlaceCal here: '
+      plain ' so that we can make you public again. If you feel this was in error, ' \
+            'or that this action is unreasonable, you can raise a support ticket with PlaceCal here: '
       a(href: 'mailto:support@placecal.org') { 'support@placecal.org' }
       plain '.'
     end

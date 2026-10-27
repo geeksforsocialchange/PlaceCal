@@ -42,7 +42,8 @@ class Views::Sites::Events::Index < Views::Base
           div(class: 'breadcrumb__actions') do
             today = Time.zone.today
             region_param = selected_region ? "&region=#{selected_region.slug}" : ''
-            today_url = "/events/#{today.year}/#{today.month}/#{today.day}?period=#{period}&sort=#{sort}&repeating=#{repeating}#{region_param}#paginator"
+            today_url = "/events/#{today.year}/#{today.month}/#{today.day}?period=#{period}" \
+                        "&sort=#{sort}&repeating=#{repeating}#{region_param}#paginator"
             Sites::EventFilter(
               pointer: current_day,
               period:,

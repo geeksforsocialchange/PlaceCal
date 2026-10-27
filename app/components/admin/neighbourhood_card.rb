@@ -62,7 +62,8 @@ class Components::Admin::NeighbourhoodCard < Components::Admin::Base
       ancestors.each_with_index do |ancestor, index|
         span(class: 'text-gray-300') { '/' } if index.positive?
         link_to admin_neighbourhood_path(ancestor),
-                class: "inline-flex items-center gap-1 px-1.5 py-0.5 text-xs rounded #{neighbourhood_colour(ancestor.level)} hover:opacity-80 transition-opacity" do
+                class: "inline-flex items-center gap-1 px-1.5 py-0.5 text-xs rounded #{neighbourhood_colour(ancestor.level)} " \
+                       'hover:opacity-80 transition-opacity' do
           plain ancestor.shortname
         end
       end

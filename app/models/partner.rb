@@ -91,7 +91,8 @@ class Partner < ApplicationRecord
   attribute :instagram_handle,        :string                      # nullable
   attribute :is_a_place,              :boolean, default: false     # NOT NULL
   attribute :name,                    :string                      # NOT NULL
-  attribute :opening_times,           :json                        # nullable — Array<Hash{dayOfWeek, opens, closes}>, schema.org OpeningHoursSpecification
+  # opening_times: Array<Hash{dayOfWeek, opens, closes}>, schema.org OpeningHoursSpecification
+  attribute :opening_times,           :json                        # nullable
   attribute :parent_id,               :integer, limit: 8           # nullable
   attribute :partner_email,           :string                      # nullable
   attribute :partner_name,            :string                      # nullable

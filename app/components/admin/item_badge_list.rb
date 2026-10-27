@@ -18,7 +18,8 @@ class Components::Admin::ItemBadgeList < Components::Admin::Base
       div(class: container_class) do
         @items.each do |item|
           link_to view_context.public_send(@link_path, item),
-                  class: "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg #{bg_class} #{text_class} text-sm font-medium hover:opacity-80 transition-opacity" do
+                  class: "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg #{bg_class} #{text_class} " \
+                         'text-sm font-medium hover:opacity-80 transition-opacity' do
             icon(@icon_name, size: '3.5')
             plain item_name(item)
           end

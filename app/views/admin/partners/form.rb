@@ -4,7 +4,8 @@ class Views::Admin::Partners::Form < Views::Admin::Base
   prop :partner, Partner, reader: :private
 
   def view_template
-    simple_form_for(partner, html: { data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'partnerTabAfterSave' } }) do |form|
+    simple_form_for(partner,
+                    html: { data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'partnerTabAfterSave' } }) do |form|
       if policy(partner).permitted_attributes.exclude?(:hidden) && partner.hidden
         div(role: 'alert', class: 'alert alert-error mb-6') do
           raw icon(:warning, size: '6', css_class: 'shrink-0')

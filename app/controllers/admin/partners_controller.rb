@@ -239,7 +239,9 @@ module Admin
 
     def invitation_flash(result)
       msg = " Invitation sent to #{result[:email]}."
-      msg += " <a href=\"#{result[:invitation_url]}\" target=\"_blank\" class=\"underline\">View invitation</a>" if Rails.env.development? && result[:invitation_url]
+      if Rails.env.development? && result[:invitation_url]
+        msg += " <a href=\"#{result[:invitation_url]}\" target=\"_blank\" class=\"underline\">View invitation</a>"
+      end
       msg
     end
 

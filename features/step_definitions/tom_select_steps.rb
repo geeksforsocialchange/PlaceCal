@@ -28,7 +28,9 @@ When("I select {string} from the service area drop down select box") do |option|
     attempts += 1
   end
 
-  raise "Could not find service area container after #{attempts} attempts. Found #{page.all('.nested-fields').count} nested-fields elements." unless service_area_container
+  unless service_area_container
+    raise "Could not find service area container after #{attempts} attempts. Found #{page.all('.nested-fields').count} nested-fields elements."
+  end
 
   # Check for Tom Select wrapper or native select
   if service_area_container.has_css?(".ts-wrapper", wait: 3)

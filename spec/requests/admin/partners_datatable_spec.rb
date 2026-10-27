@@ -15,14 +15,22 @@ RSpec.describe "Admin::Partners Datatable JSON API", type: :request do
       "length" => "25",
       "search" => { "value" => "", "regex" => "false" },
       "columns" => {
-        "0" => { "data" => "name", "name" => "name", "searchable" => "true", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
-        "1" => { "data" => "ward", "name" => "ward", "searchable" => "false", "orderable" => "false", "search" => { "value" => "", "regex" => "false" } },
-        "2" => { "data" => "partnerships", "name" => "partnerships", "searchable" => "false", "orderable" => "false", "search" => { "value" => "", "regex" => "false" } },
-        "3" => { "data" => "calendars", "name" => "calendars", "searchable" => "false", "orderable" => "false", "search" => { "value" => "", "regex" => "false" } },
-        "4" => { "data" => "admins", "name" => "admins", "searchable" => "false", "orderable" => "false", "search" => { "value" => "", "regex" => "false" } },
-        "5" => { "data" => "categories", "name" => "categories", "searchable" => "false", "orderable" => "false", "search" => { "value" => "", "regex" => "false" } },
-        "6" => { "data" => "updated_at", "name" => "updated_at", "searchable" => "false", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
-        "7" => { "data" => "actions", "name" => "actions", "searchable" => "false", "orderable" => "false", "search" => { "value" => "", "regex" => "false" } }
+        "0" => { "data" => "name", "name" => "name", "searchable" => "true", "orderable" => "true",
+                 "search" => { "value" => "", "regex" => "false" } },
+        "1" => { "data" => "ward", "name" => "ward", "searchable" => "false", "orderable" => "false",
+                 "search" => { "value" => "", "regex" => "false" } },
+        "2" => { "data" => "partnerships", "name" => "partnerships", "searchable" => "false", "orderable" => "false",
+                 "search" => { "value" => "", "regex" => "false" } },
+        "3" => { "data" => "calendars", "name" => "calendars", "searchable" => "false", "orderable" => "false",
+                 "search" => { "value" => "", "regex" => "false" } },
+        "4" => { "data" => "admins", "name" => "admins", "searchable" => "false", "orderable" => "false",
+                 "search" => { "value" => "", "regex" => "false" } },
+        "5" => { "data" => "categories", "name" => "categories", "searchable" => "false", "orderable" => "false",
+                 "search" => { "value" => "", "regex" => "false" } },
+        "6" => { "data" => "updated_at", "name" => "updated_at", "searchable" => "false", "orderable" => "true",
+                 "search" => { "value" => "", "regex" => "false" } },
+        "7" => { "data" => "actions", "name" => "actions", "searchable" => "false", "orderable" => "false",
+                 "search" => { "value" => "", "regex" => "false" } }
       },
       "order" => { "0" => { "column" => "6", "dir" => "desc" } }
     }

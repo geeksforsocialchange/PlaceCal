@@ -81,7 +81,8 @@ class Components::Sites::EventFilter < Components::Base
   def render_today_link
     return if @today
 
-    link_to(t('filters.today'), @today_url, class: 'filters__link filters__link--today', data: { turbo_frame: 'events-browser', turbo_action: 'advance' })
+    link_to(t('filters.today'), @today_url, class: 'filters__link filters__link--today',
+                                            data: { turbo_frame: 'events-browser', turbo_action: 'advance' })
   end
 
   def render_goto_date_button(button_class: nil, label: t('filters.go_to_date'))
@@ -181,7 +182,8 @@ class Components::Sites::EventFilter < Components::Base
 
   def render_neighbourhood_filter
     div(class: 'filters', data: { controller: 'event-filter' }) do
-      raw(view_context.form_tag('', method: :get, class: 'filters__form', enforce_utf8: false, data: { turbo_frame: 'events-browser', turbo_action: 'advance' }) do
+      raw(view_context.form_tag('', method: :get, class: 'filters__form', enforce_utf8: false,
+                                    data: { turbo_frame: 'events-browser', turbo_action: 'advance' }) do
         safe_join([
           view_context.hidden_field_tag(:period, @period),
           view_context.hidden_field_tag(:sort, @sort),
@@ -210,7 +212,9 @@ class Components::Sites::EventFilter < Components::Base
   end
 
   def build_sort_filter_form
-    view_context.form_tag('', method: :get, class: 'filters__form', enforce_utf8: false, data: { turbo_frame: 'events-browser', turbo_action: 'advance', filters_target: 'form', action: 'change->filters#submit' }) do
+    view_context.form_tag('', method: :get, class: 'filters__form', enforce_utf8: false,
+                              data: { turbo_frame: 'events-browser', turbo_action: 'advance',
+                                      filters_target: 'form', action: 'change->filters#submit' }) do
       buf = ActiveSupport::SafeBuffer.new
       buf << view_context.hidden_field_tag(:region, @selected_region.slug, id: nil) if @selected_region
       buf << build_sort_toggle
@@ -224,7 +228,8 @@ class Components::Sites::EventFilter < Components::Base
     button_class = "#{button_class} filters__toggle-button--active".strip if filters_active?
     view_context.content_tag(:div, class: 'filters__toggle') do
       view_context.content_tag(:button, type: 'button', class: button_class, data: { action: 'click->filters#toggle' }) do
-        safe_join([view_context.icon(:triangle_down, size: nil), ' ', view_context.content_tag(:span, t('filters.filter_and_sort'), class: 'filters__link')])
+        safe_join([view_context.icon(:triangle_down, size: nil), ' ',
+                   view_context.content_tag(:span, t('filters.filter_and_sort'), class: 'filters__link')])
       end
     end
   end

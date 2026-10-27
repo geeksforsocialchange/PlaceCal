@@ -27,7 +27,8 @@ class Components::Admin::SaveBar < Components::Admin::Base
     @button_blocks << block if block && !@wizard && !@multi_step
 
     div(
-      class: 'sticky bottom-0 z-40 bg-base-200 border-t border-base-300 py-4 px-4 sm:px-6 -mx-4 sm:-mx-6 mt-6 shadow-[0_-4px_20px_-4px_rgba(0,0,0,0.15)]',
+      class: 'sticky bottom-0 z-40 bg-base-200 border-t border-base-300 py-4 px-4 sm:px-6 -mx-4 sm:-mx-6 mt-6 ' \
+             'shadow-[0_-4px_20px_-4px_rgba(0,0,0,0.15)]',
       data: stimulus_data_attributes
     ) do
       if @wizard

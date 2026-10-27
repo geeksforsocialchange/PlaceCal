@@ -299,7 +299,10 @@ module PlaceCal
       return @events_default_period if value.nil?
 
       value = value.to_s
-      raise ArgumentError, "unknown events_default_period #{value.inspect}, expected one of #{EVENTS_DEFAULT_PERIODS.inspect}" unless EVENTS_DEFAULT_PERIODS.include?(value)
+      unless EVENTS_DEFAULT_PERIODS.include?(value)
+        raise ArgumentError,
+              "unknown events_default_period #{value.inspect}, expected one of #{EVENTS_DEFAULT_PERIODS.inspect}"
+      end
 
       @events_default_period = value
     end
@@ -309,7 +312,10 @@ module PlaceCal
       return @event_filter_style if value.nil?
 
       value = value.to_sym
-      raise ArgumentError, "unknown event_filter_style #{value.inspect}, expected one of #{EVENT_FILTER_STYLES.inspect}" unless EVENT_FILTER_STYLES.include?(value)
+      unless EVENT_FILTER_STYLES.include?(value)
+        raise ArgumentError,
+              "unknown event_filter_style #{value.inspect}, expected one of #{EVENT_FILTER_STYLES.inspect}"
+      end
 
       @event_filter_style = value
     end

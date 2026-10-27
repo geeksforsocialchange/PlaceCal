@@ -49,8 +49,14 @@ class Components::Shared::ContactDetails < Components::Base
       tailwind_row(:contact_email, @email, "mailto:#{@email}") if @email.present?
       tailwind_row(:contact_website, strip_url(@url), @url) if @url.present?
       tailwind_row(:contact_facebook, 'Facebook', "https://facebook.com/#{@partner.facebook_link}") if @partner.facebook_link.present?
-      tailwind_row(:contact_twitter, "@#{@partner.twitter_handle}", "https://twitter.com/#{@partner.twitter_handle}") if @partner.twitter_handle.present?
-      tailwind_row(:contact_instagram, "@#{@partner.instagram_handle}", "https://www.instagram.com/#{@partner.instagram_handle}/") if @partner.instagram_handle.present?
+      if @partner.twitter_handle.present?
+        tailwind_row(:contact_twitter, "@#{@partner.twitter_handle}",
+                     "https://twitter.com/#{@partner.twitter_handle}")
+      end
+      if @partner.instagram_handle.present?
+        tailwind_row(:contact_instagram, "@#{@partner.instagram_handle}",
+                     "https://www.instagram.com/#{@partner.instagram_handle}/")
+      end
     end
   end
 
@@ -129,7 +135,8 @@ class Components::Shared::ContactDetails < Components::Base
     span(class: 'contact_details__item contact_details__item--social') do
       raw(view_context.icon(:"contact_#{network}", size: '4'))
       if @social_labels == :network
-        link_to(t("directory.contact.networks.#{network}"), href, title: handle, target: '_blank', rel: 'noopener', class: "contact_details__#{network}")
+        link_to(t("directory.contact.networks.#{network}"), href, title: handle, target: '_blank', rel: 'noopener',
+                                                                  class: "contact_details__#{network}")
       else
         link_to(handle, href, target: '_blank', rel: 'noopener', class: "contact_details__#{network}")
       end

@@ -61,7 +61,8 @@ class Views::Admin::Users::Profile < Views::Admin::Base
   def render_save_bar(form)
     SaveBar(track_changes: true) do
       raw form.submit(t('admin.users.profile.save_button'),
-                      class: 'btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange btn-disabled opacity-50 cursor-not-allowed',
+                      class: 'btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange ' \
+                             'btn-disabled opacity-50 cursor-not-allowed',
                       disabled: true,
                       data: { 'form-dirty-target': 'submit' })
     end

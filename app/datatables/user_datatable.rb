@@ -44,7 +44,8 @@ class UserDatatable < Datatable
     if search_value.present?
       search_term = "%#{search_value}%"
       filtered = filtered.where(
-        "users.first_name ILIKE :term OR users.last_name ILIKE :term OR users.email ILIKE :term OR CONCAT(users.first_name, ' ', users.last_name) ILIKE :term",
+        'users.first_name ILIKE :term OR users.last_name ILIKE :term OR users.email ILIKE :term OR ' \
+        "CONCAT(users.first_name, ' ', users.last_name) ILIKE :term",
         term: search_term
       )
     end
@@ -150,10 +151,19 @@ class UserDatatable < Datatable
     end
 
     # Admin type badges
-    roles << '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">Partner Admin</span>' if record.partner_admin?
-    roles << '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-800">Neighbourhood Admin</span>' if record.neighbourhood_admin?
-    roles << '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-teal-100 text-teal-800">Partnership Admin</span>' if record.partnership_admin?
-    roles << '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800">Site Admin</span>' if record.site_admin?
+    if record.partner_admin?
+      roles << '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">Partner Admin</span>'
+    end
+    if record.neighbourhood_admin?
+      roles << '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-800">' \
+               'Neighbourhood Admin</span>'
+    end
+    if record.partnership_admin?
+      roles << '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-teal-100 text-teal-800">Partnership Admin</span>'
+    end
+    if record.site_admin?
+      roles << '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800">Site Admin</span>'
+    end
 
     return '<span class="text-gray-500">—</span>'.html_safe if roles.empty?
 

@@ -17,7 +17,8 @@ class Views::Mailers::Moderation::HiddenMessage < Views::Mailers::Base
     p do
       plain 'Once you have fixed this issue get in touch with '
       a(href: 'mailto:support@placecal.org') { 'support@placecal.org' }
-      plain ' so that we can make you public again. If you feel this was in error, or that this action is unreasonable, you can raise a support ticket with PlaceCal here: '
+      plain ' so that we can make you public again. If you feel this was in error, ' \
+            'or that this action is unreasonable, you can raise a support ticket with PlaceCal here: '
       a(href: 'mailto:support@placecal.org') { 'support@placecal.org' }
       plain '.'
     end

@@ -95,7 +95,9 @@ class TokensPreview < Lookbook::Preview
           div(style: "font-size: var(--text-#{name}); line-height: 1.2; font-family: var(--font-serif); margin-top: 0.25rem") { SAMPLE }
         end
       when :leading
-        p(style: "max-width: 36rem; margin: 0; line-height: #{name == 'normal' ? 'normal' : "var(--leading-#{name})"}") { "#{PARAGRAPH} #{PARAGRAPH}" }
+        p(style: "max-width: 36rem; margin: 0; line-height: #{name == 'normal' ? 'normal' : "var(--leading-#{name})"}") do
+          "#{PARAGRAPH} #{PARAGRAPH}"
+        end
       when :colour
         div(style: "height: 3rem; border-radius: 0.5rem; border: 1px solid rgb(0 0 0 / 0.15); background: var(--color-#{name})")
       when :radius

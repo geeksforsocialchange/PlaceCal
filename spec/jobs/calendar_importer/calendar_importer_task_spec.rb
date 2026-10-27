@@ -222,7 +222,7 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
         calendar = create(
           :calendar,
           name: "Generic webcal Calendar",
-          source: "webcal://p14-calendars.icloud.com/published/2/MTQ2NzIwNzk1NDE0NjcyMM7jQu_vEJtKcvFoPn3S2FrA6WGkdMmCuNCcP44HV1RjEsev_l3T5lO94XkBevJwb5wd-ayWykRsarVoSJrwZvc",
+          source: "webcal://p14-calendars.icloud.com/published/2/MTQ2NzIwNzk1NDE0NjcyMM7jQu_vEJtKcvFoPn3S2FrA6WGkdMmCuNCcP44HV1RjEsev_l3T5lO94XkBevJwb5wd-ayWykRsarVoSJrwZvc", # rubocop:disable Layout/LineLength
           strategy: "place"
         )
 

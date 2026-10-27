@@ -28,7 +28,8 @@ class PartnerDatatable < Datatable # rubocop:disable Metrics/ClassLength
         partnerships: render_partnerships(partnerships),
         calendars: render_calendar_status(record, calendars_count),
         admins: render_tick_cross(users_count.positive?, "#{users_count} admin#{'s' if users_count != 1}", 'No admins'),
-        categories: render_tick_cross(categories_count.positive?, "#{categories_count} categor#{'y' if categories_count == 1}#{'ies' if categories_count != 1}", 'No categories'),
+        categories: render_tick_cross(categories_count.positive?,
+                                      "#{categories_count} categor#{'y' if categories_count == 1}#{'ies' if categories_count != 1}", 'No categories'),
         updated_at: render_updated_at(record),
         actions: render_actions(record)
       }

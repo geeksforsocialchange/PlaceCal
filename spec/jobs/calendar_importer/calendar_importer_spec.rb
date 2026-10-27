@@ -5,7 +5,9 @@ require "rails_helper"
 RSpec.describe CalendarImporter::CalendarImporter do
   describe "#parser" do
     context "with webcal calendars" do
-      let(:url) { "webcal://p24-calendars.icloud.com/published/2/WvhkIr4F3oBQrToPU-lkO6WwDTpzNTpENs-Qtbo48FhhrAfDp3gkIal2XPd5eUVO0LLERrehetRzj43c6zvbotf9_DNI6heKXBejvAkz8JQ" }
+      let(:url) do
+        "webcal://p24-calendars.icloud.com/published/2/WvhkIr4F3oBQrToPU-lkO6WwDTpzNTpENs-Qtbo48FhhrAfDp3gkIal2XPd5eUVO0LLERrehetRzj43c6zvbotf9_DNI6heKXBejvAkz8JQ" # rubocop:disable Layout/LineLength
+      end
 
       it "imports webcal calendars" do
         VCR.use_cassette("Yellowbird_Webcal", allow_playback_repeats: true) do

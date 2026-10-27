@@ -10,7 +10,8 @@ class Components::Admin::ToggleCard < Components::Admin::Base
   prop :variant, Symbol, default: :success
 
   def view_template
-    label(class: "flex items-center gap-3 p-4 rounded-lg border border-base-300 bg-base-100 cursor-pointer transition-colors #{checked_border_class}") do
+    label(class: 'flex items-center gap-3 p-4 rounded-lg border border-base-300 bg-base-100 cursor-pointer ' \
+                 "transition-colors #{checked_border_class}") do
       raw(@form.check_box(@attribute, class: "checkbox checkbox-#{@variant}"))
       div do
         p(class: 'font-medium') { @title }

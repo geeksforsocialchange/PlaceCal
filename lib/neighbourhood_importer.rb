@@ -132,7 +132,8 @@ module NeighbourhoodImporter
           parent_ons_id = existing.ons_data[:parent_id] if existing_parent&.ons_data && existing_parent.ons_data[:type] == 'county'
         end
       else
-        parent_ons_id = process_row(row, release_date, parent_ons_id, 'county', "#{county_prefix}#{year_prefix}CD", "#{county_prefix}#{year_prefix}NM")
+        parent_ons_id = process_row(row, release_date, parent_ons_id, 'county', "#{county_prefix}#{year_prefix}CD",
+                                    "#{county_prefix}#{year_prefix}NM")
       end
 
       # district
@@ -189,15 +190,9 @@ module NeighbourhoodImporter
 
     # 2. load data from CSVs
     log 'Loading CSV data'
-    load_csv(
-      DateTime.new(2019, 12),
-      'Ward_to_Local_Authority_District_to_County_to_Region_to_Country_(December_2019)_Lookup_in_United_Kingdom.csv'
-    )
+    load_csv(DateTime.new(2019, 12), 'Ward_to_Local_Authority_District_to_County_to_Region_to_Country_(December_2019)_Lookup_in_United_Kingdom.csv')
 
-    load_csv(
-      DateTime.new(2023, 5),
-      'Ward_to_Local_Authority_District_to_County_to_Region_to_Country_(May_2023)_Lookup_in_United_Kingdom.csv'
-    )
+    load_csv(DateTime.new(2023, 5), 'Ward_to_Local_Authority_District_to_County_to_Region_to_Country_(May_2023)_Lookup_in_United_Kingdom.csv')
 
     load_csv(
       DateTime.new(2024, 5),

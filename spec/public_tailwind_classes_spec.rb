@@ -52,7 +52,8 @@ RSpec.describe "Public Tailwind classes" do
   it "uses no arbitrary values or variants outside the allowlist" do
     offences = found.reject { |_, _, key| allowed.key?(key) }.map { |file, match, _| "#{file}: #{match}" }
 
-    expect(offences).to be_empty, "Use a token, a named utility or a plain class instead, or add a genuine exception with a reason:\n#{offences.join("\n")}"
+    expect(offences).to be_empty,
+                        "Use a token, a named utility or a plain class instead, or add a genuine exception with a reason:\n#{offences.join("\n")}"
   end
 
   it "keeps no allowlist entries that nothing uses" do

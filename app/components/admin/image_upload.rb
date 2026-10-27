@@ -58,7 +58,8 @@ class Components::Admin::ImageUpload < Components::Admin::Base
   def render_file_input
     div(class: 'mb-4') do
       div(
-        class: "relative overflow-hidden #{@rounded} border-2 border-dashed border-base-300 hover:border-placecal-orange transition-colors bg-base-200/50 hover:bg-base-200 cursor-pointer",
+        class: "relative overflow-hidden #{@rounded} border-2 border-dashed border-base-300 hover:border-placecal-orange " \
+               'transition-colors bg-base-200/50 hover:bg-base-200 cursor-pointer',
         data_image_preview_target: 'dropzone'
       ) do
         label(class: 'flex items-center gap-3 p-3 cursor-pointer') do
@@ -90,7 +91,8 @@ class Components::Admin::ImageUpload < Components::Admin::Base
     div(class: "relative #{@rounded} overflow-hidden border border-base-300 bg-base-200") do
       image_tag image_url, class: "w-full h-auto #{@aspect} object-cover",
                            data: { image_preview_target: 'img' }
-      div(class: 'absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100') do
+      div(class: 'absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors ' \
+                 'flex items-center justify-center opacity-0 group-hover:opacity-100') do
         label(class: 'btn btn-sm bg-white/90 hover:bg-white text-base-content border-0 shadow-lg cursor-pointer') do
           icon(:upload, size: '4')
           plain " #{t('admin.images.replace')}"
@@ -100,7 +102,8 @@ class Components::Admin::ImageUpload < Components::Admin::Base
       end
     end
     div(class: 'mt-2 flex justify-end') do
-      label(class: 'inline-flex items-center gap-2 text-xs text-error cursor-pointer hover:text-red-700 transition-colors has-[:checked]:line-through has-[:checked]:opacity-60') do
+      label(class: 'inline-flex items-center gap-2 text-xs text-error cursor-pointer hover:text-red-700 transition-colors ' \
+                   'has-[:checked]:line-through has-[:checked]:opacity-60') do
         raw(@form.check_box(@remove_attribute, class: 'sr-only'))
         icon(:trash, size: '3.5')
         plain " #{t('admin.images.remove_on_save')}"

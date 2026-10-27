@@ -102,7 +102,10 @@ class Components::Shared::Navigation < Components::Base
         data: { mobile_menu_target: 'menu' }) do
       ul(class: 'contents') do
         @navigation.each do |link_text, link_path|
-          li(class: menu_li_classes) { active_link_to(link_text, link_path, data: { turbolinks: false }, base_css_class: menu_link_classes, active_css_class: menu_active_classes) }
+          li(class: menu_li_classes) do
+            active_link_to(link_text, link_path, data: { turbolinks: false }, base_css_class: menu_link_classes,
+                                                 active_css_class: menu_active_classes)
+          end
         end
         render_join_button if @site.nil?
         render_region_filter if show_region_filter?
@@ -161,7 +164,8 @@ class Components::Shared::Navigation < Components::Base
   def render_join_button
     li(class: 'text-center max-md:py-3') do
       link_to(@cta_label || t('navigation.directory.join'), @cta_path || get_in_touch_path,
-              class: 'with-no-sass inline-flex items-center rounded-full bg-secondary text-foreground-dark px-4 py-1.5 text-detail font-bold no-underline hover:brightness-110 transition-all')
+              class: 'with-no-sass inline-flex items-center rounded-full bg-secondary text-foreground-dark px-4 py-1.5 text-detail ' \
+                     'font-bold no-underline hover:brightness-110 transition-all')
     end
   end
 

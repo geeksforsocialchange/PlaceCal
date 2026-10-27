@@ -9,7 +9,8 @@ class Components::Admin::RadioCardGroup < Components::Admin::Base
   def view_template
     div(class: 'space-y-3') do
       @values.each do |value|
-        label(class: 'flex items-start gap-3 p-3 rounded-lg border border-base-300 bg-base-100 hover:bg-base-200/50 cursor-pointer transition-colors has-[:checked]:border-placecal-orange has-[:checked]:bg-orange-50/50') do
+        label(class: 'flex items-start gap-3 p-3 rounded-lg border border-base-300 bg-base-100 hover:bg-base-200/50 ' \
+                     'cursor-pointer transition-colors has-[:checked]:border-placecal-orange has-[:checked]:bg-orange-50/50') do
           raw(@form.radio_button(@attribute, value, class: 'radio radio-warning mt-0.5'))
           span(class: 'text-sm leading-relaxed') { label_for(value) }
         end

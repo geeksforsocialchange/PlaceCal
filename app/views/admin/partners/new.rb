@@ -177,7 +177,8 @@ class Views::Admin::Partners::New < Views::Admin::Base
             fit_height: true
           ) do
             div(data: { 'partner-wizard-target': 'serviceAreasContainer',
-                        action: 'nested-form:added->partner-wizard#updateContinueButton nested-form:removed->partner-wizard#updateContinueButton change->partner-wizard#updateContinueButton' }) do
+                        action: 'nested-form:added->partner-wizard#updateContinueButton nested-form:removed->partner-wizard#updateContinueButton ' \
+                                'change->partner-wizard#updateContinueButton' }) do
               NestedForm(form:, association: :service_areas, add_text: t('admin.service_areas.add')) do |area|
                 render Views::Admin::Partners::ServiceAreaFields.new(form: area, partner: form.object)
               end
@@ -443,7 +444,8 @@ class Views::Admin::Partners::New < Views::Admin::Base
   def render_after_create_radio(value, icon_name, bg_class, text_class, title, description, checked: false)
     label(class: 'cursor-pointer') do
       input(type: 'radio', name: 'after_create', value:, class: 'peer sr-only', **(checked ? { checked: true } : {}))
-      div(class: 'card bg-base-100 border-2 border-base-300 peer-checked:border-placecal-orange peer-checked:bg-placecal-orange/5 transition-colors') do
+      div(class: 'card bg-base-100 border-2 border-base-300 ' \
+                 'peer-checked:border-placecal-orange peer-checked:bg-placecal-orange/5 transition-colors') do
         div(class: 'card-body p-4') do
           div(class: 'flex items-center gap-3') do
             div(class: "w-10 h-10 rounded-lg #{bg_class} flex items-center justify-center") do

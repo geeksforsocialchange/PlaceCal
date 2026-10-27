@@ -19,15 +19,24 @@ RSpec.describe CalendarDatatable do
       "length" => "25",
       "search" => { "value" => "", "regex" => "false" },
       "columns" => {
-        "0" => { "data" => "name", "name" => "name", "searchable" => "true", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
-        "1" => { "data" => "partner", "name" => "partner", "searchable" => "false", "orderable" => "false", "search" => { "value" => "", "regex" => "false" } },
-        "2" => { "data" => "state", "name" => "state", "searchable" => "false", "orderable" => "false", "search" => { "value" => "", "regex" => "false" } },
-        "3" => { "data" => "importer", "name" => "importer", "searchable" => "false", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
-        "4" => { "data" => "events", "name" => "events", "searchable" => "false", "orderable" => "false", "search" => { "value" => "", "regex" => "false" } },
-        "5" => { "data" => "notices", "name" => "notices", "searchable" => "false", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
-        "6" => { "data" => "last_import_at", "name" => "last_import_at", "searchable" => "false", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
-        "7" => { "data" => "checksum_updated_at", "name" => "checksum_updated_at", "searchable" => "false", "orderable" => "true", "search" => { "value" => "", "regex" => "false" } },
-        "8" => { "data" => "actions", "name" => "actions", "searchable" => "false", "orderable" => "false", "search" => { "value" => "", "regex" => "false" } }
+        "0" => { "data" => "name", "name" => "name", "searchable" => "true", "orderable" => "true",
+                 "search" => { "value" => "", "regex" => "false" } },
+        "1" => { "data" => "partner", "name" => "partner", "searchable" => "false", "orderable" => "false",
+                 "search" => { "value" => "", "regex" => "false" } },
+        "2" => { "data" => "state", "name" => "state", "searchable" => "false", "orderable" => "false",
+                 "search" => { "value" => "", "regex" => "false" } },
+        "3" => { "data" => "importer", "name" => "importer", "searchable" => "false", "orderable" => "true",
+                 "search" => { "value" => "", "regex" => "false" } },
+        "4" => { "data" => "events", "name" => "events", "searchable" => "false", "orderable" => "false",
+                 "search" => { "value" => "", "regex" => "false" } },
+        "5" => { "data" => "notices", "name" => "notices", "searchable" => "false", "orderable" => "true",
+                 "search" => { "value" => "", "regex" => "false" } },
+        "6" => { "data" => "last_import_at", "name" => "last_import_at", "searchable" => "false", "orderable" => "true",
+                 "search" => { "value" => "", "regex" => "false" } },
+        "7" => { "data" => "checksum_updated_at", "name" => "checksum_updated_at", "searchable" => "false", "orderable" => "true",
+                 "search" => { "value" => "", "regex" => "false" } },
+        "8" => { "data" => "actions", "name" => "actions", "searchable" => "false", "orderable" => "false",
+                 "search" => { "value" => "", "regex" => "false" } }
       },
       "order" => { "0" => { "column" => "0", "dir" => "asc" } }
     }.deep_merge(params))

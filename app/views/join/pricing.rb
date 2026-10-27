@@ -249,7 +249,8 @@ class Views::Join::Pricing < Views::Join::Base
       div(class: 'relative self-stretch row-span-2 md:row-span-1 flex justify-center') do
         # The spine runs through the row padding so the steps join up, and stops at the first and last circles.
         span(class: 'absolute -inset-y-6 group-first/step:top-1/2 group-last/step:bottom-1/2 left-1/2 -translate-x-1/2 w-0.5 bg-rules')
-        div(class: 'relative z-1 self-center size-11 md:size-14 rounded-full bg-secondary text-foreground-dark grid place-items-center font-serif text-lg md:text-2xl') do
+        div(class: 'relative z-1 self-center size-11 md:size-14 rounded-full bg-secondary text-foreground-dark ' \
+                   'grid place-items-center font-serif text-lg md:text-2xl') do
           plain (index + 1).to_s
         end
       end
@@ -274,7 +275,9 @@ class Views::Join::Pricing < Views::Join::Base
               summary(class: 'cursor-pointer list-none py-4 font-serif text-lg text-foreground flex justify-between items-center gap-4 ' \
                              'details-marker:hidden') do
                 plain item[:question]
-                span(class: 'font-sans font-bold text-2xl text-secondary-strong transition-transform group-open:rotate-45', aria_hidden: 'true') { '+' }
+                span(class: 'font-sans font-bold text-2xl text-secondary-strong transition-transform group-open:rotate-45', aria_hidden: 'true') do
+                  '+'
+                end
               end
               p(class: 'mt-0 pb-4 text-base leading-relaxed text-tertiary max-w-(--width-prose)') { item[:answer] }
             end

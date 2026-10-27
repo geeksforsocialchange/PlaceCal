@@ -45,7 +45,8 @@ class UI::ButtonPreview < Lookbook::Preview
         Components::UI::Button::VARIANTS.each_key do |variant|
           div(style: "display: grid; grid-template-columns: 8rem 1fr; align-items: center; gap: 1rem") do
             code { ":#{variant}" }
-            div(style: "display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; padding: 0.75rem; border-radius: 0.5rem; #{PANEL_STYLE[variant]}") do
+            div(style: "display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; padding: 0.75rem; " \
+                       "border-radius: 0.5rem; #{PANEL_STYLE[variant]}") do
               Components::UI::Button::SIZES.each_key do |size|
                 render Components::UI::Button.new(variant:, size:, href: @href) { "#{size.to_s.upcase} button" }
               end
@@ -59,9 +60,11 @@ class UI::ButtonPreview < Lookbook::Preview
   class FieldRow < Phlex::HTML
     def view_template
       div(style: PAGE_STYLE) do
-        div(style: "display: flex; gap: 0.5rem; align-items: end; padding: 1rem; border-radius: 1rem; background: var(--color-home-background-3); font-size: var(--text-sm)") do
+        div(style: "display: flex; gap: 0.5rem; align-items: end; padding: 1rem; " \
+                   "border-radius: 1rem; background: var(--color-home-background-3); font-size: var(--text-sm)") do
           input(type: "text", placeholder: "Search partners",
-                style: "height: var(--height-field); padding: 0 1rem; border: 2px solid var(--color-rules); border-radius: var(--radius-sm); background: var(--color-background)")
+                style: "height: var(--height-field); padding: 0 1rem; border: 2px solid var(--color-rules); " \
+                       "border-radius: var(--radius-sm); background: var(--color-background)")
           render Components::UI::Button.new(variant: :dark, size: :sm, shape: :field) { "Apply" }
           render Components::UI::Button.new(variant: :dark_outline, size: :sm, shape: :field, href: "#") { "Clear" }
         end

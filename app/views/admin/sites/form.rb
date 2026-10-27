@@ -6,7 +6,8 @@ class Views::Admin::Sites::Form < Views::Admin::Base
   prop :primary_neighbourhood_id, _Nilable(Integer), reader: :private
 
   def view_template
-    simple_form_for([:admin, site], html: { data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'siteTabAfterSave' } }) do |form|
+    simple_form_for([:admin, site],
+                    html: { data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'siteTabAfterSave' } }) do |form|
       Error(site)
 
       TabForm(

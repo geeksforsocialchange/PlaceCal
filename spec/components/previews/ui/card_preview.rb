@@ -3,7 +3,8 @@
 # @display context directory
 class UI::CardPreview < Lookbook::Preview
   # @label Variants
-  # @notes `:outlined` is the default; `:featured` sets one card apart from outlined ones; `:panel` groups a sidebar section or a filter form; `:highlight` is a call to action.
+  # @notes `:outlined` is the default; `:featured` sets one card apart from outlined ones;
+  #   `:panel` groups a sidebar section or a filter form; `:highlight` is a call to action.
   def variants
     render(Grid.new do |g|
       %i[outlined featured panel highlight].each do |variant|

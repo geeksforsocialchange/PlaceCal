@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Views::Admin::Supporters::Form < Views::Admin::Base
+  INPUT_CLASS = 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm'
+
   prop :supporter, Supporter, reader: :private
 
   def view_template
@@ -10,11 +12,11 @@ class Views::Admin::Supporters::Form < Views::Admin::Base
       div(class: 'bg-white shadow-sm rounded-lg p-6 space-y-4') do
         h3(class: 'text-lg font-medium text-gray-900 border-b border-gray-200 pb-2') { 'Supporter Details' }
         raw form.input(:name, wrapper: :tw_vertical_form,
-                              input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' })
+                              input_html: { class: INPUT_CLASS })
         raw form.input(:url, wrapper: :tw_vertical_form,
-                             input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' })
+                             input_html: { class: INPUT_CLASS })
         raw form.input(:description, wrapper: :tw_vertical_form,
-                                     input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm', rows: 3 })
+                                     input_html: { class: INPUT_CLASS, rows: 3 })
       end
 
       div(class: 'bg-white shadow-sm rounded-lg p-6 space-y-4') do
@@ -31,7 +33,7 @@ class Views::Admin::Supporters::Form < Views::Admin::Base
       div(class: 'bg-white shadow-sm rounded-lg p-6 space-y-4') do
         h3(class: 'text-lg font-medium text-gray-900 border-b border-gray-200 pb-2') { 'Display Settings' }
         raw form.input(:weight, wrapper: :tw_vertical_form,
-                                input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' },
+                                input_html: { class: INPUT_CLASS },
                                 hint: 'Higher weight = appears first')
         raw form.input(:is_global, wrapper: :tw_boolean, hint: 'Show this supporter on all sites')
       end
@@ -50,7 +52,10 @@ class Views::Admin::Supporters::Form < Views::Admin::Base
 
   def render_submit_buttons(form)
     div(class: 'flex items-center gap-4 pt-4') do
-      raw form.button(:submit, class: 'inline-flex justify-center rounded-md bg-placecal-orange px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-placecal-orange focus:ring-offset-2')
+      raw form.button(:submit,
+                      class: 'inline-flex justify-center rounded-md bg-placecal-orange px-4 py-2 ' \
+                             'text-sm font-semibold text-white shadow-sm hover:bg-orange-600 ' \
+                             'focus:outline-none focus:ring-2 focus:ring-placecal-orange focus:ring-offset-2')
       unless supporter.new_record?
         link_to('Destroy Supporter', admin_supporter_path(supporter),
                 method: :delete,

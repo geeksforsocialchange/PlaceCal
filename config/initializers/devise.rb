@@ -10,7 +10,8 @@ Devise.setup do |config|
   # by default. You can change it below and use your own secret key.
 
   # from the original secrets.yml file for `developers` environment
-  default_key_value = 'fc69eec0b9981f6c1bdeb70aaca6ca6984097aada155a39f82485dc3b6fe4ebf7bf417f439795b880c027410042ac5c3b3076984f11034a48815bc41db43c7d4'
+  default_key_value = 'fc69eec0b9981f6c1bdeb70aaca6ca6984097aada155a39f82485dc3b6fe4ebf' \
+                      '7bf417f439795b880c027410042ac5c3b3076984f11034a48815bc41db43c7d4'
 
   # we just keep this in ENV on prod and staging
   secret_key_value = ENV.fetch('SECRET_KEY_BASE', default_key_value)

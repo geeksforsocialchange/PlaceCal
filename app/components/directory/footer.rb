@@ -41,7 +41,8 @@ class Components::Directory::Footer < Components::Directory::Base
         plain t('directory.footer.tagline')
       end
       div(class: 'mt-3') do
-        mail_to('support@placecal.org', 'support@placecal.org', class: 'text-sm font-serif text-foreground no-underline hover:underline hover:decoration-primary')
+        mail_to('support@placecal.org', 'support@placecal.org',
+                class: 'text-sm font-serif text-foreground no-underline hover:underline hover:decoration-primary')
       end
     end
   end

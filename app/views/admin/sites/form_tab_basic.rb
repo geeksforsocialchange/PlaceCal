@@ -48,7 +48,8 @@ class Views::Admin::Sites::FormTabBasic < Views::Admin::Base
       raw form.select(:site_admin_id,
                       User.order(:last_name, :first_name).map { |u| [u.display_name, u.id] },
                       { include_blank: t('admin.placeholders.select_model', model: t('admin.models.admin.one').downcase) },
-                      { class: 'select select-bordered w-full', 'aria-label': t('admin.sites.fields.site_admin'), data: { controller: 'tom-select' } })
+                      { class: 'select select-bordered w-full', 'aria-label': t('admin.sites.fields.site_admin'),
+                        data: { controller: 'tom-select' } })
     end
   end
 

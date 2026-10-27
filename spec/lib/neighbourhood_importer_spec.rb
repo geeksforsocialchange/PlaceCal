@@ -11,17 +11,21 @@ RSpec.describe NeighbourhoodImporter do
   describe "metropolitan county preservation" do
     let(:csv_2023) do
       CSV.generate do |csv|
-        csv << %w[Empty WD23CD WD23NM WD23NMW LAD23CD LAD23NM LAD23NMW CTY23CD CTY23NM CTY23NMW RGN23CD RGN23NM RGN23NMW CTRY23CD CTRY23NM CTRY23NMW ObjectId]
+        csv << %w[Empty WD23CD WD23NM WD23NMW LAD23CD LAD23NM LAD23NMW CTY23CD CTY23NM CTY23NMW RGN23CD RGN23NM RGN23NMW CTRY23CD CTRY23NM CTRY23NMW
+                  ObjectId]
         # Manchester ward → Manchester district → Greater Manchester county → North West → England
-        csv << ["", "W00000001", "TestWard", "", "E08000003", "Manchester", "", "E11000001", "Greater Manchester", "", "E12000002", "North West", "", "E92000001", "England", "", "1"]
+        csv << ["", "W00000001", "TestWard", "", "E08000003", "Manchester", "", "E11000001", "Greater Manchester", "", "E12000002", "North West", "",
+                "E92000001", "England", "", "1"]
       end
     end
 
     let(:csv_2024) do
       CSV.generate do |csv|
-        csv << %w[WD24CD WD24NM WD24NMW LAD24CD LAD24NM LAD24NMW CTYUA24CD CTYUA24NM CTYUA24NMW RGN24CD RGN24NM RGN24NMW CTRY24CD CTRY24NM CTRY24NMW ObjectId]
+        csv << %w[WD24CD WD24NM WD24NMW LAD24CD LAD24NM LAD24NMW CTYUA24CD CTYUA24NM CTYUA24NMW RGN24CD RGN24NM RGN24NMW CTRY24CD CTRY24NM CTRY24NMW
+                  ObjectId]
         # Same ward, but CTYUA = LAD (county level erased by ONS)
-        csv << ["W00000001", "TestWard", "", "E08000003", "Manchester", "", "E08000003", "Manchester", "", "E12000002", "North West", "", "E92000001", "England", "", "1"]
+        csv << ["W00000001", "TestWard", "", "E08000003", "Manchester", "", "E08000003", "Manchester", "", "E12000002", "North West", "",
+                "E92000001", "England", "", "1"]
       end
     end
 
@@ -74,9 +78,11 @@ RSpec.describe NeighbourhoodImporter do
   describe "unitary authorities without county history" do
     let(:csv_2024) do
       CSV.generate do |csv|
-        csv << %w[WD24CD WD24NM WD24NMW LAD24CD LAD24NM LAD24NMW CTYUA24CD CTYUA24NM CTYUA24NMW RGN24CD RGN24NM RGN24NMW CTRY24CD CTRY24NM CTRY24NMW ObjectId]
+        csv << %w[WD24CD WD24NM WD24NMW LAD24CD LAD24NM LAD24NMW CTYUA24CD CTYUA24NM CTYUA24NMW RGN24CD RGN24NM RGN24NMW CTRY24CD CTRY24NM CTRY24NMW
+                  ObjectId]
         # Cheshire East: CTYUA = LAD, never had a county parent
-        csv << ["W00000002", "TestWard2", "", "E06000049", "Cheshire East", "", "E06000049", "Cheshire East", "", "E12000002", "North West", "", "E92000001", "England", "", "1"]
+        csv << ["W00000002", "TestWard2", "", "E06000049", "Cheshire East", "", "E06000049", "Cheshire East", "", "E12000002", "North West", "",
+                "E92000001", "England", "", "1"]
       end
     end
 

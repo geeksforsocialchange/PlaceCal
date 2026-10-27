@@ -34,7 +34,8 @@ module Types
 
         argument :postcode, String,
                  required: false,
-                 description: 'A UK postcode, e.g. "M15 5FS". Shows events in its ward, or by organisers based or working there when the event has no address.'
+                 description: 'A UK postcode, e.g. "M15 5FS". Shows events in its ward, ' \
+                              'or by organisers based or working there when the event has no address.'
 
         argument :place, String,
                  required: false,

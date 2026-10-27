@@ -4,7 +4,11 @@
 class UI::FieldPreview < Lookbook::Preview
   # @label Text input
   def text_input
-    render(Frame.new { |f| f.render(Components::UI::Field.new(label: "Search", id: "q")) { f.render Components::UI::Input.new(id: "q", placeholder: "Partner name or keyword") } })
+    render(Frame.new do |f|
+      f.render(Components::UI::Field.new(label: "Search", id: "q")) do
+        f.render Components::UI::Input.new(id: "q", placeholder: "Partner name or keyword")
+      end
+    end)
   end
 
   # @label With hint

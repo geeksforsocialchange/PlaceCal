@@ -6,7 +6,8 @@ class Views::Admin::Calendars::Form < Views::Admin::Base
   def view_template
     render Views::Admin::Calendars::ImporterOverview.new(calendar:) unless calendar.new_record?
 
-    simple_form_for([:admin, calendar], html: { data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'calendarTabAfterSave' } }) do |form|
+    simple_form_for([:admin, calendar],
+                    html: { data: { controller: 'form-tabs live-validation', 'form-tabs-storage-key-value': 'calendarTabAfterSave' } }) do |form|
       div(class: 'mt-6') do
         TabForm(
           tabs: [

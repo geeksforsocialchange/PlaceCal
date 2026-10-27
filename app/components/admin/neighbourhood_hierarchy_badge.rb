@@ -26,13 +26,22 @@ class Components::Admin::NeighbourhoodHierarchyBadge < Components::Admin::Base
 
         if @link_each
           link_to admin_neighbourhood_path(item),
-                  class: "inline-flex items-center gap-1.5 #{badge_size_classes} rounded #{level_colour(item.level)} hover:opacity-80 transition-opacity" do
-            span(class: 'inline-flex items-center justify-center w-4 h-4 rounded-full bg-current/10 text-[9px] font-bold') { "L#{item.level}" } if @show_icons
+                  class: "inline-flex items-center gap-1.5 #{badge_size_classes} " \
+                         "rounded #{level_colour(item.level)} hover:opacity-80 transition-opacity" do
+            if @show_icons
+              span(class: 'inline-flex items-center justify-center w-4 h-4 rounded-full bg-current/10 text-[9px] font-bold') do
+                "L#{item.level}"
+              end
+            end
             plain item.shortname
           end
         else
           span(class: "inline-flex items-center gap-1.5 #{badge_size_classes} rounded #{level_colour(item.level)}") do
-            span(class: 'inline-flex items-center justify-center w-4 h-4 rounded-full bg-current/10 text-[9px] font-bold') { "L#{item.level}" } if @show_icons
+            if @show_icons
+              span(class: 'inline-flex items-center justify-center w-4 h-4 rounded-full bg-current/10 text-[9px] font-bold') do
+                "L#{item.level}"
+              end
+            end
             plain item.shortname
           end
         end

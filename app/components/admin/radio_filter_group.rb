@@ -23,7 +23,8 @@ class Components::Admin::RadioFilterGroup < Components::Admin::Base
                 data_action: 'click->admin-table#applyRadioFilter',
                 data_filter_value: '',
                 data_is_all: 'true',
-                class: 'filter-btn filter-btn-all px-2 py-0.5 text-xs font-medium rounded transition-all duration-150 bg-white text-gray-900 shadow-sm'
+                class: 'filter-btn filter-btn-all px-2 py-0.5 text-xs font-medium rounded ' \
+                       'transition-all duration-150 bg-white text-gray-900 shadow-sm'
               ) { t('admin.labels.all') }
             end
             filter[:options]&.each do |opt|
