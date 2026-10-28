@@ -17,7 +17,7 @@ class Components::Sites::PullQuote < Components::Base
         raw(view_context.icon(:home_quote_close, size: nil, css_class: 'size-10 shrink-0 text-primary'))
       end
       cite(class: 'contents not-italic text-primary') do
-        strong(class: 'h3-small') { @source } if @source.present?
+        strong { @source } if @source.present?
         span(class: 'text-sm leading-normal') { @quote_context } if @quote_context.present? && @source.present?
       end
     end

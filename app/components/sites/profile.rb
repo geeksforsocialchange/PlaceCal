@@ -8,9 +8,9 @@ class Components::Sites::Profile < Components::Base
   def view_template
     div(class: 'profile bg-background rounded-card mb-4 py-2 grid gap-x-4 md:grid-cols-avatar') do
       div(class: 'profile__title md:col-span-2') do
-        h3(class: 'allcaps text-center text-base inline-block pb-2 border-b-3 border-secondary mb-6') { t('components.profile.heading') }
+        UI::RuledHeading(level: 3, caps: true, tone: :secondary, class: 'text-base text-center mb-6') { t('components.profile.heading') }
       end
-      div(class: 'profile__avatar md:mt-2 md:mx-4') do
+      div(class: 'md:mt-2 md:mx-4') do
         image_tag(@user.avatar.retina.url, class: 'rounded-full max-w-27') if @user.avatar.retina.url
       end
       div(class: 'profile__details md:text-left') do

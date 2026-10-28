@@ -141,12 +141,12 @@ class Views::Sites::Partners::Show < Views::Base
   # straight to the buffer, ahead of the sentence the links are interpolated into.
   def render_family_sentence
     if visible_parent
-      div(class: 'partner__family text-sm leading-normal') do
+      div(class: 'text-sm leading-normal') do
         raw(t('partners.show.part_of_html', parent: view_context.link_to(visible_parent.name, partner_path(visible_parent))))
       end
     elsif visible_children.any?
       places = safe_join(visible_children.map { |child| view_context.link_to(child.name, partner_path(child)) }, ', ')
-      div(class: 'partner__family text-sm leading-normal') do
+      div(class: 'text-sm leading-normal') do
         raw(t('partners.show.children_html', name: partner.name, places:))
       end
     end
@@ -284,7 +284,7 @@ class Views::Sites::Partners::Show < Views::Base
 
   def render_repeating_filter
     div(class: events_class(:repeating_filter), data: { controller: 'filters' }) do
-      form_tag('', method: :get, class: 'partner-events__repeating-form', enforce_utf8: false,
+      form_tag('', method: :get, enforce_utf8: false,
                    data: { turbo_frame: 'events-browser', turbo_action: 'advance',
                            filters_target: 'form', action: 'change->filters#submit' }) do
         hidden_field_tag(:days, days, id: nil)

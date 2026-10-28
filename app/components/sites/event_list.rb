@@ -24,7 +24,7 @@ class Components::Sites::EventList < Components::Base
       UI::RuledHeading(rule: :full, class: ('text-xl' if @nested)) { I18n.l(day, format: :event_day) }
       render_day(day_events)
     end
-    p(class: 'event-list__truncated') { t('components.event_list.truncated') } if @truncated
+    p { t('components.event_list.truncated') } if @truncated
   end
 
   def render_day(day_events)
