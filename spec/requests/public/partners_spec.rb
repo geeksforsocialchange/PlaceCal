@@ -155,7 +155,7 @@ RSpec.describe "Public Partners", type: :request do
     end
 
     context "with accessibility info" do
-      let(:sidebar_headings) { Nokogiri::HTML(response.body).css(".gi.gi__2-5 > h2").map(&:text) }
+      let(:sidebar_headings) { Nokogiri::HTML(response.body).css(".partner-details__aside > h2").map(&:text) }
 
       before { partner.update!(accessibility_info: "Wheelchair accessible entrance") }
 
@@ -163,14 +163,14 @@ RSpec.describe "Public Partners", type: :request do
         get partner_url(partner, host: "#{site.slug}.lvh.me")
         doc = Nokogiri::HTML(response.body)
 
-        heading = doc.at_css(".gi.gi__2-5 > h2#accessibility-info")
+        heading = doc.at_css(".partner-details__aside > h2#accessibility-info")
         expect(heading.text).to eq(I18n.t("partners.show.accessibility_heading"))
         expect(heading[:class]).to eq("udl udl--fw allcaps h4")
         details = heading.next_element
         expect(details.name).to eq("details")
         expect(details.at_css("summary").text).to eq(I18n.t("partners.show.accessibility_summary"))
         expect(details.text).to include("Wheelchair accessible entrance")
-        expect(doc.at_css(".gi.gi__3-5").text).not_to include("Wheelchair accessible entrance")
+        expect(doc.at_css(".partner-details__main").text).not_to include("Wheelchair accessible entrance")
       end
 
       it "places the accessibility section after the opening times" do
@@ -200,7 +200,7 @@ RSpec.describe "Public Partners", type: :request do
         get partner_url(area_partner, host: "#{site.slug}.lvh.me")
         doc = Nokogiri::HTML(response.body)
 
-        heading = doc.css(".gi.gi__3-5 > h2").find { |h| h.text == I18n.t("partners.show.address_heading") }
+        heading = doc.css(".partner-details__main > h2").find { |h| h.text == I18n.t("partners.show.address_heading") }
         expect(heading.next_element[:class]).to eq("place_info__service_area")
         expect(heading.next_element.text).to include(ward.name)
         expect(doc.css(".place_info__address")).to be_empty

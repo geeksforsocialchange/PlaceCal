@@ -106,3 +106,25 @@
 @utility grid-cols-footer {
 	grid-template-columns: 1.4fr 1fr 1fr 1fr;
 }
+
+/* Date or meta column beside an article */
+@utility grid-cols-aside-main {
+	grid-template-columns: 1fr 4fr;
+}
+
+/* Partner page: description, a gutter, then image, map and opening times. Themes re-lay it out by these area names. */
+@utility grid-areas-partner-details {
+	grid-template-areas: "main" "right";
+	@media (width >= theme(--breakpoint-lg)) {
+		grid-template-columns: 6fr 1fr 5fr;
+		grid-template-areas: "main gutter right";
+	}
+}
+
+@utility grid-area-main {
+	grid-area: main;
+}
+
+@utility grid-area-right {
+	grid-area: right;
+}

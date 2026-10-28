@@ -269,7 +269,7 @@ class Views::Sites::Events::Show < Views::Base
 
       render_online_link
 
-      div(class: 'g three-col') do
+      div(class: 'event__columns grid gap-4 items-start mt-5.5 lg:grid-cols-3') do
         render_contact_info
         render_event_address
         render_event_organiser
@@ -282,7 +282,7 @@ class Views::Sites::Events::Show < Views::Base
   # preflight flattens every heading to the inherited size with no margin, so
   # the promotion changes the outline and not the look.
   def render_contact_info
-    div(class: 'gi gi__1-3') do
+    div(class: 'event__column') do
       if event.organiser
         h2(class: 'h4 udl') { t('events.show.contact_heading') }
         div(class: 'small') do
@@ -294,7 +294,7 @@ class Views::Sites::Events::Show < Views::Base
   end
 
   def render_event_address
-    div(class: 'gi gi__1-3') do
+    div(class: 'event__column') do
       h2(class: 'h4 udl') { t('events.show.address_heading') }
       div(class: 'small') do
         Shared::Address(address: event.address, raw_location: event.raw_location_from_source)
@@ -303,7 +303,7 @@ class Views::Sites::Events::Show < Views::Base
   end
 
   def render_event_organiser
-    div(class: 'gi gi__1-3') do
+    div(class: 'event__column') do
       h2(class: 'h4 udl') { t('events.show.organiser_heading') }
       div(class: 'small') do
         span { link_to event.organiser, event.organiser }
@@ -316,7 +316,7 @@ class Views::Sites::Events::Show < Views::Base
   end
 
   def render_event_venue
-    div(class: 'gi gi__1-3') do
+    div(class: 'event__column') do
       h2(class: 'h4 udl') { t('events.show.venue_heading') }
       div(class: 'small') do
         span { link_to event.place, event.place }

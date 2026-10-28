@@ -36,14 +36,14 @@ class Views::Sites::News::Show < Views::Base
   private
 
   def render_article_body
-    div(class: 'g article') do
-      div(class: 'gi gi__1-5 article__aside') do
+    div(class: 'article grid gap-x-4.5 lg:grid-cols-aside-main') do
+      div(class: 'article__aside') do
         p(class: 'article__published', title: article.published_at.to_s) do
           plain article_date(article.published_at, t('news.show.date_format'))
         end
       end
 
-      div(class: 'gi gi__4-5 article__main') do
+      div(class: 'article__main') do
         if article.author&.full_name.present?
           # A byline, not a section heading: as an h3 straight after the
           # hero h1 it failed axe's heading-order rule on every article.

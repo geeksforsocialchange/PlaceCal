@@ -37,7 +37,7 @@ class Views::Sites::Partners::Index < Views::Base
         if partners.empty?
           p(class: 'partners__empty') { t('partners.index.empty') }
         else
-          ul(class: 'partners reset two-col', id: 'partners') do
+          ul(class: 'partners list-none p-0 m-0 mt-5.5 grid gap-4 items-start lg:grid-cols-2', id: 'partners') do
             partners.each do |partner|
               Sites::PartnerPreview(partner:, site:)
             end
