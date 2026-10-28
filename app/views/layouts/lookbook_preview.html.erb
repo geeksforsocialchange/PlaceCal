@@ -21,7 +21,7 @@
   <%= javascript_importmap_tags %>
 </head>
 <body>
-  <div class="page bg-background" style="min-height: 100vh; display: flow-root<%= '; padding: 2rem' if padded %><%= '; padding-block: 2rem' unless width.empty? %>">
+  <div class="page bg-background min-h-screen flow-root <%= padded ? 'p-8' : ('py-8' unless width.empty?) %>">
     <% case width %>
     <% when 'page' %>
       <div class="container-public"><%= yield %></div>

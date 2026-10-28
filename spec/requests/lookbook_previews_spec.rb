@@ -23,6 +23,13 @@ RSpec.describe "Lookbook previews", type: :request do
     "#{path} raised #{e.class}: #{e.message.lines.first&.strip}"
   end
 
+  # Lookbook leaves a preview it cannot load out of its navigation, so the scenario sweep would never see it.
+  it "loads every preview file" do
+    files = Dir[Rails.root.join("spec/components/previews/**/*_preview.rb")]
+
+    expect(Lookbook::Previews.all.map { it.file_path.to_s }).to match_array(files)
+  end
+
   it "gives every preview its own URL" do
     paths = Lookbook::Previews.all.map(&:url_path)
 
