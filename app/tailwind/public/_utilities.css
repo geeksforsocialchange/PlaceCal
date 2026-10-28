@@ -114,6 +114,25 @@
 	grid-template-columns: 1.4fr 1fr 1fr 1fr;
 }
 
+/* A column that fills beside one sized to its content, and the reverse */
+@utility grid-cols-main-auto {
+	grid-template-columns: 1fr auto;
+}
+
+@utility grid-cols-auto-main {
+	grid-template-columns: auto 1fr;
+}
+
+/* A label beside its value, e.g. a day and its opening hours */
+@utility grid-cols-label-value {
+	grid-template-columns: 2fr 3fr;
+}
+
+/* An avatar column beside the details it belongs to */
+@utility grid-cols-avatar {
+	grid-template-columns: --spacing(33) auto;
+}
+
 /* Date or meta column beside an article */
 @utility grid-cols-aside-main {
 	grid-template-columns: 1fr 4fr;
