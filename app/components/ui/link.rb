@@ -15,9 +15,13 @@ class Components::UI::Link < Components::Base
   prop :tone, _Union(*TONES.keys), default: :foreground
   prop :attributes, Hash, :**
 
+  # For links another helper renders, such as active_link_to. with-no-sass keeps the legacy SCSS link colour off.
+  def self.css(variant: :underline, tone: :foreground)
+    ['with-no-sass', VARIANTS[variant], TONES[tone]].compact.join(' ')
+  end
+
   def view_template(&)
-    # with-no-sass keeps the legacy SCSS link colour off.
-    css = ['with-no-sass', VARIANTS[@variant], TONES[@tone], @attributes[:class]].compact.join(' ')
+    css = [self.class.css(variant: @variant, tone: @tone), @attributes[:class]].compact.join(' ')
     a(href: @href, class: css, **@attributes.except(:class), &)
   end
 end
