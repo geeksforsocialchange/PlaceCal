@@ -28,4 +28,11 @@ RSpec.describe SolidCache::Store do
   it "takes its size and age limits from config/cache.yml" do
     expect(store).to have_attributes(max_size: 256.megabytes, max_age: 1.week.to_i)
   end
+
+  it "expires through a job in tests, never on its own thread" do
+    # A batch size of 1 makes every write schedule expiry, instead of a 2% chance.
+    eager = described_class.new(expiry_batch_size: 1)
+
+    expect { eager.write("og_image/test", "png bytes") }.to have_enqueued_job(SolidCache::ExpiryJob).twice
+  end
 end
