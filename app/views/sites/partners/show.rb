@@ -32,8 +32,12 @@ class Views::Sites::Partners::Show < Views::Base
   def view_template
     set_content_for_tags
     render_local_layout
-    render_meta_section
-    render_page_actions
+    if site.core_theme?
+      Sites::Meta("/partners/#{partner.id}") { |meta| meta.with_link { Sites::PageActions(links: page_action_links, in_meta_band: true) } }
+    else
+      render_meta_section
+      render_page_actions
+    end
   end
 
   private
@@ -341,14 +345,18 @@ class Views::Sites::Partners::Show < Views::Base
   # Page actions row (Components::Sites::PageActions, #3368): back to the index,
   # the feed, then the export when there is something to export.
   def render_page_actions
+    Sites::PageActions(links: page_action_links)
+  end
+
+  def page_action_links
     links = [[t('partners.show.go_back'), partners_path],
              [t('partners.show.subscribe_ical', name: partner.name), partner_url(partner, protocol: :webcal, format: :ics)]]
     links << [t('events.csv_export.link'), partner_url(partner, format: :csv)] if events.any?
-    Sites::PageActions(links:, in_meta_band: site.core_theme?)
+    links
   end
 
   # Meta carries the permalink alone; the feed and export are page actions.
   def render_meta_section
-    Sites::Meta("/partners/#{partner.id}", followed_by_actions: site.core_theme?)
+    Sites::Meta("/partners/#{partner.id}")
   end
 end

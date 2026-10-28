@@ -2,8 +2,8 @@
 
 class Components::Sites::Meta < Components::Base
   prop :permalink, _Nilable(String), :positional
-  # The page actions follow on the same band (the partner page on built-in themes), so they carry its bottom padding.
-  prop :followed_by_actions, _Boolean, default: false
+  # The legacy link rule's pink underline is for body copy; links in this band underline in the text colour.
+  LINK = 'with-no-sass text-foreground underline'
 
   def after_initialize
     @link_content = nil
@@ -17,12 +17,12 @@ class Components::Sites::Meta < Components::Base
   def view_template
     yield self if block_given?
 
-    div(class: "meta text-sm leading-normal bg-rules #{@followed_by_actions ? 'pt-8' : 'py-8'}") do
-      div(class: 'container-public flex flex-wrap items-baseline gap-x-6 gap-y-2') do
+    div(class: 'meta text-sm leading-normal bg-rules py-8') do
+      div(class: 'container-public flex flex-wrap items-baseline gap-x-6') do
         raw(view_context.capture(&@link_content)) if @link_content
         if @permalink
           div(class: 'meta__permalink ms-auto') do
-            a(href: "https://placecal.org#{@permalink}") { t('components.meta.permalink') }
+            a(href: "https://placecal.org#{@permalink}", class: LINK) { t('components.meta.permalink') }
           end
         end
       end
