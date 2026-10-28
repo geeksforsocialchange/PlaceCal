@@ -32,20 +32,9 @@ class Views::Directory::Partnerships::Index < Views::Base
   private
 
   def render_search
-    form(action: partnerships_path, method: 'get',
-         class: 'mb-6') do
-      div(class: 'flex items-center bg-home-background-3 rounded-full p-1 pl-2 max-w-(--width-search)') do
-        div(class: 'px-2 text-tertiary') do
-          raw(view_context.icon(:search, size: nil, css_class: 'w-4 h-4'))
-        end
-        input(
-          type: 'text', name: 'q', value: @query,
-          placeholder: t('directory.partnerships.index.search_placeholder'),
-          class: 'flex-1 border-0 bg-transparent py-2 text-foreground text-sm outline-none placeholder:text-tertiary'
-        )
-        UI::Button(variant: :dark, size: :sm, type: 'submit') { t('directory.partnerships.index.search_button') }
-      end
-    end
+    UI::SearchBar(action: partnerships_path, value: @query, size: :sm, class: 'mb-6 max-w-(--width-search)',
+                  placeholder: t('directory.partnerships.index.search_placeholder'),
+                  button_label: t('directory.partnerships.index.search_button'))
   end
 
   def render_empty_state

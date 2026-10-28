@@ -30,18 +30,8 @@ class Components::Directory::Hero < Components::Directory::Base
   end
 
   def render_search
-    form(action: @search_path, method: 'get',
-         class: 'flex items-center bg-background rounded-full p-1 pl-2 max-w-(--width-search-hero) shadow-hero-search') do
-      div(class: 'px-2 text-tertiary') do
-        raw(view_context.icon(:search, size: nil, css_class: 'size-4'))
-      end
-      input(
-        type: 'text', name: 'q',
-        placeholder: t('directory.hero.search_placeholder'),
-        class: 'flex-1 border-0 bg-transparent py-2 text-foreground text-detail outline-none placeholder:text-tertiary'
-      )
-      UI::Button(variant: :primary, type: 'submit') { t('directory.hero.search_button') }
-    end
+    UI::SearchBar(action: @search_path, tone: :light, class: 'max-w-(--width-search-hero)',
+                  placeholder: t('directory.hero.search_placeholder'), button_label: t('directory.hero.search_button'))
   end
 
   def render_jump_links
