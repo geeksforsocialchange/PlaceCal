@@ -89,7 +89,7 @@ class Views::Sites::Events::Index < Views::Base
   end
 
   def render_meta_section
-    Sites::Meta('/hello/world') do |component|
+    Sites::Meta() do |component|
       component.with_link do
         link_to t('events.index.subscribe_ical', name: site.name), events_url(protocol: :webcal, format: :ics), class: Sites::Meta::LINK
         link_to t('events.csv_export.link'), events_url(format: :csv, **csv_export_params), class: Sites::Meta::LINK
