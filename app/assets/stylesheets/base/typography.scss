@@ -25,11 +25,13 @@ a:not(.with-no-sass) {
 	color: var(--base-text);
 }
 
-hr {
-	border-color: $base-rules;
-	border-color: var(--base-rules);
-	border-width: 5px;
-	border-style: solid;
+@layer legacy {
+	hr {
+		border-color: $base-rules;
+		border-color: var(--base-rules);
+		border-width: 5px;
+		border-style: solid;
+	}
 }
 
 @layer legacy {

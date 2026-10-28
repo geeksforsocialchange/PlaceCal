@@ -114,6 +114,25 @@
 	grid-template-columns: 1.4fr 1fr 1fr 1fr;
 }
 
+/* A column that fills beside one sized to its content, and the reverse */
+@utility grid-cols-main-auto {
+	grid-template-columns: 1fr auto;
+}
+
+@utility grid-cols-auto-main {
+	grid-template-columns: auto 1fr;
+}
+
+/* A label beside its value, e.g. a day and its opening hours */
+@utility grid-cols-label-value {
+	grid-template-columns: 2fr 3fr;
+}
+
+/* An avatar column beside the details it belongs to */
+@utility grid-cols-avatar {
+	grid-template-columns: --spacing(33) auto;
+}
+
 /* Date or meta column beside an article */
 @utility grid-cols-aside-main {
 	grid-template-columns: 1fr 4fr;
@@ -134,6 +153,28 @@
 
 @utility grid-area-right {
 	grid-area: right;
+}
+
+/* The local-site hero's corner patterns; themes replace or drop them */
+@utility hero-pattern {
+	background-image:
+		url("/images/patterns/mobile-l.svg"), url("/images/patterns/mobile-r.svg");
+	background-position:
+		-2.5rem 1.5rem,
+		right -2.5rem top 1.5rem;
+	background-repeat: no-repeat, no-repeat;
+	@media (width >= theme(--breakpoint-md)) {
+		background-image:
+			url("/images/patterns/tablet-l.svg"), url("/images/patterns/tablet-r.svg");
+		background-position:
+			-6.5rem -1rem,
+			right -6.5rem top -1rem;
+	}
+	@media (width >= theme(--breakpoint-lg)) {
+		background-position:
+			5% -1rem,
+			right 5% top -1rem;
+	}
 }
 
 /* An icon the size of the text around it */

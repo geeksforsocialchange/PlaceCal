@@ -6,11 +6,11 @@ class Components::Sites::PartnerPreview < Components::Base
 
   def view_template
     li(class: 'preview') do
-      div(class: 'preview__header') do
-        h3 { link_to(@partner.name, partner_path(@partner), data: { turbo_frame: '_top', turbo_action: 'replace' }) }
+      div(class: 'preview__header grid grid-cols-main-auto gap-x-4 border-b-3 border-rules') do
+        h3(class: 'my-0 py-2 text-xl self-center') { link_to(@partner.name, partner_path(@partner), class: 'no-underline hover:underline', data: { turbo_frame: '_top', turbo_action: 'replace' }) }
         if show_neighbourhood?
-          css = "neighbourhood #{primary_neighbourhood? ? 'neighbourhood--primary' : 'neighbourhood--secondary'} preview__neighbourhood"
-          div(class: css) { span { neighbourhood_name } }
+          css = "neighbourhood #{primary_neighbourhood? ? 'neighbourhood--primary' : 'neighbourhood--secondary'} preview__neighbourhood self-center"
+          div(class: css) { span(class: 'mt-0!') { neighbourhood_name } }
         end
       end
 

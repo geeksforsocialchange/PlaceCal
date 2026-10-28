@@ -10,8 +10,8 @@ class Components::Shared::ContactDetails < Components::Base
   # :tailwind renders a self-contained "Get in touch" card; :tailwind_rows
   # renders just the icon rows for embedding in another card (e.g. the event
   # page's organiser SidebarCard).
-  prop :variant, _Union(:scss, :tailwind, :tailwind_rows), default: :scss
-  # :network reads the social links as "Facebook" etc. (scss variant only); the handle moves to the title.
+  prop :variant, _Union(:sites, :tailwind, :tailwind_rows), default: :sites
+  # :network reads the social links as "Facebook" etc. (sites variant only); the handle moves to the title.
   prop :social_labels, _Union(:handle, :network), default: :handle
 
   def after_initialize
@@ -24,13 +24,13 @@ class Components::Shared::ContactDetails < Components::Base
     case @variant
     when :tailwind then render_tailwind
     when :tailwind_rows then render_tailwind_rows
-    when :scss then render_scss
+    when :sites then render_sites
     end
   end
 
   private
 
-  # ── Tailwind variant (directory — will become the only path) ──
+  # ── Directory variant ──
 
   def render_tailwind
     return unless contact?
@@ -61,10 +61,10 @@ class Components::Shared::ContactDetails < Components::Base
     end
   end
 
-  # ── SCSS variant (local sites — to be removed after Tailwind migration) ──
+  # ── Local-site variant ──
 
-  def render_scss
-    p(class: 'contact_details') do
+  def render_sites
+    p(class: 'contact_details grid grid-cols-auto-main gap-x-2 items-center') do
       render_phone
       render_email
       render_website
@@ -78,8 +78,8 @@ class Components::Shared::ContactDetails < Components::Base
   def render_phone
     return if @phone.blank?
 
-    span(class: 'contact_details__item') do
-      raw(view_context.icon(:contact_phone, size: '4'))
+    span(class: 'contact_details__item contents') do
+      raw(view_context.icon(:contact_phone, size: '4', css_class: 'mt-1'))
       if @partner.valid_public_phone?
         link_to(@phone, "tel:#{@phone}", target: '_blank', rel: 'noopener', class: 'contact_details__phone')
       else
@@ -91,8 +91,8 @@ class Components::Shared::ContactDetails < Components::Base
   def render_email
     return if @email.blank?
 
-    span(class: 'contact_details__item') do
-      raw(view_context.icon(:contact_email, size: '4'))
+    span(class: 'contact_details__item contents') do
+      raw(view_context.icon(:contact_email, size: '4', css_class: 'mt-1'))
       mail_to(@email, @email, target: '_blank', class: 'contact_details__email')
     end
   end
@@ -100,8 +100,8 @@ class Components::Shared::ContactDetails < Components::Base
   def render_website
     return if @url.blank?
 
-    span(class: 'contact_details__item') do
-      raw(view_context.icon(:contact_website, size: '4'))
+    span(class: 'contact_details__item contents') do
+      raw(view_context.icon(:contact_website, size: '4', css_class: 'mt-1'))
       link_to(strip_url(@url), @url, target: '_blank', rel: 'noopener', class: 'contact_details__website')
     end
   end
@@ -125,8 +125,8 @@ class Components::Shared::ContactDetails < Components::Base
   end
 
   def social_link(network, handle, href)
-    span(class: 'contact_details__item contact_details__item--social') do
-      raw(view_context.icon(:"contact_#{network}", size: '4'))
+    span(class: 'contact_details__item contact_details__item--social contents') do
+      raw(view_context.icon(:"contact_#{network}", size: '4', css_class: 'mt-1'))
       if @social_labels == :network
         link_to(t("directory.contact.networks.#{network}"), href, title: handle, target: '_blank', rel: 'noopener', class: "contact_details__#{network}")
       else
