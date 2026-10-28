@@ -22,23 +22,19 @@ class Components::Shared::Hero < Components::Base
   end
 
   def view_template
-    div(class: 'hero') do
+    div(class: 'hero hero-pattern bg-primary text-center pt-8 pb-4') do
       div(class: 'container-public') do
         render_back if @back
         p(class: 'hero__section') { @section } if @section.present?
         if @subtitle.present?
-          # The tagline is a strapline, not a section title. It used to be an h4
-          # sitting between the navigation's h2 site name and the page h1, which
-          # skipped a heading level and failed axe's heading-order rule.
-          # `present?`, not truthiness: Site#tagline is nullable and an empty
-          # string would otherwise render a bare paragraph and a divider.
-          p(class: 'allcaps') { @subtitle }
-          div(role: 'presentation', class: 'hero__divider')
+          # A paragraph, not a heading, so the outline never skips a level before the h1.
+          p(class: 'allcaps inline-block mt-2 mb-6 leading-tight max-md:max-w-56') { @subtitle }
+          div(role: 'presentation', class: 'hero__divider mx-auto w-18 border-b-4 border-background')
         end
         if @schema
-          h1(property: @schema) { render_title }
+          h1(property: @schema, class: 'mt-5') { render_title }
         else
-          h1 { render_title }
+          h1(class: 'mt-5') { render_title }
         end
         p(class: 'hero__standfirst') { @standfirst } if @standfirst.present?
         p(class: 'hero__standfirst-detail') { @standfirst_detail } if @standfirst_detail.present?
@@ -50,7 +46,7 @@ class Components::Shared::Hero < Components::Base
 
   def render_back
     label, path = @back
-    link_to(label, path, class: 'hero__back')
+    link_to(label, path, class: 'hero__back block w-fit mx-auto mb-2 text-sm')
   end
 
   # The title is user or feed supplied (partner names, event summaries, article
@@ -59,7 +55,7 @@ class Components::Shared::Hero < Components::Base
   def render_title
     @title_lines.each_with_index do |line, index|
       if index.positive?
-        br
+        br(class: 'hidden md:block')
         plain ' '
       end
       plain line
