@@ -10,7 +10,7 @@ class Sites::HeroSectionPreview < Lookbook::Preview
   # @label With image and credit
   def with_image
     render Components::Sites::HeroSection.new(
-      image_path: "https://placekitten.com/1200/400",
+      image_path: ActionController::Base.helpers.image_path("hero-image-default.jpg"),
       image_credit: "Photo by Example Photographer",
       alttext: "A community centre in Hulme"
     )
