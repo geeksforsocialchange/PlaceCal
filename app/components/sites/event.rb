@@ -14,8 +14,17 @@ class Components::Sites::Event < Components::Base
   # (Views::Events::Show renders its hero here, not directly).
   prop :back, _Nilable(Array), default: nil
 
+  ICON = 'size-7 mr-1 text-secondary'
+  # Each detail's share of the row: full width on phones (time and date share one), about a third on tablets, natural width on desktop.
+  DETAIL_LAYOUT = Hash.new('max-md:basis-full md:grow md:basis-2/7 lg:grow-0 lg:basis-auto').merge(
+    'event__time' => 'max-md:basis-11/25 md:grow md:basis-2/7 lg:grow-0 lg:basis-auto',
+    'event__date' => 'max-md:basis-11/25 md:grow md:basis-2/7 lg:grow-0 lg:basis-auto',
+    'event__duration' => 'max-md:hidden md:grow md:basis-2/7 lg:grow-0 lg:basis-auto',
+    'event__location' => 'max-md:basis-full md:grow md:shrink-0 md:basis-11/18 md:mb-0 lg:shrink lg:basis-auto'
+  ).freeze
+
   def view_template
-    div(class: "h-event event #{page? ? 'event--full' : 'event--list'}") do
+    div(class: "h-event event mb-8 #{page? ? 'event--full' : 'event--list'}") do
       page? ? render_page_layout : render_list_layout
     end
   end
@@ -36,17 +45,19 @@ class Components::Sites::Event < Components::Base
   delegate :id, :partner_at_location, :summary, :description, to: :@event
 
   def render_list_header
-    div(class: 'event__header') do
-      h3 { link_to(summary, event_path(id), class: 'p-name u-url', data: { turbo_frame: '_top' }) }
+    div(class: 'event__header grid md:grid-cols-main-auto md:items-center') do
+      h3(class: 'inline-block mb-2.5') do
+        link_to(summary, event_path(id), class: 'p-name u-url with-no-sass text-foreground no-underline', data: { turbo_frame: '_top' })
+      end
       if neighbourhood_name && @show_neighbourhoods
-        css = "neighbourhood #{primary_neighbourhood? ? 'neighbourhood--primary' : 'neighbourhood--secondary'} event__neighbourhood"
+        css = "neighbourhood #{primary_neighbourhood? ? 'neighbourhood--primary' : 'neighbourhood--secondary'} event__neighbourhood max-md:hidden"
         div(class: css) { span { neighbourhood_name } }
       end
     end
   end
 
   def render_event_details
-    div(class: 'event__details') do
+    div(class: "event__details flex flex-wrap items-center text-detail border-rules py-2 md:py-3 #{page? ? 'border-b-10' : 'border-y-3'}") do
       render_time_detail
       render_detail('event__duration', :event_duration, duration) if duration
       render_date_detail
@@ -59,9 +70,9 @@ class Components::Sites::Event < Components::Base
   end
 
   def render_time_detail
-    div(class: 'event__detail event__time') do
-      raw(view_context.icon(:event_time, size: nil))
-      plain ' '
+    div(class: detail_class('event__time')) do
+      raw(view_context.icon(:event_time, size: nil, css_class: ICON))
+      whitespace
       time(class: 'dt-start', datetime: @event.dtstart.iso8601) { fmt_time(@event.dtstart) }
       if @event.dtend
         plain " \u2013 "
@@ -71,17 +82,24 @@ class Components::Sites::Event < Components::Base
   end
 
   def render_date_detail
-    div(class: 'event__detail event__date') do
-      raw(view_context.icon(:event_date, size: nil))
-      plain " #{date}"
+    div(class: detail_class('event__date')) do
+      raw(view_context.icon(:event_date, size: nil, css_class: ICON))
+      whitespace
+      plain date
     end
   end
 
   def render_detail(css, icon_name, text)
-    div(class: "event__detail #{css}") do
-      raw(view_context.icon(icon_name, size: nil))
-      plain " #{text}"
+    div(class: detail_class(css)) do
+      raw(view_context.icon(icon_name, size: nil, css_class: ICON))
+      whitespace
+      plain text
     end
+  end
+
+  def detail_class(name)
+    spacing = %w[event__repeats event__online].include?(name) ? 'mb-0' : 'mb-0.5 lg:mb-0'
+    "event__detail #{name} flex items-center mr-4 #{spacing} max-md:grow max-md:shrink-0 #{DETAIL_LAYOUT[name]}"
   end
 
   def show_organiser?
@@ -102,9 +120,9 @@ class Components::Sites::Event < Components::Base
 
   def render_organiser
     organiser = @event.organiser
-    div(class: 'event__detail event__organiser') do
-      raw(view_context.icon(:partner, size: nil))
-      plain ' '
+    div(class: detail_class('event__organiser')) do
+      raw(view_context.icon(:partner, size: nil, css_class: ICON))
+      whitespace
       # Optional prefix such as "by ", blank in core; themes set it.
       prefix = t('events.card.organiser_prefix')
       span(class: 'event__organiser-prefix') { prefix } if prefix.present?
@@ -114,9 +132,9 @@ class Components::Sites::Event < Components::Base
   end
 
   def render_place
-    div(class: 'event__detail event__location p-location') do
-      raw(view_context.icon(:event_place, size: nil))
-      plain ' '
+    div(class: "#{detail_class('event__location')} p-location") do
+      raw(view_context.icon(:event_place, size: nil, css_class: ICON))
+      whitespace
       if partner_at_location
         link_to(partner_at_location.name.truncate(25), partner_path(partner_at_location), data: { turbo_frame: '_top' })
       elsif first_address_line

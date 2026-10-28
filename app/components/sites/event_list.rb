@@ -28,7 +28,7 @@ class Components::Sites::EventList < Components::Base
   def render_day(day_events)
     ol(class: 'events reset') do
       day_events.each do |event|
-        li { render_event(event) }
+        li(class: 'block w-full') { render_event(event) }
       end
     end
   end
