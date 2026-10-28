@@ -102,21 +102,18 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
       sidebar_heading(t('directory.sidebar.share_subscribe'))
 
       div do
-        a(href: "https://placecal.org/partners/#{@partner.slug}",
-          class: 'font-mono text-sm text-foreground break-all no-underline hover:underline hover:decoration-primary') do
+        UI::Link(href: "https://placecal.org/partners/#{@partner.slug}", variant: :quiet, class: 'font-mono text-sm break-all') do
           plain "placecal.org/partners/#{@partner.slug}"
         end
       end
       div(class: 'mt-3') do
-        a(href: partner_url(@partner, protocol: :webcal, format: :ics),
-          class: 'inline-flex items-center gap-1.5 text-sm font-bold text-foreground no-underline hover:underline hover:decoration-primary') do
+        UI::Link(href: partner_url(@partner, protocol: :webcal, format: :ics), variant: :action, class: 'text-sm') do
           raw(view_context.icon(:calendar, size: '3.5'))
           plain t('directory.sidebar.subscribe_ical')
         end
       end
       div(class: 'mt-1.5') do
-        a(href: partner_url(@partner, format: :csv),
-          class: 'inline-flex items-center gap-1.5 text-sm font-bold text-foreground no-underline hover:underline hover:decoration-primary') do
+        UI::Link(href: partner_url(@partner, format: :csv), variant: :action, class: 'text-sm') do
           raw(view_context.icon(:arrow_down, size: '3.5'))
           plain t('directory.sidebar.download_csv')
         end

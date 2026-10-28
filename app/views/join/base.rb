@@ -11,11 +11,11 @@ class Views::Join::Base < Views::Base
   def breadcrumb(*crumbs, on_secondary: false)
     tone = on_secondary ? 'text-foreground-dark' : 'text-tertiary'
     nav(class: "text-sm #{tone} mb-3", aria_label: t('join.aria.breadcrumb')) do
-      a(href: join_root_path, class: "with-no-sass #{tone} no-underline hover:underline") { t('join.breadcrumbs.root') }
+      UI::Link(href: join_root_path, variant: :quiet, tone: :inherit) { t('join.breadcrumbs.root') }
       crumbs.each do |label, path|
         span(class: 'mx-1.5 opacity-60') { safe('&rsaquo;') }
         if path
-          a(href: path, class: "with-no-sass #{tone} no-underline hover:underline") { label }
+          UI::Link(href: path, variant: :quiet, tone: :inherit) { label }
         else
           span { label }
         end
