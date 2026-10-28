@@ -16,6 +16,10 @@ class Components::Sites::EventFilter < Components::Base
   # to count the neighbourhood dropdown.
   prop :query, _Nilable(::EventsQuery), default: nil
 
+  # Hidden behind its button; on touch it covers the button so a tap opens the native picker, which iOS won't do from script.
+  DATE_INPUT = 'filters__date-input absolute opacity-0 size-0 pointer-events-none pointer-coarse:inset-0 pointer-coarse:size-full pointer-coarse:pointer-events-auto'
+  DROPDOWN_RULE = 'border-0 border-t-3'
+
   # Today, tomorrow and five more days (D22).
   DAY_STRIP_LENGTH = 7
 
@@ -60,7 +64,7 @@ class Components::Sites::EventFilter < Components::Base
   end
 
   def render_date_picker
-    div(class: 'filters__toggle', data: { controller: 'date-picker' }) do
+    div(class: "#{Sites::Filter::TOGGLE} pointer-coarse:relative", data: { controller: 'date-picker' }) do
       render_today_link
       render_goto_date_button
       render_date_picker_fields
@@ -71,7 +75,7 @@ class Components::Sites::EventFilter < Components::Base
   # button and hidden field, minus the Today link, since the day strip
   # already carries a Today button of its own.
   def render_date_toggle
-    div(class: 'filters__toggle', data: { controller: 'date-picker' }) do
+    div(class: "#{Sites::Filter::TOGGLE} pointer-coarse:relative", data: { controller: 'date-picker' }) do
       render_goto_date_button(button_class: 'filters__toggle-button filters__toggle-button--date',
                               label: t('filters.pick_a_date'))
       render_date_picker_fields
@@ -81,21 +85,21 @@ class Components::Sites::EventFilter < Components::Base
   def render_today_link
     return if @today
 
-    link_to(t('filters.today'), @today_url, class: 'filters__link filters__link--today', data: { turbo_frame: 'events-browser', turbo_action: 'advance' })
+    link_to(t('filters.today'), @today_url, class: "#{Sites::Breadcrumb::LINK} filters__link filters__link--today mr-2", data: { turbo_frame: 'events-browser', turbo_action: 'advance' })
   end
 
   def render_goto_date_button(button_class: nil, label: t('filters.go_to_date'))
-    button(type: 'button', class: button_class, data: { action: 'click->date-picker#open' }) do
-      raw(view_context.icon(:triangle_down, size: nil))
-      plain ' '
-      span(class: 'filters__link') { label }
+    button(type: 'button', class: [button_class, Sites::Filter::TOGGLE_BUTTON].compact.join(' '), data: { action: 'click->date-picker#open' }) do
+      raw(view_context.icon(:triangle_down, size: nil, css_class: Sites::Filter::TOGGLE_ICON))
+      whitespace
+      span(class: 'filters__link border-b-2 border-rules-dark') { label }
     end
   end
 
   def render_date_picker_fields
     # The field has no visible label: the Go to date button opens it. The
     # aria-label gives it the same name for assistive tech (axe: label).
-    date_field_tag(:date, @pointer, class: 'filters__date-input', aria: { label: t('filters.go_to_date') },
+    date_field_tag(:date, @pointer, class: DATE_INPUT, aria: { label: t('filters.go_to_date') },
                                     data: { date_picker_target: 'input', action: 'change->date-picker#submit' })
     # id: nil throughout: the neighbourhood and sort filters carry the same
     # three fields, so the default ids appeared twice on /events (axe
@@ -181,7 +185,7 @@ class Components::Sites::EventFilter < Components::Base
 
   def render_neighbourhood_filter
     div(class: 'filters', data: { controller: 'event-filter' }) do
-      raw(view_context.form_tag('', method: :get, class: 'filters__form', enforce_utf8: false, data: { turbo_frame: 'events-browser', turbo_action: 'advance' }) do
+      raw(view_context.form_tag('', method: :get, class: 'filters__form relative', enforce_utf8: false, data: { turbo_frame: 'events-browser', turbo_action: 'advance' }) do
         safe_join([
           view_context.hidden_field_tag(:period, @period),
           view_context.hidden_field_tag(:sort, @sort),
@@ -210,7 +214,7 @@ class Components::Sites::EventFilter < Components::Base
   end
 
   def build_sort_filter_form
-    view_context.form_tag('', method: :get, class: 'filters__form', enforce_utf8: false,
+    view_context.form_tag('', method: :get, class: 'filters__form relative', enforce_utf8: false,
                               data: { turbo_frame: 'events-browser', turbo_action: 'advance',
                                       filters_target: 'form', action: 'change->filters#submit' }) do
       buf = ActiveSupport::SafeBuffer.new
@@ -224,9 +228,10 @@ class Components::Sites::EventFilter < Components::Base
   def build_sort_toggle
     button_class = 'filters__toggle-button filters__toggle-button--filters' if day_strip_with_date_picker?
     button_class = "#{button_class} filters__toggle-button--active".strip if filters_active?
-    view_context.content_tag(:div, class: 'filters__toggle') do
-      view_context.content_tag(:button, type: 'button', class: button_class, data: { action: 'click->filters#toggle' }) do
-        safe_join([view_context.icon(:triangle_down, size: nil), ' ', view_context.content_tag(:span, t('filters.filter_and_sort'), class: 'filters__link')])
+    view_context.content_tag(:div, class: Sites::Filter::TOGGLE) do
+      view_context.content_tag(:button, type: 'button', class: [button_class, Sites::Filter::TOGGLE_BUTTON].compact.join(' '), data: { action: 'click->filters#toggle' }) do
+        safe_join([view_context.icon(:triangle_down, size: nil, css_class: Sites::Filter::TOGGLE_ICON), ' ',
+                   view_context.content_tag(:span, t('filters.filter_and_sort'), class: 'filters__link border-b-2 border-rules-dark')])
       end
     end
   end
@@ -245,7 +250,7 @@ class Components::Sites::EventFilter < Components::Base
     div(class: 'filters__applied') do
       span(class: 'filters__applied-text') { parts.join(', ') }
       link_to(t('filters.applied.reset'), "#{events_path(**region_params)}#paginator",
-              class: 'filters__applied-reset', data: { turbo_frame: 'events-browser', turbo_action: 'advance' })
+              class: "#{Sites::Breadcrumb::LINK} filters__applied-reset", data: { turbo_frame: 'events-browser', turbo_action: 'advance' })
     end
   end
 
@@ -279,7 +284,7 @@ class Components::Sites::EventFilter < Components::Base
   end
 
   def build_sort_dropdown
-    view_context.content_tag(:div, class: 'filters__dropdown filters__dropdown--hidden', data: { filters_target: 'dropdown' }) do
+    view_context.content_tag(:div, class: Sites::Filter::DROPDOWN, data: { filters_target: 'dropdown' }) do
       render_filter_groups
     end
   end
@@ -287,9 +292,9 @@ class Components::Sites::EventFilter < Components::Base
   def render_filter_groups
     buf = ActiveSupport::SafeBuffer.new
     buf << render_sort_group
-    buf << view_context.tag.hr
+    buf << view_context.tag.hr(class: DROPDOWN_RULE)
     buf << render_period_group
-    buf << view_context.tag.hr
+    buf << view_context.tag.hr(class: DROPDOWN_RULE)
     buf << render_repeating_group
     buf
   end
@@ -319,9 +324,9 @@ class Components::Sites::EventFilter < Components::Base
   end
 
   def render_radio(name, value, checked, label_text)
-    view_context.content_tag(:div, class: 'filters__option') do
-      view_context.radio_button_tag(name, value, checked) +
-        view_context.label_tag("#{name}_#{value}", label_text)
+    view_context.content_tag(:div, class: Sites::Filter::OPTION) do
+      view_context.radio_button_tag(name, value, checked, class: 'peer') +
+        view_context.label_tag("#{name}_#{value}", label_text, class: 'peer-checked:font-bold')
     end
   end
 
