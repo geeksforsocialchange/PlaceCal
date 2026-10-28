@@ -2,7 +2,7 @@
 
 class Components::Directory::Footer < Components::Directory::Base
   def view_template
-    Shared::FooterLayout(tagline: t('directory.footer.tagline'), logo_alt: t('directory.footer.placecal_logo_alt'), columns:) do
+    Shared::Footer(tagline: t('directory.footer.tagline'), logo_alt: t('directory.footer.placecal_logo_alt'), columns:) do
       div(class: 'mt-3') do
         UI::Link(href: 'mailto:support@placecal.org', variant: :quiet, class: 'text-sm font-serif') { 'support@placecal.org' }
       end

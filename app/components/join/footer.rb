@@ -2,7 +2,7 @@
 
 class Components::Join::Footer < Components::Join::Base
   def view_template
-    Shared::FooterLayout(tagline: t('join.footer.tagline'), logo_alt: t('join.footer.placecal_logo_alt'), columns:)
+    Shared::Footer(tagline: t('join.footer.tagline'), logo_alt: t('join.footer.placecal_logo_alt'), columns:)
   end
 
   private

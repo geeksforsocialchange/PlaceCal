@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # The placecal.org and join footer: brand column, link columns, then the GFSC strip.
-class Components::Shared::FooterLayout < Components::Base
+class Components::Shared::Footer < Components::Base
   prop :tagline, String
   prop :logo_alt, String
   # [[heading, [[label, href], ...]], ...]
