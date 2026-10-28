@@ -10,7 +10,7 @@ class Components::Sites::Footer < Components::Base
   HEADING = 'footer__heading allcaps text-sm leading-normal mt-0 mb-5'
   # Keeps each contact label on the same line as its value.
   NBSP = "\u00A0"
-  HR = 'footer__item footer__hr col-span-full w-full border-3 border-tertiary-light'
+  HR = 'col-span-full w-full border-3 border-tertiary-light'
 
   def view_template
     footer(class: 'footer bg-foreground text-background text-detail leading-normal py-12') do
@@ -30,7 +30,7 @@ class Components::Sites::Footer < Components::Base
 
   def render_footer_content
     render_logo
-    hr(class: "#{HR} footer__hr--1 lg:hidden")
+    hr(class: "#{HR} lg:hidden")
     render_nav
     render_site_enquiries if @site&.site_admin
     render_general_enquiries
@@ -41,7 +41,7 @@ class Components::Sites::Footer < Components::Base
   end
 
   def render_logo
-    div(class: 'footer__item footer__logo col-span-full lg:col-span-1 self-center') do
+    div(class: 'col-span-full lg:col-span-1 self-center') do
       if @site&.footer_logo.present?
         image_tag(@site.footer_logo.url, alt: @site.name, class: 'max-w-42') if @site.footer_logo.url
       else
@@ -51,7 +51,7 @@ class Components::Sites::Footer < Components::Base
   end
 
   def render_nav
-    div(class: 'footer__item footer__nav col-span-full lg:col-span-2 text-base') do
+    div(class: 'footer__nav col-span-full lg:col-span-2 text-base') do
       h2(class: HEADING, id: 'footer-nav-heading') { t('footer.site_navigation') }
       # Named, so a screen reader's landmark menu distinguishes this nav from
       # the header's rather than listing "navigation" twice.
@@ -91,7 +91,7 @@ class Components::Sites::Footer < Components::Base
   end
 
   def render_site_enquiries
-    div(class: 'footer__item footer__enquiries footer__enquiries--regional col-span-full md:col-span-1 lg:col-start-2') do
+    div(class: 'col-span-full md:col-span-1 lg:col-start-2') do
       h2(class: HEADING) { t('footer.site_enquiries', site: @site.name) }
       p(class: 'my-2') { @site.site_admin.full_name }
       p(class: 'my-2') { render_site_contact_info }
@@ -116,7 +116,7 @@ class Components::Sites::Footer < Components::Base
   end
 
   def render_general_enquiries
-    div(class: "footer__item footer__enquiries footer__enquiries--general col-span-full #{general_span}") do
+    div(class: "col-span-full #{general_span}") do
       h2(class: HEADING) { t('footer.general_enquiries') }
       p(class: 'my-2') { t('footer.get_in_touch') }
       p(class: 'my-2') do
@@ -139,11 +139,11 @@ class Components::Sites::Footer < Components::Base
   end
 
   def render_supporters(heading, supporters)
-    div(class: 'footer__item footer__supporters col-span-full') do
+    div(class: 'col-span-full') do
       h2(class: HEADING) { heading }
       ul(class: 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 list-none p-0 mt-4 mb-0') do
         supporters&.each do |supporter|
-          li(class: "footer__supporter footer__supporter--#{supporter.name.parameterize} grid items-center justify-items-center") do
+          li(class: 'grid items-center justify-items-center') do
             link_to(supporter.url) { image_tag(supporter.logo.url, alt: supporter.name, class: 'max-w-full') }
           end
         end
@@ -152,7 +152,7 @@ class Components::Sites::Footer < Components::Base
   end
 
   def render_impressum
-    div(class: 'footer__item footer__impressum col-span-full mt-12 text-tertiary-light', data_nosnippet: true) do
+    div(class: 'col-span-full mt-12 text-tertiary-light', data_nosnippet: true) do
       Shared::Impressum(logo: false, company_details: true)
     end
   end

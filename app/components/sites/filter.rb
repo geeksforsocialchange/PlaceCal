@@ -65,7 +65,7 @@ class Components::Sites::Filter < Components::Base
           action: submit_action_value,
           "#{@controller}-target": @name
         },
-        class: 'tag__button peer'
+        class: 'peer'
       )
       label_tag(
         "#{@name}_#{item[:id]}",
