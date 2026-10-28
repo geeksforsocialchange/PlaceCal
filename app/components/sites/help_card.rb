@@ -94,7 +94,7 @@ class Components::Sites::HelpCard < Components::Base
     div(class: 'text-center mb-12') do
       raw(safe(SVGS.fetch(@variant)))
 
-      UI::RuledHeading(level: 3, caps: true, tone: :secondary, rule: :centered, class: 'text-base mt-8 mb-6') { variant_t(:title) }
+      UI::RuledHeading(level: 3, caps: true, tone: :secondary, rule: :centered, size: :sm, class: 'mt-8 mb-6') { variant_t(:title) }
       p { variant_t(:description) } if config[:description]
 
       if @variant == :adding_events

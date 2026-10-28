@@ -133,7 +133,7 @@ class Views::Sites::Partners::Show < Views::Base
   end
 
   def render_contact_and_address
-    UI::RuledHeading(caps: true, rule: :full, class: 'text-xl my-5.5') { t('partners.show.contact_heading') }
+    UI::RuledHeading(caps: true, rule: :full, size: :lg, class: 'my-5.5') { t('partners.show.contact_heading') }
     Shared::ContactDetails(partner:, social_labels: site&.core_theme? ? :handle : :network)
 
     render_address
@@ -166,7 +166,7 @@ class Views::Sites::Partners::Show < Views::Base
   end
 
   def render_address
-    UI::RuledHeading(caps: true, rule: :full, class: 'text-xl my-5.5') { t('partners.show.address_heading') }
+    UI::RuledHeading(caps: true, rule: :full, size: :lg, class: 'my-5.5') { t('partners.show.address_heading') }
     if partner.service_areas?
       p(class: 'place_info__service_area') do
         raw(t('partners.show.service_area_html', areas: partner_service_area_text(partner)))
@@ -193,7 +193,7 @@ class Views::Sites::Partners::Show < Views::Base
     return unless times.any?
 
     section(class: SIDEBAR_SECTION) do
-      UI::RuledHeading(caps: true, rule: :full, class: 'text-xl my-5.5') { t('partners.show.opening_times_heading') }
+      UI::RuledHeading(caps: true, rule: :full, size: :lg, class: 'my-5.5') { t('partners.show.opening_times_heading') }
       ul(class: 'opening_times reset text-left') do
         times.each do |slot|
           li(class: 'grid grid-cols-label-value *:first:font-bold') { slot }
@@ -206,7 +206,7 @@ class Views::Sites::Partners::Show < Views::Base
     return if partner.accessibility_info_html.blank?
 
     section(class: SIDEBAR_SECTION) do
-      UI::RuledHeading(caps: true, rule: :full, class: 'text-xl my-5.5', id: 'accessibility-info') { t('partners.show.accessibility_heading') }
+      UI::RuledHeading(caps: true, rule: :full, size: :lg, class: 'my-5.5', id: 'accessibility-info') { t('partners.show.accessibility_heading') }
       details(class: 'group wrap-anywhere') do
         summary(class: 'cursor-pointer group-open:mb-3') { t('partners.show.accessibility_summary') }
         raw safe(partner.accessibility_info_html.to_s)
@@ -225,12 +225,12 @@ class Views::Sites::Partners::Show < Views::Base
         end
         div do
           if place.address
-            UI::RuledHeading(caps: true, rule: :full, class: 'text-xl my-5.5') { t('partners.show.address_heading') }
+            UI::RuledHeading(caps: true, rule: :full, size: :lg, class: 'my-5.5') { t('partners.show.address_heading') }
             div(class: 'text-sm leading-normal') do
               Shared::Address(address: place.address)
             end
           end
-          UI::RuledHeading(caps: true, rule: :full, class: 'text-xl my-5.5') { t('partners.show.place_contact_heading') }
+          UI::RuledHeading(caps: true, rule: :full, size: :lg, class: 'my-5.5') { t('partners.show.place_contact_heading') }
           div(class: 'text-sm leading-normal') do
             Shared::ContactDetails(partner: place)
           end
