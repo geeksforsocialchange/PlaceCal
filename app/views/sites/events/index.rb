@@ -35,11 +35,16 @@ class Views::Sites::Events::Index < Views::Base
 
   private
 
+  def day_strip?
+    Current.theme.event_filter_style != :date_picker
+  end
+
   def render_paginator
     div(class: 'paginator leading-snug print:hidden', id: 'paginator') do
       div(class: 'paginator__context') do
         Sites::Breadcrumb(trail: [[t('navigation.site.events'), events_path]], site_name: site.name) do
-          div(class: 'breadcrumb__actions flex gap-2 items-center') do
+          # A day strip is wider than the row, so it scrolls inside it and the sort filter wraps underneath.
+          UI::Cluster(gap: :sm, wrap: day_strip?, class: day_strip? ? 'filter-bar min-w-0 max-w-full' : 'filter-bar') do
             today = Time.zone.today
             region_param = selected_region ? "&region=#{selected_region.slug}" : ''
             today_url = "/events/#{today.year}/#{today.month}/#{today.day}?period=#{period}&sort=#{sort}&repeating=#{repeating}#{region_param}#paginator"
