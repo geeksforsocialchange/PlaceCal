@@ -38,7 +38,7 @@ class Views::Sites::Default < Views::Base
   end
 
   def render_mission
-    section(class: 'region region__mission') do
+    section(class: 'region region__mission bg-rules py-4 mt-4 text-center') do
       div(class: 'container-narrow') do
         p do
           raw(t('sites.home.mission_html',
@@ -51,9 +51,9 @@ class Views::Sites::Default < Views::Base
   end
 
   def render_about
-    section(class: 'region region__management') do
+    section(class: 'region region__management bg-rules text-center pb-4') do
       div(class: 'bg-rules py-2') do
-        h2(class: 'allcaps text-center text-base') { t('sites.home.about_us') }
+        h2(class: 'allcaps text-center text-base inline-block pb-2 border-b-3 border-background') { t('sites.home.about_us') }
       end
       div(class: 'container-narrow first-p:mt-0 first-p:font-serif first-p:text-xl') do
         raw safe(site.description_html.to_s)
@@ -63,7 +63,7 @@ class Views::Sites::Default < Views::Base
   end
 
   def render_support
-    section(class: 'region region__support') do
+    section(class: 'region region__support mt-12') do
       div(class: 'container-public') do
         div(class: 'grid gap-4.5 md:grid-cols-2 xl:grid-cols-3') do
           div { Sites::HelpCard(variant: :adding_events, site:) }
