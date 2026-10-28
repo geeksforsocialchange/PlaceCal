@@ -26,7 +26,7 @@ class Views::Join::Base < Views::Base
   def section_intro(kicker:, heading:, lede: nil, center: false)
     div(class: "mb-7 #{'text-center' if center}") do
       div(class: 'allcaps-label text-tertiary mb-1') { kicker }
-      h2(class: 'font-serif font-regular text-section text-foreground m-0') { heading }
+      UI::Heading(class: 'm-0') { heading }
       p(class: "text-detail text-tertiary leading-relaxed mt-2 mb-0 max-w-(--width-prose) #{'mx-auto' if center}") { lede } if lede
     end
   end

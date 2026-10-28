@@ -52,7 +52,7 @@ class Views::Directory::OurStory < Views::Base
     section(class: 'pt-11 pb-9') do
       narrow do
         div(class: 'allcaps-label text-tertiary mb-2') { t("#{T}.start.eyebrow") }
-        h2(class: 'font-serif font-regular text-section text-foreground mt-0 mb-5') { t("#{T}.start.heading") }
+        UI::Heading(class: 'mt-0 mb-5') { t("#{T}.start.heading") }
         div(class: 'grid md:grid-cols-2 gap-8') do
           t("#{T}.start.body").each do |paragraph|
             p(class: 'my-0 text-base leading-relaxed text-foreground') { paragraph }
@@ -101,7 +101,7 @@ class Views::Directory::OurStory < Views::Base
     section(class: wrapper_class) do
       narrow do
         div(class: "allcaps-label #{eyebrow_class} mb-2") { t("#{T}.#{section_key}.eyebrow") }
-        h2(class: 'font-serif font-regular text-section text-foreground mt-0 mb-9') { t("#{T}.#{section_key}.heading") }
+        UI::Heading(class: 'mt-0 mb-9') { t("#{T}.#{section_key}.heading") }
         div(class: 'flex flex-col gap-12') do
           items.each { |feature| render_feature(section_key, feature) }
         end
