@@ -19,7 +19,7 @@ class Components::Sites::Event < Components::Base
   ICON = 'size-7 mr-1 text-secondary'
 
   def view_template
-    div(class: "h-event event mb-8 #{page? ? 'event--full' : 'event--list'}") do
+    div(class: ['h-event event mb-8', ('event--full' if page?)]) do
       page? ? render_page_layout : render_list_layout
     end
   end
