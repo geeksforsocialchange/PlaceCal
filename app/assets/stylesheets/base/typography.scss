@@ -17,18 +17,18 @@
 
 a:not(.with-no-sass) {
 	text-decoration-color: $base-primary;
-	text-decoration-color: var(--base-primary);
+	text-decoration-color: var(--color-primary);
 	text-underline-offset: 3px;
 	text-decoration-skip-ink: none;
 	text-decoration-thickness: 2px;
 	color: $base-text;
-	color: var(--base-text);
+	color: var(--color-foreground);
 }
 
 @layer legacy {
 	hr {
 		border-color: $base-rules;
-		border-color: var(--base-rules);
+		border-color: var(--color-rules);
 		border-width: 5px;
 		border-style: solid;
 	}

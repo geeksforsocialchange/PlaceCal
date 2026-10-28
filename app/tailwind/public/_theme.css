@@ -182,6 +182,8 @@
 	--shadow-dot: 0 1px 3px var(--color-dot-shadow);
 	/* Filter dropdowns */
 	--shadow-dropdown: 7px 7px 20px 0 rgb(153 134 117 / 0.83);
+	/* The top band of the map's double stripe */
+	--shadow-map-stripe: 0 -10px 0 0 var(--color-tertiary-light);
 	/* raised panels: dropdowns, hovered cards */
 	--shadow-lg:
 		0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
@@ -323,6 +325,7 @@ this file).
 	--shadow-marker: var(--shadow-marker);
 	--shadow-dot: var(--shadow-dot);
 	--shadow-dropdown: var(--shadow-dropdown);
+	--shadow-map-stripe: var(--shadow-map-stripe);
 	--shadow-lg: var(--shadow-lg);
 
 	/* app/assets/stylesheets/modules/breakpoints.scss

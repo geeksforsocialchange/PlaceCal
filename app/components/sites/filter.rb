@@ -78,7 +78,7 @@ class Components::Sites::Filter < Components::Base
   def render_reset_button
     return unless filter_active?
 
-    UI::Button(variant: :outline, size: :sm, data: { action: reset_action_value }, class: 'btn filter__reset border-b-primary mt-3 mb-1 leading-tight') do
+    UI::Button(variant: :outline, size: :sm, data: { action: reset_action_value }, class: 'mt-3') do
       t('filters.reset_button')
     end
   end
