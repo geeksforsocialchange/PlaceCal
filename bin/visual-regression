@@ -91,7 +91,8 @@ build_assets() {
     cd "$dir"
     yarn install --frozen-lockfile --silent >/dev/null
     yarn --silent build >/dev/null
-    with_locale bin/rails dartsass:build >/dev/null
+    # Bases from before the Sass build was retired still need it.
+    if [ -f config/initializers/dartsass.rb ]; then with_locale bin/rails dartsass:build >/dev/null; fi
   )
 }
 

@@ -19,7 +19,6 @@ CI.run do
 
   step 'DB: prepare test database', 'env RAILS_ENV=test bin/rails db:test:prepare'
   step 'Assets: JS build', 'bin/yarn run build:all'
-  step 'Assets: SCSS build', 'bin/rails dartsass:build'
   step 'Assets: precompile', 'env RAILS_ENV=test bin/rails assets:precompile'
 
   step 'Tests: RSpec (unit)', "bundle exec rspec --exclude-pattern 'spec/system/**/*'"

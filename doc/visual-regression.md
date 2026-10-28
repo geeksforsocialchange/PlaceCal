@@ -20,7 +20,7 @@ bin/visual-regression clean               # remove screenshots and cached baseli
 A bare branch name prefers its remote-tracking branch from whichever remote has it. The script:
 
 1. Finds the merge base of `HEAD` and the base ref.
-2. Captures the base in a temporary `git worktree` (your working tree is never stashed or checked out): copies the current screenshot harness in, installs gems, runs `yarn build` and `dartsass:build`, loads the schema into its own `_base` database and captures. The worktree and database are removed on exit. Baselines are cached per base SHA and harness version.
+2. Captures the base in a temporary `git worktree` (your working tree is never stashed or checked out): copies the current screenshot harness in, installs gems, runs `yarn build`, loads the schema into its own `_base` database and captures. The worktree and database are removed on exit. Baselines are cached per base SHA and harness version.
 3. Builds assets and captures your working tree, including uncommitted changes.
 4. Compares each pair, padding shorter screenshots with magenta so extra height counts as changed, and writes `tmp/visual_regression/summary.md`.
 

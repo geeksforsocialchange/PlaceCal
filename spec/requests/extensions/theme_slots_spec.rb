@@ -254,7 +254,7 @@ RSpec.describe "Theme slots", type: :request do
       expect(head).to match(%r{<link rel="apple-touch-icon" href="[^"]*/assets/apple-touch-icon-[0-9a-f]+\.png">})
       expect(head).to include('<meta property="og:image:height" content="630">')
       chain = head.scan(%r{/assets/(application|public_tailwind|themes/pink)-[0-9a-f]+\.css}).flatten
-      expect(chain).to eq(%w[application public_tailwind themes/pink])
+      expect(chain).to eq(%w[public_tailwind themes/pink])
     end
 
     aggregate_failures "index chrome" do

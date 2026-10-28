@@ -73,9 +73,6 @@ RUN bundle exec bootsnap precompile app/ lib/
 # Build Tailwind CSS (admin + public)
 RUN yarn build
 
-# Compile SCSS to CSS
-RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails dartsass:build
-
 # Precompile assets (Propshaft fingerprinting + importmap)
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
