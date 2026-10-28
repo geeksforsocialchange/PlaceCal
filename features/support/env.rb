@@ -9,6 +9,7 @@
 require "cucumber/rails"
 require "capybara/cucumber"
 require "selenium-webdriver"
+require_relative "../../spec/support/chrome_options"
 
 # Normal Island geocoder lookup is loaded via config/initializers/geocoder.rb
 # UK postcode extension is loaded via lib/normal_island.rb
@@ -41,6 +42,7 @@ Capybara.register_driver :selenium_headless do |app|
   options.add_argument("--disable-gpu")
   options.add_argument("--no-sandbox")
   options.add_argument("--disable-dev-shm-usage")
+  ChromeOptions.disable_password_manager(options)
 
   Capybara::Selenium::Driver.new(app, browser: :chrome, options:)
 end
