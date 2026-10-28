@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # @display context directory
+# @display width page
 class UI::CardPreview < Lookbook::Preview
   # @label Variants
   # @notes `:outlined` is the default; `:featured` sets one card apart from outlined ones; `:panel` groups a sidebar section or a filter form; `:highlight` is a call to action.
@@ -9,7 +10,7 @@ class UI::CardPreview < Lookbook::Preview
       %i[outlined featured panel highlight].each do |variant|
         g.render(Components::UI::Card.new(variant:)) do
           g.strong { ":#{variant}" }
-          g.p(style: "margin: 0.5rem 0 0") { "A short line of card text." }
+          g.p(class: "mt-2 mb-0") { "A short line of card text." }
         end
       end
     end)
@@ -19,13 +20,13 @@ class UI::CardPreview < Lookbook::Preview
   # @notes With `href` the whole card is a link that lifts on hover.
   def link
     render(Grid.new do |g|
-      g.render(Components::UI::Card.new(href: "#")) { "Community groups" }
+      ["Community groups", "Housing providers", "Social prescribers"].each { |label| g.render(Components::UI::Card.new(href: "#")) { label } }
     end)
   end
 
   class Grid < Phlex::HTML
     def view_template(&)
-      div(style: "display: grid; grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr)); gap: 1rem; max-width: 60rem") { yield(self) }
+      div(class: "grid md:grid-cols-2 lg:grid-cols-3 gap-4") { yield(self) }
     end
   end
 end

@@ -25,20 +25,20 @@ class UI::PillPreview < Lookbook::Preview
   # @label Overlay
   # @notes For chips on a dark hero; the text colour comes from the hero.
   def overlay
-    render(Row.new(style: "padding: 1.5rem; border-radius: 1rem; background: var(--color-foreground); color: var(--color-background)") do |r|
+    render(Row.new(css: "p-6 rounded-card bg-foreground text-background") do |r|
       r.render(Components::UI::Pill.new(variant: :overlay)) { "12 partners" }
       r.render(Components::UI::Pill.new(variant: :overlay)) { "Online" }
     end)
   end
 
   class Row < Phlex::HTML
-    def initialize(style: nil)
+    def initialize(css: nil)
       super()
-      @style = style
+      @css = css
     end
 
     def view_template(&)
-      div(style: "display: flex; flex-wrap: wrap; gap: 0.5rem; #{@style}") { yield(self) }
+      div(class: ["flex flex-wrap gap-2", @css].compact.join(" ")) { yield(self) }
     end
   end
 end

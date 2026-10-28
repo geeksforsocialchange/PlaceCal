@@ -1,10 +1,10 @@
 <%# Replaces Lookbook's table of links: a component's page shows every scenario rendered %>
 <%# Lookbook's wrapper grows with its content, so a page of rendered scenarios would never scroll %>
-<style>.page-content-wrapper { height: 100%; }</style>
+<style>.page-content-wrapper { height: 100%; } .scenario-embed { margin-bottom: 2rem; }</style>
 <%= markdown(preview.notes) %>
 
 <% targets.filter(&:visible?).each do |target| %>
-  <div style="margin-bottom: 2rem">
+  <div class="scenario-embed">
     <lookbook-embed preview="<%= preview.preview_class_name %>" scenario="<%= target.name %>"></lookbook-embed>
   </div>
 <% end %>

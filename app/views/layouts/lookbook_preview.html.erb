@@ -1,7 +1,11 @@
 <%# Directory and join components only appear on placecal.org, so they ignore the Theme menu (`@display context directory`) %>
 <% theme = PlaceCal::Extensions.find_theme(lookbook_display(:theme)) unless lookbook_display(:context) == 'directory' %>
-<%# Every preview gets the same padding; full-width pieces opt out with `@display padding false` %>
-<% padded = !lookbook_display(:padding).in?([false, 'false']) %>
+<%# `@display width page|form` renders a component inside the container it sits in on the site %>
+<% width = lookbook_display(:width).to_s %>
+<%# A width's container has its own side padding; full-width pieces opt out with `@display padding false` %>
+<% page_padding = if width.present? then 'py-8'
+                  elsif !lookbook_display(:padding).in?([false, 'false']) then 'p-8'
+                  end %>
 <!DOCTYPE html>
 <html lang="en" class="<%= 'core-theme' if theme&.core? %>">
 <head>
@@ -19,8 +23,15 @@
   <%= javascript_importmap_tags %>
 </head>
 <body>
-  <div class="page bg-background" style="min-height: 100vh; display: flow-root<%= '; padding: 2rem' if padded %>">
-    <%= yield %>
+  <div class="page bg-background min-h-screen flow-root <%= page_padding %>">
+    <% case width %>
+    <% when 'page' %>
+      <div class="container-public"><%= yield %></div>
+    <% when 'form' %>
+      <div class="container-public"><div class="max-w-(--width-prose) mx-auto"><%= yield %></div></div>
+    <% else %>
+      <%= yield %>
+    <% end %>
   </div>
 </body>
 </html>

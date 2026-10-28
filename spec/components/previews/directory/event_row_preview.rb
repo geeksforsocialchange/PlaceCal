@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # @display context directory
+# @display width page
 class Directory::EventRowPreview < Lookbook::Preview
   include PreviewSupport
 
@@ -40,7 +41,7 @@ class Directory::EventRowPreview < Lookbook::Preview
     end
 
     def view_template
-      div(style: "align-content: start; color: var(--color-foreground); max-width: 760px; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); column-gap: 2rem") do
+      div(class: "grid md:grid-cols-2 gap-x-6 text-foreground") do
         @events.each { render Components::Directory::EventRow.new(event: it) }
       end
     end

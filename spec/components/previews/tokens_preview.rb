@@ -4,6 +4,8 @@
 # always matches what the build ships.
 class TokensPreview < Lookbook::Preview
   THEME_CSS = Rails.root.join("app/tailwind/public/_theme.css")
+  # Matches --root-font-size in app/tailwind/public/_theme.css
+  ROOT_PX = 18
   SAMPLE = "Community coffee morning at the library"
   PARAGRAPH = "A friendly weekly coffee morning for everyone in the neighbourhood. " \
               "Bring a friend, meet new people and find out what else is happening nearby."
@@ -55,7 +57,7 @@ class TokensPreview < Lookbook::Preview
     end
 
     def view_template
-      div(style: "display: grid; align-content: start; gap: 1.5rem; color: var(--color-foreground)") do
+      div(class: "grid content-start gap-6 text-foreground") do
         rows.each { |name, value| row(name, value) }
       end
     end
@@ -73,10 +75,10 @@ class TokensPreview < Lookbook::Preview
     end
 
     def row(name, value)
-      div(style: "display: grid; grid-template-columns: 14rem 1fr; gap: 1.5rem; align-items: start") do
-        div do
-          code(style: "font-weight: 700") { name }
-          div(style: "font-size: 0.8rem; opacity: 0.7; margin-top: 0.25rem") { label(value) }
+      div(class: "flex items-start gap-6") do
+        div(class: "w-56 shrink-0") do
+          code(class: "font-bold") { name }
+          div(class: "mt-1 text-sm opacity-70") { label(value) }
         end
         sample(name, value)
       end
@@ -84,7 +86,7 @@ class TokensPreview < Lookbook::Preview
 
     def label(value)
       size = rem(value)
-      size ? "#{value} (#{(size * 16).round(1)}px)" : value
+      size ? "#{value} (#{(size * ROOT_PX).round(1)}px)" : value
     end
 
     def sample(name, value)
@@ -92,17 +94,18 @@ class TokensPreview < Lookbook::Preview
       when :type
         div do
           div(style: "font-size: var(--text-#{name}); line-height: 1.2") { SAMPLE }
-          div(style: "font-size: var(--text-#{name}); line-height: 1.2; font-family: var(--font-serif); margin-top: 0.25rem") { SAMPLE }
+          div(class: "mt-1 font-serif", style: "font-size: var(--text-#{name}); line-height: 1.2") { SAMPLE }
         end
       when :leading
-        p(style: "max-width: 36rem; margin: 0; line-height: #{name == 'normal' ? 'normal' : "var(--leading-#{name})"}") { "#{PARAGRAPH} #{PARAGRAPH}" }
+        p(class: "m-0 max-w-(--width-prose)", style: "line-height: #{name == 'normal' ? 'normal' : "var(--leading-#{name})"}") { "#{PARAGRAPH} #{PARAGRAPH}" }
       when :colour
-        div(style: "height: 3rem; border-radius: 0.5rem; border: 1px solid rgb(0 0 0 / 0.15); background: var(--color-#{name})")
+        div(class: "h-12 rounded-sm border border-foreground/15", style: "background: var(--color-#{name})")
       when :radius
-        css = name.start_with?("shadow-") ? "box-shadow: var(--#{name})" : "border-radius: var(--radius-#{name}); border: 2px solid currentColor"
-        div(style: "width: 8rem; height: 4rem; background: var(--color-surface, #fff); #{css}")
+        shadow = name.start_with?("shadow-")
+        div(class: ["w-32 h-16 bg-surface", ("border-2 border-current" unless shadow)].compact.join(" "),
+            style: shadow ? "box-shadow: var(--#{name})" : "border-radius: var(--radius-#{name})")
       when :measure
-        div(style: "width: min(#{value}, 100%); height: 0.75rem; background: var(--color-primary); border-radius: 999px")
+        div(class: "h-3 rounded-pill bg-primary", style: "width: min(#{value}, 100%)")
       end
     end
   end

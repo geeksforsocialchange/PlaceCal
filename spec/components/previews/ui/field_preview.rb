@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # @display context directory
+# @display width form
 class UI::FieldPreview < Lookbook::Preview
   # @label Text input
   def text_input
@@ -24,7 +25,7 @@ class UI::FieldPreview < Lookbook::Preview
 
   class Frame < Phlex::HTML
     def view_template(&)
-      div(style: "max-width: 30rem") { yield(self) }
+      div { yield(self) }
     end
   end
 end
