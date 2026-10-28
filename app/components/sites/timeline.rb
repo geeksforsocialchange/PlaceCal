@@ -3,6 +3,13 @@
 class Components::Sites::Timeline < Components::Base
   DEFAULT_STEPS = 7
 
+  LIST = 'paginator__buttons relative grid grid-cols-paginator gap-1 md:gap-2 list-none m-0 px-10 pb-2 font-bold'
+  TAB = 'border-2 border-primary rounded-full text-center hover:bg-primary'
+  TAB_LINK = 'with-no-sass text-foreground no-underline flex items-center justify-center size-full py-1 px-4 whitespace-nowrap'
+  ARROW = 'paginator__arrow absolute top-0 size-9 p-0 bg-primary hover:bg-foreground'
+  ARROW_LINK = 'with-no-sass flex items-center justify-center size-full'
+  ARROW_ICON = 'size-4 text-background'
+
   prop :pointer, _Union(Date, String)
   prop :period, _Nilable(String), default: nil
   prop :sort, _Nilable(String), default: nil
@@ -23,14 +30,14 @@ class Components::Sites::Timeline < Components::Base
   def view_template
     return unless renderable?
 
-    ol(class: "paginator__buttons paginator__buttons--#{@date_period}", data: { controller: 'paginator' }) do
+    ol(class: "#{LIST} paginator__buttons--#{@date_period}", data: { controller: 'paginator' }) do
       buttons.each do |btn|
         li_attrs = { class: btn[:css] }
         btn[:data].each do |k, v|
           li_attrs[:"data-#{k.to_s.dasherize}"] = v
         end
         li(**li_attrs) do
-          a(href: btn[:link], data: { turbo_frame: 'events-browser', turbo_action: 'advance' }) do
+          a(href: btn[:link], class: btn[:link_css], data: { turbo_frame: 'events-browser', turbo_action: 'advance' }) do
             if btn[:svg]
               raw(btn[:svg])
             else
@@ -53,21 +60,27 @@ class Components::Sites::Timeline < Components::Base
 
     # Arrow pointer: for 'upcoming', use the first visible date tab as the reference
     arrow_ref = @period == 'upcoming' ? window_start : @pointer
-    pages << { svg: view_context.icon(:triangle_left, size: nil), link: url_for(step_back(arrow_ref)), css: 'paginator__arrow paginator__arrow--back', data: {} }
+    pages << { svg: view_context.icon(:triangle_left, size: nil, css_class: ARROW_ICON), link: url_for(step_back(arrow_ref)),
+               css: "#{ARROW} paginator__arrow--back left-0", link_css: "#{ARROW_LINK} pr-0.5", data: {} }
 
     if @show_upcoming
-      css = @period == 'upcoming' ? 'active' : ''
-      pages << { text: 'Upcoming', link: upcoming_url, css:, data: { paginator_target: 'button' } }
+      pages << { text: t('components.timeline.upcoming'), link: upcoming_url, css: tab_class(@period == 'upcoming'), link_css: TAB_LINK,
+                 data: { paginator_target: 'button' } }
     end
 
     current = window_start
     date_steps.times do
-      css = date_tab_active?(current) ? 'active' : ''
-      pages << { text: format_date(current), link: url_for(current), css:, data: { paginator_target: 'button' } }
+      pages << { text: format_date(current), link: url_for(current), css: tab_class(date_tab_active?(current)), link_css: TAB_LINK,
+                 data: { paginator_target: 'button' } }
       current = step_forward(current)
     end
 
-    pages << { svg: view_context.icon(:triangle_right, size: nil), link: url_for(step_forward(arrow_ref)), css: 'paginator__arrow paginator__arrow--forwards', data: { paginator_target: 'forward' } }
+    pages << { svg: view_context.icon(:triangle_right, size: nil, css_class: ARROW_ICON), link: url_for(step_forward(arrow_ref)),
+               css: "#{ARROW} paginator__arrow--forwards right-0", link_css: "#{ARROW_LINK} pl-0.5", data: { paginator_target: 'forward' } }
+  end
+
+  def tab_class(active)
+    active ? "#{TAB} active bg-primary" : TAB
   end
 
   def date_steps
@@ -145,34 +158,27 @@ class Components::Sites::Timeline < Components::Base
 
   def todayify(date)
     today = Time.zone.today
-    return 'Today' if date == today
-    return 'Tomorrow' if date == today + 1.day
+    return t('components.timeline.today') if date == today
+    return t('components.timeline.tomorrow') if date == today + 1.day
 
-    date.strftime('%a %e %b')
+    I18n.l(date, format: :timeline_day)
   end
 
   def monthify(date)
     today = Time.zone.today
-    return 'This month' if date.year == today.year && date.month == today.month
+    return t('components.timeline.this_month') if date.year == today.year && date.month == today.month
 
-    if date.year == today.year
-      date.strftime('%b')
-    else
-      date.strftime('%b %Y')
-    end
+    I18n.l(date, format: date.year == today.year ? :timeline_month : :timeline_month_year)
   end
 
   def weekify(date)
     today = Time.zone.today
     end_date = date + step - 1.day
 
-    return 'Next 7 days' if date == today
+    return t('components.timeline.next_7_days') if date == today
 
-    if date.month == end_date.month
-      "#{date.strftime('%e')} - #{end_date.strftime('%e %b')}"
-    else
-      "#{date.strftime('%e %b')} \u2013 #{end_date.strftime('%e %b')}"
-    end
+    from = I18n.l(date, format: date.month == end_date.month ? :timeline_week_start : :timeline_day_month)
+    t('components.timeline.week', from:, to: I18n.l(end_date, format: :timeline_day_month))
   end
 
   def upcoming_url

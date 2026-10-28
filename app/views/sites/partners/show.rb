@@ -304,7 +304,7 @@ class Views::Sites::Partners::Show < Views::Base
     path = "partners/#{partner.slug}/events"
     today = Time.zone.today
     filter_period = date_period || period
-    div(class: 'paginator', id: 'paginator') do
+    div(class: 'paginator leading-snug', id: 'paginator') do
       Sites::Timeline(
         pointer: current_day,
         period:,
@@ -314,7 +314,7 @@ class Views::Sites::Partners::Show < Views::Base
         path:,
         show_upcoming: true
       )
-      div(class: 'paginator__actions') do
+      div(class: 'paginator__actions relative z-10 flex gap-4 items-center justify-end text-sm pt-1 mb-2') do
         today_url = "/#{path}/#{today.year}/#{today.month}/#{today.day}?period=#{filter_period}&sort=#{sort}&repeating=#{repeating}#paginator"
         Sites::EventFilter(
           pointer: current_day,
