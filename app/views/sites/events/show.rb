@@ -261,11 +261,10 @@ class Views::Sites::Events::Show < Views::Base
   def render_event_details
     div(class: 'container-narrowish mb-12 event__fullinfo e-content') do
       raw safe(event.description_html.to_s)
-      render_event_link
-
-      br
-
-      render_online_link
+      div(class: 'flex flex-col items-start gap-2 mt-10 empty:hidden') do
+        render_event_link
+        render_online_link
+      end
 
       div(class: 'event__columns grid gap-4 items-start mt-5.5 lg:grid-cols-3') do
         render_contact_info

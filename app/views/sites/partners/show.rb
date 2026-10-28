@@ -189,8 +189,7 @@ class Views::Sites::Partners::Show < Views::Base
     times = partner.human_readable_opening_times
     return unless times.any?
 
-    br
-    UI::RuledHeading(caps: true, rule: :full, class: 'text-xl my-5.5') { t('partners.show.opening_times_heading') }
+    UI::RuledHeading(caps: true, rule: :full, class: 'text-xl mt-11.5 mb-5.5') { t('partners.show.opening_times_heading') }
     ul(class: 'opening_times reset text-left') do
       times.each do |slot|
         li(class: 'grid grid-cols-label-value *:first:font-bold') { slot }
@@ -201,8 +200,7 @@ class Views::Sites::Partners::Show < Views::Base
   def render_accessibility
     return if partner.accessibility_info_html.blank?
 
-    br
-    UI::RuledHeading(caps: true, rule: :full, class: 'text-xl my-5.5', id: 'accessibility-info') { t('partners.show.accessibility_heading') }
+    UI::RuledHeading(caps: true, rule: :full, class: 'text-xl mt-11.5 mb-5.5', id: 'accessibility-info') { t('partners.show.accessibility_heading') }
     details(class: 'group wrap-anywhere') do
       summary(class: 'cursor-pointer group-open:mb-3') { t('partners.show.accessibility_summary') }
       raw safe(partner.accessibility_info_html.to_s)
