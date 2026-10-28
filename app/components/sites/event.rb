@@ -13,6 +13,8 @@ class Components::Sites::Event < Components::Base
   # [label, path] back link, threaded through to Hero on the page layout
   # (Views::Events::Show renders its hero here, not directly).
   prop :back, _Nilable(Array), default: nil
+  # Under a day heading that is itself under a section heading, so the title drops a size.
+  prop :nested, _Boolean, default: false
 
   ICON = 'size-7 mr-1 text-secondary'
 
@@ -39,7 +41,7 @@ class Components::Sites::Event < Components::Base
 
   def render_list_header
     div(class: 'event__header grid md:grid-cols-main-auto md:items-center') do
-      h3(class: 'inline-block mb-2.5') do
+      h3(class: "inline-block mb-2.5#{' text-md' if @nested}") do
         link_to(summary, event_path(id), class: 'p-name u-url with-no-sass text-foreground no-underline', data: { turbo_frame: '_top' })
       end
       if neighbourhood_name && @show_neighbourhoods
