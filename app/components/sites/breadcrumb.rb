@@ -6,7 +6,7 @@ class Components::Sites::Breadcrumb < Components::Base
 
   ELEMENT = 'breadcrumb__element flex-initial flex items-center max-md:mb-2'
   # The filters and actions a page passes in, left-aligned on its own row until desktop.
-  LAST_ELEMENT = "#{ELEMENT} breadcrumb__element--last flex-wrap gap-y-2 gap-x-4 w-full xl:w-auto xl:flex-auto xl:justify-end xl:text-right".freeze
+  SLOT = 'breadcrumb__slot flex-initial flex items-center max-md:mb-2 flex-wrap gap-y-2 gap-x-4 w-full xl:w-auto xl:flex-auto xl:justify-end xl:text-right'
   LINK = 'with-no-sass text-foreground no-underline border-b-2 border-rules-dark'
 
   def view_template(&)
@@ -20,7 +20,7 @@ class Components::Sites::Breadcrumb < Components::Base
           link_to(link[0], link[1], class: LINK)
         end
       end
-      div(class: LAST_ELEMENT, &)
+      div(class: SLOT, &)
     end
 
     emit_breadcrumb_json_ld
