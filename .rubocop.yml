@@ -187,11 +187,17 @@ Lint/SymbolConversion:
 # Phlex views/components are template code where each HTML element call
 # inflates AbcSize/MethodLength. These metrics don't add value for templates.
 Metrics/AbcSize:
+  inherit_mode:
+    merge:
+      - Exclude
   Exclude:
     - "app/views/**/*.rb"
     - "app/components/**/*.rb"
 
 Metrics/MethodLength:
+  inherit_mode:
+    merge:
+      - Exclude
   Exclude:
     - "app/views/**/*.rb"
     - "app/components/**/*.rb"
@@ -202,6 +208,9 @@ Metrics/ParameterLists:
     - "app/components/**/*.rb"
 
 Metrics/ClassLength:
+  inherit_mode:
+    merge:
+      - Exclude
   Exclude:
     - "spec/**/*.rb"
     - "app/models/calendar.rb"
@@ -211,6 +220,9 @@ Metrics/ClassLength:
     - "app/components/**/*.rb"
 
 Metrics/CyclomaticComplexity:
+  inherit_mode:
+    merge:
+      - Exclude
   Exclude:
     - "app/controllers/application_controller.rb"
 
@@ -221,6 +233,9 @@ Metrics/ModuleLength:
     - "app/helpers/svg_icons_helper.rb"
 
 Metrics/PerceivedComplexity:
+  inherit_mode:
+    merge:
+      - Exclude
   Exclude:
     - "app/controllers/application_controller.rb"
 
@@ -398,6 +413,10 @@ RSpec/RepeatedExample:
 
 Style/ArrayIntersect:
   Enabled: false
+
+# Phlex components and views are written compact (class Components::UI::Button), which Zeitwerk resolves.
+Style/ClassAndModuleChildren:
+  EnforcedStyle: compact
 
 # CarrierWave needs File.open without a block — it takes ownership of the handle.
 # system_helpers suppresses stdout during tests, also needs persistent handle.
