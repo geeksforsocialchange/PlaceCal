@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Components::Sites::Meta < Components::Base
-  prop :permalink, _Nilable(String), :positional
+  prop :permalink, _Nilable(String), :positional, default: nil
   # The legacy link rule's pink underline is for body copy; links in this band underline in the text colour.
   LINK = 'with-no-sass text-foreground underline'
 

@@ -69,7 +69,8 @@ export default class extends Controller {
 		const markers = this.argsValue.markers.map((m) => {
 			const mapMarker = L.marker(m.position, { icon: mapIcon });
 			mapMarker.addTo(this.map);
-			mapMarker.bindPopup(m.anchor, { permanent: true, closeButton: false });
+			if (m.anchor)
+				mapMarker.bindPopup(m.anchor, { permanent: true, closeButton: false });
 			return mapMarker;
 		});
 
