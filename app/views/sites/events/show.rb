@@ -354,7 +354,8 @@ class Views::Sites::Events::Show < Views::Base
                     t('events.show.problem_link'),
                     subject: t('events.show.problem_subject',
                                url: "http://placecal.org#{event_path(event)}"),
-                    cc: 'support@placecal.org'
+                    cc: 'support@placecal.org',
+                    class: Sites::Meta::LINK
           end
         end
       end

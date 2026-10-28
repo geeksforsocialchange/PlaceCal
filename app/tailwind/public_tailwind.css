@@ -37,6 +37,15 @@
 
 /* base overrides for things which aren't yet componentised */
 @layer base {
+	/* Turbo frames lay out like the blocks they replace, and dim what they're reloading */
+	turbo-frame {
+		display: block;
+	}
+	turbo-frame[aria-busy="true"] :is(.partners, .paginator, .events, #map) {
+		opacity: 0.4;
+		pointer-events: none;
+		transition: opacity 0.1s ease-out;
+	}
 	body {
 		/* app/assets/stylesheets/base/typography.scss */
 		@apply font-sans font-regular;

@@ -203,3 +203,14 @@
 	background-position: right 0.7rem center;
 	background-size: 0.7rem 0.45rem;
 }
+
+/* A middle dot before an inline item, hidden from screen readers */
+@utility separator-dot {
+	&::before {
+		content: "\00b7";
+		content: "\00b7" / "";
+		display: inline-block;
+		padding-inline: --spacing(1) --spacing(2);
+		text-decoration: none;
+	}
+}
