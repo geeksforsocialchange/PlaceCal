@@ -6,7 +6,7 @@ class Views::Sites::Events::IndexSimple < Views::Base
   def view_template
     if events.any?
       events.each do |day, day_events|
-        h2 { day.strftime('%A %e %B') }
+        h2 { I18n.l(day, format: :event_day) }
         day_events.each do |event|
           p do
             strong { event.summary }
@@ -22,7 +22,7 @@ class Views::Sites::Events::IndexSimple < Views::Base
         end
       end
     else
-      plain 'No events with this selection.'
+      plain t('components.event_list.empty')
     end
   end
 end

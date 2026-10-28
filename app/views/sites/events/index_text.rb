@@ -4,11 +4,11 @@ class Views::Sites::Events::IndexText < Views::TextBase
   prop :events, Hash, reader: :private
 
   def text_content
-    return '  No events with this selection.' unless events.any?
+    return "  #{I18n.t('components.event_list.empty')}" unless events.any?
 
     lines = []
     events.each do |day, day_events|
-      day_label = day.strftime('%A %e %B')
+      day_label = I18n.l(day, format: :event_day)
       padding = '#' * (day_label.length + 4)
       lines << padding
       lines << "# #{day_label} #"

@@ -110,8 +110,7 @@ class Views::Sites::Events::Show < Views::Base
 
   def render_about_section
     div(class: 'pb-4') do
-      # No heading, bigger lead paragraph — same treatment as the partner page
-      # description (first-ele-lg enlarges the first <p>).
+      # No heading; a bigger lead paragraph, as on the partner page.
       div(class: 'e-content first-p:text-xl first-p:leading-snug max-w-(--width-prose-md)') { raw safe(event.description_html.to_s) } if event.description_html.present?
       div(class: 'mt-3') do
         render_event_link
