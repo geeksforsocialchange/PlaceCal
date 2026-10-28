@@ -112,7 +112,6 @@ class Views::Sites::Partners::Show < Views::Base
     end
   end
 
-  # h2, not h3: these are the first headings under the page's h1.
   def render_contact_and_address
     UI::RuledHeading(caps: true, rule: :full, class: 'text-xl my-5.5') { t('partners.show.contact_heading') }
     Shared::ContactDetails(partner:, social_labels: site&.core_theme? ? :handle : :network)
