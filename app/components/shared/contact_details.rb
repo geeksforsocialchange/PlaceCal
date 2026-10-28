@@ -128,9 +128,9 @@ class Components::Shared::ContactDetails < Components::Base
     span(class: 'contact_details__item contact_details__item--social contents') do
       raw(view_context.icon(:"contact_#{network}", size: '4', css_class: 'mt-1'))
       if @social_labels == :network
-        link_to(t("directory.contact.networks.#{network}"), href, title: handle, target: '_blank', rel: 'noopener', class: "contact_details__#{network}")
+        link_to(t("directory.contact.networks.#{network}"), href, title: handle, target: '_blank', rel: 'noopener')
       else
-        link_to(handle, href, target: '_blank', rel: 'noopener', class: "contact_details__#{network}")
+        link_to(handle, href, target: '_blank', rel: 'noopener')
       end
     end
   end

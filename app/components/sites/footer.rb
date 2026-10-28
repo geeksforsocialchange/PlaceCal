@@ -23,9 +23,9 @@ class Components::Sites::Footer < Components::Base
   private
 
   def footer_inner_class
-    return 'footer__inner footer__inner--nosite grid gap-4 lg:grid-cols-3' unless @site&.site_admin
+    return 'grid gap-4 lg:grid-cols-3' unless @site&.site_admin
 
-    'footer__inner grid gap-4 md:grid-cols-2 lg:grid-cols-3'
+    'grid gap-4 md:grid-cols-2 lg:grid-cols-3'
   end
 
   def render_footer_content

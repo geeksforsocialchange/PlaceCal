@@ -73,9 +73,9 @@ RSpec.describe MapHelper, type: :helper do
       expect(result).to include("map--single")
     end
 
-    it "returns 'map--multiple' for multi style mode" do
+    it "returns the multiple-point classes for multi style mode" do
       result = helper.send(:map_style_class, [], :multi, false)
-      expect(result).to include("map--multiple")
+      expect(result).to eq(MapHelper::MULTIPLE_CLASSES)
     end
 
     it "auto-detects single for one marker" do
@@ -90,17 +90,22 @@ RSpec.describe MapHelper, type: :helper do
         { position: [54.0, -3.0] }
       ]
       result = helper.send(:map_style_class, markers, nil, false)
-      expect(result).to include("map--multiple")
+      expect(result).to eq(MapHelper::MULTIPLE_CLASSES)
     end
 
-    it "adds 'map--compact' when compact_mode is true" do
+    it "uses the compact height when compact_mode is true" do
       result = helper.send(:map_style_class, [], :single, true)
-      expect(result).to include("map--compact")
+      expect(result).to include("h-(--height-map-compact)")
     end
 
-    it "does not add 'map--compact' when compact_mode is false" do
+    it "keeps the default height when compact_mode is false" do
       result = helper.send(:map_style_class, [], :single, false)
-      expect(result).not_to include("map--compact")
+      expect(result).not_to include("h-(--height-map-compact)")
+    end
+
+    it "keeps a multiple-point map at full height when compact" do
+      result = helper.send(:map_style_class, [], :multi, true)
+      expect(result).to eq(MapHelper::MULTIPLE_CLASSES)
     end
   end
 
@@ -203,13 +208,13 @@ RSpec.describe MapHelper, type: :helper do
       expect(result["markers"].first["anchor"]).to include("Partner B")
     end
 
-    it "preserves map--multiple style class for colocated markers" do
+    it "keeps the multiple-point style for colocated markers" do
       colocated_points = [
         { lat: 53.4668, lon: -2.2339, name: "Partner A", id: "partner-a" },
         { lat: 53.4668, lon: -2.2339, name: "Partner B", id: "partner-b" }
       ]
       result = JSON.parse(helper.args_for_map(colocated_points, nil, false))
-      expect(result["styleClass"]).to include("map--multiple")
+      expect(result["styleClass"]).to eq(MapHelper::MULTIPLE_CLASSES)
     end
 
     it "filters out nil map points" do

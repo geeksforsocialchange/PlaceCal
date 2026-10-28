@@ -30,14 +30,14 @@ class Components::Sites::Timeline < Components::Base
   def view_template
     return unless renderable?
 
-    ol(class: "#{LIST} paginator__buttons--#{@date_period}", data: { controller: 'paginator' }) do
+    ol(class: LIST, data: { controller: 'paginator' }) do
       buttons.each do |btn|
         li_attrs = { class: btn[:css] }
         btn[:data].each do |k, v|
           li_attrs[:"data-#{k.to_s.dasherize}"] = v
         end
         li(**li_attrs) do
-          a(href: btn[:link], class: btn[:link_css], data: { turbo_frame: 'events-browser', turbo_action: 'advance' }) do
+          a(href: btn[:link], class: btn[:link_css], aria_label: btn[:label], data: { turbo_frame: 'events-browser', turbo_action: 'advance' }) do
             if btn[:svg]
               raw(btn[:svg])
             else
@@ -60,8 +60,8 @@ class Components::Sites::Timeline < Components::Base
 
     # Arrow pointer: for 'upcoming', use the first visible date tab as the reference
     arrow_ref = @period == 'upcoming' ? window_start : @pointer
-    pages << { svg: view_context.icon(:triangle_left, size: nil, css_class: ARROW_ICON), link: url_for(step_back(arrow_ref)),
-               css: "#{ARROW} paginator__arrow--back left-0", link_css: "#{ARROW_LINK} pr-0.5", data: {} }
+    pages << { svg: view_context.icon(:triangle_left, size: nil, css_class: ARROW_ICON), link: url_for(step_back(arrow_ref)), label: t('components.timeline.earlier'),
+               css: "#{ARROW} left-0", link_css: "#{ARROW_LINK} pr-0.5", data: {} }
 
     if @show_upcoming
       pages << { text: t('components.timeline.upcoming'), link: upcoming_url, css: tab_class(@period == 'upcoming'), link_css: TAB_LINK,
@@ -75,8 +75,8 @@ class Components::Sites::Timeline < Components::Base
       current = step_forward(current)
     end
 
-    pages << { svg: view_context.icon(:triangle_right, size: nil, css_class: ARROW_ICON), link: url_for(step_forward(arrow_ref)),
-               css: "#{ARROW} paginator__arrow--forwards right-0", link_css: "#{ARROW_LINK} pl-0.5", data: { paginator_target: 'forward' } }
+    pages << { svg: view_context.icon(:triangle_right, size: nil, css_class: ARROW_ICON), link: url_for(step_forward(arrow_ref)), label: t('components.timeline.later'),
+               css: "#{ARROW} right-0", link_css: "#{ARROW_LINK} pl-0.5", data: { paginator_target: 'forward' } }
   end
 
   def tab_class(active)

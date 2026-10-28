@@ -10,12 +10,12 @@ class Views::Devise::Invitations::New < Views::Devise::Base
       raw form.error_notification
 
       resource.class.invite_key_fields.each do |field|
-        div(class: 'form-inputs') do
+        div do
           raw form.input(field)
         end
       end
 
-      div(class: 'form-actions') do
+      div do
         raw form.button(:submit, t('devise.invitations.new.submit_button'))
       end
     end

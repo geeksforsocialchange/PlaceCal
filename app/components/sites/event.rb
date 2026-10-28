@@ -45,8 +45,7 @@ class Components::Sites::Event < Components::Base
         link_to(summary, event_path(id), class: 'p-name u-url with-no-sass text-foreground no-underline', data: { turbo_frame: '_top' })
       end
       if neighbourhood_name && @show_neighbourhoods
-        css = "neighbourhood #{primary_neighbourhood? ? 'neighbourhood--primary' : 'neighbourhood--secondary'} event__neighbourhood max-md:hidden"
-        div(class: css) { UI::Pill(variant: primary_neighbourhood? ? :neighbourhood : :neighbourhood_outside, class: 'mt-3') { neighbourhood_name } }
+        div(class: 'neighbourhood event__neighbourhood max-md:hidden') { UI::Pill(variant: primary_neighbourhood? ? :neighbourhood : :neighbourhood_outside, class: 'mt-3') { neighbourhood_name } }
       end
     end
   end

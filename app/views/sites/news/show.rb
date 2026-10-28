@@ -119,6 +119,6 @@ class Views::Sites::News::Show < Views::Base
   end
 
   def render_pull_quote
-    Sites::PullQuote(source: '', quote_context: '', options: {}) { article.pull_quote }
+    Sites::PullQuote(source: '', quote_context: '') { article.pull_quote }
   end
 end
