@@ -195,3 +195,14 @@
 		grid-template-columns: repeat(auto-fit, minmax(--spacing(28), 1fr));
 	}
 }
+
+/* A middle dot before an inline item, hidden from screen readers */
+@utility separator-dot {
+	&::before {
+		content: "\00b7";
+		content: "\00b7" / "";
+		display: inline-block;
+		padding-inline: --spacing(1) --spacing(2);
+		text-decoration: none;
+	}
+}

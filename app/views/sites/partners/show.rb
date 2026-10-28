@@ -344,11 +344,11 @@ class Views::Sites::Partners::Show < Views::Base
     links = [[t('partners.show.go_back'), partners_path],
              [t('partners.show.subscribe_ical', name: partner.name), partner_url(partner, protocol: :webcal, format: :ics)]]
     links << [t('events.csv_export.link'), partner_url(partner, format: :csv)] if events.any?
-    Sites::PageActions(links:)
+    Sites::PageActions(links:, in_meta_band: site.core_theme?)
   end
 
   # Meta carries the permalink alone; the feed and export are page actions.
   def render_meta_section
-    Sites::Meta("/partners/#{partner.id}")
+    Sites::Meta("/partners/#{partner.id}", followed_by_actions: site.core_theme?)
   end
 end

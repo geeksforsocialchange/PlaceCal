@@ -76,6 +76,8 @@ en:
       answer_no: "No"
 
   components:
+    meta:
+      permalink: "Permalink"
     timeline:
       today: "Today"
       tomorrow: "Tomorrow"

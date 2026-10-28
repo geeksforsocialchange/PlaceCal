@@ -36,11 +36,11 @@ class Components::Shared::Address < Components::Base
       next unless coordinates?
 
       whitespace
-      a(href: "https://maps.apple.com/?daddr=#{coordinates}", class: 'place_info__directions-apple', target: '_blank', rel: 'noopener') do
+      a(href: "https://maps.apple.com/?daddr=#{coordinates}", class: 'place_info__directions-apple separator-dot', target: '_blank', rel: 'noopener') do
         t('address.apple_maps')
       end
       whitespace
-      a(href: "https://www.openstreetmap.org/directions?to=#{coordinates}", class: 'place_info__directions-osm', title: t('address.openstreetmap_full'), target: '_blank', rel: 'noopener') do
+      a(href: "https://www.openstreetmap.org/directions?to=#{coordinates}", class: 'place_info__directions-osm separator-dot', title: t('address.openstreetmap_full'), target: '_blank', rel: 'noopener') do
         t('address.openstreetmap')
       end
     end
