@@ -319,3 +319,12 @@ textarea.join-control {
 	flex-wrap: wrap;
 	row-gap: 0.5rem;
 }
+
+/* Leaflet builds its own popup markup and ships unlayered CSS, so these stay unlayered too */
+.map :is(.leaflet-container, .leaflet-popup-content) {
+	font-family: var(--font-sans);
+}
+.map :is(.leaflet-container, .leaflet-popup-content) a {
+	color: var(--color-foreground);
+	font-size: 0.9rem;
+}
