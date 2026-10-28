@@ -12,7 +12,7 @@ class Components::Sites::PageActions < Components::Base
     return if @links.empty?
 
     nav(class: 'page-actions', aria_label: t('page_actions.label')) do
-      ul(class: "reset flex flex-wrap items-center #{@in_meta_band ? 'gap-x-6 justify-start' : 'gap-4 justify-center'}") do
+      ul(class: "reset flex flex-wrap items-center #{@in_meta_band ? 'gap-x-6 gap-y-2 justify-start' : 'gap-4 justify-center'}") do
         @links.each do |label, href, options|
           li { link_to(label, href, (options || {}).merge(class: "page-actions__link #{@in_meta_band ? Sites::Meta::LINK : 'text-foreground underline'}")) }
         end
