@@ -79,7 +79,9 @@ RSpec.configure do |config|
     DatabaseCleaner.start
     # Use Selenium with headless Chrome - Rails' default and most stable for CI
     # Cuprite causes hangs in CI but Selenium works reliably
-    driven_by :selenium, using: :headless_chrome, screen_size: [1400, 1400]
+    driven_by :selenium, using: :headless_chrome, screen_size: [1400, 1400] do |options|
+      ChromeOptions.disable_password_manager(options)
+    end
   end
 
   config.after(:each, type: :system) do
