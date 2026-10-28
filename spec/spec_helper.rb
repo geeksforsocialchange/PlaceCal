@@ -31,4 +31,11 @@ RSpec.configure do |config|
   Kernel.srand config.seed
   config.filter_run_when_matching :focus
   config.example_status_persistence_file_path = "spec/examples.txt"
+
+  if ENV["CI"]
+    # CI's stdout is a pipe, so without this a hung run shows no progress at all.
+    $stdout.sync = true
+    require_relative "stall_watchdog"
+    StallWatchdog.install(config)
+  end
 end
