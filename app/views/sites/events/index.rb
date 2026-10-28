@@ -39,7 +39,7 @@ class Views::Sites::Events::Index < Views::Base
     div(class: 'paginator', id: 'paginator') do
       div(class: 'paginator__context') do
         Sites::Breadcrumb(trail: [[t('navigation.site.events'), events_path]], site_name: site.name) do
-          div(class: 'breadcrumb__actions') do
+          div(class: 'breadcrumb__actions flex gap-2 items-center') do
             today = Time.zone.today
             region_param = selected_region ? "&region=#{selected_region.slug}" : ''
             today_url = "/events/#{today.year}/#{today.month}/#{today.day}?period=#{period}&sort=#{sort}&repeating=#{repeating}#{region_param}#paginator"

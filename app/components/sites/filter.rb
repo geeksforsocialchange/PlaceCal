@@ -14,6 +14,13 @@ class Components::Sites::Filter < Components::Base
   # its own, alongside the shared filters__group class.
   prop :group_class, _Nilable(String), default: nil
 
+  TOGGLE = 'filters__toggle flex items-center'
+  TOGGLE_BUTTON = 'border-0 bg-transparent font-sans cursor-pointer flex items-center gap-1'
+  TOGGLE_ICON = 'size-2 text-primary'
+  DROPDOWN = 'filters__dropdown filters__dropdown--hidden dropdown-hidden:hidden bg-background shadow-dropdown p-3 absolute top-8 left-0 ' \
+             'z-500 text-left whitespace-nowrap max-w-screen-inset overflow-x-auto'
+  OPTION = 'filters__option py-1 grid grid-cols-auto-main gap-2 items-center'
+
   def view_template
     return unless @items.any?
 
@@ -24,11 +31,11 @@ class Components::Sites::Filter < Components::Base
   private
 
   def render_toggle
-    div(class: 'filters__toggle') do
-      button(type: 'button', data: { action: toggle_action_value }) do
-        raw(view_context.icon(:triangle_down, size: nil))
-        span(class: 'filters__toggle-label') { @label }
-        span(class: 'filters__toggle-value', data: { "#{@controller}-target": "#{@name}Text" }) do
+    div(class: TOGGLE) do
+      button(type: 'button', class: TOGGLE_BUTTON, data: { action: toggle_action_value }) do
+        raw(view_context.icon(:triangle_down, size: nil, css_class: TOGGLE_ICON))
+        span(class: 'filters__toggle-label mr-1') { @label }
+        span(class: 'filters__toggle-value border-b-2 border-rules-dark', data: { "#{@controller}-target": "#{@name}Text" }) do
           toggle_value
         end
       end
@@ -36,7 +43,7 @@ class Components::Sites::Filter < Components::Base
   end
 
   def render_dropdown
-    div(class: 'filters__dropdown filters__dropdown--hidden', data: { "#{@controller}-target": "#{@name}Dropdown" }) do
+    div(class: DROPDOWN, data: { "#{@controller}-target": "#{@name}Dropdown" }) do
       render_filter_options
       render_reset_button
     end
@@ -49,7 +56,7 @@ class Components::Sites::Filter < Components::Base
   end
 
   def render_filter_option(item)
-    div(class: 'filters__option') do
+    div(class: OPTION) do
       radio_button_tag(
         @name,
         item[:id],
@@ -58,12 +65,12 @@ class Components::Sites::Filter < Components::Base
           action: submit_action_value,
           "#{@controller}-target": @name
         },
-        class: 'tag__button'
+        class: 'tag__button peer'
       )
       label_tag(
         "#{@name}_#{item[:id]}",
         "#{item[:name]} (#{item[:count]})",
-        class: 'filters__label'
+        class: 'filters__label text-left ml-1 peer-checked:font-bold'
       )
     end
   end
@@ -71,7 +78,7 @@ class Components::Sites::Filter < Components::Base
   def render_reset_button
     return unless filter_active?
 
-    UI::Button(variant: :outline, size: :sm, data: { action: reset_action_value }, class: 'btn size-patch filter__reset') do
+    UI::Button(variant: :outline, size: :sm, data: { action: reset_action_value }, class: 'btn size-patch filter__reset border-b-primary mt-3 mb-1 leading-tight') do
       t('filters.reset_button')
     end
   end

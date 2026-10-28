@@ -26,7 +26,7 @@ class Views::Sites::News::Show < Views::Base
           trail: [[t('navigation.site.news'), news_index_path], [article.title, news_path(article)]],
           site_name: site.name
         )
-        hr
+        hr(class: 'mt-1')
         render_article_body
         render_page_actions
       end
