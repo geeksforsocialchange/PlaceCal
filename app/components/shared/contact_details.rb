@@ -10,8 +10,8 @@ class Components::Shared::ContactDetails < Components::Base
   # :tailwind renders a self-contained "Get in touch" card; :tailwind_rows
   # renders just the icon rows for embedding in another card (e.g. the event
   # page's organiser SidebarCard).
-  prop :variant, _Union(:scss, :tailwind, :tailwind_rows), default: :scss
-  # :network reads the social links as "Facebook" etc. (scss variant only); the handle moves to the title.
+  prop :variant, _Union(:sites, :tailwind, :tailwind_rows), default: :sites
+  # :network reads the social links as "Facebook" etc. (sites variant only); the handle moves to the title.
   prop :social_labels, _Union(:handle, :network), default: :handle
 
   def after_initialize
@@ -24,13 +24,13 @@ class Components::Shared::ContactDetails < Components::Base
     case @variant
     when :tailwind then render_tailwind
     when :tailwind_rows then render_tailwind_rows
-    when :scss then render_scss
+    when :sites then render_sites
     end
   end
 
   private
 
-  # ── Tailwind variant (directory — will become the only path) ──
+  # ── Directory variant ──
 
   def render_tailwind
     return unless contact?
@@ -61,9 +61,9 @@ class Components::Shared::ContactDetails < Components::Base
     end
   end
 
-  # ── SCSS variant (local sites — to be removed after Tailwind migration) ──
+  # ── Local-site variant ──
 
-  def render_scss
+  def render_sites
     p(class: 'contact_details grid grid-cols-auto-main gap-x-2 items-center') do
       render_phone
       render_email
