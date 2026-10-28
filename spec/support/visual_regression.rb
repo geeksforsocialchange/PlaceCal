@@ -16,7 +16,8 @@ module VisualRegression
     "partners" => -> { "/partners" },
     "partner" => -> { "/partners/#{riverside_hub.friendly_id}" },
     "news" => -> { "/news" },
-    "article" => -> { "/news/#{vr_article.friendly_id}" }
+    "article" => -> { "/news/#{vr_article.friendly_id}" },
+    "not_found" => -> { "/events/0" }
   }.freeze
 
   APEX_PAGES = {
