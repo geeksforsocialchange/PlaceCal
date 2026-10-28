@@ -32,9 +32,9 @@ class Components::Shared::Hero < Components::Base
           div(role: 'presentation', class: 'hero__divider mx-auto w-18 border-b-4 border-background')
         end
         if @schema
-          h1(property: @schema, class: 'mt-5 text-center') { render_title }
+          h1(property: @schema, class: 'mt-5') { render_title }
         else
-          h1(class: 'mt-5 text-center') { render_title }
+          h1(class: 'mt-5') { render_title }
         end
         p(class: 'hero__standfirst') { @standfirst } if @standfirst.present?
         p(class: 'hero__standfirst-detail') { @standfirst_detail } if @standfirst_detail.present?
