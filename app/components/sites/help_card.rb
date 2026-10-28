@@ -95,7 +95,7 @@ class Components::Sites::HelpCard < Components::Base
     div(class: "help #{config[:css_class]}") do
       raw(safe(SVGS.fetch(@variant)))
 
-      h3(class: 'h2--alt') { span { variant_t(:title) } }
+      h3(class: 'allcaps text-center text-base') { span(class: 'pb-2 border-b-4 border-secondary') { variant_t(:title) } }
       p { variant_t(:description) } if config[:description]
 
       if @variant == :adding_events

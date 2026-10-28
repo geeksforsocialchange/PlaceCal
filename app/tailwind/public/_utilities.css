@@ -64,6 +64,13 @@
 	color: var(--color-foreground);
 }
 
+/* Uppercase, extra-bold and tracked, at whatever size the element already has; themes target it by name */
+@utility allcaps {
+	text-transform: uppercase;
+	font-weight: 800;
+	letter-spacing: var(--tracking-wide);
+}
+
 /* Allcaps label used for kickers, section labels, form labels, sidebar headings */
 @utility allcaps-label {
 	font-size: var(--text-2xs);

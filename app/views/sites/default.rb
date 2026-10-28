@@ -52,10 +52,10 @@ class Views::Sites::Default < Views::Base
 
   def render_about
     section(class: 'region region__management') do
-      div(class: 'title-strip') do
-        h2(class: 'h2--alt') { t('sites.home.about_us') }
+      div(class: 'bg-rules py-2') do
+        h2(class: 'allcaps text-center text-base') { t('sites.home.about_us') }
       end
-      div(class: 'container-narrow first-ele-h3-serif') do
+      div(class: 'container-narrow first-p:mt-0 first-p:font-serif first-p:text-xl') do
         raw safe(site.description_html.to_s)
         Sites::Profile(user: site.site_admin) if site.site_admin.present?
       end

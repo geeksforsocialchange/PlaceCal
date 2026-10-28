@@ -35,7 +35,7 @@ class Views::Directory::Partners::Show < Views::Sites::Partners::Show
     return unless flat.any?
 
     div(class: 'py-4') do
-      h2(class: 'udl udl--fw allcaps text-xl') { t('directory.partners.show.upcoming_events') }
+      UI::RuledHeading(caps: true, rule: :full) { t('directory.partners.show.upcoming_events') }
       flat.first(10).each do |event|
         Directory::EventRow(event:, context_partner: partner)
       end
@@ -49,7 +49,7 @@ class Views::Directory::Partners::Show < Views::Sites::Partners::Show
     return unless partner.address || map || partner.service_areas?
 
     div(class: 'py-4') do
-      h2(class: 'udl udl--fw allcaps text-xl') { t('directory.partners.show.location') }
+      UI::RuledHeading(caps: true, rule: :full) { t('directory.partners.show.location') }
       p(class: 'mb-3') { t('directory.partners.show.serves', area: partner_service_area_text(partner)) } if partner.service_areas?
       div(class: 'grid grid-cols-[1fr_auto] gap-4 items-start') do
         Shared::Map(points: map, compact: true) if map
@@ -62,7 +62,7 @@ class Views::Directory::Partners::Show < Views::Sites::Partners::Show
     return if partner.accessibility_info_html.blank?
 
     div(class: 'py-4') do
-      h2(class: 'udl udl--fw allcaps text-xl') { t('directory.partners.show.accessibility_info') }
+      UI::RuledHeading(caps: true, rule: :full) { t('directory.partners.show.accessibility_info') }
       div do
         raw safe(partner.accessibility_info_html.to_s)
       end

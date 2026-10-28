@@ -30,6 +30,8 @@
 @custom-variant is-hidden (&.is-hidden);
 @custom-variant details-marker (&::-webkit-details-marker);
 @custom-variant logo (& > :is(svg, img));
+/* The first paragraph of rich text a view doesn't control, e.g. an event description */
+@custom-variant first-p (& > p:first-child);
 
 /* base overrides for things which aren't yet componentised */
 @layer base {

@@ -19,10 +19,10 @@ class Components::Sites::EventList < Components::Base
 
   def render_events
     @events.each do |day, day_events|
-      h2(class: 'udl udl--fw') { day.strftime('%A %e %B') }
+      UI::RuledHeading(rule: :full) { day.strftime('%A %e %B') }
       render_day(day_events)
     end
-    p(class: 'event-list__truncated') { 'Showing first 50 events. Use the date picker to see more.' } if @truncated
+    p(class: 'event-list__truncated') { t('components.event_list.truncated') } if @truncated
   end
 
   def render_day(day_events)
@@ -46,7 +46,7 @@ class Components::Sites::EventList < Components::Base
   end
 
   def render_empty_state
-    p { 'No events with this selection.' }
-    p { link_to('Skip to next date with events.', next_url(@next_date)) } if @next_date.present?
+    p { t('components.event_list.empty') }
+    p { link_to(t('components.event_list.skip_to_next'), next_url(@next_date)) } if @next_date.present?
   end
 end
