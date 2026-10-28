@@ -8,7 +8,7 @@ module ArticlesHelper
 
   def article_partner_links(article)
     article.partners.map do |partner|
-      link_to(partner.name, partner_path(partner))
+      link_to(partner.name, partner_path(partner), class: 'with-no-sass text-foreground no-underline')
     end.join(' | ').html_safe
   end
 

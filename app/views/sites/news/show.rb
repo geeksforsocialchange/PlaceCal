@@ -38,23 +38,23 @@ class Views::Sites::News::Show < Views::Base
   def render_article_body
     div(class: 'article grid gap-x-4.5 lg:grid-cols-aside-main') do
       div(class: 'article__aside') do
-        p(class: 'article__published', title: article.published_at.to_s) do
+        p(class: 'article__published m-0 font-bold text-right', title: article.published_at.to_s) do
           plain article_date(article.published_at, t('news.show.date_format'))
         end
       end
 
-      div(class: 'article__main') do
+      div(class: 'article__main pr-40 max-md:px-2') do
         if article.author&.full_name.present?
           # A byline, not a section heading: as an h3 straight after the
           # hero h1 it failed axe's heading-order rule on every article.
-          p(class: 'article__author') do
+          p(class: 'article__author mt-0 text-base') do
             plain t('news.show.by')
             em { article.author.full_name }
           end
         end
 
         if article.partners.present?
-          p(class: 'article__partners') do
+          p(class: 'article__partners text-sm') do
             article_partner_links(article)
             plain '.'
           end
@@ -86,7 +86,7 @@ class Views::Sites::News::Show < Views::Base
     return if article.article_image.blank?
 
     div(class: 'article__image') do
-      image_tag article.article_image.url, class: 'border'
+      image_tag article.article_image.url, class: 'border rounded-card overflow-hidden'
       p(class: 'article__image-credit') { article.image_credit } if article.image_credit.present?
     end
   end

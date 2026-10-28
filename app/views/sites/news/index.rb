@@ -15,7 +15,7 @@ class Views::Sites::News::Index < Views::Base
 
     Shared::Hero(t('news.index.title'), site.tagline, standfirst: t('news.index.standfirst'))
 
-    div(class: 'articles') do
+    div(class: 'articles w-9/10 mx-auto my-8') do
       articles.each do |article|
         render_article_card(article)
       end
@@ -27,26 +27,26 @@ class Views::Sites::News::Index < Views::Base
   private
 
   def render_article_card(article)
-    div(class: 'articles__article-card grid gap-x-4.5 lg:grid-cols-aside-main') do
+    div(class: 'articles__article-card grid gap-x-4.5 lg:grid-cols-aside-main my-4 border-b-2 border-tertiary-light') do
       div(class: 'articles__aside') do
-        p(class: 'articles__published', title: article.published_at.to_s) do
+        p(class: 'articles__published m-0 font-bold text-right max-md:text-left max-md:pb-4', title: article.published_at.to_s) do
           plain article_date(article.published_at, t('news.index.date_format'))
         end
       end
 
       div(class: 'articles__main') do
-        h2(class: 'articles__title') { link_to article.title, news_path(article) }
+        h2(class: 'articles__title mt-0 leading-none') { link_to article.title, news_path(article), class: 'with-no-sass text-foreground no-underline' }
 
-        p(class: 'articles__partners') { article_partner_links(article) } if article.partners.present?
+        p(class: 'articles__partners text-sm') { article_partner_links(article) } if article.partners.present?
 
-        div(class: 'articles__content grid gap-x-4.5 lg:grid-cols-2') do
-          div(class: 'articles__body') do
+        div(class: 'articles__content flex gap-x-4.5') do
+          div(class: 'articles__body grow-5 max-md:order-2') do
             p { article_summary_text(article) }
           end
 
           if article.article_image.present?
-            div(class: 'articles__image') do
-              image_tag article.article_image.url, class: 'border'
+            div(class: 'articles__image grow-5 max-md:order-1') do
+              image_tag article.article_image.url, class: 'border max-w-full rounded-card overflow-hidden'
             end
           end
         end
@@ -62,7 +62,7 @@ class Views::Sites::News::Index < Views::Base
   def render_pagination
     return unless offset.positive? || has_more
 
-    nav(class: 'articles__pagination') do
+    nav(class: 'articles__pagination p-8') do
       render_newer_link
       render_older_link
     end
