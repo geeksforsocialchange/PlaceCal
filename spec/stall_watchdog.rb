@@ -4,15 +4,18 @@
 module StallWatchdog
   LIMIT = Integer(ENV.fetch("SPEC_STALL_SECONDS", "300"))
 
+  class << self
+    attr_accessor :current
+  end
+
   module_function
 
   def install(config)
-    current = nil
     config.around do |example|
-      current = [example.id, StallWatchdog.now]
+      StallWatchdog.current = [example.id, StallWatchdog.now]
       example.run
     ensure
-      current = nil
+      StallWatchdog.current = nil
     end
 
     Thread.new do
