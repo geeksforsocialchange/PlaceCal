@@ -176,3 +176,14 @@
 			right 5% top -1rem;
 	}
 }
+
+/* An icon the size of the text around it */
+@utility size-em {
+	width: 1em;
+	height: 1em;
+}
+
+/* Keeps a popover inside the viewport with a gutter either side */
+@utility max-w-screen-inset {
+	max-width: calc(100vw - --spacing(8));
+}

@@ -4,20 +4,25 @@ class Components::Sites::Breadcrumb < Components::Base
   prop :trail, Array, default: -> { [] }
   prop :site_name, String, default: 'The Community Calendar'
 
+  ELEMENT = 'breadcrumb__element flex-initial flex items-center max-md:mb-2'
+  # The filters and actions a page passes in, left-aligned on its own row until desktop.
+  LAST_ELEMENT = "#{ELEMENT} breadcrumb__element--last flex-wrap gap-y-2 gap-x-4 w-full xl:w-auto xl:flex-auto xl:justify-end xl:text-right".freeze
+  LINK = 'with-no-sass text-foreground no-underline border-b-2 border-rules-dark'
+
   def view_template(&)
-    div(class: 'breadcrumb') do
-      div(class: 'breadcrumb__element') do
+    div(class: 'breadcrumb flex flex-wrap text-sm mt-2 md:my-4') do
+      div(class: "#{ELEMENT} gap-1 mr-2 max-md:hidden") do
         span(class: 'breadcrumb__tagline') do
-          link_to(@site_name, '/')
+          link_to(@site_name, '/', class: LINK)
         end
       end
       @trail.each do |link|
-        div(class: 'breadcrumb__element') do
-          raw(view_context.icon(:triangle_right, size: nil))
-          link_to(link[0], link[1])
+        div(class: "#{ELEMENT} gap-1 mr-2") do
+          raw(view_context.icon(:triangle_right, size: nil, css_class: 'size-em shrink-0 text-primary'))
+          link_to(link[0], link[1], class: LINK)
         end
       end
-      div(class: 'breadcrumb__element breadcrumb__element--last', &)
+      div(class: LAST_ELEMENT, &)
     end
 
     emit_breadcrumb_json_ld

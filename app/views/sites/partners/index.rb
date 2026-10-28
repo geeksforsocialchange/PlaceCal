@@ -32,7 +32,7 @@ class Views::Sites::Partners::Index < Views::Base
           )
         end
 
-        hr
+        hr(class: 'mt-1')
 
         if partners.empty?
           p(class: 'partners__empty') { t('partners.index.empty') }

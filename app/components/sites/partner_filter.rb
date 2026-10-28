@@ -13,6 +13,8 @@ class Components::Sites::PartnerFilter < Components::Base
   # for the listing and the facet counts, not once each.
   prop :query, _Nilable(::PartnersQuery), default: nil
 
+  FILTERS = 'breadcrumb__filters flex items-center gap-4 justify-end'
+
   def after_initialize
     @selected_category = @selected_category.to_i
     @selected_neighbourhood = @selected_neighbourhood.to_i
@@ -22,9 +24,9 @@ class Components::Sites::PartnerFilter < Components::Base
   def view_template
     RegionFilter(tags: @region_tags, selected: @selected_region)
 
-    form_with(**form_data, class: 'filters__form') do
+    form_with(**form_data, class: 'filters__form relative') do
       hidden_field_tag(:region, @selected_region.slug, id: nil) if @selected_region
-      div(class: 'breadcrumb__element breadcrumb__element--last') do
+      div(class: Sites::Breadcrumb::LAST_ELEMENT) do
         span { t('filters.filter_by') }
         render_category_filter if show_category_filter?
         render_neighbourhood_filter if show_neighbourhood_filter?
@@ -48,7 +50,7 @@ class Components::Sites::PartnerFilter < Components::Base
   end
 
   def render_category_filter
-    div(class: 'breadcrumb__filters filters') do
+    div(class: "#{FILTERS} filters") do
       Sites::Filter(
         name: 'category',
         label: t('filters.category'),
@@ -63,7 +65,7 @@ class Components::Sites::PartnerFilter < Components::Base
   end
 
   def render_neighbourhood_filter
-    div(class: 'breadcrumb__filters filters') do
+    div(class: "#{FILTERS} filters") do
       Sites::Filter(
         name: 'neighbourhood',
         label: t('filters.neighbourhood'),
@@ -78,8 +80,9 @@ class Components::Sites::PartnerFilter < Components::Base
   end
 
   def render_reset_link
-    div(class: 'breadcrumb__filters') do
-      link_to(t('filters.reset'), partners_path(@selected_region ? { region: @selected_region.slug } : {}), class: 'filters__link', data: { turbo_frame: 'partner_previews' })
+    div(class: FILTERS) do
+      link_to(t('filters.reset'), partners_path(@selected_region ? { region: @selected_region.slug } : {}), class: "#{Sites::Breadcrumb::LINK} filters__link",
+                                                                                                            data: { turbo_frame: 'partner_previews' })
     end
   end
 
@@ -87,10 +90,10 @@ class Components::Sites::PartnerFilter < Components::Base
   # whole form (so region/category/neighbourhood ride along) on Enter, when
   # the field loses focus after a change, or when its clear button empties it.
   def render_search
-    div(class: 'breadcrumb__filters filters') do
+    div(class: "#{FILTERS} filters") do
       input(
         type: 'search', name: 'q', value: @selected_query,
-        class: 'filters__search',
+        class: 'filters__search font-sans border-2 border-rules-dark bg-background py-1 px-2',
         placeholder: t('filters.search_partners'),
         aria_label: t('filters.search_partners'),
         data: { action: 'change->partner-filter-component#submitForm ' \
