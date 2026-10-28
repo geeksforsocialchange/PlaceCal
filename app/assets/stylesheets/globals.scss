@@ -1,9 +1,6 @@
 // Things which generate no code
 @import "variables_mixins";
 
-// External libraries (local copy to avoid path issues between sass CLI and Sprockets)
-@import "vendor/leaflet";
-
 // Overall styling
 @import "base/image";
 @import "base/layout";
