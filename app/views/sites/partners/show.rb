@@ -98,12 +98,12 @@ class Views::Sites::Partners::Show < Views::Base
   end
 
   def render_partner_details
-    div(class: 'g g--partner') do
-      div(class: 'gi gi__3-5') do
+    div(class: 'partner-details grid grid-areas-partner-details') do
+      div(class: 'partner-details__main grid-area-main') do
         render_partner_description
         render_contact_and_address
       end
-      div(class: 'gi gi__2-5') do
+      aside(class: 'partner-details__aside grid-area-right') do
         render_partner_image
         Shared::Map(points: map, compact: true) if site.core_theme?
         render_opening_times
@@ -162,12 +162,12 @@ class Views::Sites::Partners::Show < Views::Base
   def render_partner_image
     return unless partner.image?
 
-    div(class: 'gi__image') do
+    div(class: 'partner-details__image text-center my-6 print:hidden') do
       img(
         src: partner.image.standard.url,
         srcset: "#{partner.image.standard.url} 1x, #{partner.image.retina.url} 2x",
         alt: t('partners.show.image_alt', name: partner.name),
-        class: 'map--single'
+        class: 'map--single max-w-full'
       )
     end
   end
@@ -201,11 +201,11 @@ class Views::Sites::Partners::Show < Views::Base
       hr
 
       h2(class: 'place__title') { link_to place.name, partner_path(place), class: 'udl udl--red' }
-      div(class: 'g g--place-list') do
-        div(class: 'gi gi__1-2') do
+      div(class: 'grid gap-x-4.5 lg:grid-cols-2') do
+        div do
           raw safe(place.summary_html.to_s) if place.summary_html.present?
         end
-        div(class: 'gi gi__1-2') do
+        div do
           if place.address
             h2(class: 'udl udl--fw allcaps h4') { t('partners.show.address_heading') }
             div(class: 'small') do

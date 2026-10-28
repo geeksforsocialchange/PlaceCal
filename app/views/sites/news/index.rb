@@ -27,25 +27,25 @@ class Views::Sites::News::Index < Views::Base
   private
 
   def render_article_card(article)
-    div(class: 'articles__article-card g') do
-      div(class: 'gi gi__1-5 articles__aside') do
+    div(class: 'articles__article-card grid gap-x-4.5 lg:grid-cols-aside-main') do
+      div(class: 'articles__aside') do
         p(class: 'articles__published', title: article.published_at.to_s) do
           plain article_date(article.published_at, t('news.index.date_format'))
         end
       end
 
-      div(class: 'gi gi__4-5 articles__main') do
+      div(class: 'articles__main') do
         h2(class: 'articles__title') { link_to article.title, news_path(article) }
 
         p(class: 'articles__partners') { article_partner_links(article) } if article.partners.present?
 
-        div(class: 'g articles__content') do
-          div(class: 'gi articles__body') do
+        div(class: 'articles__content grid gap-x-4.5 lg:grid-cols-2') do
+          div(class: 'articles__body') do
             p { article_summary_text(article) }
           end
 
           if article.article_image.present?
-            div(class: 'gi articles__image') do
+            div(class: 'articles__image') do
               image_tag article.article_image.url, class: 'border'
             end
           end

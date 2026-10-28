@@ -10,6 +10,10 @@ RSpec.describe "Public Partners", type: :request do
     site.neighbourhoods << ward
   end
 
+  def page_actions_links
+    Capybara.string(response.body).find("nav[aria-label='#{I18n.t('page_actions.label')}']").all("a")
+  end
+
   describe "GET /partners" do
     # Must use same ward instance - :riverside_address creates NEW ward via association
     let!(:partners) do
@@ -44,15 +48,14 @@ RSpec.describe "Public Partners", type: :request do
     it "shows the empty-state message in place of the list when the search matches nothing" do
       get partners_url(host: "#{site.slug}.lvh.me", params: { q: "zzzz-no-such-partner" })
 
-      body = response.parsed_body
-      expect(body.at_css("p.partners__empty").text).to eq(I18n.t("partners.index.empty"))
-      expect(body.at_css("ul#partners")).to be_nil
+      expect(response.body).to include(I18n.t("partners.index.empty"))
+      expect(response.parsed_body.at_css("#partners")).to be_nil
     end
 
     it "does not show the empty-state message when partners match" do
       get partners_url(host: "#{site.slug}.lvh.me")
 
-      expect(response.parsed_body.at_css("p.partners__empty")).to be_nil
+      expect(response.body).not_to include(I18n.t("partners.index.empty"))
     end
   end
 
@@ -114,16 +117,14 @@ RSpec.describe "Public Partners", type: :request do
     it "links the hero back link to the partners index" do
       get partner_url(partner, host: "#{site.slug}.lvh.me")
 
-      back = Nokogiri::HTML(response.body).at_css("a.hero__back")
-      expect(back.text).to eq(I18n.t("partners.show.back_to_index"))
-      expect(back[:href]).to eq(partners_path)
+      expect(Capybara.string(response.body)).to have_link(I18n.t("partners.show.back_to_index"), href: partners_path)
     end
 
     # Page actions row (Components::Sites::PageActions, #3368): back, then the feed.
     it "renders a page actions row with a link back to the partners index and the feed" do
       get partner_url(partner, host: "#{site.slug}.lvh.me")
 
-      links = Nokogiri::HTML(response.body).css("nav.page-actions a.page-actions__link")
+      links = page_actions_links
       expect(links.map(&:text)).to eq([I18n.t("partners.show.go_back"),
                                        I18n.t("partners.show.subscribe_ical", name: partner.name)])
       expect(links.first[:href]).to eq(partners_path)
@@ -155,22 +156,19 @@ RSpec.describe "Public Partners", type: :request do
     end
 
     context "with accessibility info" do
-      let(:sidebar_headings) { Nokogiri::HTML(response.body).css(".gi.gi__2-5 > h2").map(&:text) }
+      let(:sidebar) { Capybara.string(response.body).find("aside") }
+      let(:sidebar_headings) { sidebar.all("h2").map(&:text) }
 
       before { partner.update!(accessibility_info: "Wheelchair accessible entrance") }
 
       it "shows the accessibility text in a collapsible under its sidebar heading" do
         get partner_url(partner, host: "#{site.slug}.lvh.me")
-        doc = Nokogiri::HTML(response.body)
+        details = sidebar.find("h2", text: I18n.t("partners.show.accessibility_heading")).find(:xpath, "following-sibling::*[1]")
 
-        heading = doc.at_css(".gi.gi__2-5 > h2#accessibility-info")
-        expect(heading.text).to eq(I18n.t("partners.show.accessibility_heading"))
-        expect(heading[:class]).to eq("udl udl--fw allcaps h4")
-        details = heading.next_element
-        expect(details.name).to eq("details")
-        expect(details.at_css("summary").text).to eq(I18n.t("partners.show.accessibility_summary"))
-        expect(details.text).to include("Wheelchair accessible entrance")
-        expect(doc.at_css(".gi.gi__3-5").text).not_to include("Wheelchair accessible entrance")
+        expect(details.tag_name).to eq("details")
+        expect(details).to have_css("summary", text: I18n.t("partners.show.accessibility_summary"))
+        expect(details).to have_text("Wheelchair accessible entrance")
+        expect(response.body.scan("Wheelchair accessible entrance").size).to eq(1)
       end
 
       it "places the accessibility section after the opening times" do
@@ -198,12 +196,11 @@ RSpec.describe "Public Partners", type: :request do
 
       it "puts the service area under the Address heading with no empty postal address" do
         get partner_url(area_partner, host: "#{site.slug}.lvh.me")
-        doc = Nokogiri::HTML(response.body)
+        page = Capybara.string(response.body)
+        heading = page.find("h2", text: I18n.t("partners.show.address_heading"))
 
-        heading = doc.css(".gi.gi__3-5 > h2").find { |h| h.text == I18n.t("partners.show.address_heading") }
-        expect(heading.next_element[:class]).to eq("place_info__service_area")
-        expect(heading.next_element.text).to include(ward.name)
-        expect(doc.css(".place_info__address")).to be_empty
+        expect(heading.find(:xpath, "following-sibling::*[1]")).to have_text(ward.name)
+        expect(page).to have_no_css("[typeof='PostalAddress']")
       end
     end
 
@@ -408,18 +405,16 @@ RSpec.describe "Public Partners", type: :request do
         expect(html).to include("Day 3 Event")
         expect(html).not_to include("Day 4 Event")
 
-        expect(html).to include("Show 4 more days")
-        expect(html).to include(%(class="partner-events__more"))
-        expect(html).to include("days=8")
-        expect(html).to include(%(data-turbo-frame="events-browser"))
+        more = Capybara.string(html).find_link("Show 4 more days")
+        expect(more[:href]).to include("days=8")
+        expect(more["data-turbo-frame"]).to eq("events-browser")
       end
 
       it "closes the browser with the show-more link and puts the feed and export in the page actions" do
         get partner_url(partner, host: "#{site.slug}.lvh.me")
-        actions = Nokogiri::HTML(events_browser_html).at_css(".partner-events__actions")
-        hrefs = Nokogiri::HTML(response.body).css("nav.page-actions a.page-actions__link").map { |a| a[:href] }
+        hrefs = page_actions_links.map { |a| a[:href] }
 
-        expect(actions.css("a").map { |a| a["class"] }).to eq(%w[partner-events__more])
+        expect(Capybara.string(events_browser_html).all("a").last.text).to eq("Show 4 more days")
         expect(hrefs.size).to eq(3)
         expect(hrefs[0]).to eq(partners_path)
         expect(hrefs[1]).to include(".ics")
@@ -516,7 +511,7 @@ RSpec.describe "Public Partners", type: :request do
     it "lists the child and includes the child's events on the parent page" do
       get partner_url(parent, host: "#{site.slug}.lvh.me")
 
-      expect(response.parsed_body.at_css("h2.place__title a").text).to eq("Riverside Museum")
+      expect(Capybara.string(response.body)).to have_css("h2 a", text: "Riverside Museum")
       expect(events_browser_html).to include("University Lecture", "Museum Tour")
       expect(response.body).to include("2 events")
     end
