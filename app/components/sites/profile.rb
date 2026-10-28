@@ -17,13 +17,15 @@ class Components::Sites::Profile < Components::Base
         p { strong { @user.full_name } }
         p do
           if @user.phone&.length&.positive?
-            plain "#{t('components.profile.call_on')} "
+            plain t('components.profile.call_on')
+            whitespace
             strong { @user.phone }
             br
-            plain "#{t('components.profile.or_email')} "
+            plain t('components.profile.or_email')
           else
-            plain "#{t('components.profile.email')} "
+            plain t('components.profile.email')
           end
+          whitespace
           strong { mail_to(@user.email) }
         end
       end
