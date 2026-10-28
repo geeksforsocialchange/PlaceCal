@@ -50,17 +50,19 @@ module Types
           description: 'How often this event repeats, e.g. "Weekly", "Monthly". Null for one-off events', method: :repeat_frequency
 
     field :onlineEventUrl, String,
+          resolver_method: :online_event_url,
           description: 'The URL of the online event. Can be an event link e.g. Eventbrite, or a Zoom/Meet/Jitsi link'
 
     field :onlineEventUrlType, String,
+          resolver_method: :online_event_url_type,
           description: 'Whether the URL of the online event is a link to the live stream (direct)'\
                        ' or to an intermediary (indirect).'
 
-    def onlineEventUrl
+    def online_event_url
       object&.online_address&.url
     end
 
-    def onlineEventUrlType
+    def online_event_url_type
       object&.online_address&.link_type
     end
 

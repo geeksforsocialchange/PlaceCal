@@ -42,12 +42,6 @@ module ApplicationHelper
     simple_form_for(object, options.merge(builder: StrongParametersFormBuilder), &)
   end
 
-  def has_any_global_admin_links?
-    models = [User, Site, Neighbourhood, Article, Tag]
-
-    models.any? { |model| policy(model).index? }
-  end
-
   def image_uploader_hint(uploader_field)
     return if uploader_field.nil?
 

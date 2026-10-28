@@ -244,7 +244,7 @@ class Calendar < ApplicationRecord
   # @return [void]
   def queue_for_import!(force_import, from_date = Time.current)
     without_timestamps do
-      return if is_busy?
+      return if busy?
 
       update! calendar_state: :in_queue, notices: nil, import_started_at: DateTime.current, import_job_id: nil
       job = CalendarImporterJob.perform_later id, from_date, force_import
@@ -343,7 +343,7 @@ class Calendar < ApplicationRecord
   end
 
   # is calendar being worked on by our backend?
-  def is_busy?
+  def busy?
     calendar_state.in_queue? || calendar_state.in_worker?
   end
 

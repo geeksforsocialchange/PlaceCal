@@ -291,7 +291,7 @@ class Partner < ApplicationRecord
   end
 
   # @return [Boolean]
-  def has_service_areas?
+  def service_areas?
     service_areas.any?
   end
 
@@ -464,14 +464,10 @@ class Partner < ApplicationRecord
     return if accessed_by_user.admin_for_partner?(id)
 
     if persisted? # It's an update
-      unless accessed_by_user.assigned_to_postcode?(address&.postcode)
-        errors.add :base, 'Partners cannot have an address outside of your ward.'
-      end
+      errors.add :base, 'Partners cannot have an address outside of your ward.' unless accessed_by_user.assigned_to_postcode?(address&.postcode)
 
     else # It's an create
-      unless address.blank? || accessed_by_user.assigned_to_postcode?(address&.postcode)
-        errors.add :base, 'Partners cannot have an address outside of your ward.'
-      end
+      errors.add :base, 'Partners cannot have an address outside of your ward.' unless address.blank? || accessed_by_user.assigned_to_postcode?(address&.postcode)
     end
   end
 

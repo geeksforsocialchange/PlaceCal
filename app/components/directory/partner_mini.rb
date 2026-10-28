@@ -43,7 +43,7 @@ class Components::Directory::PartnerMini < Components::Directory::Base
     return @area_text if defined?(@area_text)
 
     hood = @partner.address&.neighbourhood
-    hood ||= @partner.service_area_neighbourhoods.first if @partner.has_service_areas?
+    hood ||= @partner.service_area_neighbourhoods.first if @partner.service_areas?
     @area_text = hood&.name
   end
 end

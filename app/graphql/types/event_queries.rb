@@ -5,7 +5,7 @@ module Types
     def self.included(klass)
       klass.field :event, EventType do
         description 'Retrieve one event based on specific ID'
-        argument :id, ID
+        argument :id, ID, description: 'The ID of the event'
       end
 
       klass.field :event_connection, Types::EventType.connection_type do
@@ -64,45 +64,38 @@ module Types
       to_date = nil
 
       if args[:from_date].present?
-        if args[:from_date] =~ /^\s*(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/
-          from_date = DateTime.new(
-            Regexp.last_match(1).to_i, # year
-            Regexp.last_match(2).to_i, # month
-            Regexp.last_match(3).to_i, # day
-            Regexp.last_match(4).to_i, # hour
-            Regexp.last_match(5).to_i, # minute
-            0 # seconds
-          )
-        else
-          raise GraphQL::ExecutionError, "fromDate not in 'YYYY-MM-DD HH:MM' format"
-        end
+        raise GraphQL::ExecutionError, "fromDate not in 'YYYY-MM-DD HH:MM' format" unless args[:from_date] =~ /^\s*(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/
+
+        from_date = DateTime.new(
+          Regexp.last_match(1).to_i, # year
+          Regexp.last_match(2).to_i, # month
+          Regexp.last_match(3).to_i, # day
+          Regexp.last_match(4).to_i, # hour
+          Regexp.last_match(5).to_i, # minute
+          0 # seconds
+        )
       end
 
       if args[:to_date].present?
-        if args[:to_date] =~ /^\s*(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/
-          to_date = DateTime.new(
-            Regexp.last_match(1).to_i, # year
-            Regexp.last_match(2).to_i, # month
-            Regexp.last_match(3).to_i, # day
-            Regexp.last_match(4).to_i, # hour
-            Regexp.last_match(5).to_i, # minute
-            0       # seconds
-          )
+        raise GraphQL::ExecutionError, "toDate not in 'YYYY-MM-DD HH:MM' format" unless args[:to_date] =~ /^\s*(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/
 
-          raise GraphQL::ExecutionError, 'toDate is before fromDate' if to_date <= from_date
+        to_date = DateTime.new(
+          Regexp.last_match(1).to_i, # year
+          Regexp.last_match(2).to_i, # month
+          Regexp.last_match(3).to_i, # day
+          Regexp.last_match(4).to_i, # hour
+          Regexp.last_match(5).to_i, # minute
+          0       # seconds
+        )
 
-        else
-          raise GraphQL::ExecutionError, "toDate not in 'YYYY-MM-DD HH:MM' format"
-        end
+        raise GraphQL::ExecutionError, 'toDate is before fromDate' if to_date <= from_date
       end
 
       query = EventSearch.new(from: from_date, to: to_date, **args.slice(:postcode, :place, :query, :category)).call
 
       if args[:neighbourhood_id].present?
         neighbourhood = Neighbourhood.where(id: args[:neighbourhood_id]).first
-        if neighbourhood.nil?
-          raise GraphQL::ExecutionError, "Could not find neighbourhood with that ID (#{args[:neighbourhood_id]})"
-        end
+        raise GraphQL::ExecutionError, "Could not find neighbourhood with that ID (#{args[:neighbourhood_id]})" if neighbourhood.nil?
 
         query = query.for_neighbourhoods(neighbourhood.subtree)
       end

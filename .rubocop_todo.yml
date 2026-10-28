@@ -6,12 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 6
-GraphQL/ArgumentDescription:
-  Exclude:
-    - 'app/graphql/types/event_queries.rb'
-    - 'app/graphql/types/query_type.rb'
-
 # Offense count: 4
 # Configuration parameters: MaxFields, Prefixes.
 # Prefixes: is, has, with, avg, min, max
@@ -53,53 +47,6 @@ Metrics/MethodLength:
 Metrics/PerceivedComplexity:
   Max: 15
 
-# Offense count: 8
-Naming/AccessorMethodName:
-  Exclude:
-    - 'app/datatables/article_datatable.rb'
-    - 'app/datatables/calendar_datatable.rb'
-    - 'app/datatables/neighbourhood_datatable.rb'
-    - 'app/datatables/partner_datatable.rb'
-    - 'app/datatables/partnership_datatable.rb'
-    - 'app/datatables/site_datatable.rb'
-    - 'app/datatables/tag_datatable.rb'
-    - 'app/datatables/user_datatable.rb'
-
-# Offense count: 2
-# Configuration parameters: EnforcedStyle, AllowedPatterns, ForbiddenIdentifiers, ForbiddenPatterns.
-# SupportedStyles: snake_case, camelCase
-# ForbiddenIdentifiers: __id__, __send__
-Naming/MethodName:
-  Exclude:
-    - 'app/graphql/types/event_type.rb'
-
-# Offense count: 7
-# Configuration parameters: NamePrefix, ForbiddenPrefixes, AllowedMethods, MethodDefinitionMacros, UseSorbetSigs.
-# NamePrefix: is_, has_, have_, does_
-# ForbiddenPrefixes: is_, has_, have_, does_
-# AllowedMethods: is_a?
-# MethodDefinitionMacros: define_method, define_singleton_method
-Naming/PredicatePrefix:
-  Exclude:
-    - 'app/helpers/application_helper.rb'
-    - 'app/jobs/calendar_importer/event_resolver.rb'
-    - 'app/jobs/calendar_importer/events/base.rb'
-    - 'app/models/calendar.rb'
-    - 'app/models/partner.rb'
-    - 'app/uploaders/supporter_logo_uploader.rb'
-
-# Offense count: 20
-# Configuration parameters: Database.
-# SupportedDatabases: mysql, postgresql
-Rails/BulkChangeTable:
-  Enabled: false
-
-# Offense count: 8
-Rails/CreateTableWithTimestamps:
-  Exclude:
-    - 'db/migrate/20170726032515_create_initial_tables.rb'
-    - 'db/migrate/20181009162402_add_organisation_relationships_table.rb'
-
 # Offense count: 6
 Rails/HasAndBelongsToMany:
   Exclude:
@@ -124,27 +71,6 @@ Rails/LexicallyScopedActionFilter:
   Exclude:
     - 'app/controllers/admin/application_controller.rb'
 
-# Offense count: 3
-# Configuration parameters: Database.
-# SupportedDatabases: mysql
-Rails/NotNullColumn:
-  Exclude:
-    - 'db/migrate/20181009162402_add_organisation_relationships_table.rb'
-
-# Offense count: 6
-Rails/ReversibleMigration:
-  Exclude:
-    - 'db/migrate/20181031134053_change_calendar_contact_details_to_type_string.rb'
-
-# Offense count: 3
-# Configuration parameters: ForbiddenMethods, AllowedMethods.
-# ForbiddenMethods: decrement!, decrement_counter, increment!, increment_counter, insert, insert!, insert_all, insert_all!, toggle!, touch, touch_all, update_all, update_attribute, update_column, update_columns, update_counters, upsert, upsert_all
-Rails/SkipsModelValidations:
-  Exclude:
-    - 'db/migrate/20240125175508_partner_hidden_attribute_set_value.rb'
-    - 'db/migrate/20240411200641_partner_can_be_assigned_events_set_value.rb'
-    - 'db/migrate/20240422092628_set_calendar_checksum_date.rb'
-
 # Offense count: 223
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: EnforcedStyle, EnforcedStyleForClasses, EnforcedStyleForModules.
@@ -153,28 +79,3 @@ Rails/SkipsModelValidations:
 # SupportedStylesForModules: ~, nested, compact
 Style/ClassAndModuleChildren:
   Enabled: false
-
-# Offense count: 3
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: MinBodyLength, AllowConsecutiveConditionals.
-Style/GuardClause:
-  Exclude:
-    - 'app/graphql/types/event_queries.rb'
-    - 'db/migrate/20191031170146_add_foreign_key_constraint_to_active_storage_attachments_for_blob_id.active_storage.rb'
-
-# Offense count: 4
-# This cop supports safe autocorrection (--autocorrect).
-Style/IfUnlessModifier:
-  Exclude:
-    - 'app/graphql/types/event_queries.rb'
-    - 'app/models/partner.rb'
-    - 'db/migrate/20191031170146_add_foreign_key_constraint_to_active_storage_attachments_for_blob_id.active_storage.rb'
-
-# Offense count: 3
-# Configuration parameters: AllowedMethods.
-# AllowedMethods: respond_to_missing?
-Style/OptionalBooleanParameter:
-  Exclude:
-    - 'app/controllers/application_controller.rb'
-    - 'app/controllers/concerns/map_markers.rb'
-    - 'app/jobs/calendar_importer_job.rb'

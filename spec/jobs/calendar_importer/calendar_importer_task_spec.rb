@@ -182,8 +182,8 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
 
       parsed_event = instance_double(
         CalendarImporter::EventResolver,
-        is_private?: false,
-        has_no_occurences?: false,
+        private?: false,
+        no_occurences?: false,
         determine_online_location: nil
       )
       allow(parsed_event).to receive(:determine_location_for_strategy)

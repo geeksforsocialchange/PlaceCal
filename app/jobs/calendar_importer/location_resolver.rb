@@ -34,7 +34,7 @@ class CalendarImporter::LocationResolver
   attr_reader :calendar, :event_data
 
   def event_strategy
-    if event_data.has_location?
+    if event_data.location?
       address = Address.build_from_components(event_location_components, event_data.postcode)
       place = Partner.matching_venue_for(address)
       [place, address]
@@ -45,7 +45,7 @@ class CalendarImporter::LocationResolver
 
   def event_override_strategy
     # Fall back to calendar's place when the event has no location or address can't be built
-    return [calendar.place, calendar.place&.address] unless event_data.has_location?
+    return [calendar.place, calendar.place&.address] unless event_data.location?
 
     address = Address.build_from_components(event_location_components, event_data.postcode)
     return [calendar.place, calendar.place&.address] unless address
@@ -62,7 +62,7 @@ class CalendarImporter::LocationResolver
     place = calendar.place
     raise Problem, 'N/A' if place.blank?
 
-    if event_data.has_location? && place.address
+    if event_data.location? && place.address
       new_address = place.address.dup
       address = new_address.prepend_room_number(event_data.location)
       address.save

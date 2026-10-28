@@ -7,7 +7,7 @@ module Types
     def self.included(klass)
       klass.field :partner, PartnerType do
         description 'Retrieve one Partner based on specific ID'
-        argument :id, ID
+        argument :id, ID, description: 'The ID of the partner'
       end
 
       klass.field :partner_connection, Types::PartnerType.connection_type do
@@ -17,7 +17,7 @@ module Types
 
       klass.field :partners_by_tag, [PartnerType] do
         description 'Retrieve list of partners that have been given a certain tag'
-        argument :tag_id, ID
+        argument :tag_id, ID, description: 'The ID of the tag'
       end
     end
 
@@ -47,12 +47,12 @@ module Types
 
       klass.field :articles_by_tag, [Types::ArticleType] do
         description 'Find all news articles that have a given tag attached'
-        argument :tag_id, ID
+        argument :tag_id, ID, description: 'The ID of the tag'
       end
 
       klass.field :articles_by_partner_tag, [Types::ArticleType] do
         description 'Find news articles were written by partner that had a given tag'
-        argument :tag_id, ID
+        argument :tag_id, ID, description: 'The ID of the tag on the authoring partner'
       end
     end
 
@@ -73,7 +73,7 @@ module Types
     def self.included(klass)
       klass.field :site, SiteType do
         description 'Retrieve one Site based on specific ID'
-        argument :id, ID
+        argument :id, ID, description: 'The ID of the site'
       end
 
       klass.field :site_connection, Types::SiteType.connection_type do
