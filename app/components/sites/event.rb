@@ -46,7 +46,7 @@ class Components::Sites::Event < Components::Base
       end
       if neighbourhood_name && @show_neighbourhoods
         css = "neighbourhood #{primary_neighbourhood? ? 'neighbourhood--primary' : 'neighbourhood--secondary'} event__neighbourhood max-md:hidden"
-        div(class: css) { span { neighbourhood_name } }
+        div(class: css) { UI::Pill(variant: primary_neighbourhood? ? :neighbourhood : :neighbourhood_outside, class: 'mt-3') { neighbourhood_name } }
       end
     end
   end
