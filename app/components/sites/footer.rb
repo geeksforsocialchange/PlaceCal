@@ -13,7 +13,7 @@ class Components::Sites::Footer < Components::Base
   HR = 'col-span-full w-full border-3 border-tertiary-light'
 
   def view_template
-    footer(class: 'footer bg-foreground text-background text-detail leading-normal py-12') do
+    footer(class: 'footer bg-foreground text-background text-detail leading-normal py-12 print:hidden') do
       div(class: 'container-public') do
         div(class: footer_inner_class) { render_footer_content }
       end

@@ -8,7 +8,7 @@ class Components::Shared::Footer < Components::Base
   prop :columns, _Array(Array)
 
   def view_template(&brand_extra)
-    footer(class: 'bg-home-background border-t-5 border-rules mt-16 pt-10 pb-6') do
+    footer(class: 'bg-home-background border-t-5 border-rules mt-16 pt-10 pb-6 print:hidden') do
       div(class: 'container-public grid grid-cols-1 md:grid-cols-footer gap-8') do
         render_brand(&brand_extra)
         @columns.each { |title, links| render_column(title, links) }

@@ -34,11 +34,11 @@ class Views::Sites::Partners::Show < Views::Base
     header: 'flex flex-wrap items-center gap-y-2 gap-x-6 mt-8 mb-2 pb-2 border-b-3 border-rules',
     heading: 'allcaps text-xl m-0',
     count: 'hidden',
-    repeating_filter: 'ml-auto',
+    repeating_filter: 'ml-auto print:hidden',
     label: 'inline-flex items-center gap-2 text-sm allcaps whitespace-nowrap',
     repeating: 'select-caret appearance-none py-1 pl-3 pr-9 border-2 border-primary rounded-check bg-background text-foreground ' \
                'font-sans text-sm font-bold normal-case tracking-normal cursor-pointer',
-    actions: 'flex justify-center mt-6',
+    actions: 'flex justify-center mt-6 print:hidden',
     more: 'with-no-sass py-1 px-3.5 border-2 border-primary rounded-check bg-primary text-foreground text-sm font-bold no-underline'
   }.freeze
 
@@ -326,7 +326,7 @@ class Views::Sites::Partners::Show < Views::Base
     path = "partners/#{partner.slug}/events"
     today = Time.zone.today
     filter_period = date_period || period
-    div(class: 'paginator leading-snug', id: 'paginator') do
+    div(class: 'paginator leading-snug print:hidden', id: 'paginator') do
       Sites::Timeline(
         pointer: current_day,
         period:,

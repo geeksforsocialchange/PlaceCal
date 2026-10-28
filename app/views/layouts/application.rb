@@ -24,7 +24,6 @@ class Views::Layouts::Application < Phlex::HTML
         stylesheet_link_tag 'application', media: 'all', 'data-turbo-track': 'reload'
         stylesheet_link_tag 'public_tailwind', media: 'all', 'data-turbo-track': 'reload'
         stylesheet_link_tag site.stylesheet_link, media: 'all', 'data-turbo-track': 'reload' if site&.stylesheet_link
-        stylesheet_link_tag 'print', media: 'print', 'data-turbo-track': 'reload'
         render_theme_head
         preload_font('rawline/rawline-500.woff2')
         preload_font('rawline/rawline-700.woff2')

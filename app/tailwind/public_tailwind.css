@@ -39,6 +39,15 @@
 
 /* base overrides for things which aren't yet componentised */
 @layer base {
+	/* Collapsed details still print their content, such as a partner's accessibility information */
+	@media print {
+		details::details-content {
+			content-visibility: visible;
+		}
+		details > summary {
+			display: none;
+		}
+	}
 	/* Turbo frames lay out like the blocks they replace, and dim what they're reloading */
 	turbo-frame {
 		display: block;

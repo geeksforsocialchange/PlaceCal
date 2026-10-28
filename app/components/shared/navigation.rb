@@ -17,7 +17,7 @@ class Components::Shared::Navigation < Components::Base
 
   def view_template
     header(class: [
-             'header grid grid-cols-[1fr_auto] items-center',
+             'header grid grid-cols-[1fr_auto] items-center print:hidden',
              *(
                if @site.nil?
                  ['header__default container-public py-6 bg-background border-b border-rules']
