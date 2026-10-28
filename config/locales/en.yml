@@ -76,6 +76,12 @@ en:
       answer_no: "No"
 
   components:
+    event_list:
+      truncated: "Showing first 50 events. Use the date picker to see more."
+      empty: "No events with this selection."
+      skip_to_next: "Skip to next date with events."
+    profile:
+      heading: "Your local contact"
     hero_section:
       image_credit: "Image credit: %{credit}"
     details:

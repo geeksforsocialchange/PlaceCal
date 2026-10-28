@@ -43,7 +43,7 @@
 
 	// Section heading, then day, then event: day headings drop to the section's size, titles below
 	.partner-details ~ #events-browser {
-		> h2.udl {
+		> h2.ruled-heading {
 			font-size: $h3-size;
 		}
 

@@ -15,7 +15,7 @@ class Components::Sites::Meta < Components::Base
   def view_template
     yield self if block_given?
 
-    div(class: 'meta small') do
+    div(class: 'meta text-sm leading-normal') do
       div(class: 'container-public') do
         raw(view_context.capture(&@link_content)) if @link_content
         if @permalink

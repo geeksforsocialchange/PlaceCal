@@ -8,7 +8,7 @@ class Components::Sites::Profile < Components::Base
   def view_template
     div(class: 'profile') do
       div(class: 'profile__title') do
-        h3(class: 'h2--alt udl') { 'Your local contact' }
+        h3(class: 'allcaps text-center text-base inline-block pb-2 border-b-3 border-rules') { t('components.profile.heading') }
       end
       div(class: 'profile__avatar') do
         image_tag(@user.avatar.retina.url) if @user.avatar.retina.url

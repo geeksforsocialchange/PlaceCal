@@ -64,7 +64,7 @@ class Views::Sites::Partners::Show < Views::Base
 
   def render_partner_description
     if partner.summary
-      div(class: 'p--big') do
+      div(class: 'partner-details__description text-xl leading-snug') do
         content_tag(:p, partner.summary)
       end
     end
@@ -117,7 +117,7 @@ class Views::Sites::Partners::Show < Views::Base
   # because Tailwind's preflight already flattens every heading to the
   # inherited size with no margin, so an h2 and an h3 here draw identically.
   def render_contact_and_address
-    h2(class: 'udl udl--fw allcaps h4') { t('partners.show.contact_heading') }
+    UI::RuledHeading(caps: true, rule: :full, class: 'text-xl my-5.5') { t('partners.show.contact_heading') }
     Shared::ContactDetails(partner:, social_labels: site&.core_theme? ? :handle : :network)
 
     render_address
@@ -128,12 +128,12 @@ class Views::Sites::Partners::Show < Views::Base
   # straight to the buffer, ahead of the sentence the links are interpolated into.
   def render_family_sentence
     if visible_parent
-      div(class: 'partner__family small') do
+      div(class: 'partner__family text-sm leading-normal') do
         raw(t('partners.show.part_of_html', parent: view_context.link_to(visible_parent.name, partner_path(visible_parent))))
       end
     elsif visible_children.any?
       places = safe_join(visible_children.map { |child| view_context.link_to(child.name, partner_path(child)) }, ', ')
-      div(class: 'partner__family small') do
+      div(class: 'partner__family text-sm leading-normal') do
         raw(t('partners.show.children_html', name: partner.name, places:))
       end
     end
@@ -150,7 +150,7 @@ class Views::Sites::Partners::Show < Views::Base
   end
 
   def render_address
-    h2(class: 'udl udl--fw allcaps h4') { t('partners.show.address_heading') }
+    UI::RuledHeading(caps: true, rule: :full, class: 'text-xl my-5.5') { t('partners.show.address_heading') }
     if partner.service_areas?
       p(class: 'place_info__service_area') do
         raw(t('partners.show.service_area_html', areas: partner_service_area_text(partner)))
@@ -177,7 +177,7 @@ class Views::Sites::Partners::Show < Views::Base
     return unless times.any?
 
     br
-    h2(class: 'udl udl--fw allcaps h4') { t('partners.show.opening_times_heading') }
+    UI::RuledHeading(caps: true, rule: :full, class: 'text-xl my-5.5') { t('partners.show.opening_times_heading') }
     ul(class: 'opening_times reset') do
       times.each do |slot|
         li { slot }
@@ -189,7 +189,7 @@ class Views::Sites::Partners::Show < Views::Base
     return if partner.accessibility_info_html.blank?
 
     br
-    h2(class: 'udl udl--fw allcaps h4', id: 'accessibility-info') { t('partners.show.accessibility_heading') }
+    UI::RuledHeading(caps: true, rule: :full, class: 'text-xl my-5.5', id: 'accessibility-info') { t('partners.show.accessibility_heading') }
     details(class: 'accessibility_info') do
       summary { t('partners.show.accessibility_summary') }
       raw safe(partner.accessibility_info_html.to_s)
@@ -200,20 +200,20 @@ class Views::Sites::Partners::Show < Views::Base
     visible_children.each do |place|
       hr
 
-      h2(class: 'place__title') { link_to place.name, partner_path(place), class: 'udl udl--red' }
+      h2(class: 'mb-2') { link_to place.name, partner_path(place), class: 'inline-block pb-2 border-b-3 border-secondary no-underline' }
       div(class: 'grid gap-x-4.5 lg:grid-cols-2') do
         div do
           raw safe(place.summary_html.to_s) if place.summary_html.present?
         end
         div do
           if place.address
-            h2(class: 'udl udl--fw allcaps h4') { t('partners.show.address_heading') }
-            div(class: 'small') do
+            UI::RuledHeading(caps: true, rule: :full, class: 'text-xl my-5.5') { t('partners.show.address_heading') }
+            div(class: 'text-sm leading-normal') do
               Shared::Address(address: place.address)
             end
           end
-          h2(class: 'udl udl--fw allcaps h4') { t('partners.show.place_contact_heading') }
-          div(class: 'small') do
+          UI::RuledHeading(caps: true, rule: :full, class: 'text-xl my-5.5') { t('partners.show.place_contact_heading') }
+          div(class: 'text-sm leading-normal') do
             Shared::ContactDetails(partner: place)
           end
         end

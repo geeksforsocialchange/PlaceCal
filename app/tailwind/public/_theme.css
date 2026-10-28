@@ -85,6 +85,7 @@
 	--leading-hero: 1.05;
 	--leading-tight: 1.15;
 	--leading-snug: 1.35;
+	--leading-normal: 1.5;
 	--leading-relaxed: 1.6;
 
 	/* Border radii */
@@ -222,6 +223,7 @@ this file).
 	--leading-hero: var(--leading-hero);
 	--leading-tight: var(--leading-tight);
 	--leading-snug: var(--leading-snug);
+	--leading-normal: var(--leading-normal);
 	--leading-relaxed: var(--leading-relaxed);
 
 	/* Avatar sizes */

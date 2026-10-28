@@ -18,7 +18,7 @@ class Components::Sites::PullQuote < Components::Base
       end
       cite do
         strong(class: 'h3-small') { @source } if @source.present?
-        span(class: 'small') { @quote_context } if @quote_context.present? && @source.present?
+        span(class: 'text-sm leading-normal') { @quote_context } if @quote_context.present? && @source.present?
       end
     end
   end
