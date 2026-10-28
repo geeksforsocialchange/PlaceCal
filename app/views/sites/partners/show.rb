@@ -178,9 +178,9 @@ class Views::Sites::Partners::Show < Views::Base
 
     br
     UI::RuledHeading(caps: true, rule: :full, class: 'text-xl my-5.5') { t('partners.show.opening_times_heading') }
-    ul(class: 'opening_times reset') do
+    ul(class: 'opening_times reset text-left') do
       times.each do |slot|
-        li { slot }
+        li(class: 'grid grid-cols-label-value *:first:font-bold') { slot }
       end
     end
   end
@@ -190,8 +190,8 @@ class Views::Sites::Partners::Show < Views::Base
 
     br
     UI::RuledHeading(caps: true, rule: :full, class: 'text-xl my-5.5', id: 'accessibility-info') { t('partners.show.accessibility_heading') }
-    details(class: 'accessibility_info') do
-      summary { t('partners.show.accessibility_summary') }
+    details(class: 'accessibility_info group wrap-anywhere') do
+      summary(class: 'cursor-pointer group-open:mb-3') { t('partners.show.accessibility_summary') }
       raw safe(partner.accessibility_info_html.to_s)
     end
   end
