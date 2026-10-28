@@ -22,8 +22,7 @@ module StallWatchdog
         next unless started && now - started > LIMIT
 
         report(id)
-        # Ruby's SIGSEGV handler prints the C-level stack too, which a GVL deadlock needs.
-        Process.kill(:SEGV, Process.pid)
+        exit!(1)
       end
     end
   end
@@ -31,7 +30,6 @@ module StallWatchdog
   def report(id)
     warn "\nStallWatchdog: #{id} has run for over #{LIMIT}s"
     Thread.list.each { |thread| warn "#{thread.inspect}\n  #{Array(thread.backtrace).join("\n  ")}" }
-    system("ps", "-ef", "--forest", out: $stderr)
   end
 
   def now
