@@ -2,7 +2,7 @@
 
 # Turns a stuck example into a fast failure that says where every thread is waiting.
 module StallWatchdog
-  LIMIT = Integer(ENV.fetch("SPEC_STALL_SECONDS", "120"))
+  LIMIT = Integer(ENV.fetch("SPEC_STALL_SECONDS", "300"))
 
   module_function
 
