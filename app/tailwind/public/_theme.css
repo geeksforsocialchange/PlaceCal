@@ -136,6 +136,8 @@
 	--color-cream-warm: #fdf0dd;
 	/* Used for top map stripe and navigation in some states */
 	--color-tertiary: #786551;
+	/* Muted small print and rules on the dark footer */
+	--color-tertiary-light: #998675;
 	/* Bottom of the double line on the map */
 	--color-map-stripe-second: #c7b299;
 	/* Print stylesheet greyscale for borders */
@@ -281,6 +283,7 @@ this file).
 	--color-cream-warm: var(--color-cream-warm);
 	/* Used for top map stripe and navigation in some states */
 	--color-tertiary: var(--color-tertiary);
+	--color-tertiary-light: var(--color-tertiary-light);
 	/* Bottom of the double line on the map */
 	--color-map-stripe-second: var(--color-map-stripe-second);
 	/* Print stylesheet greyscale for borders */

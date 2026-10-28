@@ -10,7 +10,7 @@ class Components::Sites::Footer < Components::Base
   HEADING = 'footer__heading allcaps text-sm leading-normal mt-0 mb-5'
   # Keeps each contact label on the same line as its value.
   NBSP = "\u00A0"
-  HR = 'footer__item footer__hr col-span-full w-full border-3 border-tertiary'
+  HR = 'footer__item footer__hr col-span-full w-full border-3 border-tertiary-light'
 
   def view_template
     footer(class: 'footer bg-foreground text-background text-detail leading-normal py-12') do
@@ -152,7 +152,7 @@ class Components::Sites::Footer < Components::Base
   end
 
   def render_impressum
-    div(class: 'footer__item footer__impressum col-span-full mt-12 text-tertiary', data_nosnippet: true) do
+    div(class: 'footer__item footer__impressum col-span-full mt-12 text-tertiary-light', data_nosnippet: true) do
       Shared::Impressum(logo: false, company_details: true)
     end
   end
