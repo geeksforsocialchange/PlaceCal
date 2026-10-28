@@ -692,8 +692,8 @@ en:
   date:
     formats:
       datetime: "%b %-d, %Y %l:%M"
-      # Day headings in event lists, e.g. "Wednesday  9 November"
-      event_day: "%A %e %B"
+      # Day headings in event lists, e.g. "Wednesday 9 November"
+      event_day: "%A %-d %B"
 
   time:
     formats:

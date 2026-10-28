@@ -4,7 +4,7 @@ class Views::Sites::Events::IndexText < Views::TextBase
   prop :events, Hash, reader: :private
 
   def text_content
-    return "  #{I18n.t('components.event_list.empty')}" unless events.any?
+    return I18n.t('components.event_list.empty') unless events.any?
 
     lines = []
     events.each do |day, day_events|
