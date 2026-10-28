@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # @display context directory
+# @display width form
 class UI::InputPreview < Lookbook::Preview
   # @label Text
   def text
@@ -19,11 +20,12 @@ class UI::InputPreview < Lookbook::Preview
   end
 
   # @label Filter row
+  # @display width page
   # @notes Input, select and field-shaped buttons share one height, as in the partner and event filters.
   def filter_row
     render(Frame.new do |f|
-      f.div(style: "display: flex; gap: 0.5rem; align-items: end") do
-        f.div(style: "flex: 1") { f.render Components::UI::Input.new(placeholder: "Search events") }
+      f.div(class: "flex gap-2 items-end") do
+        f.div(class: "flex-1") { f.render Components::UI::Input.new(placeholder: "Search events") }
         f.render Components::UI::Select.new(name: "period", options: [{ id: "week", name: "This week" }], selected: "week", include_blank: false)
         f.render Components::UI::Button.new(variant: :dark, size: :sm, shape: :field, type: "submit") { "Filter" }
       end
@@ -32,7 +34,7 @@ class UI::InputPreview < Lookbook::Preview
 
   class Frame < Phlex::HTML
     def view_template(&content)
-      div(style: "max-width: 40rem") { yield(self) }
+      div { yield(self) }
     end
   end
 end

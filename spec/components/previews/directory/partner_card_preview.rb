@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 # @display context directory
+# @display width page
 class Directory::PartnerCardPreview < Lookbook::Preview
   # @label Grid of cards
-  # @notes Two columns, as on the directory partners page. Uses unsaved models.
+  # @notes Two columns from 900px, as on the directory partners page. Uses unsaved models.
   def grid
     render CardGrid.new(sample_partners)
   end
@@ -35,7 +36,7 @@ class Directory::PartnerCardPreview < Lookbook::Preview
     end
 
     def view_template
-      div(style: "align-content: start; color: var(--color-foreground); max-width: 760px; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); column-gap: 2rem") do
+      div(class: "lg:columns-2 gap-x-4 text-foreground") do
         @partners.each do |partner|
           render Components::Directory::PartnerCard.new(partner:, site: nil, area: "Coastshire › Seaview › Beachfront")
         end
