@@ -51,6 +51,9 @@
 
 	/* allcaps kickers, tiny badges, micro labels */
 	--text-2xs: 0.72rem;
+	/* neighbourhood pills */
+	--text-badge: 0.77777778rem;
+	--text-badge-sm: 0.6rem;
 	/* meta text, secondary info */
 	--text-sm: 0.8rem;
 	/* button text, body-adjacent links */
@@ -82,6 +85,7 @@
 
 	/* app/assets/stylesheets/variables/typography.scss */
 	--tracking-normal: normal;
+	--tracking-badge: 0.086667rem;
 	--tracking-wide: 0.16667rem;
 	--leading-none: 1;
 	--leading-hero: 1.05;
@@ -212,6 +216,8 @@ this file).
 
 	/* Type scale */
 	--text-2xs: var(--text-2xs);
+	--text-badge: var(--text-badge);
+	--text-badge-sm: var(--text-badge-sm);
 	--text-sm: var(--text-sm);
 	--text-detail: var(--text-detail);
 	--text-base: var(--text-base);
@@ -228,6 +234,7 @@ this file).
 	--text-display: var(--text-display);
 
 	--tracking-normal: var(--tracking-normal);
+	--tracking-badge: var(--tracking-badge);
 	--tracking-wide: var(--tracking-wide);
 	--leading-none: var(--leading-none);
 	--leading-hero: var(--leading-hero);
