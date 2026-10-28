@@ -15,13 +15,6 @@ class Components::Sites::Event < Components::Base
   prop :back, _Nilable(Array), default: nil
 
   ICON = 'size-7 mr-1 text-secondary'
-  # Each detail's share of the row: full width on phones (time and date share one), about a third on tablets, natural width on desktop.
-  DETAIL_LAYOUT = Hash.new('max-md:basis-full md:grow md:basis-2/7 lg:grow-0 lg:basis-auto').merge(
-    'event__time' => 'max-md:basis-11/25 md:grow md:basis-2/7 lg:grow-0 lg:basis-auto',
-    'event__date' => 'max-md:basis-11/25 md:grow md:basis-2/7 lg:grow-0 lg:basis-auto',
-    'event__duration' => 'max-md:hidden md:grow md:basis-2/7 lg:grow-0 lg:basis-auto',
-    'event__location' => 'max-md:basis-full md:grow md:shrink-0 md:basis-11/18 md:mb-0 lg:shrink lg:basis-auto'
-  ).freeze
 
   def view_template
     div(class: "h-event event mb-8 #{page? ? 'event--full' : 'event--list'}") do
@@ -57,7 +50,7 @@ class Components::Sites::Event < Components::Base
   end
 
   def render_event_details
-    div(class: "event__details flex flex-wrap items-center text-detail border-rules py-2 md:py-3 #{page? ? 'border-b-10' : 'border-y-3'}") do
+    div(class: "event__details flex flex-wrap items-center gap-x-4 gap-y-1 text-detail border-rules py-2 md:py-3 #{page? ? 'border-b-10' : 'border-y-3'}") do
       render_time_detail
       render_detail('event__duration', :event_duration, duration) if duration
       render_date_detail
@@ -98,8 +91,7 @@ class Components::Sites::Event < Components::Base
   end
 
   def detail_class(name)
-    spacing = %w[event__repeats event__online].include?(name) ? 'mb-0' : 'mb-0.5 lg:mb-0'
-    "event__detail #{name} flex items-center mr-4 #{spacing} max-md:grow max-md:shrink-0 #{DETAIL_LAYOUT[name]}"
+    "event__detail #{name} flex items-center#{' max-md:hidden' if name == 'event__duration'}"
   end
 
   def show_organiser?
