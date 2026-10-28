@@ -101,7 +101,7 @@ RSpec.describe "Theme slots", type: :request do
 
     expect(response).to have_http_status(:ok)
     expect(response.body).to include('data-example-theme="footer"')
-    expect(response.body).not_to include('class="footer__inner')
+    expect(response.body).not_to include('id="footer-nav-heading"')
   end
 
   it "renders the theme's hero standfirst" do
@@ -261,7 +261,7 @@ RSpec.describe "Theme slots", type: :request do
       event
       get "http://plain.lvh.me/events?period=future"
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include('class="footer__inner')
+      expect(response.body).to include('id="footer-nav-heading"')
       expect(response.body).not_to include('data-example-theme="footer"')
       expect(response.body).not_to include("hero__standfirst")
       expect(response.body).not_to include("list-heading")

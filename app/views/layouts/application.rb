@@ -17,8 +17,7 @@ class Views::Layouts::Application < Phlex::HTML
 
   def view_template
     doctype
-    # Marks the built-in themes, so CSS aimed at them can stay off extension themes, which share the markup
-    html(lang: 'en', class: ('core-theme' if site&.core_theme?)) do
+    html(lang: 'en') do
       head do
         csrf_meta_tags
         stylesheet_link_tag 'public_tailwind', media: 'all', 'data-turbo-track': 'reload'

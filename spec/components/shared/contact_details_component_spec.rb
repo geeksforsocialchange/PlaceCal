@@ -46,9 +46,9 @@ RSpec.describe Components::Shared::ContactDetails, type: :phlex do
     expect(page).to have_css("span.contact_details__item a[href='tel:#{contact_phone}']", text: contact_phone)
     expect(page).to have_css("span.contact_details__item a[href='mailto:#{contact_email}']", text: contact_email)
     expect(page).to have_css("span.contact_details__item a[href='#{contact_url}']")
-    expect(page).to have_css("span.contact_details__item a.contact_details__facebook")
-    expect(page).to have_css("span.contact_details__item a.contact_details__twitter")
-    expect(page).to have_css("span.contact_details__item a.contact_details__instagram")
+    expect(page).to have_css("span.contact_details__item a[href^='https://facebook.com/']")
+    expect(page).to have_css("span.contact_details__item a[href^='https://twitter.com/']")
+    expect(page).to have_css("span.contact_details__item a[href^='https://www.instagram.com/']")
   end
 
   it "marks the social links as social items" do
@@ -68,9 +68,9 @@ RSpec.describe Components::Shared::ContactDetails, type: :phlex do
     end
 
     it "names each social link after its network, keeping the handle in the title" do
-      expect(page).to have_css("a.contact_details__facebook[title='rchfb']", text: "Facebook")
-      expect(page).to have_css("a.contact_details__twitter[title='@rchtwit']", text: "Twitter")
-      expect(page).to have_css("a.contact_details__instagram[title='@rchinsta']", text: "Instagram")
+      expect(page).to have_link("Facebook", title: "rchfb")
+      expect(page).to have_link("Twitter", title: "@rchtwit")
+      expect(page).to have_link("Instagram", title: "@rchinsta")
       expect(page).not_to have_text("rchtwit")
     end
 

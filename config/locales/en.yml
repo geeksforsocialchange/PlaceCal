@@ -82,6 +82,8 @@ en:
       today: "Today"
       tomorrow: "Tomorrow"
       upcoming: "Upcoming"
+      earlier: "Earlier"
+      later: "Later"
       this_month: "This month"
       next_7_days: "Next 7 days"
       week: "%{from} - %{to}"

@@ -20,7 +20,7 @@ class Components::Shared::Navigation < Components::Base
              'header grid grid-cols-[1fr_auto] items-center print:hidden',
              *(
                if @site.nil?
-                 ['header__default container-public py-6 bg-background border-b border-rules']
+                 ['container-public py-6 bg-background border-b border-rules']
                else
                  ['header__partner mx-4 pt-4', 'lg:py-4 lg:mx-12 lg:py-6']
                end

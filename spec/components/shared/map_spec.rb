@@ -27,8 +27,8 @@ RSpec.describe Components::Shared::Map, type: :phlex do
 
   it "passes style to the map helper" do
     render_inline(described_class.new(points:, style: :multi))
-    args = page.find("[data-leaflet-args-value]")["data-leaflet-args-value"]
-    expect(args).to include("map--multiple")
+    args = JSON.parse(page.find("[data-leaflet-args-value]")["data-leaflet-args-value"])
+    expect(args["styleClass"]).to eq(MapHelper::MULTIPLE_CLASSES)
   end
 
   it "groups colocated points into a single marker" do
@@ -46,7 +46,7 @@ RSpec.describe Components::Shared::Map, type: :phlex do
 
   it "passes compact to the map helper" do
     render_inline(described_class.new(points:, compact: true))
-    args = page.find("[data-leaflet-args-value]")["data-leaflet-args-value"]
-    expect(args).to include("map--compact")
+    args = JSON.parse(page.find("[data-leaflet-args-value]")["data-leaflet-args-value"])
+    expect(args["styleClass"]).to include("h-(--height-map-compact)")
   end
 end

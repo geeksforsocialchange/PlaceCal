@@ -91,7 +91,7 @@ class Components::Sites::HelpCard < Components::Base
     config = VARIANTS.fetch(@variant)
     return if @variant == :adding_events && !@site&.site_admin
 
-    div(class: 'help text-center mb-12') do
+    div(class: 'text-center mb-12') do
       raw(safe(SVGS.fetch(@variant)))
 
       UI::RuledHeading(level: 3, caps: true, tone: :secondary, rule: :centered, class: 'text-base mt-8 mb-6') { variant_t(:title) }

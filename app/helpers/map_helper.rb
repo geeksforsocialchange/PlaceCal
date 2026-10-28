@@ -23,7 +23,7 @@ module MapHelper
 
   SINGLE_CLASSES = %w[map--single border-5 border-rules rounded-card overflow-hidden z-0].freeze
   # A multi-point map keeps its full height even when compact.
-  MULTIPLE_CLASSES = %w[map--multiple h-(--height-map-full) border-t-10 border-map-stripe-second shadow-map-stripe].freeze
+  MULTIPLE_CLASSES = %w[h-(--height-map-full) border-t-10 border-map-stripe-second shadow-map-stripe].freeze
 
   private
 
@@ -31,7 +31,6 @@ module MapHelper
     multiple = style_mode == :multi || (style_mode != :single && points.length > 1)
     # One class per entry: the leaflet controller adds them with classList.add.
     out = multiple ? MULTIPLE_CLASSES.dup : SINGLE_CLASSES.dup
-    out << 'map--compact' if compact_mode
     out << 'h-(--height-map-compact)' if compact_mode && !multiple
     out
   end

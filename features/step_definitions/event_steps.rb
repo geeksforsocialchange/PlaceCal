@@ -56,7 +56,7 @@ Then("I should see {string} in the paginator") do |text|
 end
 
 When("I click the forward arrow") do
-  find(".paginator__arrow--forwards a").click
+  find(".paginator a[aria-label='Later']").click
 end
 
 Then("I should see a {string} button") do |text|

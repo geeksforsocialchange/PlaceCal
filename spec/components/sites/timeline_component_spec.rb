@@ -27,8 +27,8 @@ RSpec.describe Components::Sites::Timeline, type: :component do
       it "renders navigation arrows" do
         render_inline(described_class.new(**base_attrs))
 
-        expect(page).to have_css(".paginator__arrow--back")
-        expect(page).to have_css(".paginator__arrow--forwards")
+        expect(page).to have_css("a[aria-label='Earlier'][href^='/events/2022/11/7?']")
+        expect(page).to have_css("a[aria-label='Later'][href^='/events/2022/11/9?']")
       end
 
       it "renders day buttons with correct count" do
@@ -86,7 +86,7 @@ RSpec.describe Components::Sites::Timeline, type: :component do
       it "renders timeline buttons" do
         render_inline(described_class.new(**attrs))
 
-        expect(page).to have_css("ol.paginator__buttons--month")
+        expect(page).to have_css("ol.paginator__buttons")
       end
 
       it "shows This month for current month" do
