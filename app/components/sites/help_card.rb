@@ -92,10 +92,10 @@ class Components::Sites::HelpCard < Components::Base
     config = VARIANTS.fetch(@variant)
     return if @variant == :adding_events && !@site&.site_admin
 
-    div(class: "help #{config[:css_class]}") do
+    div(class: "help #{config[:css_class]} text-center mb-12") do
       raw(safe(SVGS.fetch(@variant)))
 
-      h3(class: 'allcaps text-center text-base') { span(class: 'pb-2 border-b-4 border-secondary') { variant_t(:title) } }
+      h3(class: 'allcaps text-center text-base my-8') { span(class: 'pb-2 border-b-3 border-secondary') { variant_t(:title) } }
       p { variant_t(:description) } if config[:description]
 
       if @variant == :adding_events
@@ -118,7 +118,7 @@ class Components::Sites::HelpCard < Components::Base
 
   def render_places_list(empty_message)
     if @places.any?
-      ul do
+      ul(class: 'list-none p-0') do
         @places.each do |location|
           li { link_to(location.name, partner_path(location)) }
         end
