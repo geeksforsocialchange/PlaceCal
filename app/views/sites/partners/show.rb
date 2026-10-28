@@ -103,7 +103,7 @@ class Views::Sites::Partners::Show < Views::Base
         render_partner_description
         render_contact_and_address
       end
-      div(class: 'partner-details__aside grid-area-right') do
+      aside(class: 'partner-details__aside grid-area-right') do
         render_partner_image
         Shared::Map(points: map, compact: true) if site.core_theme?
         render_opening_times
