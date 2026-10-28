@@ -30,7 +30,7 @@ class Components::Sites::EventList < Components::Base
   def render_day(day_events)
     ol(class: 'events reset') do
       day_events.each do |event|
-        li { render_event(event) }
+        li(class: 'block w-full') { render_event(event) }
       end
     end
   end
@@ -43,7 +43,8 @@ class Components::Sites::EventList < Components::Base
       show_neighbourhoods: @show_neighbourhoods,
       badge_zoom_level: @badge_zoom_level,
       site_tagline: @site_tagline,
-      context_partner: @context_partner
+      context_partner: @context_partner,
+      nested: @nested
     )
   end
 
