@@ -2,7 +2,8 @@
 
 # A sans section heading with a rule under it, as on the partner and event pages. Size comes from the call site.
 class Components::UI::RuledHeading < Components::Base
-  RULES = { inline: 'inline-block', full: 'block' }.freeze
+  # :centered keeps the rule under the words but stays a block, so it sits on its own line and its margins collapse.
+  RULES = { inline: 'inline-block', full: 'block', centered: 'block w-fit mx-auto' }.freeze
   # The rule's colour; :background and :secondary for headings on a rules-coloured band or a card.
   TONES = { rules: 'border-rules', background: 'border-background', secondary: 'border-secondary' }.freeze
 
