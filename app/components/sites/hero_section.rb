@@ -11,20 +11,19 @@ class Components::Sites::HeroSection < Components::Base
   end
 
   def view_template
-    div(class: 'hero_section') do
-      if @image_path.presence
-        img_attrs = { class: 'hero_section__img', src: @image_path }
-        if @alttext.presence
-          img_attrs[:alt] = @alttext
-        else
-          img_attrs[:'aria-hidden'] = 'true'
-        end
-        img(**img_attrs)
-      end
-      div(class: 'hero_section__text') do
-        p(class: 'hero_section__credit') { "Image credit: #{@image_credit}" } if @image_credit.presence
-        h1(class: 'hero_section__title') { @title }
+    div do
+      render_image if @image_path.presence
+      div(class: "relative flex flex-col items-center gap-6 p-6 rounded-t-card bg-background #{'-mt-4.5' if @image_path.presence}") do
+        p(class: 'm-0 text-sm') { t('components.hero_section.image_credit', credit: @image_credit) } if @image_credit.presence
+        h1(class: 'm-0 max-w-lg text-center text-2xl leading-tight lg:text-3xl') { @title }
       end
     end
+  end
+
+  private
+
+  def render_image
+    attrs = @alttext.presence ? { alt: @alttext } : { 'aria-hidden': 'true' }
+    img(class: 'block w-full aspect-2/1 object-cover lg:aspect-3/1', src: @image_path, **attrs)
   end
 end
