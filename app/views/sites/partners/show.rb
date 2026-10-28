@@ -112,10 +112,6 @@ class Views::Sites::Partners::Show < Views::Base
     end
   end
 
-  # These section headings are h2 rather than h3: they are the first headings
-  # under the page h1 and an h3 there skips a level. The look is unchanged,
-  # because Tailwind's preflight already flattens every heading to the
-  # inherited size with no margin, so an h2 and an h3 here draw identically.
   def render_contact_and_address
     UI::RuledHeading(caps: true, rule: :full, class: 'text-xl my-5.5') { t('partners.show.contact_heading') }
     Shared::ContactDetails(partner:, social_labels: site&.core_theme? ? :handle : :network)
