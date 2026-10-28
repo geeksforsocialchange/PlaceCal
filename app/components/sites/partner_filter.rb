@@ -13,9 +13,8 @@ class Components::Sites::PartnerFilter < Components::Base
   # for the listing and the facet counts, not once each.
   prop :query, _Nilable(::PartnersQuery), default: nil
 
-  BAR = 'filter-bar flex flex-wrap items-center gap-y-2 gap-x-4 xl:justify-end'
-  CONTROLS = 'filter-bar__controls flex-initial flex items-center max-md:mb-2 flex-wrap gap-y-2 gap-x-4 w-full xl:w-auto xl:flex-auto xl:justify-end xl:text-right'
-  FILTER = 'flex items-center gap-4 justify-end'
+  # Inside the form, filling the bar's row and right-aligned from xl, as the breadcrumb slot is.
+  CONTROLS = 'filter-bar__controls w-full max-md:mb-2 xl:w-auto xl:flex-auto xl:justify-end'
 
   def after_initialize
     @selected_category = @selected_category.to_i
@@ -24,12 +23,12 @@ class Components::Sites::PartnerFilter < Components::Base
   end
 
   def view_template
-    div(class: BAR) do
+    UI::Cluster(gap: :md, row_gap: :sm, class: 'filter-bar xl:justify-end') do
       RegionFilter(tags: @region_tags, selected: @selected_region)
 
       form_with(**form_data, class: 'filters__form relative') do
         hidden_field_tag(:region, @selected_region.slug, id: nil) if @selected_region
-        div(class: CONTROLS) do
+        UI::Cluster(gap: :md, row_gap: :sm, class: CONTROLS) do
           span(class: 'filter-bar__label') { t('filters.filter_by') }
           render_category_filter if show_category_filter?
           render_neighbourhood_filter if show_neighbourhood_filter?
@@ -54,7 +53,7 @@ class Components::Sites::PartnerFilter < Components::Base
   end
 
   def render_category_filter
-    div(class: "#{FILTER} filters filter-bar__category") do
+    UI::Cluster(gap: :md, justify: :end, wrap: false, class: 'filters filter-bar__category') do
       Sites::Filter(
         name: 'category',
         label: t('filters.category'),
@@ -69,7 +68,7 @@ class Components::Sites::PartnerFilter < Components::Base
   end
 
   def render_neighbourhood_filter
-    div(class: "#{FILTER} filters filter-bar__neighbourhood") do
+    UI::Cluster(gap: :md, justify: :end, wrap: false, class: 'filters filter-bar__neighbourhood') do
       Sites::Filter(
         name: 'neighbourhood',
         label: t('filters.neighbourhood'),
@@ -84,7 +83,7 @@ class Components::Sites::PartnerFilter < Components::Base
   end
 
   def render_reset_link
-    div(class: "#{FILTER} filter-bar__reset") do
+    UI::Cluster(gap: :md, justify: :end, wrap: false, class: 'filter-bar__reset') do
       link_to(t('filters.reset'), partners_path(@selected_region ? { region: @selected_region.slug } : {}), class: "#{Sites::Breadcrumb::LINK} filters__link",
                                                                                                             data: { turbo_frame: 'partner_previews' })
     end
@@ -94,7 +93,7 @@ class Components::Sites::PartnerFilter < Components::Base
   # whole form (so region/category/neighbourhood ride along) on Enter, when
   # the field loses focus after a change, or when its clear button empties it.
   def render_search
-    div(class: "#{FILTER} filters filter-bar__search") do
+    UI::Cluster(gap: :md, justify: :end, wrap: false, class: 'filters filter-bar__search') do
       input(
         type: 'search', name: 'q', value: @selected_query,
         class: 'filters__search font-sans border-2 border-rules-dark bg-background py-1 px-2',

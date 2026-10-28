@@ -15,9 +15,6 @@ class Views::Sites::Events::Index < Views::Base
   prop :selected_region, _Nilable(::Tag), reader: :private, default: nil
   prop :query, _Nilable(::EventsQuery), reader: :private, default: nil
 
-  # A day strip is wider than the row, so it scrolls inside it and the sort filter wraps underneath.
-  DAY_STRIP_BAR = 'min-w-0 max-w-full flex-wrap gap-y-2'
-
   def view_template
     content_for(:title) { t('events.index.page_title') }
     content_for(:description) { site.og_description }
@@ -46,7 +43,8 @@ class Views::Sites::Events::Index < Views::Base
     div(class: 'paginator leading-snug print:hidden', id: 'paginator') do
       div(class: 'paginator__context') do
         Sites::Breadcrumb(trail: [[t('navigation.site.events'), events_path]], site_name: site.name) do
-          div(class: ['filter-bar flex gap-2 items-center', (DAY_STRIP_BAR if day_strip?)]) do
+          # A day strip is wider than the row, so it scrolls inside it and the sort filter wraps underneath.
+          UI::Cluster(gap: :sm, wrap: day_strip?, class: day_strip? ? 'filter-bar min-w-0 max-w-full' : 'filter-bar') do
             today = Time.zone.today
             region_param = selected_region ? "&region=#{selected_region.slug}" : ''
             today_url = "/events/#{today.year}/#{today.month}/#{today.day}?period=#{period}&sort=#{sort}&repeating=#{repeating}#{region_param}#paginator"
