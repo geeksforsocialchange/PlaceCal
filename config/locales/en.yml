@@ -76,6 +76,13 @@ en:
       answer_no: "No"
 
   components:
+    timeline:
+      today: "Today"
+      tomorrow: "Tomorrow"
+      upcoming: "Upcoming"
+      this_month: "This month"
+      next_7_days: "Next 7 days"
+      week: "%{from} - %{to}"
     event_list:
       truncated: "Showing first 50 events. Use the date picker to see more."
       empty: "No events with this selection."
@@ -697,6 +704,12 @@ en:
       datetime: "%b %-d, %Y %l:%M"
       # Day headings in event lists, e.g. "Wednesday 9 November"
       event_day: "%A %-d %B"
+      # Paginator tabs, e.g. "Wed 9 Nov", "Nov", "Nov 2027", and week ranges "9 - 15 Nov"
+      timeline_day: "%a %-d %b"
+      timeline_month: "%b"
+      timeline_month_year: "%b %Y"
+      timeline_week_start: "%-d"
+      timeline_day_month: "%-d %b"
 
   time:
     formats:
