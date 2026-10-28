@@ -42,7 +42,7 @@ class Views::Directory::Home < Views::Base
         div(class: 'flex justify-between items-baseline flex-wrap gap-2') do
           div do
             div(class: 'allcaps-label text-tertiary') { t('directory.home.partnerships.kicker') }
-            h2(class: 'font-serif font-regular text-section text-foreground') { t('directory.home.partnerships.heading') }
+            UI::Heading() { t('directory.home.partnerships.heading') }
           end
           UI::Button(variant: :outline, href: partnerships_path) do
             plain t('directory.home.partnerships.see_all')
@@ -72,7 +72,7 @@ class Views::Directory::Home < Views::Base
   def render_recent_partners
     div do
       div(class: 'allcaps-label text-tertiary') { t('directory.home.activity.kicker') }
-      h2(class: 'font-serif font-regular text-section text-foreground mb-4') { t('directory.home.activity.heading') }
+      UI::Heading(class: 'mb-4') { t('directory.home.activity.heading') }
       div(class: 'flex flex-col gap-2') do
         partners = @recent_partners.first(5)
         partners.each do |partner|
@@ -91,7 +91,7 @@ class Views::Directory::Home < Views::Base
   def render_upcoming_events
     div do
       div(class: 'allcaps-label text-tertiary') { t('directory.home.events.kicker') }
-      h2(class: 'font-serif font-regular text-section text-foreground mb-4') { t('directory.home.events.heading') }
+      UI::Heading(class: 'mb-4') { t('directory.home.events.heading') }
       div do
         flat_events.first(5).each do |event|
           Directory::EventRow(event:)

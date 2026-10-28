@@ -190,7 +190,7 @@ class Views::Join::Pricing < Views::Join::Base
   def render_extras
     section(class: 'py-10 bg-cream') do
       div(class: 'container-public') do
-        h2(class: 'font-serif font-regular text-section text-foreground mt-0 mb-7') { t('join.pricing.extras.heading') }
+        UI::Heading(class: 'mt-0 mb-7') { t('join.pricing.extras.heading') }
         div(class: 'grid lg:grid-cols-2 gap-4') do
           t('join.pricing.extras.addons').each { |addon| render_addon(addon) }
           render_training_addon
@@ -201,7 +201,7 @@ class Views::Join::Pricing < Views::Join::Base
 
   def render_addon(addon)
     UI::Card(padding: :lg, class: 'flex flex-col') do
-      h3(class: 'font-serif font-regular text-subhead text-foreground mt-0 mb-1.5') { addon[:title] }
+      UI::Heading(level: 3, size: :subhead, class: 'mt-0 mb-1.5') { addon[:title] }
       p(class: 'text-base leading-relaxed text-tertiary mt-0 mb-4') { addon[:body] }
       div(class: 'font-serif text-xl text-foreground mt-auto') do
         plain t('join.pricing.extras.poa')
@@ -215,7 +215,7 @@ class Views::Join::Pricing < Views::Join::Base
   def render_training_addon
     training = t('join.pricing.extras.training')
     UI::Card(padding: :lg, class: 'flex flex-col') do
-      h3(class: 'font-serif font-regular text-subhead text-foreground mt-0 mb-1.5') { training[:title] }
+      UI::Heading(level: 3, size: :subhead, class: 'mt-0 mb-1.5') { training[:title] }
       p(class: 'text-base leading-relaxed text-tertiary mt-0 mb-2') { training[:body] }
       ul(class: 'list-none p-0 mt-auto mb-0') do
         training[:rows].each do |row|
@@ -234,7 +234,7 @@ class Views::Join::Pricing < Views::Join::Base
   def render_rollout
     section(class: 'py-10') do
       div(class: 'container-public') do
-        h2(class: 'font-serif font-regular text-section text-foreground mt-0 mb-4') { t('join.rollout.heading') }
+        UI::Heading(class: 'mt-0 mb-4') { t('join.rollout.heading') }
         div(class: 'max-w-(--width-prose-lg)') do
           t('join.rollout.steps').each_with_index do |step, index|
             render_rollout_step(step, index)
@@ -257,7 +257,7 @@ class Views::Join::Pricing < Views::Join::Base
         image_tag(ROLLOUT_ART[index], alt: '', class: 'w-32 md:w-42 h-auto') if ROLLOUT_ART[index]
       end
       div(class: 'col-start-2 md:col-start-auto') do
-        h3(class: 'font-serif font-regular text-subhead text-foreground mt-0 mb-1') { step[:title] }
+        UI::Heading(level: 3, size: :subhead, class: 'mt-0 mb-1') { step[:title] }
         p(class: 'text-base leading-relaxed text-tertiary m-0') { step[:body] }
       end
     end
@@ -267,7 +267,7 @@ class Views::Join::Pricing < Views::Join::Base
   def render_faq
     section(class: 'py-10 bg-cream') do
       div(class: 'container-public') do
-        h2(class: 'font-serif font-regular text-section text-foreground mt-0 mb-4') { t('join.pricing.faq.heading') }
+        UI::Heading(class: 'mt-0 mb-4') { t('join.pricing.faq.heading') }
         div(class: 'max-w-(--width-prose-lg)') do
           t('join.pricing.faq.items').each_with_index do |item, index|
             details(class: 'group border-b-2 border-rules', open: index.zero?) do

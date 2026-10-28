@@ -40,9 +40,9 @@ class Views::Join::Audience < Views::Join::Base
     section(class: 'py-10') do
       div(class: 'container-public grid lg:grid-cols-[1.4fr_1fr] gap-10 items-start') do
         div do
-          h2(class: 'font-serif font-regular text-section text-foreground mt-0 mb-3') { t('join.audiences.how_heading') }
+          UI::Heading(class: 'mt-0 mb-3') { t('join.audiences.how_heading') }
           p(class: 'text-base leading-relaxed mt-0 mb-8') { t("#{prefix}.details") }
-          h2(class: 'font-serif font-regular text-section text-foreground mt-0 mb-4') { t('join.audiences.impact_heading') }
+          UI::Heading(class: 'mt-0 mb-4') { t('join.audiences.impact_heading') }
           t("#{prefix}.impact").each do |impact|
             Join::FeatureCard(title: impact[:title], body: impact[:body])
           end
@@ -79,7 +79,7 @@ class Views::Join::Audience < Views::Join::Base
       div(class: 'container-public') do
         div(class: 'text-center mb-6') do
           div(class: 'allcaps-label text-tertiary mb-1') { t('join.audiences.others.kicker') }
-          h2(class: 'font-serif font-regular text-section text-foreground m-0') { t('join.audiences.others.heading') }
+          UI::Heading(class: 'm-0') { t('join.audiences.others.heading') }
         end
         div(class: 'grid md:grid-cols-2 lg:grid-cols-3 gap-4') do
           others.first(3).each { |key| Join::AudienceCard(audience: key) }
