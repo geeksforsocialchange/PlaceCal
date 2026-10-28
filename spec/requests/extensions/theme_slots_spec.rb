@@ -44,7 +44,7 @@ RSpec.describe "Theme slots", type: :request do
 
     head = head_html
     expect(head).to match(%r{<link rel="stylesheet" href="/assets/example_theme/theme-[0-9a-f]+\.css" data-example-theme="head">})
-    expect(head.index("data-example-theme")).to be > head.index('media="print"')
+    expect(head.index("data-example-theme")).to be > head.index("/assets/public_tailwind-")
   end
 
   # theme.font_stylesheet: the preconnects, the preload and the stylesheet link
@@ -253,8 +253,8 @@ RSpec.describe "Theme slots", type: :request do
       expect(head).to match(%r{<link rel="icon" type="image/png" href="[^"]*/assets/favicon-[0-9a-f]+\.png">})
       expect(head).to match(%r{<link rel="apple-touch-icon" href="[^"]*/assets/apple-touch-icon-[0-9a-f]+\.png">})
       expect(head).to include('<meta property="og:image:height" content="630">')
-      chain = head.scan(%r{/assets/(application|public_tailwind|themes/pink|print)-[0-9a-f]+\.css}).flatten
-      expect(chain).to eq(%w[application public_tailwind themes/pink print])
+      chain = head.scan(%r{/assets/(application|public_tailwind|themes/pink)-[0-9a-f]+\.css}).flatten
+      expect(chain).to eq(%w[application public_tailwind themes/pink])
     end
 
     aggregate_failures "index chrome" do
