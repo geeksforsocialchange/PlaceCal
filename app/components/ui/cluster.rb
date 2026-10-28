@@ -18,7 +18,7 @@ class Components::UI::Cluster < Components::Base
   prop :attributes, Hash, :**
 
   def view_template(&)
-    css = ['flex *:my-0', (@wrap ? 'flex-wrap' : 'flex-nowrap'), GAPS[@gap], ROW_GAPS[@row_gap || @gap],
+    css = ['flex', (@wrap ? 'flex-wrap' : 'flex-nowrap'), GAPS[@gap], ROW_GAPS[@row_gap || @gap],
            JUSTIFY[@justify], ALIGN[@align], ('reset' if %i[ul ol].include?(@as)), @attributes[:class]]
     public_send(@as, class: css.compact.join(' '), **@attributes.except(:class), &)
   end
