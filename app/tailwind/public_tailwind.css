@@ -6,6 +6,8 @@
 */
 @import "tailwindcss" source(none);
 @import "./public/fonts.css";
+/* Leaflet's own CSS, kept unlayered so its rules sit where they did in the Sass build */
+@import "./vendor/leaflet.css";
 
 @source "../views/{directory,join,sites,shared,devise}/**/*.rb";
 @source "../views/layouts/application.rb";

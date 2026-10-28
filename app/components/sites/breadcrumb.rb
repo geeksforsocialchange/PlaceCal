@@ -12,9 +12,7 @@ class Components::Sites::Breadcrumb < Components::Base
   def view_template(&)
     div(class: 'breadcrumb flex flex-wrap text-sm mt-2 md:my-4 print:hidden') do
       div(class: "#{ELEMENT} gap-1 mr-2 max-md:hidden") do
-        span(class: 'breadcrumb__tagline') do
-          link_to(@site_name, '/', class: LINK)
-        end
+        link_to(@site_name, '/', class: LINK)
       end
       @trail.each do |link|
         div(class: "#{ELEMENT} gap-1 mr-2") do

@@ -73,13 +73,13 @@ class Views::Sites::News::Index < Views::Base
 
     newer_offset = [offset - NewsController::ARTICLES_PER_PAGE, 0].max
     href = newer_offset.zero? ? news_index_path : "#{news_index_path}?offset=#{newer_offset}"
-    link_to t('news.index.newer'), href, class: 'articles__pagination-newer'
+    link_to t('news.index.newer'), href
   end
 
   def render_older_link
     return unless has_more
 
     older_offset = offset + NewsController::ARTICLES_PER_PAGE
-    link_to t('news.index.older'), "#{news_index_path}?offset=#{older_offset}", class: 'articles__pagination-older'
+    link_to t('news.index.older'), "#{news_index_path}?offset=#{older_offset}"
   end
 end

@@ -60,6 +60,10 @@ RSpec.describe "Public Articles (News)", type: :request do
         end
       end
 
+      def pagination_link(doc, key)
+        doc.css("a").find { |a| a.text.strip == I18n.t("news.index.#{key}") }
+      end
+
       context "with fewer articles than one page" do
         before { create_published_articles(5) }
 
@@ -67,8 +71,8 @@ RSpec.describe "Public Articles (News)", type: :request do
           get news_index_url(host: "#{site.slug}.lvh.me")
 
           doc = Nokogiri::HTML(response.body)
-          expect(doc.at_css(".articles__pagination-newer")).to be_nil
-          expect(doc.at_css(".articles__pagination-older")).to be_nil
+          expect(pagination_link(doc, :newer)).to be_nil
+          expect(pagination_link(doc, :older)).to be_nil
         end
       end
 
@@ -79,9 +83,9 @@ RSpec.describe "Public Articles (News)", type: :request do
           get news_index_url(host: "#{site.slug}.lvh.me")
 
           doc = Nokogiri::HTML(response.body)
-          expect(doc.at_css(".articles__pagination-newer")).to be_nil
+          expect(pagination_link(doc, :newer)).to be_nil
 
-          older = doc.at_css(".articles__pagination-older")
+          older = pagination_link(doc, :older)
           expect(older).to be_present
           expect(older[:href]).to include("offset=#{NewsController::ARTICLES_PER_PAGE}")
         end
@@ -90,11 +94,11 @@ RSpec.describe "Public Articles (News)", type: :request do
           get news_index_url(host: "#{site.slug}.lvh.me", offset: NewsController::ARTICLES_PER_PAGE)
 
           doc = Nokogiri::HTML(response.body)
-          newer = doc.at_css(".articles__pagination-newer")
+          newer = pagination_link(doc, :newer)
           expect(newer).to be_present
           expect(newer[:href]).to eq(news_index_path)
 
-          expect(doc.at_css(".articles__pagination-older")).to be_nil
+          expect(pagination_link(doc, :older)).to be_nil
         end
       end
 
@@ -105,7 +109,7 @@ RSpec.describe "Public Articles (News)", type: :request do
           get news_index_url(host: "#{site.slug}.lvh.me", offset: NewsController::ARTICLES_PER_PAGE * 2)
 
           doc = Nokogiri::HTML(response.body)
-          newer = doc.at_css(".articles__pagination-newer")
+          newer = pagination_link(doc, :newer)
           expect(newer[:href]).to include("offset=#{NewsController::ARTICLES_PER_PAGE}")
         end
       end

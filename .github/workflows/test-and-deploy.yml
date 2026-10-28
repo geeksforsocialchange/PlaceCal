@@ -157,15 +157,15 @@ jobs:
 
       - name: Verify compiled CSS is not empty
         run: |
-          css_file="app/assets/builds/application.css"
+          css_file="app/assets/builds/public_tailwind.css"
           if [ ! -f "$css_file" ]; then
-            echo "ERROR: No compiled application.css found in app/assets/builds/"
+            echo "ERROR: No compiled public_tailwind.css found in app/assets/builds/"
             exit 1
           fi
           size=$(wc -c < "$css_file")
-          echo "application.css size: $size bytes"
-          if [ "$size" -lt 10000 ]; then
-            echo "ERROR: application.css is suspiciously small ($size bytes) — CSS compilation may have failed silently"
+          echo "public_tailwind.css size: $size bytes"
+          if [ "$size" -lt 30000 ]; then
+            echo "ERROR: public_tailwind.css is suspiciously small ($size bytes): CSS compilation may have failed silently"
             exit 1
           fi
 

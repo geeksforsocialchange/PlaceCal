@@ -30,17 +30,17 @@ class Components::Shared::Address < Components::Base
   # Apple Maps and OpenStreetMap only take coordinates, so without them Google stays the lone "Directions" link.
   def render_directions_link
     div(class: 'place_info__directions-list', role: 'group', aria_label: t('address.directions')) do
-      a(href: directions_url, class: 'place_info__directions', target: '_blank', rel: 'noopener') do
+      a(href: directions_url, target: '_blank', rel: 'noopener') do
         coordinates? ? t('address.google_maps') : t('address.directions')
       end
       next unless coordinates?
 
       whitespace
-      a(href: "https://maps.apple.com/?daddr=#{coordinates}", class: 'place_info__directions-apple separator-dot', target: '_blank', rel: 'noopener') do
+      a(href: "https://maps.apple.com/?daddr=#{coordinates}", class: 'separator-dot', target: '_blank', rel: 'noopener') do
         t('address.apple_maps')
       end
       whitespace
-      a(href: "https://www.openstreetmap.org/directions?to=#{coordinates}", class: 'place_info__directions-osm separator-dot', title: t('address.openstreetmap_full'), target: '_blank',
+      a(href: "https://www.openstreetmap.org/directions?to=#{coordinates}", class: 'separator-dot', title: t('address.openstreetmap_full'), target: '_blank',
         rel: 'noopener') do
         t('address.openstreetmap')
       end

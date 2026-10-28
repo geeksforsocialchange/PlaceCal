@@ -348,7 +348,7 @@ class Views::Sites::Events::Show < Views::Base
       component.with_link do
         contact = event.calendar&.contact_information
         if contact
-          div(class: 'contact_information') do
+          div do
             plain t('events.show.problem_prompt')
             mail_to contact[0],
                     t('events.show.problem_link'),
