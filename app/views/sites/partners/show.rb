@@ -207,12 +207,12 @@ class Views::Sites::Partners::Show < Views::Base
         end
         div do
           if place.address
-            h2(class: 'udl udl--fw allcaps h4 mb-0') { t('partners.show.address_heading') }
+            h2(class: 'udl udl--fw allcaps h4') { t('partners.show.address_heading') }
             div(class: 'small') do
               Shared::Address(address: place.address)
             end
           end
-          h2(class: 'udl udl--fw allcaps h4 mb-0') { t('partners.show.place_contact_heading') }
+          h2(class: 'udl udl--fw allcaps h4') { t('partners.show.place_contact_heading') }
           div(class: 'small') do
             Shared::ContactDetails(partner: place)
           end
