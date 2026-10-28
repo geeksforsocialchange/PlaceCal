@@ -14,7 +14,8 @@ class Components::Shared::Impressum < Components::Base
       div(class: 'flex justify-between flex-wrap gap-2') do
         span { copyright }
         span do
-          plain "#{t('colophon.build')} "
+          plain t('colophon.build')
+          whitespace
           UI::Link(href: AppVersion.url, tone: :muted) { AppVersion.label(fallback: 'main') }
         end
       end
@@ -28,16 +29,17 @@ class Components::Shared::Impressum < Components::Base
   end
 
   def render_company_details
-    p do
+    p(class: 'my-2') do
       plain copyright
       br
       plain t('colophon.company')
       br
       plain t('colophon.address')
     end
-    p do
-      plain "#{t('colophon.build')} "
-      tag.tt { link_to(AppVersion.label(fallback: 'main'), AppVersion.url) }
+    p(class: 'my-2') do
+      plain t('colophon.build')
+      whitespace
+      tag.tt { link_to(AppVersion.label(fallback: 'main'), AppVersion.url, class: UI::Link.css(tone: :inherit)) }
     end
   end
 
