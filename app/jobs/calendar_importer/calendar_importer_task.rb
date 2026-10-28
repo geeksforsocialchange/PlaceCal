@@ -64,8 +64,8 @@ class CalendarImporter::CalendarImporterTask
 
   # Attempt to create each event
   def process_event(parsed_event)
-    return if parsed_event.is_private?
-    return if parsed_event.has_no_occurences?
+    return if parsed_event.private?
+    return if parsed_event.no_occurences?
 
     parsed_event.determine_online_location
 

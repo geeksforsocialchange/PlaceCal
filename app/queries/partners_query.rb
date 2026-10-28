@@ -31,7 +31,7 @@ class PartnersQuery
 
     neighbourhoods = partners.to_h do |partner|
       hood = partner.address&.neighbourhood
-      hood ||= partner.service_area_neighbourhoods.first if partner.has_service_areas?
+      hood ||= partner.service_area_neighbourhoods.first if partner.service_areas?
       [partner.id, hood]
     end
 

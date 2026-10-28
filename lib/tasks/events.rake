@@ -27,7 +27,7 @@ namespace :events do
 
     Calendar.find_each do |calendar|
       calendar.update calendar_state: :in_queue, import_job_id: nil
-      CalendarImporterJob.perform_now calendar.id, from, force_import, silence_db_exceptions
+      CalendarImporterJob.perform_now calendar.id, from, force_import, silence_db_exceptions:
 
     rescue StandardError => e
       puts "\n"

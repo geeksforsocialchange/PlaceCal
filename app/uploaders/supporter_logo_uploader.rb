@@ -3,14 +3,14 @@
 # app/uploaders/supporter_logo_uploader.rb
 class SupporterLogoUploader < DefaultUploader
   # Process files as they are uploaded:
-  process resize_to_fit: [200, 200], if: :is_raster?
+  process resize_to_fit: [200, 200], if: :raster?
   #
   # def scale(width, height)
   #   # do something
   # end
 
   # Create different versions of your uploaded files:
-  version :standard, if: :is_raster? do
+  version :standard, if: :raster? do
     process resize_to_fit: [100, 100]
   end
 
@@ -28,7 +28,7 @@ class SupporterLogoUploader < DefaultUploader
 
   private
 
-  def is_raster?(new_file)
+  def raster?(new_file)
     File.extname(new_file.file) != '.svg'
   end
 end

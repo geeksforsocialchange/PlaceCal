@@ -26,6 +26,7 @@ AllCops:
     - "vendor/**/*"
     - ".git/**/*"
     - "db/schema.rb"
+    - "db/migrate/**/*" # migrations are history, not rewritten
     - "doc/ai/plugins/**/*" # vendored AI tooling scripts, not app code
 
 # =============================================================================
@@ -62,8 +63,6 @@ Layout/LineContinuationSpacing:
 
 Layout/LineLength:
   Max: 200
-  Exclude:
-    - "db/migrate/**/*"
 
 # Enforce consistent section ordering in model files.
 # Maps to the section template defined in #3081.
@@ -232,6 +231,11 @@ Metrics/PerceivedComplexity:
 Naming/MemoizedInstanceVariableName:
   Exclude:
     - "app/components/**/*.rb"
+
+# ajax-datatables-rails calls get_raw_records by that name
+Naming/AccessorMethodName:
+  Exclude:
+    - "app/datatables/**/*.rb"
 
 Naming/BlockForwarding:
   Enabled: false

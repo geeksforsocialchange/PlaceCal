@@ -98,7 +98,7 @@ module CalendarImporter::Events
 
     def publisher_url; end
 
-    def has_location?
+    def location?
       location.present?
     end
 

@@ -46,11 +46,11 @@ class Views::Directory::Partners::Show < Views::Sites::Partners::Show
   end
 
   def render_directory_location
-    return unless partner.address || map || partner.has_service_areas?
+    return unless partner.address || map || partner.service_areas?
 
     div(class: 'py-4') do
       h2(class: 'udl udl--fw allcaps text-xl') { t('directory.partners.show.location') }
-      p(class: 'mb-3') { t('directory.partners.show.serves', area: partner_service_area_text(partner)) } if partner.has_service_areas?
+      p(class: 'mb-3') { t('directory.partners.show.serves', area: partner_service_area_text(partner)) } if partner.service_areas?
       div(class: 'grid grid-cols-[1fr_auto] gap-4 items-start') do
         Shared::Map(points: map, compact: true) if map
         Shared::Address(address: partner.address) if partner.address

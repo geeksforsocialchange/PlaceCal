@@ -6,6 +6,8 @@
 class CalendarImporter::EventResolver
   attr_reader :data, :uid, :notices, :calendar
 
+  delegate :private?, to: :data
+
   def initialize(event_data, calendar, notices, from_date)
     @data = event_data
     @uid = data.uid
@@ -14,11 +16,7 @@ class CalendarImporter::EventResolver
     @from_date = from_date
   end
 
-  def is_private?
-    data.private?
-  end
-
-  def has_no_occurences?
+  def no_occurences?
     occurences.none?
   end
 

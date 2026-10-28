@@ -151,7 +151,7 @@ class Views::Sites::Partners::Show < Views::Base
 
   def render_address
     h2(class: 'udl udl--fw allcaps h4') { t('partners.show.address_heading') }
-    if partner.has_service_areas?
+    if partner.service_areas?
       p(class: 'place_info__service_area') do
         raw(t('partners.show.service_area_html', areas: partner_service_area_text(partner)))
       end

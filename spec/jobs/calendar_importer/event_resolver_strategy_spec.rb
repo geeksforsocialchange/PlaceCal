@@ -25,7 +25,7 @@ RSpec.describe CalendarImporter::LocationResolver do
     :rrule,
     :last_modified,
     :ocurrences_between,
-    :has_location?,
+    :location?,
     :postcode
   )
 
@@ -47,7 +47,7 @@ RSpec.describe CalendarImporter::LocationResolver do
       rrule: "",
       last_modified: "",
       ocurrences_between: [[start_date, end_date]],
-      has_location?: true,
+      location?: true,
       postcode: ""
     )
   end

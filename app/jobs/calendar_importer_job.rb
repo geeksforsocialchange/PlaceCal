@@ -64,7 +64,7 @@ class CalendarImporterJob < ApplicationJob
   # Imports all events from a given calendar
   # @param calendar_id [int] The ID of the Calendar object to import from
   # @param from_date [Date] The Date from which to import from
-  def perform(calendar_id, from_date, force_import, silence_db_exceptions = false)
+  def perform(calendar_id, from_date, force_import, silence_db_exceptions: false)
     Calendar.record_timestamps = false
 
     @silence_db_exceptions = silence_db_exceptions

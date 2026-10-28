@@ -8,13 +8,11 @@ module MapMarkers
   #
   # parameters:
   #   @locations - Array of Partners, Addresses or Events
-  #   @addresses_only - boolean whether to skip partners that
-  #     have no service areas
   #
   # returns:
   #   Array of Hashes to be consumed by the JS map front end
   #
-  def get_map_markers(locations, addresses_only = false)
+  def get_map_markers(locations)
     # Events
     locations = locations.map do |loc|
       next loc unless loc.is_a?(Event)
@@ -28,11 +26,6 @@ module MapMarkers
 
       # reject partner with no resolvable address
       next if loc.address.nil? || loc.address.latitude.blank?
-
-      if addresses_only && loc.service_areas.any?
-        # reject partner if they have any service areas?
-        next
-      end
 
       {
         lat: loc.address.latitude,
