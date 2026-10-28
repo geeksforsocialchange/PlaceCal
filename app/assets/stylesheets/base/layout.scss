@@ -17,5 +17,9 @@ $bg-offset: 725px;
 				calc(50% + #{$bg-offset}) $bg-top;
 			background-repeat: no-repeat, no-repeat;
 		}
+
+		@media print {
+			background: none;
+		}
 	}
 }

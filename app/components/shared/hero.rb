@@ -22,7 +22,7 @@ class Components::Shared::Hero < Components::Base
   end
 
   def view_template
-    div(class: 'hero hero-pattern bg-primary text-center pt-8 pb-4 print:hidden') do
+    div(class: 'hero hero-pattern bg-primary text-center pt-8 pb-4 print:bg-none print:bg-transparent') do
       div(class: 'container-public') do
         render_back if @back
         p(class: 'hero__section') { @section } if @section.present?
@@ -46,7 +46,7 @@ class Components::Shared::Hero < Components::Base
 
   def render_back
     label, path = @back
-    link_to(label, path, class: 'hero__back block w-fit mx-auto mb-2 text-sm')
+    link_to(label, path, class: 'hero__back block w-fit mx-auto mb-2 text-sm print:hidden')
   end
 
   # The title is user or feed supplied (partner names, event summaries, article
