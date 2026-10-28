@@ -15,11 +15,6 @@
 	}
 }
 
-h1.sans {
-	font-family: $sans-serif;
-	font-weight: $bold;
-}
-
 // Main page sections
 
 .h2--alt {
@@ -49,26 +44,9 @@ h1.sans {
 	margin: 3rem 0;
 }
 
-.slightly-smaller {
-	font-size: 0.8888889rem;
-}
-
 .small {
 	font-size: $small-font-size;
 	line-height: 1.5;
-}
-
-.center {
-	text-align: center;
-}
-
-.serif {
-	font-family: $serif;
-	font-weight: normal;
-}
-
-h2.serif {
-	font-size: 1.4444444rem;
 }
 
 // Partner page section headings are h2s for heading order, drawn at the h3 size
@@ -118,84 +96,15 @@ hr {
 	line-height: 1.3;
 }
 
-// Alternate one for region home pages
-.first-ele-h3 > p:first-child {
-	font-size: $h3-size;
-	font-weight: $bold;
-	margin-top: 0;
-}
-
 .first-ele-h3-serif > p:first-child {
 	font-size: $h3-size;
 	font-family: $serif;
 	margin-top: 0;
 }
 
-.p--mega {
-	font-size: $h3-size;
-
-	@include for-tablet-portrait-up {
-		font-size: $h2-size;
-		line-height: 1.25;
-	}
-
-	font-family: $serif;
-	font-weight: normal;
-}
-
-.space-big {
-	margin-top: 3rem;
-	margin-bottom: 3rem;
-}
-
-.space-before {
-	margin-top: 2rem;
-}
-
 // TODO: refactor
 h2.place__title {
 	margin-bottom: 0.5rem;
-}
-
-.url a {
-	word-wrap: break-word;
-}
-
-// Suggested linebreaks
-.break {
-	@include for-desktop-up {
-		display: block;
-	}
-}
-
-.fc-primary {
-	color: $base-primary !important;
-}
-
-.fc-text {
-	color: $base-text !important;
-}
-
-br.tablet-up {
-	@include for-phone-only {
-		display: none;
-	}
-}
-
-br.mobile-only {
-	display: none;
-
-	@include for-phone-only {
-		display: block;
-	}
-}
-
-br.half {
-	font-size: 0.5rem;
-}
-
-.regular-links a {
-	font-weight: $regular;
 }
 
 @layer legacy {
