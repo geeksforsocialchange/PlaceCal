@@ -592,6 +592,11 @@ en:
         heading: "Rather just email?"
         body: "Write to %{site} directly and we'll pick it up from there."
 
+  shared:
+    resource_not_found:
+      title: "Not found"
+      body: "The page you were looking for does not exist"
+
   # ===========================================================================
   # EVENT EXPORTS (shared by local sites and the directory)
   # ===========================================================================
