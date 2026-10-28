@@ -153,7 +153,6 @@ jobs:
       - name: Build assets
         run: |
           bin/yarn run build:all
-          bin/rails dartsass:build
 
       - name: Verify compiled CSS is not empty
         run: |

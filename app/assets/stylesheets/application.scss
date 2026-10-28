@@ -1,5 +1,0 @@
-// Bare element rules sit in the legacy layer: above Tailwind's base, below its utilities.
-// properties comes first so Safari's --tw-* defaults can't outrank the utilities that set them.
-@layer properties, theme, base, legacy, components, utilities;
-
-@import "globals";

@@ -132,4 +132,52 @@
 		display: inline;
 		vertical-align: baseline;
 	}
+
+	/* Element rules from the retired Sass build; they come last so they win over the defaults above */
+	body {
+		margin: 0;
+		color: var(--color-foreground);
+		background-color: var(--color-tertiary-light);
+		@media (width >= theme(--breakpoint-xl)) {
+			background-image:
+				url("/images/patterns/widescreen.svg"),
+				url("/images/patterns/widescreen.svg");
+			background-position:
+				calc(50% - 725px) 103px,
+				calc(50% + 725px) 103px;
+			background-repeat: no-repeat, no-repeat;
+		}
+		@media print {
+			background: none;
+		}
+	}
+	h1 {
+		font-family: var(--font-serif);
+		font-weight: normal;
+		font-size: var(--text-3xl);
+		line-height: 1;
+		@media (width >= theme(--breakpoint-md)) {
+			line-height: 1.25;
+		}
+	}
+	hr {
+		border: 5px solid var(--color-rules);
+	}
+	input {
+		font-family: var(--font-sans);
+		font-size: inherit;
+	}
+	img {
+		max-width: 100%;
+		max-height: 100%;
+	}
+	button {
+		font-size: 100%;
+		margin: 0;
+		overflow: visible;
+		text-transform: none;
+		-webkit-appearance: button;
+		cursor: pointer;
+		border: 0;
+	}
 }

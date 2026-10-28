@@ -5,9 +5,8 @@
 # config/application.rb so that extension engines, whose initializers run
 # before this file, can register into it.
 #
-# Each built-in stylesheet is app/assets/stylesheets/themes/<name>.scss,
-# built by dartsass (config/initializers/dartsass.rb), with a matching
-# public/map-styles/<name>.json.
+# Each built-in stylesheet is app/assets/stylesheets/themes/<name>.css, with a
+# matching public/map-styles/<name>.json.
 # A local, not a top-level constant: nothing outside this file needs it.
 theme_colors = {
   pink: '#f19089',

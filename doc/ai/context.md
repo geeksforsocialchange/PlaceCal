@@ -125,11 +125,12 @@ Both admin and public interfaces use **importmap-rails** with native ES modules 
 - Referenced directly via `<link>` tag in `app/views/layouts/admin/application.html.erb`
 - New Tailwind classes only work after rebuilding CSS (Tailwind scans templates)
 
-### SCSS (Public site)
+### Tailwind CSS (Public site)
 
-- **Source**: `app/assets/stylesheets/application.scss`
-- **Vendor CSS**: `vendor/assets/stylesheets/` (e.g., maplibre-gl.css)
-- Processed by Sprockets (no separate build command)
+- **Source**: `app/tailwind/public_tailwind.css` (tokens in `app/tailwind/public/_theme.css`, named utilities in `_utilities.css`, the few unlayered rules in `_components.css`, Leaflet's CSS in `app/tailwind/vendor/leaflet.css`)
+- **Output**: `app/assets/builds/public_tailwind.css`, built by `yarn build`
+- **Colour themes**: `app/assets/stylesheets/themes/<name>.css`, plain CSS custom properties served by Propshaft
+- MapLibre's CSS is `public/vendor/maplibre-gl.css`, loaded by the map's Stimulus controller
 
 ### Common Issues
 

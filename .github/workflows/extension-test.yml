@@ -171,7 +171,6 @@ jobs:
         working-directory: PlaceCal
         run: |
           bin/yarn run build:all
-          bin/rails dartsass:build
 
       # No yarn cache here: the post-job save would collide with the key the
       # core step above already saved under, and log a cache warning for
