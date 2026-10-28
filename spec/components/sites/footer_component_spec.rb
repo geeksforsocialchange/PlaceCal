@@ -47,7 +47,7 @@ RSpec.describe Components::Sites::Footer, type: :component do
     # (SiteNavigation), so the spec constructs one the same way.
     def footer_nav_labels(navigation)
       render_inline(described_class.new(site, navigation:))
-      page.all(".footer__nav nav ul li a").map(&:text)
+      page.all("footer nav ul li a").map(&:text)
     end
 
     context "with news, an in-nav page and a join link" do
@@ -108,7 +108,7 @@ RSpec.describe Components::Sites::Footer, type: :component do
         footer_nav_labels(navigation)
 
         expect(page).to have_css(
-          ".footer__nav nav a[href='/events?region=hulme']",
+          "footer nav a[href='/events?region=hulme']",
           text: I18n.t("navigation.site.events")
         )
       end
@@ -122,7 +122,7 @@ RSpec.describe Components::Sites::Footer, type: :component do
 
         expect(labels.count("Privacy notice")).to eq(1)
         expect(labels).not_to include(I18n.t("navigation.site.privacy"))
-        expect(page).to have_css(".footer__nav nav a[href='/privacy']", text: "Privacy notice")
+        expect(page).to have_css("footer nav a[href='/privacy']", text: "Privacy notice")
       end
     end
   end
@@ -131,7 +131,7 @@ RSpec.describe Components::Sites::Footer, type: :component do
     it "falls back to the links every site nav opens with, plus the fixed tail" do
       render_inline(described_class.new(nil))
 
-      expect(page.all(".footer__nav nav ul li a").map(&:text)).to eq(
+      expect(page.all("footer nav ul li a").map(&:text)).to eq(
         [
           I18n.t("navigation.site.home"),
           I18n.t("navigation.site.events"),

@@ -17,7 +17,7 @@ class Components::Sites::EventFilter < Components::Base
   prop :query, _Nilable(::EventsQuery), default: nil
 
   # Hidden behind its button; on touch it covers the button so a tap opens the native picker, which iOS won't do from script.
-  DATE_INPUT = 'filters__date-input absolute opacity-0 size-0 pointer-events-none pointer-coarse:inset-0 pointer-coarse:size-full pointer-coarse:pointer-events-auto'
+  DATE_INPUT = 'absolute opacity-0 size-0 pointer-events-none pointer-coarse:inset-0 pointer-coarse:size-full pointer-coarse:pointer-events-auto'
   DROPDOWN_RULE = 'border-0 border-t-3'
 
   # Today, tomorrow and five more days (D22).
@@ -76,7 +76,7 @@ class Components::Sites::EventFilter < Components::Base
   # already carries a Today button of its own.
   def render_date_toggle
     div(class: "#{Sites::Filter::TOGGLE} pointer-coarse:relative", data: { controller: 'date-picker' }) do
-      render_goto_date_button(button_class: 'filters__toggle-button filters__toggle-button--date',
+      render_goto_date_button(button_class: 'filters__toggle-button--date',
                               label: t('filters.pick_a_date'))
       render_date_picker_fields
     end
@@ -85,7 +85,7 @@ class Components::Sites::EventFilter < Components::Base
   def render_today_link
     return if @today
 
-    link_to(t('filters.today'), @today_url, class: "#{Sites::Breadcrumb::LINK} filters__link filters__link--today mr-2", data: { turbo_frame: 'events-browser', turbo_action: 'advance' })
+    link_to(t('filters.today'), @today_url, class: "#{Sites::Breadcrumb::LINK} filters__link mr-2", data: { turbo_frame: 'events-browser', turbo_action: 'advance' })
   end
 
   def render_goto_date_button(button_class: nil, label: t('filters.go_to_date'))
@@ -226,8 +226,7 @@ class Components::Sites::EventFilter < Components::Base
   end
 
   def build_sort_toggle
-    button_class = 'filters__toggle-button filters__toggle-button--filters' if day_strip_with_date_picker?
-    button_class = "#{button_class} filters__toggle-button--active".strip if filters_active?
+    button_class = 'filters__toggle-button--active' if filters_active?
     view_context.content_tag(:div, class: Sites::Filter::TOGGLE) do
       view_context.content_tag(:button, type: 'button', class: [button_class, Sites::Filter::TOGGLE_BUTTON].compact.join(' '), data: { action: 'click->filters#toggle' }) do
         safe_join([view_context.icon(:triangle_down, size: nil, css_class: Sites::Filter::TOGGLE_ICON), ' ',
@@ -248,7 +247,7 @@ class Components::Sites::EventFilter < Components::Base
     return if parts.empty?
 
     div(class: 'filters__applied') do
-      span(class: 'filters__applied-text') { parts.join(', ') }
+      span { parts.join(', ') }
       link_to(t('filters.applied.reset'), "#{events_path(**region_params)}#paginator",
               class: "#{Sites::Breadcrumb::LINK} filters__applied-reset", data: { turbo_frame: 'events-browser', turbo_action: 'advance' })
     end
@@ -300,14 +299,14 @@ class Components::Sites::EventFilter < Components::Base
   end
 
   def render_sort_group
-    view_context.content_tag(:div, class: 'filters__group filters__group--sort') do
+    view_context.content_tag(:div, class: 'filters__group') do
       render_radio('sort', 'time', @sort == 'time', t('filters.sort.time')) +
         render_radio('sort', 'summary', @sort == 'summary', t('filters.sort.summary'))
     end
   end
 
   def render_period_group
-    view_context.content_tag(:div, class: 'filters__group filters__group--period') do
+    view_context.content_tag(:div, class: 'filters__group') do
       buf = render_radio('period', 'day', @period == 'day', t('filters.period.day')) +
             render_radio('period', 'week', @period == 'week', t('filters.period.week'))
       buf += render_radio('period', 'month', @period == 'month', t('filters.period.month')) if @show_monthly
@@ -316,7 +315,7 @@ class Components::Sites::EventFilter < Components::Base
   end
 
   def render_repeating_group
-    view_context.content_tag(:div, class: 'filters__group filters__group--repeating') do
+    view_context.content_tag(:div, class: 'filters__group') do
       render_radio('repeating', 'on', @repeating == 'on', t('filters.repeating.on')) +
         render_radio('repeating', 'off', @repeating == 'off', t('filters.repeating.off')) +
         render_radio('repeating', 'only', @repeating == 'only', t('filters.repeating.only'))

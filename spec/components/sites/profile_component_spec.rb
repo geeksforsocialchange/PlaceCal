@@ -47,11 +47,11 @@ RSpec.describe Components::Sites::Profile, type: :component do
     end
   end
 
-  it "renders profile structure" do
+  it "renders the heading and an email link" do
     render_inline(described_class.new(user:))
 
     expect(page).to have_css(".profile")
-    expect(page).to have_css(".profile__title")
-    expect(page).to have_css(".profile__details")
+    expect(page).to have_css("h3", text: I18n.t("components.profile.heading"))
+    expect(page).to have_link("jane@example.com", href: "mailto:jane@example.com")
   end
 end

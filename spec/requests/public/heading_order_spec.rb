@@ -50,7 +50,7 @@ RSpec.describe "Site page heading order", type: :request do
       footer_headings = document.css("footer h1, footer h2, footer h3, footer h4, footer h5, footer h6")
 
       expect(footer_headings.map(&:name).uniq).to eq(["h2"])
-      expect(footer_headings.map { |h| h["class"] }).to all(include("footer__heading"))
+      expect(footer_headings.map(&:text)).to include(I18n.t("footer.site_navigation"), I18n.t("footer.general_enquiries"))
     end
   end
 

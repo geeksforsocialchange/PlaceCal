@@ -4,14 +4,13 @@ class Components::Sites::HelpCard < Components::Base
   # Copy lives under help_card.<variant>.* in config/locales/en.yml so a theme
   # can override it; only the structure is held here.
   VARIANTS = {
-    computer_access: { css_class: 'help__computer_access', description: true },
-    free_wifi: { css_class: 'help__free_public_wifi', description: false },
+    computer_access: { description: true },
+    free_wifi: { description: false },
     getting_help: {
-      css_class: 'help__getting_help',
       description: true,
       link_url: 'https://handbook.placecal.org'
     },
-    adding_events: { css_class: 'help__adding_events', description: true }
+    adding_events: { description: true }
   }.freeze
 
   COMPUTER_SVG = <<~SVG
@@ -92,7 +91,7 @@ class Components::Sites::HelpCard < Components::Base
     config = VARIANTS.fetch(@variant)
     return if @variant == :adding_events && !@site&.site_admin
 
-    div(class: "help #{config[:css_class]} text-center mb-12") do
+    div(class: 'help text-center mb-12') do
       raw(safe(SVGS.fetch(@variant)))
 
       UI::RuledHeading(level: 3, caps: true, tone: :secondary, class: 'text-base my-8') { variant_t(:title) }
