@@ -53,7 +53,7 @@ class Views::Sites::Default < Views::Base
   def render_about
     section(class: 'bg-rules text-center pb-4') do
       div(class: 'bg-rules py-2') do
-        UI::RuledHeading(caps: true, tone: :background, class: 'text-base') { t('sites.home.about_us') }
+        UI::RuledHeading(caps: true, tone: :background, size: :sm) { t('sites.home.about_us') }
       end
       div(class: 'container-narrow first-p:mt-0 first-p:font-serif first-p:text-xl') do
         raw safe(site.description_html.to_s)
