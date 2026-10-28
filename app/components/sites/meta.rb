@@ -17,7 +17,7 @@ class Components::Sites::Meta < Components::Base
   def view_template
     yield self if block_given?
 
-    div(class: 'meta text-sm leading-normal bg-rules py-8') do
+    div(class: 'meta text-sm leading-normal bg-rules py-8 print:hidden') do
       div(class: 'container-public flex flex-wrap items-baseline gap-x-6') do
         raw(view_context.capture(&@link_content)) if @link_content
         if @permalink

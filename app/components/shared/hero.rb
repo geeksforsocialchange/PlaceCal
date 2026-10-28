@@ -22,7 +22,7 @@ class Components::Shared::Hero < Components::Base
   end
 
   def view_template
-    div(class: 'hero hero-pattern bg-primary text-center pt-8 pb-4') do
+    div(class: 'hero hero-pattern bg-primary text-center pt-8 pb-4 print:hidden') do
       div(class: 'container-public') do
         render_back if @back
         p(class: 'hero__section') { @section } if @section.present?

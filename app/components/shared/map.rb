@@ -11,7 +11,7 @@ class Components::Shared::Map < Components::Base
     return if @points.blank?
 
     div(
-      class: @compact ? 'min-h-(--height-map-compact)' : 'min-h-(--height-map-full)',
+      class: "#{@compact ? 'min-h-(--height-map-compact)' : 'min-h-(--height-map-full)'} print:hidden",
       data_controller: 'leaflet',
       data_leaflet_args_value: args_for_map(@points, @style, @compact)
     )

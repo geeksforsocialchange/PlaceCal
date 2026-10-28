@@ -326,7 +326,7 @@ class Views::Sites::Partners::Show < Views::Base
     path = "partners/#{partner.slug}/events"
     today = Time.zone.today
     filter_period = date_period || period
-    div(class: 'paginator leading-snug', id: 'paginator') do
+    div(class: 'paginator leading-snug print:hidden', id: 'paginator') do
       Sites::Timeline(
         pointer: current_day,
         period:,

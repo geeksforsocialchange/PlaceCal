@@ -10,7 +10,7 @@ class Components::Sites::Breadcrumb < Components::Base
   LINK = 'with-no-sass text-foreground no-underline border-b-2 border-rules-dark'
 
   def view_template(&)
-    div(class: 'breadcrumb flex flex-wrap text-sm mt-2 md:my-4') do
+    div(class: 'breadcrumb flex flex-wrap text-sm mt-2 md:my-4 print:hidden') do
       div(class: "#{ELEMENT} gap-1 mr-2 max-md:hidden") do
         span(class: 'breadcrumb__tagline') do
           link_to(@site_name, '/', class: LINK)
