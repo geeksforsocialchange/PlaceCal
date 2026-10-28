@@ -81,6 +81,7 @@
 	--text-display: clamp(1.8rem, 3.6vw, 2.5rem);
 
 	/* app/assets/stylesheets/variables/typography.scss */
+	--tracking-normal: normal;
 	--tracking-wide: 0.16667rem;
 	--leading-hero: 1.05;
 	--leading-tight: 1.15;
@@ -223,6 +224,7 @@ this file).
 	--text-hero: var(--text-hero);
 	--text-display: var(--text-display);
 
+	--tracking-normal: var(--tracking-normal);
 	--tracking-wide: var(--tracking-wide);
 	--leading-hero: var(--leading-hero);
 	--leading-tight: var(--leading-tight);

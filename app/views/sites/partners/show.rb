@@ -29,6 +29,19 @@ class Views::Sites::Partners::Show < Views::Base
   prop :events_total_count, _Nilable(Integer), reader: :private, default: nil
   prop :events_total_days, _Nilable(Integer), reader: :private, default: nil
 
+  # Themes style the events section themselves; these are the built-in themes' look.
+  CORE_EVENTS = {
+    header: 'flex flex-wrap items-center gap-y-2 gap-x-6 mt-8 mb-2 pb-2 border-b-3 border-rules',
+    heading: 'allcaps text-xl m-0',
+    count: 'hidden',
+    repeating_filter: 'ml-auto',
+    label: 'inline-flex items-center gap-2 text-sm allcaps whitespace-nowrap',
+    repeating: 'select-caret appearance-none py-1 pl-3 pr-9 border-2 border-primary rounded-check bg-background text-foreground ' \
+               'font-sans text-sm font-bold normal-case tracking-normal cursor-pointer',
+    actions: 'flex justify-center mt-6',
+    more: 'with-no-sass py-1 px-3.5 border-2 border-primary rounded-check bg-primary text-foreground text-sm font-bold no-underline'
+  }.freeze
+
   def view_template
     set_content_for_tags
     render_local_layout
@@ -234,7 +247,8 @@ class Views::Sites::Partners::Show < Views::Base
           show_neighbourhoods: site.show_neighbourhoods?,
           badge_zoom_level: site.badge_zoom_level&.to_s,
           site_tagline: site.tagline,
-          context_partner: partner
+          context_partner: partner,
+          nested: site.core_theme?
         )
       else
         p { em { no_event_message || empty_period_message } }
@@ -247,15 +261,19 @@ class Views::Sites::Partners::Show < Views::Base
   def render_events_actions
     return unless more_days.positive?
 
-    div(class: 'partner-events__actions') { render_show_more_days }
+    div(class: events_class(:actions)) { render_show_more_days }
   end
 
   def render_events_header
-    div(class: 'partner-events__header') do
-      h2(class: 'partner-events__heading') { t('partners.show.upcoming_events') }
-      span(class: 'partner-events__count') { events_count_text }
+    div(class: events_class(:header)) do
+      h2(class: events_class(:heading)) { t('partners.show.upcoming_events') }
+      span(class: events_class(:count)) { events_count_text }
       render_repeating_filter
     end
+  end
+
+  def events_class(part)
+    ["partner-events__#{part.to_s.dasherize}", (CORE_EVENTS[part] if site.core_theme?)].compact.join(' ')
   end
 
   def events_count_text
@@ -265,7 +283,7 @@ class Views::Sites::Partners::Show < Views::Base
   end
 
   def render_repeating_filter
-    div(class: 'partner-events__repeating-filter', data: { controller: 'filters' }) do
+    div(class: events_class(:repeating_filter), data: { controller: 'filters' }) do
       form_tag('', method: :get, class: 'partner-events__repeating-form', enforce_utf8: false,
                    data: { turbo_frame: 'events-browser', turbo_action: 'advance',
                            filters_target: 'form', action: 'change->filters#submit' }) do
@@ -275,9 +293,9 @@ class Views::Sites::Partners::Show < Views::Base
         # The select is wrapped in its label (implicit association) rather
         # than paired by id: the paginator's own repeating radios reuse
         # "repeating"-derived ids, and this form can render alongside them.
-        label do
+        label(class: (CORE_EVENTS[:label] if site.core_theme?)) do
           plain t('partners.show.show_label')
-          select_tag(:repeating, class: 'partner-events__repeating', id: nil) do
+          select_tag(:repeating, class: events_class(:repeating), id: nil) do
             options_for_select(repeating_options, repeating)
           end
         end
@@ -291,7 +309,7 @@ class Views::Sites::Partners::Show < Views::Base
 
   def render_show_more_days
     count = [more_days, 4].min
-    a(href: show_more_days_url, class: 'partner-events__more', data: { turbo_frame: 'events-browser' }) do
+    a(href: show_more_days_url, class: events_class(:more), data: { turbo_frame: 'events-browser' }) do
       t('partners.show.show_more_days', count:)
     end
   end

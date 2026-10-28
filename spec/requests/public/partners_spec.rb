@@ -435,7 +435,7 @@ RSpec.describe "Public Partners", type: :request do
       it "shows a repeating select with the filters.repeating options" do
         get partner_url(partner, host: "#{site.slug}.lvh.me")
 
-        expect(response.body).to include(%(class="partner-events__repeating"))
+        expect(response.body).to match(/<select[^>]*name="repeating"/)
         expect(response.body).to include("All events")
         expect(response.body).to include("Only one-off events")
         expect(response.body).to include("Only repeating events")
