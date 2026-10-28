@@ -101,10 +101,11 @@ class TokensPreview < Lookbook::Preview
       when :colour
         div(class: "h-12 rounded-sm border border-foreground/15", style: "background: var(--color-#{name})")
       when :radius
-        css = name.start_with?("shadow-") ? "box-shadow: var(--#{name})" : "border-radius: var(--radius-#{name}); border: 2px solid currentColor"
-        div(style: "width: 8rem; height: 4rem; background: var(--color-surface, #fff); #{css}")
+        shadow = name.start_with?("shadow-")
+        div(class: ["w-32 h-16 bg-surface", ("border-2 border-current" unless shadow)].compact.join(" "),
+            style: shadow ? "box-shadow: var(--#{name})" : "border-radius: var(--radius-#{name})")
       when :measure
-        div(style: "width: min(#{value}, 100%); height: 0.75rem; background: var(--color-primary); border-radius: 999px")
+        div(class: "h-3 rounded-pill bg-primary", style: "width: min(#{value}, 100%)")
       end
     end
   end
