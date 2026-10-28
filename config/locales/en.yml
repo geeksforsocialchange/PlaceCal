@@ -82,6 +82,9 @@ en:
       skip_to_next: "Skip to next date with events."
     profile:
       heading: "Your local contact"
+      call_on: "Call on"
+      or_email: "Or send an email to"
+      email: "Email"
     hero_section:
       image_credit: "Image credit: %{credit}"
     details:
