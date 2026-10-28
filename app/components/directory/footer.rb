@@ -53,7 +53,7 @@ class Components::Directory::Footer < Components::Directory::Base
         links.each do |label, target|
           li do
             href = target.is_a?(Symbol) ? send(target) : target
-            link_to(label, href, class: 'font-serif text-detail text-foreground no-underline hover:underline hover:decoration-primary')
+            UI::Link(href:, variant: :quiet, class: 'font-serif text-detail') { label }
           end
         end
       end

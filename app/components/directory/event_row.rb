@@ -55,9 +55,7 @@ class Components::Directory::EventRow < Components::Directory::Base
       render_icon(:event_place)
       partner = @event.partner_at_location
       if partner
-        link_to(partner.name.truncate(30), partner_path(partner),
-                class: 'text-foreground underline decoration-primary decoration-2 underline-offset-2 hover:text-foreground/80',
-                data: { turbo_frame: '_top' })
+        UI::Link(href: partner_path(partner), data: { turbo_frame: '_top' }) { partner.name.truncate(30) }
       elsif @event.address&.street_address
         plain @event.address.street_address.delete('\\').truncate(30)
       end
@@ -67,9 +65,7 @@ class Components::Directory::EventRow < Components::Directory::Base
   def render_meta_organiser
     span(class: 'inline-flex items-center gap-1') do
       render_icon(:partner)
-      link_to(@event.organiser.name.truncate(25), partner_path(@event.organiser),
-              class: 'text-foreground underline decoration-primary decoration-2 underline-offset-2 hover:text-foreground/80',
-              data: { turbo_frame: '_top' })
+      UI::Link(href: partner_path(@event.organiser), data: { turbo_frame: '_top' }) { @event.organiser.name.truncate(25) }
     end
   end
 

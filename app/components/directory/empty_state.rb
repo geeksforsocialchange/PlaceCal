@@ -17,9 +17,6 @@ class Components::Directory::EmptyState < Components::Directory::Base
   private
 
   def render_link
-    a(href: @link_href,
-      class: 'inline-flex items-center gap-2 mt-3 text-foreground font-bold no-underline hover:underline') do
-      plain @link_text
-    end
+    UI::Link(href: @link_href, variant: :action, class: 'mt-3') { @link_text }
   end
 end

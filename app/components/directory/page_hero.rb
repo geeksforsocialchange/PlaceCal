@@ -47,11 +47,11 @@ class Components::Directory::PageHero < Components::Directory::Base
   def render_breadcrumb
     nav(class: 'text-sm mb-2', style: 'color: var(--color-background)', aria_label: t('directory.aria.breadcrumb')) do
       root_label = @root_label || t('directory.breadcrumbs.root')
-      a(href: root_path, class: 'no-underline hover:underline', style: 'color: inherit') { root_label }
+      UI::Link(href: root_path, variant: :quiet, tone: :inherit) { root_label }
       crumb_items.each do |item|
         span(class: 'mx-1.5 opacity-60') { safe('›') }
         if item[:path]
-          a(href: item[:path], class: 'no-underline hover:underline opacity-80', style: 'color: inherit') { item[:label] }
+          UI::Link(href: item[:path], variant: :quiet, tone: :inherit, class: 'opacity-80') { item[:label] }
         else
           span(class: 'opacity-80') { item[:label] }
         end

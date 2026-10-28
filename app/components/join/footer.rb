@@ -49,7 +49,7 @@ class Components::Join::Footer < Components::Join::Base
       ul(class: 'list-none space-y-1') do
         links.each do |label, href|
           li do
-            link_to(label, href, class: 'font-serif text-detail text-foreground no-underline hover:underline hover:decoration-primary')
+            UI::Link(href:, variant: :quiet, class: 'font-serif text-detail') { label }
           end
         end
       end

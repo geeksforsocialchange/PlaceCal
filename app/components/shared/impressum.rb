@@ -15,7 +15,7 @@ class Components::Shared::Impressum < Components::Base
         span { copyright }
         span do
           plain "#{t('colophon.build')} "
-          link_to(AppVersion.label(fallback: 'main'), AppVersion.url, class: 'text-tertiary underline hover:decoration-primary')
+          UI::Link(href: AppVersion.url, tone: :muted) { AppVersion.label(fallback: 'main') }
         end
       end
     end

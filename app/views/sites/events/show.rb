@@ -170,14 +170,13 @@ class Views::Sites::Events::Show < Views::Base
         info_row(:event_repeats) { event.repeat_frequency } if event.repeat_frequency
         if event.partner_at_location
           info_row(:event_place) do
-            link_to event.partner_at_location.name, partner_path(event.partner_at_location), class: info_link_classes
+            UI::Link(href: partner_path(event.partner_at_location)) { event.partner_at_location.name }
           end
         end
         info_row(:neighbourhood) { neighbourhood_line } if event.neighbourhood
         if event.online_address
           info_row(:event_online) do
-            link_to strip_scheme(event.online_address.url), event.online_address.url,
-                    class: info_link_classes, target: '_blank', rel: 'noopener'
+            UI::Link(href: event.online_address.url, target: '_blank', rel: 'noopener') { strip_scheme(event.online_address.url) }
           end
         end
       end
@@ -208,14 +207,12 @@ class Views::Sites::Events::Show < Views::Base
     UI::Card(variant: :panel, padding: :sm) do
       sidebar_heading(t('directory.sidebar.share_subscribe'))
       div do
-        a(href: "https://placecal.org/events/#{event.id}",
-          class: 'font-mono text-sm text-foreground break-all no-underline hover:underline hover:decoration-primary') do
+        UI::Link(href: "https://placecal.org/events/#{event.id}", variant: :quiet, class: 'font-mono text-sm break-all') do
           plain "placecal.org/events/#{event.id}"
         end
       end
       div(class: 'mt-3') do
-        a(href: event_url(event, protocol: :webcal, format: :ics),
-          class: 'inline-flex items-center gap-1.5 text-sm font-bold text-foreground no-underline hover:underline hover:decoration-primary') do
+        UI::Link(href: event_url(event, protocol: :webcal, format: :ics), variant: :action, class: 'text-sm') do
           raw(view_context.icon(:calendar, size: '3.5'))
           plain t('directory.sidebar.subscribe_ical')
         end
@@ -230,10 +227,6 @@ class Views::Sites::Events::Show < Views::Base
       raw(view_context.icon(icon_name, size: '4'))
       span(&)
     end
-  end
-
-  def info_link_classes
-    'text-foreground underline decoration-primary decoration-2 underline-offset-2 hover:text-foreground/80'
   end
 
   def neighbourhood_line

@@ -23,7 +23,7 @@ class Components::Directory::SidebarCard < Components::Directory::Base
 
   def render_title
     if @title_href
-      a(href: @title_href, class: 'font-serif text-lg no-underline hover:underline', style: 'color: inherit') { @title }
+      UI::Link(href: @title_href, variant: :quiet, tone: :inherit, class: 'font-serif text-lg') { @title }
     else
       div(class: 'font-serif text-lg') { @title }
     end
