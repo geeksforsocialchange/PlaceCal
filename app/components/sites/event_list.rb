@@ -21,7 +21,7 @@ class Components::Sites::EventList < Components::Base
 
   def render_events
     @events.each do |day, day_events|
-      UI::RuledHeading(rule: :full, class: ('text-xl' if @nested)) { I18n.l(day, format: :event_day) }
+      UI::RuledHeading(rule: :full, size: (@nested ? :lg : :inherit)) { I18n.l(day, format: :event_day) }
       render_day(day_events)
     end
     p { t('components.event_list.truncated') } if @truncated
