@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class Views::Sites::Events::Show < Views::Base
-  register_output_helper :event_link
-  register_output_helper :online_link
   register_value_helper :html_to_plaintext
 
   prop :event, ::Event, reader: :private
@@ -116,8 +114,8 @@ class Views::Sites::Events::Show < Views::Base
       # description (first-ele-lg enlarges the first <p>).
       div(class: 'e-content first-ele-lg max-w-(--width-prose-md)') { raw safe(event.description_html.to_s) } if event.description_html.present?
       div(class: 'mt-3') do
-        event_link(event)
-        online_link
+        render_event_link
+        render_online_link
       end
     end
   end
@@ -222,6 +220,28 @@ class Views::Sites::Events::Show < Views::Base
 
   # ── Shared bits ──
 
+  def render_event_link
+    return if event.publisher_url.blank?
+
+    event_button(event.publisher_url, t('events.show.visit_webpage'))
+  end
+
+  # A stream gets a direct join link; any other online address only stands in for a missing webpage link.
+  def render_online_link
+    online_address = event.online_address
+    return if online_address.nil?
+
+    if online_address.link_type == :stream
+      event_button(online_address.url, t('events.show.join_meeting'))
+    elsif event.publisher_url.blank?
+      event_button(online_address.url, t('events.show.visit_webpage'))
+    end
+  end
+
+  def event_button(href, label)
+    UI::Button(variant: :outline, href:, class: 'btn') { label }
+  end
+
   def info_row(icon_name, &)
     div(class: 'flex items-center gap-2.5 text-sm text-foreground') do
       raw(view_context.icon(icon_name, size: '4'))
@@ -243,11 +263,11 @@ class Views::Sites::Events::Show < Views::Base
   def render_event_details
     div(class: 'container-narrowish mb-12 event__fullinfo e-content') do
       raw safe(event.description_html.to_s)
-      event_link(event)
+      render_event_link
 
       br
 
-      online_link
+      render_online_link
 
       div(class: 'g three-col') do
         render_contact_info

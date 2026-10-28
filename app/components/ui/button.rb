@@ -10,7 +10,9 @@ class Components::UI::Button < Components::Base
     dark_outline: 'bg-transparent border-foreground text-foreground hover:bg-foreground hover:text-background',
     # Cream fill for coloured panels, e.g. the Our Story call to action.
     light: 'bg-home-background border-home-background text-foreground hover:bg-foreground hover:border-foreground hover:text-background',
-    join: 'bg-secondary-strong border-secondary-strong text-background hover:bg-foreground hover:border-foreground'
+    join: 'bg-secondary-strong border-secondary-strong text-background hover:bg-foreground hover:border-foreground',
+    # Secondary fill inside a ring, e.g. the local-site home call to action; dark text keeps AA on every colour theme.
+    secondary: 'bg-secondary border-background ring-2 ring-secondary text-foreground-dark hover:bg-foreground hover:ring-foreground hover:text-background'
   }.freeze
 
   SIZES = {

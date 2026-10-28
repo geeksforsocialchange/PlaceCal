@@ -51,7 +51,7 @@ class Views::Sites::News::Index < Views::Base
           end
         end
 
-        p { link_to t('news.index.read_more'), news_path(article), class: 'btn btn--alt btn--mt' }
+        p { UI::Button(variant: :outline, href: news_path(article), class: 'btn btn--alt mt-4') { t('news.index.read_more') } }
       end
     end
   end
