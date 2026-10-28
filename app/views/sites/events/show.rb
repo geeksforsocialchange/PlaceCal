@@ -150,7 +150,7 @@ class Views::Sites::Events::Show < Views::Base
 
   # Section heading matching the directory partner page (underlined, full-width).
   def section_heading(text)
-    UI::RuledHeading(caps: true, rule: :full, class: 'text-xl') { text }
+    UI::RuledHeading(caps: true, rule: :full, size: :lg) { text }
   end
 
   # ── Right column cards ──
@@ -282,7 +282,7 @@ class Views::Sites::Events::Show < Views::Base
   def render_contact_info
     div(class: 'event__column') do
       if event.organiser
-        UI::RuledHeading(class: 'text-xl my-5.5') { t('events.show.contact_heading') }
+        UI::RuledHeading(size: :lg, class: 'my-5.5') { t('events.show.contact_heading') }
         div(class: 'event__column-body text-sm leading-normal') do
           p(class: 'contact_details__partner') { link_to(event.organiser.name, partner_path(event.organiser)) }
           Shared::ContactDetails(partner: event.organiser, social_labels: site&.core_theme? ? :handle : :network)
@@ -293,7 +293,7 @@ class Views::Sites::Events::Show < Views::Base
 
   def render_event_address
     div(class: 'event__column') do
-      UI::RuledHeading(class: 'text-xl my-5.5') { t('events.show.address_heading') }
+      UI::RuledHeading(size: :lg, class: 'my-5.5') { t('events.show.address_heading') }
       div(class: 'event__column-body text-sm leading-normal') do
         Shared::Address(address: event.address, raw_location: event.raw_location_from_source)
       end
@@ -302,7 +302,7 @@ class Views::Sites::Events::Show < Views::Base
 
   def render_event_organiser
     div(class: 'event__column') do
-      UI::RuledHeading(class: 'text-xl my-5.5') { t('events.show.organiser_heading') }
+      UI::RuledHeading(size: :lg, class: 'my-5.5') { t('events.show.organiser_heading') }
       div(class: 'event__column-body text-sm leading-normal') do
         span { link_to event.organiser, event.organiser }
       end
@@ -315,7 +315,7 @@ class Views::Sites::Events::Show < Views::Base
 
   def render_event_venue
     div(class: 'event__column') do
-      UI::RuledHeading(class: 'text-xl my-5.5') { t('events.show.venue_heading') }
+      UI::RuledHeading(size: :lg, class: 'my-5.5') { t('events.show.venue_heading') }
       div(class: 'event__column-body text-sm leading-normal') do
         span { link_to event.place, event.place }
       end
