@@ -142,6 +142,8 @@ en:
     category: "Category"
     neighbourhood: "Neighbourhood"
     reset: "Reset filters"
+    # The short button beside a single active filter
+    reset_button: "Reset"
     today: "Today"
     go_to_date: "Go to date"
     # Label for the date toggle in the day-strip-with-date-picker style
@@ -645,6 +647,8 @@ en:
       # Hero back link (#3368), above the section name and title.
       back: "All events"
       contact_heading: "Contact information"
+      visit_webpage: "Visit the webpage for this event"
+      join_meeting: "Join this meeting"
       address_heading: "Event address"
       organiser_heading: "Event organiser"
       venue_heading: "Venue"

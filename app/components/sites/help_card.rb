@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class Components::Sites::HelpCard < Components::Base
-  include Phlex::Rails::Helpers::MailTo
-
   # Copy lives under help_card.<variant>.* in config/locales/en.yml so a theme
   # can override it; only the structure is held here.
   VARIANTS = {
@@ -101,9 +99,9 @@ class Components::Sites::HelpCard < Components::Base
       p { variant_t(:description) } if config[:description]
 
       if @variant == :adding_events
-        mail_to(@site.site_admin.email, t('help_card.email_now'), class: 'btn btn--lg')
+        UI::Button(variant: :primary, size: :lg, href: "mailto:#{@site.site_admin.email}", class: 'btn') { t('help_card.email_now') }
       elsif config[:link_url]
-        link_to(variant_t(:link), config[:link_url], class: 'btn btn--lg')
+        UI::Button(variant: :primary, size: :lg, href: config[:link_url], class: 'btn') { variant_t(:link) }
       elsif @places
         render_places_list(variant_t(:empty_message))
       end

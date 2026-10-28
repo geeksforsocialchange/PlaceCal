@@ -71,7 +71,9 @@ class Components::Sites::Filter < Components::Base
   def render_reset_button
     return unless filter_active?
 
-    button(type: 'button', data: { action: reset_action_value }, class: 'btn size-patch filter__reset') { 'Reset' }
+    UI::Button(variant: :outline, size: :sm, data: { action: reset_action_value }, class: 'btn size-patch filter__reset') do
+      t('filters.reset_button')
+    end
   end
 
   def selected?(id)
