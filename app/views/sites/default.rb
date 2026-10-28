@@ -45,7 +45,7 @@ class Views::Sites::Default < Views::Base
                 link: view_context.link_to(t('sites.home.mission_link'), partners_path),
                 place: site.place_name))
         end
-        UI::Button(variant: :join, size: :lg, href: events_path, class: 'btn mt-4') { t('sites.home.whats_on') }
+        UI::Button(variant: :secondary, href: events_path, class: 'btn mt-4') { t('sites.home.whats_on') }
       end
     end
   end
