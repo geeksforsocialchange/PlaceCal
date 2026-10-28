@@ -25,10 +25,10 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
         expect(page).to have_link("Today", href: base_attrs[:today_url])
       end
 
-      it "applies correct styling class" do
+      it "loads into the events browser frame" do
         render_inline(described_class.new(**base_attrs))
 
-        expect(page).to have_css("a.filters__link--today")
+        expect(page).to have_css("a[data-turbo-frame='events-browser']", text: "Today")
       end
     end
 
@@ -59,7 +59,7 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
     it "renders hidden date input" do
       render_inline(described_class.new(**base_attrs))
 
-      expect(page).to have_css("input[type='date'].filters__date-input", visible: :all)
+      expect(page).to have_css("input[type='date'][aria-label='Go to date']", visible: :all)
     end
 
     it "sets date input value to pointer" do
@@ -137,14 +137,14 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
     it "names a picked date on the from-this-date listing" do
       render_inline(described_class.new(**base_attrs, period: "future", pointer: today + 5))
 
-      expect(page).to have_css(".filters__applied-text", text: "From Sun 13 Nov")
+      expect(page).to have_css(".filters__applied", text: "From Sun 13 Nov")
       expect(page).to have_link("Reset filters", href: "/events#paginator")
     end
 
     it "names the day, the sort and the repeats setting, with a reset link" do
       render_inline(described_class.new(**base_attrs, sort: "summary", repeating: "off"))
 
-      expect(page).to have_css(".filters__applied-text", text: "Showing today, Sorted by name, One-off events only")
+      expect(page).to have_css(".filters__applied", text: "Showing today, Sorted by name, One-off events only")
       expect(page).to have_link("Reset filters", href: "/events#paginator")
     end
   end
@@ -430,10 +430,10 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
       expect(page).to have_css("nav.day-strip li.shrink-0", count: 8)
     end
 
-    it "does not add the toggle-row button classes to the sort toggle" do
+    it "does not render the toggles row" do
       render_inline(described_class.new(**day_strip_attrs))
 
-      expect(page).to have_no_css("button.filters__toggle-button")
+      expect(page).to have_no_button("Pick a date")
       expect(page).to have_no_css("div.filters__toggles")
     end
   end
@@ -446,10 +446,10 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
       expect(page).to have_button("Go to date")
     end
 
-    it "does not add the toggle-row button classes to the date toggle" do
+    it "does not render the toggles row" do
       render_inline(described_class.new(**base_attrs))
 
-      expect(page).to have_no_css("button.filters__toggle-button")
+      expect(page).to have_no_button("Pick a date")
       expect(page).to have_no_css("div.filters__toggles")
     end
   end
@@ -472,8 +472,8 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
     it "renders the sort and date toggles side by side in filters__toggles" do
       render_inline(described_class.new(**base_attrs))
 
-      expect(page).to have_css("div.filters__toggles button.filters__toggle-button--filters", text: "Filter and sort")
-      expect(page).to have_css("div.filters__toggles button.filters__toggle-button--date", text: "Pick a date")
+      expect(page).to have_css("div.filters__toggles button", text: "Filter and sort")
+      expect(page).to have_css("div.filters__toggles button", text: "Pick a date")
     end
 
     it "labels the date toggle Pick a date instead of Go to date" do
@@ -492,17 +492,16 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
     it "still renders the date picker's hidden date field" do
       render_inline(described_class.new(**base_attrs))
 
-      expect(page).to have_css("input[type='date'].filters__date-input", visible: :all)
+      expect(page).to have_css("input[type='date'][aria-label='Go to date']", visible: :all)
     end
   end
 
-  describe "filters__group modifier classes" do
-    it "adds a modifier alongside filters__group on the sort, period and repeating groups" do
+  describe "filter groups" do
+    it "groups the sort, period and repeating options separately" do
       render_inline(described_class.new(**base_attrs))
 
-      expect(page).to have_css("div.filters__group.filters__group--sort")
-      expect(page).to have_css("div.filters__group.filters__group--period")
-      expect(page).to have_css("div.filters__group.filters__group--repeating")
+      groups = page.all("div.filters__group").map { |group| group.all("input[type='radio']").map { |radio| radio[:name] }.uniq }
+      expect(groups).to eq([["sort"], ["period"], ["repeating"]])
     end
   end
 

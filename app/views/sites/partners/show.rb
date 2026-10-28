@@ -203,7 +203,7 @@ class Views::Sites::Partners::Show < Views::Base
 
     br
     UI::RuledHeading(caps: true, rule: :full, class: 'text-xl my-5.5', id: 'accessibility-info') { t('partners.show.accessibility_heading') }
-    details(class: 'accessibility_info group wrap-anywhere') do
+    details(class: 'group wrap-anywhere') do
       summary(class: 'cursor-pointer group-open:mb-3') { t('partners.show.accessibility_summary') }
       raw safe(partner.accessibility_info_html.to_s)
     end

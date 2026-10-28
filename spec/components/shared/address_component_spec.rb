@@ -29,7 +29,7 @@ RSpec.describe Components::Shared::Address, type: :component do
     it "links to Google Maps using the coordinates when present" do
       render_inline(described_class.new(address:, raw_location: nil))
 
-      link = page.find("a.place_info__directions")
+      link = page.find_link("Google Maps")
       expect(link[:href]).to eq(
         "https://www.google.com/maps/dir/?api=1&destination=#{address.latitude},#{address.longitude}"
       )
@@ -45,12 +45,12 @@ RSpec.describe Components::Shared::Address, type: :component do
       expect(list["aria-label"]).to eq("Directions")
       expect(list.all("a").map(&:text)).to eq(["Google Maps", "Apple Maps", "OSM"])
 
-      apple = list.find("a.place_info__directions-apple")
+      apple = list.find_link("Apple Maps")
       expect(apple[:href]).to eq("https://maps.apple.com/?daddr=#{address.latitude},#{address.longitude}")
       expect(apple[:target]).to eq("_blank")
       expect(apple[:rel]).to eq("noopener")
 
-      osm = list.find("a.place_info__directions-osm")
+      osm = list.find_link("OSM")
       expect(osm[:href]).to eq("https://www.openstreetmap.org/directions?to=#{address.latitude},#{address.longitude}")
       expect(osm[:title]).to eq("OpenStreetMap")
       expect(osm[:target]).to eq("_blank")
@@ -63,19 +63,19 @@ RSpec.describe Components::Shared::Address, type: :component do
 
       render_inline(described_class.new(address:, raw_location: nil))
 
-      link = page.find("a.place_info__directions")
+      link = page.find_link("Directions")
       expect(link[:href]).to eq(
         "https://www.google.com/maps/dir/?api=1&destination=#{CGI.escape(address.to_s)}"
       )
       expect(link.text).to eq("Directions")
-      expect(page).not_to have_css("a.place_info__directions-apple")
-      expect(page).not_to have_css("a.place_info__directions-osm")
+      expect(page).not_to have_link("Apple Maps")
+      expect(page).not_to have_link("OSM")
     end
 
     it "is absent without an address" do
       render_inline(described_class.new(address: nil, raw_location:))
 
-      expect(page).not_to have_css("a.place_info__directions")
+      expect(page).not_to have_link("Directions")
       expect(page).not_to have_css(".place_info__directions-list")
     end
   end

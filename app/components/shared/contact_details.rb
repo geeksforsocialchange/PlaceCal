@@ -81,7 +81,7 @@ class Components::Shared::ContactDetails < Components::Base
     span(class: 'contact_details__item contents') do
       raw(view_context.icon(:contact_phone, size: '4', css_class: 'mt-1'))
       if @partner.valid_public_phone?
-        link_to(@phone, "tel:#{@phone}", target: '_blank', rel: 'noopener', class: 'contact_details__phone')
+        link_to(@phone, "tel:#{@phone}", target: '_blank', rel: 'noopener')
       else
         plain @phone
       end
@@ -93,7 +93,7 @@ class Components::Shared::ContactDetails < Components::Base
 
     span(class: 'contact_details__item contents') do
       raw(view_context.icon(:contact_email, size: '4', css_class: 'mt-1'))
-      mail_to(@email, @email, target: '_blank', class: 'contact_details__email')
+      mail_to(@email, @email, target: '_blank')
     end
   end
 
@@ -102,7 +102,7 @@ class Components::Shared::ContactDetails < Components::Base
 
     span(class: 'contact_details__item contents') do
       raw(view_context.icon(:contact_website, size: '4', css_class: 'mt-1'))
-      link_to(strip_url(@url), @url, target: '_blank', rel: 'noopener', class: 'contact_details__website')
+      link_to(strip_url(@url), @url, target: '_blank', rel: 'noopener')
     end
   end
 

@@ -37,15 +37,15 @@ RSpec.describe Components::Shared::ContactDetails, type: :phlex do
     expect(page).to have_text("No contact information")
   end
 
-  it "gives each scss-variant link a channel class, wrapped in an item span" do
+  it "wraps each scss-variant link in an item span" do
     render_inline(described_class.new(partner: contact_partner,
                                       email: contact_email,
                                       phone: contact_phone,
                                       url: contact_url))
 
-    expect(page).to have_css("span.contact_details__item a.contact_details__phone", text: contact_phone)
-    expect(page).to have_css("span.contact_details__item a.contact_details__email", text: contact_email)
-    expect(page).to have_css("span.contact_details__item a.contact_details__website")
+    expect(page).to have_css("span.contact_details__item a[href='tel:#{contact_phone}']", text: contact_phone)
+    expect(page).to have_css("span.contact_details__item a[href='mailto:#{contact_email}']", text: contact_email)
+    expect(page).to have_css("span.contact_details__item a[href='#{contact_url}']")
     expect(page).to have_css("span.contact_details__item a.contact_details__facebook")
     expect(page).to have_css("span.contact_details__item a.contact_details__twitter")
     expect(page).to have_css("span.contact_details__item a.contact_details__instagram")
@@ -55,7 +55,7 @@ RSpec.describe Components::Shared::ContactDetails, type: :phlex do
     render_inline(described_class.new(partner: contact_partner))
 
     expect(page).to have_css("span.contact_details__item--social", count: 3)
-    expect(page).not_to have_css("span.contact_details__item--social a.contact_details__email")
+    expect(page).not_to have_css("span.contact_details__item--social a[href^='mailto:']")
   end
 
   context "with social_labels: :network" do
@@ -75,9 +75,9 @@ RSpec.describe Components::Shared::ContactDetails, type: :phlex do
     end
 
     it "leaves phone, email and website as they are" do
-      expect(page).to have_css("a.contact_details__phone", text: contact_phone)
-      expect(page).to have_css("a.contact_details__email", text: contact_email)
-      expect(page).to have_css("a.contact_details__website", text: contact_url)
+      expect(page).to have_link(contact_phone, href: "tel:#{contact_phone}")
+      expect(page).to have_link(contact_email, href: "mailto:#{contact_email}")
+      expect(page).to have_link(contact_url, href: contact_url)
     end
   end
 

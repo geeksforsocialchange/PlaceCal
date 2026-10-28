@@ -7,7 +7,7 @@ class Components::Sites::Footer < Components::Base
   # The derived site navigation (SiteNavigation), passed through by the layout.
   prop :navigation, _Nilable(_Array(_Any)), default: nil
 
-  HEADING = 'footer__heading allcaps text-sm leading-normal mt-0 mb-5'
+  HEADING = 'allcaps text-sm leading-normal mt-0 mb-5'
   # Keeps each contact label on the same line as its value.
   NBSP = "\u00A0"
   HR = 'col-span-full w-full border-3 border-tertiary-light'
@@ -51,7 +51,7 @@ class Components::Sites::Footer < Components::Base
   end
 
   def render_nav
-    div(class: 'footer__nav col-span-full lg:col-span-2 text-base') do
+    div(class: 'col-span-full lg:col-span-2 text-base') do
       h2(class: HEADING, id: 'footer-nav-heading') { t('footer.site_navigation') }
       # Named, so a screen reader's landmark menu distinguishes this nav from
       # the header's rather than listing "navigation" twice.
