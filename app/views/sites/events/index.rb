@@ -36,7 +36,7 @@ class Views::Sites::Events::Index < Views::Base
   private
 
   def render_paginator
-    div(class: 'paginator', id: 'paginator') do
+    div(class: 'paginator leading-snug', id: 'paginator') do
       div(class: 'paginator__context') do
         Sites::Breadcrumb(trail: [[t('navigation.site.events'), events_path]], site_name: site.name) do
           div(class: 'breadcrumb__actions') do

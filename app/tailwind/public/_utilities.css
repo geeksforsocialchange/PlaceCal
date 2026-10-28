@@ -176,3 +176,11 @@
 			right 5% top -1rem;
 	}
 }
+
+/* Paginator tabs: as many as fit, none narrower than its label needs */
+@utility grid-cols-paginator {
+	grid-template-columns: repeat(auto-fit, minmax(--spacing(24), 1fr));
+	@media (width >= theme(--breakpoint-md)) {
+		grid-template-columns: repeat(auto-fit, minmax(--spacing(28), 1fr));
+	}
+}
