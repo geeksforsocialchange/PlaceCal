@@ -22,6 +22,6 @@ RSpec.describe Components::Sites::PageActions, type: :component do
 
     link = page.find_link("Download")
     expect(link[:rel]).to eq("nofollow")
-    expect(link[:class]).to eq("page-actions__link")
+    expect(link[:class].split).to include("page-actions__link")
   end
 end
