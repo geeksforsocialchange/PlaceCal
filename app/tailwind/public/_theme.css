@@ -83,6 +83,7 @@
 	/* app/assets/stylesheets/variables/typography.scss */
 	--tracking-normal: normal;
 	--tracking-wide: 0.16667rem;
+	--leading-none: 1;
 	--leading-hero: 1.05;
 	--leading-tight: 1.15;
 	--leading-snug: 1.35;
@@ -226,6 +227,7 @@ this file).
 
 	--tracking-normal: var(--tracking-normal);
 	--tracking-wide: var(--tracking-wide);
+	--leading-none: var(--leading-none);
 	--leading-hero: var(--leading-hero);
 	--leading-tight: var(--leading-tight);
 	--leading-snug: var(--leading-snug);
