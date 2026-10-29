@@ -51,7 +51,7 @@ gem 'uk_postcode'                 # UK postcode validation and parsing
 
 # API
 gem 'graphql'                     # GraphQL API
-gem 'mcp', '~> 1.7.0'             # MCP server for AI assistants (/mcp)
+gem 'mcp', '1.8.1'                # MCP server for AI assistants (/mcp)
 gem 'rack-attack'                 # API rate limiting and throttling
 gem 'rack-cors', require: 'rack/cors' # Cross-origin request support
 
@@ -123,7 +123,7 @@ group :test do
   gem 'faker'                     # Fake data generation
   gem 'graphql-client'            # GraphQL API test client
   gem 'json-schema'               # JSON Schema validation for structured data tests
-  gem 'playwright-ruby-client', '~> 1.64.0', require: false # Keep in step with the playwright npm package
+  gem 'playwright-ruby-client', '1.64.0', require: false # Keep in step with the playwright npm package
   gem 'pundit-matchers', '~> 4.0' # Policy spec matchers
   gem 'rspec-rails', '~> 8.0'     # Test framework
   gem 'selenium-webdriver'        # Browser driver for system tests

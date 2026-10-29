@@ -389,7 +389,7 @@ GEM
       net-smtp
     marcel (1.2.1)
     matrix (0.4.3)
-    mcp (1.7.0)
+    mcp (1.8.1)
       json_schemer (>= 2.4)
     memoist3 (1.0.0)
     mime-types (3.7.0)
@@ -791,7 +791,7 @@ DEPENDENCIES
   listen
   literal
   lookbook (>= 2.3.14)
-  mcp (~> 1.7.0)
+  mcp (= 1.8.1)
   mini_magick
   pagy
   paper_trail
@@ -799,7 +799,7 @@ DEPENDENCIES
   phlex-rails (~> 2.3)
   placecal-theme-mossley!
   placecal-theme-transdimension!
-  playwright-ruby-client (~> 1.64.0)
+  playwright-ruby-client (= 1.64.0)
   propshaft
   puma
   pundit
