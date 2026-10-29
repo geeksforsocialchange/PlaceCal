@@ -68,7 +68,10 @@ module Admin
 
     def update
       authorize @calendar
-      if @calendar.update(calendar_params)
+      @calendar.assign_attributes(calendar_params)
+      authorize @calendar
+
+      if @calendar.save
         flash[:success] = 'Calendar successfully updated'
         redirect_to edit_admin_calendar_path(@calendar)
       else

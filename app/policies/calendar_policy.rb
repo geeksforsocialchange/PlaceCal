@@ -6,7 +6,7 @@ class CalendarPolicy < ApplicationPolicy
   end
 
   def create?
-    index?
+    index? && partners_in_scope?
   end
 
   def new?
@@ -19,7 +19,8 @@ class CalendarPolicy < ApplicationPolicy
 
   def update?
     return true if user.root?
-    return true if scope.map(&:id).include? record.id
+
+    scope.map(&:id).include?(record.id) && partners_in_scope?
   end
 
   def import?
@@ -28,6 +29,16 @@ class CalendarPolicy < ApplicationPolicy
 
   def destroy?
     update?
+  end
+
+  private
+
+  # A changed organiser or default location must be a partner the user manages; unchanged ones are left alone.
+  def partners_in_scope?
+    return true if user.root? || !record.is_a?(Calendar)
+
+    ids = %i[organiser_id place_id].filter_map { |attr| record[attr] if record.will_save_change_to_attribute?(attr) }
+    (ids - Pundit.policy_scope!(user, Partner).where(id: ids).pluck(:id)).empty?
   end
 
   class Scope < Scope

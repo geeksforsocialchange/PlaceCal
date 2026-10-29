@@ -347,6 +347,29 @@ RSpec.describe "Admin::Partners", type: :request do
       end
     end
 
+    context "partner admin submitting nested calendars" do
+      let(:user) { create(:partner_admin) }
+      let(:partner) { user.partners.first }
+      let(:other_partner) { create(:partner) }
+      let!(:calendar) { create(:calendar, organiser: partner) }
+
+      before { sign_in user }
+
+      it "does not move their calendar to another partner" do
+        put admin_partner_url(partner, host: admin_host), params: {
+          partner: {
+            name: partner.name,
+            calendars_attributes: { "0" => { id: calendar.id, organiser_id: other_partner.id, place_id: other_partner.id } }
+          }
+        }
+
+        expect(response).to redirect_to(edit_admin_partner_url(partner, host: admin_host))
+        calendar.reload
+        expect(calendar.organiser).to eq(partner)
+        expect(calendar.place).to be_nil
+      end
+    end
+
     context "neighbourhood admin address restriction" do
       let(:ward) { create(:riverside_ward) }
       let(:user) { create(:neighbourhood_admin, neighbourhood: ward) }
