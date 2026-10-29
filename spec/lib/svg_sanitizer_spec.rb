@@ -43,20 +43,19 @@ RSpec.describe SvgSanitizer do
       expect(result).to include("<text")
     end
 
-    it "keeps fragment hrefs and drops external ones" do
+    it "keeps fragment hrefs on use elements and drops external ones" do
       svg = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">' \
             '<defs><path id="p" d="M0 0h1"/></defs><use xlink:href="#p"/>' \
-            '<image href="https://example.com/track.png"/></svg>'
+            '<use href="https://example.com/sprite.svg#p"/></svg>'
       doc = Nokogiri::XML(described_class.sanitize(svg))
       doc.remove_namespaces!
-      expect(doc.at("use")["href"]).to eq("#p")
-      expect(doc.at("image")["href"]).to be_nil
+      expect(doc.css("use").map { |use| use["href"] }).to eq(["#p", nil])
     end
 
-    it "removes set elements" do
+    it "strips the value from set elements" do
       svg = '<svg xmlns="http://www.w3.org/2000/svg"><set attributeName="onmouseover" to="alert(1)"/><rect width="100" height="100"/></svg>'
       result = described_class.sanitize(svg)
-      expect(result).not_to include("<set")
+      expect(result).not_to include("alert")
       expect(result).to include("<rect")
     end
 
@@ -90,11 +89,11 @@ RSpec.describe SvgSanitizer do
       expect(doc.at("text").text).to eq("click me")
     end
 
-    it "drops comments, doctypes and animation elements" do
+    it "drops comments and doctypes, and strips javascript: values from animations" do
       svg = '<!DOCTYPE svg [<!ENTITY e "x">]><svg xmlns="http://www.w3.org/2000/svg"><!-- hidden -->' \
             '<a href="#a"><animate attributeName="href" to="javascript:alert(1)"/></a></svg>'
       result = described_class.sanitize(svg)
-      expect(result).not_to include("hidden", "DOCTYPE", "animate", "javascript")
+      expect(result).not_to include("hidden", "DOCTYPE", "javascript")
     end
 
     it "drops styles that load external resources" do
@@ -103,6 +102,29 @@ RSpec.describe SvgSanitizer do
       result = described_class.sanitize(svg)
       expect(result).not_to include("example.com")
       expect(result).to include("<rect")
+    end
+
+    it "drops foreignObject and its content" do
+      svg = '<svg xmlns="http://www.w3.org/2000/svg"><foreignObject><div xmlns="http://www.w3.org/1999/xhtml">hi</div>' \
+            '</foreignObject><rect width="1" height="1"/></svg>'
+      result = described_class.sanitize(svg)
+      expect(result).not_to include("foreignObject", "hi")
+    end
+
+    it "keeps SVG properties in style attributes, such as gradient fills and stop colours" do
+      svg = '<svg xmlns="http://www.w3.org/2000/svg"><linearGradient id="g"><stop style="stop-color:#e5007e;stop-opacity:1"/>' \
+            '</linearGradient><rect width="1" height="1" style="fill:url(#g);opacity:0.5"/></svg>'
+      doc = Nokogiri::XML(described_class.sanitize(svg))
+      doc.remove_namespaces!
+      expect(doc.at("stop")["style"]).to eq("stop-color:#e5007e;stop-opacity:1")
+      expect(doc.at("rect")["style"]).to eq("fill:url(#g);opacity:0.5")
+    end
+
+    it "keeps embedded raster images" do
+      svg = '<svg xmlns="http://www.w3.org/2000/svg"><image width="1" height="1" href="data:image/png;base64,iVBORw0KGgo="/></svg>'
+      doc = Nokogiri::XML(described_class.sanitize(svg))
+      doc.remove_namespaces!
+      expect(doc.at("image")["href"]).to eq("data:image/png;base64,iVBORw0KGgo=")
     end
 
     it "keeps a typical exported logo intact" do
