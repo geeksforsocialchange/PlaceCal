@@ -54,7 +54,7 @@ class PartnerPolicy < ApplicationPolicy
              { calendars_attributes: %i[id name source strategy _destroy],
                address_attributes: %i[id street_address street_address2 street_address3 city postcode],
                service_areas_attributes: %i[id neighbourhood_id _destroy],
-               tag_ids: [], category_ids: [], facility_ids: [] }]
+               category_ids: [], facility_ids: [] }]
 
     attrs += %i[slug address_id] if user.root?
     attrs += moderation_attributes if can_moderate?

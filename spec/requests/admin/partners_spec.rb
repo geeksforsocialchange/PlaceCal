@@ -424,6 +424,39 @@ RSpec.describe "Admin::Partners", type: :request do
       end
     end
 
+    context "partner admin submitting tags" do
+      let(:user) { create(:partner_admin, partner: create(:riverside_partner)) }
+      let(:partner) { user.partners.first }
+      let(:partnership) { create(:partnership) }
+      let(:category) { create(:category) }
+
+      before { sign_in user }
+
+      it "does not add their partner to a partnership through tag_ids" do
+        put admin_partner_url(partner, host: admin_host),
+            params: { partner: { name: partner.name, tag_ids: [partnership.id] } }
+
+        expect(partner.reload.partnerships).to be_empty
+      end
+
+      it "does not clear their partner's tags through tag_ids" do
+        partner.categories << category
+
+        put admin_partner_url(partner, host: admin_host),
+            params: { partner: { name: partner.name, tag_ids: [""] } }
+
+        expect(partner.reload.categories).to contain_exactly(category)
+      end
+
+      it "sets categories from the partner form" do
+        put admin_partner_url(partner, host: admin_host),
+            params: { partner: { name: partner.name, category_ids: ["", category.id] } }
+
+        expect(response).to redirect_to(edit_admin_partner_url(partner, host: admin_host))
+        expect(partner.reload.categories).to contain_exactly(category)
+      end
+    end
+
     context "neighbourhood admin address restriction" do
       let(:ward) { create(:riverside_ward) }
       let(:user) { create(:neighbourhood_admin, neighbourhood: ward) }
