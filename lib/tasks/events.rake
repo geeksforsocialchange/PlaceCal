@@ -1,5 +1,19 @@
 # frozen_string_literal: true
 
+module EventTaskHelpers
+  module_function
+
+  def to_boolean(value)
+    ActiveModel::Type::Boolean.new.cast(value)
+  end
+
+  def to_date(value)
+    return Date.current.beginning_of_day if value.blank?
+
+    Date.parse(value)
+  end
+end
+
 namespace :events do
   # rails events:import_all_calendars
   #
@@ -18,9 +32,9 @@ namespace :events do
   #
   desc 'import events from the CLI process'
   task :import_all_calendars, %i[force_import from silence_db_exceptions] => [:environment] do |_t, args|
-    force_import = to_boolean(args[:force_import])
-    from = to_date(args[:from])
-    silence_db_exceptions = to_boolean(args[:silence_db_exceptions])
+    force_import = EventTaskHelpers.to_boolean(args[:force_import])
+    from = EventTaskHelpers.to_date(args[:from])
+    silence_db_exceptions = EventTaskHelpers.to_boolean(args[:silence_db_exceptions])
 
     puts "Importing all events. force_import=#{force_import}, from=#{from}, silence_db_exceptions=#{silence_db_exceptions}"
     puts "Running in '#{Rails.env}' environment"
@@ -52,9 +66,9 @@ namespace :events do
   #
   desc 'import a specific calendar from a given date'
   task :import_calendar, %i[calendar_id from force_import] => [:environment] do |_t, args|
-    from = args[:from] ? to_date(args[:from]) : Date.current.beginning_of_day
+    from = args[:from] ? EventTaskHelpers.to_date(args[:from]) : Date.current.beginning_of_day
     calendar_id = args[:calendar_id]
-    force_import = args[:force_import] ? to_boolean(args[:force_import]) : true
+    force_import = args[:force_import] ? EventTaskHelpers.to_boolean(args[:force_import]) : true
 
     CalendarImporterJob.perform_now calendar_id, from, force_import
   rescue StandardError => e
@@ -67,8 +81,8 @@ namespace :events do
 
   desc 'scan for calendars to send to the importer worker'
   task :scan_for_calendars_needing_import, %i[force_import from] => [:environment] do |_t, args|
-    force_import = to_boolean(args[:force_import])
-    from = to_date(args[:from])
+    force_import = EventTaskHelpers.to_boolean(args[:force_import])
+    from = EventTaskHelpers.to_date(args[:from])
 
     Calendar.queue_all_for_import!(force: force_import, from:)
   end
@@ -102,14 +116,4 @@ namespace :events do
     # TODO: For all ICS calendars, check their events and refresh their online event data
     # Currently it is impossible to do this because we don't know what parser an Event used after the fact :(
   end
-end
-
-def to_boolean(value)
-  (@boolean ||= ActiveModel::Type::Boolean.new).cast value
-end
-
-def to_date(value)
-  return Date.current.beginning_of_day if value.blank?
-
-  Date.parse value
 end
