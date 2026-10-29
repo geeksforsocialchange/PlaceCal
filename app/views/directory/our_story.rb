@@ -149,7 +149,7 @@ class Views::Directory::OurStory < Views::Base
     section(class: 'pt-12 pb-4') do
       narrow do
         UI::Card(variant: :highlight, padding: :none, class: 'flex flex-wrap items-center justify-between gap-6 px-10 py-8') do
-          h2(class: 'my-0 font-serif font-regular text-display leading-tight text-foreground') do
+          h2(class: 'my-0 font-serif font-regular text-display leading-tight') do
             t("#{T}.cta.heading")
           end
           UI::Button(variant: :light, size: :lg, href: @cta_path || get_in_touch_path) do
