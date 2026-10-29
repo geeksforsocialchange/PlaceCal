@@ -67,7 +67,7 @@ module Types
     end
 
     def organizer
-      partner = object&.organiser
+      partner = dataload_association(:organiser)
       return if partner.blank? || partner.hidden
 
       partner

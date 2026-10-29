@@ -168,6 +168,42 @@ RSpec.describe "GraphQL Partners", type: :request do
       expect(recurring["repeatFrequency"]).to eq("Weekly")
       expect(one_off["repeatFrequency"]).to be_nil
     end
+
+    it "returns at most the documented number of events, soonest first" do
+      stub_const("Types::PartnerType::LIST_LIMIT", 2)
+      create(:event, organiser: partner, dtstart: 1.day.from_now)
+      create(:event, organiser: partner, dtstart: 2.weeks.from_now)
+
+      events = execute_query(query, variables: { id: partner.id })["data"]["partner"]["events"]
+
+      expect(events.pluck("startDate")).to eq([1.day.from_now, 1.week.from_now].map(&:iso8601))
+    end
+  end
+
+  describe "partner articles field" do
+    let(:partner) { create(:partner) }
+    let(:query) do
+      <<-GRAPHQL
+        query($id: ID!) {
+          partner(id: $id) {
+            articles { headline }
+          }
+        }
+      GRAPHQL
+    end
+
+    it "returns at most the documented number of published articles, newest first" do
+      stub_const("Types::PartnerType::LIST_LIMIT", 2)
+      { "Old" => 3.days.ago, "Newer" => 2.days.ago, "Newest" => 1.day.ago }.each do |title, published_at|
+        create(:article, title:, published_at:, partners: [partner])
+      end
+      create(:draft_article, title: "Draft", partners: [partner])
+      create(:article, title: "Other partner's", published_at: Time.current, partners: [create(:partner)])
+
+      articles = execute_query(query, variables: { id: partner.id })["data"]["partner"]["articles"]
+
+      expect(articles.pluck("headline")).to eq(%w[Newest Newer])
+    end
   end
 
   describe "partnersByTag query" do

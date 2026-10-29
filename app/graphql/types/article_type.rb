@@ -44,11 +44,14 @@ module Types
           method: :updated_at
 
     field :providers, [PartnerType],
-          description: 'The partner this article is about',
-          method: :partners
+          description: 'The partner this article is about'
 
     # creativeWorkStatus: string, from is_draft
     # author: person, from user
+
+    def providers
+      dataload_association(:partners)
+    end
 
     def image
       return nil if object.article_image_url.blank?
