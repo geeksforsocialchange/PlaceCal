@@ -1,0 +1,8 @@
+/* The site-wide link style. Unlayered, so a link's own utilities only win when it's marked with-no-sass */
+a:not(.with-no-sass) {
+	text-decoration-color: var(--color-primary);
+	text-underline-offset: 3px;
+	text-decoration-skip-ink: none;
+	text-decoration-thickness: 2px;
+	color: var(--color-foreground);
+}

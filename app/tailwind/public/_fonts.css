@@ -1,7 +1,4 @@
-/* Font-face declarations for Rawline and Trocchi fonts */
-/* Using url() for compatibility with standalone sass compiler */
-
-/* Removed eot, ttf, svg, woff variants in favour of woff2 https://caniuse.com/woff2 */
+/* Rawline and Trocchi, woff2 only (https://caniuse.com/woff2) */
 
 /* Rawline
 	Open Font License

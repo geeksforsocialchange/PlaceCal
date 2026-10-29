@@ -17,7 +17,7 @@ class Views::Layouts::Application < Phlex::HTML
 
   def view_template
     doctype
-    html(lang: 'en') do
+    html(lang: 'en', data: { theme: (site.theme if site&.core_theme?) }) do
       head do
         csrf_meta_tags
         stylesheet_link_tag 'public_tailwind', media: 'all', 'data-turbo-track': 'reload'

@@ -149,9 +149,9 @@ RSpec.describe PlaceCal::Theme do
 
   describe "resolution" do
     it "returns the stylesheet and map style it was given" do
-      theme.stylesheet "themes/pink"
+      theme.stylesheet "public_tailwind"
       theme.map_style "pink"
-      expect(theme.stylesheet_path).to eq("themes/pink")
+      expect(theme.stylesheet_path).to eq("public_tailwind")
       expect(theme.map_style_name).to eq("pink")
     end
 

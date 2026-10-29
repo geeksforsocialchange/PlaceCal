@@ -1,0 +1,117 @@
+/* Element defaults. Preflight zeroes browser styles; these restore the margins and sizes the public pages are built on. */
+@layer base {
+	body {
+		@apply font-sans font-regular;
+		margin: 0;
+		color: var(--color-foreground);
+		background-color: var(--color-tertiary-light);
+		@media (width >= theme(--breakpoint-xl)) {
+			background-image:
+				url("/images/patterns/widescreen.svg"),
+				url("/images/patterns/widescreen.svg");
+			background-position:
+				calc(50% - 725px) 103px,
+				calc(50% + 725px) 103px;
+			background-repeat: no-repeat, no-repeat;
+		}
+		@media print {
+			background: none;
+		}
+	}
+
+	h1 {
+		font-family: var(--font-serif);
+		font-weight: normal;
+		font-size: var(--text-3xl);
+		line-height: 1;
+		margin-block: 0.67em;
+		@media (width >= theme(--breakpoint-md)) {
+			line-height: 1.25;
+		}
+	}
+	h2 {
+		@apply text-2xl font-bold;
+		margin-block: 0.83em;
+	}
+	h3 {
+		@apply text-xl font-bold;
+		margin-block: 1em;
+	}
+	h4 {
+		@apply text-base font-bold;
+	}
+	h5 {
+		font-size: 0.83em;
+		font-weight: bold;
+		margin-block: 1.67em;
+	}
+
+	p,
+	ul {
+		margin-block: 1em;
+	}
+	blockquote {
+		margin-inline: 40px;
+	}
+	a:not(.with-reset) {
+		text-decoration-line: underline;
+	}
+	hr {
+		margin-block: 0.5em;
+		border: 5px solid var(--color-rules);
+	}
+
+	img,
+	svg {
+		display: inline;
+		vertical-align: baseline;
+	}
+	img {
+		max-width: 100%;
+		max-height: 100%;
+	}
+
+	button {
+		margin: 0;
+		padding-block: 1px;
+		padding-inline: 4px;
+		border: 0;
+		font-size: 100%;
+		line-height: normal;
+		overflow: visible;
+		text-transform: none;
+		cursor: pointer;
+		-webkit-appearance: button;
+	}
+	input {
+		font-family: var(--font-sans);
+		font-size: inherit;
+	}
+	input[type="checkbox"] {
+		margin-block: 3px;
+		margin-inline: 4px 3px;
+	}
+	textarea {
+		@apply bg-home-background;
+	}
+
+	/* Turbo frames lay out like the blocks they replace, and dim what they're reloading */
+	turbo-frame {
+		display: block;
+	}
+	turbo-frame[aria-busy="true"] :is(.partners, .paginator, .events, #map) {
+		opacity: 0.4;
+		pointer-events: none;
+		transition: opacity 0.1s ease-out;
+	}
+
+	/* Collapsed details still print their content, such as a partner's accessibility information */
+	@media print {
+		details::details-content {
+			content-visibility: visible;
+		}
+		details > summary {
+			display: none;
+		}
+	}
+}

@@ -1,0 +1,16 @@
+/* The built-in colour themes, picked per site by data-theme on <html>. Unlayered and more specific than :root, so they win over _theme.css. */
+html[data-theme="pink"] {
+	--color-primary: #f19089;
+}
+html[data-theme="orange"] {
+	--color-primary: #fe9263;
+	--color-secondary: #fe9263;
+}
+html[data-theme="green"] {
+	--color-primary: #afcf5a;
+	--color-secondary: #afcf5a;
+}
+html[data-theme="blue"] {
+	--color-primary: #74d4ec;
+	--color-secondary: #74d4ec;
+}

@@ -103,7 +103,7 @@ module PlaceCal
 
     # ---- DSL: each method sets when given a value, reads otherwise.
 
-    # @param value [String, nil] asset logical path without extension, e.g. "themes/pink"
+    # @param value [String, nil] asset logical path without extension, e.g. "transdimension/theme"
     setting :stylesheet
 
     # @param value [String, nil] Phlex view class name, resolved lazily so
