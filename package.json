@@ -3,7 +3,6 @@
 	"version": "3.0.0",
 	"private": true,
 	"dependencies": {
-		"@hotwired/turbo-rails": "8.0.23",
 		"@tailwindcss/cli": "4.3.3"
 	},
 	"devDependencies": {

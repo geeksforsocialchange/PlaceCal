@@ -63,6 +63,30 @@
 			"groupName": "node version",
 			"matchDepNames": ["node"],
 			"matchManagers": ["nodenv", "npm", "custom.regex"]
+		},
+		{
+			"description": "npm supplies these packages' CSS and the importmap their JS, so both copies update together",
+			"matchPackageNames": ["tom-select"],
+			"groupName": "tom-select"
+		},
+		{
+			"matchPackageNames": ["leaflet"],
+			"groupName": "leaflet"
+		},
+		{
+			"matchPackageNames": ["@hotwired/turbo", "@hotwired/turbo-rails"],
+			"groupName": "turbo"
+		}
+	],
+	"customManagers": [
+		{
+			"customType": "regex",
+			"description": "Importmap pins load npm packages from jsdelivr",
+			"managerFilePatterns": ["/^config/importmap\\.rb$/"],
+			"matchStrings": [
+				"https://cdn\\.jsdelivr\\.net/npm/(?<depName>(?:@[^/@]+/)?[^/@]+)@(?<currentValue>[^/]+)/"
+			],
+			"datasourceTemplate": "npm"
 		}
 	]
 }
