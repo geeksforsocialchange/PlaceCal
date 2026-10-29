@@ -369,9 +369,11 @@ en:
         no_location: "No location"
         past: "Recent Past Events"
       importer:
+        calendar_occurrence_limit: "This calendar has more than %{count} upcoming event dates, so the import stopped there. Events after that point were not updated."
         importing: "Importing..."
         last_import: "Last import:"
         notices: "Import notices"
+        occurrence_limit: '"%{summary}" repeats more than %{count} times, so only its first %{count} dates were imported.'
         pending: "Pending import"
         reimport: "Re-import now"
         retry_import: "Retry import"

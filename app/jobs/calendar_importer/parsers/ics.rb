@@ -41,7 +41,20 @@ module CalendarImporter::Parsers
     ].freeze
 
     # Outlook names zones the Windows way, which icalendar can't resolve, so repeats keep one fixed offset
-    WINDOWS_TIME_ZONES = { 'GMT Standard Time' => 'Europe/London' }.freeze
+    WINDOWS_TIME_ZONES = {
+      'GMT Standard Time' => 'Europe/London',
+      'Greenwich Standard Time' => 'Atlantic/Reykjavik',
+      'W. Europe Standard Time' => 'Europe/Berlin',
+      'Romance Standard Time' => 'Europe/Paris',
+      'Central Europe Standard Time' => 'Europe/Budapest',
+      'Central European Standard Time' => 'Europe/Warsaw',
+      'E. Europe Standard Time' => 'Europe/Chisinau',
+      'GTB Standard Time' => 'Europe/Bucharest',
+      'FLE Standard Time' => 'Europe/Kyiv',
+      'Eastern Standard Time' => 'America/New_York',
+      'Central Standard Time' => 'America/Chicago',
+      'Pacific Standard Time' => 'America/Los_Angeles'
+    }.freeze
 
     def self.allowlist_pattern
       allowlists = {
@@ -91,11 +104,27 @@ module CalendarImporter::Parsers
     private
 
     def ics_event(event, overrides: [])
+      use_local_time_for_unzoned_dates(event)
       # Date can't be parsed with calling `value_ical` first
       start_time = DateTime.parse(event.dtstart.value_ical) if event.dtstart
       end_time = DateTime.parse(event.dtend.value_ical) if event.dtend
 
       CalendarImporter::Events::IcsEvent.new(event, start_time, end_time, overrides:)
+    end
+
+    # All-day and floating times have no zone, and icalendar-recurrence would read them in the process zone
+    def use_local_time_for_unzoned_dates(event)
+      event.dtstart = local_time(event.dtstart)
+      event.dtend = local_time(event.dtend)
+      event.recurrence_id = local_time(event.recurrence_id)
+      event.exdate = event.exdate.flat_map { |dates| Array(dates) }.map { |date| local_time(date) }
+      event.rdate = event.rdate.flat_map { |dates| Array(dates) }.map { |date| local_time(date) }
+    end
+
+    def local_time(value)
+      return value unless value.is_a?(Icalendar::Values::Date) || (value.is_a?(Icalendar::Values::DateTime) && value.ical_params['tzid'].blank?)
+
+      Icalendar::Values::DateTime.new(value.strftime(Icalendar::Values::DateTime::FORMAT), 'tzid' => Time.zone.tzinfo.name)
     end
 
     def with_iana_time_zones(data)
