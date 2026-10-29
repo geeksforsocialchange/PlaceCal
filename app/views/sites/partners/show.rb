@@ -99,8 +99,7 @@ class Views::Sites::Partners::Show < Views::Base
 
   def render_local_layout
     div do
-      Shared::Hero(partner.name, site.tagline, section: t('partners.show.section'),
-                                               back: [t('partners.show.back_to_index'), partners_path])
+      Shared::Hero(partner.name, site.tagline, section: t('partners.show.section'))
 
       div(class: 'container-public mb-32') do
         Sites::Breadcrumb(
@@ -196,7 +195,7 @@ class Views::Sites::Partners::Show < Views::Base
       UI::RuledHeading(caps: true, rule: :full, size: :lg, spacing: :section) { t('partners.show.opening_times_heading') }
       ul(class: 'opening_times reset text-left') do
         times.each do |slot|
-          li(class: 'grid grid-cols-label-value *:first:font-bold') { Shared::OpeningTime(**slot) }
+          Shared::OpeningTime(**slot)
         end
       end
     end

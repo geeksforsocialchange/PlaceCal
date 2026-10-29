@@ -62,7 +62,7 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
     UI::Card(variant: :panel, padding: :sm) do
       sidebar_heading(t('directory.sidebar.opening_times'))
       ul(class: 'text-sm text-foreground space-y-1 list-none pl-0') do
-        opening_times.each { |slot| li { Shared::OpeningTime(**slot) } }
+        opening_times.each { |slot| Shared::OpeningTime(**slot) }
       end
     end
   end
