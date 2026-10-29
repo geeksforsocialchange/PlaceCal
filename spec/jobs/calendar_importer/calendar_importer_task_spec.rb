@@ -307,5 +307,19 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
 
       expect(calendar.events.order(:dtstart).pluck(:uid)).to eq(%w[e1-d1 e1-d2])
     end
+
+    it "does not reimport when only unused date fields change" do
+      date = ts_date("d1", 20)
+      stub_request(:get, dates_url).to_return(json("data" => [date.deep_merge("attributes" => { "tickets_sold" => 3 })]))
+      run_import
+      checksum = calendar.reload.last_checksum
+      calendar.events.first.update!(summary: "Edited locally")
+
+      stub_request(:get, dates_url).to_return(json("data" => [date.deep_merge("attributes" => { "tickets_sold" => 9 })]))
+      run_import
+
+      expect(calendar.reload.last_checksum).to eq(checksum)
+      expect(calendar.events.pluck(:summary)).to eq(["Edited locally"])
+    end
   end
 end

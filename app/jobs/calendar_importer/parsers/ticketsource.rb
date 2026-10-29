@@ -56,8 +56,15 @@ module CalendarImporter
       # Dates are fetched here so they count towards the checksum, and a failed request fails the import.
       def fetch_all_events
         fetch_all_pages('/events').each do |event_data|
-          event_data['dates'] = fetch_all_pages("/events/#{event_data['id']}/dates") if importable?(event_data)
+          next unless importable?(event_data)
+
+          event_data['dates'] = fetch_all_pages("/events/#{event_data['id']}/dates").map { |date| date_fields(date) }
         end
+      end
+
+      # Only the fields the importer reads, so changes like ticket counts don't alter the checksum.
+      def date_fields(date)
+        { 'id' => date['id'], 'attributes' => (date['attributes'] || {}).slice('start', 'end', 'cancelled') }
       end
 
       def fetch_all_pages(path)
