@@ -955,6 +955,8 @@ en:
       models:
         partner:
           attributes:
+            base:
+              default_venue: "This partner is the default location for %{calendars}. Change those calendars' location before deleting it."
             tag_ids:
               blank: "Select at least one Tag"
             opening_times:

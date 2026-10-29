@@ -559,4 +559,44 @@ RSpec.describe Partner, type: :model do
       expect(partner.contactable?).to be false
     end
   end
+
+  describe "#destroy" do
+    let(:venue) { create(:partner) }
+    let(:other_organiser) { create(:partner) }
+
+    it "is blocked while another organiser's calendar needs it as its default place" do
+      create(:calendar, name: "Weekly sessions", organiser: other_organiser, place: venue, strategy: "place")
+
+      expect(venue.destroy).to be(false)
+      expect(venue.errors.full_messages.to_sentence).to include("Weekly sessions")
+      expect(described_class.exists?(venue.id)).to be(true)
+    end
+
+    it "clears the place on other organisers' calendars and events that don't need it" do
+      calendar = create(:calendar, organiser: other_organiser, place: venue, strategy: "event")
+      event = create(:event, organiser: other_organiser, calendar:, place: venue)
+
+      expect(venue.destroy).to be_truthy
+      expect(calendar.reload.place).to be_nil
+      expect(event.reload.place).to be_nil
+    end
+
+    it "keeps an address that another organiser's event still uses" do
+      calendar = create(:calendar, organiser: other_organiser, strategy: "event")
+      event = create(:event, organiser: other_organiser, calendar:, place: venue, address: venue.address)
+
+      expect(venue.destroy).to be_truthy
+      expect(event.reload.address).to be_present
+    end
+
+    it "deletes a partner whose own calendar uses it as its default place" do
+      calendar = create(:calendar, organiser: venue, place: venue, strategy: "place")
+      create(:event, organiser: venue, calendar:, place: venue, address: venue.address)
+      address_id = venue.address_id
+
+      expect(venue.destroy).to be_truthy
+      expect(Calendar.exists?(calendar.id)).to be(false)
+      expect(Address.exists?(address_id)).to be(false)
+    end
+  end
 end
