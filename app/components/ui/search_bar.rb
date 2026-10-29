@@ -7,8 +7,8 @@ class Components::UI::SearchBar < Components::Base
     panel: { bar: 'bg-home-background-3', button: :dark }
   }.freeze
   # The input has no outline of its own, so the bar shows keyboard focus; current colour reads on both the dark hero and a cream page.
-  FOCUS = 'has-[input:focus-visible]:outline-solid has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-offset-2 ' \
-          'has-[input:focus-visible]:outline-current'
+  FOCUS = 'input-focused:outline-solid input-focused:outline-2 input-focused:outline-offset-2 ' \
+          'input-focused:outline-current'
   SIZES = { md: { input: 'text-detail', button: :md }, sm: { input: 'text-sm', button: :sm } }.freeze
 
   prop :action, String
