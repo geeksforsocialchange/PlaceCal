@@ -433,6 +433,25 @@ RSpec.describe Partner, type: :model do
           .to include(I18n.t("activerecord.errors.models.partner.attributes.opening_times.overlapping"))
       end
 
+      it "accepts http and https schema.org day URLs" do
+        partner = build(:partner, opening_times: [
+          { dayOfWeek: "http://schema.org/Monday", opens: "09:00", closes: "17:00" },
+          { dayOfWeek: "https://schema.org/Tuesday", opens: "09:00", closes: "17:00" }
+        ].to_json)
+
+        expect(partner).to be_valid
+      end
+
+      it "is invalid when a day is not a schema.org day URL" do
+        ["Monday", "http://schema.org/Funday", '<b id="probe">Mon', nil].each do |day|
+          partner = build(:partner, opening_times: [{ dayOfWeek: day, opens: "09:00", closes: "17:00" }].to_json)
+
+          expect(partner).not_to be_valid
+          expect(partner.errors[:opening_times])
+            .to include(I18n.t("activerecord.errors.models.partner.attributes.opening_times.invalid_day"))
+        end
+      end
+
       it "allows identical times on different days without flagging overlap" do
         partner = build(:partner, opening_times: [
           spec("Monday", "09:00", "17:00"),

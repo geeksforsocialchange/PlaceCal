@@ -211,6 +211,30 @@ RSpec.describe "Public Partners", type: :request do
     end
   end
 
+  describe "GET /partners/:id opening times" do
+    let(:partner) { create(:riverside_partner, address: create(:riverside_address, neighbourhood: ward)) }
+    let(:page) { Capybara.string(response.body) }
+
+    { "site" => "test-site.lvh.me", "directory" => "lvh.me" }.each do |label, host|
+      it "shows each opening time on the #{label} partner page" do
+        partner.update!(opening_times: [{ dayOfWeek: "http://schema.org/Monday", opens: "09:00:00", closes: "17:00:00" }].to_json)
+        get partner_url(partner, host:)
+
+        expect(page).to have_css("li", text: "Monday 9:00am \u2013 5:00pm", normalize_ws: true)
+      end
+
+      it "shows markup in a stored day name as text on the #{label} partner page" do
+        stored = [{ dayOfWeek: '<b id="probe">Mon', opens: "09:00:00", closes: "17:00:00" }].to_json
+        partner.update_columns(opening_times: stored) # rubocop:disable Rails/SkipsModelValidations -- simulates a value stored before validation
+        get partner_url(partner, host:)
+
+        expect(page).to have_no_css("b#probe")
+        expect(page).to have_text('<b id="probe">Mon')
+        expect(response.body).not_to include('<b id="probe"')
+      end
+    end
+  end
+
   describe "GET /partners/:id for a partner not on this site" do
     # A separate ward the site does not own — the partner is real but
     # belongs to a different part of the country (issue #1722).

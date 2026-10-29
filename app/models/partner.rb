@@ -67,6 +67,7 @@ class Partner < ApplicationRecord
   # ==== Constants ====
 
   MAX_CATEGORIES = 3
+  OPENING_TIMES_DAY = %r{\Ahttps?://schema\.org/(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\z}
   NEIGHBOURHOOD_UNIT_RANK = %w[ward district county region].freeze
 
   # ==== Attributes ====
@@ -373,17 +374,16 @@ class Partner < ApplicationRecord
     opening_times
   end
 
-  # @return [Array<String>] HTML-safe strings like "Monday 9:00am – 5:00pm"
+  # @return [Array<Hash>] plain-text slots like { day: "Monday", opens: "9:00am", closes: "5:00pm" }
   def human_readable_opening_times
     return [] if !opening_times || opening_times.length.zero?
 
     JSON.parse(opening_times).map do |s|
-      d = s['dayOfWeek'].split('/').last
-      o = Time.zone.parse(s['opens']).strftime('%-l:%M%P')
-      c = Time.zone.parse(s['closes']).strftime('%-l:%M%P')
-      %( <span class='opening_times--day'>#{d}</span>
-         <span class='opening_times--time'>#{o} &ndash; #{c}</span>
-      ).html_safe
+      {
+        day: opening_times_day(s),
+        opens: Time.zone.parse(s['opens']).strftime('%-l:%M%P'),
+        closes: Time.zone.parse(s['closes']).strftime('%-l:%M%P')
+      }
     end
   rescue JSON::ParserError
     []
@@ -532,9 +532,8 @@ class Partner < ApplicationRecord
     errors.add :base, 'Partner.opening_times must be valid json'
   end
 
-  # Validates each opening hours specification has a sensible time range and
-  # that ranges on the same day do not overlap. Skips when the value is blank
-  # or not parseable (handled by #opening_times_is_json_or_nil).
+  # Checks each slot has a schema.org day, a valid time range and no same-day overlap.
+  # Skips blank or unparseable values (handled by #opening_times_is_json_or_nil).
   def opening_times_are_valid
     return if opening_times.blank?
     return unless valid_json? opening_times
@@ -544,10 +543,12 @@ class Partner < ApplicationRecord
 
     by_day = {}
     has_invalid_range = false
+    has_invalid_day = false
 
     specs.each do |spec|
       next unless spec.is_a?(Hash)
 
+      has_invalid_day ||= !OPENING_TIMES_DAY.match?(spec['dayOfWeek'].to_s)
       opens = parse_opening_time(spec['opens'])
       closes = parse_opening_time(spec['closes'])
       next if opens.nil? || closes.nil?
@@ -560,6 +561,7 @@ class Partner < ApplicationRecord
       (by_day[opening_times_day(spec)] ||= []) << [opens, closes]
     end
 
+    errors.add(:opening_times, :invalid_day) if has_invalid_day
     errors.add(:opening_times, :end_before_start) if has_invalid_range
     flag_overlapping_opening_times(by_day)
   end
