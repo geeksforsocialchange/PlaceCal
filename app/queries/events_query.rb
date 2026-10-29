@@ -110,7 +110,7 @@ class EventsQuery
 
   # Returns events as a flat relation for iCal feeds (no grouping)
   def for_ical
-    base_scope.ical_feed
+    base_scope.ical_feed.preload(place: :address, organiser: :address)
   end
 
   # Efficient count for a period (no grouping or sorting)

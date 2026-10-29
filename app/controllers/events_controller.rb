@@ -177,15 +177,16 @@ class EventsController < ApplicationController
     key = ical_feed_key(events)
     return unless stale?(etag: key)
 
-    ics = Rails.cache.fetch(key, expires_in: 1.day) { create_calendar(events).tap(&:publish).to_ical }
+    ics = Rails.cache.fetch(key, expires_in: 1.day) { ical_text(events) }
     render plain: ics
   end
 
   # Addresses have no updated_at, so the date caps how long an edited address can stay stale
   def ical_feed_key(events)
-    count, latest = events.unscope(:includes).pick(Arel.sql('count(*)'), Arel.sql('max(events.updated_at)'))
-    ['ical_feed', @site&.cache_key_with_version, Date.current, count, latest&.iso8601(6),
-     Partner.maximum(:updated_at)&.iso8601(6)]
+    plain = events.unscope(:includes, :preload)
+    count, latest = plain.pick(Arel.sql('count(*)'), Arel.sql('max(events.updated_at)'))
+    partners = Partner.where(id: plain.select(:organiser_id)).or(Partner.where(id: plain.select(:place_id)))
+    ['ical_feed', @site&.cache_key_with_version, Date.current, count, latest&.iso8601(6), partners.maximum(:updated_at)&.iso8601(6)]
   end
 
   # The same builder as the partner page's CSV export (app/services/events_csv.rb),
