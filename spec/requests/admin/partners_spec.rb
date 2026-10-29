@@ -347,6 +347,116 @@ RSpec.describe "Admin::Partners", type: :request do
       end
     end
 
+    context "partner admin submitting nested calendars" do
+      let(:user) { create(:partner_admin) }
+      let(:partner) { user.partners.first }
+      let(:other_partner) { create(:partner) }
+      let!(:calendar) { create(:calendar, organiser: partner) }
+
+      before { sign_in user }
+
+      it "does not move their calendar to another partner" do
+        put admin_partner_url(partner, host: admin_host), params: {
+          partner: {
+            name: partner.name,
+            calendars_attributes: { "0" => { id: calendar.id, organiser_id: other_partner.id, place_id: other_partner.id } }
+          }
+        }
+
+        expect(response).to redirect_to(edit_admin_partner_url(partner, host: admin_host))
+        calendar.reload
+        expect(calendar.organiser).to eq(partner)
+        expect(calendar.place).to be_nil
+      end
+    end
+
+    context "partner admin editing addresses" do
+      let(:user) { create(:partner_admin, partner: create(:riverside_partner)) }
+      let(:partner) { user.partners.first }
+      let(:other_partner) { create(:partner) }
+
+      before { sign_in user }
+
+      it "does not repoint their partner at another partner's address or change that address" do
+        own_address = partner.address
+        other_address = other_partner.address
+
+        put admin_partner_url(partner, host: admin_host), params: {
+          partner: {
+            name: partner.name,
+            address_id: other_address.id,
+            address_attributes: { id: other_address.id, street_address: "1 Other Road", postcode: other_address.postcode }
+          }
+        }
+
+        expect(response).to have_http_status(:not_found)
+        expect(partner.reload.address).to eq(own_address)
+        expect(other_address.reload.street_address).not_to eq("1 Other Road")
+        expect(own_address.reload.street_address).not_to eq("1 Other Road")
+      end
+
+      it "does not change another partner's address from a partner with no address" do
+        partner.service_areas.create!(neighbourhood: create(:riverside_ward))
+        partner.update_column(:address_id, nil) # rubocop:disable Rails/SkipsModelValidations
+        other_address = other_partner.address
+
+        put admin_partner_url(partner, host: admin_host), params: {
+          partner: {
+            name: partner.name,
+            address_attributes: { id: other_address.id, street_address: "1 Other Road", postcode: other_address.postcode }
+          }
+        }
+
+        expect(partner.reload.address).to be_nil
+        expect(other_address.reload.street_address).not_to eq("1 Other Road")
+      end
+
+      it "updates their own partner's address" do
+        put admin_partner_url(partner, host: admin_host), params: {
+          partner: {
+            name: partner.name,
+            address_attributes: { id: partner.address.id, street_address: "2 New Street", postcode: partner.address.postcode }
+          }
+        }
+
+        expect(response).to redirect_to(edit_admin_partner_url(partner, host: admin_host))
+        expect(partner.reload.address.street_address).to eq("2 New Street")
+      end
+    end
+
+    context "partner admin submitting tags" do
+      let(:user) { create(:partner_admin, partner: create(:riverside_partner)) }
+      let(:partner) { user.partners.first }
+      let(:partnership) { create(:partnership) }
+      let(:category) { create(:category) }
+
+      before { sign_in user }
+
+      it "does not add their partner to a partnership through tag_ids" do
+        put admin_partner_url(partner, host: admin_host),
+            params: { partner: { name: partner.name, tag_ids: [partnership.id] } }
+
+        expect(partner.reload.partnerships).to be_empty
+      end
+
+      it "does not clear their partner's tags through tag_ids" do
+        partner.categories << category
+
+        put admin_partner_url(partner, host: admin_host),
+            params: { partner: { name: partner.name, tag_ids: [""] } }
+
+        expect(partner.reload.categories).to contain_exactly(category)
+      end
+
+      it "sets categories from the partner form" do
+        put admin_partner_url(partner, host: admin_host),
+            params: { partner: { name: partner.name, category_ids: ["", category.id] } }
+
+        expect(response).to redirect_to(edit_admin_partner_url(partner, host: admin_host))
+        expect(partner.reload.categories).to contain_exactly(category)
+      end
+    end
+
     context "neighbourhood admin address restriction" do
       let(:ward) { create(:riverside_ward) }
       let(:user) { create(:neighbourhood_admin, neighbourhood: ward) }

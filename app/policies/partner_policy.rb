@@ -49,14 +49,14 @@ class PartnerPolicy < ApplicationPolicy
     attrs = [:name, :image, :remove_image, :summary, :description, :accessibility_info,
              :public_name, :public_email, :public_phone,
              :partner_name, :partner_email, :partner_phone,
-             :address_id, :url, :facebook_link, :twitter_handle, :instagram_handle,
+             :url, :facebook_link, :twitter_handle, :instagram_handle,
              :opening_times, :can_be_assigned_events,
-             { calendars_attributes: %i[id name source strategy place_id organiser_id _destroy],
+             { calendars_attributes: %i[id name source strategy _destroy],
                address_attributes: %i[id street_address street_address2 street_address3 city postcode],
                service_areas_attributes: %i[id neighbourhood_id _destroy],
-               tag_ids: [], category_ids: [], facility_ids: [] }]
+               category_ids: [], facility_ids: [] }]
 
-    attrs << :slug if user.root?
+    attrs += %i[slug address_id] if user.root?
     attrs += moderation_attributes if can_moderate?
     attrs << { partnership_ids: [] } if user.root? || user.partnership_admin?
     attrs

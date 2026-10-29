@@ -260,9 +260,49 @@ RSpec.describe "Admin::Calendars", type: :request do
     end
   end
 
+  describe "POST /admin/calendars" do
+    let(:user) { create(:partner_admin) }
+    let(:admin_partner) { user.partners.first }
+    let(:other_partner) { create(:partner) }
+    let(:calendar_params) do
+      { name: "Weekly sessions", source: "https://example.com/weekly.ics", strategy: "event" }
+    end
+
+    before do
+      allow_any_instance_of(Calendar).to receive(:check_source_reachable)
+      sign_in user
+    end
+
+    it "creates a calendar for the user's own partner" do
+      expect do
+        post admin_calendars_url(host: admin_host),
+             params: { calendar: calendar_params.merge(organiser_id: admin_partner.id) }
+      end.to change(Calendar, :count).by(1)
+
+      expect(Calendar.last.organiser).to eq(admin_partner)
+    end
+
+    it "does not create a calendar organised by a partner outside the user's scope" do
+      expect do
+        post admin_calendars_url(host: admin_host),
+             params: { calendar: calendar_params.merge(organiser_id: other_partner.id) }
+      end.not_to change(Calendar, :count)
+
+      expect(other_partner.calendars).to be_empty
+    end
+
+    it "does not create a calendar whose default location is outside the user's scope" do
+      expect do
+        post admin_calendars_url(host: admin_host),
+             params: { calendar: calendar_params.merge(organiser_id: admin_partner.id, place_id: other_partner.id) }
+      end.not_to change(Calendar, :count)
+    end
+  end
+
   describe "PUT /admin/calendars/:id" do
     let(:user) { create(:partner_admin) }
     let(:admin_partner) { user.partners.first }
+    let(:other_partner) { create(:partner) }
     let(:calendar) do
       cal = build(:calendar, organiser: admin_partner, importer_mode: "ical")
       allow(cal).to receive(:check_source_reachable)
@@ -278,6 +318,42 @@ RSpec.describe "Admin::Calendars", type: :request do
 
       calendar.reload
       expect(calendar.importer_mode).to eq("eventbrite")
+    end
+
+    it "does not move the calendar to a partner outside the user's scope" do
+      put admin_calendar_url(calendar, host: admin_host),
+          params: { calendar: { organiser_id: other_partner.id } }
+
+      expect(calendar.reload.organiser).to eq(admin_partner)
+    end
+
+    it "does not set a default location outside the user's scope" do
+      put admin_calendar_url(calendar, host: admin_host),
+          params: { calendar: { place_id: other_partner.id } }
+
+      expect(calendar.reload.place).to be_nil
+    end
+
+    it "sets a default location to another partner the user manages" do
+      venue = create(:partner)
+      user.partners << venue
+
+      put admin_calendar_url(calendar, host: admin_host),
+          params: { calendar: { place_id: venue.id } }
+
+      expect(response).to redirect_to(edit_admin_calendar_url(calendar, host: admin_host))
+      expect(calendar.reload.place).to eq(venue)
+    end
+
+    it "keeps an existing default location outside the user's scope on an unrelated edit" do
+      calendar.update_column(:place_id, other_partner.id) # rubocop:disable Rails/SkipsModelValidations
+
+      put admin_calendar_url(calendar, host: admin_host),
+          params: { calendar: { name: "Renamed calendar", place_id: other_partner.id } }
+
+      calendar.reload
+      expect(calendar.name).to eq("Renamed calendar")
+      expect(calendar.place).to eq(other_partner)
     end
   end
 end
