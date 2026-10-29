@@ -123,7 +123,6 @@
 	--color-rules-dark: #decbba;
 	/* Contrast colours */
 	--color-secondary: #f19089;
-	--color-secondary-light: #f4a6a1;
 	/* Deeper salmon for small text / numerals that need contrast on cream */
 	--color-secondary-deep: #e66f67;
 	/* Deepest salmon: large display numerals on cream */
@@ -277,7 +276,6 @@ this file).
 	--color-rules-dark: var(--color-rules-dark);
 	/* Contrast colours */
 	--color-secondary: var(--color-secondary);
-	--color-secondary-light: var(--color-secondary-light);
 	--color-secondary-deep: var(--color-secondary-deep);
 	--color-secondary-dark: var(--color-secondary-dark);
 	--color-secondary-strong: var(--color-secondary-strong);
