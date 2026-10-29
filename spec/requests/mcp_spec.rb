@@ -3,10 +3,28 @@
 require "rails_helper"
 
 RSpec.describe "MCP server", type: :request do
-  def call_tool(arguments)
-    post "/mcp", params: { jsonrpc: "2.0", id: 1, method: "tools/call", params: { name: "search_events", arguments: } }.to_json,
+  def rpc(method, params = {})
+    post "/mcp", params: { jsonrpc: "2.0", id: 1, method:, params: }.to_json,
                  headers: { "Content-Type" => "application/json", "Accept" => "application/json, text/event-stream", "Host" => "lvh.me" }
-    response.parsed_body["result"]
+    response.parsed_body
+  end
+
+  def call_tool(arguments)
+    rpc("tools/call", name: "search_events", arguments:)["result"]
+  end
+
+  it "answers initialize as a JSON-RPC 2.0 server offering tools" do
+    body = rpc("initialize", protocolVersion: "2025-06-18", capabilities: {}, clientInfo: { name: "spec", version: "1" })
+
+    expect(body).to include("jsonrpc" => "2.0", "id" => 1)
+    expect(body["result"]["capabilities"]).to have_key("tools")
+    expect(body["result"]["serverInfo"]["name"]).to be_present
+  end
+
+  it "lists the search_events tool with its input schema" do
+    tool = rpc("tools/list")["result"]["tools"].find { |t| t["name"] == "search_events" }
+
+    expect(tool["inputSchema"]["properties"]).to have_key("place")
   end
 
   it "finds events by place, linking each to its page" do
