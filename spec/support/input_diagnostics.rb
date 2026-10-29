@@ -48,9 +48,8 @@ module InputDiagnostics
   module_function
 
   def report(page, example)
-    result = { example: example.location, windows: page.driver.browser.window_handles.size }
+    result = { example: example.location, windows: page.windows.size }
     result[:page] = page.evaluate_script(PAGE_STATE_JS)
-    result[:console] = page.driver.browser.logs.get(:browser).last(10).map(&:message)
     result.merge!(probes(page))
   rescue StandardError => e
     result = (result || {}).merge(error: "#{e.class}: #{e.message}".truncate(300))
