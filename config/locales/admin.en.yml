@@ -373,7 +373,7 @@ en:
         importing: "Importing..."
         last_import: "Last import:"
         notices: "Import notices"
-        occurrence_limit: "\"%{summary}\" repeats more than %{count} times, so only its first %{count} dates were imported."
+        occurrence_limit: '"%{summary}" repeats more than %{count} times, so only its first %{count} dates were imported.'
         pending: "Pending import"
         reimport: "Re-import now"
         retry_import: "Retry import"
