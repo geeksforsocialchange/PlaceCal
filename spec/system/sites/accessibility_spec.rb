@@ -14,6 +14,39 @@ RSpec.describe "Site accessibility", :slow, type: :system do
     "the Get in touch page" => "/get-in-touch"
   }.freeze
 
+  # axe leaves text over a background image or under an overlapping element as incomplete rather than failing it,
+  # so this measures that text against the nearest solid fill behind it. Run after be_axe_clean, which loads axe.
+  UNRESOLVED_LOW_CONTRAST = <<~'JS'
+    async () => {
+      const luminance = (colour) => {
+        const [r, g, b] = colour.match(/[\d.]+/g).slice(0, 3).map((v) => {
+          v /= 255
+          return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4
+        })
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b
+      }
+      const fill = (el) => {
+        for (; el; el = el.parentElement) {
+          const bg = getComputedStyle(el).backgroundColor
+          if (bg !== "transparent" && !/, 0\)$/.test(bg)) return bg
+        }
+        return "rgb(255, 255, 255)"
+      }
+      const { incomplete } = await axe.run(document, { runOnly: ["color-contrast"] })
+      return incomplete.flatMap((rule) => rule.nodes)
+        .filter((node) => ["bgImage", "bgOverlap"].includes(node.any[0]?.data?.messageKey))
+        .flatMap((node) => {
+          const el = document.querySelector(node.target[0])
+          const style = getComputedStyle(el)
+          const [a, b] = [luminance(style.color), luminance(fill(el))]
+          const ratio = (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)
+          const size = parseFloat(style.fontSize)
+          const large = size >= 24 || (size >= 18.66 && parseInt(style.fontWeight, 10) >= 700)
+          return ratio < (large ? 3 : 4.5) ? [`${ratio.toFixed(2)}:1 ${style.color} on ${fill(el)}: ${node.html}`] : []
+        })
+    }
+  JS
+
   let(:ward) { create(:riverside_ward) }
   let(:outside_ward) { create(:oldtown_ward, parent: ward.parent) }
   let(:site_admin) { create(:user, first_name: "Robin", last_name: "Rivers", phone: "01234 567890") }
@@ -53,6 +86,11 @@ RSpec.describe "Site accessibility", :slow, type: :system do
     visit "http://riverside.lvh.me:#{Capybara.current_session.server.port}#{path}"
   end
 
+  def expect_accessible_page
+    expect(page).to be_axe_clean
+    expect(page.driver.with_playwright_page { |pw| pw.evaluate(UNRESOLVED_LOW_CONTRAST) }).to be_empty
+  end
+
   CORE_THEMES.each do |core_theme|
     context "on the #{core_theme} theme" do
       let(:theme) { core_theme }
@@ -61,26 +99,26 @@ RSpec.describe "Site accessibility", :slow, type: :system do
         it "has no accessibility violations on #{description}" do
           visit_site(path)
 
-          expect(page).to be_axe_clean
+          expect_accessible_page
         end
       end
 
       it "has no accessibility violations on a partner page" do
         visit_site("/partners/#{partner.to_param}")
 
-        expect(page).to be_axe_clean
+        expect_accessible_page
       end
 
       it "has no accessibility violations on an event page" do
         visit_site("/events/#{event.to_param}")
 
-        expect(page).to be_axe_clean
+        expect_accessible_page
       end
 
       it "has no accessibility violations on an article" do
         visit_site("/news/#{article.to_param}")
 
-        expect(page).to be_axe_clean
+        expect_accessible_page
       end
     end
   end
