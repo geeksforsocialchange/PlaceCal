@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# A module, not top-level defs, so these don't become methods on every object
 module EventTaskHelpers
   module_function
 
