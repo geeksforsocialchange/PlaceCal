@@ -4,6 +4,9 @@
 #
 # Delegates location resolution to LocationResolver and online detection to OnlineDetector.
 class CalendarImporter::EventResolver
+  # Twice-daily for a year fits; a minutely or hourly rule does not
+  MAX_OCCURENCES = 1000
+
   attr_reader :data, :uid, :notices, :calendar
 
   delegate :private?, to: :data
@@ -21,7 +24,14 @@ class CalendarImporter::EventResolver
   end
 
   def occurences
-    @occurences ||= data.occurrences_between(@from_date, Calendar.import_up_to)
+    @occurences ||= begin
+      all = data.occurrences_between(@from_date, Calendar.import_up_to)
+      if all.size > MAX_OCCURENCES
+        notices << I18n.t('admin.calendars.importer.occurrence_limit', summary: data.summary, count: MAX_OCCURENCES)
+        all = all.sort_by(&:start_time).first(MAX_OCCURENCES)
+      end
+      all
+    end
   end
 
   def determine_online_location
@@ -38,28 +48,11 @@ class CalendarImporter::EventResolver
 
   def save_all_occurences
     calendar_events = calendar.events.where(uid: data.uid)
-
-    # If any dates of this event don't match the imported start times or end times, delete them
-    if data.recurring_event?
-      time_pairs = occurences.map { |o| [o.start_time, o.end_time] }
-      events_with_invalid_dates = calendar_events.without_matching_times(time_pairs)
-      events_with_invalid_dates.destroy_all
-
-      # Re-query after destroy to avoid stale relation returning destroyed records
-      calendar_events = calendar.events.where(uid: data.uid)
-    end
+    remove_stale_occurences(calendar_events)
 
     occurences.each do |occurence|
       event_time = { dtstart: occurence.start_time, dtend: occurence.end_time }
-      event = nil
-
-      if calendar_events.present?
-        event = if data.recurring_event?
-                  calendar_events.find_by(event_time)
-                else
-                  calendar_events.first
-                end
-      end
+      event = series? ? calendar_events.find_by(event_time) : one_off_event(calendar_events)
 
       # Clean up any remaining duplicates for this specific occurrence
       calendar_events.where(event_time).where.not(id: event.id).delete_all if event&.persisted?
@@ -73,10 +66,36 @@ class CalendarImporter::EventResolver
       begin
         notices << event.errors.full_messages.join(', ') unless event.update(attributes)
       rescue ActiveRecord::RecordNotUnique
-        # Duplicate detected by DB constraint — find and update existing instead
+        # Duplicate detected by DB constraint: find and update existing instead
         existing = calendar.events.find_by!(uid: data.uid, dtstart: event_time[:dtstart], dtend: event_time[:dtend])
         notices << existing.errors.full_messages.join(', ') unless existing.update(attributes)
       end
     end
+  end
+
+  private
+
+  # RDATE gives an event several dates without an RRULE
+  def series?
+    data.recurring_event? || occurences.many?
+  end
+
+  # Past rows are history, and occurrences are only generated from the import's from_date
+  def remove_stale_occurences(calendar_events)
+    upcoming = calendar_events.where(dtstart: @from_date..)
+    stale = if series?
+              upcoming.without_matching_times(occurences.map { |o| [o.start_time, o.end_time] })
+            else
+              upcoming.where.not(id: one_off_event(calendar_events))
+            end
+    stale.destroy_all
+  end
+
+  # Reuses an existing row so a rescheduled one-off keeps its id
+  def one_off_event(calendar_events)
+    occurence = occurences.first
+    @one_off_event ||= calendar_events.find_by(dtstart: occurence.start_time, dtend: occurence.end_time) ||
+                       calendar_events.where(dtstart: @from_date..).order(:dtstart).first ||
+                       calendar_events.order(:dtstart).first
   end
 end
