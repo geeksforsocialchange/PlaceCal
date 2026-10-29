@@ -27,6 +27,22 @@ RSpec.describe "Event iCal export", type: :request do
     expect(response.body).not_to include("event-#{beyond.id}@placecal.org")
   end
 
+  it "includes an event with no end time, and rebuilds the feed when it changes" do
+    event = create(:event, organiser: partner, address: partner.address, dtstart: 2.days.from_now, dtend: nil)
+    url = events_url(host: "lvh.me", format: :ics)
+
+    get url
+    exported = Icalendar::Calendar.parse(response.body).first.events.find { |e| e.uid.to_s == "event-#{event.id}@placecal.org" }
+    expect(exported).to be_present
+    expect(exported.dtend).to be_nil
+
+    etag = response.headers["ETag"]
+    Timecop.freeze(1.minute.from_now) { event.update!(summary: "Renamed open-ended event") }
+    get url, headers: { "If-None-Match" => etag }
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to include("Renamed open-ended event")
+  end
+
   it "doesn't rebuild an unchanged events feed for a repeat request" do
     event = create(:event, organiser: partner, address: partner.address,
                            dtstart: 1.day.from_now, dtend: 1.day.from_now + 1.hour)
