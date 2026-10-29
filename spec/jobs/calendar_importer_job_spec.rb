@@ -171,4 +171,48 @@ RSpec.describe CalendarImporterJob do
       expect(calendar.events.pluck(:uid, :place_id, :address_id)).to eq([["good@example.com", place.id, nil]])
     end
   end
+
+  describe "a TicketSource dates request that fails" do
+    let(:calendar) do
+      create(:calendar, source: "https://www.ticketsource.co.uk/fairfield-house",
+                        importer_mode: "ticketsource", api_token: "test_key")
+        .tap { |c| c.update!(calendar_state: "in_queue") }
+    end
+
+    def json(body)
+      { status: 200, body: body.to_json, headers: { "Content-Type" => "application/json" } }
+    end
+
+    def ts_event(id, name)
+      { "id" => id, "attributes" => { "name" => name, "public" => true, "archived" => false } }
+    end
+
+    def ts_dates(id)
+      { "data" => [{ "id" => id, "attributes" => { "start" => "2022-11-20T19:00:00+00:00",
+                                                   "end" => "2022-11-20T21:00:00+00:00" } }] }
+    end
+
+    before do
+      allow(CalendarImporter::Parsers::Base).to receive(:sleep)
+      stub_request(:get, %r{api\.ticketsource\.io/events/\w+/venues}).to_return(json("data" => []))
+      stub_request(:get, "https://api.ticketsource.io/events?page=1&per_page=100")
+        .to_return(json("data" => [ts_event("e1", "One"), ts_event("e2", "Two")]))
+      stub_request(:get, "https://api.ticketsource.io/events/e1/dates?page=1&per_page=100").to_return(json(ts_dates("d1")))
+      stub_request(:get, "https://api.ticketsource.io/events/e2/dates?page=1&per_page=100").to_return(json(ts_dates("d2")))
+      perform_import
+      calendar.reload.update!(calendar_state: "in_queue")
+    end
+
+    it "keeps that event's existing events and marks the source bad" do
+      expect(calendar.events.pluck(:summary)).to contain_exactly("One", "Two")
+      checksum = calendar.reload.last_checksum
+
+      stub_request(:get, "https://api.ticketsource.io/events/e2/dates?page=1&per_page=100").to_return(status: 429)
+      described_class.perform_now(calendar.id, Time.zone.today, true)
+
+      expect(calendar.reload.calendar_state).to eq("bad_source")
+      expect(calendar.events.pluck(:summary)).to contain_exactly("One", "Two")
+      expect(calendar.last_checksum).to eq(checksum)
+    end
+  end
 end
