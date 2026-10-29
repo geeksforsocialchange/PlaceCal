@@ -39,7 +39,7 @@ class Components::Shared::Navigation < Components::Base
               'header__branding row-start-1 col-start-1 ',
               ("header__branding--#{@site.slug}" if @site&.slug.presence),
               ("header__branding--theme-#{branding_theme_name}" if branding_theme_name),
-              # svg/img classes are here because partner svgs are inlined with File.read
+              # svg for the bundled inline logos, img for uploaded ones
               'logo:object-contain logo:max-w-full logo:max-h-full',
               *(if @site.nil?
                   ['w-32 h-10 md:w-42 md:h-12']
@@ -70,12 +70,8 @@ class Components::Shared::Navigation < Components::Base
     if @site.nil?
       raw(view_context.svg_image('home/icons/logo-dark.svg', alt_text: 'PlaceCal'))
     elsif logo_url
-      logo_path = Rails.public_path.join(logo_url.delete_prefix('/'))
-      if /\.svg$/i.match?(logo_url) && File.exist?(logo_path)
-        raw(safe(File.read(logo_path)))
-      else
-        image_tag(logo_url, alt: @site&.name)
-      end
+      # An <img>, not inline markup: an uploaded SVG then can't run script or restyle the page.
+      image_tag(logo_url, alt: @site.name)
     else
       raw(view_context.svg_image('header.svg', alt_text: 'PlaceCal'))
     end
