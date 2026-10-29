@@ -94,6 +94,10 @@ module CalendarImporter::Events
         online_address_id: }
     end
 
+    def attributes_for(_occurrence)
+      attributes
+    end
+
     def footer; end
 
     def publisher_url; end

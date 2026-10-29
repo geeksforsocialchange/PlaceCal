@@ -42,20 +42,16 @@ module CalendarImporter::Parsers
     end
 
     def import_events_from(data)
-      @events = []
-
       # It is possible for an ics file to contain multiple calendars
-      parse_remote_calendars(data).each do |calendar|
-        calendar.events.each do |event|
-          # Date can't be parsed with calling `value_ical` first
-          @start_time = DateTime.parse(event.dtstart.value_ical) if event.dtstart
-          @end_time = DateTime.parse(event.dtend.value_ical) if event.dtend
+      vevents = parse_remote_calendars(data).flat_map(&:events)
 
-          @events << CalendarImporter::Events::IcsEvent.new(event, @start_time, @end_time)
-        end
+      # A VEVENT with a RECURRENCE-ID replaces one occurrence of the series sharing its UID
+      vevents.group_by { |event| event.uid.to_s }.values.flat_map do |group|
+        overrides, series = group.partition(&:recurrence_id)
+        next overrides.map { |event| ics_event(event) } if series.empty?
+
+        series.map { |event| ics_event(event, overrides: overrides.map { |override| ics_event(override) }) }
       end
-
-      @events
     end
 
     def parse_remote_calendars(data)
@@ -78,6 +74,14 @@ module CalendarImporter::Parsers
     end
 
     private
+
+    def ics_event(event, overrides: [])
+      # Date can't be parsed with calling `value_ical` first
+      start_time = DateTime.parse(event.dtstart.value_ical) if event.dtstart
+      end_time = DateTime.parse(event.dtend.value_ical) if event.dtend
+
+      CalendarImporter::Events::IcsEvent.new(event, start_time, end_time, overrides:)
+    end
 
     def with_iana_time_zones(data)
       data.gsub(/(?<=TZID[=:])#{Regexp.union(WINDOWS_TIME_ZONES.keys)}/, WINDOWS_TIME_ZONES)
