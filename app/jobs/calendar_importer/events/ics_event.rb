@@ -37,13 +37,18 @@ module CalendarImporter::Events
       x_zoom_meeting_url
     ].freeze
 
-    def initialize(event, start_date, end_date)
+    Occurrence = Struct.new(:start_time, :end_time, :override)
+
+    OVERRIDABLE_FIELDS = %i[summary description publisher_url].freeze
+
+    def initialize(event, start_date, end_date, overrides: [])
       @event = event
       @dtstart = start_date
       @dtend = end_date
+      @overrides = overrides
     end
 
-    attr_reader :dtstart, :dtend
+    attr_reader :dtstart, :dtend, :overrides
 
     # to_s has to be called on any value returned by icalendar, or it will return a Icalendar::Values instead of a String
     def uid
@@ -75,7 +80,33 @@ module CalendarImporter::Events
       rrule.present?
     end
 
-    delegate :occurrences_between, to: :@event
+    def occurrences_between(from, to)
+      return @event.occurrences_between(from, to) if overrides.empty?
+
+      overridden = overrides.map(&:recurrence_start)
+      window = Icalendar::Recurrence::TimeUtil.to_time(from)..Icalendar::Recurrence::TimeUtil.to_time(to)
+
+      @event.occurrences_between(from, to).reject { |occurrence| overridden.include?(occurrence.start_time.to_i) } +
+        overrides.reject(&:hidden?).map(&:overriding_occurrence).select { |occurrence| window.cover?(occurrence.start_time) }
+    end
+
+    def attributes_for(occurrence)
+      return attributes unless occurrence.respond_to?(:override)
+
+      attributes.merge(occurrence.override.attributes.slice(*OVERRIDABLE_FIELDS).compact_blank)
+    end
+
+    def recurrence_start
+      Icalendar::Recurrence::TimeUtil.to_time(@event.recurrence_id).to_i
+    end
+
+    def hidden?
+      private? || @event.status.to_s.casecmp?('CANCELLED')
+    end
+
+    def overriding_occurrence
+      Occurrence.new(@event.schedule.start_time.utc, @event.schedule.end_time.utc, self)
+    end
 
     # The iCal URL property links to more info about the event (its webpage),
     # not to an online meeting. Use this for publisher_url, not online detection.

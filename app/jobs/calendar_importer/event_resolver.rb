@@ -69,7 +69,7 @@ class CalendarImporter::EventResolver
 
       event_time[:are_spaces_available] = occurence.status if occurence.respond_to?(:status)
 
-      attributes = data.attributes.merge(event_time)
+      attributes = data.attributes_for(occurence).merge(event_time)
       begin
         notices << event.errors.full_messages.join(', ') unless event.update(attributes)
       rescue ActiveRecord::RecordNotUnique

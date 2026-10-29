@@ -33,7 +33,8 @@ RSpec.describe CalendarImporter::CalendarImporter do
           output = parser_class.new(calendar).calendar_to_events
           events = output.events
 
-          expect(events.count).to eq(139)
+          # 3 of the feed's 139 VEVENTs edit an occurrence of another, so they join that series
+          expect(events.count).to eq(136)
           expect(events.first.summary).to eq("Dementia Friends Walk and Talk Group")
           expect(events.first.description).to eq("Session run by Together Dementia Support call Sally on: 0161 2839970")
         end
