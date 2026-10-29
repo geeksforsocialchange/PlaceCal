@@ -948,6 +948,8 @@ en:
     # Validation errors
     # -------------------------------------------------------------------------
     errors:
+      messages:
+        invalid_svg: "is not a valid SVG image"
       template:
         header:
           one: "%{count} error prohibited this %{model} from being saved"
