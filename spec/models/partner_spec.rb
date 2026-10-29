@@ -433,6 +433,47 @@ RSpec.describe Partner, type: :model do
           .to include(I18n.t("activerecord.errors.models.partner.attributes.opening_times.overlapping"))
       end
 
+      it "accepts http and https schema.org day URLs" do
+        partner = build(:partner, opening_times: [
+          { dayOfWeek: "http://schema.org/Monday", opens: "09:00", closes: "17:00" },
+          { dayOfWeek: "https://schema.org/Tuesday", opens: "09:00", closes: "17:00" }
+        ].to_json)
+
+        expect(partner).to be_valid
+      end
+
+      it "is invalid when a day is not a schema.org day URL" do
+        ["Monday", "http://schema.org/Funday", '<b id="probe">Mon', nil].each do |day|
+          partner = build(:partner, opening_times: [{ dayOfWeek: day, opens: "09:00", closes: "17:00" }].to_json)
+
+          expect(partner).not_to be_valid
+          expect(partner.errors[:opening_times])
+            .to include(I18n.t("activerecord.errors.models.partner.attributes.opening_times.invalid_day"))
+        end
+      end
+
+      it "keeps a stored legacy day valid when the opening times are reformatted or reordered" do
+        partner = create(:partner)
+        stored = [{ dayOfWeek: "Monday", opens: "09:00", closes: "17:00" },
+                  { dayOfWeek: "http://schema.org/Tuesday", opens: "09:00", closes: "17:00" }].to_json
+        partner.update_columns(opening_times: stored) # rubocop:disable Rails/SkipsModelValidations -- simulates a legacy stored value
+
+        resaved = JSON.pretty_generate(JSON.parse(stored).reverse)
+        expect(partner.reload.update(opening_times: resaved)).to be(true)
+      end
+
+      it "rejects a new bad day alongside a stored legacy day" do
+        partner = create(:partner)
+        stored = [{ dayOfWeek: "Monday", opens: "09:00", closes: "17:00" }].to_json
+        partner.update_columns(opening_times: stored) # rubocop:disable Rails/SkipsModelValidations -- simulates a legacy stored value
+
+        updated = [{ dayOfWeek: "Monday", opens: "09:00", closes: "17:00" },
+                   { dayOfWeek: "Funday", opens: "09:00", closes: "17:00" }].to_json
+        expect(partner.reload.update(opening_times: updated)).to be(false)
+        expect(partner.errors[:opening_times])
+          .to include(I18n.t("activerecord.errors.models.partner.attributes.opening_times.invalid_day"))
+      end
+
       it "allows identical times on different days without flagging overlap" do
         partner = build(:partner, opening_times: [
           spec("Monday", "09:00", "17:00"),
@@ -453,6 +494,18 @@ RSpec.describe Partner, type: :model do
         expect(described_class.visible).to include(visible)
         expect(described_class.visible).not_to include(hidden)
       end
+    end
+  end
+
+  describe ".matching_venue_for" do
+    it "matches a venue by name and postcode, but not once it is hidden" do
+      venue = create(:partner, name: "Community Hall", can_be_assigned_events: true)
+      event_address = build(:address, street_address: "Community Hall", postcode: venue.address.postcode)
+
+      expect(described_class.matching_venue_for(event_address)).to eq(venue)
+
+      venue.update!(hidden: true, hidden_reason: "Test", hidden_blame_id: 1)
+      expect(described_class.matching_venue_for(event_address)).to be_nil
     end
   end
 

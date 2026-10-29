@@ -281,7 +281,7 @@ class Calendar < ApplicationRecord
   end
 
   # Record that the source payload checksum has changed.
-  # @param checksum [Integer] checksum of the retrieved source payload
+  # @param checksum [String] checksum of the retrieved source payload
   # @return [void]
   def flag_checksum_change!(checksum)
     without_timestamps do
@@ -309,8 +309,7 @@ class Calendar < ApplicationRecord
     end
   end
 
-  # Flag that an import error occurred; all future processing ceases
-  # until the user resets this calendar.
+  # Flag that an import error occurred; the hourly scan requeues it so it retries once the fault clears.
   # NOTE: reloads the model, clobbering any in-memory state.
   # @param problem [String] description of the import failure
   # @return [void]

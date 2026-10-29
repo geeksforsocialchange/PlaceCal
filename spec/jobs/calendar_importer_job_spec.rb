@@ -137,6 +137,61 @@ RSpec.describe CalendarImporterJob do
     end
   end
 
+  describe "an import that fails part-way" do
+    before do
+      stub_request(:get, calendar.source).to_return(status: 200, body: <<~ICS)
+        BEGIN:VCALENDAR
+        VERSION:2.0
+        BEGIN:VEVENT
+        UID:recover@example.com
+        DTSTART:20221201T100000Z
+        DTEND:20221201T110000Z
+        SUMMARY:Recovered event
+        END:VEVENT
+        END:VCALENDAR
+      ICS
+
+      saves = 0
+      allow_any_instance_of(CalendarImporter::EventResolver).to receive(:save_all_occurences)
+        .and_wrap_original do |original, *args|
+          saves += 1
+          saves == 1 ? raise("boom") : original.call(*args)
+        end
+    end
+
+    it "imports the unchanged feed on the next scheduled run" do
+      expect { perform_import }.to raise_error(RuntimeError, "boom")
+      expect(calendar.reload.calendar_state).to eq("error")
+      expect(calendar.events).to be_empty
+
+      calendar.queue_for_import!(false, Time.current)
+      described_class.perform_now(calendar.id, Time.zone.today, false)
+
+      calendar.reload
+      expect(calendar.calendar_state).to eq("idle")
+      expect(calendar.critical_error).to be_nil
+      expect(calendar.events.pluck(:summary)).to eq(["Recovered event"])
+      expect(calendar.last_checksum).to be_present
+    end
+  end
+
+  describe "a retried job for a calendar already in error" do
+    let(:calendar) do
+      create(:calendar, importer_mode: "ical")
+        .tap { |c| c.update!(calendar_state: "error", critical_error: "earlier failure") }
+    end
+
+    before { stub_request(:get, calendar.source) }
+
+    it "does no import work" do
+      expect { perform_import }.not_to raise_error
+
+      expect(a_request(:get, calendar.source)).not_to have_been_made
+      expect(calendar.reload.calendar_state).to eq("error")
+      expect(calendar.critical_error).to eq("earlier failure")
+    end
+  end
+
   describe "a default place without an address" do
     let(:place) { create(:ashton_service_area_partner).tap { |p| p.reload.clear_address! } }
     let(:calendar) do
@@ -169,6 +224,50 @@ RSpec.describe CalendarImporterJob do
 
       expect(calendar.reload.calendar_state).to eq("idle")
       expect(calendar.events.pluck(:uid, :place_id, :address_id)).to eq([["good@example.com", place.id, nil]])
+    end
+  end
+
+  describe "a TicketSource dates request that fails" do
+    let(:calendar) do
+      create(:calendar, source: "https://www.ticketsource.co.uk/fairfield-house",
+                        importer_mode: "ticketsource", api_token: "test_key")
+        .tap { |c| c.update!(calendar_state: "in_queue") }
+    end
+
+    def json(body)
+      { status: 200, body: body.to_json, headers: { "Content-Type" => "application/json" } }
+    end
+
+    def ts_event(id, name)
+      { "id" => id, "attributes" => { "name" => name, "public" => true, "archived" => false } }
+    end
+
+    def ts_dates(id)
+      { "data" => [{ "id" => id, "attributes" => { "start" => "2022-11-20T19:00:00+00:00",
+                                                   "end" => "2022-11-20T21:00:00+00:00" } }] }
+    end
+
+    before do
+      allow(CalendarImporter::Parsers::Base).to receive(:sleep)
+      stub_request(:get, %r{api\.ticketsource\.io/events/\w+/venues}).to_return(json("data" => []))
+      stub_request(:get, "https://api.ticketsource.io/events?page=1&per_page=100")
+        .to_return(json("data" => [ts_event("e1", "One"), ts_event("e2", "Two")]))
+      stub_request(:get, "https://api.ticketsource.io/events/e1/dates?page=1&per_page=100").to_return(json(ts_dates("d1")))
+      stub_request(:get, "https://api.ticketsource.io/events/e2/dates?page=1&per_page=100").to_return(json(ts_dates("d2")))
+      perform_import
+      calendar.reload.update!(calendar_state: "in_queue")
+    end
+
+    it "keeps that event's existing events and marks the source bad" do
+      expect(calendar.events.pluck(:summary)).to contain_exactly("One", "Two")
+      checksum = calendar.reload.last_checksum
+
+      stub_request(:get, "https://api.ticketsource.io/events/e2/dates?page=1&per_page=100").to_return(status: 429)
+      described_class.perform_now(calendar.id, Time.zone.today, true)
+
+      expect(calendar.reload.calendar_state).to eq("bad_source")
+      expect(calendar.events.pluck(:summary)).to contain_exactly("One", "Two")
+      expect(calendar.last_checksum).to eq(checksum)
     end
   end
 end

@@ -51,6 +51,26 @@ RSpec.describe CalendarPolicy, type: :policy do
       it { is_expected.to forbid_action(:show) }
       it { is_expected.to forbid_action(:update) }
     end
+
+    context "creating a calendar for another partner" do
+      subject { described_class.new(user, build(:calendar, organiser: partner)) }
+
+      let(:user) { create(:partner_admin) }
+
+      it { is_expected.to forbid_action(:create) }
+    end
+
+    context "moving their calendar to another partner" do
+      subject do
+        calendar.organiser = create(:partner)
+        described_class.new(user, calendar)
+      end
+
+      let(:user) { create(:partner_admin) }
+      let(:partner) { user.partners.first }
+
+      it { is_expected.to forbid_action(:update) }
+    end
   end
 
   describe "for a neighbourhood admin" do

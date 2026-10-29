@@ -148,6 +148,12 @@ class Event < ApplicationRecord
   # Filter by Organiser or Place
   scope :by_organiser_or_place, ->(organiser) { in_place(organiser).or(by_organiser(organiser)) }
 
+  # Hiding a partner is a moderation action, so its events leave every public listing
+  scope :with_visible_organiser, lambda {
+    where('NOT EXISTS (SELECT 1 FROM partners hidden_organisers ' \
+          'WHERE hidden_organisers.id = events.organiser_id AND hidden_organisers.hidden)')
+  }
+
   # Sort by Summary or Start Time
   scope :sort_by_summary, -> { order(summary: :asc).order(:dtstart) }
   scope :sort_by_time, -> { order(dtstart: :asc).order(summary: :asc) }
@@ -259,9 +265,9 @@ class Event < ApplicationRecord
     resolved_address.to_s
   end
 
-  # @return [Partner, nil] the place partner, or a venue matching the address
+  # @return [Partner, nil] the visible place partner, or a visible venue matching the address
   def partner_at_location
-    @partner_at_location ||= place || Partner.matching_venue_for(address)
+    @partner_at_location ||= (place unless place&.hidden) || Partner.matching_venue_for(address)
   end
 
   # TODO: plan this out on paper, currently half finished

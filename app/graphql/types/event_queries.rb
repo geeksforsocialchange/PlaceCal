@@ -51,12 +51,14 @@ module Types
       end
     end
 
+    # A hidden organiser's event gets the same error as a missing id, without the scope's SQL in the message
     def event(id:)
-      Event.find(id)
+      Event.with_visible_organiser.find_by(id:) ||
+        raise(ActiveRecord::RecordNotFound.new("Couldn't find Event with 'id'=#{id.inspect}", Event.name, 'id', id))
     end
 
     def event_connection(*)
-      Event.sort_by_time.all
+      Event.with_visible_organiser.sort_by_time
     end
 
     def events_by_filter(**args)

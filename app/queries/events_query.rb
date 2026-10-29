@@ -187,7 +187,7 @@ class EventsQuery
   end
 
   def events_in_scope
-    @site.nil? ? Event.all : SiteEventsScope.new(site: @site).call
+    @site.nil? ? Event.with_visible_organiser : SiteEventsScope.new(site: @site).call
   end
 
   # ===================

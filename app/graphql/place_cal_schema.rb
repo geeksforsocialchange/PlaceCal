@@ -4,9 +4,8 @@ class PlaceCalSchema < GraphQL::Schema
   # mutation(Types::MutationType)
 
   default_max_page_size 100
-  # Query depth and complexity limits are set per-query in GraphqlController
-  # to exempt introspection queries (which are inherently deep and complex).
-  # Limits: max_depth 10, max_complexity 1500
+  max_depth 10, count_introspection_fields: false
+  max_complexity 1500, count_introspection_fields: false
 
   query Types::QueryType
 
