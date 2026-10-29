@@ -24,19 +24,6 @@
   dependencies:
     tslib "^2.4.0"
 
-"@hotwired/turbo-rails@8.0.23":
-  version "8.0.23"
-  resolved "https://registry.yarnpkg.com/@hotwired/turbo-rails/-/turbo-rails-8.0.23.tgz#7a84ad041cb0f3e5d9ff97d1a1f0291550a93fc9"
-  integrity sha512-iBILwda3qmQC7FYM70+4s6kEQ7Fx9dJ6+yGxjPyrz9a5JDx1+y7OAA5TA7GGVOZJoicMLrKGdFDNorl40X35lw==
-  dependencies:
-    "@hotwired/turbo" "^8.0.23"
-    "@rails/actioncable" ">=7.0"
-
-"@hotwired/turbo@^8.0.23":
-  version "8.0.23"
-  resolved "https://registry.yarnpkg.com/@hotwired/turbo/-/turbo-8.0.23.tgz#a6eebc9ab4a5faadae265a4cbec8cfcb5731e77c"
-  integrity sha512-GZ7cijxEZ6Ig71u7rD6LHaRv/wcE/hNsc+nEfiWOkLNqUgLOwo5MNGWOy5ZV9ZUDSiQx1no7YxjTNnT4O6//cQ==
-
 "@jridgewell/gen-mapping@^0.3.5":
   version "0.3.13"
   resolved "https://registry.yarnpkg.com/@jridgewell/gen-mapping/-/gen-mapping-0.3.13.tgz#6342a19f44347518c93e43b1ac69deb3c4656a1f"
@@ -178,11 +165,6 @@
     "@parcel/watcher-win32-arm64" "2.5.1"
     "@parcel/watcher-win32-ia32" "2.5.1"
     "@parcel/watcher-win32-x64" "2.5.1"
-
-"@rails/actioncable@>=7.0":
-  version "8.1.400"
-  resolved "https://registry.yarnpkg.com/@rails/actioncable/-/actioncable-8.1.400.tgz#af41a431614e4abb007e65429197d1c5dbf43741"
-  integrity sha512-Qffc3/I9xcpeaal12hmi9EPRV3hz9FvakUHBR7kL0jpZviWwO9dyaG8F1ltcjkHIdFxQ5QqzRyequAWHMq17xQ==
 
 "@tailwindcss/cli@4.3.3":
   version "4.3.3"

@@ -11,15 +11,15 @@ pin 'application'
 pin '@hotwired/stimulus', to: 'stimulus.min.js'
 pin '@hotwired/stimulus-loading', to: 'stimulus-loading.js'
 # turbo-rails from CDN (gem asset has compatibility issues with importmap)
-pin '@hotwired/turbo-rails', to: 'https://cdn.jsdelivr.net/npm/@hotwired/turbo-rails@8.0.12/+esm'
-pin '@hotwired/turbo', to: 'https://cdn.jsdelivr.net/npm/@hotwired/turbo@8.0.12/+esm'
+pin '@hotwired/turbo-rails', to: 'https://cdn.jsdelivr.net/npm/@hotwired/turbo-rails@8.0.23/+esm'
+pin '@hotwired/turbo', to: 'https://cdn.jsdelivr.net/npm/@hotwired/turbo@8.0.23/+esm'
 
 # External dependencies
 # jsdelivr bundles ESM with sub-dependencies inline (more reliable than esm.sh).
 # Maps must use jsdelivr, not esm.sh: esm.sh serves a different build per browser
 # via User-Agent sniffing, and Safari's transitive maplibre-gl fetch hangs forever,
 # so the map's dynamic import() rejects and nothing renders (works fine in Chrome).
-pin 'tom-select', to: 'https://cdn.jsdelivr.net/npm/tom-select@2.4.3/+esm', preload: false
+pin 'tom-select', to: 'https://cdn.jsdelivr.net/npm/tom-select@2.6.2/+esm', preload: false
 pin 'leaflet', to: 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/+esm', preload: false
 
 # MapLibre GL for vector tile rendering with custom styles
