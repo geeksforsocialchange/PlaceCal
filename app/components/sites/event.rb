@@ -196,7 +196,7 @@ class Components::Sites::Event < Components::Base
   # "By <organiser>" under the title, the name linked; the hero's standfirst slot is free here.
   def organiser_line
     organiser = @event.organiser
-    organiser && t('events.show.by_organiser_html', name: view_context.link_to(organiser.name, partner_path(organiser)))
+    organiser && t('events.show.by_organiser_html', name: view_context.link_to(organiser.name, partner_path(organiser), class: UI::Link.css(tone: :inherit)))
   end
 
   def neighbourhood_line
