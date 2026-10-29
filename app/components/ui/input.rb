@@ -4,7 +4,7 @@ class Components::UI::Input < Components::Base
   # The form-control box, shared with UI::Select's trigger.
   BOX = 'w-full h-(--height-field) border-2 border-rules rounded-sm px-4 text-sm bg-background text-foreground transition-colors'
   # The border darkens on focus; keyboard focus also gets an outline, so focus isn't shown by colour alone.
-  FOCUS = 'outline-none focus:border-foreground focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground'
+  FOCUS = "outline-none focus:border-foreground #{UI::Focus::RING} focus-visible:outline-foreground".freeze
 
   prop :type, String, default: 'text'
   # Adds a Show/Hide button to a password field.

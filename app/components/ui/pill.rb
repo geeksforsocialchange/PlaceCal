@@ -30,7 +30,7 @@ class Components::UI::Pill < Components::Base
 
     if @href && !@selected
       # with-no-sass keeps the legacy SCSS link colour off.
-      a(href: @href, class: "with-no-sass #{css}", **attributes, &)
+      a(href: @href, class: "with-no-sass #{UI::Focus::RING} focus-visible:outline-current #{css}", **attributes, &)
     else
       span(class: css, aria: { current: ('page' if @selected) }, **attributes, &)
     end
