@@ -103,7 +103,7 @@ class Site < ApplicationRecord
   normalizes :domain, with: ->(value) { normalize_domain(value) }
 
   # ==== Associations ====
-  has_one :sites_neighbourhood, dependent: :destroy
+  has_one :sites_neighbourhood, -> { where(relation_type: 'Primary') }, dependent: :destroy, inverse_of: :site
   has_one :primary_neighbourhood, lambda {
                                     where(sites_neighbourhoods: { relation_type: 'Primary' })
                                   }, source: :neighbourhood, through: :sites_neighbourhood

@@ -240,6 +240,28 @@ RSpec.describe "Admin::Sites", type: :request do
       end
     end
 
+    context "when a secondary neighbourhood row is older than the primary" do
+      before { sign_in root_user }
+
+      it "saves what the edit form submits" do
+        secondary = create(:sites_neighbourhood, site:, neighbourhood: neighbourhoods.first, relation_type: "Secondary")
+        primary = create(:sites_neighbourhood, site:, neighbourhood: neighbourhoods.second, relation_type: "Primary")
+
+        get edit_admin_site_url(site, host: admin_host)
+        form = Nokogiri::HTML(response.body).css("form").find { |f| f.at_css("input[name^='site[sites_neighbourhood']") }
+        fields = form.css("input[name^='site[sites_neighbourhood']").reject { |input| input.ancestors("template").any? }
+        params = Rack::Utils.parse_nested_query(fields.map { |input| "#{CGI.escape(input['name'])}=#{CGI.escape(input['value'].to_s)}" }.join("&"))
+        params["site"]["name"] = "Renamed site"
+
+        put(admin_site_url(site, host: admin_host), params:)
+
+        expect(response).to redirect_to(edit_admin_site_url(site, host: admin_host))
+        expect(site.reload.name).to eq("Renamed site")
+        expect(site.sites_neighbourhood).to eq(primary)
+        expect(site.sites_neighbourhoods.find(secondary.id).relation_type).to eq("Secondary")
+      end
+    end
+
     context "with bad image uploads" do
       before { sign_in root_user }
 
