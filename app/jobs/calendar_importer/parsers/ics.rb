@@ -8,6 +8,27 @@ module CalendarImporter::Parsers
   class Ics < Base
     include CalendarImporter::Exceptions
 
+    # Leaves out a VEVENT whose dates can't be read, so the rest of the feed still imports
+    class SkippingParser < Icalendar::Parser
+      DATE_ERRORS = [Icalendar::Values::Date::FormatError, Icalendar::Values::DateTime::FormatError].freeze
+
+      def skipped
+        @skipped ||= {}.compare_by_identity
+      end
+
+      def parse
+        super.each { |calendar| calendar.events.reject! { |event| skipped.key?(event) } }
+      end
+
+      def parse_property(component, fields = nil)
+        super
+      rescue *DATE_ERRORS => e
+        raise unless component.is_a?(Icalendar::Event)
+
+        skipped[component] = e.message
+      end
+    end
+
     # These constants are only used for the frontend interface
     NAME = 'Generic iCal / .ics'
     KEY = 'ical'
@@ -57,19 +78,13 @@ module CalendarImporter::Parsers
     def parse_remote_calendars(data)
       raise InvalidResponse, 'Source returned empty ICS data' if data.blank?
 
-      Icalendar::Calendar.parse with_iana_time_zones(data)
-    rescue RuntimeError => e
-      # I hope this isn't swallowing up any important exceptions.
-
-      # From the PR comment describing this:
-      #   The icalendar gem appears to lack a distinct exception class.
-      #   As for investigating- i think you'd have to trace the code path
-      #   manually and see how the ICS parser tests for errors. so if
-      #   there is a problem it will likely be in that code (or our input
-      #   into it, which is tested on the line above). at least it is not
-      #   catching StandardError.
-      #   - IK
-
+      parser = SkippingParser.new(with_iana_time_zones(data))
+      calendars = parser.parse
+      parser.skipped.each do |event, error|
+        notices << I18n.t('admin.calendars.importer.unreadable_event_dates', event: event.summary.to_s.presence || event.uid.to_s, error:)
+      end
+      calendars
+    rescue RuntimeError, *SkippingParser::DATE_ERRORS => e
       raise InvalidResponse, "Could not parse ICS response (#{e})"
     end
 

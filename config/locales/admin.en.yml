@@ -378,6 +378,7 @@ en:
         source_changed: "Source changed:"
         status_label: "Status:"
         success: "Success"
+        unreadable_event_dates: "Skipped \"%{event}\" because its dates could not be read (%{error})."
       warnings:
         stale: "Potential stale calendar - not updated in over 6 months."
       danger_zone:

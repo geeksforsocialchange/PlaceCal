@@ -29,7 +29,7 @@ module CalendarImporter::Parsers
     def self.requires_api_token?
       false
     end
-    Output = Struct.new(:events, :checksum_changed, :checksum)
+    Output = Struct.new(:events, :checksum_changed, :checksum, :notices)
 
     CONTEXT = {
       'geo' => 'http://schema.org/geo',
@@ -123,9 +123,14 @@ module CalendarImporter::Parsers
       data = download_calendar
       checksum = digest(data)
       checksum_changed = @calendar.last_checksum != checksum
-      return Output.new([], false, checksum) if !@force_import && !checksum_changed
+      return Output.new([], false, checksum, []) if !@force_import && !checksum_changed
 
-      Output.new(import_events_from(data), checksum_changed, checksum)
+      Output.new(import_events_from(data), checksum_changed, checksum, notices)
+    end
+
+    # Problems with individual events that were skipped while parsing the feed
+    def notices
+      @notices ||= []
     end
 
     # @abstract Subclass is expect to implmement #download_calendar
