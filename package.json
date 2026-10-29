@@ -15,10 +15,11 @@
 		"tom-select": "2.6.2"
 	},
 	"scripts": {
-		"build": "yarn css-admin && yarn css-public",
+		"build": "yarn css-admin && yarn css-public && yarn leaflet-images",
 		"build:all": "yarn build",
 		"css-admin": "./node_modules/.bin/tailwindcss -i ./app/tailwind/admin_tailwind.css -o ./app/assets/builds/admin_tailwind.css --minify",
 		"css-public": "./node_modules/.bin/tailwindcss -i ./app/tailwind/public_tailwind.css -o ./app/assets/builds/public_tailwind.css --minify",
+		"leaflet-images": "mkdir -p app/assets/builds/images && cp node_modules/leaflet/dist/images/*.png app/assets/builds/images/",
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
 		"prepare": "husky install"

@@ -27,9 +27,6 @@
 @source "../views/layouts/admin/**/*.{erb,rb}";
 @source "../components/admin/**/*.rb";
 
-/* Icon sizes the icon helper builds from a number at runtime */
-@source inline("size-{3,4,5,6,8,10,12}");
-
 /* PlaceCal brand colors as CSS custom properties */
 @theme {
 	--color-placecal-brown: #5b4e46;
