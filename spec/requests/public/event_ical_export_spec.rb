@@ -43,4 +43,36 @@ RSpec.describe "Event iCal export", type: :request do
     get url, headers: { "If-None-Match" => etag }
     expect(response.body).to include("Renamed event")
   end
+
+  it "renders only the changed event when a feed is rebuilt" do
+    allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
+    events = Array.new(2) do |n|
+      create(:event, organiser: partner, address: partner.address, dtstart: (n + 1).days.from_now, dtend: (n + 1).days.from_now + 1.hour)
+    end
+    url = events_url(host: "lvh.me", format: :ics)
+    get url
+
+    allow(Icalendar::Event).to receive(:new).and_call_original
+    Timecop.freeze(1.minute.from_now) { events.first.update!(summary: "Renamed event") }
+    get url
+
+    expect(response.body).to include("Renamed event", "event-#{events.last.id}@placecal.org")
+    expect(Icalendar::Event).to have_received(:new).once
+  end
+
+  it "keeps the events feed when an unrelated partner changes, and rebuilds it when its organiser does" do
+    create(:event, organiser: partner, address: partner.address, dtstart: 1.day.from_now, dtend: 1.day.from_now + 1.hour)
+    unrelated = create(:partner)
+    url = events_url(host: "lvh.me", format: :ics)
+    get url
+    etag = response.headers["ETag"]
+
+    Timecop.freeze(1.minute.from_now) { unrelated.update!(name: "Somewhere else") }
+    get url, headers: { "If-None-Match" => etag }
+    expect(response).to have_http_status(:not_modified)
+
+    Timecop.freeze(2.minutes.from_now) { partner.update!(name: "Renamed organiser") }
+    get url, headers: { "If-None-Match" => etag }
+    expect(response).to have_http_status(:ok)
+  end
 end

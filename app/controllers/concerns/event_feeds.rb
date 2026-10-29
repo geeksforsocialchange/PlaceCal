@@ -19,6 +19,26 @@ module EventFeeds
     cal
   end
 
+  # A feed's iCal text, from each event's cached VEVENT so a rebuild only renders the events that changed
+  def ical_text(events, title = nil)
+    cal = Icalendar::Calendar.new
+    cal.x_wr_calname = title || 'PlaceCal'
+    cal.publish
+    shell = cal.to_ical
+    site_url = current_site&.canonical_url || 'https://placecal.org'
+    by_key = events.index_by { |event| ical_event_key(event, site_url) }
+    return shell if by_key.empty?
+
+    fragments = Rails.cache.fetch_multi(*by_key.keys, expires_in: 1.day) { |key| create_ical_event(by_key[key], site_url).to_ical }
+    "#{shell.delete_suffix("END:VCALENDAR\r\n")}#{fragments.values.join}END:VCALENDAR\r\n"
+  end
+
+  # Addresses have no updated_at, so the date caps how long an edited address can stay stale
+  def ical_event_key(event, site_url)
+    ['ical_event', event.cache_key_with_version, event.place&.cache_key_with_version,
+     event.organiser&.cache_key_with_version, site_url, Date.current]
+  end
+
   # Convert an event object into an ics listing
   def create_ical_event(source, site_url)
     event_url = "#{site_url}/events/#{source.id}"

@@ -61,9 +61,8 @@ class PartnersController < ApplicationController
       end
       format.ics do
         track_ical_download
-        cal = create_calendar(Event.by_organiser_or_place(@event_partner_ids).ical_feed, "#{@partner} - Powered by PlaceCal")
-        cal.publish
-        render plain: cal.to_ical
+        events = Event.by_organiser_or_place(@event_partner_ids).ical_feed.includes(:online_address, address: :neighbourhood, place: :address, organiser: :address)
+        render plain: ical_text(events, "#{@partner} - Powered by PlaceCal")
       end
       format.csv do
         track_csv_download
