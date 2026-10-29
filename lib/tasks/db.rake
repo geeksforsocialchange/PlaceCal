@@ -32,16 +32,63 @@
 # Original source: https://gist.github.com/hopsoft/56ba6f55fe48ad7f8b90
 # Merged with: https://gist.github.com/kofronpi/37130f5ed670465b1fe2d170f754f8c6
 require 'English'
+
+module DbTaskHelpers
+  module_function
+
+  def ensure_format(format)
+    return format if %w[c p t d].include?(format)
+
+    { 'dump' => 'c', 'sql' => 'p', 'tar' => 't', 'dir' => 'd' }.fetch(format, 'p')
+  end
+
+  def suffix_for_format(suffix)
+    { 'c' => 'dump', 'p' => 'sql', 't' => 'tar', 'd' => 'dir' }[suffix]
+  end
+
+  def format_for_file(file)
+    case file
+    when /\.dump$/ then 'c'
+    when /\.sql$/  then 'p'
+    when /\.dir$/  then 'd'
+    when /\.tar$/  then 't'
+    end
+  end
+
+  def backup_directory(suffix = nil, create: false)
+    backup_dir = Rails.root.join(*['db/backups', suffix].compact).to_s
+
+    if create && !Dir.exist?(backup_dir)
+      puts "Creating #{backup_dir} .."
+      FileUtils.mkdir_p(backup_dir)
+    end
+
+    backup_dir
+  end
+
+  def with_config
+    db_config = ActiveRecord::Base.connection_db_config.configuration_hash
+    yield Rails.application.class.module_parent_name.underscore,
+          db_config[:host],
+          db_config[:database],
+          db_config[:username]
+  end
+
+  def to_boolean(value)
+    (@boolean ||= ActiveModel::Type::Boolean.new).cast value
+  end
+end
+
 namespace :db do
   desc 'Dumps the database to backups'
   task dump: :environment do
-    dump_fmt   = ensure_format(ENV.fetch('format', nil))
-    dump_sfx   = suffix_for_format(dump_fmt)
-    backup_dir = backup_directory(Rails.env, create: true)
+    dump_fmt   = DbTaskHelpers.ensure_format(ENV.fetch('format', nil))
+    dump_sfx   = DbTaskHelpers.suffix_for_format(dump_fmt)
+    backup_dir = DbTaskHelpers.backup_directory(Rails.env, create: true)
     full_path  = nil
     cmd        = nil
 
-    with_config do |_app, host, db, user|
+    DbTaskHelpers.with_config do |_app, host, db, user|
       full_path = "#{backup_dir}/#{Time.current.strftime('%Y%m%d%H%M%S')}_#{db}.#{dump_sfx}"
       cmd       = "pg_dump -F #{dump_fmt} -v -O -o --exclude-table-data=solid_cache_entries -U '#{user}' -h '#{host}' -d '#{db}' -f '#{full_path}'"
     end
@@ -59,13 +106,13 @@ namespace :db do
       table_name = ENV.fetch('table', nil)
 
       if table_name.present?
-        dump_fmt   = ensure_format(ENV.fetch('format', nil))
-        dump_sfx   = suffix_for_format(dump_fmt)
-        backup_dir = backup_directory(Rails.env, create: true)
+        dump_fmt   = DbTaskHelpers.ensure_format(ENV.fetch('format', nil))
+        dump_sfx   = DbTaskHelpers.suffix_for_format(dump_fmt)
+        backup_dir = DbTaskHelpers.backup_directory(Rails.env, create: true)
         full_path  = nil
         cmd        = nil
 
-        with_config do |_app, host, db, user|
+        DbTaskHelpers.with_config do |_app, host, db, user|
           full_path = "#{backup_dir}/#{Time.current.strftime('%Y%m%d%H%M%S')}_#{db}.#{table_name.parameterize.underscore}.#{dump_sfx}"
           cmd       = "pg_dump -F #{dump_fmt} -v -O -o -U '#{user}' -h '#{host}' -d '#{db}' -t '#{table_name}' -f '#{full_path}'"
         end
@@ -83,7 +130,7 @@ namespace :db do
 
   desc 'Show the existing database backups'
   task dumps: :environment do
-    backup_dir = backup_directory
+    backup_dir = DbTaskHelpers.backup_directory
     puts backup_dir.to_s
     system "/bin/ls -ltR #{backup_dir}"
   end
@@ -96,8 +143,8 @@ namespace :db do
       file = nil
       cmd  = nil
 
-      with_config do |_app, host, db, user|
-        backup_dir = backup_directory
+      DbTaskHelpers.with_config do |_app, host, db, user|
+        backup_dir = DbTaskHelpers.backup_directory
         files      = Dir.glob("#{backup_dir}/**/*#{pattern}*")
 
         case files.size
@@ -105,7 +152,7 @@ namespace :db do
           puts "No backups found for the pattern '#{pattern}'"
         when 1
           file = files.first
-          fmt  = format_for_file file
+          fmt  = DbTaskHelpers.format_for_file file
 
           case fmt
           when nil
@@ -303,7 +350,7 @@ namespace :db do
 
   desc 'scrubs events that have the same UID and dtstart, pass in `true` if you want those events deleted'
   task :find_and_clean_duplicate_events, %i[destroy_arg] => :environment do |_t, args|
-    destroy = to_boolean(args[:destroy_arg])
+    destroy = DbTaskHelpers.to_boolean(args[:destroy_arg])
     if destroy
       puts 'WARNING! you have selected DESTROY, this is not reversible'
       sleep 5
@@ -322,46 +369,4 @@ namespace :db do
       duplicates.destroy_all if destroy
     end
   end
-end
-
-def ensure_format(format)
-  return format if %w[c p t d].include?(format)
-
-  { 'dump' => 'c', 'sql' => 'p', 'tar' => 't', 'dir' => 'd' }.fetch(format, 'p')
-end
-
-def suffix_for_format(suffix)
-  { 'c' => 'dump', 'p' => 'sql', 't' => 'tar', 'd' => 'dir' }[suffix]
-end
-
-def format_for_file(file)
-  case file
-  when /\.dump$/ then 'c'
-  when /\.sql$/  then 'p'
-  when /\.dir$/  then 'd'
-  when /\.tar$/  then 't'
-  end
-end
-
-def backup_directory(suffix = nil, create: false)
-  backup_dir = Rails.root.join(*['db/backups', suffix].compact).to_s
-
-  if create && !Dir.exist?(backup_dir)
-    puts "Creating #{backup_dir} .."
-    FileUtils.mkdir_p(backup_dir)
-  end
-
-  backup_dir
-end
-
-def with_config
-  db_config = ActiveRecord::Base.connection_db_config.configuration_hash
-  yield Rails.application.class.module_parent_name.underscore,
-        db_config[:host],
-        db_config[:database],
-        db_config[:username]
-end
-
-def to_boolean(value)
-  (@boolean ||= ActiveModel::Type::Boolean.new).cast value
 end
