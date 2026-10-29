@@ -13,7 +13,7 @@ class Components::UI::Pill < Components::Base
     # A chip on a dark hero, keeping the hero's text colour
     overlay: 'px-3 py-1 text-sm bg-overlay-light',
     # A partner's or event's neighbourhood: in the site's primary area, or outside it
-    neighbourhood: 'px-3 max-md:px-1 text-badge max-md:text-badge-sm font-extra-bold uppercase tracking-badge bg-primary text-background',
+    neighbourhood: 'px-3 max-md:px-1 text-badge max-md:text-badge-sm font-extra-bold uppercase tracking-badge bg-primary text-foreground-dark',
     neighbourhood_outside: 'px-3 max-md:px-1 text-badge max-md:text-badge-sm font-extra-bold uppercase tracking-badge bg-rules text-foreground'
   }.freeze
 

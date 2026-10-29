@@ -44,10 +44,10 @@ class Views::Join::Home < Views::Join::Base
 
   def stat_tile(value, label)
     UI::Card(variant: :highlight) do
-      div(class: 'font-serif text-3xl leading-none text-foreground-dark') do
+      div(class: 'font-serif text-3xl leading-none') do
         plain value.is_a?(Numeric) ? value.to_fs(:delimited) : value.to_s
       end
-      div(class: 'allcaps-label text-foreground-dark mt-1.5') { label }
+      div(class: 'allcaps-label mt-1.5') { label }
     end
   end
 

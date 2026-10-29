@@ -3,24 +3,33 @@
 require "rails_helper"
 
 # Every page a visitor to a core-themed site can reach, checked with axe-core
-# the way the directory is (spec/system/directory/accessibility_spec.rb). The
-# extension themes run the same sweep in their own repos; this is the one for
-# the markup and palette core ships.
+# on each core colour theme, so the palette is held to contrast as well as the markup.
 RSpec.describe "Site accessibility", :slow, type: :system do
-  # color-contrast is the one rule skipped, because what trips it is the core
-  # palette itself rather than markup: on the pink theme white text on the
-  # primary colour (#fffcf0 on #f19089, buttons and the partner card badge)
-  # measures 2.24:1 and the footer impressum (#998675 on #5b4e46) 2.29:1,
-  # against the 4.5:1 the rule wants. Changing that is a design decision for
-  # every core theme, not a spec fix. Everything structural is enforced.
-  PALETTE_RULES = [:"color-contrast"].freeze
+  CORE_THEMES = PlaceCal::Extensions.themes.select(&:core?).map(&:name)
+  LISTING_PAGES = {
+    "the homepage" => "/",
+    "the events listing" => "/events",
+    "the partners listing" => "/partners",
+    "the news listing" => "/news",
+    "the Get in touch page" => "/get-in-touch"
+  }.freeze
 
   let(:ward) { create(:riverside_ward) }
-  let(:site) { create(:site, slug: "riverside", theme: "pink") }
-  let(:partner) { create(:partner, name: "Riverside Hub", address: create(:riverside_address, neighbourhood: ward)) }
+  let(:outside_ward) { create(:oldtown_ward, parent: ward.parent) }
+  let(:site_admin) { create(:user, first_name: "Robin", last_name: "Rivers", phone: "01234 567890") }
+  let(:site) { create(:site, slug: "riverside", theme:, site_admin:) }
+
+  let(:partner) do
+    create(:partner, name: "Riverside Hub", address: create(:riverside_address, neighbourhood: ward),
+                     accessibility_info: "Step-free entrance and an accessible toilet.",
+                     opening_times: [{ dayOfWeek: "http://schema.org/Monday", opens: "09:00", closes: "17:00" }].to_json)
+  end
+  let(:outside_partner) do
+    create(:partner, name: "Oldtown Hall", address: create(:oldtown_address, neighbourhood: outside_ward))
+  end
 
   let(:event) do
-    create(:event, summary: "Riverside Makers", organiser: partner,
+    create(:event, summary: "Riverside Makers", organiser: partner, address: partner.address,
                    dtstart: 3.days.from_now, dtend: 3.days.from_now + 2.hours)
   end
 
@@ -28,9 +37,13 @@ RSpec.describe "Site accessibility", :slow, type: :system do
     create(:article, title: "Riverside Roundup", is_draft: false, published_at: 1.day.ago, partners: [partner])
   end
 
+  # Two neighbourhoods, so listings show each partner's and event's neighbourhood pill.
   before do
-    site.neighbourhoods << ward
+    create(:sites_neighbourhood, site:, neighbourhood: ward, relation_type: "Primary")
+    create(:sites_neighbourhood, site:, neighbourhood: outside_ward, relation_type: "Secondary")
     event
+    create(:event, summary: "Oldtown Social", organiser: outside_partner, address: outside_partner.address,
+                   dtstart: 4.days.from_now, dtend: 4.days.from_now + 2.hours)
     article
   end
 
@@ -40,35 +53,35 @@ RSpec.describe "Site accessibility", :slow, type: :system do
     visit "http://riverside.lvh.me:#{Capybara.current_session.server.port}#{path}"
   end
 
-  {
-    "the homepage" => "/",
-    "the events listing" => "/events",
-    "the partners listing" => "/partners",
-    "the news listing" => "/news",
-    "the Get in touch page" => "/get-in-touch"
-  }.each do |description, path|
-    it "has no accessibility violations on #{description}" do
-      visit_site(path)
+  CORE_THEMES.each do |core_theme|
+    context "on the #{core_theme} theme" do
+      let(:theme) { core_theme }
 
-      expect(page).to be_axe_clean.skipping(*PALETTE_RULES)
+      LISTING_PAGES.each do |description, path|
+        it "has no accessibility violations on #{description}" do
+          visit_site(path)
+
+          expect(page).to be_axe_clean
+        end
+      end
+
+      it "has no accessibility violations on a partner page" do
+        visit_site("/partners/#{partner.to_param}")
+
+        expect(page).to be_axe_clean
+      end
+
+      it "has no accessibility violations on an event page" do
+        visit_site("/events/#{event.to_param}")
+
+        expect(page).to be_axe_clean
+      end
+
+      it "has no accessibility violations on an article" do
+        visit_site("/news/#{article.to_param}")
+
+        expect(page).to be_axe_clean
+      end
     end
-  end
-
-  it "has no accessibility violations on a partner page" do
-    visit_site("/partners/#{partner.to_param}")
-
-    expect(page).to be_axe_clean.skipping(*PALETTE_RULES)
-  end
-
-  it "has no accessibility violations on an event page" do
-    visit_site("/events/#{event.to_param}")
-
-    expect(page).to be_axe_clean.skipping(*PALETTE_RULES)
-  end
-
-  it "has no accessibility violations on an article" do
-    visit_site("/news/#{article.to_param}")
-
-    expect(page).to be_axe_clean.skipping(*PALETTE_RULES)
   end
 end
