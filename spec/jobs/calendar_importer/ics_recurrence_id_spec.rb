@@ -101,6 +101,22 @@ RSpec.describe "Importing iCal series with edited occurrences" do
     expect(listed.map(&:first)).to eq(["4 Nov 19:00", "11 Nov 19:00", "25 Nov 19:00"])
   end
 
+  it "retitles an occurrence edited without moving it" do
+    retitled = moved.sub("T210000", "T190000").sub("T220000", "T200000").sub("SUMMARY:Moved", "SUMMARY:Retitled")
+    import(feed(series))
+    id = calendar.events.find_by(summary: "Weekly", dtstart: Time.zone.local(2026, 11, 11, 19)).id
+    import(feed(series, retitled))
+
+    expect(listed[1]).to eq(["11 Nov 19:00", "20:00", "Retitled"])
+    expect(calendar.events.find_by(summary: "Retitled").id).to eq(id)
+  end
+
+  it "drops an occurrence marked #placecal-ignore" do
+    import(feed(series, moved.sub("SUMMARY:Moved", "SUMMARY:Moved\nDESCRIPTION:#placecal-ignore")))
+
+    expect(listed.map(&:first)).to eq(["4 Nov 19:00", "18 Nov 19:00", "25 Nov 19:00"])
+  end
+
   it "drops an occurrence removed with EXDATE" do
     import(feed(series))
     import(feed(series.sub("RRULE", "EXDATE;TZID=Europe/London:20261125T190000\nRRULE")))

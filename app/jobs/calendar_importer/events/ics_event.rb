@@ -87,7 +87,7 @@ module CalendarImporter::Events
       window = Icalendar::Recurrence::TimeUtil.to_time(from)..Icalendar::Recurrence::TimeUtil.to_time(to)
 
       @event.occurrences_between(from, to).reject { |occurrence| overridden.include?(occurrence.start_time.to_i) } +
-        overrides.reject(&:cancelled?).map(&:overriding_occurrence).select { |occurrence| window.cover?(occurrence.start_time) }
+        overrides.reject(&:hidden?).map(&:overriding_occurrence).select { |occurrence| window.cover?(occurrence.start_time) }
     end
 
     def attributes_for(occurrence)
@@ -100,8 +100,8 @@ module CalendarImporter::Events
       Icalendar::Recurrence::TimeUtil.to_time(@event.recurrence_id).to_i
     end
 
-    def cancelled?
-      @event.status.to_s.casecmp?('CANCELLED')
+    def hidden?
+      private? || @event.status.to_s.casecmp?('CANCELLED')
     end
 
     def overriding_occurrence
