@@ -452,13 +452,24 @@ RSpec.describe Partner, type: :model do
         end
       end
 
-      it "only checks days when opening times change" do
+      it "keeps a stored legacy day valid when the opening times are reformatted or reordered" do
+        partner = create(:partner)
+        stored = [{ dayOfWeek: "Monday", opens: "09:00", closes: "17:00" },
+                  { dayOfWeek: "http://schema.org/Tuesday", opens: "09:00", closes: "17:00" }].to_json
+        partner.update_columns(opening_times: stored) # rubocop:disable Rails/SkipsModelValidations -- simulates a legacy stored value
+
+        resaved = JSON.pretty_generate(JSON.parse(stored).reverse)
+        expect(partner.reload.update(opening_times: resaved)).to be(true)
+      end
+
+      it "rejects a new bad day alongside a stored legacy day" do
         partner = create(:partner)
         stored = [{ dayOfWeek: "Monday", opens: "09:00", closes: "17:00" }].to_json
         partner.update_columns(opening_times: stored) # rubocop:disable Rails/SkipsModelValidations -- simulates a legacy stored value
 
-        expect(partner.reload.update(name: "Renamed partner")).to be(true)
-        expect(partner.update(opening_times: [{ dayOfWeek: "Funday", opens: "09:00", closes: "17:00" }].to_json)).to be(false)
+        updated = [{ dayOfWeek: "Monday", opens: "09:00", closes: "17:00" },
+                   { dayOfWeek: "Funday", opens: "09:00", closes: "17:00" }].to_json
+        expect(partner.reload.update(opening_times: updated)).to be(false)
         expect(partner.errors[:opening_times])
           .to include(I18n.t("activerecord.errors.models.partner.attributes.opening_times.invalid_day"))
       end

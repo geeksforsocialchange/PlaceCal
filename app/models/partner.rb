@@ -544,13 +544,12 @@ class Partner < ApplicationRecord
     by_day = {}
     has_invalid_range = false
     has_invalid_day = false
-    # Legacy stored days must not block saves that leave opening times alone.
-    check_days = will_save_change_to_opening_times?
+    stored_days = stored_opening_times_days
 
     specs.each do |spec|
       next unless spec.is_a?(Hash)
 
-      has_invalid_day ||= check_days && !OPENING_TIMES_DAY.match?(spec['dayOfWeek'].to_s)
+      has_invalid_day ||= invalid_opening_times_day?(spec['dayOfWeek'], stored_days)
       opens = parse_opening_time(spec['opens'])
       closes = parse_opening_time(spec['closes'])
       next if opens.nil? || closes.nil?
@@ -580,6 +579,20 @@ class Partner < ApplicationRecord
     return nil if hours > 23 || minutes > 59
 
     (hours * 60) + minutes
+  end
+
+  # Days already stored are grandfathered so legacy values don't block resaves.
+  def invalid_opening_times_day?(day, stored_days)
+    !OPENING_TIMES_DAY.match?(day.to_s) && stored_days.exclude?(day)
+  end
+
+  # @return [Array] dayOfWeek values currently in the database
+  def stored_opening_times_days
+    stored = opening_times_in_database
+    return [] unless stored.is_a?(String) && valid_json?(stored)
+
+    parsed = JSON.parse(stored)
+    parsed.is_a?(Array) ? parsed.grep(Hash).pluck('dayOfWeek') : []
   end
 
   # @return [String] day key for grouping (last URL segment, or "" if absent)
