@@ -29,15 +29,13 @@ module CalendarImporter
         return [] unless data.is_a?(Array)
 
         data.flat_map do |event_data|
-          attrs = event_data['attributes'] || {}
-          next if attrs['archived'] || !attrs['public']
+          next unless importable?(event_data)
 
           event_id = event_data['id']
-          dates = fetch_event_dates(event_id)
-          venues = fetch_event_venues(event_id)
-          venue = venues.first
+          attrs = event_data['attributes']
+          venue = fetch_event_venues(event_id).first
 
-          dates.filter_map do |date_data|
+          (event_data['dates'] || []).filter_map do |date_data|
             date_attrs = date_data['attributes'] || {}
             next if date_attrs['cancelled']
 
@@ -55,38 +53,43 @@ module CalendarImporter
 
       private
 
+      # Dates are fetched here so they count towards the checksum, and a failed request fails the import.
       def fetch_all_events
-        events = []
+        fetch_all_pages('/events').each do |event_data|
+          next unless importable?(event_data)
+
+          event_data['dates'] = fetch_all_pages("/events/#{event_data['id']}/dates").map { |date| date_fields(date) }
+        end
+      end
+
+      # Only the fields the importer reads, so changes like ticket counts don't alter the checksum.
+      def date_fields(date)
+        { 'id' => date['id'], 'attributes' => (date['attributes'] || {}).slice('start', 'end', 'cancelled') }
+      end
+
+      def fetch_all_pages(path)
+        records = []
         page = 1
 
         loop do
-          url = build_events_url(page)
-          response = fetch_page_json(url)
-          page_events = response['data'] || []
+          response = fetch_page_json("#{API_BASE_URL}#{path}?page=#{page}&per_page=100")
+          page_records = response['data'] || []
 
-          break if page_events.empty?
+          break if page_records.empty?
 
-          events.concat(page_events)
+          records.concat(page_records)
 
           break unless response.dig('links', 'next')
 
           page += 1
         end
 
-        events
+        records
       end
 
-      def build_events_url(page = 1)
-        "#{API_BASE_URL}/events?page=#{page}&per_page=100"
-      end
-
-      def fetch_event_dates(event_id)
-        url = "#{API_BASE_URL}/events/#{event_id}/dates?per_page=100"
-        response = fetch_page_json(url)
-        response['data'] || []
-      rescue StandardError => e
-        Rails.logger.warn "#{NAME}: Failed to fetch dates for event #{event_id}: #{e.message}"
-        []
+      def importable?(event_data)
+        attrs = event_data['attributes'] || {}
+        !attrs['archived'] && attrs['public']
       end
 
       def fetch_event_venues(event_id)

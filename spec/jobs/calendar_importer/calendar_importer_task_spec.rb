@@ -269,4 +269,57 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
       end
     end
   end
+
+  describe "TicketSource import" do
+    let(:calendar) do
+      create(:calendar, source: "https://www.ticketsource.co.uk/fairfield-house",
+                        importer_mode: "ticketsource", api_token: "test_key")
+    end
+    let(:dates_url) { "https://api.ticketsource.io/events/e1/dates?page=1&per_page=100" }
+
+    def json(body)
+      { status: 200, body: body.to_json, headers: { "Content-Type" => "application/json" } }
+    end
+
+    def ts_date(id, day)
+      { "id" => id, "attributes" => { "start" => "2022-11-#{day}T19:00:00+00:00",
+                                      "end" => "2022-11-#{day}T21:00:00+00:00" } }
+    end
+
+    def run_import
+      calendar.update!(calendar_state: "in_worker")
+      described_class.new(calendar, Time.zone.today, false).run
+    end
+
+    before do
+      stub_request(:get, "https://api.ticketsource.io/events?page=1&per_page=100")
+        .to_return(json("data" => [{ "id" => "e1", "attributes" => { "name" => "Show", "public" => true } }]))
+      stub_request(:get, "https://api.ticketsource.io/events/e1/venues").to_return(json("data" => []))
+    end
+
+    it "imports a date added to an event whose listing is unchanged" do
+      stub_request(:get, dates_url).to_return(json("data" => [ts_date("d1", 20)]))
+      run_import
+      expect(calendar.events.count).to eq(1)
+
+      stub_request(:get, dates_url).to_return(json("data" => [ts_date("d1", 20), ts_date("d2", 27)]))
+      run_import
+
+      expect(calendar.events.order(:dtstart).pluck(:uid)).to eq(%w[e1-d1 e1-d2])
+    end
+
+    it "does not reimport when only unused date fields change" do
+      date = ts_date("d1", 20)
+      stub_request(:get, dates_url).to_return(json("data" => [date.deep_merge("attributes" => { "tickets_sold" => 3 })]))
+      run_import
+      checksum = calendar.reload.last_checksum
+      calendar.events.first.update!(summary: "Edited locally")
+
+      stub_request(:get, dates_url).to_return(json("data" => [date.deep_merge("attributes" => { "tickets_sold" => 9 })]))
+      run_import
+
+      expect(calendar.reload.last_checksum).to eq(checksum)
+      expect(calendar.events.pluck(:summary)).to eq(["Edited locally"])
+    end
+  end
 end

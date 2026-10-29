@@ -97,7 +97,21 @@ RSpec.describe CalendarImporter::Parsers::Ticketsource do
         }.to_json
       end
 
-      it "fetches events from the API" do
+      let(:dates_url) { "https://api.ticketsource.io/events/evt_123/dates?page=1&per_page=100" }
+
+      def dates_page(*ids, next_link: nil)
+        {
+          "data" => ids.map { |id| { "id" => id, "attributes" => { "start" => "2026-03-15T19:30:00+00:00" } } },
+          "links" => { "next" => next_link }
+        }.to_json
+      end
+
+      before do
+        stub_request(:get, dates_url)
+          .to_return(status: 200, body: dates_page("date_1"), headers: { "Content-Type" => "application/json" })
+      end
+
+      it "fetches events from the API with their dates" do
         stub_request(:get, "https://api.ticketsource.io/events?page=1&per_page=100")
           .to_return(status: 200, body: events_response, headers: { "Content-Type" => "application/json" })
 
@@ -107,6 +121,43 @@ RSpec.describe CalendarImporter::Parsers::Ticketsource do
         expect(data).to be_an(Array)
         expect(data.length).to eq(1)
         expect(data.first["id"]).to eq("evt_123")
+        expect(data.first["dates"].pluck("id")).to eq(["date_1"])
+      end
+
+      it "reads every page of an event's dates" do
+        stub_request(:get, "https://api.ticketsource.io/events?page=1&per_page=100")
+          .to_return(status: 200, body: events_response, headers: { "Content-Type" => "application/json" })
+        stub_request(:get, dates_url)
+          .to_return(status: 200, body: dates_page("date_1", next_link: "page2"), headers: { "Content-Type" => "application/json" })
+        stub_request(:get, "https://api.ticketsource.io/events/evt_123/dates?page=2&per_page=100")
+          .to_return(status: 200, body: dates_page("date_2"), headers: { "Content-Type" => "application/json" })
+
+        data = described_class.new(calendar).download_calendar
+
+        expect(data.first["dates"].pluck("id")).to eq(%w[date_1 date_2])
+      end
+
+      it "raises when an event's dates request fails" do
+        allow(CalendarImporter::Parsers::Base).to receive(:sleep)
+        stub_request(:get, "https://api.ticketsource.io/events?page=1&per_page=100")
+          .to_return(status: 200, body: events_response, headers: { "Content-Type" => "application/json" })
+        stub_request(:get, dates_url).to_return(status: 429)
+
+        expect { described_class.new(calendar).download_calendar }.to raise_error(
+          CalendarImporter::Exceptions::InaccessibleFeed,
+          /rate limit/
+        )
+      end
+
+      it "does not fetch dates for archived events" do
+        archived = JSON.parse(events_response)
+        archived["data"].first["attributes"]["archived"] = true
+        stub_request(:get, "https://api.ticketsource.io/events?page=1&per_page=100")
+          .to_return(status: 200, body: archived.to_json, headers: { "Content-Type" => "application/json" })
+
+        described_class.new(calendar).download_calendar
+
+        expect(a_request(:get, dates_url)).not_to have_been_made
       end
 
       it "retries a transient 5xx response then succeeds (ApiBase retry path)" do
@@ -157,13 +208,8 @@ RSpec.describe CalendarImporter::Parsers::Ticketsource do
           "reference" => "test-show",
           "archived" => false,
           "public" => true
-        }
-      }
-    end
-
-    let(:dates_response) do
-      {
-        "data" => [
+        },
+        "dates" => [
           {
             "id" => "date_456",
             "attributes" => {
@@ -173,7 +219,7 @@ RSpec.describe CalendarImporter::Parsers::Ticketsource do
             }
           }
         ]
-      }.to_json
+      }
     end
 
     let(:venues_response) do
@@ -197,8 +243,6 @@ RSpec.describe CalendarImporter::Parsers::Ticketsource do
     end
 
     before do
-      stub_request(:get, %r{api\.ticketsource\.io/events/evt_123/dates})
-        .to_return(status: 200, body: dates_response, headers: { "Content-Type" => "application/json" })
       stub_request(:get, %r{api\.ticketsource\.io/events/evt_123/venues})
         .to_return(status: 200, body: venues_response, headers: { "Content-Type" => "application/json" })
     end
@@ -236,24 +280,21 @@ RSpec.describe CalendarImporter::Parsers::Ticketsource do
     end
 
     it "filters out cancelled dates" do
-      cancelled_dates_response = {
-        "data" => [
-          {
-            "id" => "date_456",
-            "attributes" => {
-              "start" => "2026-03-15T19:30:00+00:00",
-              "end" => "2026-03-15T22:00:00+00:00",
-              "cancelled" => true
-            }
-          }
-        ]
-      }.to_json
+      cancelled_event = sample_event_data.deep_dup
+      cancelled_event["dates"].first["attributes"]["cancelled"] = true
 
-      stub_request(:get, %r{api\.ticketsource\.io/events/evt_123/dates})
-        .to_return(status: 200, body: cancelled_dates_response, headers: { "Content-Type" => "application/json" })
+      events = parser.import_events_from([cancelled_event])
+      expect(events).to be_empty
+    end
+
+    it "imports the event without a venue when the venues request fails" do
+      allow(CalendarImporter::Parsers::Base).to receive(:sleep)
+      stub_request(:get, %r{api\.ticketsource\.io/events/evt_123/venues}).to_return(status: 500)
 
       events = parser.import_events_from([sample_event_data])
-      expect(events).to be_empty
+
+      expect(events.map(&:uid)).to eq(["evt_123-date_456"])
+      expect(events.first.location).to be_nil
     end
 
     it "filters out archived events" do
