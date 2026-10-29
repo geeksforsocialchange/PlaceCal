@@ -63,8 +63,8 @@ RSpec.describe Components::Sites::Event, type: :component do
   context "with list context" do
     it "renders list structure" do
       rendered
-      expect(page).to have_css(".event.event--list")
-      expect(page).to have_css(".event__header")
+      expect(page).to have_css(".h-event .event__header")
+      expect(page).to have_no_css(".event--full")
     end
 
     it "renders link to event" do
