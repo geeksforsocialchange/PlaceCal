@@ -72,7 +72,7 @@ RSpec.describe CalendarImporter::Parsers::Ics do
         expect(output.notices).to eq(['Skipped "Broken" because its dates could not be read (Failed to parse "2026-11-0X" - invalid date).'])
       end
 
-      it "imports the other events" do
+      it "imports the other events and records the notice on the calendar" do
         Timecop.freeze(Time.zone.local(2026, 10, 29, 12))
         calendar = create(:ics_calendar, strategy: "no_location", importer_mode: "ical", calendar_state: "in_worker")
         stub_request(:get, calendar.source).to_return(status: 200, body: ics_data)
@@ -81,6 +81,7 @@ RSpec.describe CalendarImporter::Parsers::Ics do
 
         expect(calendar.events.pluck(:summary)).to eq(["Good"])
         expect(calendar.reload.calendar_state).to eq("idle")
+        expect(calendar.notices).to eq(['Skipped "Broken" because its dates could not be read (Failed to parse "2026-11-0X" - invalid date).'])
       end
     end
 
