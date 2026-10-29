@@ -86,6 +86,17 @@ RSpec.describe "Events organised by hidden partners", type: :request do
       expect(ical_uids).to eq([uid(visible_event)])
     end
 
+    it "doesn't name a hidden venue on a visible partner's event page" do
+      hidden_partner.update!(name: "Secret Venue")
+      at_hidden_venue = create(:event, organiser: visible_partner, place: hidden_partner, summary: "At Hidden Venue",
+                                       address: create(:address, neighbourhood: ward), dtstart: 2.days.from_now)
+
+      get event_url(at_hidden_venue, host: "#{site.slug}.lvh.me")
+
+      expect(response.body).to include("At Hidden Venue")
+      expect(response.body).not_to include("Secret Venue")
+    end
+
     it "leaves them out of more from the organiser when held at the organiser's venue" do
       create(:event, organiser: hidden_partner, place: visible_partner, summary: "Hidden At Venue", dtstart: 2.days.from_now)
       create(:event, organiser: visible_partner, summary: "Another Visible", dtstart: 2.days.from_now)

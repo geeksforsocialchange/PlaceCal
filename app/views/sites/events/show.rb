@@ -309,7 +309,7 @@ class Views::Sites::Events::Show < Views::Base
   end
 
   def show_venue?
-    event.place.present? && event.place != event.organiser
+    event.place.present? && !event.place.hidden && event.place != event.organiser
   end
 
   def render_event_venue
