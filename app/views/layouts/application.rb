@@ -17,12 +17,12 @@ class Views::Layouts::Application < Phlex::HTML
 
   def view_template
     doctype
-    html(lang: 'en', data: { theme: (site.theme if site&.core_theme?) }) do
+    html(lang: 'en', data: { theme: theme.data_theme }) do
       head do
         csrf_meta_tags
         stylesheet_link_tag 'public_tailwind', media: 'all', 'data-turbo-track': 'reload'
-        stylesheet_link_tag site.stylesheet_link, media: 'all', 'data-turbo-track': 'reload' if site&.stylesheet_link
-        render_theme_head
+        Shared::ThemeHead(theme:)
+        raw content_for(:theme_head) if content_for?(:theme_head)
         preload_font('rawline/rawline-500.woff2')
         preload_font('rawline/rawline-700.woff2')
         preload_font('rawline/rawline-800.woff2')
@@ -89,25 +89,6 @@ class Views::Layouts::Application < Phlex::HTML
   # with no arguments; one that needs the site can read it from view_context the
   # way this layout does, or the theme's views can push markup through
   # content_for(:theme_head), which also works alongside a head component.
-  def render_theme_head
-    render_font_stylesheet
-    head_class = theme.head_class
-    render head_class.new if head_class
-    raw content_for(:theme_head) if content_for?(:theme_head)
-  end
-
-  # Theme webfont slot (#3368 D1): `theme.font_stylesheet url, preconnect: [...]`
-  # renders as the preconnects, the preload and the stylesheet link a hosted
-  # font wants, which is all most themes needed a head component for.
-  def render_font_stylesheet
-    font = theme.font_stylesheet
-    return if font.nil?
-
-    font[:preconnect].each { |origin| link(rel: 'preconnect', href: origin, crossorigin: true) }
-    link(rel: 'preload', as: 'style', href: font[:url])
-    link(rel: 'stylesheet', href: font[:url])
-  end
-
   def render_meta
     title_text = compute_title
     description_text = compute_description

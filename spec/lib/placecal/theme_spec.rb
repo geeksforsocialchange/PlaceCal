@@ -147,6 +147,16 @@ RSpec.describe PlaceCal::Theme do
     expect { theme.event_filter_style :carousel }.to raise_error(ArgumentError, /carousel/)
   end
 
+  describe "#data_theme" do
+    it "names a built-in theme, for its colours in _themes.css" do
+      expect(PlaceCal::Extensions.find_theme(:orange).data_theme).to eq("orange")
+    end
+
+    it "is nil for an extension theme, which brings its own stylesheet" do
+      expect(PlaceCal::Extensions.find_theme(:example_theme).data_theme).to be_nil
+    end
+  end
+
   describe "resolution" do
     it "returns the stylesheet and map style it was given" do
       theme.stylesheet "public_tailwind"

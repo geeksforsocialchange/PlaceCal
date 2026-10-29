@@ -36,6 +36,12 @@ RSpec.describe "Lookbook previews", type: :request do
     expect(paths.tally.select { |_, count| count > 1 }).to be_empty
   end
 
+  it "paints a preview in the core theme picked from the Theme menu" do
+    get "#{preview_path('ui/ruled_heading')}/caps_full/preview", params: { _display: { theme: "orange" }.to_json }
+
+    expect(response.body).to include('<html lang="en" data-theme="orange">')
+  end
+
   it "renders every scenario" do
     scenarios = scenario_links
     expect(scenarios.size).to be > 50

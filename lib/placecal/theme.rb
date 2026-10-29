@@ -101,6 +101,12 @@ module PlaceCal
       @core
     end
 
+    # The value for data-theme on <html>, which picks a built-in theme's colours in _themes.css
+    # @return [String, nil]
+    def data_theme
+      name.to_s if core?
+    end
+
     # ---- DSL: each method sets when given a value, reads otherwise.
 
     # @param value [String, nil] asset logical path without extension, e.g. "transdimension/theme"
