@@ -25,7 +25,7 @@ class SiteEventsScope
   end
 
   def untagged
-    base = Event.left_joins(:address)
+    base = Event.with_visible_organiser.left_joins(:address)
     base.where(organiser_id: partner_ids)
         .or(base.where(place_id: partner_ids))
         .or(base.where(addresses: { neighbourhood_id: @site.owned_neighbourhoods_subtree.select(:id) }))
@@ -34,7 +34,7 @@ class SiteEventsScope
   def tagged
     return Event.none if partner_ids.empty?
 
-    base = Event.left_joins(:address)
+    base = Event.with_visible_organiser.left_joins(:address)
     base.where(organiser_id: partner_ids)
         .or(base.where(place_id: partner_ids))
         .or(base.where(legacy_venue_match_sql))

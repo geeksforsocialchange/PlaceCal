@@ -61,12 +61,12 @@ class PartnersController < ApplicationController
       end
       format.ics do
         track_ical_download
-        events = Event.by_organiser_or_place(@event_partner_ids).ical_feed.includes(:online_address, address: :neighbourhood, place: :address, organiser: :address)
+        events = Event.with_visible_organiser.by_organiser_or_place(@event_partner_ids).ical_feed.includes(:online_address, address: :neighbourhood, place: :address, organiser: :address)
         render plain: ical_text(events, "#{@partner} - Powered by PlaceCal")
       end
       format.csv do
         track_csv_download
-        events = Event.by_organiser_or_place(@event_partner_ids).upcoming.sort_by_time
+        events = Event.with_visible_organiser.by_organiser_or_place(@event_partner_ids).upcoming.sort_by_time
         site_url = current_site&.canonical_url || 'https://placecal.org'
         send_data EventsCsv.new(events, site_url:).call,
                   filename: "#{@partner.slug}-events.csv", type: :csv
@@ -81,7 +81,7 @@ class PartnersController < ApplicationController
   # (flat, day-windowed), or many events (paginated, day-windowed by default
   # or the older Timeline/EventFilter paginator for an explicit period).
   def assign_events_for_show
-    upcoming_count = Event.by_organiser_or_place(@event_partner_ids).upcoming.count
+    upcoming_count = Event.with_visible_organiser.by_organiser_or_place(@event_partner_ids).upcoming.count
     if upcoming_count.zero?
       @events = []
       @no_event_message = no_upcoming_events_reason(@partner)

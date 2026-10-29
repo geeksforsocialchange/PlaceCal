@@ -54,7 +54,7 @@ module PlacecalMcp
           title: event.summary,
           starts_at: event.dtstart.in_time_zone.iso8601,
           ends_at: event.dtend&.in_time_zone&.iso8601,
-          venue: event.place&.name,
+          venue: (event.place&.name unless event.place&.hidden),
           address: event.location.presence,
           online_url: event.online_address&.url,
           organiser: event.organiser&.name,

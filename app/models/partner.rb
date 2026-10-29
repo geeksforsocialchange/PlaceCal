@@ -240,7 +240,7 @@ class Partner < ApplicationRecord
   def self.matching_venue_for(address)
     return unless address&.street_lines&.any? && address&.postcode
 
-    Partner.left_joins(:address)
+    Partner.visible.left_joins(:address)
            .find_by(
              'can_be_assigned_events AND '\
              'lower(name) IN (:components) AND '\

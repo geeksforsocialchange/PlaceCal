@@ -38,6 +38,18 @@ RSpec.describe "MCP server", type: :request do
     expect(result["content"].first["text"]).to include("Repair cafe")
   end
 
+  it "doesn't name or locate a hidden venue" do
+    hidden_venue = create(:partner, name: "Secret Venue", hidden: true, hidden_reason: "Test", hidden_blame_id: 1,
+                                    address: create(:address, street_address: "99 Secret Lane"))
+    create(:event, summary: "Secret gig", place: hidden_venue, address: nil)
+
+    result = call_tool(keyword: "Secret gig")["structuredContent"]["events"].sole
+
+    expect(result).not_to have_key("venue")
+    expect(result["address"].to_s).not_to include("99 Secret Lane")
+    expect(result.to_json).not_to include("Secret Venue")
+  end
+
   it "explains an unknown place" do
     expect(call_tool(place: "Atlantis")).to include("isError" => true)
   end

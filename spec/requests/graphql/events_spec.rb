@@ -42,6 +42,16 @@ RSpec.describe "GraphQL Events", type: :request do
       expect(result["data"]["eventConnection"]["edges"].length).to eq(5)
     end
 
+    it "leaves out events whose organiser is hidden" do
+      hidden_partner = create(:partner, hidden: true, hidden_reason: "Test", hidden_blame_id: 1)
+      create(:event, organiser: hidden_partner, summary: "Hidden Event", dtstart: Time.current, address:)
+
+      summaries = execute_query(query)["data"]["eventConnection"]["edges"].map { |edge| edge["node"]["summary"] }
+
+      expect(summaries.length).to eq(5)
+      expect(summaries).not_to include("Hidden Event")
+    end
+
     it "includes event details" do
       result = execute_query(query)
 
@@ -115,6 +125,18 @@ RSpec.describe "GraphQL Events", type: :request do
 
       # GraphQL returns error when record not found
       expect(result["errors"]).to be_present
+    end
+
+    it "treats an event whose organiser is hidden as not found" do
+      hidden_partner = create(:partner, hidden: true, hidden_reason: "Test", hidden_blame_id: 1)
+      hidden_event = create(:event, organiser: hidden_partner, summary: "Hidden Event", dtstart: Time.current, address:)
+
+      result = execute_query(query, variables: { id: hidden_event.id })
+
+      missing = execute_query(query, variables: { id: 999_999 })
+      expect(result["data"]).to be_nil
+      expect(result["errors"].sole["message"]).to eq(missing["errors"].sole["message"].sub("999999", hidden_event.id.to_s))
+      expect(result.to_json).not_to include("Hidden Event", "NOT EXISTS")
     end
   end
 
