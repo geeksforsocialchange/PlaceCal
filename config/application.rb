@@ -27,6 +27,10 @@ module PlaceCal
 
     config.active_job.queue_adapter = :delayed_job
 
+    # Partial matches, filtered from logs, AppSignal and #inspect. Set here because delayed_job loads
+    # ActiveRecord during Bundler.require, which copies this list into filter_attributes before initializers run.
+    config.filter_parameters += %i[passw email secret token _key crypt salt certificate otp ssn cvv cvc]
+
     config.time_zone = 'Europe/London'
 
     # Cloudflare's edges (https://www.cloudflare.com/ips) count as proxies, so remote_ip is the visitor
