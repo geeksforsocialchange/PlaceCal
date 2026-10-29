@@ -3,6 +3,8 @@
 class Components::UI::Input < Components::Base
   # The form-control box, shared with UI::Select's trigger.
   BOX = 'w-full h-(--height-field) border-2 border-rules rounded-sm px-4 text-sm bg-background text-foreground transition-colors'
+  # The border darkens on focus; keyboard focus also gets an outline, so focus isn't shown by colour alone.
+  FOCUS = 'outline-none focus:border-foreground focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground'
 
   prop :type, String, default: 'text'
   # Adds a Show/Hide button to a password field.
@@ -30,7 +32,7 @@ class Components::UI::Input < Components::Base
   private
 
   def render_input(extra_class = nil, **data)
-    input(type: @type, class: [BOX, 'outline-none focus:border-foreground', extra_class, @attributes[:class]].compact.join(' '),
+    input(type: @type, class: [BOX, FOCUS, extra_class, @attributes[:class]].compact.join(' '),
           **@attributes.except(:class, :data), data: { **@attributes.fetch(:data, {}), **data })
   end
 
