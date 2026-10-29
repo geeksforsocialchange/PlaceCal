@@ -12,4 +12,8 @@ RSpec.describe Components::UI::RuledHeading, type: :component do
   it "rejects an unknown rule width" do
     expect { described_class.new(rule: :half) }.to raise_error(Literal::TypeError)
   end
+
+  it "rejects a spacing that isn't one of its presets" do
+    expect { described_class.new(spacing: :huge) }.to raise_error(Literal::TypeError)
+  end
 end
