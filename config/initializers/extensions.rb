@@ -5,8 +5,8 @@
 # config/application.rb so that extension engines, whose initializers run
 # before this file, can register into it.
 #
-# Each built-in stylesheet is app/assets/stylesheets/themes/<name>.css, with a
-# matching public/map-styles/<name>.json.
+# Each built-in theme's colours are in app/tailwind/public/_themes.css, picked
+# by data-theme on <html>, with a matching public/map-styles/<name>.json.
 # A local, not a top-level constant: nothing outside this file needs it.
 theme_colors = {
   pink: '#f19089',
@@ -17,7 +17,6 @@ theme_colors = {
 
 %w[pink orange green blue].each do |name|
   PlaceCal::Extensions.register_theme(name, core: true) do |theme|
-    theme.stylesheet "themes/#{name}"
     theme.map_style name
     theme.theme_color theme_colors[name.to_sym]
   end

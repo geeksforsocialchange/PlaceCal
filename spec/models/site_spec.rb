@@ -374,9 +374,9 @@ RSpec.describe Site, type: :model do
     end
 
     describe "#stylesheet_link" do
-      it "returns the core theme stylesheet" do
+      it "returns nil for a core theme, whose colours are in the main stylesheet" do
         %w[pink orange green blue].each do |name|
-          expect(build(:site, theme: name).stylesheet_link).to eq("themes/#{name}")
+          expect(build(:site, theme: name).stylesheet_link).to be_nil
         end
       end
 

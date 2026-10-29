@@ -1,13 +1,8 @@
-/* Public site Tailwind CSS  */
-
-/* Disable automatic content detection and positively include each public
-   section (#3163): the admin sections have their own entrypoint
-   (admin_tailwind.css) with the mirror-image include list.
-*/
+/* Public site stylesheet. Content detection is off, so each public section is listed here; admin_tailwind.css has the mirror-image list. */
 @import "tailwindcss" source(none);
-@import "./public/fonts.css";
-/* Leaflet's own CSS, kept unlayered so its rules sit where they did in the Sass build */
-@import "./vendor/leaflet.css";
+@import "./public/_fonts.css";
+/* Leaflet's own CSS, unlayered, before the overrides in components/_map.css */
+@import "leaflet/dist/leaflet.css";
 
 @source "../views/{directory,join,sites,shared,devise}/**/*.rb";
 @source "../views/layouts/application.rb";
@@ -19,165 +14,22 @@
 @source "../helpers/**/*.rb";
 @source "../javascript/**/*.js";
 
-/* remove tailwind theme: https://tailwindcss.com/docs/theme#using-a-custom-theme */
+/* Drop Tailwind's default theme: every token is declared in _theme.css */
 @theme {
 	--*: initial;
 }
 
 @import "./public/_theme.css";
+@import "./public/_themes.css";
+@import "./public/_variants.css";
+@import "./public/_base.css";
 @import "./public/_utilities.css";
-@import "./public/_components.css";
 
-/* mobile_menu_controller toggles .is-hidden on the collapsible menu */
-@custom-variant is-hidden (&.is-hidden);
-/* The filter controllers toggle .filters__dropdown--hidden on their dropdowns */
-@custom-variant dropdown-hidden (&.filters__dropdown--hidden);
-@custom-variant details-marker (&::-webkit-details-marker);
-@custom-variant logo (& > :is(svg, img));
-/* The first paragraph of rich text a view doesn't control, e.g. an event description */
-@custom-variant first-p (& > p:first-child);
-
-/* base overrides for things which aren't yet componentised */
-@layer base {
-	/* Collapsed details still print their content, such as a partner's accessibility information */
-	@media print {
-		details::details-content {
-			content-visibility: visible;
-		}
-		details > summary {
-			display: none;
-		}
-	}
-	/* Turbo frames lay out like the blocks they replace, and dim what they're reloading */
-	turbo-frame {
-		display: block;
-	}
-	turbo-frame[aria-busy="true"] :is(.partners, .paginator, .events, #map) {
-		opacity: 0.4;
-		pointer-events: none;
-		transition: opacity 0.1s ease-out;
-	}
-	body {
-		/* app/assets/stylesheets/base/typography.scss */
-		@apply font-sans font-regular;
-	}
-	/* app/assets/stylesheets/variables/typography.scss */
-	h1 {
-		@apply text-3xl font-bold;
-	}
-	h2 {
-		@apply text-2xl font-bold;
-	}
-	h3 {
-		@apply text-xl font-bold;
-	}
-	h4 {
-		@apply text-base font-bold;
-	}
-
-	/* the site previously had no reset so these are browser defaults which were not overridden
-		TODO: add not(.with-reset) to selectors so these can be overriden then properly cleaned up when deprecated instead of duplicating the tailwind reset
-   */
-	h1 {
-		margin-block: 0.67em;
-	}
-	h2 {
-		margin-block: 0.83em;
-	}
-	h3 {
-		margin-block: 1em;
-	}
-	/* haven't come across a h4 which wasn't overriding default margins yet */
-	h5 {
-		font-size: 0.83em;
-		font-weight: bold;
-		margin-block: 1.67em;
-	}
-	p {
-		margin-block: 1em;
-	}
-	/* TODO: this is a child of pullquote. move the margins there */
-	blockquote {
-		margin-inline: 40px;
-	}
-	/* the real default is #fff but i've switched to a theme colour for consistency */
-	textarea {
-		@apply bg-home-background;
-	}
-	/* TODO: should be in a flex */
-	input[type="checkbox"] {
-		margin-block: 3px;
-		margin-inline: 4px 3px;
-	}
-	ul {
-		margin-block: 1em;
-	}
-	/* TODO: this should only be enabled where it's wanted */
-	a:not(.with-reset) {
-		text-decoration-line: underline;
-	}
-	/* TODO: this should only be enabled where it's wanted */
-	hr {
-		margin-block: 0.5em;
-	}
-	/* TODO: this seems only relevant in breadcrumb */
-	button {
-		padding-block: 1px;
-		padding-inline: 4px;
-		line-height: normal;
-	}
-	/* FIXME: these are just bad. they cause jank in the existing layout and should be removed - will need Kim to agree */
-	img,
-	svg {
-		display: inline;
-		vertical-align: baseline;
-	}
-
-	/* Element rules from the retired Sass build; they come last so they win over the defaults above */
-	body {
-		margin: 0;
-		color: var(--color-foreground);
-		background-color: var(--color-tertiary-light);
-		@media (width >= theme(--breakpoint-xl)) {
-			background-image:
-				url("/images/patterns/widescreen.svg"),
-				url("/images/patterns/widescreen.svg");
-			background-position:
-				calc(50% - 725px) 103px,
-				calc(50% + 725px) 103px;
-			background-repeat: no-repeat, no-repeat;
-		}
-		@media print {
-			background: none;
-		}
-	}
-	h1 {
-		font-family: var(--font-serif);
-		font-weight: normal;
-		font-size: var(--text-3xl);
-		line-height: 1;
-		@media (width >= theme(--breakpoint-md)) {
-			line-height: 1.25;
-		}
-	}
-	hr {
-		border: 5px solid var(--color-rules);
-	}
-	input {
-		font-family: var(--font-sans);
-		font-size: inherit;
-	}
-	img {
-		max-width: 100%;
-		max-height: 100%;
-	}
-	button {
-		font-size: 100%;
-		margin: 0;
-		overflow: visible;
-		text-transform: none;
-		-webkit-appearance: button;
-		cursor: pointer;
-		border: 0;
-	}
-}
+/* Unlayered, so they win over utilities; imported in this order because _links.css must come last */
+@import "./public/components/_select.css";
+@import "./public/components/_cluster-map.css";
+@import "./public/components/_markdown.css";
+@import "./public/components/_join.css";
+@import "./public/components/_paginator.css";
+@import "./public/components/_map.css";
+@import "./public/components/_links.css";

@@ -120,16 +120,19 @@ Both admin and public interfaces use **importmap-rails** with native ES modules 
 ### Tailwind CSS (Admin interface)
 
 - **Source**: `app/tailwind/admin_tailwind.css`
-- **Output**: `public/assets/admin_tailwind.css`
+- **Output**: `app/assets/builds/admin_tailwind.css`
 - **Build command**: `yarn build` (or `yarn css-admin`)
-- Referenced directly via `<link>` tag in `app/views/layouts/admin/application.html.erb`
+- Linked from `app/views/layouts/admin/application.rb`
 - New Tailwind classes only work after rebuilding CSS (Tailwind scans templates)
 
 ### Tailwind CSS (Public site)
 
-- **Source**: `app/tailwind/public_tailwind.css` (tokens in `app/tailwind/public/_theme.css`, named utilities in `_utilities.css`, the few unlayered rules in `_components.css`, Leaflet's CSS in `app/tailwind/vendor/leaflet.css`)
+- **Source**: `app/tailwind/public_tailwind.css`, the entry point: Tailwind, Leaflet's CSS from npm, the `@source` list, then the partials in `app/tailwind/public/`:
+  - `_theme.css`: design tokens (the override contract themes rely on)
+  - `_themes.css`: the built-in colour themes, picked by `data-theme` on `<html>`
+  - `_fonts.css`, `_variants.css` (custom variants), `_base.css` (element defaults), `_utilities.css` (named utilities)
+  - `components/`: the few unlayered component rules, one file per component, imported in a fixed order
 - **Output**: `app/assets/builds/public_tailwind.css`, built by `yarn build`
-- **Colour themes**: `app/assets/stylesheets/themes/<name>.css`, plain CSS custom properties served by Propshaft
 - MapLibre's CSS is `public/vendor/maplibre-gl.css`, loaded by the map's Stimulus controller
 
 ### Common Issues
@@ -144,23 +147,21 @@ When running `bin/dev`, the Procfile.dev starts a watcher for Tailwind CSS. Java
 
 ## Tailwind CSS Best Practices
 
-### Component Classes vs Utility Classes
+### Components own their look
 
-For reusable UI patterns with hover/focus states, **create component classes** in `app/tailwind/_components.css` instead of relying on JIT-generated utility classes:
+Public UI primitives live in `app/components/ui/` and carry their styling as Tailwind utility maps inside the component (`UI::Button`, `UI::Pill`, `UI::RuledHeading`). Call sites pick a variant or size by prop; they don't pass size, colour or spacing classes.
 
-```css
-/* Good: Reliable, always generated */
-.btn-clear-filters {
-  @apply inline-flex items-center gap-1.5 px-2.5 py-1.5;
-  @apply bg-gray-100 text-gray-600 border border-gray-300;
-}
-.btn-clear-filters:hover {
-  @apply bg-red-50 text-red-600;
-}
+```ruby
+# Good
+UI::RuledHeading(caps: true, rule: :full, size: :lg) { t('partners.show.contact_heading') }
+UI::Cluster(gap: :md, row_gap: :sm) { ... }
 
-/* Avoid: JIT classes may not be generated if not scanned */
-class="hover:bg-red-50 hover:text-red-600"
+# Avoid
+UI::RuledHeading(class: 'text-xl my-5.5') { ... }
+div(class: 'flex flex-wrap items-center gap-y-2 gap-x-4') { ... }
 ```
+
+Layout goes through `UI::Cluster` (a wrapping row) and `UI::Stack` (a column whose gap replaces its children's margins), with gaps from one scale (`:xs` to `:xl`). Hover and focus utilities are generated like any other, as long as the file is in an `@source` path. Write custom CSS in `app/tailwind/public/components/` only for what utilities can't express, such as markup a library builds.
 
 ### Stimulus Controller Visibility Toggling
 

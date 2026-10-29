@@ -1,6 +1,4 @@
-/* Container utilities replacing legacy SCSS .c class
-   Responsive padding matches app/assets/stylesheets/base/layout.scss breakpoints
-*/
+/* Page containers: a centred measure with gutters that widen at each breakpoint */
 @utility container-public {
 	max-width: 1240px;
 	margin-inline: auto;
@@ -77,18 +75,6 @@
 	font-weight: 800;
 	text-transform: uppercase;
 	letter-spacing: var(--tracking-wide);
-}
-
-/* Custom select arrow for appearance-none dropdowns.
-   The stroke colour (--color-foreground, #5b4e46) has to stay literal: CSS
-   custom properties cannot be referenced from inside an SVG data URI. A theme
-   that restyles the foreground colour needs to redeclare this utility. */
-@utility select-arrow {
-	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235b4e46' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-	background-repeat: no-repeat;
-	background-position: right 0.75rem center;
-	background-size: 1rem;
-	padding-right: 2.5rem;
 }
 
 /* Main content beside a fixed-width sidebar */

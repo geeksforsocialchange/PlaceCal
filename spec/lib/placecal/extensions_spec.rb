@@ -13,9 +13,9 @@ RSpec.describe PlaceCal::Extensions do
       expect(described_class.find_theme(:example_theme)).not_to be_core
     end
 
-    it "resolves built-in stylesheets and map styles" do
+    it "resolves built-in map styles; their colours are in the main stylesheet, not one of their own" do
       pink = described_class.find_theme(:pink)
-      expect(pink.stylesheet_path).to eq("themes/pink")
+      expect(pink.stylesheet_path).to be_nil
       expect(pink.map_style_name).to eq("pink")
       expect(pink.homepage_view_class).to be_nil
     end

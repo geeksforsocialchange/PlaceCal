@@ -2,10 +2,10 @@
 
    OVERRIDE CONTRACT
    Every themeable value (colour, font, radius, shadow) is a plain custom
-   property on `:root` below. A theme stylesheet loaded after
-   public_tailwind.css (`app/assets/stylesheets/themes/*.scss`, linked from
-   `Views::Layouts::Application` via `site.stylesheet_link`) retheme the site
-   by re-declaring any of these on `:root`; nothing else needs changing.
+   property on `:root` below. The built-in colour themes re-declare some of
+   them in _themes.css; an extension theme does the same in its own stylesheet,
+   loaded after public_tailwind.css (`site.stylesheet_link`). Nothing else
+   needs changing.
 
    The `@theme inline` block underneath only maps Tailwind's utility
    namespaces onto those properties. Because it is `inline`, Tailwind
@@ -19,7 +19,6 @@
    measures, map heights) which are not part of a theme's surface.
 */
 :root {
-	/* app/assets/stylesheets/base/typography.scss */
 	--root-font-size: 18px;
 	--root-line-height: 1.5;
 	font-size: var(--root-font-size);
@@ -35,7 +34,6 @@
 
 	/* Fonts */
 
-	/* app/assets/stylesheets/variables/typography.scss (we do not have Raleway so I have removed it) */
 	/* preloaded in Views::Layouts::Application#view_template */
 	--font-sans: Rawline, sans-serif;
 	--font-serif: Trocchi, Georgia, serif;
@@ -44,7 +42,6 @@
 	--font-weight-extra-bold: 800;
 	--font-weight-bold: 700;
 	--font-weight-regular: 500;
-	/* this one only from app/assets/stylesheets/components/navigation_component.scss */
 	--font-weight-semibold: 600;
 
 	/* Type scale. Themes override these by name, so a name never changes meaning: add or retire, don't reuse. */
@@ -83,7 +80,6 @@
 	/* responsive section titles on marketing pages */
 	--text-display: clamp(1.8rem, 3.6vw, 2.5rem);
 
-	/* app/assets/stylesheets/variables/typography.scss */
 	--tracking-normal: normal;
 	--tracking-badge: 0.086667rem;
 	--tracking-wide: 0.16667rem;
@@ -157,11 +153,7 @@
 	--color-marker-shadow: rgb(0 0 0 / 0.25);
 	--color-dot-shadow: rgb(0 0 0 / 0.3);
 
-	/* Default-site
-   some of these reuse colours from above
-   FIXME: pink is here twice
-   */
-	/* this was originally #fffbef (0, -1, +1 from --color-background). i'm assuming it was a mistake */
+	/* The placecal.org palette; some repeat colours above */
 	--color-home-background: #fffcf0;
 	--color-home-background-2: #f19089;
 	--color-home-background-3: #f0e9da;
@@ -197,11 +189,7 @@ Every themeable entry below is `var(--x)` so the utility resolves against the
 this file).
 */
 @theme inline {
-	/* our root element size is 18px rather than the usual 16, but the sizes and spacing are based on a mix of both, and also percentages, and also base10
-   that means that there is not a good value to put here
-   app/assets/stylesheets/base/typography.scss#L2
-	 large FIXME: normalise sizing
-   */
+	/* One step is 4.5px at the 18px root */
 	--spacing: 0.25rem;
 
 	/* Fonts */
@@ -327,21 +315,15 @@ this file).
 	--shadow-map-stripe: var(--shadow-map-stripe);
 	--shadow-lg: var(--shadow-lg);
 
-	/* app/assets/stylesheets/modules/breakpoints.scss
-		tablet portrait, landscape, desktop
-		literal: used in media queries, cannot be a runtime var
-	*/
+	/* Tablet portrait, landscape, desktop. Literal: media queries can't read a runtime var */
 	--breakpoint-md: 600px;
 	--breakpoint-lg: 900px;
 	--breakpoint-xl: 1200px;
-	/* app/assets/stylesheets/home/pages/_index.scss
-		FIXME: this seems very arbitrary
-	*/
+	/* placecal.org's page width (max-w-home on the layout) */
 	--breakpoint-home: 1388px;
 
 	--container-md: var(--breakpoint-md);
 	--container-lg: var(--breakpoint-lg);
 	--container-xl: var(--breakpoint-xl);
-	/* app/assets/stylesheets/home/pages/_index.scss */
 	--container-home: var(--breakpoint-home);
 }
