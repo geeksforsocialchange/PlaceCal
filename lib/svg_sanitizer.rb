@@ -46,9 +46,10 @@ module SvgSanitizer
   UNSAFE_CSS = /@import|expression\s*\(|javascript:|\\|url\s*\(\s*['"]?(?!#)/i
   CSS_COMMENT = %r{/\*.*?\*/}m
 
+  # Returns nil unless the content is a well-formed SVG with something left to draw.
   def self.sanitize(svg_content)
-    source = Nokogiri::XML(svg_content).root
-    return '' unless source&.name == 'svg' && svg_namespace?(source, nil)
+    source = Nokogiri::XML(svg_content) { |config| config.strict.nonet }.root
+    return unless source&.name == 'svg' && svg_namespace?(source, nil)
 
     doc = Nokogiri::XML::Document.new
     root = doc.create_element('svg')
@@ -56,8 +57,11 @@ module SvgSanitizer
     doc.root = root
     copy_attributes(source, root)
     copy_children(source, root, source.namespace&.href)
+    return if root.element_children.empty?
 
     root.to_xml(encoding: 'UTF-8', save_with: Nokogiri::XML::Node::SaveOptions::AS_XML)
+  rescue Nokogiri::XML::SyntaxError
+    nil
   end
 
   def self.copy_children(source, target, root_namespace)

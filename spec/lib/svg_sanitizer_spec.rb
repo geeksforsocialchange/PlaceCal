@@ -21,7 +21,7 @@ RSpec.describe SvgSanitizer do
     end
 
     it "removes foreignObject elements" do
-      svg = '<svg xmlns="http://www.w3.org/2000/svg"><foreignObject><body xmlns="http://www.w3.org/1999/xhtml"><script>alert(1)</script></body></foreignObject></svg>'
+      svg = '<svg xmlns="http://www.w3.org/2000/svg"><foreignObject><body xmlns="http://www.w3.org/1999/xhtml"><script>alert(1)</script></body></foreignObject><rect width="1" height="1"/></svg>'
       result = described_class.sanitize(svg)
       expect(result).not_to include("foreignObject")
       expect(result).not_to include("alert")
@@ -136,8 +136,17 @@ RSpec.describe SvgSanitizer do
       expect(doc.at_xpath("//svg:rect", "svg" => "http://www.w3.org/2000/svg")).to be_present
     end
 
-    it "returns nothing for a file that is not an SVG" do
-      expect(described_class.sanitize("<html><body>hi</body></html>")).to eq("")
+    it "returns nil for a file that is not an SVG" do
+      expect(described_class.sanitize("<html><body>hi</body></html>")).to be_nil
+    end
+
+    it "returns nil for a file that is not well-formed XML" do
+      expect(described_class.sanitize('<svg xmlns="http://www.w3.org/2000/svg"><rect width="1"')).to be_nil
+    end
+
+    it "returns nil when nothing drawable is left after sanitising" do
+      svg = '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>'
+      expect(described_class.sanitize(svg)).to be_nil
     end
   end
 end

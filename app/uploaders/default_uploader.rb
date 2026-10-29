@@ -23,6 +23,8 @@ class DefaultUploader < CarrierWave::Uploader::Base
     return unless file && File.extname(file.file).casecmp('.svg').zero?
 
     sanitized = SvgSanitizer.sanitize(file.read)
+    raise CarrierWave::ProcessingError, I18n.t('activerecord.errors.messages.invalid_svg') if sanitized.nil?
+
     File.write(file.file, sanitized)
   end
 end
