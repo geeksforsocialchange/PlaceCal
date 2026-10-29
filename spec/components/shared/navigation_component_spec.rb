@@ -48,21 +48,21 @@ RSpec.describe Components::Shared::Navigation, type: :component do
       Current.theme = PlaceCal::Theme.new(:fixture)
       render_inline(described_class.new(navigation:, site: nil, region_tags: [north, south]))
 
-      expect(page).not_to have_css("li.header__region")
+      expect(page).not_to have_css("nav.region-filter--nav")
     end
 
     it "does not render when the setting is on but the site has only one tag" do
       Current.theme = region_enabled_theme
       render_inline(described_class.new(navigation:, site: nil, region_tags: [north]))
 
-      expect(page).not_to have_css("li.header__region")
+      expect(page).not_to have_css("nav.region-filter--nav")
     end
 
     it "renders a segmented-control hook when the setting is on and the site has two tags" do
       Current.theme = region_enabled_theme
       render_inline(described_class.new(navigation:, site: nil, region_tags: [north, south]))
 
-      expect(page).to have_css("li.header__region nav.region-filter--nav")
+      expect(page).to have_css("li nav.region-filter--nav")
       expect(page).to have_link("North")
       expect(page).to have_link("South")
     end
