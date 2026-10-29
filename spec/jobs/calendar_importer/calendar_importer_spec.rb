@@ -271,6 +271,7 @@ RSpec.describe CalendarImporter::CalendarImporter do
         output = parser_class.new(calendar).calendar_to_events
 
         expect(output.events).to be_empty
+        expect(output.checksum_changed).to be(false)
       end
     end
   end
