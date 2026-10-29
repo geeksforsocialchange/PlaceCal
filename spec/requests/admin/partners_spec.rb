@@ -287,7 +287,7 @@ RSpec.describe "Admin::Partners", type: :request do
 
       get edit_admin_partner_url(partner, host: admin_host)
 
-      expect(response.body).to include(partner_admin.full_name)
+      expect(Nokogiri::HTML(response.body).text).to include(partner_admin.full_name)
       expect(response.body).not_to include(other_user.email)
       expect(Nokogiri::HTML(response.body).at_css('select[data-stacked-list-selector-target="select"]')).to be_nil
     end
