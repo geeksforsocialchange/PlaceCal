@@ -452,6 +452,17 @@ RSpec.describe Partner, type: :model do
         end
       end
 
+      it "only checks days when opening times change" do
+        partner = create(:partner)
+        stored = [{ dayOfWeek: "Monday", opens: "09:00", closes: "17:00" }].to_json
+        partner.update_columns(opening_times: stored) # rubocop:disable Rails/SkipsModelValidations -- simulates a legacy stored value
+
+        expect(partner.reload.update(name: "Renamed partner")).to be(true)
+        expect(partner.update(opening_times: [{ dayOfWeek: "Funday", opens: "09:00", closes: "17:00" }].to_json)).to be(false)
+        expect(partner.errors[:opening_times])
+          .to include(I18n.t("activerecord.errors.models.partner.attributes.opening_times.invalid_day"))
+      end
+
       it "allows identical times on different days without flagging overlap" do
         partner = build(:partner, opening_times: [
           spec("Monday", "09:00", "17:00"),

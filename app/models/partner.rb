@@ -544,11 +544,13 @@ class Partner < ApplicationRecord
     by_day = {}
     has_invalid_range = false
     has_invalid_day = false
+    # Legacy stored days must not block saves that leave opening times alone.
+    check_days = will_save_change_to_opening_times?
 
     specs.each do |spec|
       next unless spec.is_a?(Hash)
 
-      has_invalid_day ||= !OPENING_TIMES_DAY.match?(spec['dayOfWeek'].to_s)
+      has_invalid_day ||= check_days && !OPENING_TIMES_DAY.match?(spec['dayOfWeek'].to_s)
       opens = parse_opening_time(spec['opens'])
       closes = parse_opening_time(spec['closes'])
       next if opens.nil? || closes.nil?
