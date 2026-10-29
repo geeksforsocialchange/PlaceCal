@@ -63,6 +63,7 @@ class CalendarImporter::CalendarImporterTask
   def event_data_from_parser
     return [] if !force_import && !calendar_source.checksum_changed
 
+    notices.concat(calendar_source.notices)
     calendar_source.events.map do |event_data|
       CalendarImporter::EventResolver.new(event_data, calendar, notices, from_date)
     end
