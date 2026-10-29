@@ -456,6 +456,18 @@ RSpec.describe Partner, type: :model do
     end
   end
 
+  describe ".matching_venue_for" do
+    it "matches a venue by name and postcode, but not once it is hidden" do
+      venue = create(:partner, name: "Community Hall", can_be_assigned_events: true)
+      event_address = build(:address, street_address: "Community Hall", postcode: venue.address.postcode)
+
+      expect(described_class.matching_venue_for(event_address)).to eq(venue)
+
+      venue.update!(hidden: true, hidden_reason: "Test", hidden_blame_id: 1)
+      expect(described_class.matching_venue_for(event_address)).to be_nil
+    end
+  end
+
   describe "#can_clear_address?" do
     let(:ward) { create(:riverside_ward) }
 

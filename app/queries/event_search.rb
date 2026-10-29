@@ -22,7 +22,7 @@ class EventSearch
   # @return [ActiveRecord::Relation<Event>]
   # @raise [EventSearch::Error] for an unknown postcode, place or category
   def call
-    events = Event.sort_by_time.where(dtstart: @from.., organiser_id: Partner.visible.select(:id))
+    events = Event.with_visible_organiser.sort_by_time.where(dtstart: @from..)
     events = events.where(dtstart: ...@to) if @to
     events = in_neighbourhoods(events, neighbourhoods) if @postcode || @place
     events = matching_text(events) if @query

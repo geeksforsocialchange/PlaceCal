@@ -38,7 +38,7 @@ class EventsController < ApplicationController
       @map = get_map_markers([@event.address])
     end
     if directory_request? && @event.organiser
-      @more_from_organiser = Event.by_organiser_or_place(@event.organiser)
+      @more_from_organiser = Event.with_visible_organiser.by_organiser_or_place(@event.organiser)
                                   .upcoming.sort_by_time
                                   .where.not(id: @event.id)
                                   .limit(4)
@@ -75,6 +75,7 @@ class EventsController < ApplicationController
 
   def set_event
     @event = Event.find(params[:id])
+    redirect_to root_path if @event.organiser&.hidden
   end
 
   # Auto-select period based on event density
