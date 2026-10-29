@@ -9,6 +9,7 @@ require 'rails/all'
 # boot. lib/ is not autoloaded, so it is required here (extension.rb requires
 # the registry itself).
 require_relative '../lib/placecal/extension'
+require_relative '../lib/placecal/svg_sandbox_headers'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -56,6 +57,8 @@ module PlaceCal
         resource '/widget.js', headers: :any, methods: %i[get options]
       end
     end
+
+    config.middleware.insert_before 0, PlaceCal::SvgSandboxHeaders
 
     # Lookbook component previews (http://lvh.me:3000/lookbook); the gem loads in development and test only
     if defined?(Lookbook)

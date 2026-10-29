@@ -16,14 +16,15 @@ class DefaultUploader < CarrierWave::Uploader::Base
     (1.byte)..(10.megabytes)
   end
 
-  # Strip script tags, event handlers, and other dangerous content from SVGs.
-  # Runs automatically after upload for any file with an .svg extension.
+  # Runs on every upload with an .svg extension.
   process :sanitize_svg
 
   def sanitize_svg
     return unless file && File.extname(file.file).casecmp('.svg').zero?
 
     sanitized = SvgSanitizer.sanitize(file.read)
+    raise CarrierWave::ProcessingError, I18n.t('activerecord.errors.messages.invalid_svg') if sanitized.nil?
+
     File.write(file.file, sanitized)
   end
 end
