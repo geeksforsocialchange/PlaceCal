@@ -26,8 +26,8 @@ module TabHelpers
     click_tab_matching("input.tab[aria-label='#{tab_label}']")
   end
 
-  # Click a tab radio and wait for :checked, re-clicking if Selenium dropped
-  # the click on a loaded CI runner (#3341). Not for clicks that trigger a
+  # Click a tab radio and wait for :checked, re-clicking if the click was
+  # dropped on a loaded CI runner (#3341). Not for clicks that trigger a
   # confirm() — those need a raw click inside accept_confirm/dismiss_confirm.
   def click_tab_matching(selector)
     wait_for_form_tabs

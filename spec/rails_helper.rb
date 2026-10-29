@@ -73,15 +73,13 @@ RSpec.configure do |config|
   # Disable transactional fixtures for system/feature tests
   # System tests run in separate threads from the browser - transactions
   # would cause the browser to see uncommitted data, leading to hangs
-  config.before(:each, type: :system) do
+  config.before(:each, type: :system) do |example|
     self.use_transactional_tests = false
     DatabaseCleaner.strategy = :deletion
     DatabaseCleaner.start
-    # Use Selenium with headless Chrome - Rails' default and most stable for CI
-    # Cuprite causes hangs in CI but Selenium works reliably
-    driven_by :selenium, using: :headless_chrome, screen_size: [1400, 1400] do |options|
-      ChromeOptions.disable_password_manager(options)
-    end
+    driven_by :playwright_system
+    # The visual regression spec switches to its own driver afterwards.
+    PlaywrightTrace.start(page, example) unless example.metadata[:visual_regression]
   end
 
   config.after(:each, type: :system) do

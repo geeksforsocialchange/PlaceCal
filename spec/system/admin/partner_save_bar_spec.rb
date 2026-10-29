@@ -47,13 +47,9 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     wait_for_save_bar
   end
 
-  # Helper to modify form fields in a way that triggers JavaScript input events
-  # Capybara's fill_in doesn't always trigger native events properly in headless Chrome
+  # Types the value as real keystrokes so the save bar sees input events
   def modify_field(selector, value)
-    input = find(selector)
-    input.click
-    input.native.clear
-    input.send_keys(value)
+    find(selector).set(value)
   end
 
   describe "tab-aware buttons" do
