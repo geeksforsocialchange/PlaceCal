@@ -51,7 +51,7 @@ class Views::Layouts::Application < Phlex::HTML
                     'max-w-xl bg-background mx-auto',
                     # tailwind border-n is px, not multiples of --spacing
                     'xl:border xl:border-x-[calc(--spacing(8))]',
-                    'dt:border-text'
+                    'xl:border-foreground'
                   ]
                 end)
             ]) do
