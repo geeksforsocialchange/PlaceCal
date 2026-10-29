@@ -42,6 +42,11 @@ RSpec.describe "MCP server", type: :request do
     expect(call_tool(place: "Atlantis")).to include("isError" => true)
   end
 
+  it "does not answer at the address with a format extension" do
+    expect { post "/mcp.json", params: { jsonrpc: "2.0", id: 1, method: "tools/list" }.to_json, headers: { "Content-Type" => "application/json", "Host" => "lvh.me" } }
+      .to raise_error(ActionController::RoutingError)
+  end
+
   it "shows a person in a browser how to connect it, leaving MCP clients the protocol" do
     get "/mcp", headers: { "Accept" => "text/html", "Host" => "lvh.me" }
     expect(response).to have_http_status(:ok)
