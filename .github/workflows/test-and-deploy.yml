@@ -129,13 +129,14 @@ jobs:
           cache-version: 3
 
       - name: Install Imagemagick and libvips
+        if: matrix.suite != 'system'
         timeout-minutes: 8
         uses: ./.github/actions/install-apt-packages
         with:
           packages: imagemagick libvips42t64
 
       - name: Install Chrome for browser tests
-        if: matrix.suite == 'system' || startsWith(matrix.suite, 'cucumber')
+        if: startsWith(matrix.suite, 'cucumber')
         uses: browser-actions/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4 # latest
         id: setup-chrome
         with:
@@ -146,6 +147,35 @@ jobs:
           node-version-file: ".node-version"
           cache: yarn
       - run: yarn install --frozen-lockfile
+
+      - name: Read Playwright version
+        if: matrix.suite == 'system'
+        id: playwright
+        run: echo "version=$(node -p "require('playwright/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      # Chromium's system libraries come from the same .deb cache as ImageMagick and libvips.
+      - name: Install Imagemagick, libvips and Chromium libraries
+        if: matrix.suite == 'system'
+        timeout-minutes: 20
+        uses: ./.github/actions/install-apt-packages
+        with:
+          packages: imagemagick libvips42t64
+          key: playwright-${{ steps.playwright.outputs.version }}
+          extra-packages-command: >-
+            yarn -s playwright install-deps --dry-run chromium
+            | awk '/^Missing system dependencies/ { found = 1; sub(/^[^:]*:/, "") } found'
+            | tr -s ' ' '\n' | grep -E '^[a-z0-9][a-z0-9.+-]+$' || true
+
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        if: matrix.suite == 'system'
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-chromium-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+
+      - name: Install Playwright Chromium
+        if: matrix.suite == 'system'
+        timeout-minutes: 8
+        run: yarn playwright install --only-shell chromium
 
       - name: Prepare database
         run: bin/rails db:test:prepare
@@ -179,8 +209,6 @@ jobs:
       - name: Run RSpec system tests
         if: matrix.suite == 'system'
         run: RUN_SLOW_TESTS=true bundle exec rspec spec/system
-        env:
-          BROWSER_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
 
       # Cucumber split into 2 parallel jobs by directory for faster CI
       - name: Run Cucumber features (admin)
@@ -205,6 +233,14 @@ jobs:
         with:
           name: test-screenshots-${{ matrix.suite }}
           path: tmp/capybara/
+          if-no-files-found: ignore
+
+      - if: failure() && matrix.suite == 'system'
+        name: Upload Playwright traces
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: playwright-traces
+          path: tmp/playwright-traces/
           if-no-files-found: ignore
 
   # This job provides a single status check for branch protection rules
