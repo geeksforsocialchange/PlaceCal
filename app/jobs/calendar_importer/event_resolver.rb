@@ -52,7 +52,7 @@ class CalendarImporter::EventResolver
 
     occurences.each do |occurence|
       event_time = { dtstart: occurence.start_time, dtend: occurence.end_time }
-      event = data.recurring_event? ? calendar_events.find_by(event_time) : one_off_event(calendar_events)
+      event = series? ? calendar_events.find_by(event_time) : one_off_event(calendar_events)
 
       # Clean up any remaining duplicates for this specific occurrence
       calendar_events.where(event_time).where.not(id: event.id).delete_all if event&.persisted?
@@ -75,10 +75,15 @@ class CalendarImporter::EventResolver
 
   private
 
+  # RDATE gives an event several dates without an RRULE
+  def series?
+    data.recurring_event? || occurences.many?
+  end
+
   # Past rows are history, and occurrences are only generated from the import's from_date
   def remove_stale_occurences(calendar_events)
     upcoming = calendar_events.where(dtstart: @from_date..)
-    stale = if data.recurring_event?
+    stale = if series?
               upcoming.without_matching_times(occurences.map { |o| [o.start_time, o.end_time] })
             else
               upcoming.where.not(id: one_off_event(calendar_events))

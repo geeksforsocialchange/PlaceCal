@@ -78,6 +78,16 @@ RSpec.describe "Reimporting recurring iCal events" do
     end
   end
 
+  describe "an event repeated with RDATE and no RRULE" do
+    it "keeps a row for each date" do
+      dated = vevent(rrule: nil).sub("SUMMARY", "RDATE;TZID=Europe/London:20261111T190000\nSUMMARY")
+
+      2.times { import(feed(dated)) }
+
+      expect(listed).to eq([["4 Nov", "Weekly"], ["11 Nov", "Weekly"]])
+    end
+  end
+
   describe "occurrence limits" do
     it "imports a minutely event up to the limit and says so" do
       stub_const("CalendarImporter::EventResolver::MAX_OCCURENCES", 25)
