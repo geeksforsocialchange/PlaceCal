@@ -29,6 +29,39 @@ RSpec.describe EventSearch do
     create(:event, organiser: oldtown_partner, address: create(:address, neighbourhood: elsewhere))
 
     expect(search(place: "Riverside, Millbrook")).to eq([in_millbrook])
+    expect(search(place: "riverside, greater millbrook")).to eq([in_millbrook])
+    expect { search(place: "Riverside, Oldtown") }.to raise_error(EventSearch::Error, /No PlaceCal area called Riverside, Oldtown/)
+  end
+
+  it "narrows same-named places by the wider area in a fixed number of queries" do
+    riverside
+    count_queries = lambda do
+      queries = 0
+      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*, payload|
+        queries += 1 unless payload[:cached] || payload[:name] == "SCHEMA"
+      end
+      described_class.new(place: "Riverside, Millbrook").neighbourhoods
+      queries
+    ensure
+      ActiveSupport::Notifications.unsubscribe(subscriber)
+    end
+
+    create(:riverside_ward, parent: create(:seaview_district))
+    with_two = count_queries.call
+    create_list(:riverside_ward, 3, parent: create(:seaview_district))
+
+    expect(count_queries.call).to eq(with_two)
+  end
+
+  it "leaves out events organised by hidden partners" do
+    shown = create(:event, organiser: oldtown_partner, address: in_riverside)
+    hidden_partner = create(:partner, address: create(:address, neighbourhood: riverside),
+                                      hidden: true, hidden_reason: "Test", hidden_blame_id: 1)
+    create(:event, organiser: hidden_partner, address: in_riverside)
+    create(:event, organiser: hidden_partner, address: nil, online_address: create(:online_address))
+
+    expect(search).to eq([shown])
+    expect(search(place: "riverside")).to eq([shown])
   end
 
   it "resolves a postcode to its ward" do

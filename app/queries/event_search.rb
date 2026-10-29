@@ -22,7 +22,7 @@ class EventSearch
   # @return [ActiveRecord::Relation<Event>]
   # @raise [EventSearch::Error] for an unknown postcode, place or category
   def call
-    events = Event.sort_by_time.where(dtstart: @from..)
+    events = Event.sort_by_time.where(dtstart: @from.., organiser_id: Partner.visible.select(:id))
     events = events.where(dtstart: ...@to) if @to
     events = in_neighbourhoods(events, neighbourhoods) if @postcode || @place
     events = matching_text(events) if @query
@@ -83,10 +83,15 @@ class EventSearch
     matches = Neighbourhood.where('lower(name) = ?', name)
     current = matches.where(release_date: Neighbourhood::LATEST_RELEASE_DATE)
     found = (current.exists? ? current : matches).to_a
-    found = found.select { |area| area.ancestors.exists?(['lower(name) = ?', within]) } if within.present?
+    found = within_area(found, within) if within.present?
     raise Error, "No PlaceCal area called #{@place}. Try a UK ward, district or county name, or a postcode" if found.empty?
 
     found
+  end
+
+  def within_area(areas, within)
+    area_ids = Neighbourhood.where(id: areas.flat_map(&:ancestor_ids)).where('lower(name) = ?', within).pluck(:id)
+    areas.select { |area| area.ancestor_ids.intersect?(area_ids) }
   end
 
   def category_tag
