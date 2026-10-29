@@ -18,7 +18,7 @@ class Rack::Attack
 
   # Throttle MCP requests by IP: 60 requests per minute
   throttle('mcp/ip', limit: 60, period: 60) do |req|
-    client_ip(req) if req.path == '/mcp'
+    client_ip(req) if req.path.match?(%r{\A/mcp(\.[^/]*)?\z})
   end
 
   # Return JSON 429 for API requests
