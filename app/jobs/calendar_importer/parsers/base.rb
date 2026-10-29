@@ -29,7 +29,7 @@ module CalendarImporter::Parsers
     def self.requires_api_token?
       false
     end
-    Output = Struct.new(:events, :checksum_changed)
+    Output = Struct.new(:events, :checksum_changed, :checksum)
 
     CONTEXT = {
       'geo' => 'http://schema.org/geo',
@@ -118,19 +118,14 @@ module CalendarImporter::Parsers
       @force_import = options.delete(:force_import)
     end
 
-    # Takes a calendar feed and imports it
-    # Returns array of events
-    #
+    # Downloads the feed and parses it unless its checksum is unchanged (or the import is forced).
     def calendar_to_events
       data = download_calendar
       checksum = digest(data)
       checksum_changed = @calendar.last_checksum != checksum
-      ## record if checksum has changed since last time we interacted with it.
-      ## if download_calendar fails it should raise an exception so this code won't run
-      @calendar.flag_checksum_change!(checksum) if checksum_changed
-      return Output.new([], checksum) if !@force_import && !checksum_changed
+      return Output.new([], false, checksum) if !@force_import && !checksum_changed
 
-      Output.new(import_events_from(data), checksum_changed)
+      Output.new(import_events_from(data), checksum_changed, checksum)
     end
 
     # @abstract Subclass is expect to implmement #download_calendar

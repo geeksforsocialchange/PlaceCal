@@ -28,6 +28,7 @@ class CalendarImporter::CalendarImporterTask
     end
 
     calendar.flag_complete_import_job! notices, parser::KEY
+    calendar.flag_checksum_change!(calendar_source.checksum) if calendar_source.checksum_changed
   end
 
   private

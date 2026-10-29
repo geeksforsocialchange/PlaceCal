@@ -71,6 +71,7 @@ class CalendarImporterJob < ApplicationJob
     @calendar_id = calendar_id
 
     calendar.flag_start_import_job!
+    return unless calendar.calendar_state.in_worker?
 
     message = "Importing events for calendar #{calendar.name} (ID #{calendar.id})"
     message += " for place #{calendar.place.name} (ID #{calendar.place.id})" if calendar.place

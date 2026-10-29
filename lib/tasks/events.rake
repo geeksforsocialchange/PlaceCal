@@ -70,6 +70,7 @@ namespace :events do
     calendar_id = args[:calendar_id]
     force_import = args[:force_import] ? EventTaskHelpers.to_boolean(args[:force_import]) : true
 
+    Calendar.find(calendar_id).update calendar_state: :in_queue, import_job_id: nil
     CalendarImporterJob.perform_now calendar_id, from, force_import
   rescue StandardError => e
     backtrace = e.backtrace[...6]
