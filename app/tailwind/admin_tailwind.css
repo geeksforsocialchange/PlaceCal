@@ -27,8 +27,8 @@
 @source "../views/layouts/admin/**/*.{erb,rb}";
 @source "../components/admin/**/*.rb";
 
-/* Safelist for dynamically generated icon sizes */
-/* size-3 size-4 size-5 size-6 size-8 size-10 size-12 */
+/* Icon sizes the icon helper builds from a number at runtime */
+@source inline("size-{3,4,5,6,8,10,12}");
 
 /* PlaceCal brand colors as CSS custom properties */
 @theme {
