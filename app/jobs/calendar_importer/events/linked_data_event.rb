@@ -2,6 +2,8 @@
 
 module CalendarImporter::Events
   class LinkedDataEvent < Base
+    EXCLUDED_STATUSES = %w[EventCancelled EventPostponed].freeze
+
     attr_reader :uid, :start_time, :end_time, :summary, :description, :location, :status
 
     def initialize(data)
@@ -66,10 +68,10 @@ module CalendarImporter::Events
       @start_time.present? && (@start_time > DateTime.now)
     end
 
-    ## Events may have a status, such as cancelled or scheduled (see https://schema.org/EventStatusType for a complete list).
-    ## We are not handling any statuses other than cancelled, on the assumption that alternative states won't be implemented.
+    # eventStatus is optional; postponed events have no date set yet, so the startDate shown would be wrong.
     def not_cancelled?
-      @status.present? && @status != 'https://schema.org/EventCancelled'
+      status = @status.is_a?(Hash) ? @status['@id'] : @status
+      EXCLUDED_STATUSES.exclude?(status.to_s.sub(%r{\A(https?://schema\.org/|schema:)}, ''))
     end
 
     def occurrences_between(*)
