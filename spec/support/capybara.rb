@@ -27,6 +27,7 @@ RSpec.configure do |config|
   # sessionStorage, so leftover keys (e.g. partnerTabAfterSave from save-bar)
   # can leak into the next test and silently switch tabs on page load.
   config.after(type: :system) do |example|
+    PlaywrightTrace.stop(example)
     InputDiagnostics.report(page, example) if example.exception
 
     begin
@@ -37,6 +38,5 @@ RSpec.configure do |config|
     Capybara.reset_sessions!
   end
 
-  # Filter Selenium from backtraces
-  config.filter_gems_from_backtrace("capybara", "selenium-webdriver")
+  config.filter_gems_from_backtrace("capybara", "capybara-playwright-driver", "playwright-ruby-client", "selenium-webdriver")
 end

@@ -135,27 +135,27 @@ module TomSelectHelpers
     options.each do |option|
       scroll_to(wrapper)
 
-      # Find the tom-select within this wrapper
-      result = page.evaluate_script(<<~JS)
-        (function() {
-          var wrapper = document.querySelector('.#{wrapper_class}');
-          if (!wrapper) return { error: 'Wrapper not found' };
+      # Find the tom-select within this wrapper, retrying until the controller has initialised it
+      result = page.document.synchronize do
+        page.evaluate_script(<<~JS).tap { |r| raise Capybara::ElementNotFound, "Stacked list select error: #{r['error']}" if r["error"] }
+          (function() {
+            var wrapper = document.querySelector('.#{wrapper_class}');
+            if (!wrapper) return { error: 'Wrapper not found' };
 
-          var select = wrapper.querySelector('select[data-controller*="tom-select"]');
-          if (!select) return { error: 'Select not found in wrapper' };
-          if (!select.tomselect) return { error: 'Tom Select not initialized' };
+            var select = wrapper.querySelector('select[data-controller*="tom-select"]');
+            if (!select) return { error: 'Select not found in wrapper' };
+            if (!select.tomselect) return { error: 'Tom Select not initialized' };
 
-          var ts = select.tomselect;
-          var opts = [];
-          for (var key in ts.options) {
-            var opt = ts.options[key];
-            opts.push({ value: key, text: opt.text || opt.label || opt.name || key });
-          }
-          return { selectId: select.id, options: opts };
-        })()
-      JS
-
-      raise Capybara::ElementNotFound, "Stacked list select error: #{result['error']}" if result["error"]
+            var ts = select.tomselect;
+            var opts = [];
+            for (var key in ts.options) {
+              var opt = ts.options[key];
+              opts.push({ value: key, text: opt.text || opt.label || opt.name || key });
+            }
+            return { selectId: select.id, options: opts };
+          })()
+        JS
+      end
 
       matching_option = result["options"].find { |o| o["text"]&.include?(option) }
 
