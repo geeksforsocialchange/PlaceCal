@@ -16,7 +16,7 @@ module Types
 
       klass.field :events_by_filter, [Types::EventType] do
         description \
-          'Find events with various filter parameters. By default `eventsByFilter` will show all events from the current time. ' \
+          'Find events with various filter parameters. By default `eventsByFilter` shows events from the start of today. ' \
           "Returns at most #{EVENTS_BY_FILTER_LIMIT} events, soonest first: narrow the dates or filters to see the rest."
 
         argument :from_date, String,
