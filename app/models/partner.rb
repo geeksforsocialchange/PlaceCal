@@ -452,7 +452,7 @@ class Partner < ApplicationRecord
     throw :abort
   end
 
-  # Events at this venue can share its address; Address.delete_orphaned! removes it once they don't
+  # Imported events can share the venue's address
   def destroy_unshared_address
     address.destroy if address && !Event.exists?(address_id:)
   end
