@@ -21,7 +21,8 @@ class Views::Directory::Mcp < Views::Base
   private
 
   def render_address
-    section(class: 'max-w-(--width-prose-lg)', data: { controller: 'copy', copy_copied_label_value: t("#{T}.copied") }) do
+    section(class: 'max-w-(--width-prose-lg)',
+            data: { controller: 'copy', copy_copied_label_value: t("#{T}.copied"), copy_failed_label_value: t("#{T}.copy_failed") }) do
       UI::Field(label: t("#{T}.address_label"), id: 'mcp-server-url') do
         div(class: 'flex gap-2') do
           input(id: 'mcp-server-url', type: 'text', readonly: true, value: @server_url,

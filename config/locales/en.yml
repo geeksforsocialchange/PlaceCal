@@ -347,6 +347,7 @@ en:
         address_label: "Server address"
         copy: "Copy"
         copied: "Copied"
+        copy_failed: "Couldn't copy"
       privacy:
         title: "PlaceCal Privacy Policy"
         breadcrumb: "Privacy"
