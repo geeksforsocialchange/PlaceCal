@@ -46,6 +46,9 @@ RSpec.describe "MCP server", type: :request do
     get "/mcp", headers: { "Accept" => "text/html", "Host" => "lvh.me" }
     expect(response).to have_http_status(:ok)
     expect(response.body).to include(ERB::Util.html_escape(I18n.t("directory.pages.mcp.hero_title")), "#{Site::DIRECTORY_URL}/mcp")
+    copy = Nokogiri::HTML(response.body).at_css("[data-controller='copy']")
+    expect(copy["data-copy-copied-label-value"]).to eq(I18n.t("directory.pages.mcp.copied"))
+    expect(copy["data-copy-failed-label-value"]).to eq(I18n.t("directory.pages.mcp.copy_failed"))
 
     get "/mcp", headers: { "Accept" => "application/json, text/event-stream", "Host" => "lvh.me" }
     expect(response).to have_http_status(:method_not_allowed)
