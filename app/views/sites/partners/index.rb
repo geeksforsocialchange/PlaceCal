@@ -45,6 +45,7 @@ class Views::Sites::Partners::Index < Views::Base
         end
       end
       div(id: 'map') do
+        UI::Stripe() if site.core_theme? && map.present? && map.length > 1
         Shared::Map(points: map)
       end
     end
