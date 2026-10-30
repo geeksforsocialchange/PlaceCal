@@ -2,8 +2,7 @@
 
 module Admin
   class SitesController < Admin::ApplicationController
-    before_action :set_site, only: %i[update destroy show]
-    before_action :set_variables_for_sites_neighbourhoods_selection, only: %i[new edit]
+    before_action :set_site, only: %i[edit update destroy show]
 
     def index
       @sites = policy_scope(Site)
@@ -53,7 +52,6 @@ module Admin
 
       else
         flash.now[:danger] = 'Site was not created'
-        set_variables_for_sites_neighbourhoods_selection
         render Views::Admin::Sites::New.new(site: @site, **neighbourhood_props), status: :unprocessable_content
       end
     end
@@ -68,7 +66,6 @@ module Admin
 
       else
         flash.now[:danger] = 'Site was not saved'
-        set_variables_for_sites_neighbourhoods_selection
         render Views::Admin::Sites::Edit.new(site: @site, **neighbourhood_props), status: :unprocessable_content
       end
     end
@@ -115,18 +112,8 @@ module Admin
     end
 
     def neighbourhood_props
-      { all_neighbourhoods: @all_neighbourhoods, primary_neighbourhood_id: @primary_neighbourhood_id }
-    end
-
-    def set_variables_for_sites_neighbourhoods_selection
-      @all_neighbourhoods = policy_scope(Neighbourhood).order(:name)
-      begin
-        set_site
-      rescue ActiveRecord::RecordNotFound
-        @primary_neighbourhood_id = nil
-      else
-        @primary_neighbourhood_id = @site.primary_neighbourhood&.id
-      end
+      { all_neighbourhoods: policy_scope(Neighbourhood).order(:name),
+        primary_neighbourhood_id: (@site.primary_neighbourhood&.id if @site.persisted?) }
     end
   end
 end
