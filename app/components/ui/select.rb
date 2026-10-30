@@ -85,7 +85,7 @@ class Components::UI::Select < Components::Base
         label: opt[:label],
         selected: is_selected.to_s
       },
-      class: 'custom-select-option w-full text-left px-4 py-2 text-sm cursor-pointer transition-colors'
+      class: 'w-full text-left px-4 py-2 text-sm cursor-pointer transition-colors text-background hover:text-primary selected:text-primary selected:font-bold'
     ) do
       span(class: 'text-background/50 text-2xs block mb-0.5') { opt[:group] } if opt[:group]
       plain opt[:label]

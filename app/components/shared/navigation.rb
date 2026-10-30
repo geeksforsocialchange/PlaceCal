@@ -17,12 +17,12 @@ class Components::Shared::Navigation < Components::Base
 
   def view_template
     header(class: [
-             'header grid grid-cols-[1fr_auto] items-center print:hidden',
+             'header grid grid-cols-main-auto items-center print:hidden',
              *(
                if @site.nil?
                  ['container-public py-6 bg-background border-b border-rules']
                else
-                 ['header__partner mx-4 pt-4', 'lg:py-4 lg:mx-12 lg:py-6']
+                 ['header__partner mx-4 pt-4', 'lg:mx-12 lg:py-6']
                end
              )
            ], data: { controller: 'mobile-menu' }) do
@@ -37,7 +37,6 @@ class Components::Shared::Navigation < Components::Base
   def render_branding
     link_to(root_path, class: [
               'header__branding row-start-1 col-start-1 ',
-              ("header__branding--#{@site.slug}" if @site&.slug.presence),
               ("header__branding--theme-#{branding_theme_name}" if branding_theme_name),
               # svg for the bundled inline logos, img for uploaded ones
               'logo:object-contain logo:max-w-full logo:max-h-full',
@@ -52,9 +51,7 @@ class Components::Shared::Navigation < Components::Base
     end
   end
 
-  # A theme's own branding CSS hooks onto this rather than onto the slug class
-  # above: the slug is admin-editable, so a rename would silently drop the
-  # theme's styling (#3368).
+  # A theme's branding CSS hooks onto this, not the site slug, which admins can rename (#3368).
   #
   # @return [String, nil] the registered theme's name, or nil for a site with
   #   no theme and for the nationwide directory

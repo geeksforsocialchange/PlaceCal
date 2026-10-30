@@ -7,10 +7,8 @@ class Components::Shared::ContactDetails < Components::Base
   prop :email, _Nilable(String), default: nil
   prop :phone, _Nilable(String), default: nil
   prop :url, _Nilable(String), default: nil
-  # :tailwind renders a self-contained "Get in touch" card; :tailwind_rows
-  # renders just the icon rows for embedding in another card (e.g. the event
-  # page's organiser SidebarCard).
-  prop :variant, _Union(:sites, :tailwind, :tailwind_rows), default: :sites
+  # :card is a self-contained "Get in touch" card; :rows is just the icon rows, for embedding in another card.
+  prop :variant, _Union(:sites, :card, :rows), default: :sites
   # :network reads the social links as "Facebook" etc. (sites variant only); the handle moves to the title.
   prop :social_labels, _Union(:handle, :network), default: :handle
 
@@ -22,8 +20,8 @@ class Components::Shared::ContactDetails < Components::Base
 
   def view_template
     case @variant
-    when :tailwind then render_tailwind
-    when :tailwind_rows then render_tailwind_rows
+    when :card then render_card
+    when :rows then render_rows
     when :sites then render_sites
     end
   end
@@ -32,29 +30,29 @@ class Components::Shared::ContactDetails < Components::Base
 
   # ── Directory variant ──
 
-  def render_tailwind
+  def render_card
     return unless contact?
 
     UI::Card(variant: :panel, padding: :sm) do
       sidebar_heading(t('directory.contact.get_in_touch'))
-      render_tailwind_rows
+      render_rows
     end
   end
 
-  def render_tailwind_rows
+  def render_rows
     return unless contact?
 
     UI::Stack(gap: :sm) do
-      tailwind_row(:contact_phone, @phone, "tel:#{@phone}") if @phone.present?
-      tailwind_row(:contact_email, @email, "mailto:#{@email}") if @email.present?
-      tailwind_row(:contact_website, strip_url(@url), @url) if @url.present?
-      tailwind_row(:contact_facebook, 'Facebook', "https://facebook.com/#{@partner.facebook_link}") if @partner.facebook_link.present?
-      tailwind_row(:contact_twitter, "@#{@partner.twitter_handle}", "https://twitter.com/#{@partner.twitter_handle}") if @partner.twitter_handle.present?
-      tailwind_row(:contact_instagram, "@#{@partner.instagram_handle}", "https://www.instagram.com/#{@partner.instagram_handle}/") if @partner.instagram_handle.present?
+      contact_row(:contact_phone, @phone, "tel:#{@phone}") if @phone.present?
+      contact_row(:contact_email, @email, "mailto:#{@email}") if @email.present?
+      contact_row(:contact_website, strip_url(@url), @url) if @url.present?
+      contact_row(:contact_facebook, 'Facebook', "https://facebook.com/#{@partner.facebook_link}") if @partner.facebook_link.present?
+      contact_row(:contact_twitter, "@#{@partner.twitter_handle}", "https://twitter.com/#{@partner.twitter_handle}") if @partner.twitter_handle.present?
+      contact_row(:contact_instagram, "@#{@partner.instagram_handle}", "https://www.instagram.com/#{@partner.instagram_handle}/") if @partner.instagram_handle.present?
     end
   end
 
-  def tailwind_row(icon_name, label, href)
+  def contact_row(icon_name, label, href)
     UI::Link(href:, variant: :quiet, target: '_blank', rel: 'noopener', class: 'flex items-center gap-2.5 text-sm') do
       raw(view_context.icon(icon_name, size: '4'))
       span(class: 'truncate') { label }
