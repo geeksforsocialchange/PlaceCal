@@ -30,7 +30,7 @@ class Views::Sites::Events::Show < Views::Base
         back: [t('events.show.back'), events_path]
       )
       render_event_details
-      UI::Stripe() if site.core_theme? && map.present?
+      div(class: 'border-t-10 border-tertiary-light', aria_hidden: 'true') if site.core_theme? && map.present?
       Shared::Map(points: map, style: :multi)
       render_site_more_from_organiser if Array(more_from_organiser).any?
       render_page_actions
