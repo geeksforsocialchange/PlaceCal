@@ -12,9 +12,8 @@ class Components::UI::Pill < Components::Base
     muted: 'px-2.5 py-0.5 text-2xs font-bold bg-home-background-3 text-tertiary',
     # A chip on a dark hero, keeping the hero's text colour
     overlay: 'px-3 py-1 text-sm bg-overlay-light',
-    # A partner's or event's neighbourhood: in the site's primary area, or outside it
-    neighbourhood: 'px-3 max-md:px-1 text-badge max-md:text-badge-sm font-extra-bold uppercase tracking-badge bg-primary text-foreground-dark',
-    neighbourhood_outside: 'px-3 max-md:px-1 text-badge max-md:text-badge-sm font-extra-bold uppercase tracking-badge bg-rules text-foreground'
+    # A partner's or event's neighbourhood
+    neighbourhood: 'px-3 max-md:px-1 text-badge max-md:text-badge-sm font-extra-bold uppercase tracking-badge bg-primary text-foreground-dark'
   }.freeze
 
   SELECTED = 'px-4 py-1.5 text-sm font-bold bg-foreground text-background'

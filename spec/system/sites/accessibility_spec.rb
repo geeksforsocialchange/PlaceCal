@@ -48,7 +48,7 @@ RSpec.describe "Site accessibility", :slow, type: :system do
   JS
 
   let(:ward) { create(:riverside_ward) }
-  let(:outside_ward) { create(:oldtown_ward, parent: ward.parent) }
+  let(:second_ward) { create(:oldtown_ward, parent: ward.parent) }
   let(:site_admin) { create(:user, first_name: "Robin", last_name: "Rivers", phone: "01234 567890") }
   let(:site) { create(:site, slug: "riverside", theme:, site_admin:) }
 
@@ -56,9 +56,6 @@ RSpec.describe "Site accessibility", :slow, type: :system do
     create(:partner, name: "Riverside Hub", address: create(:riverside_address, neighbourhood: ward),
                      accessibility_info: "Step-free entrance and an accessible toilet.",
                      opening_times: [{ dayOfWeek: "http://schema.org/Monday", opens: "09:00", closes: "17:00" }].to_json)
-  end
-  let(:outside_partner) do
-    create(:partner, name: "Oldtown Hall", address: create(:oldtown_address, neighbourhood: outside_ward))
   end
 
   let(:event) do
@@ -73,10 +70,8 @@ RSpec.describe "Site accessibility", :slow, type: :system do
   # Two neighbourhoods, so listings show each partner's and event's neighbourhood pill.
   before do
     create(:sites_neighbourhood, site:, neighbourhood: ward, relation_type: "Primary")
-    create(:sites_neighbourhood, site:, neighbourhood: outside_ward, relation_type: "Secondary")
+    create(:sites_neighbourhood, site:, neighbourhood: second_ward, relation_type: "Secondary")
     event
-    create(:event, summary: "Oldtown Social", organiser: outside_partner, address: outside_partner.address,
-                   dtstart: 4.days.from_now, dtend: 4.days.from_now + 2.hours)
     article
   end
 

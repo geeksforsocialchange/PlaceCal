@@ -3,7 +3,6 @@
 class Components::Sites::EventList < Components::Base
   prop :events, Hash
   prop :period, _Nilable(String), default: nil
-  prop :primary_neighbourhood, _Nilable(::Neighbourhood), default: nil
   prop :show_neighbourhoods, _Boolean, default: false
   prop :badge_zoom_level, _Nilable(String), default: nil
   prop :next_date, _Nilable(Time), default: nil
@@ -39,7 +38,6 @@ class Components::Sites::EventList < Components::Base
     Sites::Event(
       display_context: @period&.to_sym,
       event:,
-      primary_neighbourhood: @primary_neighbourhood,
       show_neighbourhoods: @show_neighbourhoods,
       badge_zoom_level: @badge_zoom_level,
       site_tagline: @site_tagline,
