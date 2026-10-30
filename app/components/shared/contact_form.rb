@@ -18,58 +18,40 @@ class Components::Shared::ContactForm < Components::Base
 
   private
 
-  # Plain form-builder helpers, not f.input, so the label and chip markup stay ours.
   def render_form
     simple_form_for(contact_request, url:) do |f|
       invisible_captcha
 
-      div(class: 'join-card') do
-        div(class: 'join-grid') do
+      div(class: 'join-card bg-background border-2 border-rules rounded-card pt-8 px-9 pb-9') do
+        div(class: 'join-grid grid grid-cols-1 md:grid-cols-2 gap-y-4.5 gap-x-5') do
           render_field(f, :name, required: true)
-          render_field(f, :email, type: :email_field, required: true)
+          render_field(f, :email, type: 'email', required: true)
           render_field(f, :job_title)
-          render_field(f, :phone, type: :telephone_field)
+          render_field(f, :phone, type: 'tel')
           render_field(f, :job_org)
           render_field(f, :area)
         end
 
         render_choices(f)
-        render_why(f)
-        render_actions(f)
+        div(class: 'join-block mt-5.5') { render_field(f, :why, required: true, rows: 5) }
+        render_actions
       end
     end
   end
 
-  # A single labelled text input in the field grid.
-  def render_field(form, attribute, type: :text_field, required: false)
-    div(class: 'join-field') do
-      render_label(attribute, required:)
-      raw form.public_send(
-        type, attribute,
-        class: 'join-control',
-        required:,
-        placeholder: t("contact_form.placeholders.#{attribute}")
-      )
-    end
-  end
-
-  def render_why(form)
-    div(class: 'join-block join-field') do
-      render_label(:why, required: true)
-      raw form.text_area(
-        :why,
-        class: 'join-control',
-        rows: 5,
-        required: true,
-        placeholder: t('contact_form.placeholders.why')
-      )
+  def render_field(form, attribute, type: 'text', required: false, rows: nil)
+    id = form.field_id(attribute)
+    UI::Field(label: ContactRequest.human_attribute_name(attribute), id:, variant: :strong, required:,
+              label_class: 'join-label', class: 'join-field') do
+      UI::Input(variant: :roomy, type:, rows:, id:, name: form.field_name(attribute), value: contact_request.public_send(attribute),
+                required:, placeholder: t("contact_form.placeholders.#{attribute}"), class: 'join-control')
     end
   end
 
   def render_choices(form)
-    div(class: 'join-block') do
-      p(class: 'join-label mb-3') { t('contact_form.choices_legend') }
-      div(class: 'join-choices') do
+    div(class: 'join-block mt-5.5') do
+      p(class: "join-label #{UI::Field::VARIANTS[:strong][:label]} mb-3") { t('contact_form.choices_legend') }
+      div(class: 'join-choices flex flex-wrap gap-2.75') do
         render_choice(form, :ringback)
         render_choice(form, :more_info)
       end
@@ -77,45 +59,26 @@ class Components::Shared::ContactForm < Components::Base
   end
 
   def render_choice(form, attribute)
-    label(class: 'join-choice') do
-      raw form.check_box(attribute)
-      span(class: 'join-choice__box') { icon(:check, size: '4') }
-      plain ContactRequest.human_attribute_name(attribute)
-    end
-  end
-
-  def render_actions(form)
-    div(class: 'join-actions') do
-      raw form.submit(t('contact_form.submit'), class: 'join-submit')
-      p(class: 'join-note') { t('contact_form.note') }
-    end
-  end
-
-  # Field label with a required (*) or optional marker, matching the design.
-  def render_label(attribute, required: false)
-    label(for: "contact_request_#{attribute}", class: 'join-label') do
-      plain ContactRequest.human_attribute_name(attribute)
-      if required
-        span(class: 'req', aria_hidden: 'true') { '*' }
-      else
-        span(class: 'opt') { t('contact_form.optional') }
+    label(class: 'join-choice group relative inline-flex items-center gap-2.5 py-2.5 pr-4.5 pl-3.25 border-2 border-rules-dark rounded-pill ' \
+                 'bg-background cursor-pointer font-bold text-detail text-foreground select-none transition-colors hover:border-tertiary ' \
+                 'has-checked:border-foreground has-checked:bg-home-background-3 has-focus-visible:ring-3 has-focus-visible:ring-focus-ring') do
+      raw form.check_box(attribute, class: 'absolute opacity-0 pointer-events-none')
+      span(class: 'join-choice__box grid place-items-center size-5 shrink-0 border-2 border-rules-dark rounded-check bg-surface transition-colors ' \
+                  'group-has-checked:bg-foreground group-has-checked:border-foreground') do
+        icon(:check, size: '4', css_class: 'text-background opacity-0 scale-60 transition group-has-checked:opacity-100 group-has-checked:scale-100')
       end
+      plain ContactRequest.human_attribute_name(attribute)
+    end
+  end
+
+  def render_actions
+    div(class: 'join-actions flex flex-wrap items-center gap-5 mt-7.5') do
+      UI::Button(variant: :dark_invert, size: :xl, type: 'submit', class: 'join-submit') { t('contact_form.submit') }
+      p(class: 'join-note max-w-(--width-note) text-sm leading-normal text-tertiary') { t('contact_form.note') }
     end
   end
 
   def render_email_cta
-    address = t('contact.email')
-
-    div(class: 'join-email-cta') do
-      div do
-        # h2 (not h3) to keep the heading order correct after the page's h1.
-        h2(class: 'join-email-cta__heading') { t('contact_form.email_cta.heading') }
-        p(class: 'join-email-cta__body') { t('contact_form.email_cta.body') }
-      end
-      a(href: "mailto:#{address}", class: 'join-email-link with-no-sass') do
-        icon(:mail, size: '4')
-        plain address
-      end
-    end
+    Shared::EmailCta(heading: t('contact_form.email_cta.heading'), body: t('contact_form.email_cta.body'), address: t('contact.email'))
   end
 end

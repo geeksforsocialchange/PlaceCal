@@ -16,29 +16,19 @@ class Components::Directory::Paginator < Components::Directory::Base
   private
 
   def render_prev
-    if @pagy.previous
-      a(href: pagy_url(@pagy.previous), class: pill_class) { safe('&larr;') }
-    else
-      span(class: "#{pill_class} opacity-30 pointer-events-none") { safe('&larr;') }
-    end
+    UI::Pill(variant: :page, href: (pagy_url(@pagy.previous) if @pagy.previous), disabled: !@pagy.previous) { safe('&larr;') }
   end
 
   def render_next
-    if @pagy.next
-      a(href: pagy_url(@pagy.next), class: pill_class) { safe('&rarr;') }
-    else
-      span(class: "#{pill_class} opacity-30 pointer-events-none") { safe('&rarr;') }
-    end
+    UI::Pill(variant: :page, href: (pagy_url(@pagy.next) if @pagy.next), disabled: !@pagy.next) { safe('&rarr;') }
   end
 
   def render_pages
     page_numbers.each do |item|
       if item == :gap
         span(class: 'px-1 text-tertiary') { plain '...' }
-      elsif item == @pagy.page
-        span(class: active_pill_class) { plain item.to_s }
       else
-        a(href: pagy_url(item), class: pill_class) { plain item.to_s }
+        UI::Pill(variant: :page, href: pagy_url(item), selected: item == @pagy.page) { plain item.to_s }
       end
     end
   end
@@ -60,14 +50,6 @@ class Components::Directory::Paginator < Components::Directory::Base
       result << p
     end
     result
-  end
-
-  def pill_class
-    'paginator-pill'
-  end
-
-  def active_pill_class
-    'paginator-pill--active'
   end
 
   def pagy_url(page)

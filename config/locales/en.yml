@@ -101,6 +101,8 @@ en:
     details:
       open: "Open to read more"
       close: "Close"
+    field:
+      optional: "optional"
     password_reveal:
       show_label: "Show password"
       hide_label: "Hide password"
@@ -775,7 +777,6 @@ en:
   # get-in-touch page and the join site's book-a-demo page)
   # ===========================================================================
   contact_form:
-    optional: "optional"
     choices_legend: "I'd like"
     placeholders:
       name: "Your full name"

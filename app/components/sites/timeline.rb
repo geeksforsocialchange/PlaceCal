@@ -4,7 +4,7 @@ class Components::Sites::Timeline < Components::Base
   DEFAULT_STEPS = 7
 
   LIST = 'paginator__buttons relative grid grid-cols-paginator gap-1 md:gap-2 list-none m-0 px-10 pb-2 font-bold'
-  TAB = 'border-2 border-primary rounded-full text-center hover:bg-primary'
+  TAB = 'border-2 border-primary rounded-pill text-center hover:bg-primary'
   TAB_LINK = 'with-no-sass text-foreground no-underline flex items-center justify-center size-full py-1 px-4 whitespace-nowrap'
   ARROW = 'paginator__arrow absolute top-0 size-9 p-0 bg-primary hover:bg-foreground'
   ARROW_LINK = 'with-no-sass flex items-center justify-center size-full'

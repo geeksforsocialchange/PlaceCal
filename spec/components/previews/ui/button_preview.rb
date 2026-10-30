@@ -21,8 +21,8 @@ class UI::ButtonPreview < Lookbook::Preview
   end
 
   # @label Playground
-  # @param variant select { choices: [primary, dark, outline, dark_outline, light, join, secondary] }
-  # @param size select { choices: [sm, md, lg] }
+  # @param variant select { choices: [primary, dark, outline, dark_outline, light, join, secondary, dark_invert] }
+  # @param size select { choices: [sm, md, lg, xl] }
   # @param shape select { choices: [pill, field] }
   # @param link toggle
   # @param label text

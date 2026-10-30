@@ -23,6 +23,13 @@ RSpec.describe Components::UI::Input, type: :component do
     expect(page).to have_css("input.mt-2.rounded-sm")
   end
 
+  it "renders a textarea holding the value when given rows" do
+    render_inline(described_class.new(rows: 5, name: "why", value: "For our community"))
+
+    expect(page).to have_css("textarea[name='why'][rows='5']", text: "For our community")
+    expect(page).not_to have_css("input")
+  end
+
   it "adds a show-password button for the password field, hidden until JavaScript connects" do
     render_inline(described_class.new(type: "password", reveal: true, id: "user_password"))
 
