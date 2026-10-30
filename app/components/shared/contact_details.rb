@@ -44,7 +44,7 @@ class Components::Shared::ContactDetails < Components::Base
   def render_tailwind_rows
     return unless contact?
 
-    div(class: 'flex flex-col gap-2') do
+    UI::Stack(gap: :sm) do
       tailwind_row(:contact_phone, @phone, "tel:#{@phone}") if @phone.present?
       tailwind_row(:contact_email, @email, "mailto:#{@email}") if @email.present?
       tailwind_row(:contact_website, strip_url(@url), @url) if @url.present?
