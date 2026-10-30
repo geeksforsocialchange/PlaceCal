@@ -7,7 +7,7 @@ class Components::UI::Button < Components::Base
   VARIANTS = {
     primary: 'bg-primary border-primary text-foreground-dark hover:bg-primary-light hover:border-primary-light',
     dark: 'bg-foreground border-foreground text-background hover:bg-tertiary hover:border-tertiary',
-    outline: 'bg-home-background border-primary text-foreground hover:bg-primary',
+    outline: 'bg-home-background border-primary text-foreground hover:bg-primary hover:text-foreground-dark',
     dark_outline: 'bg-transparent border-foreground text-foreground hover:bg-foreground hover:text-background',
     # Cream fill for coloured panels, e.g. the Our Story call to action.
     light: 'bg-home-background border-home-background text-foreground hover:bg-foreground hover:border-foreground hover:text-background',
