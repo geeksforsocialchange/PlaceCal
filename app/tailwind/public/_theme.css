@@ -16,7 +16,8 @@
    `@theme inline` is NOT overridable at runtime. Breakpoints and containers
    have to stay literal because they are used in media queries; the remaining
    literals are fixed layout metrics (spacing step, avatar sizes, content
-   measures, map heights) which are not part of a theme's surface.
+   measures, map heights) and the default transition timing, which are not
+   part of a theme's surface.
 */
 :root {
 	--root-font-size: 18px;
@@ -290,6 +291,10 @@ this file).
 	--shadow-dot: var(--shadow-dot);
 	--shadow-dropdown: var(--shadow-dropdown);
 	--shadow-lg: var(--shadow-lg);
+
+	/* Used by transition-* utilities that have no duration-* class; reduced motion still zeroes them in _base.css */
+	--default-transition-duration: 150ms;
+	--default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 
 	/* Tablet portrait, landscape, desktop. Literal: media queries can't read a runtime var */
 	--breakpoint-md: 600px;
