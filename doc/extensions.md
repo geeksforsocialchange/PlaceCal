@@ -175,7 +175,7 @@ A theme restyles core through three public layers:
    }
    ```
 
-   Core's defaults and its built-in colour themes (`html[data-theme="pink"]` and so on) are in the `theme` cascade layer, so an unlayered `:root` rule wins over them on any site. Lookbook's overview lists every token with its default.
+   Core's defaults and its built-in colour themes (`html[data-theme="pink"]` and so on) are in the `tokens` cascade layer, so an unlayered `:root` rule wins over them on any site. Lookbook's overview lists every token with its default.
 
 2. **Scopes, parts and states:** data attributes on the meaningful elements of a component, which theme CSS targets.
 3. **Replacement points:** the theme settings that swap a whole view or component (`homepage_view`, `footer`, `page`, `head`), for a design that needs different structure.

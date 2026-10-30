@@ -1,4 +1,6 @@
 /* Public site stylesheet. Content detection is off, so each public section is listed here; admin_tailwind.css has the mirror-image list. */
+/* tokens sits above Tailwind's theme layer, so core's tokens beat a theme's Tailwind defaults but not its unlayered :root */
+@layer theme, tokens, base, components, utilities;
 @import "tailwindcss" source(none);
 @import "./public/_fonts.css";
 /* Leaflet's own CSS, unlayered, before the overrides in components/_map.css */
@@ -19,8 +21,8 @@
 	--*: initial;
 }
 
-@import "./public/_theme.css" layer(theme);
-@import "./public/_themes.css" layer(theme);
+@import "./public/_theme.css" layer(tokens);
+@import "./public/_themes.css" layer(tokens);
 
 /* Root sizing reads the tokens; unlayered, as it was, so preflight's html rules don't override it */
 :root {

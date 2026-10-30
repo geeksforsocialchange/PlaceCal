@@ -3,7 +3,7 @@
    OVERRIDE CONTRACT
    Every themeable value (colour, font, radius, shadow) is a plain custom
    property on `:root` below. This file and the built-in colour themes in
-   _themes.css are imported into the `theme` cascade layer, so an extension
+   _themes.css are imported into the `tokens` cascade layer, so an extension
    theme overrides any token with a plain unlayered `:root` rule in its own
    stylesheet, whatever the site's data-theme. Nothing else needs changing.
 
