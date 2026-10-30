@@ -40,7 +40,7 @@ class Components::Directory::EventRow < Components::Directory::Base
   end
 
   def render_meta_time
-    span(class: 'inline-flex items-baseline gap-1') do
+    span(class: 'inline-flex items-center gap-1') do
       render_icon(:event_time)
       time(datetime: @event.dtstart.iso8601) { fmt_time(@event.dtstart) }
       if @event.dtend && @event.dtend != @event.dtstart
@@ -51,7 +51,7 @@ class Components::Directory::EventRow < Components::Directory::Base
   end
 
   def render_meta_place
-    span(class: 'inline-flex items-baseline gap-1') do
+    span(class: 'inline-flex items-center gap-1') do
       render_icon(:event_place)
       partner = @event.partner_at_location
       if partner
@@ -63,29 +63,29 @@ class Components::Directory::EventRow < Components::Directory::Base
   end
 
   def render_meta_organiser
-    span(class: 'inline-flex items-baseline gap-1') do
+    span(class: 'inline-flex items-center gap-1') do
       render_icon(:partner)
       UI::Link(href: partner_path(@event.organiser), data: { turbo_frame: '_top' }) { @event.organiser.name.truncate(25) }
     end
   end
 
   def render_meta_repeats
-    span(class: 'inline-flex items-baseline gap-1') do
+    span(class: 'inline-flex items-center gap-1') do
       render_icon(:event_repeats)
       plain repeats
     end
   end
 
   def render_meta_online
-    span(class: 'inline-flex items-baseline gap-1') do
+    span(class: 'inline-flex items-center gap-1') do
       render_icon(:event_online)
       plain t('directory.event_row.online')
     end
   end
 
-  # Sits on the text baseline, then drops to the middle of the lowercase letters; centring on the line box reads high
+  # Raleway's glyphs sit below the middle of their line box, so a centred icon looks high without the nudge
   def render_icon(name)
-    raw(view_context.icon(name, size: nil, css_class: 'w-3.5 h-3.5 translate-y-0.75 text-tertiary opacity-55 shrink-0'))
+    raw(view_context.icon(name, size: nil, css_class: 'w-3.5 h-3.5 translate-y-px text-tertiary opacity-55 shrink-0'))
   end
 
   def show_place?
