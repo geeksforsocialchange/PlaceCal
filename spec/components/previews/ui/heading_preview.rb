@@ -16,8 +16,14 @@ class UI::HeadingPreview < Lookbook::Preview
 
   # `spacing:` drops the top margin and sets the space below from the layout scale (`:none`, `:xs`, `:sm`, `:md`, `:lg` or `:xl`).
   # @label Spacing
-  def spacing
-    safe_join([render(Components::UI::Heading.new(spacing: :md)) { "Frequently asked questions" },
-               tag.p(class: "my-0") { "The paragraph starts one :md step under the heading." }])
+  def spaced
+    render(Spaced.new)
+  end
+
+  class Spaced < Phlex::HTML
+    def view_template
+      render(Components::UI::Heading.new(spacing: :md)) { "Frequently asked questions" }
+      p(class: "my-0") { "The paragraph starts one :md step under the heading." }
+    end
   end
 end
