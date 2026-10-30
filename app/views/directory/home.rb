@@ -104,7 +104,7 @@ class Views::Directory::Home < Views::Base
     end
   end
 
-  # :lg is the base heading's top margin, so these kickers sit as the partnerships one does.
+  # :lg is the base heading's top margin.
   def activity_heading(kicker, heading)
     UI::Stack(gap: :lg) do
       div(class: 'allcaps-label text-tertiary') { kicker }
