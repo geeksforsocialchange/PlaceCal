@@ -219,8 +219,6 @@ module SvgIconsHelper
     classes = size_class
     classes += " #{css_class}" if css_class.present?
 
-    # tailwind compat classes for non-admin frontend are in app/assets/stylesheets/temp_tailwind_compat.scss
-
     tag.svg(
       class: classes,
       'data-icon-name': name.to_s,

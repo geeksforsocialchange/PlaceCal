@@ -2,22 +2,22 @@
 
 class Components::UI::Link < Components::Base
   VARIANTS = {
-    underline: 'underline decoration-primary decoration-2 underline-offset-2 hover:opacity-80',
-    quiet: 'no-underline hover:underline hover:decoration-primary',
-    action: 'inline-flex items-center gap-1.5 font-bold no-underline hover:underline hover:decoration-primary'
+    underline: 'underline decoration-primary decoration-2 underline-offset-2 skip-ink-auto hover:opacity-80',
+    quiet: 'no-underline hover:underline hover:decoration-primary decoration-auto underline-offset-auto skip-ink-auto',
+    action: 'inline-flex items-center gap-1.5 font-bold no-underline hover:underline hover:decoration-primary decoration-auto underline-offset-auto skip-ink-auto'
   }.freeze
 
   # :inherit takes the colour of the surrounding text, e.g. breadcrumbs on a coloured band.
-  TONES = { foreground: 'text-foreground', muted: 'text-tertiary', inherit: nil }.freeze
+  TONES = { foreground: 'text-foreground', muted: 'text-tertiary', inherit: 'text-inherit' }.freeze
 
   prop :href, String
   prop :variant, _Union(*VARIANTS.keys), default: :underline
   prop :tone, _Union(*TONES.keys), default: :foreground
   prop :attributes, Hash, :**
 
-  # For links another helper renders, such as active_link_to. with-no-sass keeps the legacy SCSS link colour off.
+  # For links another helper renders, such as active_link_to.
   def self.css(variant: :underline, tone: :foreground)
-    ['with-no-sass', VARIANTS[variant], TONES[tone]].compact.join(' ')
+    [VARIANTS[variant], TONES[tone]].join(' ')
   end
 
   def view_template(&)

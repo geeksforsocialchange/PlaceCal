@@ -11,7 +11,7 @@ class Components::UI::Pill < Components::Base
     # For chips on cream cards, such as a partner's categories
     muted: 'px-2.5 py-0.5 text-2xs font-bold bg-home-background-3 text-tertiary',
     # A chip on a dark hero, keeping the hero's text colour
-    overlay: 'px-3 py-1 text-sm bg-overlay-light',
+    overlay: 'px-3 py-1 text-sm bg-overlay-light text-inherit',
     # A partner's or event's neighbourhood
     neighbourhood: 'px-3 max-md:px-1 text-badge max-md:text-badge-sm font-extra-bold uppercase tracking-badge bg-primary text-foreground-dark',
     # A page number or arrow in a paginator, square until the label is wider than it is tall
@@ -37,8 +37,7 @@ class Components::UI::Pill < Components::Base
     attributes = @attributes.except(:class)
 
     if @href && !@selected && !@disabled
-      # with-no-sass keeps the legacy SCSS link colour off.
-      a(href: @href, class: "with-no-sass #{css}", **attributes, &)
+      a(href: @href, class: css, **attributes, &)
     else
       span(class: css, aria: { current: ('page' if @selected) }, **attributes, &)
     end

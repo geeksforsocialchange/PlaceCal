@@ -2,8 +2,8 @@
 
 class Components::Sites::Meta < Components::Base
   prop :permalink, _Nilable(String), :positional, default: nil
-  # The legacy link rule's pink underline is for body copy; links in this band underline in the text colour.
-  LINK = 'with-no-sass text-foreground underline'
+  # The pink underline is for body copy; links in this band underline in the text colour.
+  LINK = 'text-foreground underline decoration-current decoration-auto underline-offset-auto skip-ink-auto'
 
   def after_initialize
     @link_content = nil

@@ -157,7 +157,7 @@ class Components::Shared::Navigation < Components::Base
   def render_join_button
     li(class: 'text-center max-md:py-3') do
       link_to(@cta_label || t('navigation.directory.join'), @cta_path || get_in_touch_path,
-              class: 'with-no-sass inline-flex items-center rounded-pill bg-secondary text-foreground-dark px-4 py-1.5 text-detail font-bold no-underline hover:brightness-110 transition-all')
+              class: 'inline-flex items-center rounded-pill bg-secondary text-foreground-dark px-4 py-1.5 text-detail font-bold no-underline hover:brightness-110 transition-all')
     end
   end
 
@@ -178,7 +178,7 @@ class Components::Shared::Navigation < Components::Base
 
   def menu_link_classes
     [
-      'with-reset with-no-sass text-base',
+      'text-base no-underline',
       'after:block after:mx-auto after:w-10',
       *(if @site.nil?
           [

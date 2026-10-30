@@ -38,7 +38,6 @@ class Views::Layouts::Application < Phlex::HTML
         meta(name: 'turbo-refresh-method', content: 'morph')
       end
 
-      # app/assets/stylesheets/base/layout.scss
       body do
         # Outside .page so it spans the viewport, not the page column.
         Join::WipBanner() if join_site?

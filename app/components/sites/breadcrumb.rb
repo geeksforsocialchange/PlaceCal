@@ -7,7 +7,7 @@ class Components::Sites::Breadcrumb < Components::Base
   ELEMENT = 'breadcrumb__element flex items-center gap-1 mr-2 max-md:mb-2'
   # The filters and actions a page passes in: their own row below the trail, beside it and right-aligned from xl.
   SLOT = 'breadcrumb__slot w-full max-md:mb-2 xl:w-auto xl:flex-auto xl:justify-end'
-  LINK = 'with-no-sass text-foreground no-underline border-b-2 border-rules-dark'
+  LINK = 'text-foreground no-underline border-b-2 border-rules-dark'
 
   def view_template(&)
     div(class: 'breadcrumb flex flex-wrap text-sm mt-2 md:my-4 print:hidden') do

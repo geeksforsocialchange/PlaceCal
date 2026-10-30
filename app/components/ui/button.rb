@@ -39,8 +39,7 @@ class Components::UI::Button < Components::Base
     attributes = @attributes.except(:class)
 
     if @href
-      # with-no-sass keeps the legacy SCSS link colour off.
-      a(href: @href, class: "with-no-sass #{css}", **attributes, &)
+      a(href: @href, class: css, **attributes, &)
     else
       button(type: @type, class: css, **attributes, &)
     end

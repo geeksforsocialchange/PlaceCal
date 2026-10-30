@@ -8,7 +8,7 @@ class Components::Join::WipBanner < Components::Join::Base
         strong(class: 'font-serif font-regular text-card') { t('join.wip.heading') }
         p(class: 'm-0 text-detail leading-relaxed flex-1 min-w-64') { t('join.wip.body') }
         a(href: "mailto:#{t('contact.email')}",
-          class: 'with-no-sass text-detail font-bold text-foreground-dark underline hover:no-underline') do
+          class: 'text-detail font-bold text-foreground-dark underline decoration-current decoration-auto underline-offset-auto skip-ink-auto hover:no-underline') do
           t('join.wip.cta')
         end
       end

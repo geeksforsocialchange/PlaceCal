@@ -174,7 +174,7 @@ class Components::Sites::EventFilter < Components::Base
   end
 
   def day_strip_link_class(current)
-    base = 'day-strip__link with-no-sass inline-flex items-center rounded-sm border-2 px-3 py-1.5 text-sm font-bold no-underline transition-colors'
+    base = 'day-strip__link inline-flex items-center rounded-sm border-2 px-3 py-1.5 text-sm font-bold no-underline transition-colors'
     state = if current
               'bg-foreground text-background border-foreground'
             else

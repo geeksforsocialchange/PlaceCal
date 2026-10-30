@@ -3,11 +3,10 @@
 require "rails_helper"
 
 RSpec.describe Components::UI::Button, type: :component do
-  it "renders a link, marked with-no-sass, when given an href" do
+  it "renders a link when given an href" do
     render_inline(described_class.new(variant: :dark, href: "/events")) { "All events" }
 
     expect(page).to have_link("All events", href: "/events")
-    expect(page).to have_css("a.with-no-sass")
     expect(page).not_to have_css("button")
   end
 

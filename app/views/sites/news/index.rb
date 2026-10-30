@@ -35,7 +35,7 @@ class Views::Sites::News::Index < Views::Base
       end
 
       div(class: 'articles__main') do
-        h2(class: 'articles__title mt-0 leading-none') { link_to article.title, news_path(article), class: 'with-no-sass text-foreground no-underline' }
+        h2(class: 'articles__title mt-0 leading-none') { link_to article.title, news_path(article), class: 'text-foreground no-underline' }
 
         p(class: 'articles__partners text-sm') { article_partner_links(article) } if article.partners.present?
 
