@@ -19,6 +19,12 @@
 		}
 	}
 
+	/* Keyboard focus is an outline in the text colour; components override the colour only where that would vanish */
+	:focus-visible {
+		outline: 2px solid currentColor;
+		outline-offset: 2px;
+	}
+
 	h1 {
 		font-family: var(--font-serif);
 		font-weight: normal;

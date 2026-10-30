@@ -2,7 +2,7 @@
 
 class Components::UI::Button < Components::Base
   # The focus outline is foreground, not current colour, because some variants put cream text on a cream page.
-  BASE = "inline-flex items-center justify-center gap-2 border-2 font-bold no-underline cursor-pointer transition-colors duration-150 #{UI::Focus::RING} focus-visible:outline-foreground".freeze
+  BASE = 'inline-flex items-center justify-center gap-2 border-2 font-bold no-underline cursor-pointer transition-colors duration-150 focus-visible:outline-foreground'
 
   VARIANTS = {
     primary: 'bg-primary border-primary text-foreground hover:bg-primary-light hover:border-primary-light',

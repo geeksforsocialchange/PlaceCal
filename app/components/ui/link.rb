@@ -17,7 +17,7 @@ class Components::UI::Link < Components::Base
 
   # For links another helper renders, such as active_link_to. with-no-sass keeps the legacy SCSS link colour off.
   def self.css(variant: :underline, tone: :foreground)
-    ['with-no-sass', UI::Focus::RING, 'focus-visible:outline-current', VARIANTS[variant], TONES[tone]].compact.join(' ')
+    ['with-no-sass', VARIANTS[variant], TONES[tone]].compact.join(' ')
   end
 
   def view_template(&)
