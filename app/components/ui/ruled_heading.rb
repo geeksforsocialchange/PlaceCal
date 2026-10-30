@@ -8,8 +8,8 @@ class Components::UI::RuledHeading < Components::Base
   TONES = { rules: 'border-rules', background: 'border-background', secondary: 'border-secondary' }.freeze
   # :inherit keeps the base heading size for its level.
   SIZES = { inherit: nil, sm: 'text-base', lg: 'text-xl' }.freeze
-  # :section is the rhythm of the partner and event pages' detail sections.
-  SPACING = { none: nil, section: 'my-5.5' }.freeze
+  # :section is the rhythm of the partner and event pages' detail sections; :card titles a card, :illustrated sits under a card's picture.
+  SPACING = { none: nil, section: 'my-5.5', card: 'mb-6', illustrated: 'mt-8 mb-6' }.freeze
 
   theme_scope :ruled_heading, parts: { root: 'The heading element (h1 to h4) with its rule underneath.' },
                               tokens: %i[--color-foreground --color-rules --color-background --color-secondary --text-base --text-xl

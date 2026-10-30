@@ -21,6 +21,29 @@ RSpec.describe Components::UI::Cluster, type: :component do
     expect(page).to have_css("nav[aria-label='Filters']")
   end
 
+  it "lines its items up at the bottom" do
+    render_inline(described_class.new(align: :end)) { "x" }
+
+    expect(page).to have_css("div.flex.items-end")
+  end
+
+  it "justifies only from the breakpoint it is given" do
+    render_inline(described_class.new(justify: :end, justify_from: :xl)) { "x" }
+
+    expect(page).to have_css("div.xl\\:justify-end")
+    expect(page).to have_no_css("div.justify-end")
+  end
+
+  it "stops wrapping from the breakpoint it is given" do
+    render_inline(described_class.new(nowrap_from: :lg)) { "x" }
+
+    expect(page).to have_css("div.flex-wrap.lg\\:flex-nowrap")
+  end
+
+  it "rejects a breakpoint it has no classes for" do
+    expect { described_class.new(justify_from: :sm) }.to raise_error(Literal::TypeError)
+  end
+
   it "rejects a gap off the scale" do
     expect { described_class.new(gap: :huge) }.to raise_error(Literal::TypeError)
   end

@@ -2,7 +2,7 @@
 
 class UI::StackPreview < Lookbook::Preview
   # @label Sections
-  # @notes Children sit one under another, spaced by `gap:` (`:none`, `:xs`, `:sm`, `:md`, `:lg` or `:xl`); their own vertical margins are ignored.
+  # @notes Children sit one under another, spaced by `gap:` (`:none`, `:xs`, `:sm`, `:sm_md`, `:md`, `:lg` or `:xl`); their own vertical margins are ignored.
   def sections
     render Components::UI::Stack.new(gap: :lg) do
       safe_join([

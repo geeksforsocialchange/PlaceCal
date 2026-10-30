@@ -218,12 +218,12 @@ class Views::Sites::Events::Show < Views::Base
     UI::Card(variant: :panel, padding: :sm) do
       sidebar_heading(t('directory.sidebar.share_subscribe'))
       div do
-        UI::Link(href: "https://placecal.org/events/#{event.id}", variant: :quiet, class: 'font-mono text-sm break-all') do
+        UI::Link(href: "https://placecal.org/events/#{event.id}", variant: :quiet, font: :code) do
           plain "placecal.org/events/#{event.id}"
         end
       end
       div(class: 'mt-3') do
-        UI::Link(href: event_url(event, protocol: :webcal, format: :ics), variant: :action, class: 'text-sm') do
+        UI::Link(href: event_url(event, protocol: :webcal, format: :ics), variant: :action, size: :sm) do
           raw(view_context.icon(:calendar, size: '3.5'))
           plain t('directory.sidebar.subscribe_ical')
         end

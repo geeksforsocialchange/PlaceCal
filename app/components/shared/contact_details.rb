@@ -55,7 +55,7 @@ class Components::Shared::ContactDetails < Components::Base
   end
 
   def tailwind_row(icon_name, label, href)
-    UI::Link(href:, variant: :quiet, target: '_blank', rel: 'noopener', class: 'flex items-center gap-2.5 text-sm') do
+    UI::Link(href:, variant: :quiet, target: '_blank', rel: 'noopener', size: :sm, class: 'flex items-center gap-2.5') do
       raw(view_context.icon(icon_name, size: '4'))
       span(class: 'truncate') { label }
     end

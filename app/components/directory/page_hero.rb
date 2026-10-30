@@ -51,7 +51,7 @@ class Components::Directory::PageHero < Components::Directory::Base
       crumb_items.each do |item|
         span(class: 'mx-1.5 opacity-60') { safe('›') }
         if item[:path]
-          UI::Link(href: item[:path], variant: :quiet, tone: :inherit, class: 'opacity-80') { item[:label] }
+          span(class: 'opacity-80') { UI::Link(href: item[:path], variant: :quiet, tone: :inherit) { item[:label] } }
         else
           span(class: 'opacity-80') { item[:label] }
         end

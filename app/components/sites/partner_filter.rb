@@ -13,8 +13,8 @@ class Components::Sites::PartnerFilter < Components::Base
   # for the listing and the facet counts, not once each.
   prop :query, _Nilable(::PartnersQuery), default: nil
 
-  # Inside the form, filling the bar's row and right-aligned from xl, as the breadcrumb slot is.
-  CONTROLS = 'filter-bar__controls w-full max-md:mb-2 xl:w-auto xl:flex-auto xl:justify-end'
+  # Inside the form, filling the bar's row, then sharing it from xl as the breadcrumb slot does.
+  CONTROLS = 'filter-bar__controls w-full max-md:mb-2 xl:w-auto xl:flex-auto'
 
   def after_initialize
     @selected_category = @selected_category.to_i
@@ -23,12 +23,12 @@ class Components::Sites::PartnerFilter < Components::Base
   end
 
   def view_template
-    UI::Cluster(gap: :md, row_gap: :sm, class: 'filter-bar xl:justify-end') do
+    UI::Cluster(gap: :md, row_gap: :sm, justify: :end, justify_from: :xl, class: 'filter-bar') do
       Sites::RegionFilter(tags: @region_tags, selected: @selected_region)
 
       form_with(**form_data, class: 'filters__form relative') do
         hidden_field_tag(:region, @selected_region.slug, id: nil) if @selected_region
-        UI::Cluster(gap: :md, row_gap: :sm, class: CONTROLS) do
+        UI::Cluster(gap: :md, row_gap: :sm, justify: :end, justify_from: :xl, class: CONTROLS) do
           span(class: 'filter-bar__label') { t('filters.filter_by') }
           render_category_filter if show_category_filter?
           render_neighbourhood_filter if show_neighbourhood_filter?
