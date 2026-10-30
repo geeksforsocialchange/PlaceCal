@@ -129,9 +129,7 @@ class Components::Shared::Navigation < Components::Base
   end
 
   def render_theme_cta
-    options = {
-      class: 'header__cta-link inline-flex items-center rounded-sm bg-background px-4 py-1.5 text-detail font-bold no-underline'
-    }
+    options = {}
     # A CTA off to another site (a donation platform, say) opens in a new tab;
     # one pointing at a page of this site must not.
     if external_url?(theme_cta[:url])
@@ -140,7 +138,7 @@ class Components::Shared::Navigation < Components::Base
     end
 
     li(class: 'text-center max-md:py-3 header__cta') do
-      link_to(t(theme_cta[:label_key]), theme_cta[:url], **options)
+      UI::Button(variant: :light, href: theme_cta[:url], class: 'header__cta-link', **options) { t(theme_cta[:label_key]) }
     end
   end
 
@@ -156,8 +154,7 @@ class Components::Shared::Navigation < Components::Base
   # Stays on get-in-touch until the join site's copy is agreed.
   def render_join_button
     li(class: 'text-center max-md:py-3') do
-      link_to(@cta_label || t('navigation.directory.join'), @cta_path || get_in_touch_path,
-              class: 'inline-flex items-center rounded-pill bg-secondary text-foreground-dark px-4 py-1.5 text-detail font-bold no-underline hover:brightness-110 transition-all')
+      UI::Button(variant: :secondary, href: @cta_path || get_in_touch_path) { @cta_label || t('navigation.directory.join') }
     end
   end
 

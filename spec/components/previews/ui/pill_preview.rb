@@ -23,6 +23,27 @@ class UI::PillPreview < Lookbook::Preview
     end)
   end
 
+  # @label Letters
+  # @notes `:letter` for an A to Z index: the chosen letter is selected, letters with nothing under them are disabled, and "All" widens to fit.
+  def letters
+    render(Row.new do |r|
+      r.render(Components::UI::Pill.new(variant: :letter, href: "#")) { "All" }
+      r.render(Components::UI::Pill.new(variant: :letter, selected: true, href: "#")) { "A" }
+      r.render(Components::UI::Pill.new(variant: :letter, href: "#")) { "B" }
+      r.render(Components::UI::Pill.new(variant: :letter, disabled: true, href: "#")) { "C" }
+    end)
+  end
+
+  # @label Segments
+  # @notes `:segment` for a filter row, such as regions, days or time periods. The selected option stays a link, carrying aria-current.
+  def segments
+    render(Row.new do |r|
+      r.render(Components::UI::Pill.new(variant: :segment, selected: true, href: "#")) { "All" }
+      r.render(Components::UI::Pill.new(variant: :segment, href: "#")) { "North" }
+      r.render(Components::UI::Pill.new(variant: :segment, href: "#")) { "South" }
+    end)
+  end
+
   # @label Small
   # @notes `:tag` for category links, `:count` for counts, `:muted` for categories on cream cards.
   def small

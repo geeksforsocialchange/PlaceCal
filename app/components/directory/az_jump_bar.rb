@@ -9,30 +9,15 @@ class Components::Directory::AzJumpBar < Components::Directory::Base
 
   def view_template
     nav(class: 'flex gap-0.5 flex-wrap py-3', aria_label: t('directory.aria.filter_by_letter')) do
-      render_all_link
+      UI::Pill(variant: :letter, selected: @selected_letter.nil?, href: all_path) { plain t('directory.filters.all') }
       LETTERS.each do |letter|
-        if @active_letters.include?(letter)
-          if letter == @selected_letter
-            span(class: "#{letter_base} #{letter_selected}") { plain letter }
-          else
-            a(href: letter_path(letter), class: "#{letter_base} #{letter_active}") { plain letter }
-          end
-        else
-          span(class: "#{letter_base} #{letter_inactive}") { plain letter }
-        end
+        active = @active_letters.include?(letter)
+        UI::Pill(variant: :letter, selected: letter == @selected_letter, disabled: !active, href: letter_path(letter)) { plain letter }
       end
     end
   end
 
   private
-
-  def render_all_link
-    if @selected_letter.nil?
-      span(class: "#{letter_base} #{letter_selected} w-auto px-2") { plain t('directory.filters.all') }
-    else
-      a(href: all_path, class: "#{letter_base} #{letter_active} w-auto px-2") { plain t('directory.filters.all') }
-    end
-  end
 
   def letter_path(letter)
     "#{partners_path}?#{@filter_params.merge('sort' => 'name', 'letter' => letter).to_query}"
@@ -40,21 +25,5 @@ class Components::Directory::AzJumpBar < Components::Directory::Base
 
   def all_path
     "#{partners_path}?#{@filter_params.merge('sort' => 'name').to_query}"
-  end
-
-  def letter_base
-    'w-7 h-7 flex items-center justify-center rounded-sm text-sm font-bold no-underline transition-colors'
-  end
-
-  def letter_selected
-    'bg-foreground text-background'
-  end
-
-  def letter_active
-    'text-foreground hover:bg-home-background-3'
-  end
-
-  def letter_inactive
-    'text-rules cursor-default'
   end
 end

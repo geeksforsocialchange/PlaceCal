@@ -44,6 +44,13 @@ RSpec.describe Components::Sites::Timeline, type: :component do
         expect(page).to have_css("li.active")
       end
 
+      it "renders each period as a segment pill, the current one a link marked current" do
+        render_inline(described_class.new(**base_attrs))
+
+        expect(page).to have_css("li[data-paginator-target='button'] a[data-variant='segment']", count: 7)
+        expect(page).to have_css("li.active a[aria-current='page'][href^='/events/2022/11/8?']", text: "Today")
+      end
+
       it "shows Today label for current date" do
         render_inline(described_class.new(**base_attrs))
 

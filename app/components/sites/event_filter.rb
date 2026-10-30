@@ -127,21 +127,13 @@ class Components::Sites::EventFilter < Components::Base
   end
 
   def render_day_strip_day(date, index)
-    current = @period == 'day' && @pointer == date
-    link_to(day_strip_label(date, index),
-            day_strip_day_url(date),
-            class: day_strip_link_class(current),
-            aria: { current: current ? 'date' : nil },
-            data: { turbo_frame: 'events-browser', turbo_action: 'advance' })
+    UI::Pill(variant: :segment, selected: @period == 'day' && @pointer == date, current: 'date', href: day_strip_day_url(date),
+             class: 'day-strip__link', data: { turbo_frame: 'events-browser', turbo_action: 'advance' }) { day_strip_label(date, index) }
   end
 
   def render_day_strip_all_upcoming
-    current = @period == 'future'
-    link_to(t('filters.day_strip.all_upcoming'),
-            "#{events_path(**day_strip_params, period: 'future')}#paginator",
-            class: day_strip_link_class(current),
-            aria: { current: current ? 'true' : nil },
-            data: { turbo_frame: 'events-browser', turbo_action: 'advance' })
+    UI::Pill(variant: :segment, selected: @period == 'future', current: 'true', href: "#{events_path(**day_strip_params, period: 'future')}#paginator",
+             class: 'day-strip__link', data: { turbo_frame: 'events-browser', turbo_action: 'advance' }) { t('filters.day_strip.all_upcoming') }
   end
 
   def day_strip_dates
@@ -171,16 +163,6 @@ class Components::Sites::EventFilter < Components::Base
     params[:repeating] = @repeating if @repeating.present? && @repeating != 'on'
     params[:region] = @selected_region.slug if @selected_region
     params
-  end
-
-  def day_strip_link_class(current)
-    base = 'day-strip__link inline-flex items-center rounded-sm border-2 px-3 py-1.5 text-sm font-bold no-underline transition-colors'
-    state = if current
-              'bg-foreground text-background border-foreground'
-            else
-              'bg-background text-foreground border-rules hover:border-foreground'
-            end
-    "#{base} #{state}"
   end
 
   def render_neighbourhood_filter

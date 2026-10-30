@@ -185,10 +185,11 @@ RSpec.describe "Theme slots", type: :request do
 
     today = Time.zone.today
     expect(response).to have_http_status(:ok)
-    expect(response.body).to include(
-      "/events/#{today.year}/#{today.month}/#{today.day}?period=day&amp;region=#{south.slug}#paginator"
+    hrefs = Nokogiri::HTML(response.body).css("a.day-strip__link").map { it["href"] }
+    expect(hrefs).to include(
+      "/events/#{today.year}/#{today.month}/#{today.day}?period=day&region=#{south.slug}#paginator",
+      "/events?period=future&region=#{south.slug}#paginator"
     )
-    expect(response.body).to include("/events?period=future&amp;region=#{south.slug}#paginator")
   end
 
   it "applies the theme's event card date format and organiser prefix" do
