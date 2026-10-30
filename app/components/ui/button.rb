@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class Components::UI::Button < Components::Base
-  BASE = 'inline-flex items-center justify-center gap-2 border-2 font-bold no-underline cursor-pointer transition-colors duration-150'
+  # The focus outline is foreground, not current colour, because some variants put cream text on a cream page.
+  BASE = 'inline-flex items-center justify-center gap-2 border-2 font-bold no-underline cursor-pointer transition-colors duration-150 focus-visible:outline-foreground'
 
   VARIANTS = {
     primary: 'bg-primary border-primary text-foreground-dark hover:bg-primary-light hover:border-primary-light',

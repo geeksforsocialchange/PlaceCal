@@ -6,6 +6,9 @@ class Components::UI::SearchBar < Components::Base
     light: { bar: 'bg-background shadow-hero-search', button: :primary },
     panel: { bar: 'bg-home-background-3', button: :dark }
   }.freeze
+  # The input has no outline of its own, so the bar shows keyboard focus; current colour reads on both the dark hero and a cream page.
+  FOCUS = 'input-focused:outline-solid input-focused:outline-2 input-focused:outline-offset-2 ' \
+          'input-focused:outline-current'
   SIZES = { md: { input: 'text-detail', button: :md }, sm: { input: 'text-sm', button: :sm } }.freeze
 
   prop :action, String
@@ -19,7 +22,7 @@ class Components::UI::SearchBar < Components::Base
 
   def view_template
     form(action: @action, method: 'get',
-         class: ['flex items-center rounded-pill p-1 pl-2', TONES[@tone][:bar], @attributes[:class]].compact.join(' '),
+         class: ['flex items-center rounded-pill p-1 pl-2', FOCUS, TONES[@tone][:bar], @attributes[:class]].compact.join(' '),
          **@attributes.except(:class)) do
       div(class: 'px-2 text-tertiary') { raw(view_context.icon(:search, size: nil, css_class: 'size-4')) }
       input(type: 'text', name: @name, value: @value, placeholder: @placeholder, aria_label: @placeholder,

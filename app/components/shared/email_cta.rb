@@ -17,7 +17,7 @@ class Components::Shared::EmailCta < Components::Base
       end
       a(href: "mailto:#{@address}", class: 'join-email-link with-no-sass inline-flex items-center gap-2.25 whitespace-nowrap no-underline py-2.75 px-5.5 ' \
                                            'rounded-pill bg-foreground text-background font-bold text-base ring-2 ring-foreground ' \
-                                           'transition-colors hover:bg-background hover:text-foreground') do
+                                           'transition-colors hover:bg-background hover:text-foreground focus-visible:outline-foreground') do
         icon(:mail, size: '4')
         plain @address
       end

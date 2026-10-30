@@ -3,12 +3,12 @@
 class Components::UI::Input < Components::Base
   # The form-control box, shared with UI::Select's trigger.
   BOX = 'w-full h-(--height-field) border-2 border-rules rounded-sm px-4 text-sm bg-background text-foreground transition-colors'
-  # The border darkens on focus; keyboard focus also gets an outline, so focus isn't shown by colour alone.
-  FOCUS = 'outline-none focus:border-foreground focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground'
+  # The border darkens on focus, and keyboard focus also gets the base outline, so focus isn't shown by colour alone.
+  FOCUS = 'focus:border-foreground'
   # A taller box with larger text, for a standalone form such as the contact form.
   ROOMY = 'w-full border-2 border-rules-dark rounded-field px-3.5 py-3 text-base font-regular bg-background text-foreground ' \
           'transition duration-150 placeholder:text-tertiary hover:border-tertiary ' \
-          'outline-none focus:border-foreground focus:bg-surface focus:ring-3 focus:ring-focus-ring'
+          'focus:border-foreground focus:bg-surface focus:ring-3 focus:ring-focus-ring'
 
   prop :type, String, default: 'text'
   prop :variant, _Union(:compact, :roomy), default: :compact

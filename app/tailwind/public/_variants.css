@@ -6,3 +6,5 @@
 @custom-variant logo (& > :is(svg, img));
 /* The first paragraph of rich text a view doesn't control, e.g. an event description */
 @custom-variant first-p (& > p:first-child);
+/* A wrapper showing focus for the input inside it, but not when focus is on a button beside it */
+@custom-variant input-focused (&:has(input:focus-visible));

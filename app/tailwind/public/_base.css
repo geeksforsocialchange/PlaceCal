@@ -19,6 +19,12 @@
 		}
 	}
 
+	/* Keyboard focus is an outline in the text colour; components override the colour only where that would vanish */
+	:focus-visible {
+		outline: 2px solid currentColor;
+		outline-offset: 2px;
+	}
+
 	h1 {
 		font-family: var(--font-serif);
 		font-weight: normal;
@@ -103,6 +109,17 @@
 		opacity: 0.4;
 		pointer-events: none;
 		transition: opacity 0.1s ease-out;
+	}
+
+	/* Reduced motion: transitions and animations finish at once */
+	@media (prefers-reduced-motion: reduce) {
+		*,
+		::before,
+		::after {
+			animation-duration: 0.01ms !important;
+			animation-iteration-count: 1 !important;
+			transition-duration: 0.01ms !important;
+		}
 	}
 
 	/* Collapsed details still print their content, such as a partner's accessibility information */
