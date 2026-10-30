@@ -2,7 +2,7 @@
 
 class Components::Sites::Event < Components::Base
   theme_scope :event,
-              parts: %i[root header title neighbourhood details time duration date repeats online organiser organiser_prefix place icon],
+              parts: %i[root content header title neighbourhood details time duration date repeats online organiser organiser_prefix place icon],
               variants: { root: %i[card page] },
               states: { root: %i[online] },
               tokens: %i[--color-foreground --color-secondary --color-rules --text-detail --text-md]
@@ -34,7 +34,7 @@ class Components::Sites::Event < Components::Base
   def render_page_layout
     Shared::Hero(summary, @site_tagline, section: t('events.show.section'), back: @back, standfirst: organiser_line)
     a(class: 'p-name u-url', href: event_path(id), hidden: true) { summary }
-    div(class: 'container-public') { render_event_details }
+    div(**part(:content, class: 'container-public')) { render_event_details }
   end
 
   def render_list_layout
