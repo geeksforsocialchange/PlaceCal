@@ -124,11 +124,9 @@ module Admin
         set_site
       rescue ActiveRecord::RecordNotFound
         @primary_neighbourhood_id = nil
-        @secondary_neighbourhood_ids = []
         @sites_neighbourhoods_ids = {}
       else
         @primary_neighbourhood_id = @site.primary_neighbourhood&.id
-        @secondary_neighbourhood_ids = @site.secondary_neighbourhoods.pluck(:id)
 
         # Make a dictionary of { neighbourhood_id => sites_neighbourhood_id }
         @sites_neighbourhoods_ids =

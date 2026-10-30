@@ -133,10 +133,6 @@ class ApplicationController < ActionController::Base
     Sites::JoinHost.matches?(request)
   end
 
-  def set_primary_neighbourhood
-    @primary_neighbourhood = current_site&.primary_neighbourhood
-  end
-
   def authenticate_by_ip
     # Is whitelist mode enabled?
     return unless ENV['WHITELIST_MODE']
