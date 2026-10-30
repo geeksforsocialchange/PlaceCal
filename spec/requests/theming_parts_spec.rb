@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-# The contract themes target (PlaceCal::Theming): every part a component declares renders in its previews.
+# The contract themes target (PlaceCal::Theming): every part and variant a component declares renders in its previews.
 RSpec.describe "Theming parts", type: :request do
   def preview_for(component)
     Lookbook::Previews.all.find { "Components::#{it.preview_class_name.delete_suffix('Preview')}" == component.name }
@@ -11,7 +11,7 @@ RSpec.describe "Theming parts", type: :request do
   def rendered_parts(preview)
     preview.scenarios.flat_map do |scenario|
       get "#{preview.url_path}/#{scenario.name}/preview"
-      Nokogiri::HTML(response.body).css("[data-part]").map { [it["data-scope"], it["data-part"]] }
+      Nokogiri::HTML(response.body).css("[data-part]").map { [it["data-scope"], it["data-part"], it["data-variant"]] }
     end
   end
 
@@ -30,7 +30,11 @@ RSpec.describe "Theming parts", type: :request do
 
       pairs = rendered_parts(preview)
       expect(pairs.map(&:first)).not_to include(nil)
-      expect(pairs.select { it.first == scope.css_name }.map(&:last).uniq).to match_array(scope.to_contract[:parts])
+      own = pairs.select { it.first == scope.css_name }
+      expect(own.map { it[1] }.uniq).to match_array(scope.to_contract[:parts])
+      scope.to_contract[:variants].each do |part, variants|
+        expect(own.select { it[1] == part }.filter_map(&:last).uniq).to match_array(variants), "#{scope.css_name} #{part} variants"
+      end
     end
   end
 

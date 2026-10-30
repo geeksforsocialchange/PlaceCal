@@ -2,8 +2,8 @@
 
 class Components::Sites::Event < Components::Base
   theme_scope :event,
-              parts: %i[root content header title neighbourhood details time duration date repeats online organiser organiser_prefix place icon],
-              variants: { root: %i[card page] },
+              parts: %i[root content header title neighbourhood details detail organiser_prefix icon],
+              variants: { root: %i[card page], detail: %i[time duration date repeats online organiser place neighbourhood] },
               states: { root: %i[online] },
               tokens: %i[--color-foreground --color-secondary --color-rules --text-detail --text-md]
 
@@ -95,7 +95,7 @@ class Components::Sites::Event < Components::Base
   end
 
   def detail(name, css = nil)
-    part(name, class: ['flex items-center', ('max-md:hidden' if name == :duration), css].compact.join(' '))
+    part(:detail, variant: name, class: ['flex items-center', ('max-md:hidden' if name == :duration), css].compact.join(' '))
   end
 
   def render_icon(name)

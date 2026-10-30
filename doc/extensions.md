@@ -175,7 +175,7 @@ Everything else is internal and can change in any release: every class name, inc
 ### Scopes and parts
 
 - `data-scope` names the component, in kebab-case: `hero`, `event`, `event-details`, `pill`.
-- `data-part` names a piece of it by what it is, not how it is laid out: `title`, `standfirst`, `date`. The outer element is `root`.
+- `data-part` names a piece of it by what it is, not how it is laid out: `title`, `standfirst`, `detail`. The outer element is `root`.
 - Every part element carries both attributes. Within one component, use both in one compound selector, so a part of a component nested inside can't match:
 
   ```css
@@ -192,11 +192,18 @@ Everything else is internal and can change in any release: every class name, inc
   }
   ```
 
-- **Variants:** `data-variant` on a part says which variant or context it renders in. The event's root is `card` in a listing and `page` on the event's own page:
+- **Variants:** `data-variant` on a part says which variant or context it renders in. The event's root is `card` in a listing and `page` on the event's own page. Parts that repeat, such as the event's `detail` lines, name which one each is the same way: `[data-variant="date"]`, `[data-variant="time"]`.
 
   ```css
+  /* Every detail line on an event page */
   [data-scope="event"][data-variant="page"]
-  	[data-scope="event"][data-part="date"] {
+  	[data-scope="event"][data-part="detail"] {
+  	justify-content: center;
+  }
+
+  /* Just the date */
+  [data-scope="event"][data-variant="page"]
+  	[data-scope="event"][data-part="detail"][data-variant="date"] {
   	font-size: 1.8rem;
   }
   ```

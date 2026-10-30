@@ -67,7 +67,8 @@ RSpec.describe PlaceCal::Theming do
     contract = described_class.contract
 
     expect(contract.keys).to include("hero", "event", "event-details", "pill", "link", "button", "ruled-heading")
-    expect(contract["event"]).to include(variants: { "root" => %w[card page] }, states: { "root" => %w[online] })
+    expect(contract["event"]).to include(states: { "root" => %w[online] })
+    expect(contract["event"][:variants]).to include("root" => %w[card page], "detail" => include("date", "time"))
     expect(contract["hero"][:parts]).to include("root", "standfirst-detail")
   end
 
