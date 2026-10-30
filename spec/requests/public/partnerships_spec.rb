@@ -32,6 +32,18 @@ RSpec.describe "Public Partnerships", type: :request do
       expect(response.body).to include(I18n.t("directory.partnerships.index.hero_title"))
     end
 
+    it "shows each partnership's place name on its card" do
+      partnerships.first.update!(place_name: "Hulme")
+      get partnerships_url(host: "lvh.me")
+      expect(response.body).to include("Hulme")
+    end
+
+    it "leaves the area out of a card when the place name is blank" do
+      partnerships.first.sites_neighbourhoods.create!(neighbourhood: create(:neighbourhood, name: "Primaryshire"), relation_type: "Primary")
+      get partnerships_url(host: "lvh.me")
+      expect(response.body).not_to include("Primaryshire")
+    end
+
     context "with search query" do
       it "returns successful response" do
         get partnerships_url(host: "lvh.me", params: { q: partnerships.first.name })
@@ -84,6 +96,29 @@ RSpec.describe "Public Partnerships", type: :request do
       get partnership_url(partnership, host: "lvh.me")
       expect(response.body).to include(I18n.t("directory.partnerships.show.get_involved"))
       expect(response.body).to include(I18n.t("directory.partnerships.show.contact_coordinator"))
+    end
+
+    context "with a place name" do
+      before { partnership.update!(place_name: "Hulme") }
+
+      it "names the area in the stat chips and the get involved card" do
+        get partnership_url(partnership, host: "lvh.me")
+        page = Capybara.string(response.body)
+        expect(page).to have_text("Hulme", minimum: 2)
+        expect(response.body).to include(I18n.t("directory.partnerships.show.cta_text", area: I18n.t("directory.partnerships.show.cta_area", name: "Hulme")))
+      end
+    end
+
+    context "with a blank place name" do
+      before do
+        partnership.sites_neighbourhoods.create!(neighbourhood: create(:neighbourhood, name: "Primaryshire"), relation_type: "Primary")
+      end
+
+      it "leaves the area out rather than naming the primary neighbourhood" do
+        get partnership_url(partnership, host: "lvh.me")
+        expect(response.body).not_to include("Primaryshire")
+        expect(response.body).to include(I18n.t("directory.partnerships.show.cta_text", area: ""))
+      end
     end
 
     context "with partners in neighbourhood" do

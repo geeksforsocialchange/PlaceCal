@@ -8,7 +8,7 @@ RSpec.describe "Admin::Sites Datatable JSON API", type: :request do
   let(:datatable_columns) do
     [
       { data: :name, searchable: true, orderable: true },
-      { data: :primary_neighbourhood },
+      { data: :place_name, searchable: true, orderable: true },
       { data: :partners_count, orderable: true },
       { data: :events_count, orderable: true },
       { data: :site_admin },
@@ -57,6 +57,27 @@ RSpec.describe "Admin::Sites Datatable JSON API", type: :request do
                       non_matching_value: "London"
     end
 
+    context "searching by place name" do
+      let!(:hulme_site) { create(:site, name: "First Site", place_name: "Hulme") }
+      let!(:moss_side_site) { create(:site, name: "Second Site", place_name: "Moss Side") }
+
+      it_behaves_like "datatable search",
+                      search_field: :place_name,
+                      matching_value: "Hulme",
+                      non_matching_value: "Moss Side"
+    end
+
+    context "sorting by place name" do
+      let!(:ancoats_site) { create(:site, name: "First Site", place_name: "Ancoats") }
+      let!(:withington_site) { create(:site, name: "Second Site", place_name: "Withington") }
+
+      it_behaves_like "datatable sorting",
+                      column_index: 1,
+                      field: :place_name,
+                      first_value: "Ancoats",
+                      last_value: "Withington"
+    end
+
     context "sorting" do
       let!(:site_a) { create(:site, name: "Alpha Site") }
       let!(:site_z) { create(:site, name: "Zeta Site") }
@@ -100,10 +121,10 @@ RSpec.describe "Admin::Sites Datatable JSON API", type: :request do
     end
 
     context "data rendering" do
-      let!(:neighbourhood) { create(:neighbourhood) }
+      let!(:neighbourhood) { create(:neighbourhood, name: "Primaryshire") }
       let!(:site_admin) { create(:user, first_name: "Test", last_name: "Admin") }
       let!(:site) do
-        site = create(:site, name: "Render Test", slug: "render-test", site_admin:)
+        site = create(:site, name: "Render Test", slug: "render-test", site_admin:, place_name: "Hulme")
         site.sites_neighbourhoods.create!(neighbourhood:, relation_type: "Primary")
         site
       end
@@ -131,12 +152,22 @@ RSpec.describe "Admin::Sites Datatable JSON API", type: :request do
         expect(external).to include('href="https://fruitsaladevents.co.uk"').and include("External website")
       end
 
-      it "renders primary neighbourhood cell" do
+      it "renders the place name cell" do
         datatable_request
 
         json = response.parsed_body
         site_data = json["data"].find { |d| d["name"].include?("Render Test") }
-        expect(site_data["primary_neighbourhood"]).to include(neighbourhood.shortname)
+        expect(site_data["place_name"]).to include("Hulme")
+      end
+
+      it "leaves the place name cell empty rather than naming the primary neighbourhood" do
+        site.update!(place_name: nil)
+        datatable_request
+
+        json = response.parsed_body
+        site_data = json["data"].find { |d| d["name"].include?("Render Test") }
+        expect(site_data["place_name"]).not_to include("Primaryshire")
+        expect(site_data["place_name"]).not_to include("Hulme")
       end
 
       it "renders site admin cell" do

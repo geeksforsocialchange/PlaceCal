@@ -36,7 +36,7 @@ module OgImage
 
     def rows
       [
-        [:map, site.primary_neighbourhood&.name],
+        [:map, site.place_name],
         [:users, partners_text],
         [:calendar, events_text]
       ]

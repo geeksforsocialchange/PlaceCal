@@ -4,7 +4,7 @@ class SiteDatatable < Datatable
   def view_columns
     @view_columns ||= {
       name: { source: 'Site.name', cond: :like, searchable: true },
-      primary_neighbourhood: { source: 'Site.id', searchable: false, orderable: false },
+      place_name: { source: 'Site.place_name', cond: :like, searchable: true, orderable: true },
       partners_count: { source: 'Site.partners_count', searchable: false, orderable: true },
       events_count: { source: 'Site.events_count', searchable: false, orderable: true },
       site_admin: { source: 'Site.site_admin_id', searchable: false, orderable: false },
@@ -17,7 +17,7 @@ class SiteDatatable < Datatable
     records.map do |record|
       {
         name: render_name_cell(record),
-        primary_neighbourhood: render_primary_neighbourhood_cell(record),
+        place_name: render_place_name_cell(record),
         partners_count: render_count_cell(record.partners_count, 'partner'),
         events_count: render_count_cell(record.events_count, 'event'),
         site_admin: render_site_admin_cell(record),
@@ -31,7 +31,7 @@ class SiteDatatable < Datatable
     # Use includes for eager loading, but NOT left_joins which causes duplicates
     # when sites have multiple neighbourhoods
     records = options[:sites]
-              .includes(:neighbourhoods, :primary_neighbourhood, :site_admin)
+              .includes(:neighbourhoods, :site_admin)
               .distinct
 
     # Apply filters from request params
@@ -88,15 +88,10 @@ class SiteDatatable < Datatable
     "<span class=\"text-xs text-gray-500\">#{ERB::Util.html_escape(status)}</span>"
   end
 
-  def render_primary_neighbourhood_cell(record)
-    neighbourhood = record.primary_neighbourhood
-    return empty_cell unless neighbourhood
+  def render_place_name_cell(record)
+    return empty_cell if record.place_name.blank?
 
-    <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
-      <a href="#{admin_neighbourhood_path(neighbourhood)}" class="text-gray-600 hover:text-orange-600 hover:underline">
-        #{ERB::Util.html_escape(neighbourhood.shortname)}
-      </a>
-    HTML
+    "<span class=\"text-gray-600\">#{ERB::Util.html_escape(record.place_name)}</span>".html_safe # rubocop:disable Rails/OutputSafety
   end
 
   def render_count_cell(count, label)

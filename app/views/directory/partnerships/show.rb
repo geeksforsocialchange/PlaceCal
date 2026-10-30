@@ -56,7 +56,7 @@ class Views::Directory::Partnerships::Show < Views::Base
   def render_stat_chips
     chip("#{partner_count} #{Partner.model_name.human(count: partner_count).downcase}", icon_name: :partner)
     chip(t('directory.partnerships.show.events_this_month', count: @event_count), icon_name: :event)
-    chip(@partnership.primary_neighbourhood.name, icon_name: :neighbourhood) if @partnership.primary_neighbourhood
+    chip(@partnership.place_name, icon_name: :neighbourhood) if @partnership.place_name.present?
   end
 
   def chip(text, icon_name: nil)
@@ -140,7 +140,7 @@ class Views::Directory::Partnerships::Show < Views::Base
         div(class: 'font-serif text-lg', style: 'color: var(--color-foreground-dark)') { t('directory.partnerships.show.get_involved') }
       end
       div(class: 'bg-home-background-3 px-4 py-3') do
-        area_name = @partnership.primary_neighbourhood&.name
+        area_name = @partnership.place_name.presence
         area = area_name ? t('directory.partnerships.show.cta_area', name: area_name) : ''
         div(class: 'text-sm text-tertiary mb-4') do
           plain t('directory.partnerships.show.cta_text', area:)

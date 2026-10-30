@@ -602,6 +602,7 @@ en:
     home:
       # %{link} is the "local organisations" link, %{place} the site's place name
       mission_html: "We're working with %{link} to create a great calendar of everything that's on in %{place}."
+      mission_no_place_html: "We're working with %{link} to create a great calendar of everything that's on."
       mission_link: "local organisations"
       whats_on: "See what's on"
       about_us: "About Us"

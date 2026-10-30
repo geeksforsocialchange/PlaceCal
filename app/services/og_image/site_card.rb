@@ -40,7 +40,7 @@ module OgImage
     def rows
       [
         [:globe, domain],
-        [:map, site.primary_neighbourhood&.name],
+        [:map, site.place_name],
         [:users, site.tagline]
       ]
     end
