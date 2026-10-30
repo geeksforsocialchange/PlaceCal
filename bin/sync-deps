@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Installs the Ruby, gems and node packages a checkout needs; run by the post-checkout and post-merge hooks.
+# Usage: bin/sync-deps [FROM_REF TO_REF]. With refs, only runs when .ruby-version or a lockfile changed between them.
+cd "$(dirname "$0")/.." || exit 0
+
+from=${1:-}
+to=${2:-HEAD}
+null_ref=0000000000000000000000000000000000000000
+if [[ -n $from && $from != "$null_ref" ]] &&
+  git diff --quiet "$from" "$to" -- .ruby-version Gemfile.lock yarn.lock .node-version 2>/dev/null; then
+  exit 0
+fi
+
+command -v rbenv >/dev/null && eval "$(rbenv init - --no-rehash)"
+
+want_ruby=$(cat .ruby-version)
+if command -v rbenv >/dev/null && ! rbenv versions --bare | grep -qx "$want_ruby"; then
+  echo "== Installing Ruby $want_ruby (bin/ruby-update also removes older patches) =="
+  rbenv install --skip-existing "$want_ruby" || echo "Ruby $want_ruby didn't install. Run: rbenv install $want_ruby"
+fi
+
+bin/bundle check >/dev/null 2>&1 || bin/bundle install --quiet || echo "bundle install failed. Run: bin/bundle install"
+
+if [[ ! -d node_modules ]] || ! git diff --quiet "${from:-HEAD}" "$to" -- yarn.lock 2>/dev/null; then
+  bin/yarn install --frozen-lockfile --silent || echo "yarn install failed. Run: bin/yarn install"
+fi
+
+want_node=$(cat .node-version)
+have_node=$(node --version 2>/dev/null)
+[[ ${have_node#v} == "${want_node%%.*}".* ]] || echo "Node ${have_node:-is missing}; this project uses Node $want_node"
+
+exit 0

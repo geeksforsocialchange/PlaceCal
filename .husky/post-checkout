@@ -1,0 +1,3 @@
+# Branch switches, not single-file checkouts; older commits and CI have nothing to sync
+[ "$3" = "1" ] && [ -z "${CI:-}" ] && [ -x bin/sync-deps ] || exit 0
+bin/sync-deps "$1" "$2"

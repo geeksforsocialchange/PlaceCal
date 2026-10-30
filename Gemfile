@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-ruby file: '.ruby-version'
 source 'https://gem.coop'
 
 # Core
