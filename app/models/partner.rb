@@ -122,7 +122,9 @@ class Partner < ApplicationRecord
   has_and_belongs_to_many :users
   has_many :calendars, foreign_key: :organiser_id, dependent: :destroy, inverse_of: :organiser
   has_many :events, foreign_key: :organiser_id, dependent: :destroy, inverse_of: :organiser
-  belongs_to :address, optional: true, dependent: :destroy
+  has_many :hosted_calendars, class_name: 'Calendar', foreign_key: :place_id, dependent: :nullify, inverse_of: :place
+  has_many :hosted_events, class_name: 'Event', foreign_key: :place_id, dependent: :nullify, inverse_of: :place
+  belongs_to :address, optional: true
 
   has_many :partner_tags, dependent: :destroy
   has_many :tags, through: :partner_tags
@@ -230,6 +232,8 @@ class Partner < ApplicationRecord
   delegate :neighbourhood_id, to: :address, allow_nil: true
 
   # ==== Callbacks ====
+  before_destroy :check_not_default_venue, prepend: true
+  after_destroy :destroy_unshared_address
   after_commit :refresh_neighbourhood_partners_count
 
   # ==== Class methods ====
@@ -438,6 +442,23 @@ class Partner < ApplicationRecord
   private
 
   # ==== Private methods ====
+
+  # Another organiser's calendar that needs a default place would be left invalid without it
+  def check_not_default_venue
+    names = hosted_calendars.where.not(organiser_id: id).includes(:organiser).select(&:requires_default_location?).map do |calendar|
+      I18n.t('activerecord.errors.models.partner.attributes.base.default_venue_calendar',
+             calendar: calendar.name, organiser: calendar.organiser&.name)
+    end
+    return if names.empty?
+
+    errors.add(:base, :default_venue, calendars: names.sort.to_sentence)
+    throw :abort
+  end
+
+  # Imported events can share the venue's address
+  def destroy_unshared_address
+    address.destroy if address && !Event.exists?(address_id:)
+  end
 
   def refresh_neighbourhood_partners_count
     # Refresh count for current neighbourhood (via address)
