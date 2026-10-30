@@ -32,7 +32,7 @@ class Views::Sites::Default < Views::Base
 
     section do
       div(class: 'container-public') do
-        RegionFilter(tags: region_tags, selected: selected_region)
+        Sites::RegionFilter(tags: region_tags, selected: selected_region)
       end
     end
   end

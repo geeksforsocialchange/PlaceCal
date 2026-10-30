@@ -22,7 +22,7 @@ module Components
     Breadcrumb: 'Sites::Breadcrumb', Event: 'Sites::Event', EventFilter: 'Sites::EventFilter',
     EventList: 'Sites::EventList', Filter: 'Sites::Filter', Footer: 'Sites::Footer',
     HelpCard: 'Sites::HelpCard', HeroSection: 'Sites::HeroSection', Meta: 'Sites::Meta',
-    PartnerFilter: 'Sites::PartnerFilter', PartnerPreview: 'Sites::PartnerPreview',
+    PartnerFilter: 'Sites::PartnerFilter', PartnerPreview: 'Sites::PartnerPreview', RegionFilter: 'Sites::RegionFilter',
     Profile: 'Sites::Profile', Timeline: 'Sites::Timeline'
   }.freeze
 

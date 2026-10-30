@@ -24,7 +24,7 @@ class Components::Sites::PartnerFilter < Components::Base
 
   def view_template
     UI::Cluster(gap: :md, row_gap: :sm, class: 'filter-bar xl:justify-end') do
-      RegionFilter(tags: @region_tags, selected: @selected_region)
+      Sites::RegionFilter(tags: @region_tags, selected: @selected_region)
 
       form_with(**form_data, class: 'filters__form relative') do
         hidden_field_tag(:region, @selected_region.slug, id: nil) if @selected_region

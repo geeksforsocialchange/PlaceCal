@@ -29,7 +29,7 @@ class Components::Sites::EventFilter < Components::Base
   end
 
   def view_template
-    RegionFilter(tags: @region_tags, selected: @selected_region)
+    Sites::RegionFilter(tags: @region_tags, selected: @selected_region)
     case Current.theme.event_filter_style
     when :day_strip_with_date_picker
       render_toggles_row

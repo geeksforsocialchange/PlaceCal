@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe Components::RegionFilter, type: :component do
+RSpec.describe Components::Sites::RegionFilter, type: :component do
   let(:north) { create(:partnership, name: "North") }
   let(:south) { create(:partnership, name: "South") }
 

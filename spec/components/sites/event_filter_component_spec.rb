@@ -537,7 +537,7 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
     end
   end
 
-  # Components::RegionFilter's own rendering is covered by its component spec.
+  # Components::Sites::RegionFilter's own rendering is covered by its component spec.
   # What is EventFilter's is carrying the selection through the filter forms.
   describe "region filter" do
     let(:north) { create(:partnership, name: "North") }
