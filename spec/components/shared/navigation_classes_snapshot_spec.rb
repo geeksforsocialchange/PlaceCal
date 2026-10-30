@@ -2,9 +2,8 @@
 
 require "rails_helper"
 
-# Pins every class attribute the navigation renders in each context, so a
-# refactor of how the classes are built can't change what reaches the page.
-# Regenerate after an intended change with UPDATE_SNAPSHOTS=1.
+# Pins every class attribute the navigation renders in each context.
+# Regenerate after an intended class change with UPDATE_SNAPSHOTS=1.
 RSpec.describe Components::Shared::Navigation, type: :component do
   let(:snapshot_path) { Rails.root.join("spec/fixtures/navigation_classes.yml") }
   let(:navigation) do
