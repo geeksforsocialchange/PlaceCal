@@ -15,17 +15,17 @@ class Components::Sites::Footer < Components::Base
   def view_template
     footer(class: 'footer bg-foreground text-background text-detail leading-normal py-12 print:hidden') do
       div(class: 'container-public') do
-        div(class: footer_inner_class) { render_footer_content }
+        UI::Grid(cols: footer_cols) { render_footer_content }
       end
     end
   end
 
   private
 
-  def footer_inner_class
-    return 'grid gap-4 lg:grid-cols-3' unless @site&.site_admin
+  def footer_cols
+    return { lg: 3 } unless @site&.site_admin
 
-    'grid gap-4 md:grid-cols-2 lg:grid-cols-3'
+    { md: 2, lg: 3 }
   end
 
   def render_footer_content

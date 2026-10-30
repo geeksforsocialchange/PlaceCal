@@ -59,9 +59,7 @@ class Views::Join::Audience < Views::Join::Base
       steps.each_with_index do |step, index|
         last = index == steps.length - 1
         div(class: "flex gap-5 items-start py-4 #{'border-b-2 border-rules' unless last}") do
-          div(class: 'size-13 shrink-0 rounded-full bg-home-background text-foreground grid place-items-center font-serif text-subhead') do
-            plain (index + 1).to_s
-          end
+          UI::CircleBadge(size: :md, tone: :background) { (index + 1).to_s }
           div do
             strong { step[:title] }
             p(class: 'text-sm m-0') { step[:body] }
@@ -81,7 +79,7 @@ class Views::Join::Audience < Views::Join::Base
           div(class: 'allcaps-label text-tertiary mb-1') { t('join.audiences.others.kicker') }
           UI::Heading(spacing: :none) { t('join.audiences.others.heading') }
         end
-        div(class: 'grid md:grid-cols-2 lg:grid-cols-3 gap-4') do
+        UI::Grid(cols: { md: 2, lg: 3 }) do
           others.first(3).each { |key| Join::AudienceCard(audience: key) }
         end
       end

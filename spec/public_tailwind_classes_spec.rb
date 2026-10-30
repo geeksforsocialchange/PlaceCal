@@ -20,7 +20,6 @@ RSpec.describe "Public Tailwind classes" do
   let(:to_replace) do
     {
       "grid-cols-[64px_1fr]" => "the event row's date tile column: move to the spacing scale",
-      "grid-cols-[44px_1fr_auto]" => "the partner row's avatar column: move to the spacing scale",
       "grid-cols-[1.4fr_1fr]" => "join audience split: grid-cols-2 or a named utility",
       "grid-cols-[1.3fr_1fr]" => "join home split: grid-cols-2 or a named utility",
       "grid-cols-[1fr_1.2fr]" => "join home split: grid-cols-2 or a named utility",
