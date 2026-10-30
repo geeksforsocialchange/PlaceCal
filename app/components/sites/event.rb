@@ -2,7 +2,17 @@
 
 class Components::Sites::Event < Components::Base
   theme_scope :event,
-              parts: %i[root content header title neighbourhood details detail organiser_prefix icon],
+              parts: {
+                root: 'The whole event: a card in a listing, the top of the page on the event\'s own page (see the variant).',
+                content: 'The width-limited column under the hero that holds the details row. Page variant only.',
+                header: 'The card\'s title row: the title and the neighbourhood badge. Card variant only.',
+                title: 'The card\'s h3, holding the link to the event. Card variant only.',
+                neighbourhood: 'The neighbourhood badge in the card\'s header, holding a pill. Only when the listing shows neighbourhoods.',
+                details: 'The row of detail lines.',
+                detail: 'One detail line, its icon then its text; the variant says which. Each line only when the event has it.',
+                organiser_prefix: 'Optional words before the organiser\'s name, such as "by ", inside the organiser detail. Blank in core; a theme fills it.',
+                icon: 'The svg icon at the start of each detail line.'
+              },
               variants: { root: %i[card page], detail: %i[time duration date repeats online organiser place neighbourhood] },
               states: { root: %i[online] },
               tokens: %i[--color-foreground --color-secondary --color-rules --text-detail --text-md]
@@ -24,7 +34,7 @@ class Components::Sites::Event < Components::Base
   ICON = 'size-7 mr-1 text-secondary'
 
   def view_template
-    div(**part(:root, variant: page? ? :page : :card, states: { online: online? }, class: 'h-event mb-8')) do
+    div(**part(:root, variant: page? ? :page : :card, state: (:online if online?), class: 'h-event mb-8')) do
       page? ? render_page_layout : render_list_layout
     end
   end

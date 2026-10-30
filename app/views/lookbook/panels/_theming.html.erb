@@ -1,4 +1,5 @@
 <% scope = PlaceCal::Theming.scope_of("Components::#{preview.preview_class_name.delete_suffix('Preview')}") %>
+<% found = PlaceCal::Theming.survey(scope, preview, self) if scope %>
 <style>
   .theming-panel { padding: var(--lb-panel-padding); }
   .theming-panel table { border-collapse: collapse; margin-block: 0.5rem 1.25rem; }
@@ -10,16 +11,20 @@
     <p>This component has no theming hooks. Its markup and classes are internal.</p>
   <% else %>
     <h4>Scope <code><%= scope.css_name %></code></h4>
-    <p>Target a part with both attributes. Everything else in this component's markup, including its classes, is internal. See "Styling hooks" in doc/extensions.md.</p>
+    <p>Target a part with both attributes, <code>[data-scope="<%= scope.css_name %>"][data-part="…"]</code>. Parts are in render order. Everything else in this component's markup, including its classes, is internal. See "Styling hooks" in doc/extensions.md.</p>
     <table>
-      <thead><tr><th>Part</th><th>Selector</th><th>Variants</th><th>States</th></tr></thead>
+      <thead><tr><th>Part</th><th>What it is</th><th>Element</th><th>Inside</th><th>In previews</th><th>Variants</th><th>States</th></tr></thead>
       <tbody>
         <% scope.parts.each do |part| %>
+          <% name = PlaceCal::Theming.css_name(part) %>
           <tr>
-            <td><code><%= PlaceCal::Theming.css_name(part) %></code></td>
-            <td><code>[data-scope="<%= scope.css_name %>"][data-part="<%= PlaceCal::Theming.css_name(part) %>"]</code></td>
+            <td><code><%= name %></code></td>
+            <td><%= scope.descriptions[part] %></td>
+            <td><%= found[name][:elements].map { "<#{it}>" }.join(", ") %></td>
+            <td><%= found[name][:parents].join(", ") %></td>
+            <td><%= found[name][:scenarios].join(", ") %></td>
             <td><% scope.variants.fetch(part, []).each do |variant| %><code>[data-variant="<%= PlaceCal::Theming.css_name(variant) %>"]</code> <% end %></td>
-            <td><% scope.states.fetch(part, []).each do |state| %><code>[data-<%= PlaceCal::Theming.css_name(state) %>]</code> <% end %></td>
+            <td><% scope.states.fetch(part, []).each do |state| %><code>[data-state="<%= PlaceCal::Theming.css_name(state) %>"]</code> <% end %></td>
           </tr>
         <% end %>
       </tbody>

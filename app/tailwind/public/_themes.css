@@ -1,4 +1,4 @@
-/* The built-in colour themes, picked per site by data-theme on <html>. Unlayered and more specific than :root, so they win over _theme.css. */
+/* The built-in colour themes, picked per site by data-theme on <html>. In the theme layer with _theme.css and more specific than its :root, so they win over it; an extension's unlayered :root wins over both. */
 /* primary-light is the base mixed with 25% white; the deeper shades keep the base hue and match the default shade's contrast on the background. */
 html[data-theme="pink"] {
 	--color-primary: #f19089;

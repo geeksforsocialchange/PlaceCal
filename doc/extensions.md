@@ -166,7 +166,17 @@ Commit the built CSS; CI fails if it is stale. Propshaft serves and fingerprints
 
 A theme restyles core through three public layers:
 
-1. **Tokens:** the custom properties in `app/tailwind/public/_theme.css` (colour, font, radius, shadow, type scale). Override their values in the theme's stylesheet.
+1. **Tokens:** the custom properties in `app/tailwind/public/_theme.css` (colour, font, weight, tracking, radius, shadow, type scale). Override their values in a plain `:root` rule in the theme's stylesheet:
+
+   ```css
+   :root {
+   	--color-primary: #6b5bd6;
+   	--font-serif: Georgia, serif;
+   }
+   ```
+
+   Core's defaults and its built-in colour themes (`html[data-theme="pink"]` and so on) are in the `theme` cascade layer, so an unlayered `:root` rule wins over them on any site. Lookbook's overview lists every token with its default.
+
 2. **Scopes, parts and states:** data attributes on the meaningful elements of a component, which theme CSS targets.
 3. **Replacement points:** the theme settings that swap a whole view or component (`homepage_view`, `footer`, `page`, `head`), for a design that needs different structure.
 
@@ -208,14 +218,16 @@ Everything else is internal and can change in any release: every class name, inc
   }
   ```
 
-- **States:** a state is a bare attribute on the part it describes, such as `data-online` on an online event's root (`[data-scope="event"][data-online]`). Where an ARIA attribute already says the same thing (`aria-current`, `aria-expanded`), that is the hook.
+- **States:** `data-state` on the part it describes, such as an online event's root (`[data-scope="event"][data-state="online"]`). Where an ARIA attribute already says the same thing (`aria-current`, `aria-expanded`), that is the hook.
 - Inside a part, a theme may style the content the part holds: the link in a standfirst, the paragraphs and headings of a description, a detail's icon. It shouldn't rely on wrappers core puts around that content, or on position (`:nth-child`, `+`, `>` between parts).
+
+Some parts take their margins in em from core's paragraph and heading defaults, so the gaps grow when a theme enlarges the part's font size; the Theming panel says which.
 
 `[data-scope][data-part]` has the specificity of two classes. Theme CSS is unlayered and core styles parts only with layered utilities, so a theme rule always wins over core's.
 
 ### Where the hooks are listed
 
-Every scoped component's Lookbook page has a **Theming** panel in its drawer, listing its scope, parts with their selectors, variants, states and the tokens it reads. The scopes so far are `hero`, `event`, `event-details`, `pill`, `link`, `button` and `ruled-heading`. Components without a scope have no public hooks.
+Every scoped component's Lookbook page has a **Theming** panel in its drawer. It lists the scope and, for each part in render order, what it is (including when it only renders conditionally), its element, the part it sits inside, the previews it appears in, its selector, variants and states, then the tokens the component reads. The scopes so far are `hero`, `event`, `event-details`, `pill`, `link`, `button` and `ruled-heading`. Components without a scope have no public hooks.
 
 `PlaceCal::Theming.contract` returns the same list as data (`{ "hero" => { parts: [...], states: {...}, variants: {...}, tokens: [...] } }`). A theme's `spec/host_contract_spec.rb` should check every `data-scope` and `data-part` its CSS names against it, so the theme's CI fails when core drops one.
 
@@ -225,7 +237,9 @@ A component or view declares its scope once, and marks each part with `part`, wh
 
 ```ruby
 class Components::Shared::Hero < Components::Base
-  theme_scope :hero, parts: %i[root title standfirst], tokens: %i[--color-primary]
+  theme_scope :hero,
+              parts: { root: "The coloured band.", title: "The page's h1.", standfirst: "The lead paragraph." },
+              tokens: %i[--color-primary]
 
   def view_template
     div(**part(:root, class: "bg-primary")) do
@@ -235,7 +249,7 @@ class Components::Shared::Hero < Components::Base
 end
 ```
 
-`variants:` and `states:` take a hash of part to allowed names, rendered with `part(:root, variant: :page, states: { online: true })`. A part, variant or state the scope doesn't declare raises in development and test. Each declared part must render in the component's Lookbook previews (`spec/requests/theming_parts_spec.rb`). Core never targets a part with unlayered CSS.
+`parts:` maps each part, in render order, to a one-line description, which the Lookbook panel shows. `variants:` and `states:` take a hash of part to allowed names, rendered with `part(:root, variant: :page, state: :online)`. A part, variant or state the scope doesn't declare raises in development and test. Each declared part must render in the component's Lookbook previews (`spec/requests/theming_parts_spec.rb`). Core never targets a part with unlayered CSS.
 
 ### Stability
 

@@ -10,7 +10,7 @@ RSpec.describe PlaceCal::Theming do
       theme_scope :spec_widget, parts: %i[root item_label], variants: { root: %i[wide] }, states: { root: %i[open closed] }
 
       def view_template
-        div(**part(:root, variant: :wide, states: { open: true, closed: false }, class: "p-2", data: { controller: "x" }, data_turbo: "false")) do
+        div(**part(:root, variant: :wide, state: :open, class: "p-2", data: { controller: "x" }, data_turbo: "false")) do
           span(**part(:item_label)) { "Label" }
         end
       end
@@ -43,16 +43,15 @@ RSpec.describe PlaceCal::Theming do
     expect(root["data-part"]).to eq("root")
   end
 
-  it "renders a variant and the states that are on" do
+  it "renders a variant and a state" do
     root = html(widget.new).at_css("div")
 
     expect(root["data-variant"]).to eq("wide")
-    expect(root).to have_attribute("data-open")
-    expect(root).not_to have_attribute("data-closed")
+    expect(root["data-state"]).to eq("open")
   end
 
   it "raises on a part, variant or state the scope does not declare" do
-    templates = [-> { div(**part(:rot)) }, -> { div(**part(:root, variant: :wide)) }, -> { div(**part(:root, states: { open: true })) }]
+    templates = [-> { div(**part(:rot)) }, -> { div(**part(:root, variant: :wide)) }, -> { div(**part(:root, state: :open)) }]
 
     templates.each { |template| expect { scoped(template).new.call }.to raise_error(described_class::UndeclaredPart) }
   end

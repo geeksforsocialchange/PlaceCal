@@ -10,7 +10,7 @@ class Components::UI::Link < Components::Base
   # :inherit takes the colour of the surrounding text, e.g. breadcrumbs on a coloured band.
   TONES = { foreground: 'text-foreground', muted: 'text-tertiary', inherit: 'text-inherit' }.freeze
 
-  theme_scope :link, parts: %i[root], variants: { root: VARIANTS.keys },
+  theme_scope :link, parts: { root: 'The link, an <a>.' }, variants: { root: VARIANTS.keys },
                      tokens: %i[--color-primary --color-foreground --color-tertiary]
 
   prop :href, String

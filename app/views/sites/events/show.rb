@@ -4,7 +4,18 @@ class Views::Sites::Events::Show < Views::Base
   register_value_helper :html_to_plaintext
 
   theme_scope :event_details,
-              parts: %i[root description links info contact contact_name address organiser venue section_body],
+              parts: {
+                root: 'Everything under the event\'s details row on its page.',
+                description: 'The event\'s description, as its organiser wrote it (paragraphs, lists, headings).',
+                links: 'The buttons under the description: the event\'s webpage and a join link for streams. Only when the event has them.',
+                info: 'The group of headed sections below: contact, address, organiser and venue.',
+                contact: 'The organiser\'s contact section. Its heading only when the event has an organiser.',
+                contact_name: 'The organiser\'s name, linked, heading the contact details.',
+                address: 'The event\'s address section.',
+                organiser: 'The organiser section, linking to their page.',
+                venue: 'The venue section. Only when the venue is a different partner from the organiser.',
+                section_body: 'The text under each section\'s heading.'
+              },
               tokens: %i[--text-sm --leading-normal]
 
   prop :event, ::Event, reader: :private

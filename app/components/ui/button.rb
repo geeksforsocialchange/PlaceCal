@@ -27,7 +27,7 @@ class Components::UI::Button < Components::Base
 
   PILL_PADDING = { sm: 'py-1.5', md: 'py-2', lg: 'py-3', xl: 'py-3.25' }.freeze
 
-  theme_scope :button, parts: %i[root], variants: { root: VARIANTS.keys },
+  theme_scope :button, parts: { root: 'The button: an <a> when it has an href, otherwise a <button>.' }, variants: { root: VARIANTS.keys },
                        tokens: %i[--color-primary --color-primary-light --color-foreground --color-foreground-dark --color-background
                                   --color-home-background --color-tertiary --color-secondary --color-secondary-strong
                                   --radius-pill --radius-sm --height-field --text-sm --text-detail --text-base]

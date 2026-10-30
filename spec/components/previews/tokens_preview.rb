@@ -11,9 +11,15 @@ class TokensPreview < Lookbook::Preview
               "Bring a friend, meet new people and find out what else is happening nearby."
 
   # @label Type scale
-  # @notes Sorted by rendered size. Sans and serif samples per token.
+  # @notes Sorted by rendered size. Sans and serif samples per token. Values are the defaults in _theme.css; samples use the theme picked in the Theme menu.
   def type_scale
     render Sheet.new(:type, root_tokens("text"))
+  end
+
+  # @label Fonts, weights and tracking
+  # @notes Values are the defaults in _theme.css; samples use the theme picked in the Theme menu.
+  def fonts
+    render Sheet.new(:font, root_tokens("font").merge(root_tokens("tracking")))
   end
 
   # @label Line heights
@@ -23,30 +29,30 @@ class TokensPreview < Lookbook::Preview
   end
 
   # @label Colours
+  # @notes Values are the defaults in _theme.css. Swatches show the theme picked in the Theme menu, which may override them (the built-in colour themes are in _themes.css).
   def colours
     render Sheet.new(:colour, root_tokens("color"))
   end
 
   # @label Radii and shadows
   def radii_and_shadows
-    render Sheet.new(:radius, root_tokens("radius").merge(root_tokens("shadow").transform_keys { "shadow-#{it}" }))
+    render Sheet.new(:radius, root_tokens("radius").merge(root_tokens("shadow")))
   end
 
   # @label Breakpoints and widths
   def breakpoints
-    render Sheet.new(:measure, all_tokens("breakpoint").transform_keys { "breakpoint-#{it}" }
-                                 .merge(root_tokens("width").transform_keys { "width-#{it}" }))
+    render Sheet.new(:measure, all_tokens("breakpoint").merge(root_tokens("width")))
   end
 
   private
 
   def root_tokens(prefix)
     block = THEME_CSS.read[/^:root \{(.*?)^\}/m, 1]
-    block.scan(/--#{prefix}-([\w-]+):\s*([^;]+);/).to_h
+    block.scan(/(--#{prefix}-[\w-]+):\s*([^;]+);/).to_h
   end
 
   def all_tokens(prefix)
-    THEME_CSS.read.scan(/--#{prefix}-([\w-]+):\s*([^;]+);/).to_h
+    THEME_CSS.read.scan(/(--#{prefix}-[\w-]+):\s*([^;]+);/).to_h
   end
 
   class Sheet < Phlex::HTML
@@ -76,7 +82,7 @@ class TokensPreview < Lookbook::Preview
 
     def row(name, value)
       div(class: "flex items-start gap-6") do
-        div(class: "w-56 shrink-0") do
+        div(class: "w-64 shrink-0") do
           code(class: "font-bold") { name }
           div(class: "mt-1 text-sm opacity-70") { label(value) }
         end
@@ -93,20 +99,28 @@ class TokensPreview < Lookbook::Preview
       case @kind
       when :type
         div do
-          div(style: "font-size: var(--text-#{name}); line-height: 1.2") { SAMPLE }
-          div(class: "mt-1 font-serif", style: "font-size: var(--text-#{name}); line-height: 1.2") { SAMPLE }
+          div(style: "font-size: var(#{name}); line-height: 1.2") { SAMPLE }
+          div(class: "mt-1 font-serif", style: "font-size: var(#{name}); line-height: 1.2") { SAMPLE }
         end
+      when :font then div(style: font_style(name)) { SAMPLE }
       when :leading
-        p(class: "m-0 max-w-(--width-prose)", style: "line-height: #{name == 'normal' ? 'normal' : "var(--leading-#{name})"}") { "#{PARAGRAPH} #{PARAGRAPH}" }
+        p(class: "m-0 max-w-(--width-prose)", style: "line-height: #{name == 'normal' ? 'normal' : "var(#{name})"}") { "#{PARAGRAPH} #{PARAGRAPH}" }
       when :colour
-        div(class: "h-12 rounded-sm border border-foreground/15", style: "background: var(--color-#{name})")
+        div(class: "h-12 rounded-sm border border-foreground/15", style: "background: var(#{name})")
       when :radius
-        shadow = name.start_with?("shadow-")
+        shadow = name.start_with?("--shadow-")
         div(class: ["w-32 h-16 bg-surface", ("border-2 border-current" unless shadow)].compact.join(" "),
-            style: shadow ? "box-shadow: var(--#{name})" : "border-radius: var(--radius-#{name})")
+            style: shadow ? "box-shadow: var(#{name})" : "border-radius: var(#{name})")
       when :measure
         div(class: "h-3 rounded-pill bg-primary", style: "width: min(#{value}, 100%)")
       end
+    end
+
+    def font_style(name)
+      return "letter-spacing: var(#{name}); text-transform: uppercase" if name.start_with?("--tracking-")
+      return "font-weight: var(#{name}); font-size: var(--text-lg)" if name.start_with?("--font-weight-")
+
+      "font-family: var(#{name}); font-size: var(--text-lg)"
     end
   end
 end

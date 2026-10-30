@@ -41,8 +41,9 @@ RSpec.describe "Theming parts", type: :request do
   it "shows a component's scope, parts and tokens in its Lookbook theming panel" do
     get(Lookbook::Previews.all.find { it.lookup_path == "shared/hero" }.url_path.then { "#{it}/record_page" })
 
-    panel = Nokogiri::HTML(response.body)
-    expect(panel.text).to include('[data-scope="hero"][data-part="standfirst-detail"]', "--color-primary")
+    row = Nokogiri::HTML(response.body).css(".theming-panel tr").find { it.at_css("td code")&.text == "back" }
+    expect(row.css("td").map { it.text.strip }).to include(a_string_including("The back link"), "<a>", "content", "Record page with back link")
+    expect(response.body).to include("--color-primary")
   end
 
   it "opens the inspector of a component without hooks" do

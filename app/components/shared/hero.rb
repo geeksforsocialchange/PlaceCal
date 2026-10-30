@@ -2,7 +2,17 @@
 
 class Components::Shared::Hero < Components::Base
   theme_scope :hero,
-              parts: %i[root content back kicker subtitle divider title standfirst standfirst_detail],
+              parts: {
+                root: 'The coloured band. Core gives it the primary background and its pattern images (background-image), so a theme with its own background clears them.',
+                content: 'The width-limited column inside the band that holds every other part.',
+                back: 'The back link, an <a>. Only when the page passes one, such as "All events" on an event page.',
+                kicker: 'The section name above the title, such as "Events" on an event page. Only on a single record\'s page. Margins in em.',
+                subtitle: 'The site tagline, in caps. Only when the page passes one.',
+                divider: 'The short decorative rule under the subtitle. Only with a subtitle.',
+                title: 'The page\'s h1. Its bottom margin is in em, so it grows with the font size.',
+                standfirst: 'The lead paragraph under the title, such as "By <organiser>" on an event page, or a theme\'s intro on a listing. Margins in em.',
+                standfirst_detail: 'A smaller second paragraph after the standfirst, its sibling. Only when the page passes one.'
+              },
               tokens: %i[--color-primary --color-foreground-dark --color-background --font-serif --text-3xl --text-sm
                          --font-weight-extra-bold --tracking-wide]
 

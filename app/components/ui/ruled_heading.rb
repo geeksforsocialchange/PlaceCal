@@ -11,7 +11,8 @@ class Components::UI::RuledHeading < Components::Base
   # :section is the rhythm of the partner and event pages' detail sections.
   SPACING = { none: nil, section: 'my-5.5' }.freeze
 
-  theme_scope :ruled_heading, parts: %i[root], tokens: %i[--color-foreground --color-rules --color-background --color-secondary --text-base --text-xl]
+  theme_scope :ruled_heading, parts: { root: 'The heading element (h1 to h4) with its rule underneath.' },
+                              tokens: %i[--color-foreground --color-rules --color-background --color-secondary --text-base --text-xl]
 
   prop :level, _Union(1, 2, 3, 4), default: 2
   prop :caps, _Boolean, default: false
