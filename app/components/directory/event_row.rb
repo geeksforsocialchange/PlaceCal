@@ -15,8 +15,8 @@ class Components::Directory::EventRow < Components::Directory::Base
 
   def render_date_badge
     div(class: 'font-serif text-center bg-home-background-3 rounded-sm py-1 px-2') do
-      div(class: 'text-2xl leading-none font-regular tracking-tight') { @event.dtstart.day.to_s }
-      div(class: 'font-sans text-2xs uppercase tracking-widest text-tertiary font-extra-bold mt-1') do
+      div(class: 'text-2xl leading-none font-regular') { @event.dtstart.day.to_s }
+      div(class: 'font-sans text-2xs uppercase tracking-wide text-tertiary font-extra-bold mt-1') do
         plain @event.dtstart.strftime('%b').upcase
       end
     end

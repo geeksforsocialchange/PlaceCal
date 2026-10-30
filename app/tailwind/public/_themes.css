@@ -1,16 +1,33 @@
 /* The built-in colour themes, picked per site by data-theme on <html>. Unlayered and more specific than :root, so they win over _theme.css. */
+/* primary-light is the base mixed with 25% white; the deeper shades keep the base hue and match the default shade's contrast on the background. */
 html[data-theme="pink"] {
 	--color-primary: #f19089;
+	--color-primary-light: #f4aca6;
+	--color-secondary-deep: #e66f67;
+	--color-secondary-dark: #d65a52;
+	--color-secondary-strong: #b5443d;
 }
 html[data-theme="orange"] {
 	--color-primary: #fe9263;
+	--color-primary-light: #fead8a;
 	--color-secondary: #fe9263;
+	--color-secondary-deep: #f06b22;
+	--color-secondary-dark: #d95b01;
+	--color-secondary-strong: #b24a01;
 }
 html[data-theme="green"] {
 	--color-primary: #afcf5a;
+	--color-primary-light: #c3db83;
 	--color-secondary: #afcf5a;
+	--color-secondary-deep: #7d9f00;
+	--color-secondary-dark: #6d8d01;
+	--color-secondary-strong: #577301;
 }
 html[data-theme="blue"] {
 	--color-primary: #74d4ec;
+	--color-primary-light: #97dff1;
 	--color-secondary: #74d4ec;
+	--color-secondary-deep: #01a1be;
+	--color-secondary-dark: #028ea9;
+	--color-secondary-strong: #02748b;
 }

@@ -6,6 +6,7 @@ class PlaceCalSchema < GraphQL::Schema
   default_max_page_size 100
   max_depth 10, count_introspection_fields: false
   max_complexity 1500, count_introspection_fields: false
+  query_analyzer Analyzers::MaxListNesting
 
   query Types::QueryType
 

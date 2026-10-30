@@ -41,7 +41,7 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
       Array(@containing_sites).each do |site_record|
         # canonical_url, not public_url: an external domain doesn't have PlaceCal's partner pages
         a(href: "#{site_record.canonical_url}/partners/#{@partner.slug}",
-          class: 'flex items-center justify-between py-2 no-underline text-foreground hover:bg-background/50 transition-colors rounded px-1') do
+          class: 'flex items-center justify-between py-2 no-underline text-foreground hover:bg-background/50 transition-colors rounded-sm px-1') do
           div do
             div(class: 'font-extra-bold text-sm') { site_record.name }
             div(class: 'text-sm text-tertiary') do
@@ -62,7 +62,7 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
     UI::Card(variant: :panel, padding: :sm) do
       sidebar_heading(t('directory.sidebar.opening_times'))
       ul(class: 'text-sm text-foreground space-y-1 list-none pl-0') do
-        opening_times.each { |slot| li { Shared::OpeningTime(**slot) } }
+        opening_times.each { |slot| Shared::OpeningTime(**slot) }
       end
     end
   end

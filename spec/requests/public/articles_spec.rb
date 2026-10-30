@@ -181,17 +181,11 @@ RSpec.describe "Public Articles (News)", type: :request do
       end
     end
 
-    # Hero back link (#3368): "All news" above the article page hero.
-    context "with the hero back link" do
-      let!(:article) { create(:article, is_draft: false) }
+    it "leaves the way back to the index to the breadcrumb, with no hero back link" do
+      article = create(:article, is_draft: false)
+      get news_url(article, host: "#{site.slug}.lvh.me")
 
-      it "points at the news index" do
-        get news_url(article, host: "#{site.slug}.lvh.me")
-
-        back = Nokogiri::HTML(response.body).at_css("a.hero__back")
-        expect(back.text).to eq(I18n.t("news.show.back_to_index"))
-        expect(back[:href]).to eq(news_index_path)
-      end
+      expect(Capybara.string(response.body)).not_to have_css(".hero a[href='#{news_index_path}']")
     end
 
     # Page actions row (Components::Sites::PageActions, #3368): previous/next by

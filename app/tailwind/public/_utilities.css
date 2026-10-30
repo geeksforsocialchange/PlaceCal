@@ -65,14 +65,14 @@
 /* Uppercase, extra-bold and tracked, at whatever size the element already has; themes target it by name */
 @utility allcaps {
 	text-transform: uppercase;
-	font-weight: 800;
+	font-weight: var(--font-weight-extra-bold);
 	letter-spacing: var(--tracking-wide);
 }
 
 /* Allcaps label used for kickers, section labels, form labels, sidebar headings */
 @utility allcaps-label {
 	font-size: var(--text-2xs);
-	font-weight: 800;
+	font-weight: var(--font-weight-extra-bold);
 	text-transform: uppercase;
 	letter-spacing: var(--tracking-wide);
 }
@@ -182,9 +182,13 @@
 	}
 }
 
-/* A native select's own caret, drawn in the foreground colour */
+/* A native select's own caret in the foreground colour: a wedge from the bottom centre to the top corners of a 14:9 box */
 @utility select-caret {
-	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9'%3E%3Cpolygon points='0,0 14,0 7,9' fill='%235b4e46'/%3E%3C/svg%3E");
+	background-image: conic-gradient(
+		from -37.875deg at 50% 100%,
+		var(--color-foreground) 75.75deg,
+		transparent 0
+	);
 	background-repeat: no-repeat;
 	background-position: right 0.7rem center;
 	background-size: 0.7rem 0.45rem;

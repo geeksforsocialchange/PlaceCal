@@ -176,6 +176,48 @@ RSpec.describe "GraphQL Events", type: :request do
       expect(result["errors"]).to be_nil
       expect(result["data"]["eventsByFilter"]).to be_an(Array)
     end
+
+    it "reports dates in the wrong format or order" do
+      errors = [
+        { fromDate: "next week" },
+        { toDate: "2022-11-08" },
+        { fromDate: "2022-11-10 09:00", toDate: "2022-11-09 09:00" }
+      ].map { |variables| execute_query(query, variables:)["errors"].sole["message"] }
+
+      expect(errors).to eq(["fromDate not in 'YYYY-MM-DD HH:MM' format", "toDate not in 'YYYY-MM-DD HH:MM' format", "toDate is before fromDate"])
+    end
+
+    it "returns at most the documented number of events, soonest first" do
+      stub_const("Types::EventQueries::EVENTS_BY_FILTER_LIMIT", 2)
+      soonest = create(:event, organiser: partner, dtstart: 1.hour.from_now, address:)
+
+      events = execute_query(query)["data"]["eventsByFilter"]
+
+      expect(events.length).to eq(2)
+      expect(events.first["id"]).to eq(soonest.id.to_s)
+    end
+
+    it "states the maximum in the field description" do
+      expect(PlaceCalSchema.query.get_field("eventsByFilter").description).to include("at most 1000 events")
+    end
+
+    it "accepts a fromDate up to a year before today" do
+      past_event = create(:event, organiser: partner, dtstart: 11.months.ago, address:)
+
+      result = execute_query(query, variables: { fromDate: 1.year.ago.strftime("%Y-%m-%d 00:00") })
+
+      expect(result["errors"]).to be_nil
+      expect(result["data"]["eventsByFilter"].pluck("id")).to include(past_event.id.to_s)
+    end
+
+    it "rejects a fromDate more than a year before today" do
+      create(:event, organiser: partner, dtstart: 5.years.ago, address:)
+
+      result = execute_query(query, variables: { fromDate: "1970-01-01 00:00" })
+
+      expect(result["data"]["eventsByFilter"]).to be_nil
+      expect(result["errors"].sole["message"]).to eq("fromDate is more than a year before today")
+    end
   end
 
   describe "eventsByFilter by place and keyword" do

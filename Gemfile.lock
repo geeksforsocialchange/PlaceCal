@@ -8,10 +8,10 @@ GIT
 
 GIT
   remote: https://github.com/geeksforsocialchange/placecal-theme-transdimension.git
-  revision: 0336deeb480a59336749600bb6fb05149f7cdcd8
-  tag: v0.7.3
+  revision: 0238b7edcb764ca34d6fe7ae745206891dc1c4c3
+  tag: v0.7.4
   specs:
-    placecal-theme-transdimension (0.7.3)
+    placecal-theme-transdimension (0.7.4)
       rails (>= 8.0)
 
 GEM
@@ -603,7 +603,7 @@ GEM
       rspec-mocks (>= 3.13.0, < 5.0.0)
       rspec-support (>= 3.13.0, < 5.0.0)
     rspec-support (3.13.7)
-    rubocop (1.92.0)
+    rubocop (1.92.1)
       json (>= 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -811,7 +811,7 @@ DEPENDENCIES
   rails-erd
   rdoc
   rspec-rails (~> 8.0)
-  rubocop (= 1.92.0)
+  rubocop (= 1.92.1)
   rubocop-graphql (= 1.8.0)
   rubocop-performance (= 1.27.0)
   rubocop-rails (= 2.38.0)

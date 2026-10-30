@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class CalendarImporter::CalendarImporterTask
+  MAX_OCCURENCES = 20_000
+
   attr_reader :calendar,
               :from_date,
               :force_import
@@ -21,10 +23,13 @@ class CalendarImporter::CalendarImporterTask
       # end
 
       parsed_events.each do |parsed_event|
+        break unless within_occurence_limit?(parsed_event)
+
         process_event parsed_event
       end
 
-      purge_stale_events_from_calendar
+      # Events past the limit were never processed, so their rows would look stale
+      purge_stale_events_from_calendar unless @occurence_limit_reached
     end
 
     calendar.flag_complete_import_job! notices, parser::KEY
@@ -58,6 +63,7 @@ class CalendarImporter::CalendarImporterTask
   def event_data_from_parser
     return [] if !force_import && !calendar_source.checksum_changed
 
+    notices.concat(calendar_source.notices)
     calendar_source.events.map do |event_data|
       CalendarImporter::EventResolver.new(event_data, calendar, notices, from_date)
     end
@@ -77,6 +83,17 @@ class CalendarImporter::CalendarImporterTask
     parsed_event.save_all_occurences
   rescue CalendarImporter::LocationResolver::Problem => e
     notices << e.message
+  end
+
+  def within_occurence_limit?(parsed_event)
+    return true if parsed_event.private?
+
+    @occurence_count = @occurence_count.to_i + parsed_event.occurences.size
+    return true if @occurence_count <= MAX_OCCURENCES
+
+    notices << I18n.t('admin.calendars.importer.calendar_occurrence_limit', count: MAX_OCCURENCES)
+    @occurence_limit_reached = true
+    false
   end
 
   def purge_stale_events_from_calendar

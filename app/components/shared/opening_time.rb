@@ -6,12 +6,14 @@ class Components::Shared::OpeningTime < Components::Base
   prop :closes, String
 
   def view_template
-    span(class: 'opening_times--day') { @day }
-    whitespace
-    span(class: 'opening_times--time') do
-      plain @opens
-      raw safe(' &ndash; ')
-      plain @closes
+    li(class: 'grid grid-cols-label-value') do
+      span(class: 'opening_times--day font-bold') { @day }
+      whitespace
+      span(class: 'opening_times--time') do
+        plain @opens
+        raw safe(' &ndash; ')
+        plain @closes
+      end
     end
   end
 end

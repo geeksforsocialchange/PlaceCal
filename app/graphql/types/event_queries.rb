@@ -2,6 +2,8 @@
 
 module Types
   module EventQueries
+    EVENTS_BY_FILTER_LIMIT = 1000
+
     def self.included(klass)
       klass.field :event, EventType do
         description 'Retrieve one event based on specific ID'
@@ -14,11 +16,13 @@ module Types
 
       klass.field :events_by_filter, [Types::EventType] do
         description \
-          'Find events with various filter parameters. By default `eventsByFilter` will show all events from the current time.'
+          'Find events with various filter parameters. By default `eventsByFilter` shows events from the start of today. ' \
+          "Returns at most #{EVENTS_BY_FILTER_LIMIT} events, soonest first: narrow the dates or filters to see the rest."
 
         argument :from_date, String,
                  required: false,
-                 description: 'Time to start filter from. Format like "YYYY-MM-DD HH:MM". Defaults to current time'
+                 description: 'Time to start filter from. Format like "YYYY-MM-DD HH:MM". Defaults to current time. ' \
+                              'Can be at most a year before today'
 
         argument :to_date, String,
                  required: false,
@@ -62,36 +66,11 @@ module Types
     end
 
     def events_by_filter(**args)
-      from_date = Time.current.beginning_of_day
-      to_date = nil
+      from_date = args[:from_date].present? ? parse_filter_time(args[:from_date], 'fromDate') : Time.current.beginning_of_day
+      raise GraphQL::ExecutionError, 'fromDate is more than a year before today' if from_date < 1.year.ago.beginning_of_day
 
-      if args[:from_date].present?
-        raise GraphQL::ExecutionError, "fromDate not in 'YYYY-MM-DD HH:MM' format" unless args[:from_date] =~ /^\s*(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/
-
-        from_date = DateTime.new(
-          Regexp.last_match(1).to_i, # year
-          Regexp.last_match(2).to_i, # month
-          Regexp.last_match(3).to_i, # day
-          Regexp.last_match(4).to_i, # hour
-          Regexp.last_match(5).to_i, # minute
-          0 # seconds
-        )
-      end
-
-      if args[:to_date].present?
-        raise GraphQL::ExecutionError, "toDate not in 'YYYY-MM-DD HH:MM' format" unless args[:to_date] =~ /^\s*(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/
-
-        to_date = DateTime.new(
-          Regexp.last_match(1).to_i, # year
-          Regexp.last_match(2).to_i, # month
-          Regexp.last_match(3).to_i, # day
-          Regexp.last_match(4).to_i, # hour
-          Regexp.last_match(5).to_i, # minute
-          0       # seconds
-        )
-
-        raise GraphQL::ExecutionError, 'toDate is before fromDate' if to_date <= from_date
-      end
+      to_date = parse_filter_time(args[:to_date], 'toDate') if args[:to_date].present?
+      raise GraphQL::ExecutionError, 'toDate is before fromDate' if to_date && to_date <= from_date
 
       query = EventSearch.new(from: from_date, to: to_date, **args.slice(:postcode, :place, :query, :category)).call
 
@@ -109,9 +88,18 @@ module Types
         query = query.with_tags([tag])
       end
 
-      query.all
+      query.limit(EVENTS_BY_FILTER_LIMIT)
     rescue EventSearch::Error => e
       raise GraphQL::ExecutionError, e.message
+    end
+
+    private
+
+    def parse_filter_time(value, name)
+      match = value.match(/^\s*(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/)
+      raise GraphQL::ExecutionError, "#{name} not in 'YYYY-MM-DD HH:MM' format" unless match
+
+      DateTime.new(*match.captures.map(&:to_i), 0)
     end
   end
 end

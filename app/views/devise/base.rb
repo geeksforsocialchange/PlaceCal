@@ -28,10 +28,10 @@ class Views::Devise::Base < Views::Base
     return if resource.errors.empty?
 
     UI::Card(variant: :highlight, padding: :sm, class: 'mb-4') do
-      h2(class: 'font-bold text-sm text-foreground mb-1') do
+      h2(class: 'font-bold text-sm mb-1') do
         plain t('errors.messages.not_saved', count: resource.errors.count, resource: resource.model_name.human.downcase)
       end
-      ul(class: 'list-disc pl-5 text-sm text-foreground') do
+      ul(class: 'list-disc pl-5 text-sm') do
         resource.errors.full_messages.each { |msg| li { msg } }
       end
     end
