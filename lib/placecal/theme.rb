@@ -279,7 +279,7 @@ module PlaceCal
     # @param value [Boolean, nil]
     setting :menu_label, cast: :boolean, default: false, predicate: true
 
-    # Whether the site nav includes the region control (Components::RegionFilter,
+    # Whether the site nav includes the region control (Components::Sites::RegionFilter,
     # #3368): a segmented control of the site's own Partnership tags, rendered
     # as the last item before the theme CTA. Only takes effect when the site
     # also has two or more Partnership tags: a theme opting in on a

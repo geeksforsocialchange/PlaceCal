@@ -7,7 +7,7 @@
 # Selection travels in the URL as ?region=<tag slug> (D19) and is carried by
 # links rather than session state (D20). Only rendered when a site has more
 # than one Partnership tag.
-class Components::RegionFilter < Components::Base
+class Components::Sites::RegionFilter < Components::Base
   prop :tags, Array, default: -> { [] }
   prop :selected, _Nilable(::Tag), default: nil
   # True when rendered as a nav item (Components::Navigation) rather than as
