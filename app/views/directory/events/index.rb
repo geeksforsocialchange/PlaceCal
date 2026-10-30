@@ -28,11 +28,15 @@ class Views::Directory::Events::Index < Views::Base
     )
 
     div(class: 'container-public py-6') do
-      render_filters
-      render_period_tabs
-      render_results_header
-      render_event_list
-      Directory::Paginator(pagy: @pagy) if @pagy
+      UI::Stack(gap: :md) do
+        render_filters
+        div do
+          render_period_tabs
+          render_results_header
+          render_event_list
+          Directory::Paginator(pagy: @pagy) if @pagy
+        end
+      end
     end
   end
 
@@ -43,7 +47,7 @@ class Views::Directory::Events::Index < Views::Base
   end
 
   def render_filters
-    UI::Card(variant: :panel, padding: :sm, tag: :form, action: events_path, method: 'get', class: 'mb-4') do
+    UI::Card(variant: :panel, padding: :sm, tag: :form, action: events_path, method: 'get') do
       div(class: 'flex flex-wrap gap-3 items-end') do
         render_search_field
         render_partnership_select
