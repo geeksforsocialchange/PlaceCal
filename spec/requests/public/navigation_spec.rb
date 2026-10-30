@@ -63,7 +63,7 @@ RSpec.describe "Public site navigation", type: :request do
     let(:south) { create(:partnership, name: "South") }
 
     def region_control
-      Nokogiri::HTML(response.body).at_css("li.header__region")
+      Nokogiri::HTML(response.body).at_css("nav.region-filter--nav")
     end
 
     it "does not render on a core theme, even with two tags", :theme_registry do
@@ -94,7 +94,6 @@ RSpec.describe "Public site navigation", type: :request do
       get "http://navsite.lvh.me"
 
       expect(region_control).to be_present
-      expect(region_control.at_css("nav.region-filter--nav")).to be_present
       expect(region_control.css("a").map(&:text)).to include("North", "South")
     end
   end

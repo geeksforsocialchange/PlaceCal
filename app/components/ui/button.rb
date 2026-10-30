@@ -5,7 +5,7 @@ class Components::UI::Button < Components::Base
   BASE = 'inline-flex items-center justify-center gap-2 border-2 font-bold no-underline cursor-pointer transition-colors duration-150 focus-visible:outline-foreground'
 
   VARIANTS = {
-    primary: 'bg-primary border-primary text-foreground hover:bg-primary-light hover:border-primary-light',
+    primary: 'bg-primary border-primary text-foreground-dark hover:bg-primary-light hover:border-primary-light',
     dark: 'bg-foreground border-foreground text-background hover:bg-tertiary hover:border-tertiary',
     outline: 'bg-home-background border-primary text-foreground hover:bg-primary',
     dark_outline: 'bg-transparent border-foreground text-foreground hover:bg-foreground hover:text-background',

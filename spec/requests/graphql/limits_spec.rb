@@ -25,14 +25,14 @@ RSpec.describe "GraphQL query limits", type: :request do
     result = execute_query(deep_query)
 
     expect(result["data"]).to be_nil
-    expect(result["errors"].first["message"]).to include("exceeds max depth of 10")
+    expect(result["errors"].pluck("message")).to include(a_string_including("exceeds max depth of 10"))
   end
 
   it "rejects an over-deep query that mentions __schema in a comment" do
     result = execute_query("#{deep_query}\n# __schema")
 
     expect(result["data"]).to be_nil
-    expect(result["errors"].first["message"]).to include("exceeds max depth of 10")
+    expect(result["errors"].pluck("message")).to include(a_string_including("exceeds max depth of 10"))
   end
 
   it "rejects an over-complex query that mentions __schema in a comment" do
@@ -40,6 +40,42 @@ RSpec.describe "GraphQL query limits", type: :request do
 
     expect(result["data"]).to be_nil
     expect(result["errors"].first["message"]).to include("exceeds max complexity of 1500")
+  end
+
+  it "rejects lists nested more than two deep" do
+    query = "query { partnerConnection(first: 100) { nodes { events { organizer { events { organizer { events { organizer { events { summary } } } } } } } } } }"
+
+    result = execute_query(query)
+
+    expect(result["data"]).to be_nil
+    expect(result["errors"].sole["message"]).to eq("Query nests lists 5 deep, which exceeds the maximum of 2")
+  end
+
+  describe "partners with their events and organisers" do
+    let(:query) { "query { partnerConnection { nodes { id events { id organizer { id } } } } }" }
+
+    def create_partners_with_events(count)
+      create_list(:partner, count).each { |partner| create_list(:event, 5, organiser: partner, dtstart: 1.day.from_now) }
+    end
+
+    def count_queries(&)
+      queries = 0
+      counter = ->(*, payload) { queries += 1 unless payload[:cached] || %w[SCHEMA TRANSACTION].include?(payload[:name]) }
+      ActiveSupport::Notifications.subscribed(counter, "sql.active_record", &)
+      queries
+    end
+
+    it "loads them in the same few SQL queries however many partners there are" do
+      create_partners_with_events(4)
+      with_five = count_queries { execute_query(query) }
+
+      create_partners_with_events(5)
+      with_ten = count_queries { execute_query(query) }
+
+      expect(response.parsed_body.dig("data", "partnerConnection", "nodes").sum { |node| node["events"].length }).to eq(45)
+      expect(with_ten).to eq(with_five)
+      expect(with_ten).to be <= 3
+    end
   end
 
   it "runs the standard introspection query" do

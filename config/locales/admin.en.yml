@@ -369,15 +369,18 @@ en:
         no_location: "No location"
         past: "Recent Past Events"
       importer:
+        calendar_occurrence_limit: "This calendar has more than %{count} upcoming event dates, so the import stopped there. Events after that point were not updated."
         importing: "Importing..."
         last_import: "Last import:"
         notices: "Import notices"
+        occurrence_limit: '"%{summary}" repeats more than %{count} times, so only its first %{count} dates were imported.'
         pending: "Pending import"
         reimport: "Re-import now"
         retry_import: "Retry import"
         source_changed: "Source changed:"
         status_label: "Status:"
         success: "Success"
+        unreadable_event_dates: 'Skipped "%{event}" because its dates could not be read (%{error}).'
       warnings:
         stale: "Potential stale calendar - not updated in over 6 months."
       danger_zone:
@@ -460,6 +463,9 @@ en:
     # Partners
     # -------------------------------------------------------------------------
     partners:
+      destroy:
+        success: "Partner was successfully destroyed."
+        failure: "Partner was not deleted. %{errors}"
       filters:
         has_calendar: "Has Calendar?"
         has_admin: "Has Admin?"

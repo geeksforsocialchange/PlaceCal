@@ -26,7 +26,6 @@ class Views::Sites::Events::Show < Views::Base
       Sites::Event(
         display_context: :page,
         event:,
-        primary_neighbourhood: site.primary_neighbourhood,
         site_tagline: site.tagline,
         back: [t('events.show.back'), events_path]
       )
@@ -261,7 +260,7 @@ class Views::Sites::Events::Show < Views::Base
   def render_event_details
     div(class: 'container-narrowish mb-12 event__fullinfo e-content') do
       raw safe(event.description_html.to_s)
-      div(class: 'flex flex-col items-start gap-2 mt-10 empty:hidden') do
+      div(class: 'event__links flex flex-col items-start gap-2 mt-10 empty:hidden') do
         render_event_link
         render_online_link
       end

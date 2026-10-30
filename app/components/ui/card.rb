@@ -6,7 +6,8 @@ class Components::UI::Card < Components::Base
     # Sets one card apart from the outlined ones around it, such as the free tier on pricing
     featured: 'bg-cream-warm border-2 border-rules',
     panel: 'bg-home-background-3',
-    highlight: 'bg-secondary'
+    # Dark text keeps AA on the secondary fill of every colour theme.
+    highlight: 'bg-secondary text-foreground-dark'
   }.freeze
 
   PADDING = { none: nil, sm: 'p-4', md: 'p-5', lg: 'p-6' }.freeze

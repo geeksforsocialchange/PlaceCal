@@ -281,6 +281,22 @@ RSpec.describe Event, type: :model do
       end
     end
 
+    describe ".ical_feed" do
+      it "includes an upcoming event with no end time" do
+        open_ended = create(:event, organiser: partner, dtstart: 2.days.from_now, dtend: nil)
+        expect(described_class.ical_feed).to include(open_ended)
+      end
+
+      it "covers events starting from a week ago to six months ahead" do
+        inside = create(:event, organiser: partner, dtstart: 6.days.ago, dtend: nil)
+        too_old = create(:event, organiser: partner, dtstart: 8.days.ago, dtend: nil)
+        too_far = create(:event, organiser: partner, dtstart: 7.months.from_now, dtend: nil)
+
+        expect(described_class.ical_feed).to include(inside)
+        expect(described_class.ical_feed).not_to include(too_old, too_far)
+      end
+    end
+
     describe "EventsQuery site filtering" do
       let(:ward) { create(:riverside_ward) }
       let(:site) { create(:site) }
@@ -433,5 +449,19 @@ RSpec.describe Event, "#resolved_address", type: :model do
     event = create(:event, address: nil, place: nil, organiser:,
                            online_address: create(:online_address), calendar: online_calendar)
     expect(event.resolved_address).to be_nil
+  end
+end
+
+RSpec.describe Event, "#partner_at_location", type: :model do
+  it "runs the venue query once when no venue matches" do
+    event = create(:event, place: nil)
+    venue_queries = 0
+    count_venue_queries = ->(*, payload) { venue_queries += 1 if payload[:sql].include?("can_be_assigned_events") }
+
+    ActiveSupport::Notifications.subscribed(count_venue_queries, "sql.active_record") do
+      3.times { expect(event.partner_at_location).to be_nil }
+    end
+
+    expect(venue_queries).to eq(1)
   end
 end

@@ -123,7 +123,6 @@
 	--color-rules-dark: #decbba;
 	/* Contrast colours */
 	--color-secondary: #f19089;
-	--color-secondary-light: #f4a6a1;
 	/* Deeper salmon for small text / numerals that need contrast on cream */
 	--color-secondary-deep: #e66f67;
 	/* Deepest salmon: large display numerals on cream */
@@ -141,8 +140,6 @@
 	--color-tertiary-light: #998675;
 	/* Bottom of the double line on the map */
 	--color-map-stripe-second: #c7b299;
-	/* Print stylesheet greyscale for borders */
-	--color-print-grey: #dadada;
 	/* Plain white surfaces: focused inputs, unchecked checkbox boxes */
 	--color-surface: #fff;
 	/* Translucent white over a dark/branded panel */
@@ -155,14 +152,8 @@
 
 	/* The placecal.org palette; some repeat colours above */
 	--color-home-background: #fffcf0;
-	--color-home-background-2: #f19089;
 	--color-home-background-3: #f0e9da;
 	--color-home-blue: #74d4ec;
-	--color-home-blue-soft: #97dff1;
-	--color-home-pink: #f19089;
-	--color-home-pink-soft: #f4a6a1;
-	--color-home-green: #afcf5a;
-	--color-home-green-soft: #c3db83;
 
 	/* Shadows */
 
@@ -277,7 +268,6 @@ this file).
 	--color-rules-dark: var(--color-rules-dark);
 	/* Contrast colours */
 	--color-secondary: var(--color-secondary);
-	--color-secondary-light: var(--color-secondary-light);
 	--color-secondary-deep: var(--color-secondary-deep);
 	--color-secondary-dark: var(--color-secondary-dark);
 	--color-secondary-strong: var(--color-secondary-strong);
@@ -288,8 +278,6 @@ this file).
 	--color-tertiary-light: var(--color-tertiary-light);
 	/* Bottom of the double line on the map */
 	--color-map-stripe-second: var(--color-map-stripe-second);
-	/* Print stylesheet greyscale for borders */
-	--color-print-grey: var(--color-print-grey);
 	--color-surface: var(--color-surface);
 	--color-overlay-light: var(--color-overlay-light);
 	--color-focus-ring: var(--color-focus-ring);
@@ -298,14 +286,8 @@ this file).
 
 	/* Default-site */
 	--color-home-background: var(--color-home-background);
-	--color-home-background-2: var(--color-home-background-2);
 	--color-home-background-3: var(--color-home-background-3);
 	--color-home-blue: var(--color-home-blue);
-	--color-home-blue-soft: var(--color-home-blue-soft);
-	--color-home-pink: var(--color-home-pink);
-	--color-home-pink-soft: var(--color-home-pink-soft);
-	--color-home-green: var(--color-home-green);
-	--color-home-green-soft: var(--color-home-green-soft);
 
 	/* Shadows */
 	--shadow-hero-search: var(--shadow-hero-search);

@@ -526,8 +526,6 @@ en:
   partners:
     show:
       section: ""
-      # Hero back link (#3368), above the section name and title.
-      back_to_index: "All partners"
       # Page actions row back link (Components::PageActions, #3368).
       go_back: "All partners"
       accessibility_heading: "Accessibility"
@@ -576,8 +574,6 @@ en:
   news:
     show:
       section: ""
-      # Hero back link (#3368), above the section name and title.
-      back_to_index: "All news"
       # strftime pattern for the article's published date; themes may override
       date_format: "%B %Y"
       by: "By "
@@ -957,6 +953,9 @@ en:
       models:
         partner:
           attributes:
+            base:
+              default_venue: "This partner is the default location for %{calendars}. Change those calendars' location before deleting it."
+              default_venue_calendar: "%{calendar} (%{organiser})"
             tag_ids:
               blank: "Select at least one Tag"
             opening_times:

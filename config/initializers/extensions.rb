@@ -7,17 +7,13 @@
 #
 # Each built-in theme's colours are in app/tailwind/public/_themes.css, picked
 # by data-theme on <html>, with a matching public/map-styles/<name>.json.
-# A local, not a top-level constant: nothing outside this file needs it.
-theme_colors = {
-  pink: '#f19089',
-  orange: '#fe9263',
-  green: '#afcf5a',
-  blue: '#74d4ec'
-}.freeze
+# theme_color is read from each theme's --color-primary there.
+primary_colors = Rails.root.join('app/tailwind/public/_themes.css').read
+                      .scan(/html\[data-theme="(\w+)"\]\s*\{[^}]*?--color-primary:\s*(#\h{6})/).to_h
 
 %w[pink orange green blue].each do |name|
   PlaceCal::Extensions.register_theme(name, core: true) do |theme|
     theme.map_style name
-    theme.theme_color theme_colors[name.to_sym]
+    theme.theme_color primary_colors.fetch(name)
   end
 end

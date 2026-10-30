@@ -52,6 +52,28 @@ RSpec.describe Site, type: :model do
     it { is_expected.to belong_to(:site_admin).class_name("User").optional }
   end
 
+  describe "#sites_neighbourhood" do
+    it "is the primary row even when a secondary row is older" do
+      site = create(:site)
+      create(:sites_neighbourhood, site:, relation_type: "Secondary")
+      primary = create(:sites_neighbourhood, site:, relation_type: "Primary")
+
+      expect(site.reload.sites_neighbourhood).to eq(primary)
+      expect(site.primary_neighbourhood).to eq(primary.neighbourhood)
+    end
+
+    it "is nil when the site has only secondary rows" do
+      site = create(:site)
+      create(:sites_neighbourhood, site:, relation_type: "Secondary")
+
+      expect(site.reload.sites_neighbourhood).to be_nil
+    end
+
+    it "builds a primary row for a new site" do
+      expect(described_class.new.build_sites_neighbourhood.relation_type).to eq("Primary")
+    end
+  end
+
   describe "validations" do
     it { is_expected.to validate_presence_of(:name) }
 

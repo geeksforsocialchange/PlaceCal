@@ -3,7 +3,6 @@
 class Components::Sites::Event < Components::Base
   prop :display_context, _Nilable(Symbol), default: nil
   prop :event, _Interface(:summary, :dtstart)  # Event model or test double
-  prop :primary_neighbourhood, _Nilable(::Neighbourhood), default: nil
   prop :show_neighbourhoods, _Boolean, default: false
   prop :badge_zoom_level, _Nilable(String), default: nil
   prop :site_tagline, _Nilable(String), default: nil
@@ -44,9 +43,7 @@ class Components::Sites::Event < Components::Base
       h3(class: "inline-block mb-2.5#{' text-md' if @nested}") do
         link_to(summary, event_path(id), class: 'p-name u-url with-no-sass text-foreground no-underline', data: { turbo_frame: '_top' })
       end
-      if neighbourhood_name && @show_neighbourhoods
-        div(class: 'neighbourhood event__neighbourhood max-md:hidden') { UI::Pill(variant: primary_neighbourhood? ? :neighbourhood : :neighbourhood_outside, class: 'mt-3') { neighbourhood_name } }
-      end
+      div(class: 'neighbourhood event__neighbourhood max-md:hidden') { UI::Pill(variant: :neighbourhood, class: 'mt-3') { neighbourhood_name } } if neighbourhood_name && @show_neighbourhoods
     end
   end
 
@@ -196,7 +193,7 @@ class Components::Sites::Event < Components::Base
   # "By <organiser>" under the title, the name linked; the hero's standfirst slot is free here.
   def organiser_line
     organiser = @event.organiser
-    organiser && t('events.show.by_organiser_html', name: view_context.link_to(organiser.name, partner_path(organiser)))
+    organiser && t('events.show.by_organiser_html', name: view_context.link_to(organiser.name, partner_path(organiser), class: UI::Link.css(tone: :inherit)))
   end
 
   def neighbourhood_line
@@ -205,12 +202,6 @@ class Components::Sites::Event < Components::Base
 
   def neighbourhood_name
     @event.neighbourhood&.name_from_badge_zoom(@badge_zoom_level)
-  end
-
-  def primary_neighbourhood?
-    return true unless @primary_neighbourhood
-
-    @event.neighbourhood == @primary_neighbourhood || @primary_neighbourhood.children.include?(@event.neighbourhood)
   end
 
   def online?

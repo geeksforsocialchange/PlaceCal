@@ -173,7 +173,7 @@ class Event < ApplicationRecord
   scope :past, -> { where(dtstart: ..DateTime.current.beginning_of_day) }
 
   # Global feed; six months ahead keeps busy sites' subscriptions small enough for calendar apps
-  scope :ical_feed, -> { where(dtstart: 1.week.ago..).where(dtend: ...6.months.from_now) }
+  scope :ical_feed, -> { where(dtstart: 1.week.ago...6.months.from_now) }
 
   # ==== Callbacks ====
   before_save :sanitize_rrule
@@ -267,7 +267,9 @@ class Event < ApplicationRecord
 
   # @return [Partner, nil] the visible place partner, or a visible venue matching the address
   def partner_at_location
-    @partner_at_location ||= (place unless place&.hidden) || Partner.matching_venue_for(address)
+    return @partner_at_location if defined?(@partner_at_location)
+
+    @partner_at_location = (place unless place&.hidden) || Partner.matching_venue_for(address)
   end
 
   # TODO: plan this out on paper, currently half finished

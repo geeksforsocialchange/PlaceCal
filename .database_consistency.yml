@@ -55,3 +55,9 @@ Partner:
   children:
     ForeignKeyCascadeChecker:
       enabled: false # Using model-level dependent: :nullify
+  hosted_calendars:
+    ForeignKeyCascadeChecker:
+      enabled: false # Using model-level dependent: :nullify, after a before_destroy check
+  hosted_events:
+    ForeignKeyCascadeChecker:
+      enabled: false # Using model-level dependent: :nullify

@@ -112,11 +112,10 @@ RSpec.describe "Public Partners", type: :request do
       expect(response.body).to include("<title>#{partner.name} | #{site.name}</title>")
     end
 
-    # Hero back link (#3368): "All partners" above the partner page hero.
-    it "links the hero back link to the partners index" do
+    it "leaves the way back to the index to the breadcrumb, with no hero back link" do
       get partner_url(partner, host: "#{site.slug}.lvh.me")
 
-      expect(Capybara.string(response.body)).to have_link(I18n.t("partners.show.back_to_index"), href: partners_path)
+      expect(Capybara.string(response.body)).not_to have_css(".hero a[href='#{partners_path}']")
     end
 
     # Page actions row (Components::Sites::PageActions, #3368): back, then the feed.

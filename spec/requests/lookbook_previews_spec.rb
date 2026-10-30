@@ -42,6 +42,13 @@ RSpec.describe "Lookbook previews", type: :request do
     expect(response.body).to include('<html lang="en" data-theme="orange">')
   end
 
+  it "loads MapLibre's CSS at the version the importmap pins for its JS" do
+    version = Rails.application.importmap.packages["maplibre-gl"].path[%r{maplibre-gl@([^/]+)}, 1]
+    get "#{preview_path('shared/map')}/single_point/preview"
+
+    expect(response.body).to include("https://cdn.jsdelivr.net/npm/maplibre-gl@#{version}/dist/maplibre-gl.css")
+  end
+
   it "renders every scenario" do
     scenarios = scenario_links
     expect(scenarios.size).to be > 50

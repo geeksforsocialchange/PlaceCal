@@ -2,6 +2,8 @@
 
 module Types
   class PartnerType < Types::BaseObject
+    LIST_LIMIT = 100
+
     description 'Organisations that run events'
 
     field :id, ID,
@@ -53,10 +55,10 @@ module Types
           description: 'The hours that this partner opens for at their physical address'
 
     field :articles, [ArticleType],
-          description: 'News and information from this partner'
+          description: "News and information from this partner, newest first, at most #{LIST_LIMIT}"
 
     field :events, [EventType],
-          description: 'Upcoming events from this partner'
+          description: "Upcoming events from this partner, soonest first, at most #{LIST_LIMIT}"
 
     def contact
       object
@@ -69,11 +71,11 @@ module Types
     end
 
     def articles
-      object.articles.published.by_publish_date
+      dataload(Sources::PublishedArticles, LIST_LIMIT, object.id)
     end
 
     def events
-      object.events.upcoming.sort_by_time
+      dataload(Sources::UpcomingEvents, LIST_LIMIT, object.id)
     end
 
     def logo

@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-ruby file: '.ruby-version'
 source 'https://gem.coop'
 
 # Core
@@ -76,7 +75,7 @@ gem 'strong_migrations'           # Catch unsafe migrations before they reach pr
 # release a new version of an extension.
 group :extensions do
   gem 'placecal-theme-mossley', github: 'geeksforsocialchange/placecal-theme-mossley', tag: 'v0.1.4'
-  gem 'placecal-theme-transdimension', github: 'geeksforsocialchange/placecal-theme-transdimension', tag: 'v0.7.3'
+  gem 'placecal-theme-transdimension', github: 'geeksforsocialchange/placecal-theme-transdimension', tag: 'v0.7.4'
 end
 
 group :development, :test do
@@ -100,7 +99,7 @@ group :development do
   gem 'rack-mini-profiler'        # In-page performance profiler (?pp=help in dev)
   gem 'rails-erd'                 # Entity-relationship diagrams
   gem 'rdoc'                      # Documentation generator
-  gem 'rubocop', '1.92.0', require: false
+  gem 'rubocop', '1.92.1', require: false
   gem 'rubocop-graphql', '1.8.0', require: false
   gem 'rubocop-performance', '1.27.0', require: false
   gem 'rubocop-rails', '2.38.0', require: false

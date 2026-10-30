@@ -152,7 +152,7 @@ class Components::Sites::Footer < Components::Base
   end
 
   def render_impressum
-    div(class: 'col-span-full mt-12 text-tertiary-light', data_nosnippet: true) do
+    div(class: 'col-span-full mt-12 text-rules-dark', data_nosnippet: true) do
       Shared::Impressum(logo: false, company_details: true)
     end
   end

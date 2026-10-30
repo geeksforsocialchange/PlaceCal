@@ -12,7 +12,7 @@
   <%= csrf_meta_tags %>
   <%= stylesheet_link_tag 'public_tailwind', media: 'all' %>
   <%= render Components::Shared::ThemeHead.new(theme:) if theme %>
-  <link rel="stylesheet" href="/vendor/maplibre-gl.css" media="all">
+  <%= stylesheet_link_tag URI.join(Rails.application.importmap.packages['maplibre-gl'].path, 'dist/maplibre-gl.css').to_s, media: 'all', id: 'maplibre-gl-css' %>
   <%= javascript_importmap_tags %>
 </head>
 <body>
