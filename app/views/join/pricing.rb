@@ -29,10 +29,10 @@ class Views::Join::Pricing < Views::Join::Base
     section(class: 'bg-secondary py-10') do
       div(class: 'container-public') do
         breadcrumb([t('join.nav.pricing')], on_secondary: true)
-        div(class: 'flex items-center justify-between gap-8') do
-          div do
-            div(class: 'allcaps-label text-foreground-dark mb-2') { t('join.pricing.eyebrow') }
-            h1(class: 'join-headline m-0') { t('join.pricing.title') }
+        UI::Cluster(gap: :xl, justify: :between, wrap: false) do
+          UI::Stack(gap: :sm) do
+            div(class: 'allcaps-label text-foreground-dark') { t('join.pricing.eyebrow') }
+            h1(class: 'join-headline') { t('join.pricing.title') }
           end
           image_tag('home/our_story/collective_ownership.png', alt: '',
                                                                class: 'hidden md:block shrink-0 w-36 xl:w-48 h-auto')
@@ -44,11 +44,13 @@ class Views::Join::Pricing < Views::Join::Base
   def render_tiers
     section(class: 'py-10') do
       div(class: 'container-public') do
-        render_compare_table
-        render_tier_cards
-        render_starter_strip
-        div(class: 'text-center mt-7') do
-          UI::Button(variant: :join, size: :lg, href: join_demo_path) { t('join.pricing.cta') }
+        UI::Stack(gap: :lg) do
+          render_compare_table
+          render_tier_cards
+          render_starter_strip
+          div(class: 'text-center') do
+            UI::Button(variant: :join, size: :lg, href: join_demo_path) { t('join.pricing.cta') }
+          end
         end
       end
     end
@@ -141,28 +143,28 @@ class Views::Join::Pricing < Views::Join::Base
   end
 
   def render_tier_card(tier)
-    UI::Card(tag: :article, padding: :lg, class: 'flex flex-col') do
-      div(class: 'allcaps-label text-secondary-strong') { t("join.pricing.tiers.#{tier}.name") }
-      p(class: 'font-serif text-lg leading-snug text-foreground mt-2.5 mb-3') do
-        t("join.pricing.tiers.#{tier}.who_card")
-      end
-      div(class: 'font-serif text-3xl leading-none text-foreground') do
-        span(class: 'block text-detail text-tertiary mb-0.5') { t('join.pricing.from') } if tier_from?(tier)
-        plain t("join.pricing.tiers.#{tier}.price")
-        span(class: 'text-detail text-tertiary') { " #{t('join.pricing.per_month')}" }
-      end
-      div(class: 'text-sm text-tertiary mt-1.5 pb-4 border-b-2 border-rules mb-4') do
-        t("join.pricing.tiers.#{tier}.setup_card")
-      end
-      div(class: 'text-sm text-tertiary mb-4') do
-        b(class: 'font-serif font-regular text-md text-foreground') { t("join.pricing.tiers.#{tier}.spec_strong") }
-        plain t("join.pricing.tiers.#{tier}.spec_rest")
-      end
-      ul(class: 'list-none p-0 m-0 flex flex-col gap-2.5') do
-        t("join.pricing.tiers.#{tier}.bullets").each do |bullet|
-          li(class: 'flex gap-2.5 text-detail leading-snug') do
-            tick(size: 18)
-            plain bullet
+    UI::Card(tag: :article, padding: :lg) do
+      UI::Stack(gap: :md) do
+        UI::Stack(gap: :sm) do
+          div(class: 'allcaps-label text-secondary-strong') { t("join.pricing.tiers.#{tier}.name") }
+          p(class: 'font-serif text-lg leading-snug text-foreground') { t("join.pricing.tiers.#{tier}.who_card") }
+          div(class: 'font-serif text-3xl leading-none text-foreground') do
+            span(class: 'block text-detail text-tertiary mb-0.5') { t('join.pricing.from') } if tier_from?(tier)
+            plain t("join.pricing.tiers.#{tier}.price")
+            span(class: 'text-detail text-tertiary') { " #{t('join.pricing.per_month')}" }
+          end
+          div(class: 'text-sm text-tertiary pb-4 border-b-2 border-rules') { t("join.pricing.tiers.#{tier}.setup_card") }
+        end
+        div(class: 'text-sm text-tertiary') do
+          b(class: 'font-serif font-regular text-md text-foreground') { t("join.pricing.tiers.#{tier}.spec_strong") }
+          plain t("join.pricing.tiers.#{tier}.spec_rest")
+        end
+        UI::Stack(as: :ul, gap: :sm) do
+          t("join.pricing.tiers.#{tier}.bullets").each do |bullet|
+            li(class: 'flex gap-2.5 text-detail leading-snug') do
+              tick(size: 18)
+              plain bullet
+            end
           end
         end
       end
@@ -172,15 +174,16 @@ class Views::Join::Pricing < Views::Join::Base
   # The free tier is deliberately pulled out of the comparison, not a
   # fourth column.
   def render_starter_strip
-    UI::Card(variant: :featured, tag: :aside, padding: :lg, class: 'mt-6 flex flex-col lg:flex-row lg:items-center gap-x-10 gap-y-3') do
-      div(class: 'shrink-0') do
-        div(class: 'allcaps-label text-secondary-strong') { t('join.pricing.starter.name') }
-        div(class: 'font-serif text-2xl leading-tight text-foreground') { t('join.pricing.starter.price') }
-      end
-      div do
-        t('join.pricing.starter.body').each_with_index do |paragraph, index|
-          p(class: "text-base leading-relaxed text-foreground max-w-(--width-prose) mb-0 #{index.zero? ? 'mt-0' : 'mt-2.5'}") do
-            paragraph
+    UI::Card(variant: :featured, tag: :aside, padding: :lg) do
+      # A column that turns into a row on wide screens, rather than a row that wraps.
+      div(class: 'flex flex-col lg:flex-row lg:items-center gap-x-10 gap-y-3') do
+        div(class: 'shrink-0') do
+          div(class: 'allcaps-label text-secondary-strong') { t('join.pricing.starter.name') }
+          div(class: 'font-serif text-2xl leading-tight text-foreground') { t('join.pricing.starter.price') }
+        end
+        UI::Stack(gap: :sm) do
+          t('join.pricing.starter.body').each do |paragraph|
+            p(class: 'text-base leading-relaxed text-foreground max-w-(--width-prose)') { paragraph }
           end
         end
       end
@@ -190,10 +193,12 @@ class Views::Join::Pricing < Views::Join::Base
   def render_extras
     section(class: 'py-10 bg-cream') do
       div(class: 'container-public') do
-        UI::Heading(class: 'mt-0 mb-7') { t('join.pricing.extras.heading') }
-        div(class: 'grid lg:grid-cols-2 gap-4') do
-          t('join.pricing.extras.addons').each { |addon| render_addon(addon) }
-          render_training_addon
+        UI::Stack(gap: :lg) do
+          UI::Heading() { t('join.pricing.extras.heading') }
+          div(class: 'grid lg:grid-cols-2 gap-4') do
+            t('join.pricing.extras.addons').each { |addon| render_addon(addon) }
+            render_training_addon
+          end
         end
       end
     end
@@ -201,7 +206,7 @@ class Views::Join::Pricing < Views::Join::Base
 
   def render_addon(addon)
     UI::Card(padding: :lg, class: 'flex flex-col') do
-      UI::Heading(level: 3, size: :subhead, class: 'mt-0 mb-1.5') { addon[:title] }
+      UI::Heading(level: 3, size: :subhead, spacing: :sm) { addon[:title] }
       p(class: 'text-base leading-relaxed text-tertiary mt-0 mb-4') { addon[:body] }
       div(class: 'font-serif text-xl text-foreground mt-auto') do
         plain t('join.pricing.extras.poa')
@@ -215,7 +220,7 @@ class Views::Join::Pricing < Views::Join::Base
   def render_training_addon
     training = t('join.pricing.extras.training')
     UI::Card(padding: :lg, class: 'flex flex-col') do
-      UI::Heading(level: 3, size: :subhead, class: 'mt-0 mb-1.5') { training[:title] }
+      UI::Heading(level: 3, size: :subhead, spacing: :sm) { training[:title] }
       p(class: 'text-base leading-relaxed text-tertiary mt-0 mb-2') { training[:body] }
       ul(class: 'list-none p-0 mt-auto mb-0') do
         training[:rows].each do |row|
@@ -234,10 +239,12 @@ class Views::Join::Pricing < Views::Join::Base
   def render_rollout
     section(class: 'py-10') do
       div(class: 'container-public') do
-        UI::Heading(class: 'mt-0 mb-4') { t('join.rollout.heading') }
-        div(class: 'max-w-(--width-prose-lg)') do
-          t('join.rollout.steps').each_with_index do |step, index|
-            render_rollout_step(step, index)
+        UI::Stack(gap: :md) do
+          UI::Heading() { t('join.rollout.heading') }
+          div(class: 'max-w-(--width-prose-lg)') do
+            t('join.rollout.steps').each_with_index do |step, index|
+              render_rollout_step(step, index)
+            end
           end
         end
       end
@@ -257,7 +264,7 @@ class Views::Join::Pricing < Views::Join::Base
         image_tag(ROLLOUT_ART[index], alt: '', class: 'w-32 md:w-42 h-auto') if ROLLOUT_ART[index]
       end
       div(class: 'col-start-2 md:col-start-auto') do
-        UI::Heading(level: 3, size: :subhead, class: 'mt-0 mb-1') { step[:title] }
+        UI::Heading(level: 3, size: :subhead, spacing: :xs) { step[:title] }
         p(class: 'text-base leading-relaxed text-tertiary m-0') { step[:body] }
       end
     end
@@ -267,16 +274,18 @@ class Views::Join::Pricing < Views::Join::Base
   def render_faq
     section(class: 'py-10 bg-cream') do
       div(class: 'container-public') do
-        UI::Heading(class: 'mt-0 mb-4') { t('join.pricing.faq.heading') }
-        div(class: 'max-w-(--width-prose-lg)') do
-          t('join.pricing.faq.items').each_with_index do |item, index|
-            details(class: 'group border-b-2 border-rules', open: index.zero?) do
-              summary(class: 'cursor-pointer list-none py-4 font-serif text-lg text-foreground flex justify-between items-center gap-4 ' \
-                             'details-marker:hidden') do
-                plain item[:question]
-                span(class: 'font-sans font-bold text-2xl text-secondary-strong transition-transform group-open:rotate-45', aria_hidden: 'true') { '+' }
+        UI::Stack(gap: :md) do
+          UI::Heading() { t('join.pricing.faq.heading') }
+          div(class: 'max-w-(--width-prose-lg)') do
+            t('join.pricing.faq.items').each_with_index do |item, index|
+              details(class: 'group border-b-2 border-rules', open: index.zero?) do
+                summary(class: 'cursor-pointer list-none py-4 font-serif text-lg text-foreground flex justify-between items-center gap-4 ' \
+                               'details-marker:hidden') do
+                  plain item[:question]
+                  span(class: 'font-sans font-bold text-2xl text-secondary-strong transition-transform group-open:rotate-45', aria_hidden: 'true') { '+' }
+                end
+                p(class: 'mt-0 pb-4 text-base leading-relaxed text-tertiary max-w-(--width-prose)') { item[:answer] }
               end
-              p(class: 'mt-0 pb-4 text-base leading-relaxed text-tertiary max-w-(--width-prose)') { item[:answer] }
             end
           end
         end

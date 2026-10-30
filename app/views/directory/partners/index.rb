@@ -32,21 +32,18 @@ class Views::Directory::Partners::Index < Views::Base
     )
 
     div(class: 'container-public py-6') do
-      Directory::PartnerFilter(
-        query: @query,
-        categories: @categories,
-        partnerships_list: @partnerships_list,
-        neighbourhoods_tree: @neighbourhoods_tree,
-        selected_category: @selected_category,
-        selected_partnership: @selected_partnership,
-        selected_neighbourhood: @selected_neighbourhood
-      )
-
-      render_results_header
-      render_sort_tabs
-      Directory::AzJumpBar(active_letters: @az_letters, selected_letter: @selected_letter, filter_params: current_filter_params) if @sort == 'name'
-      render_partner_list
-      Directory::Paginator(pagy: @pagy) if @pagy
+      UI::Stack(gap: :md) do
+        Directory::PartnerFilter(
+          query: @query,
+          categories: @categories,
+          partnerships_list: @partnerships_list,
+          neighbourhoods_tree: @neighbourhoods_tree,
+          selected_category: @selected_category,
+          selected_partnership: @selected_partnership,
+          selected_neighbourhood: @selected_neighbourhood
+        )
+        render_results
+      end
     end
   end
 
@@ -54,6 +51,16 @@ class Views::Directory::Partners::Index < Views::Base
 
   def kicker_text
     t('directory.partners.index.kicker', count: @total_count, partnerships: @partnership_count)
+  end
+
+  def render_results
+    div do
+      render_results_header
+      render_sort_tabs
+      Directory::AzJumpBar(active_letters: @az_letters, selected_letter: @selected_letter, filter_params: current_filter_params) if @sort == 'name'
+      render_partner_list
+      Directory::Paginator(pagy: @pagy) if @pagy
+    end
   end
 
   def render_results_header

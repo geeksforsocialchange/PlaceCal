@@ -12,9 +12,11 @@ class Views::Directory::Mcp < Views::Base
     Directory::PageHero(breadcrumb_label: t("#{T}.heading"), kicker: t("#{T}.heading"),
                         title: t("#{T}.hero_title"), subtitle: t("#{T}.hero_lede"))
 
-    div(class: 'container-public py-8 flex flex-col gap-8') do
-      render_address
-      Directory::MarkdownContent(slug: 'mcp')
+    div(class: 'container-public py-8') do
+      UI::Stack(gap: :xl) do
+        render_address
+        Directory::MarkdownContent(slug: 'mcp')
+      end
     end
   end
 

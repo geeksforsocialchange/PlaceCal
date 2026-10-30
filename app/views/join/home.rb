@@ -23,7 +23,7 @@ class Views::Join::Home < Views::Join::Base
           div(class: 'allcaps-label text-secondary-strong mb-2') { t('join.home.hero.kicker') }
           h1(class: 'join-headline m-0 mb-4') { t('join.home.hero.title') }
           p(class: 'text-base leading-relaxed max-w-(--width-prose) mt-0 mb-6') { t('join.home.hero.intro') }
-          div(class: 'flex gap-2.5 flex-wrap items-center') do
+          UI::Cluster(gap: :sm) do
             UI::Button(variant: :join, size: :lg, href: join_demo_path) { t('join.home.hero.cta_demo') }
             UI::Button(variant: :outline, href: join_our_story_path) { t('join.home.hero.cta_how') }
           end
@@ -72,7 +72,7 @@ class Views::Join::Home < Views::Join::Base
       div(class: 'container-public grid lg:grid-cols-[1fr_1.2fr] gap-10 items-center') do
         div do
           div(class: 'allcaps-label text-tertiary mb-1') { t('join.home.why.kicker') }
-          UI::Heading(class: 'm-0 mb-3') { t('join.home.why.heading') }
+          UI::Heading(spacing: :md) { t('join.home.why.heading') }
           p(class: 'mt-0 mb-4') { t('join.home.why.intro') }
           ul(class: 'list-none p-0 m-0') do
             t('join.home.why.problems').each do |problem|

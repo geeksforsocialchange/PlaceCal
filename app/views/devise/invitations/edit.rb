@@ -12,18 +12,20 @@ class Views::Devise::Invitations::Edit < Views::Devise::Base
 
     div(class: 'container-public py-8') do
       div(class: 'max-w-(--width-prose) mx-auto') do
-        render_error_messages
+        UI::Stack(gap: :md) do
+          render_error_messages
 
-        form_for(resource, as: resource_name,
-                           url: invitation_path(resource_name),
-                           html: { method: :put, class: 'space-y-4', data: { turbo: 'false' } }) do |form|
-          raw form.hidden_field(:invitation_token)
+          form_for(resource, as: resource_name,
+                             url: invitation_path(resource_name),
+                             html: { method: :put, class: 'space-y-4', data: { turbo: 'false' } }) do |form|
+            raw form.hidden_field(:invitation_token)
 
-          render_field(form, :password, label: t('devise.invitations.edit.new_password'), type: 'password', reveal: true, autocomplete: 'new-password')
+            render_field(form, :password, label: t('devise.invitations.edit.new_password'), type: 'password', reveal: true, autocomplete: 'new-password')
 
-          render_field(form, :password_confirmation, label: t('devise.invitations.edit.repeat_password'), type: 'password', reveal: true, autocomplete: 'new-password')
+            render_field(form, :password_confirmation, label: t('devise.invitations.edit.repeat_password'), type: 'password', reveal: true, autocomplete: 'new-password')
 
-          div { UI::Button(variant: :dark, type: 'submit') { t('devise.invitations.edit.submit_button') } }
+            div { UI::Button(variant: :dark, type: 'submit') { t('devise.invitations.edit.submit_button') } }
+          end
         end
       end
     end

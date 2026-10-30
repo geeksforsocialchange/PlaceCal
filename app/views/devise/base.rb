@@ -27,7 +27,7 @@ class Views::Devise::Base < Views::Base
   def render_error_messages
     return if resource.errors.empty?
 
-    UI::Card(variant: :highlight, padding: :sm, class: 'mb-4') do
+    UI::Card(variant: :highlight, padding: :sm) do
       h2(class: 'font-bold text-sm mb-1') do
         plain t('errors.messages.not_saved', count: resource.errors.count, resource: resource.model_name.human.downcase)
       end
@@ -38,15 +38,15 @@ class Views::Devise::Base < Views::Base
   end
 
   def render_shared_links
-    div(class: 'flex flex-col gap-1 text-sm') do
+    UI::Stack(gap: :xs) do
       if controller_name != 'sessions'
         a(href: new_session_path(resource_name),
-          class: 'underline hover:decoration-primary') { t('devise.shared.links.log_in') }
+          class: 'text-sm underline hover:decoration-primary') { t('devise.shared.links.log_in') }
       end
 
       if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations'
         a(href: new_password_path(resource_name),
-          class: 'underline hover:decoration-primary') { t('devise.shared.links.forgot_your_password') }
+          class: 'text-sm underline hover:decoration-primary') { t('devise.shared.links.forgot_your_password') }
       end
     end
   end

@@ -6,10 +6,12 @@ class Components::Directory::Paginator < Components::Directory::Base
   def view_template
     return unless @pagy.pages > 1
 
-    nav(class: 'flex items-center justify-center gap-1 py-6', aria_label: t('directory.aria.pagination')) do
-      render_prev
-      render_pages
-      render_next
+    nav(class: 'py-6', aria_label: t('directory.aria.pagination')) do
+      UI::Cluster(gap: :xs, justify: :center, wrap: false) do
+        render_prev
+        render_pages
+        render_next
+      end
     end
   end
 

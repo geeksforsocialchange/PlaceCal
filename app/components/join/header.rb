@@ -20,10 +20,12 @@ class Components::Join::Header < Components::Join::Base
   # landmark: axe's region rule flags top-level content outside one.
   def render_band
     nav(class: 'bg-secondary', aria_label: t('join.band.aria_label')) do
-      div(class: 'container-public py-2 flex items-center justify-between gap-4 flex-wrap text-foreground-dark') do
-        span(class: 'allcaps-label') { t('join.band.host') }
-        UI::Link(href: apex_url, variant: :quiet, tone: :inherit, class: 'allcaps-label') do
-          plain "← #{t('join.band.directory_link')}"
+      div(class: 'container-public py-2 text-foreground-dark') do
+        UI::Cluster(gap: :md, justify: :between) do
+          span(class: 'allcaps-label') { t('join.band.host') }
+          UI::Link(href: apex_url, variant: :quiet, tone: :inherit, class: 'allcaps-label') do
+            plain "← #{t('join.band.directory_link')}"
+          end
         end
       end
     end

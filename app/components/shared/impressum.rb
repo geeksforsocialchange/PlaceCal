@@ -11,7 +11,7 @@ class Components::Shared::Impressum < Components::Base
     if @company_details
       render_company_details
     else
-      div(class: 'flex justify-between flex-wrap gap-2') do
+      UI::Cluster(gap: :sm, justify: :between, align: :stretch) do
         span { copyright }
         span do
           plain t('colophon.build')

@@ -12,7 +12,7 @@ class Components::Directory::PartnerFilter < Components::Directory::Base
   prop :selected_neighbourhood, _Nilable(String), default: nil
 
   def view_template
-    UI::Card(variant: :panel, padding: :sm, tag: :form, action: partners_path, method: 'get', class: 'mb-4 text-sm') do
+    UI::Card(variant: :panel, padding: :sm, tag: :form, action: partners_path, method: 'get', class: 'text-sm') do
       div(class: 'flex flex-wrap lg:flex-nowrap gap-3 items-end') do
         render_search_field
         if @categories.any?
