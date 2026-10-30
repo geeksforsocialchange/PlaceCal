@@ -10,9 +10,11 @@ class Components::Directory::ToggleTabs < Components::Directory::Base
   prop :aria_label, String
 
   def view_template
-    nav(class: 'flex gap-1 flex-wrap py-2', aria_label: @aria_label) do
-      @items.each do |item|
-        UI::Pill(selected: item[:active], href: item[:href]) { plain item[:label] }
+    nav(class: 'py-2', aria_label: @aria_label) do
+      UI::Cluster(gap: :xs, align: :stretch) do
+        @items.each do |item|
+          UI::Pill(selected: item[:active], href: item[:href]) { plain item[:label] }
+        end
       end
     end
   end

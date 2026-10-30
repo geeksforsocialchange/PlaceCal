@@ -160,7 +160,7 @@ class Views::Sites::Events::Show < Views::Base
   def render_information_card
     UI::Card(variant: :panel, padding: :sm) do
       sidebar_heading(t('directory.events.show.information'))
-      div(class: 'flex flex-col gap-2') do
+      UI::Stack(gap: :sm) do
         info_row(:event_date) { event.dtstart.strftime('%a %-e %b %Y') }
         info_row(:event_time) { event.time }
         info_row(:event_repeats) { event.repeat_frequency } if event.repeat_frequency

@@ -20,7 +20,7 @@ class Components::Directory::NeighbourhoodCascade < Components::Directory::Base
       data: { controller: 'neighbourhood-cascade', action: 'change->neighbourhood-cascade#onChange' }
     ) do
       span(id: 'neighbourhood_cascade_label', class: 'block allcaps-label text-tertiary mb-1') { @label_text }
-      div(class: 'flex flex-wrap gap-2') do
+      UI::Cluster(gap: :sm, align: :stretch) do
         cascade_levels.each do |level|
           div(class: 'flex-1 min-w-0 md:flex-none md:w-56') do
             UI::Select(

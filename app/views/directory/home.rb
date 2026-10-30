@@ -39,7 +39,7 @@ class Views::Directory::Home < Views::Base
   def render_partnerships_section
     section(class: 'py-5') do
       div(class: 'container-public') do
-        div(class: 'flex justify-between items-baseline flex-wrap gap-2') do
+        UI::Cluster(gap: :sm, justify: :between, align: :baseline) do
           div do
             div(class: 'allcaps-label text-tertiary') { t('directory.home.partnerships.kicker') }
             UI::Heading() { t('directory.home.partnerships.heading') }
