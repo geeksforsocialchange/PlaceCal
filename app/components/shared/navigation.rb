@@ -116,7 +116,7 @@ class Components::Shared::Navigation < Components::Base
 
   def render_region_filter
     li do
-      RegionFilter(tags: @region_tags, selected: @selected_region, embedded: true)
+      Sites::RegionFilter(tags: @region_tags, selected: @selected_region, embedded: true)
     end
   end
 
