@@ -24,7 +24,7 @@ class Components::UI::Button < Components::Base
     xl: 'px-8 text-base'
   }.freeze
 
-  PILL_PADDING = { sm: 'py-1.5', md: 'py-2', lg: 'py-3', xl: 'py-3.5' }.freeze
+  PILL_PADDING = { sm: 'py-1.5', md: 'py-2', lg: 'py-3', xl: 'py-3.25' }.freeze
 
   prop :variant, _Union(*VARIANTS.keys)
   prop :size, _Union(*SIZES.keys), default: :md
