@@ -1,12 +1,7 @@
 # frozen_string_literal: true
 
-# Open Graph card images are rendered server-side with libvips (pango + librsvg).
-# Pango resolves fonts through fontconfig, so we point it at a private config
-# that contains only the PlaceCal brand fonts. This keeps rendering identical
-# across development (macOS), CI and production (Debian).
-#
-# Both variables must be set before pango initialises, i.e. before the first
-# Vips::Image.text call in the process.
+# Pango reads FONTCONFIG_FILE once, at first use, so it is set for the whole process and its children.
+# The config lists the brand fonts, then includes the system's default fonts.conf for everything else.
 fonts_dir = Rails.root.join('app/assets/fonts')
 cache_dir = Rails.root.join('tmp/cache/fontconfig')
 conf_path = Rails.root.join('tmp/og_image_fonts.conf')
@@ -17,6 +12,11 @@ File.write(conf_path, <<~XML)
   <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
   <fontconfig>
     <dir>#{fonts_dir}</dir>
+    <include ignore_missing="yes">fonts.conf</include>
+    <match target="font">
+      <test name="file" compare="contains"><string>#{fonts_dir}</string></test>
+      <edit name="hintstyle" mode="assign"><const>hintfull</const></edit>
+    </match>
     <cachedir>#{cache_dir}</cachedir>
   </fontconfig>
 XML

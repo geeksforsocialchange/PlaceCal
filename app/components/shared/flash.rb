@@ -11,7 +11,7 @@ class Components::Shared::Flash < Components::Base
 
     div(class: 'flex flex-col gap-2 mx-6 my-4') do
       messages.each do |key, value|
-        div(class: "rounded-card px-4 py-3 text-detail font-bold text-foreground #{STATES[state(key)]}", role: 'alert') { value }
+        div(class: "rounded-card px-4 py-3 text-detail font-bold text-foreground-dark #{STATES[state(key)]}", role: 'alert') { value }
       end
     end
   end
