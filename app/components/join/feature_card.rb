@@ -8,8 +8,8 @@ class Components::Join::FeatureCard < Components::Join::Base
 
   def view_template
     UI::Card() do
-      send(:"h#{@heading_level}", class: 'font-serif font-regular text-lg text-foreground mt-0 mb-1.5') { @title }
-      p(class: 'text-detail text-tertiary leading-relaxed m-0') { @body }
+      UI::Heading(level: @heading_level, size: :item, spacing: :xs) { @title }
+      UI::Text(variant: :lede, tone: :muted, spacing: :none) { @body }
     end
   end
 end

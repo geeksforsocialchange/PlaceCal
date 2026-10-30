@@ -55,7 +55,7 @@ class Views::Directory::OurStory < Views::Base
           eyebrow_heading(t("#{T}.start.eyebrow"), t("#{T}.start.heading"))
           div(class: 'grid md:grid-cols-2 gap-8') do
             t("#{T}.start.body").each do |paragraph|
-              p(class: 'my-0 text-base leading-relaxed text-foreground') { paragraph }
+              UI::Text(tone: :foreground, spacing: :none) { paragraph }
             end
           end
           div(class: 'grid grid-cols-1 md:grid-cols-3 gap-3') do
@@ -83,7 +83,7 @@ class Views::Directory::OurStory < Views::Base
           blockquote(class: 'mx-0 mt-0 mb-3.5 pl-8 font-serif text-display leading-tight text-foreground text-balance') do
             t("#{T}.quote.text")
           end
-          figcaption(class: 'pl-8 text-base text-tertiary max-w-(--width-prose) leading-relaxed') { t("#{T}.quote.caption") }
+          UI::Text(as: :figcaption, tone: :muted, measure: :prose, class: 'pl-8') { t("#{T}.quote.caption") }
         end
       end
     end
@@ -91,7 +91,7 @@ class Views::Directory::OurStory < Views::Base
 
   def eyebrow_heading(eyebrow, heading)
     UI::Stack(gap: :sm) do
-      div(class: 'allcaps-label text-tertiary') { eyebrow }
+      UI::Kicker(tone: :muted) { eyebrow }
       UI::Heading() { heading }
     end
   end
@@ -128,10 +128,10 @@ class Views::Directory::OurStory < Views::Base
         UI::Cluster(gap: :sm, align: :baseline) do
           # Deepened coral (vs --color-secondary-deep) so the large numeral clears WCAG AA (3:1) on cream.
           span(class: 'font-serif text-2xl leading-none', style: 'color: var(--color-secondary-dark)') { feature[:num] } if feature[:num]
-          span(class: 'allcaps-label text-tertiary') { t("#{base}.kicker") }
+          UI::Kicker(as: :span, tone: :muted) { t("#{base}.kicker") }
         end
         h3(class: 'text-subhead leading-tight font-bold text-foreground') { t("#{base}.title") }
-        p(class: 'text-base leading-relaxed text-tertiary') { t("#{base}.body") }
+        UI::Text(tone: :muted) { t("#{base}.body") }
       end
     end
   end
@@ -140,14 +140,10 @@ class Views::Directory::OurStory < Views::Base
     section(class: 'bg-secondary text-foreground py-13') do
       narrow('text-center') do
         UI::Stack(gap: :lg) do
-          UI::Stack(gap: :md) do
-            h2(class: 'mx-auto max-w-(--width-prose-lg) font-serif font-regular text-display leading-tight text-foreground text-balance') do
-              t("#{T}.turning.heading")
-            end
+          UI::Stack(gap: :md, align: :center) do
+            UI::Heading(size: :display, balance: true) { t("#{T}.turning.heading") }
             # --color-foreground-dark (the design's text-on-colour brown) clears WCAG AA on the pink panel; the prior opacity-85 brown did not.
-            p(class: 'mx-auto max-w-(--width-prose) text-base leading-relaxed', style: 'color: var(--color-foreground-dark)') do
-              t("#{T}.turning.body")
-            end
+            UI::Text(tone: :strong, measure: :prose) { t("#{T}.turning.body") }
           end
           div { image_tag "#{IMAGE_BASE}/logo_onpink.svg", alt: t("#{T}.turning.logo_alt"), class: 'inline h-10' }
         end
@@ -160,9 +156,7 @@ class Views::Directory::OurStory < Views::Base
       narrow do
         UI::Card(variant: :highlight, padding: :xl) do
           UI::Cluster(gap: :lg, justify: :between) do
-            h2(class: 'my-0 font-serif font-regular text-display leading-tight') do
-              t("#{T}.cta.heading")
-            end
+            UI::Heading(size: :display, tone: :inherit, spacing: :none) { t("#{T}.cta.heading") }
             UI::Button(variant: :light, size: :lg, href: @cta_path || get_in_touch_path) do
               plain @cta_label || t("#{T}.cta.button")
               span(aria_hidden: 'true') { safe('→') }

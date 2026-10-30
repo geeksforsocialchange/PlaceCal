@@ -41,7 +41,7 @@ class Views::Directory::Home < Views::Base
       div(class: 'container-public') do
         UI::Cluster(gap: :sm, justify: :between, align: :baseline) do
           div do
-            div(class: 'allcaps-label text-tertiary') { t('directory.home.partnerships.kicker') }
+            UI::Kicker(tone: :muted) { t('directory.home.partnerships.kicker') }
             UI::Heading() { t('directory.home.partnerships.heading') }
           end
           UI::Button(variant: :outline, href: partnerships_path) do
@@ -107,7 +107,7 @@ class Views::Directory::Home < Views::Base
   # :lg is the base heading's top margin.
   def activity_heading(kicker, heading)
     UI::Stack(gap: :lg) do
-      div(class: 'allcaps-label text-tertiary') { kicker }
+      UI::Kicker(tone: :muted) { kicker }
       UI::Heading() { heading }
     end
   end
@@ -136,7 +136,7 @@ class Views::Directory::Home < Views::Base
   def render_cta_card(heading:, body:, link_text:, link_path:, head_class:)
     div(class: 'flex flex-col rounded-card overflow-hidden') do
       div(class: "#{head_class} px-5") do
-        h3(class: 'font-serif font-regular text-card', style: 'color: var(--color-foreground-dark)') { heading }
+        UI::Heading(level: 3, size: :card, tone: :strong) { heading }
       end
       div(class: 'bg-home-background-3 px-5 py-4 flex-1') do
         p(class: 'text-detail leading-relaxed text-tertiary mb-4') { body }

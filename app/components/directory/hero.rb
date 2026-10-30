@@ -23,7 +23,7 @@ class Components::Directory::Hero < Components::Directory::Base
   def render_content
     div(class: 'pb-6 lg:pb-10') do
       h1(class: 'hero-title') { @title }
-      div(class: 'text-base leading-relaxed max-w-(--width-prose) mb-6') { @subtitle } if @subtitle
+      UI::Text(as: :div, measure: :prose, spacing: :lg) { @subtitle } if @subtitle
       render_search if @search_path
       render_jump_links
     end

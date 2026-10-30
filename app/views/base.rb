@@ -39,6 +39,7 @@ class Views::Base < Phlex::HTML
   include PlaceCal::ThemeTranslation
   # theme_scope and part (doc/extensions.md, "Styling hooks")
   include PlaceCal::Theming::Hooks
+  include Components::SidebarHeading
 
   # Optional heading between a listing page's hero and its filters, for example
   # "All partners" (#3368). Core ships the locale key empty, so nothing renders
@@ -46,12 +47,6 @@ class Views::Base < Phlex::HTML
   def list_heading(key)
     text = t(key)
     h2(class: 'list-heading') { text } if text.present?
-  end
-
-  # Directory sidebar-card heading, mirroring Components::Base#sidebar_heading
-  # so views composing sidebar cards inline use the identical treatment.
-  def sidebar_heading(text)
-    h3(class: 'allcaps-label text-tertiary mt-1 mb-2') { text }
   end
 
   if Rails.env.development?

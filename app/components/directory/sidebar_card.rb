@@ -12,7 +12,7 @@ class Components::Directory::SidebarCard < Components::Directory::Base
   def view_template(&block)
     div(class: 'rounded-card overflow-hidden') do
       div(class: 'bg-foreground px-4 py-3', style: 'color: var(--color-background)') do
-        div(class: 'allcaps-label mb-0.5 opacity-80') { @eyebrow } if @eyebrow
+        UI::Kicker(tone: :faded, spacing: :xs) { @eyebrow } if @eyebrow
         render_title
       end
       div(class: 'bg-home-background-3 px-4 py-3', &block) if block

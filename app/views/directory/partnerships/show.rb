@@ -67,8 +67,8 @@ class Views::Directory::Partnerships::Show < Views::Base
   end
 
   def render_partners
-    div(class: 'pt-4 pb-8') do
-      h2(class: 'allcaps-label text-tertiary mb-4') { t('directory.partnerships.show.partners_heading') }
+    div(class: 'pt-6 pb-8') do
+      UI::Kicker(as: :h2, tone: :muted, spacing: :md) { t('directory.partnerships.show.partners_heading') }
       div(class: 'grid grid-cols-1 md:grid-cols-2 gap-x-6') do
         displayed_partners.each do |partner|
           Directory::PartnerMini(partner:, event_count: @partner_event_counts[partner.id] || 0)
@@ -81,8 +81,8 @@ class Views::Directory::Partnerships::Show < Views::Base
   def render_events
     return if flat_events.empty?
 
-    div(class: 'py-6') do
-      h2(class: 'allcaps-label text-tertiary mb-4') { t('directory.partnerships.show.upcoming_events') }
+    div(class: 'pt-8 pb-6') do
+      UI::Kicker(as: :h2, tone: :muted, spacing: :md) { t('directory.partnerships.show.upcoming_events') }
       flat_events.first(10).each do |event|
         Directory::EventRow(event:)
       end

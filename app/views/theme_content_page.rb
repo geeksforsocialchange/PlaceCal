@@ -138,7 +138,7 @@ class Views::ThemeContentPage < Views::Base
 
   # Override for a page laid out in its own sections rather than one markdown column.
   def page_content
-    div(class: 'markdown-content max-w-(--width-prose-lg) text-base leading-relaxed') do
+    UI::Text(as: :div, measure: :prose_lg, class: 'markdown-content') do
       page_body
     end
   end

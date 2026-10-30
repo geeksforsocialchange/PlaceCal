@@ -31,7 +31,7 @@ class Views::Join::Pricing < Views::Join::Base
         breadcrumb([t('join.nav.pricing')], on_secondary: true)
         UI::Cluster(gap: :xl, justify: :between, wrap: false) do
           UI::Stack(gap: :sm) do
-            div(class: 'allcaps-label text-foreground-dark') { t('join.pricing.eyebrow') }
+            UI::Kicker(tone: :strong) { t('join.pricing.eyebrow') }
             h1(class: 'join-headline') { t('join.pricing.title') }
           end
           image_tag('home/our_story/collective_ownership.png', alt: '',
@@ -74,9 +74,8 @@ class Views::Join::Pricing < Views::Join::Base
         tbody do
           t('join.pricing.rows').each { |row| render_compare_row(row) }
           tr do
-            th(scope: 'colgroup', colspan: 4,
-               class: 'allcaps-label text-secondary-strong text-left px-4 pt-6 pb-2 border-b-2 border-rules') do
-              t('join.pricing.table.support_heading')
+            th(scope: 'colgroup', colspan: 4, class: 'text-left px-4 pt-6 pb-2 border-b-2 border-rules') do
+              UI::Kicker(tone: :accent) { t('join.pricing.table.support_heading') }
             end
           end
           t('join.pricing.support_rows').each { |row| render_compare_row(row) }
@@ -87,7 +86,7 @@ class Views::Join::Pricing < Views::Join::Base
 
   def render_tier_column_header(tier)
     th(scope: 'col', class: 'text-left align-top px-4 pb-4 border-b-2 border-foreground') do
-      div(class: 'allcaps-label text-secondary-strong') { t("join.pricing.tiers.#{tier}.name") }
+      UI::Kicker(tone: :accent) { t("join.pricing.tiers.#{tier}.name") }
       p(class: 'font-serif text-base leading-tight text-foreground mt-2 mb-2.5 min-h-[2.4em]') do
         t("join.pricing.tiers.#{tier}.who")
       end
@@ -146,7 +145,7 @@ class Views::Join::Pricing < Views::Join::Base
     UI::Card(tag: :article, padding: :lg) do
       UI::Stack(gap: :md) do
         UI::Stack(gap: :sm) do
-          div(class: 'allcaps-label text-secondary-strong') { t("join.pricing.tiers.#{tier}.name") }
+          UI::Kicker(tone: :accent) { t("join.pricing.tiers.#{tier}.name") }
           p(class: 'font-serif text-lg leading-snug text-foreground') { t("join.pricing.tiers.#{tier}.who_card") }
           div(class: 'font-serif text-3xl leading-none text-foreground') do
             span(class: 'block text-detail text-tertiary mb-0.5') { t('join.pricing.from') } if tier_from?(tier)
@@ -178,12 +177,12 @@ class Views::Join::Pricing < Views::Join::Base
       # A column that turns into a row on wide screens, rather than a row that wraps.
       div(class: 'flex flex-col lg:flex-row lg:items-center gap-x-10 gap-y-3') do
         div(class: 'shrink-0') do
-          div(class: 'allcaps-label text-secondary-strong') { t('join.pricing.starter.name') }
+          UI::Kicker(tone: :accent) { t('join.pricing.starter.name') }
           div(class: 'font-serif text-2xl leading-tight text-foreground') { t('join.pricing.starter.price') }
         end
         UI::Stack(gap: :sm) do
           t('join.pricing.starter.body').each do |paragraph|
-            p(class: 'text-base leading-relaxed text-foreground max-w-(--width-prose)') { paragraph }
+            UI::Text(tone: :foreground, measure: :prose) { paragraph }
           end
         end
       end
@@ -207,7 +206,7 @@ class Views::Join::Pricing < Views::Join::Base
   def render_addon(addon)
     UI::Card(padding: :lg, class: 'flex flex-col') do
       UI::Heading(level: 3, size: :subhead, spacing: :sm) { addon[:title] }
-      p(class: 'text-base leading-relaxed text-tertiary mt-0 mb-4') { addon[:body] }
+      UI::Text(tone: :muted, spacing: :md) { addon[:body] }
       div(class: 'font-serif text-xl text-foreground mt-auto') do
         plain t('join.pricing.extras.poa')
         small(class: 'block font-sans text-sm font-semibold text-tertiary mt-0.5') do
@@ -221,7 +220,7 @@ class Views::Join::Pricing < Views::Join::Base
     training = t('join.pricing.extras.training')
     UI::Card(padding: :lg, class: 'flex flex-col') do
       UI::Heading(level: 3, size: :subhead, spacing: :sm) { training[:title] }
-      p(class: 'text-base leading-relaxed text-tertiary mt-0 mb-2') { training[:body] }
+      UI::Text(tone: :muted, spacing: :sm) { training[:body] }
       ul(class: 'list-none p-0 mt-auto mb-0') do
         training[:rows].each do |row|
           muted = row[:standard] ? 'text-tertiary' : ''
@@ -265,7 +264,7 @@ class Views::Join::Pricing < Views::Join::Base
       end
       div(class: 'col-start-2 md:col-start-auto') do
         UI::Heading(level: 3, size: :subhead, spacing: :xs) { step[:title] }
-        p(class: 'text-base leading-relaxed text-tertiary m-0') { step[:body] }
+        UI::Text(tone: :muted, spacing: :none) { step[:body] }
       end
     end
   end
@@ -284,7 +283,7 @@ class Views::Join::Pricing < Views::Join::Base
                   plain item[:question]
                   span(class: 'font-sans font-bold text-2xl text-secondary-strong transition-transform group-open:rotate-45', aria_hidden: 'true') { '+' }
                 end
-                p(class: 'mt-0 pb-4 text-base leading-relaxed text-tertiary max-w-(--width-prose)') { item[:answer] }
+                UI::Text(tone: :muted, measure: :prose, spacing: :xl) { item[:answer] }
               end
             end
           end
