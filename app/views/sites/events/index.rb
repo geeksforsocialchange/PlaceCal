@@ -79,7 +79,6 @@ class Views::Sites::Events::Index < Views::Base
     Sites::EventList(
       events:,
       period:,
-      primary_neighbourhood: site.primary_neighbourhood,
       show_neighbourhoods: site.show_neighbourhoods?,
       badge_zoom_level: site.badge_zoom_level&.to_s,
       next_date: next_date&.dtstart,

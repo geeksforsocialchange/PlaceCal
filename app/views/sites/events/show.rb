@@ -26,7 +26,6 @@ class Views::Sites::Events::Show < Views::Base
       Sites::Event(
         display_context: :page,
         event:,
-        primary_neighbourhood: site.primary_neighbourhood,
         site_tagline: site.tagline,
         back: [t('events.show.back'), events_path]
       )
