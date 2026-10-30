@@ -5,13 +5,21 @@ class Components::UI::Input < Components::Base
   BOX = 'w-full h-(--height-field) border-2 border-rules rounded-sm px-4 text-sm bg-background text-foreground transition-colors'
   # The border darkens on focus, and keyboard focus also gets the base outline, so focus isn't shown by colour alone.
   FOCUS = 'focus:border-foreground'
+  # A taller box with larger text, for a standalone form such as the contact form.
+  ROOMY = 'w-full border-2 border-rules-dark rounded-field px-3.5 py-3 text-base font-regular bg-background text-foreground ' \
+          'transition duration-150 placeholder:text-tertiary hover:border-tertiary ' \
+          'focus:border-foreground focus:bg-surface focus:ring-3 focus:ring-focus-ring'
 
   prop :type, String, default: 'text'
+  prop :variant, _Union(:compact, :roomy), default: :compact
+  # Renders a textarea this many rows tall instead of an input.
+  prop :rows, _Nilable(Integer), default: nil
   # Adds a Show/Hide button to a password field.
   prop :reveal, _Boolean, default: false
   prop :attributes, Hash, :**
 
   def view_template
+    return render_textarea if @rows
     return render_input unless @reveal
 
     div(class: 'relative', data: { controller: 'password-reveal', **reveal_values }) do
@@ -32,9 +40,16 @@ class Components::UI::Input < Components::Base
   private
 
   def render_input(extra_class = nil, **data)
-    input(type: @type, class: [BOX, FOCUS, extra_class, @attributes[:class]].compact.join(' '),
+    input(type: @type, class: [*box, extra_class, @attributes[:class]].compact.join(' '),
           **@attributes.except(:class, :data), data: { **@attributes.fetch(:data, {}), **data })
   end
+
+  def render_textarea
+    textarea(rows: @rows, class: [*box, 'min-h-29.25 resize-y leading-normal', @attributes[:class]].compact.join(' '),
+             **@attributes.except(:class, :value)) { @attributes[:value] }
+  end
+
+  def box = @variant == :roomy ? [ROOMY] : [BOX, FOCUS]
 
   def reveal_values
     %i[show_label hide_label shown hidden].to_h do |key|

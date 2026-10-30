@@ -18,6 +18,15 @@ class UI::FieldPreview < Lookbook::Preview
     end)
   end
 
+  # @label Strong
+  # @notes A bold label marked required or optional, with the roomy input, as on the contact form.
+  def strong
+    render(Frame.new do |f|
+      f.render(Components::UI::Field.new(label: "Name", id: "name", variant: :strong, required: true)) { f.render Components::UI::Input.new(id: "name", variant: :roomy) }
+      f.render(Components::UI::Field.new(label: "Why", id: "why", variant: :strong, required: false)) { f.render Components::UI::Input.new(id: "why", variant: :roomy, rows: 4) }
+    end)
+  end
+
   # @label Select
   def select
     render(Frame.new { |f| f.render Components::UI::Select.new(name: "category", label_text: "Category", options: [{ id: "arts", name: "Arts" }]) })

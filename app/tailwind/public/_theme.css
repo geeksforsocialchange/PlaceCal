@@ -134,12 +134,10 @@
 	--color-cream: #fdf6e9;
 	/* Warmer cream for the pricing page's Starter strip */
 	--color-cream-warm: #fdf0dd;
-	/* Used for top map stripe and navigation in some states */
+	/* Muted text and icons, and navigation in some states */
 	--color-tertiary: #786551;
-	/* Muted small print and rules on the dark footer */
+	/* Muted small print and rules on the dark footer, and the band above a full-width map */
 	--color-tertiary-light: #998675;
-	/* Bottom of the double line on the map */
-	--color-map-stripe-second: #c7b299;
 	/* Plain white surfaces: focused inputs, unchecked checkbox boxes */
 	--color-surface: #fff;
 	/* Translucent white over a dark/branded panel */
@@ -164,8 +162,6 @@
 	--shadow-dot: 0 1px 3px var(--color-dot-shadow);
 	/* Filter dropdowns */
 	--shadow-dropdown: 7px 7px 20px 0 rgb(153 134 117 / 0.83);
-	/* The top band of the map's double stripe */
-	--shadow-map-stripe: 0 -10px 0 0 var(--color-tertiary-light);
 	/* raised panels: dropdowns, hovered cards */
 	--shadow-lg:
 		0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
@@ -231,6 +227,8 @@ this file).
 	--width-prose: 620px;
 	--width-prose-md: 700px;
 	--width-prose-lg: 800px;
+	/* short helper notes beside a button */
+	--width-note: 34ch;
 
 	/* Layout widths */
 	--width-sidebar: 340px;
@@ -273,11 +271,8 @@ this file).
 	--color-secondary-strong: var(--color-secondary-strong);
 	--color-cream: var(--color-cream);
 	--color-cream-warm: var(--color-cream-warm);
-	/* Used for top map stripe and navigation in some states */
 	--color-tertiary: var(--color-tertiary);
 	--color-tertiary-light: var(--color-tertiary-light);
-	/* Bottom of the double line on the map */
-	--color-map-stripe-second: var(--color-map-stripe-second);
 	--color-surface: var(--color-surface);
 	--color-overlay-light: var(--color-overlay-light);
 	--color-focus-ring: var(--color-focus-ring);
@@ -294,7 +289,6 @@ this file).
 	--shadow-marker: var(--shadow-marker);
 	--shadow-dot: var(--shadow-dot);
 	--shadow-dropdown: var(--shadow-dropdown);
-	--shadow-map-stripe: var(--shadow-map-stripe);
 	--shadow-lg: var(--shadow-lg);
 
 	/* Tablet portrait, landscape, desktop. Literal: media queries can't read a runtime var */

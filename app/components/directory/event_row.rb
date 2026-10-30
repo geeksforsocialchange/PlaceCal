@@ -83,8 +83,9 @@ class Components::Directory::EventRow < Components::Directory::Base
     end
   end
 
+  # Raleway's glyphs sit below the middle of their line box, so a centred icon looks high without the nudge
   def render_icon(name)
-    raw(view_context.icon(name, size: nil, css_class: 'w-3.5 h-3.5 text-tertiary opacity-55 shrink-0'))
+    raw(view_context.icon(name, size: nil, css_class: 'w-3.5 h-3.5 translate-y-px text-tertiary opacity-55 shrink-0'))
   end
 
   def show_place?

@@ -22,7 +22,7 @@ class Components::UI::SearchBar < Components::Base
 
   def view_template
     form(action: @action, method: 'get',
-         class: ['flex items-center rounded-full p-1 pl-2', FOCUS, TONES[@tone][:bar], @attributes[:class]].compact.join(' '),
+         class: ['flex items-center rounded-pill p-1 pl-2', FOCUS, TONES[@tone][:bar], @attributes[:class]].compact.join(' '),
          **@attributes.except(:class)) do
       div(class: 'px-2 text-tertiary') { raw(view_context.icon(:search, size: nil, css_class: 'size-4')) }
       input(type: 'text', name: @name, value: @value, placeholder: @placeholder, aria_label: @placeholder,

@@ -13,16 +13,19 @@ class Components::UI::Button < Components::Base
     light: 'bg-home-background border-home-background text-foreground hover:bg-foreground hover:border-foreground hover:text-background',
     join: 'bg-secondary-strong border-secondary-strong text-background hover:bg-foreground hover:border-foreground',
     # Secondary fill inside a ring, e.g. the local-site home call to action; dark text keeps AA on every colour theme.
-    secondary: 'bg-secondary border-background ring-2 ring-secondary text-foreground-dark hover:bg-foreground hover:ring-foreground hover:text-background'
+    secondary: 'bg-secondary border-background ring-2 ring-secondary text-foreground-dark hover:bg-foreground hover:ring-foreground hover:text-background',
+    # Dark fill that turns to the page colour on hover, outlined by a ring outside the border.
+    dark_invert: 'bg-foreground border-transparent ring-2 ring-foreground text-background hover:bg-background hover:text-foreground'
   }.freeze
 
   SIZES = {
     sm: 'px-4 text-sm',
     md: 'px-5 text-detail',
-    lg: 'px-6 text-base'
+    lg: 'px-6 text-base',
+    xl: 'px-8 text-base'
   }.freeze
 
-  PILL_PADDING = { sm: 'py-1.5', md: 'py-2', lg: 'py-3' }.freeze
+  PILL_PADDING = { sm: 'py-1.5', md: 'py-2', lg: 'py-3', xl: 'py-3.25' }.freeze
 
   prop :variant, _Union(*VARIANTS.keys)
   prop :size, _Union(*SIZES.keys), default: :md
