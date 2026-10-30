@@ -1,0 +1,3 @@
+# Branch switches, not single-file checkouts
+[ "$3" = "1" ] || exit 0
+bin/sync-deps "$1" "$2"
