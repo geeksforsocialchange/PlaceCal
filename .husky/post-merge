@@ -1,1 +1,3 @@
+# Older commits and CI have nothing to sync
+[ -z "${CI:-}" ] && [ -x bin/sync-deps ] || exit 0
 bin/sync-deps ORIG_HEAD HEAD
