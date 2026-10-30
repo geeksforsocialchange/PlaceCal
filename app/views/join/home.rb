@@ -23,7 +23,7 @@ class Views::Join::Home < Views::Join::Base
           div(class: 'allcaps-label text-secondary-strong mb-2') { t('join.home.hero.kicker') }
           h1(class: 'join-headline m-0 mb-4') { t('join.home.hero.title') }
           p(class: 'text-base leading-relaxed max-w-(--width-prose) mt-0 mb-6') { t('join.home.hero.intro') }
-          div(class: 'flex gap-2.5 flex-wrap items-center') do
+          UI::Cluster(gap: :sm) do
             UI::Button(variant: :join, size: :lg, href: join_demo_path) { t('join.home.hero.cta_demo') }
             UI::Button(variant: :outline, href: join_our_story_path) { t('join.home.hero.cta_how') }
           end
