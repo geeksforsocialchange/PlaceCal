@@ -38,9 +38,8 @@
 @import "./public/_variants.css";
 @import "./public/_base.css";
 @import "./public/_utilities.css";
+@import "./public/components/_markdown.css";
 
 /* Unlayered, so they win over utilities */
 @import "./public/components/_select.css";
-@import "./public/components/_cluster-map.css";
-@import "./public/components/_markdown.css";
 @import "./public/components/_map.css";

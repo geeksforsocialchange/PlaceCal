@@ -130,8 +130,8 @@ Both admin and public interfaces use **importmap-rails** with native ES modules 
 - **Source**: `app/tailwind/public_tailwind.css`, the entry point: Tailwind, Leaflet's CSS from npm, the `@source` list, then the partials in `app/tailwind/public/`:
   - `_theme.css`: design tokens (the override contract themes rely on)
   - `_themes.css`: the built-in colour themes, picked by `data-theme` on `<html>`
-  - `_fonts.css`, `_variants.css` (custom variants), `_base.css` (element defaults), `_utilities.css` (named utilities)
-  - `components/`: the few unlayered component rules, one file per component, imported in a fixed order
+  - `_fonts.css`, `_variants.css` (custom variants), `_base.css` (element defaults), `_utilities.css` (named utilities, grouped into containers and sizing, type, grids and decorations)
+  - `components/`: CSS for markup utilities can't reach, one file per component, such as `_map.css` for Leaflet's markup and markers (unlayered, to beat Leaflet's own unlayered CSS) and `_markdown.css` for rendered markdown (in the `components` layer)
 - **Output**: `app/assets/builds/public_tailwind.css`, built by `yarn build`
 - MapLibre's CSS loads from jsDelivr at the version `config/importmap.rb` pins, added by the map's Stimulus controller
 - `yarn build` also copies Leaflet's images from npm into `app/assets/builds/images/`, where Leaflet's CSS looks for them

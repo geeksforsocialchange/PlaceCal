@@ -88,7 +88,7 @@ class Views::Join::Pricing < Views::Join::Base
   def render_tier_column_header(tier)
     th(scope: 'col', class: 'text-left align-top px-4 pb-4 border-b-2 border-foreground') do
       div(class: 'allcaps-label text-secondary-strong') { t("join.pricing.tiers.#{tier}.name") }
-      p(class: 'font-serif text-base leading-tight text-foreground mt-2 mb-2.5 min-h-[2.4em]') do
+      p(class: 'font-serif text-base leading-tight text-foreground mt-2 mb-2.5 min-h-two-lines') do
         t("join.pricing.tiers.#{tier}.who")
       end
       div(class: 'font-serif text-stat leading-none text-foreground whitespace-nowrap') do

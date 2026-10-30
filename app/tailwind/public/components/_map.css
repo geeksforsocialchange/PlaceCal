@@ -18,3 +18,29 @@
 .leaflet-container a {
 	color: var(--color-foreground);
 }
+
+/* The directory homepage cluster map's markers; display: flex has to beat Leaflet's display: block on marker icons */
+.cluster-marker {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	background: var(--color-foreground);
+	color: var(--color-background);
+	font-weight: 800;
+	font-size: 0.75rem;
+	box-shadow: var(--shadow-marker);
+}
+.cluster-md {
+	font-size: 0.85rem;
+}
+.cluster-lg {
+	font-size: 1rem;
+}
+
+.partner-dot {
+	background: var(--color-secondary);
+	border-radius: 50%;
+	border: 2px solid var(--color-background);
+	box-shadow: var(--shadow-dot);
+}

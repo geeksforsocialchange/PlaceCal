@@ -38,7 +38,7 @@ class Views::Join::Audience < Views::Join::Base
 
   def render_pitch
     section(class: 'py-10') do
-      div(class: 'container-public grid lg:grid-cols-[1.4fr_1fr] gap-10 items-start') do
+      div(class: 'container-public grid lg:grid-cols-split-start gap-10 items-start') do
         div do
           UI::Heading(spacing: :md) { t('join.audiences.how_heading') }
           p(class: 'text-base leading-relaxed mt-0 mb-8') { t("#{prefix}.details") }
