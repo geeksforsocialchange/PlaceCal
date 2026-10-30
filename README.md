@@ -37,7 +37,9 @@ bin/setup
 
 This will install dependencies, create the database, and seed it with development data.
 
-When `.ruby-version` changes, run `bin/ruby-update`. It installs the new Ruby with rbenv, runs `bin/setup`, then removes older patch versions of that Ruby (0.5 to 1GB each) unless another project next to this one uses them.
+Ruby and Node updates arrive together in one Renovate PR on the first of each month. After you pull or switch branches, git hooks run `bin/sync-deps`, which installs a new Ruby with rbenv, then gems and node packages, whenever `.ruby-version` or a lockfile has changed. In a new git worktree, run `bin/sync-deps` once yourself, because the hooks only exist after its first `yarn install`.
+
+`bin/ruby-update` installs the Ruby in `.ruby-version`, runs `bin/setup`, then removes older patch versions of that Ruby (0.5 to 1GB each) unless another project next to this one uses them.
 
 - **Login**: `root@placecal.org` / `password`
 
