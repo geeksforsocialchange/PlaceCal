@@ -25,7 +25,7 @@ class Components::UI::Card < Components::Base
 
     if @href
       # with-no-sass keeps the legacy SCSS link colour off.
-      a(href: @href, class: "with-no-sass no-underline text-foreground transition-all hover:border-secondary-deep hover:-translate-y-0.5 #{css}",
+      a(href: @href, class: "with-no-sass no-underline text-foreground transition-all hover:border-secondary-deep motion-safe:hover:-translate-y-0.5 #{css}",
         **attributes, &)
     else
       send(@tag, class: css, **attributes, &)
