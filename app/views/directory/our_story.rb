@@ -51,15 +51,16 @@ class Views::Directory::OurStory < Views::Base
   def render_start
     section(class: 'pt-11 pb-9') do
       narrow do
-        div(class: 'allcaps-label text-tertiary mb-2') { t("#{T}.start.eyebrow") }
-        UI::Heading(class: 'mt-0 mb-5') { t("#{T}.start.heading") }
-        div(class: 'grid md:grid-cols-2 gap-8') do
-          t("#{T}.start.body").each do |paragraph|
-            p(class: 'my-0 text-base leading-relaxed text-foreground') { paragraph }
+        UI::Stack(gap: :lg) do
+          eyebrow_heading(t("#{T}.start.eyebrow"), t("#{T}.start.heading"))
+          div(class: 'grid md:grid-cols-2 gap-8') do
+            t("#{T}.start.body").each do |paragraph|
+              p(class: 'my-0 text-base leading-relaxed text-foreground') { paragraph }
+            end
           end
-        end
-        div(class: 'grid grid-cols-1 md:grid-cols-3 gap-3 mt-7') do
-          t("#{T}.stats").each { |stat| render_stat(stat) }
+          div(class: 'grid grid-cols-1 md:grid-cols-3 gap-3') do
+            t("#{T}.stats").each { |stat| render_stat(stat) }
+          end
         end
       end
     end
@@ -88,21 +89,26 @@ class Views::Directory::OurStory < Views::Base
     end
   end
 
+  def eyebrow_heading(eyebrow, heading)
+    UI::Stack(gap: :sm) do
+      div(class: 'allcaps-label text-tertiary') { eyebrow }
+      UI::Heading() { heading }
+    end
+  end
+
   def render_problems
-    feature_section(:problems, PROBLEMS, eyebrow_class: 'text-tertiary',
-                                         wrapper_class: 'bg-home-background border-t-5 border-rules py-11')
+    feature_section(:problems, PROBLEMS, wrapper_class: 'bg-home-background border-t-5 border-rules py-11')
   end
 
   def render_solutions
-    feature_section(:solutions, SOLUTIONS, eyebrow_class: 'text-tertiary', wrapper_class: 'pt-11 pb-3')
+    feature_section(:solutions, SOLUTIONS, wrapper_class: 'pt-11 pb-3')
   end
 
-  def feature_section(section_key, items, eyebrow_class:, wrapper_class:)
+  def feature_section(section_key, items, wrapper_class:)
     section(class: wrapper_class) do
       narrow do
-        div(class: "allcaps-label #{eyebrow_class} mb-2") { t("#{T}.#{section_key}.eyebrow") }
-        UI::Heading(class: 'mt-0 mb-9') { t("#{T}.#{section_key}.heading") }
-        div(class: 'flex flex-col gap-12') do
+        UI::Stack(gap: :xl) do
+          eyebrow_heading(t("#{T}.#{section_key}.eyebrow"), t("#{T}.#{section_key}.heading"))
           items.each { |feature| render_feature(section_key, feature) }
         end
       end
@@ -118,14 +124,14 @@ class Views::Directory::OurStory < Views::Base
                   alt: t("#{base}.image_alt"),
                   class: 'w-full max-w-76 h-auto object-contain'
       end
-      div do
-        div(class: 'flex items-baseline gap-2.5 mb-2') do
+      UI::Stack(gap: :sm) do
+        UI::Cluster(gap: :sm, align: :baseline) do
           # Deepened coral (vs --color-secondary-deep) so the large numeral clears WCAG AA (3:1) on cream.
           span(class: 'font-serif text-2xl leading-none', style: 'color: var(--color-secondary-dark)') { feature[:num] } if feature[:num]
           span(class: 'allcaps-label text-tertiary') { t("#{base}.kicker") }
         end
-        h3(class: 'mt-0 mb-2 text-subhead leading-tight font-bold text-foreground') { t("#{base}.title") }
-        p(class: 'my-0 text-base leading-relaxed text-tertiary') { t("#{base}.body") }
+        h3(class: 'text-subhead leading-tight font-bold text-foreground') { t("#{base}.title") }
+        p(class: 'text-base leading-relaxed text-tertiary') { t("#{base}.body") }
       end
     end
   end
@@ -133,14 +139,18 @@ class Views::Directory::OurStory < Views::Base
   def render_turning
     section(class: 'bg-secondary text-foreground py-13') do
       narrow('text-center') do
-        h2(class: 'mx-auto mt-0 mb-4 max-w-(--width-prose-lg) font-serif font-regular text-display leading-tight text-foreground text-balance') do
-          t("#{T}.turning.heading")
+        UI::Stack(gap: :lg) do
+          UI::Stack(gap: :md) do
+            h2(class: 'mx-auto max-w-(--width-prose-lg) font-serif font-regular text-display leading-tight text-foreground text-balance') do
+              t("#{T}.turning.heading")
+            end
+            # --color-foreground-dark (the design's text-on-colour brown) clears WCAG AA on the pink panel; the prior opacity-85 brown did not.
+            p(class: 'mx-auto max-w-(--width-prose) text-base leading-relaxed', style: 'color: var(--color-foreground-dark)') do
+              t("#{T}.turning.body")
+            end
+          end
+          div { image_tag "#{IMAGE_BASE}/logo_onpink.svg", alt: t("#{T}.turning.logo_alt"), class: 'inline h-10' }
         end
-        # --color-foreground-dark (the design's text-on-colour brown) clears WCAG AA on the pink panel; the prior opacity-85 brown did not.
-        p(class: 'mx-auto my-0 max-w-(--width-prose) text-base leading-relaxed', style: 'color: var(--color-foreground-dark)') do
-          t("#{T}.turning.body")
-        end
-        image_tag "#{IMAGE_BASE}/logo_onpink.svg", alt: t("#{T}.turning.logo_alt"), class: 'inline h-10 mt-7'
       end
     end
   end
@@ -148,13 +158,15 @@ class Views::Directory::OurStory < Views::Base
   def render_cta
     section(class: 'pt-12 pb-4') do
       narrow do
-        UI::Card(variant: :highlight, padding: :none, class: 'flex flex-wrap items-center justify-between gap-6 px-10 py-8') do
-          h2(class: 'my-0 font-serif font-regular text-display leading-tight') do
-            t("#{T}.cta.heading")
-          end
-          UI::Button(variant: :light, size: :lg, href: @cta_path || get_in_touch_path) do
-            plain @cta_label || t("#{T}.cta.button")
-            span(aria_hidden: 'true') { safe('→') }
+        UI::Card(variant: :highlight, padding: :xl) do
+          UI::Cluster(gap: :lg, justify: :between) do
+            h2(class: 'my-0 font-serif font-regular text-display leading-tight') do
+              t("#{T}.cta.heading")
+            end
+            UI::Button(variant: :light, size: :lg, href: @cta_path || get_in_touch_path) do
+              plain @cta_label || t("#{T}.cta.button")
+              span(aria_hidden: 'true') { safe('→') }
+            end
           end
         end
       end
