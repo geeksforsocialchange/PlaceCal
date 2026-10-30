@@ -18,6 +18,9 @@ module PreviewSupport
     def to_param = id.to_s
   end
 
+  NeighbourhoodMock = Struct.new(:name, :shortname, :district) { def name_from_badge_zoom(_level) = name }
+  PartnerMock = Struct.new(:id, :name) { def to_param = id.to_s }
+
   RetinaMock = Struct.new(:url)
   AvatarMock = Struct.new(:retina)
   UserMock = Struct.new(:full_name, :email, :phone, :avatar)
@@ -60,6 +63,13 @@ module PreviewSupport
       description: "A gentle walk around the local park, every week.",
       rrule: [{ "table" => { "frequency" => "weekly" } }]
     )
+  end
+
+  # Every optional line: duration, repeats, online, organiser, place and neighbourhood.
+  def sample_full_event
+    hulme = NeighbourhoodMock.new(name: "Hulme", shortname: "Hulme", district: NeighbourhoodMock.new(shortname: "Manchester"))
+    sample_event(id: 7, summary: "Repair Café", rrule: [{ "table" => { "frequency" => "weekly" } }], online_address: "https://example.org/live",
+                 organiser: PartnerMock.new(id: 1, name: "Hulme Community Garden Centre"), neighbourhood: hulme)
   end
 
   def sample_all_day_event

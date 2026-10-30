@@ -27,6 +27,11 @@ class Components::UI::Button < Components::Base
 
   PILL_PADDING = { sm: 'py-1.5', md: 'py-2', lg: 'py-3', xl: 'py-3.25' }.freeze
 
+  theme_scope :button, parts: { root: 'The button: an <a> when it has an href, otherwise a <button>.' }, variants: { root: VARIANTS.keys },
+                       tokens: %i[--color-primary --color-primary-light --color-foreground --color-foreground-dark --color-background
+                                  --color-home-background --color-tertiary --color-secondary --color-secondary-strong
+                                  --radius-pill --radius-sm --height-field --text-sm --text-detail --text-base --font-weight-bold]
+
   prop :variant, _Union(*VARIANTS.keys)
   prop :size, _Union(*SIZES.keys), default: :md
   # :field squares the corners and matches the height of the filter form controls.
@@ -36,12 +41,12 @@ class Components::UI::Button < Components::Base
   prop :attributes, Hash, :**
 
   def view_template(&)
-    attributes = @attributes.except(:class)
+    attributes = part(:root, variant: @variant, class: css, **@attributes.except(:class))
 
     if @href
-      a(href: @href, class: css, **attributes, &)
+      a(href: @href, **attributes, &)
     else
-      button(type: @type, class: css, **attributes, &)
+      button(type: @type, **attributes, &)
     end
   end
 

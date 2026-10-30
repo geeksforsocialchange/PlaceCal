@@ -3,6 +3,21 @@
 class Views::Sites::Events::Show < Views::Base
   register_value_helper :html_to_plaintext
 
+  theme_scope :event_details,
+              parts: {
+                root: 'Everything under the event\'s details row on its page.',
+                description: 'The event\'s description, as its organiser wrote it (paragraphs, lists, headings).',
+                links: 'The buttons under the description: the event\'s webpage and a join link for streams. Only when the event has them.',
+                info: 'The group of headed sections below: contact, address, organiser and venue.',
+                contact: 'The organiser\'s contact section. Its heading only when the event has an organiser.',
+                contact_name: 'The organiser\'s name, linked, heading the contact details.',
+                address: 'The event\'s address section.',
+                organiser: 'The organiser section, linking to their page.',
+                venue: 'The venue section. Only when the venue is a different partner from the organiser.',
+                section_body: 'The text under each section\'s heading.'
+              },
+              tokens: %i[--text-sm --leading-normal --color-foreground --color-primary]
+
   prop :event, ::Event, reader: :private
   prop :site, _Nilable(::Site), reader: :private
   prop :map, _Nilable(Array), reader: :private
@@ -237,7 +252,7 @@ class Views::Sites::Events::Show < Views::Base
   end
 
   def event_button(href, label)
-    UI::Button(variant: :outline, href:, class: 'btn') { label }
+    UI::Button(variant: :outline, href:) { label }
   end
 
   def info_row(icon_name, &)
@@ -259,14 +274,14 @@ class Views::Sites::Events::Show < Views::Base
   # ── Local site layout ──
 
   def render_event_details
-    div(class: 'container-narrowish mb-12 event__fullinfo e-content') do
-      raw safe(event.description_html.to_s)
-      div(class: 'event__links flex flex-col items-start gap-2 mt-10 empty:hidden') do
+    div(**part(:root, class: 'container-narrowish mb-12 e-content')) do
+      div(**part(:description)) { raw safe(event.description_html.to_s) }
+      div(**part(:links, class: 'flex flex-col items-start gap-2 mt-10 empty:hidden')) do
         render_event_link
         render_online_link
       end
 
-      div(class: 'event__columns grid gap-4 items-start mt-5.5 lg:grid-cols-3') do
+      div(**part(:info, class: 'grid gap-4 items-start mt-5.5 lg:grid-cols-3')) do
         render_contact_info
         render_event_address
         render_event_organiser
@@ -279,11 +294,11 @@ class Views::Sites::Events::Show < Views::Base
   # preflight flattens every heading to the inherited size with no margin, so
   # the promotion changes the outline and not the look.
   def render_contact_info
-    div(class: 'event__column') do
+    div(**part(:contact)) do
       if event.organiser
         UI::RuledHeading(size: :lg, spacing: :section) { t('events.show.contact_heading') }
-        div(class: 'event__column-body text-sm leading-normal') do
-          p(class: 'contact_details__partner') { link_to(event.organiser.name, partner_path(event.organiser)) }
+        div(**part(:section_body, class: 'text-sm leading-normal')) do
+          p(**part(:contact_name)) { link_to(event.organiser.name, partner_path(event.organiser)) }
           Shared::ContactDetails(partner: event.organiser, social_labels: site&.core_theme? ? :handle : :network)
         end
       end
@@ -291,18 +306,18 @@ class Views::Sites::Events::Show < Views::Base
   end
 
   def render_event_address
-    div(class: 'event__column') do
+    div(**part(:address)) do
       UI::RuledHeading(size: :lg, spacing: :section) { t('events.show.address_heading') }
-      div(class: 'event__column-body text-sm leading-normal') do
+      div(**part(:section_body, class: 'text-sm leading-normal')) do
         Shared::Address(address: event.address, raw_location: event.raw_location_from_source)
       end
     end
   end
 
   def render_event_organiser
-    div(class: 'event__column') do
+    div(**part(:organiser)) do
       UI::RuledHeading(size: :lg, spacing: :section) { t('events.show.organiser_heading') }
-      div(class: 'event__column-body text-sm leading-normal') do
+      div(**part(:section_body, class: 'text-sm leading-normal')) do
         span { link_to event.organiser, event.organiser }
       end
     end
@@ -313,9 +328,9 @@ class Views::Sites::Events::Show < Views::Base
   end
 
   def render_event_venue
-    div(class: 'event__column') do
+    div(**part(:venue)) do
       UI::RuledHeading(size: :lg, spacing: :section) { t('events.show.venue_heading') }
-      div(class: 'event__column-body text-sm leading-normal') do
+      div(**part(:section_body, class: 'text-sm leading-normal')) do
         span { link_to event.place, event.place }
       end
     end

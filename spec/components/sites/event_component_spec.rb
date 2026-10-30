@@ -63,8 +63,8 @@ RSpec.describe Components::Sites::Event, type: :component do
   context "with list context" do
     it "renders list structure" do
       rendered
-      expect(page).to have_css(".h-event .event__header")
-      expect(page).to have_no_css(".event--full")
+      expect(page).to have_css('.h-event [data-scope="event"][data-part="header"]')
+      expect(page).to have_no_css('[data-scope="event"][data-variant="page"]')
     end
 
     it "renders link to event" do
@@ -103,8 +103,8 @@ RSpec.describe Components::Sites::Event, type: :component do
 
       it "shows only the start day and a plain time range" do
         rendered
-        expect(page).to have_css(".event__date", exact_text: /\A\s*23 Oct\s*\z/)
-        expect(page).to have_css(".event__time", text: /11pm \u2013\s+3am/)
+        expect(page).to have_css('[data-scope="event"][data-part="detail"][data-variant="date"]', exact_text: /\A\s*23 Oct\s*\z/)
+        expect(page).to have_css('[data-scope="event"][data-part="detail"][data-variant="time"]', text: /11pm \u2013\s+3am/)
       end
     end
 
@@ -114,8 +114,8 @@ RSpec.describe Components::Sites::Event, type: :component do
 
       it "shows the start day and puts the end date on the time line" do
         rendered
-        expect(page).to have_css(".event__date", exact_text: /\A\s*23 Oct\s*\z/)
-        expect(page).to have_css(".event__time", text: "11pm \u2013 25 Oct 3pm")
+        expect(page).to have_css('[data-scope="event"][data-part="detail"][data-variant="date"]', exact_text: /\A\s*23 Oct\s*\z/)
+        expect(page).to have_css('[data-scope="event"][data-part="detail"][data-variant="time"]', text: "11pm \u2013 25 Oct 3pm")
       end
     end
   end
@@ -123,7 +123,7 @@ RSpec.describe Components::Sites::Event, type: :component do
   context "with page context" do
     it "renders page structure" do
       render_inline(described_class.new(display_context: :page, event:, site_tagline: "The Community Calendar"))
-      expect(page).to have_css(".event.event--full")
+      expect(page).to have_css('[data-scope="event"][data-part="root"][data-variant="page"]')
     end
 
     it "wraps in h-event" do
@@ -144,7 +144,7 @@ RSpec.describe Components::Sites::Event, type: :component do
       it "puts the organiser under the title as the hero standfirst" do
         render_inline(described_class.new(display_context: :page, event:))
 
-        expect(page).to have_css(".hero .hero__standfirst", text: "By Community Centre")
+        expect(page).to have_css('[data-scope="hero"][data-part="standfirst"]', text: "By Community Centre")
         expect(page).to have_link("Community Centre", href: "/partners/community-centre")
       end
     end
@@ -152,7 +152,7 @@ RSpec.describe Components::Sites::Event, type: :component do
     it "renders no neighbourhood line when the event has no neighbourhood" do
       render_inline(described_class.new(display_context: :page, event:))
 
-      expect(page).to have_no_css(".event__neighbourhood-line")
+      expect(page).to have_no_css('[data-scope="event"][data-part="detail"][data-variant="neighbourhood"]')
     end
 
     context "when the event has a neighbourhood" do
@@ -163,13 +163,13 @@ RSpec.describe Components::Sites::Event, type: :component do
       it "renders the neighbourhood with its district" do
         render_inline(described_class.new(display_context: :page, event:))
 
-        expect(page).to have_css(".event__detail.event__neighbourhood-line", text: "Moss Side, Manchester")
+        expect(page).to have_css('[data-scope="event"][data-part="detail"][data-variant="neighbourhood"]', text: "Moss Side, Manchester")
       end
 
       it "leaves it off the list card" do
         render_inline(described_class.new(display_context: :list, event:))
 
-        expect(page).to have_no_css(".event__neighbourhood-line")
+        expect(page).to have_no_css('[data-scope="event"][data-part="detail"][data-variant="neighbourhood"]')
       end
     end
   end
@@ -182,8 +182,8 @@ RSpec.describe Components::Sites::Event, type: :component do
 
     it "shows both when organiser differs from place" do
       rendered
-      expect(page).to have_css(".event__organiser", text: "Book Club")
-      expect(page).to have_css(".event__location", text: "Central Library")
+      expect(page).to have_css('[data-scope="event"][data-part="detail"][data-variant="organiser"]', text: "Book Club")
+      expect(page).to have_css('[data-scope="event"][data-part="detail"][data-variant="place"]', text: "Central Library")
     end
 
     context "when organiser is the same as place" do
@@ -191,8 +191,8 @@ RSpec.describe Components::Sites::Event, type: :component do
 
       it "shows only the place" do
         rendered
-        expect(page).to have_no_css(".event__organiser")
-        expect(page).to have_css(".event__location", text: "Central Library")
+        expect(page).to have_no_css('[data-scope="event"][data-part="detail"][data-variant="organiser"]')
+        expect(page).to have_css('[data-scope="event"][data-part="detail"][data-variant="place"]', text: "Central Library")
       end
     end
 
@@ -201,8 +201,8 @@ RSpec.describe Components::Sites::Event, type: :component do
 
       it "hides the organiser but shows the place" do
         rendered
-        expect(page).to have_no_css(".event__organiser")
-        expect(page).to have_css(".event__location", text: "Central Library")
+        expect(page).to have_no_css('[data-scope="event"][data-part="detail"][data-variant="organiser"]')
+        expect(page).to have_css('[data-scope="event"][data-part="detail"][data-variant="place"]', text: "Central Library")
       end
     end
 
@@ -211,8 +211,8 @@ RSpec.describe Components::Sites::Event, type: :component do
 
       it "shows the organiser but hides the place" do
         rendered
-        expect(page).to have_css(".event__organiser", text: "Book Club")
-        expect(page).to have_no_css(".event__location")
+        expect(page).to have_css('[data-scope="event"][data-part="detail"][data-variant="organiser"]', text: "Book Club")
+        expect(page).to have_no_css('[data-scope="event"][data-part="detail"][data-variant="place"]')
       end
     end
 
@@ -222,8 +222,8 @@ RSpec.describe Components::Sites::Event, type: :component do
 
       it "shows organiser and address text" do
         rendered
-        expect(page).to have_css(".event__organiser", text: "Book Club")
-        expect(page).to have_css(".event__location", text: "456 Oak Ave")
+        expect(page).to have_css('[data-scope="event"][data-part="detail"][data-variant="organiser"]', text: "Book Club")
+        expect(page).to have_css('[data-scope="event"][data-part="detail"][data-variant="place"]', text: "456 Oak Ave")
       end
     end
 
@@ -233,8 +233,8 @@ RSpec.describe Components::Sites::Event, type: :component do
 
       it "shows the organiser but no place" do
         rendered
-        expect(page).to have_css(".event__organiser", text: "Book Club")
-        expect(page).to have_no_css(".event__location")
+        expect(page).to have_css('[data-scope="event"][data-part="detail"][data-variant="organiser"]', text: "Book Club")
+        expect(page).to have_no_css('[data-scope="event"][data-part="detail"][data-variant="place"]')
       end
     end
   end
@@ -245,8 +245,13 @@ RSpec.describe Components::Sites::Event, type: :component do
 
     it "shows online indicator" do
       rendered
-      expect(page).to have_css(".event__online", text: "Online")
-      expect(page).to have_no_css(".event__repeats")
+      expect(page).to have_css('[data-scope="event"][data-part="detail"][data-variant="online"]', text: "Online")
+      expect(page).to have_no_css('[data-scope="event"][data-part="detail"][data-variant="repeats"]')
+    end
+
+    it "marks the event as online for themes" do
+      rendered
+      expect(page).to have_css('[data-scope="event"][data-part="root"][data-state="online"]')
     end
   end
 
@@ -256,8 +261,9 @@ RSpec.describe Components::Sites::Event, type: :component do
 
     it "shows repeat frequency" do
       rendered
-      expect(page).to have_css(".event__repeats", text: "Weekly")
-      expect(page).to have_no_css(".event__online")
+      expect(page).to have_css('[data-scope="event"][data-part="detail"][data-variant="repeats"]', text: "Weekly")
+      expect(page).to have_no_css('[data-scope="event"][data-part="detail"][data-variant="online"]')
+      expect(page).to have_no_css('[data-scope="event"][data-state]')
     end
   end
 

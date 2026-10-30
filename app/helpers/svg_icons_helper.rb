@@ -182,7 +182,7 @@ module SvgIconsHelper
   # @return [String] HTML-safe SVG element
   # Size mapping to Tailwind classes (size-N for better JIT detection)
   # Helpful Tailwind classes: `text-{colour}`, `stroke-{i}`, `stroke-[{f}]`
-  def svg_icon(name, size: '5', css_class: '')
+  def svg_icon(name, size: '5', css_class: '', data: {})
     entry = ICONS[name.to_sym]
     return content_tag(:span, "[icon:#{name}]", class: 'text-error') unless entry
 
@@ -221,7 +221,7 @@ module SvgIconsHelper
 
     tag.svg(
       class: classes,
-      'data-icon-name': name.to_s,
+      data: { icon_name: name.to_s, **data },
       fill:,
       stroke:,
       'stroke-linecap': stroke_linecap,

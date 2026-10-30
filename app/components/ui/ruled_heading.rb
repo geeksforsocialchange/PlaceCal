@@ -11,6 +11,10 @@ class Components::UI::RuledHeading < Components::Base
   # :section is the rhythm of the partner and event pages' detail sections.
   SPACING = { none: nil, section: 'my-5.5' }.freeze
 
+  theme_scope :ruled_heading, parts: { root: 'The heading element (h1 to h4) with its rule underneath.' },
+                              tokens: %i[--color-foreground --color-rules --color-background --color-secondary --text-base --text-xl
+                                         --font-serif --text-3xl --text-2xl --font-weight-bold --font-weight-extra-bold --tracking-wide]
+
   prop :level, _Union(1, 2, 3, 4), default: 2
   prop :caps, _Boolean, default: false
   prop :rule, _Union(*RULES.keys), default: :inline
@@ -22,6 +26,6 @@ class Components::UI::RuledHeading < Components::Base
   def view_template(&)
     css = ['ruled-heading text-foreground pb-2 border-b-3', TONES[@tone], RULES[@rule], SIZES[@size], SPACING[@spacing],
            @caps ? 'allcaps' : 'font-bold', @attributes[:class]].compact.join(' ')
-    public_send(:"h#{@level}", class: css, **@attributes.except(:class), &)
+    public_send(:"h#{@level}", **part(:root, class: css, **@attributes.except(:class)), &)
   end
 end

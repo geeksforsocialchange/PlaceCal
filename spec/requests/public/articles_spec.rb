@@ -185,7 +185,7 @@ RSpec.describe "Public Articles (News)", type: :request do
       article = create(:article, is_draft: false)
       get news_url(article, host: "#{site.slug}.lvh.me")
 
-      expect(Capybara.string(response.body)).not_to have_css(".hero a[href='#{news_index_path}']")
+      expect(Capybara.string(response.body)).not_to have_css("[data-scope='hero'][data-part='root'] a[href='#{news_index_path}']")
     end
 
     # Page actions row (Components::Sites::PageActions, #3368): previous/next by

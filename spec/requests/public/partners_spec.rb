@@ -115,7 +115,7 @@ RSpec.describe "Public Partners", type: :request do
     it "leaves the way back to the index to the breadcrumb, with no hero back link" do
       get partner_url(partner, host: "#{site.slug}.lvh.me")
 
-      expect(Capybara.string(response.body)).not_to have_css(".hero a[href='#{partners_path}']")
+      expect(Capybara.string(response.body)).not_to have_css("[data-scope='hero'][data-part='root'] a[href='#{partners_path}']")
     end
 
     # Page actions row (Components::Sites::PageActions, #3368): back, then the feed.

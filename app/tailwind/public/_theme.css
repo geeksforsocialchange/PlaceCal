@@ -2,10 +2,10 @@
 
    OVERRIDE CONTRACT
    Every themeable value (colour, font, radius, shadow) is a plain custom
-   property on `:root` below. The built-in colour themes re-declare some of
-   them in _themes.css; an extension theme does the same in its own stylesheet,
-   loaded after public_tailwind.css (`site.stylesheet_link`). Nothing else
-   needs changing.
+   property on `:root` below. This file and the built-in colour themes in
+   _themes.css are imported into the `tokens` cascade layer, so an extension
+   theme overrides any token with a plain unlayered `:root` rule in its own
+   stylesheet, whatever the site's data-theme. Nothing else needs changing.
 
    The `@theme inline` block underneath only maps Tailwind's utility
    namespaces onto those properties. Because it is `inline`, Tailwind
@@ -22,16 +22,6 @@
 :root {
 	--root-font-size: 18px;
 	--root-line-height: 1.5;
-	font-size: var(--root-font-size);
-	line-height: var(--root-line-height);
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-
-	/* allow transition between keywords (i.e. `auto`, `min-content`) and numerics
-	not in firefox yet https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/interpolate-size#browser_compatibility */
-	interpolate-size: allow-keywords;
-	/* transition discrete properties (i.e. `display`) at the start/end of transition rather than at 50% */
-	transition-behavior: allow-discrete;
 
 	/* Fonts */
 
@@ -76,7 +66,7 @@
 	--text-stat: 2rem;
 	/* h1 */
 	--text-3xl: 2.22222rem;
-	/* hero responsive title */
+	/* directory hero and not-found titles (hero-title, text-hero); the local-site hero title is an h1 at --text-3xl */
 	--text-hero: clamp(2rem, 4vw, 2.8rem);
 	/* responsive section titles on marketing pages */
 	--text-display: clamp(1.8rem, 3.6vw, 2.5rem);

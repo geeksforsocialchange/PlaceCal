@@ -17,6 +17,19 @@ class Shared::HeroPreview < Lookbook::Preview
     render Components::Shared::Hero.new("Events", "PlaceCal Hulme")
   end
 
+  # @label Listing page
+  # @notes A theme fills the standfirst and its detail through locale keys.
+  def listing
+    render Components::Shared::Hero.new("Partners", "PlaceCal Hulme",
+                                        standfirst: "Groups and venues near you",
+                                        standfirst_detail: "Every partner here publishes their events on PlaceCal.")
+  end
+
+  # @label Record page with back link
+  def record_page
+    render Components::Shared::Hero.new("Repair Café", "PlaceCal Hulme", section: "Events", back: ["All events", "/events"])
+  end
+
   # @label With schema property
   def with_schema
     render Components::Shared::Hero.new("Yoga for Beginners", nil, schema: "name")

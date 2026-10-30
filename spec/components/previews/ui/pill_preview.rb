@@ -42,6 +42,12 @@ class UI::PillPreview < Lookbook::Preview
     end)
   end
 
+  # @label Neighbourhood
+  # @notes A partner's or event's neighbourhood.
+  def neighbourhood
+    render(Components::UI::Pill.new(variant: :neighbourhood)) { "Hulme" }
+  end
+
   class Row < Phlex::HTML
     def initialize(css: nil)
       super()

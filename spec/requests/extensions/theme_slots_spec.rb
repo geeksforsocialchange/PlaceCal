@@ -111,7 +111,7 @@ RSpec.describe "Theme slots", type: :request do
     expect(response.body).to include("Fixture standfirst for events")
 
     get "http://themed.lvh.me/partners"
-    expect(response.body).to include('hero__standfirst-detail">Fixture detail for partners')
+    expect(Nokogiri::HTML(response.body).at_css('[data-scope="hero"][data-part="standfirst-detail"]')&.text).to eq("Fixture detail for partners")
   end
 
   it "renders the theme's list headings on the index pages" do
@@ -197,7 +197,7 @@ RSpec.describe "Theme slots", type: :request do
 
     expect(response).to have_http_status(:ok)
     expect(response.body).to include("09 Nov")
-    expect(response.body).to include('event__organiser-prefix">by </span>')
+    expect(Nokogiri::HTML(response.body).at_css('[data-scope="event"][data-part="organiser-prefix"]')&.text).to eq("by ")
     expect(response.body).to include("Thu 10 Nov")
   end
 
@@ -205,7 +205,7 @@ RSpec.describe "Theme slots", type: :request do
     get "http://themed.lvh.me/events/#{event.id}"
 
     expect(response).to have_http_status(:ok)
-    expect(response.body).to include('hero__section">Fixture events section</p>')
+    expect(Nokogiri::HTML(response.body).at_css('[data-scope="hero"][data-part="kicker"]')&.text).to eq("Fixture events section")
     expect(response.body).to include("9th November 2022")
   end
 
@@ -265,7 +265,7 @@ RSpec.describe "Theme slots", type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include('id="footer-nav-heading"')
       expect(response.body).not_to include('data-example-theme="footer"')
-      expect(response.body).not_to include("hero__standfirst")
+      expect(response.body).not_to include('data-part="standfirst"')
       expect(response.body).not_to include("list-heading")
       expect(response.body).not_to include("header__cta")
       expect(response.body).not_to include("header__toggle-label")
@@ -274,12 +274,12 @@ RSpec.describe "Theme slots", type: :request do
       expect(response.body).to include("Go to date")
       expect(response.body).not_to include("day-strip")
       expect(response.body).to include(" 9 Nov")
-      expect(response.body).not_to include("event__organiser-prefix")
+      expect(response.body).not_to include('data-part="organiser-prefix"')
     end
 
     aggregate_failures "show page and partners" do
       get "http://plain.lvh.me/events/#{event.id}"
-      expect(response.body).not_to include("hero__section")
+      expect(response.body).not_to include('data-part="kicker"')
       expect(response.body).to include(" 9 Nov")
 
       # Core sites carry their own partners heading (the outline would skip a

@@ -36,7 +36,7 @@ Then("I should see the event {string}") do |name|
 end
 
 Then("I should see {int} events") do |count|
-  expect(page).to have_selector(".event", count:)
+  expect(page).to have_selector('[data-scope="event"][data-part="root"]', count:)
 end
 
 # Paginator steps

@@ -1,0 +1,41 @@
+<% scope = PlaceCal::Theming.scope_for_preview(preview) %>
+<% survey = PlaceCal::Theming.survey(scope, preview, self) if scope %>
+<style>
+  .theming-panel { padding: var(--lb-panel-padding); }
+  .theming-panel table { border-collapse: collapse; margin-block: 0.5rem 1.25rem; }
+  .theming-panel th, .theming-panel td { padding: 0.25rem 1rem 0.25rem 0; text-align: left; vertical-align: top; }
+</style>
+<div class="theming-panel">
+  <%= lb_prose(size: :sm) do %>
+  <% if scope.nil? %>
+    <p>This component has no theming hooks. Its markup and classes are internal.</p>
+  <% else %>
+    <h4>Scope <code><%= scope.css_name %></code></h4>
+    <p>Target a part with both attributes, <code>[data-scope="<%= scope.css_name %>"][data-part="…"]</code>. Parts are in render order. Everything else in this component's markup, including its classes, is internal. See "Styling hooks" in doc/extensions.md.</p>
+    <% if survey[:errors].any? %>
+      <p><strong>These previews failed to render, so the columns below leave them out:</strong></p>
+      <ul><% survey[:errors].each do |label, error| %><li><%= label %>: <code><%= error %></code></li><% end %></ul>
+    <% end %>
+    <table>
+      <thead><tr><th>Part</th><th>What it is</th><th>Element</th><th>Inside</th><th>In previews</th><th>Variants</th><th>States</th></tr></thead>
+      <tbody>
+        <% scope.parts.each do |part| %>
+          <% name = PlaceCal::Theming.css_name(part) %>
+          <% seen = survey[:parts][name] %>
+          <tr>
+            <td><code><%= name %></code></td>
+            <td><%= scope.descriptions[part] %></td>
+            <td><%= seen[:elements].map { "<#{it}>" }.join(", ") %></td>
+            <td><%= seen[:parents].join(", ") %></td>
+            <td><%= seen[:scenarios].join(", ") %></td>
+            <td><% scope.variants.fetch(part, []).each do |variant| %><code>[data-variant="<%= PlaceCal::Theming.css_name(variant) %>"]</code> <% end %></td>
+            <td><% scope.states.fetch(part, []).each do |state| %><code>[data-state="<%= PlaceCal::Theming.css_name(state) %>"]</code> <% end %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <h4>Tokens it reads</h4>
+    <p><% scope.tokens.each do |token| %><code><%= token %></code> <% end %></p>
+  <% end %>
+  <% end %>
+</div>
