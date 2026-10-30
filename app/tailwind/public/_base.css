@@ -59,8 +59,13 @@
 	blockquote {
 		margin-inline: 40px;
 	}
-	a:not(.with-reset) {
+	a {
+		color: var(--color-foreground);
 		text-decoration-line: underline;
+		text-decoration-color: var(--color-primary);
+		text-decoration-thickness: 2px;
+		text-underline-offset: 3px;
+		text-decoration-skip-ink: none;
 	}
 	hr {
 		margin-block: 0.5em;

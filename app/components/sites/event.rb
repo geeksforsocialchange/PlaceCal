@@ -41,7 +41,7 @@ class Components::Sites::Event < Components::Base
   def render_list_header
     div(class: 'event__header grid md:grid-cols-main-auto md:items-center') do
       h3(class: "inline-block mb-2.5#{' text-md' if @nested}") do
-        link_to(summary, event_path(id), class: 'p-name u-url with-no-sass text-foreground no-underline', data: { turbo_frame: '_top' })
+        link_to(summary, event_path(id), class: 'p-name u-url text-foreground no-underline', data: { turbo_frame: '_top' })
       end
       div(class: 'neighbourhood event__neighbourhood max-md:hidden') { UI::Pill(variant: :neighbourhood, class: 'mt-3') { neighbourhood_name } } if neighbourhood_name && @show_neighbourhoods
     end

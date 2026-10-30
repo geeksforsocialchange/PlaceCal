@@ -211,3 +211,8 @@
 	padding: 0;
 	list-style-type: none;
 }
+
+/* Underlines that break around descenders, unlike the base link rule's */
+@utility skip-ink-auto {
+	text-decoration-skip-ink: auto;
+}

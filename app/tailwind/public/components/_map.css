@@ -13,3 +13,8 @@
 	color: var(--color-foreground);
 	font-size: 0.9rem;
 }
+
+/* Leaflet colours its own links blue or black; every map keeps them in the text colour */
+.leaflet-container a {
+	color: var(--color-foreground);
+}

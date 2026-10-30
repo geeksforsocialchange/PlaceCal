@@ -42,7 +42,7 @@ class Views::Sites::Partners::Show < Views::Base
     repeating: 'select-caret appearance-none py-1 pl-3 pr-9 border-2 border-primary rounded-check bg-background text-foreground ' \
                'font-sans text-sm font-bold normal-case tracking-normal cursor-pointer',
     actions: 'flex justify-center mt-6 print:hidden',
-    more: 'with-no-sass py-1 px-3.5 border-2 border-primary rounded-check bg-primary text-foreground text-sm font-bold no-underline'
+    more: 'py-1 px-3.5 border-2 border-primary rounded-check bg-primary text-foreground text-sm font-bold no-underline'
   }.freeze
 
   def view_template

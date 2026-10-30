@@ -41,12 +41,12 @@ class Views::Devise::Base < Views::Base
     div(class: 'flex flex-col gap-1 text-sm') do
       if controller_name != 'sessions'
         a(href: new_session_path(resource_name),
-          class: 'text-foreground underline hover:decoration-primary') { t('devise.shared.links.log_in') }
+          class: 'underline hover:decoration-primary') { t('devise.shared.links.log_in') }
       end
 
       if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations'
         a(href: new_password_path(resource_name),
-          class: 'text-foreground underline hover:decoration-primary') { t('devise.shared.links.forgot_your_password') }
+          class: 'underline hover:decoration-primary') { t('devise.shared.links.forgot_your_password') }
       end
     end
   end

@@ -43,7 +43,7 @@ class Components::RegionFilter < Components::Base
 
   def option_classes(active)
     [
-      'with-no-sass inline-flex items-center rounded-pill border px-3 py-1 text-detail no-underline',
+      'inline-flex items-center rounded-pill border px-3 py-1 text-detail no-underline',
       (active ? 'bg-primary text-background border-primary font-bold' : 'bg-background text-foreground border-rules hover:bg-tertiary')
     ].join(' ')
   end
