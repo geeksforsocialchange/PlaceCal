@@ -6,6 +6,9 @@
 </style>
 <div class="theming-panel">
   <%= lb_prose(size: :sm) do %>
+  <% if scope.nil? %>
+    <p>This component has no theming hooks. Its markup and classes are internal.</p>
+  <% else %>
     <h4>Scope <code><%= scope.css_name %></code></h4>
     <p>Target a part with both attributes. Everything else in this component's markup, including its classes, is internal. See "Styling hooks" in doc/extensions.md.</p>
     <table>
@@ -23,5 +26,6 @@
     </table>
     <h4>Tokens it reads</h4>
     <p><% scope.tokens.each do |token| %><code><%= token %></code> <% end %></p>
+  <% end %>
   <% end %>
 </div>

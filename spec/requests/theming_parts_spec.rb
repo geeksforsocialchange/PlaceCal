@@ -40,4 +40,12 @@ RSpec.describe "Theming parts", type: :request do
     panel = Nokogiri::HTML(response.body)
     expect(panel.text).to include('[data-scope="hero"][data-part="standfirst-detail"]', "--color-primary")
   end
+
+  it "opens the inspector of a component without hooks" do
+    card = Lookbook::Previews.all.find { it.lookup_path == "ui/card" }
+    get "#{card.url_path}/#{card.scenarios.first.name}"
+
+    expect(response).to be_successful
+    expect(response.body).to include("This component has no theming hooks.")
+  end
 end

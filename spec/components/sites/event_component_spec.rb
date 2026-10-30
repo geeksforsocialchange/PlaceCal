@@ -248,6 +248,11 @@ RSpec.describe Components::Sites::Event, type: :component do
       expect(page).to have_css('[data-scope="event"][data-part="online"]', text: "Online")
       expect(page).to have_no_css('[data-scope="event"][data-part="repeats"]')
     end
+
+    it "marks the event as online for themes" do
+      rendered
+      expect(page).to have_css('[data-scope="event"][data-part="root"][data-online]')
+    end
   end
 
   context "with repeating event" do
@@ -258,6 +263,7 @@ RSpec.describe Components::Sites::Event, type: :component do
       rendered
       expect(page).to have_css('[data-scope="event"][data-part="repeats"]', text: "Weekly")
       expect(page).to have_no_css('[data-scope="event"][data-part="online"]')
+      expect(page).to have_no_css('[data-scope="event"][data-online]')
     end
   end
 
