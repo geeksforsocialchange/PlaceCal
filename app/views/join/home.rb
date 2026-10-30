@@ -72,7 +72,7 @@ class Views::Join::Home < Views::Join::Base
       div(class: 'container-public grid lg:grid-cols-[1fr_1.2fr] gap-10 items-center') do
         div do
           div(class: 'allcaps-label text-tertiary mb-1') { t('join.home.why.kicker') }
-          UI::Heading(class: 'm-0 mb-3') { t('join.home.why.heading') }
+          UI::Heading(spacing: :md) { t('join.home.why.heading') }
           p(class: 'mt-0 mb-4') { t('join.home.why.intro') }
           ul(class: 'list-none p-0 m-0') do
             t('join.home.why.problems').each do |problem|

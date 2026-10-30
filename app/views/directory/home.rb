@@ -70,16 +70,15 @@ class Views::Directory::Home < Views::Base
   end
 
   def render_recent_partners
-    div do
-      div(class: 'allcaps-label text-tertiary') { t('directory.home.activity.kicker') }
-      UI::Heading(class: 'mb-4') { t('directory.home.activity.heading') }
-      div(class: 'flex flex-col gap-2') do
+    UI::Stack(gap: :md) do
+      activity_heading(t('directory.home.activity.kicker'), t('directory.home.activity.heading'))
+      UI::Stack(gap: :sm) do
         partners = @recent_partners.first(5)
         partners.each do |partner|
           Directory::PartnerRow(partner:, event_count: @partner_event_counts[partner.id] || 0)
         end
       end
-      div(class: 'mt-4') do
+      div do
         UI::Button(variant: :outline, href: partners_path) do
           plain t('directory.home.activity.browse_all')
           span { safe('&rarr;') }
@@ -89,20 +88,27 @@ class Views::Directory::Home < Views::Base
   end
 
   def render_upcoming_events
-    div do
-      div(class: 'allcaps-label text-tertiary') { t('directory.home.events.kicker') }
-      UI::Heading(class: 'mb-4') { t('directory.home.events.heading') }
+    UI::Stack(gap: :md) do
+      activity_heading(t('directory.home.events.kicker'), t('directory.home.events.heading'))
       div do
         flat_events.first(5).each do |event|
           Directory::EventRow(event:)
         end
       end
-      div(class: 'mt-4') do
+      div do
         UI::Button(variant: :outline, href: events_path) do
           plain t('directory.home.events.filter_by_place')
           span { safe('&rarr;') }
         end
       end
+    end
+  end
+
+  # :lg is the base heading's top margin, so these kickers sit as the partnerships one does.
+  def activity_heading(kicker, heading)
+    UI::Stack(gap: :lg) do
+      div(class: 'allcaps-label text-tertiary') { kicker }
+      UI::Heading() { heading }
     end
   end
 
