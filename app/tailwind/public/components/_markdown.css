@@ -20,10 +20,9 @@
 .markdown-content li {
 	@apply pl-1;
 }
-.markdown-content a {
-	@apply underline;
-	color: var(--color-foreground);
-}
-.markdown-content a:hover {
-	@apply no-underline;
+/* In base so a theme's own link rules can override it */
+@layer base {
+	.markdown-content a:hover {
+		@apply no-underline;
+	}
 }

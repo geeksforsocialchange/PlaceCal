@@ -6,12 +6,11 @@
 }
 
 /* Leaflet builds its own popup markup and ships unlayered CSS, so these stay unlayered too */
-.map :is(.leaflet-container, .leaflet-popup-content) {
+.leaflet-container {
 	font-family: var(--font-sans);
 }
-.map :is(.leaflet-container, .leaflet-popup-content) a {
-	color: var(--color-foreground);
-	font-size: 0.9rem;
+.leaflet-popup-content a {
+	font-size: var(--text-detail);
 }
 
 /* Leaflet colours its own links blue or black; every map keeps them in the text colour */
