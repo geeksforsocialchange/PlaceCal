@@ -463,6 +463,9 @@ en:
     # Partners
     # -------------------------------------------------------------------------
     partners:
+      destroy:
+        success: "Partner was successfully destroyed."
+        failure: "Partner was not deleted. %{errors}"
       filters:
         has_calendar: "Has Calendar?"
         has_admin: "Has Admin?"

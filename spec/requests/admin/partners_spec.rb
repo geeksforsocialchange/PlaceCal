@@ -569,4 +569,30 @@ RSpec.describe "Admin::Partners", type: :request do
       end
     end
   end
+
+  describe "DELETE /admin/partners/:id" do
+    let(:user) { create(:root_user) }
+    let(:venue) { create(:partner) }
+
+    before { sign_in user }
+
+    it "deletes the partner and says so" do
+      delete admin_partner_url(venue, host: admin_host)
+
+      expect(response).to redirect_to(admin_partners_url(host: admin_host))
+      expect(flash[:success]).to eq("Partner was successfully destroyed.")
+      expect(Partner.exists?(venue.id)).to be(false)
+    end
+
+    it "explains why the partner wasn't deleted when another calendar needs it as its place" do
+      create(:calendar, name: "Weekly sessions", organiser: create(:partner), place: venue, strategy: "place")
+
+      delete admin_partner_url(venue, host: admin_host)
+
+      expect(response).to redirect_to(edit_admin_partner_url(venue, host: admin_host))
+      expect(flash[:success]).to be_nil
+      expect(flash[:danger]).to include("Partner was not deleted", "Weekly sessions")
+      expect(Partner.exists?(venue.id)).to be(true)
+    end
+  end
 end

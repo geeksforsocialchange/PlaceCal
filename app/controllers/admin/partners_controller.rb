@@ -128,13 +128,22 @@ module Admin
 
     def destroy
       authorize @partner
-      @partner.destroy
-      respond_to do |format|
-        format.html do
-          flash[:success] = 'Partner was successfully destroyed.'
-          redirect_to admin_partners_url
+      if @partner.destroy
+        respond_to do |format|
+          format.html do
+            flash[:success] = t('.success')
+            redirect_to admin_partners_url
+          end
+          format.json { head :no_content }
         end
-        format.json { head :no_content }
+      else
+        respond_to do |format|
+          format.html do
+            flash[:danger] = t('.failure', errors: @partner.errors.full_messages.to_sentence)
+            redirect_to edit_admin_partner_path(@partner)
+          end
+          format.json { render json: { errors: @partner.errors.full_messages }, status: :unprocessable_content }
+        end
       end
     end
 
