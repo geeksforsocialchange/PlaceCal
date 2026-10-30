@@ -227,6 +227,8 @@ this file).
 	--width-prose: 620px;
 	--width-prose-md: 700px;
 	--width-prose-lg: 800px;
+	/* short helper notes beside a button */
+	--width-note: 34ch;
 
 	/* Layout widths */
 	--width-sidebar: 340px;

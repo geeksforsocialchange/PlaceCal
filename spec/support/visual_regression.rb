@@ -16,6 +16,7 @@ module VisualRegression
     "partners" => -> { "/partners" },
     "partner" => -> { "/partners/#{riverside_hub.friendly_id}" },
     "news" => -> { "/news" },
+    "get_in_touch" => -> { "/get-in-touch" },
     "article" => -> { "/news/#{vr_article.friendly_id}" },
     "not_found" => -> { "/events/0" }
   }.freeze
@@ -27,8 +28,10 @@ module VisualRegression
     "sign_in" => -> { vr_url("admin", "/users/sign_in") },
     "forgot_password" => -> { vr_url("admin", "/users/password/new") },
     "directory_our_story" => -> { vr_url(nil, "/our-story") },
+    "directory_get_in_touch" => -> { vr_url(nil, "/get-in-touch") },
     "join_home" => -> { vr_url("join", "/") },
-    "join_pricing" => -> { vr_url("join", "/pricing") }
+    "join_pricing" => -> { vr_url("join", "/pricing") },
+    "join_demo" => -> { vr_url("join", "/book-a-demo") }
   }.freeze
 
   # Leaflet arrives from a CDN and may or may not have initialised a map by capture time, so keep only its space.

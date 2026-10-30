@@ -2,8 +2,6 @@
 
 # The get-in-touch form on a local site, delivered to the site's own contact_email.
 class Views::Sites::Join < Views::Base
-  register_output_helper :icon
-
   prop :contact_request, ContactRequest, reader: :private
   prop :site, Site, reader: :private
 
@@ -14,7 +12,7 @@ class Views::Sites::Join < Views::Base
     Shared::Hero(t('sites.join.hero.title'), site.tagline)
 
     div(class: 'container-editorial py-8') do
-      p(class: 'join-note mb-6') { t('sites.join.intro', site: site.name) }
+      p(class: 'join-note max-w-(--width-note) mb-6 text-sm leading-normal text-tertiary') { t('sites.join.intro', site: site.name) }
       Shared::ContactForm(contact_request:, url: get_in_touch_path, email_cta: false)
       render_email_cta
     end
@@ -28,15 +26,6 @@ class Views::Sites::Join < Views::Base
     address = site.contact_email
     return if address.blank?
 
-    div(class: 'join-email-cta') do
-      div do
-        h2(class: 'join-email-cta__heading') { t('sites.join.email_cta.heading') }
-        p(class: 'join-email-cta__body') { t('sites.join.email_cta.body', site: site.name) }
-      end
-      a(href: "mailto:#{address}", class: 'join-email-link with-no-sass') do
-        icon(:mail, size: '4')
-        plain address
-      end
-    end
+    Shared::EmailCta(heading: t('sites.join.email_cta.heading'), body: t('sites.join.email_cta.body', site: site.name), address:)
   end
 end

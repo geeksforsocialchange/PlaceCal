@@ -12,6 +12,17 @@ class UI::PillPreview < Lookbook::Preview
     end)
   end
 
+  # @label Pages
+  # @notes `:page` for a paginator: the current page is selected and the arrow off the end is disabled.
+  def pages
+    render(Row.new do |r|
+      r.render(Components::UI::Pill.new(variant: :page, disabled: true)) { "←" }
+      r.render(Components::UI::Pill.new(variant: :page, selected: true)) { "1" }
+      r.render(Components::UI::Pill.new(variant: :page, href: "#")) { "2" }
+      r.render(Components::UI::Pill.new(variant: :page, href: "#")) { "→" }
+    end)
+  end
+
   # @label Small
   # @notes `:tag` for category links, `:count` for counts, `:muted` for categories on cream cards.
   def small

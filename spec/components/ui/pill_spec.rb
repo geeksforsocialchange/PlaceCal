@@ -23,6 +23,13 @@ RSpec.describe Components::UI::Pill, type: :component do
     expect(page).not_to have_css("[aria-current]")
   end
 
+  it "renders a disabled pill as text, not a link" do
+    render_inline(described_class.new(variant: :page, href: "/partners?page=0", disabled: true)) { "Previous" }
+
+    expect(page).to have_css("span", text: "Previous")
+    expect(page).not_to have_link
+  end
+
   it "rejects an unknown variant" do
     expect { described_class.new(variant: :ghost) }.to raise_error(Literal::TypeError)
   end
