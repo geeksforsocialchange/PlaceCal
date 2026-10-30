@@ -62,11 +62,11 @@ class SitePolicy < ApplicationPolicy
     attrs = %i[id name place_name logo footer_logo is_published tagline description
                badge_zoom_level hero_image hero_image_credit hero_alttext hero_text theme
                contact_email]
-            .push(sites_neighbourhoods_attributes: %i[_destroy id neighbourhood_id relation_type],
-                  sites_neighbourhood_attributes: %i[_destroy id neighbourhood_id relation_type])
 
     root_attrs = %i[slug domain site_admin_id tags sites_neighbourhoods]
-                 .push(tag_ids: [])
+                 .push(tag_ids: [],
+                       sites_neighbourhoods_attributes: %i[_destroy id neighbourhood_id relation_type],
+                       sites_neighbourhood_attributes: %i[_destroy id neighbourhood_id relation_type])
 
     return root_attrs + attrs if user.root?
 

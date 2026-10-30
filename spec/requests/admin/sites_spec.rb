@@ -372,3 +372,60 @@ RSpec.describe "Admin::Sites theme and contact authorisation", type: :request do
     end
   end
 end
+
+RSpec.describe "Admin::Sites neighbourhood authorisation", type: :request do
+  let(:site_admin) { create(:citizen_user) }
+  let!(:site) { create(:site, name: "Original name", site_admin:) }
+  let(:areas) { create_list(:neighbourhood, 4) }
+  let!(:primary) { create(:sites_neighbourhood, site:, neighbourhood: areas[0], relation_type: "Primary") }
+  let!(:secondary) { create(:sites_neighbourhood, site:, neighbourhood: areas[1], relation_type: "Secondary") }
+  let(:row_changes) do
+    {
+      name: "New name",
+      sites_neighbourhoods_attributes: {
+        "0" => { id: secondary.id, neighbourhood_id: areas[1].id, relation_type: "Secondary", _destroy: "1" },
+        "1" => { neighbourhood_id: areas[2].id, relation_type: "Secondary", _destroy: "false" }
+      }
+    }
+  end
+
+  def put_site(attributes)
+    put admin_site_url(site, host: admin_host), params: { site: attributes }
+  end
+
+  def neighbourhood_rows
+    site.sites_neighbourhoods.reload.map { |sn| [sn.neighbourhood_id, sn.relation_type] }
+  end
+
+  context "as the site's admin" do
+    before { sign_in site_admin }
+
+    it "saves their other edits but leaves the neighbourhoods unchanged" do
+      put_site(row_changes)
+
+      expect(response).to redirect_to(edit_admin_site_url(site, host: admin_host))
+      expect(site.reload.name).to eq("New name")
+      expect(neighbourhood_rows).to contain_exactly([areas[0].id, "Primary"], [areas[1].id, "Secondary"])
+    end
+
+    it "cannot change the primary neighbourhood" do
+      put_site(name: "New name",
+               sites_neighbourhood_attributes: { id: primary.id, neighbourhood_id: areas[3].id, relation_type: "Primary" })
+
+      expect(site.reload.name).to eq("New name")
+      expect(site.primary_neighbourhood).to eq(areas[0])
+    end
+  end
+
+  context "as a root user" do
+    before { sign_in create(:root_user) }
+
+    it "can add and remove neighbourhoods" do
+      put_site(row_changes)
+
+      expect(response).to redirect_to(edit_admin_site_url(site, host: admin_host))
+      expect(site.reload.name).to eq("New name")
+      expect(neighbourhood_rows).to contain_exactly([areas[0].id, "Primary"], [areas[2].id, "Secondary"])
+    end
+  end
+end
