@@ -10,7 +10,7 @@ class Components::UI::Card < Components::Base
     highlight: 'bg-secondary text-foreground-dark'
   }.freeze
 
-  PADDING = { none: nil, sm: 'p-4', md: 'p-5', lg: 'p-6' }.freeze
+  PADDING = { none: nil, sm: 'p-4', md: 'p-5', lg: 'p-6', xl: 'p-8' }.freeze
   TAGS = %i[div article aside section form].freeze
 
   prop :variant, _Union(*VARIANTS.keys), default: :outlined

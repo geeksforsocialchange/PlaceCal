@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
 class Components::UI::Field < Components::Base
+  # Sentence-case bold label, shared with UI::Fieldset's legend.
+  STRONG_LABEL = 'flex items-center gap-1.25 font-bold text-detail text-foreground'
+
   VARIANTS = {
     caps: { wrapper: nil, label: 'block allcaps-label text-tertiary mb-1' },
-    # Sentence-case bold label, for a form laid out as a grid of fields
-    strong: { wrapper: 'flex flex-col gap-1.5 min-w-0', label: 'flex items-center gap-1.25 font-bold text-detail text-foreground' }
+    # For a form laid out as a grid of fields
+    strong: { wrapper: 'flex flex-col gap-1.5 min-w-0', label: STRONG_LABEL }
   }.freeze
 
   prop :label, String
