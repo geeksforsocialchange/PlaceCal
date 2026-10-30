@@ -227,7 +227,7 @@ Some parts take their margins in em from core's paragraph and heading defaults, 
 
 ### Where the hooks are listed
 
-Every scoped component's Lookbook page has a **Theming** panel in its drawer. It lists the scope and, for each part in render order, what it is (including when it only renders conditionally), its element, the part it sits inside, the previews it appears in, its selector, variants and states, then the tokens the component reads. The scopes so far are `hero`, `event`, `event-details`, `pill`, `link`, `button` and `ruled-heading`. Components without a scope have no public hooks.
+Every scoped component's Lookbook page has a **Theming** panel in its drawer. It lists the scope and, for each part in render order, what it is (including when it only renders conditionally), its element, the part it sits inside, the previews it appears in, its selector, variants and states, then the tokens the component reads: those of the utilities on its parts and the plain elements inside them, and of core's element styles for their tags (an `h1` reads `--font-serif`). A nested component lists its own. The scopes so far are `hero`, `event`, `event-details`, `pill`, `link`, `button` and `ruled-heading`. Components without a scope have no public hooks.
 
 `PlaceCal::Theming.contract` returns the same list as data (`{ "hero" => { parts: [...], states: {...}, variants: {...}, tokens: [...] } }`). A theme's `spec/host_contract_spec.rb` should check every `data-scope` and `data-part` its CSS names against it, so the theme's CI fails when core drops one.
 

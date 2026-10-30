@@ -15,7 +15,7 @@ class Components::Sites::Event < Components::Base
               },
               variants: { root: %i[card page], detail: %i[time duration date repeats online organiser place neighbourhood] },
               states: { root: %i[online] },
-              tokens: %i[--color-foreground --color-secondary --color-rules --text-detail --text-md]
+              tokens: %i[--color-foreground --color-primary --color-secondary --color-rules --text-detail --text-xl --text-md --font-weight-bold]
 
   prop :display_context, _Nilable(Symbol), default: nil
   prop :event, _Interface(:summary, :dtstart)  # Event model or test double

@@ -11,7 +11,7 @@ class Components::UI::Link < Components::Base
   TONES = { foreground: 'text-foreground', muted: 'text-tertiary', inherit: 'text-inherit' }.freeze
 
   theme_scope :link, parts: { root: 'The link, an <a>.' }, variants: { root: VARIANTS.keys },
-                     tokens: %i[--color-primary --color-foreground --color-tertiary]
+                     tokens: %i[--color-primary --color-foreground --color-tertiary --font-weight-bold]
 
   prop :href, String
   prop :variant, _Union(*VARIANTS.keys), default: :underline

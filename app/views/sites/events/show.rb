@@ -16,7 +16,7 @@ class Views::Sites::Events::Show < Views::Base
                 venue: 'The venue section. Only when the venue is a different partner from the organiser.',
                 section_body: 'The text under each section\'s heading.'
               },
-              tokens: %i[--text-sm --leading-normal]
+              tokens: %i[--text-sm --leading-normal --color-foreground --color-primary]
 
   prop :event, ::Event, reader: :private
   prop :site, _Nilable(::Site), reader: :private

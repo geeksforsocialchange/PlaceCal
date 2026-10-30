@@ -34,16 +34,30 @@ module PlaceCal
 
       def scope_of(class_name) = class_name.safe_constantize.try(:theme_scope)
 
+      # Lookbook previews mirror app/components: UI::PillPreview previews Components::UI::Pill.
+      def component_for_preview(preview) = "Components::#{preview.preview_class_name.delete_suffix('Preview')}"
+
+      def scope_for_preview(preview) = scope_of(component_for_preview(preview))
+
       # Plain data for theme specs: { "hero" => { parts: [...], states: {...}, variants: {...}, tokens: [...] } }.
       def contract
         scopes.transform_values(&:to_contract)
       end
 
-      # For the Lookbook panel: per part, the elements, enclosing parts and preview labels it renders with.
+      # For the Lookbook panel: per part, the elements, enclosing parts and preview labels it renders with,
+      # and each scenario that failed to render.
       def survey(scope, preview, view_context)
         found = Hash.new { |hash, part| hash[part] = { elements: [], parents: [], scenarios: [] } }
+        errors = {}
         preview.scenarios.each do |scenario|
-          html = render_scenario(scenario, view_context) or next
+          html = begin
+            render_scenario(scenario, view_context)
+          rescue StandardError => e
+            errors[scenario.label] = "#{e.class}: #{e.message}"
+            nil
+          end
+          next if html.nil?
+
           html.css(%([data-scope="#{scope.css_name}"][data-part])).each do |element|
             parent = element.ancestors.find { it.is_a?(Nokogiri::XML::Element) && it['data-scope'] == scope.css_name && it['data-part'] }
             seen = found[element['data-part']]
@@ -52,16 +66,15 @@ module PlaceCal
             seen[:scenarios] |= [scenario.label]
           end
         end
-        found
+        { parts: found, errors: }
       end
 
       private
 
+      # nil for a scenario that renders a template rather than a Phlex component.
       def render_scenario(scenario, view_context)
         args = scenario.render_args
         Nokogiri::HTML5.fragment(args[:component].render_in(view_context, &args[:block]).to_s) if args[:component].is_a?(Phlex::SGML)
-      rescue StandardError
-        nil
       end
 
       def registry

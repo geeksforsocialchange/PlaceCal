@@ -13,8 +13,8 @@ class Components::Shared::Hero < Components::Base
                 standfirst: 'The lead paragraph under the title, such as "By <organiser>" on an event page, or a theme\'s intro on a listing. Margins in em.',
                 standfirst_detail: 'A smaller second paragraph after the standfirst, its sibling. Only when the page passes one.'
               },
-              tokens: %i[--color-primary --color-foreground-dark --color-background --font-serif --text-3xl --text-sm
-                         --font-weight-extra-bold --tracking-wide]
+              tokens: %i[--color-primary --color-foreground-dark --color-foreground --color-background --font-serif --text-3xl --text-sm
+                         --font-weight-extra-bold --tracking-wide --leading-tight]
 
   prop :title, String, :positional
   prop :subtitle, _Nilable(String), :positional, default: ''

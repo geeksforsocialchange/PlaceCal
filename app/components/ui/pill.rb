@@ -27,7 +27,7 @@ class Components::UI::Pill < Components::Base
   theme_scope :pill, parts: { root: 'The pill: a link, or a span when it is selected or disabled. Selected carries aria-current.' }, variants: { root: VARIANTS.keys },
                      tokens: %i[--radius-pill --color-primary --color-primary-light --color-foreground --color-foreground-dark
                                 --color-background --color-home-background-3 --color-tertiary --color-overlay-light
-                                --text-sm --text-2xs --text-badge --text-badge-sm --tracking-badge]
+                                --text-sm --text-2xs --text-badge --text-badge-sm --tracking-badge --font-weight-bold --font-weight-extra-bold]
 
   prop :variant, _Union(*VARIANTS.keys), default: :tab
   prop :selected, _Boolean, default: false

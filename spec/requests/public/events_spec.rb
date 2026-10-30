@@ -194,14 +194,15 @@ RSpec.describe "Public Events", type: :request do
       end
     end
 
-    it "marks every declared event-details part when the event has a venue and a webpage" do
+    it "marks every declared event-details part, and declares its tokens, when the event has a venue and a webpage" do
       venue = create(:partner, name: "The Venue", address:)
       full_event = create(:event, organiser: partner, place: venue, publisher_url: "https://example.org/event",
                                   dtstart: 1.day.from_now, address:)
       get event_url(full_event, host: "#{site.slug}.lvh.me")
 
-      rendered = Nokogiri::HTML(response.body).css('[data-scope="event-details"]').map { it["data-part"] }
-      expect(rendered.uniq).to match_array(PlaceCal::Theming.contract["event-details"][:parts])
+      html = Nokogiri::HTML(response.body)
+      expect(html.css('[data-scope="event-details"]').map { it["data-part"] }.uniq).to match_array(PlaceCal::Theming.contract["event-details"][:parts])
+      expect(ThemingTokens.read_by(html, "event-details") - PlaceCal::Theming.contract["event-details"][:tokens]).to be_empty
     end
 
     # Hero back link (#3368): "All events" above the event page hero.

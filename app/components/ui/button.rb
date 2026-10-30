@@ -30,7 +30,7 @@ class Components::UI::Button < Components::Base
   theme_scope :button, parts: { root: 'The button: an <a> when it has an href, otherwise a <button>.' }, variants: { root: VARIANTS.keys },
                        tokens: %i[--color-primary --color-primary-light --color-foreground --color-foreground-dark --color-background
                                   --color-home-background --color-tertiary --color-secondary --color-secondary-strong
-                                  --radius-pill --radius-sm --height-field --text-sm --text-detail --text-base]
+                                  --radius-pill --radius-sm --height-field --text-sm --text-detail --text-base --font-weight-bold]
 
   prop :variant, _Union(*VARIANTS.keys)
   prop :size, _Union(*SIZES.keys), default: :md
