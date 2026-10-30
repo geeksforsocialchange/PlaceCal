@@ -124,14 +124,8 @@ module Admin
         set_site
       rescue ActiveRecord::RecordNotFound
         @primary_neighbourhood_id = nil
-        @sites_neighbourhoods_ids = {}
       else
         @primary_neighbourhood_id = @site.primary_neighbourhood&.id
-
-        # Make a dictionary of { neighbourhood_id => sites_neighbourhood_id }
-        @sites_neighbourhoods_ids =
-          @site.sites_neighbourhoods.map { |sn| { sn.neighbourhood_id => sn.id } }
-               .reduce({}, :merge)
       end
     end
   end
