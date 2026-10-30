@@ -568,7 +568,7 @@ RSpec.describe Partner, type: :model do
       create(:calendar, name: "Weekly sessions", organiser: other_organiser, place: venue, strategy: "place")
 
       expect(venue.destroy).to be(false)
-      expect(venue.errors.full_messages.to_sentence).to include("Weekly sessions")
+      expect(venue.errors.full_messages.to_sentence).to include("Weekly sessions (#{other_organiser.name})")
       expect(described_class.exists?(venue.id)).to be(true)
     end
 

@@ -445,7 +445,10 @@ class Partner < ApplicationRecord
 
   # Another organiser's calendar that needs a default place would be left invalid without it
   def check_not_default_venue
-    names = hosted_calendars.where.not(organiser_id: id).select(&:requires_default_location?).map(&:name)
+    names = hosted_calendars.where.not(organiser_id: id).includes(:organiser).select(&:requires_default_location?).map do |calendar|
+      I18n.t('activerecord.errors.models.partner.attributes.base.default_venue_calendar',
+             calendar: calendar.name, organiser: calendar.organiser&.name)
+    end
     return if names.empty?
 
     errors.add(:base, :default_venue, calendars: names.sort.to_sentence)
