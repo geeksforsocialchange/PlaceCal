@@ -2,9 +2,9 @@
 # as PRs merge to main, with categorised notes + an auto-resolved semver bump.
 # Publishing that draft is what deploys production (see test-and-deploy.yml).
 #
-# Categorisation + version bump are driven by PR labels — but the `autolabeler`
-# below applies those labels automatically from PR titles/branches, so no manual
-# labelling is required. Renovate applies `dependencies` itself. To force a
+# Categorisation + version bump are driven by PR labels. The `autolabeler` below
+# only catches conventional title/branch prefixes, so most PRs are labelled by hand.
+# Renovate and the extension pin PRs apply `dependencies` themselves. To force a
 # specific bump, label the PR `major`/`minor`/`patch` by hand.
 name-template: "v$RESOLVED_VERSION"
 tag-template: "v$RESOLVED_VERSION"
@@ -17,7 +17,9 @@ categories:
   - title: "🔒 Security"
     labels: [security]
   - title: "🧹 Maintenance"
-    labels: [maintenance, dependencies]
+    labels: [maintenance]
+  - title: "📦 Dependencies"
+    labels: [dependencies]
   - title: "📚 Docs"
     labels: [docs]
 
@@ -59,10 +61,10 @@ autolabeler:
         "/^test/i",
         "/^perf/i",
         "/^build/i",
-        "/^upgrade/i",
-        "/^bump/i",
       ]
     branch: ["/^chore/i", "/^refactor/i"]
+  - label: dependencies
+    title: ["/^upgrade/i", "/^bump/i", "/^update dependency/i"]
   - label: breaking
     title: ["/!:/", "/^break/i"]
 
