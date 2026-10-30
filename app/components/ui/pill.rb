@@ -24,6 +24,11 @@ class Components::UI::Pill < Components::Base
     page: 'justify-center min-w-9 h-9 px-2 text-sm font-bold bg-foreground text-background'
   }.freeze
 
+  theme_scope :pill, parts: %i[root], variants: { root: VARIANTS.keys },
+                     tokens: %i[--radius-pill --color-primary --color-primary-light --color-foreground --color-foreground-dark
+                                --color-background --color-home-background-3 --color-tertiary --color-overlay-light
+                                --text-sm --text-2xs --text-badge --text-badge-sm --tracking-badge]
+
   prop :variant, _Union(*VARIANTS.keys), default: :tab
   prop :selected, _Boolean, default: false
   # Greyed out and not a link, such as the previous arrow on the first page.
@@ -34,12 +39,12 @@ class Components::UI::Pill < Components::Base
   def view_template(&)
     look = @selected ? SELECTED.fetch(@variant, SELECTED[:tab]) : VARIANTS[@variant]
     css = [BASE, look, ('opacity-30 pointer-events-none' if @disabled), @attributes[:class]].compact.join(' ')
-    attributes = @attributes.except(:class)
+    attributes = part(:root, variant: @variant, class: css, **@attributes.except(:class))
 
     if @href && !@selected && !@disabled
-      a(href: @href, class: css, **attributes, &)
+      a(href: @href, **attributes, &)
     else
-      span(class: css, aria: { current: ('page' if @selected) }, **attributes, &)
+      span(aria: { current: ('page' if @selected) }, **attributes, &)
     end
   end
 end

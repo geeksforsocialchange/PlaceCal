@@ -1,0 +1,27 @@
+<% scope = PlaceCal::Theming.scope_of("Components::#{preview.preview_class_name.delete_suffix('Preview')}") %>
+<style>
+  .theming-panel { padding: var(--lb-panel-padding); }
+  .theming-panel table { border-collapse: collapse; margin-block: 0.5rem 1.25rem; }
+  .theming-panel th, .theming-panel td { padding: 0.25rem 1rem 0.25rem 0; text-align: left; vertical-align: top; }
+</style>
+<div class="theming-panel">
+  <%= lb_prose(size: :sm) do %>
+    <h4>Scope <code><%= scope.css_name %></code></h4>
+    <p>Target a part with both attributes. Everything else in this component's markup, including its classes, is internal. See "Styling hooks" in doc/extensions.md.</p>
+    <table>
+      <thead><tr><th>Part</th><th>Selector</th><th>Variants</th><th>States</th></tr></thead>
+      <tbody>
+        <% scope.parts.each do |part| %>
+          <tr>
+            <td><code><%= PlaceCal::Theming.css_name(part) %></code></td>
+            <td><code>[data-scope="<%= scope.css_name %>"][data-part="<%= PlaceCal::Theming.css_name(part) %>"]</code></td>
+            <td><% scope.variants.fetch(part, []).each do |variant| %><code>[data-variant="<%= PlaceCal::Theming.css_name(variant) %>"]</code> <% end %></td>
+            <td><% scope.states.fetch(part, []).each do |state| %><code>[data-<%= PlaceCal::Theming.css_name(state) %>]</code> <% end %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <h4>Tokens it reads</h4>
+    <p><% scope.tokens.each do |token| %><code><%= token %></code> <% end %></p>
+  <% end %>
+</div>

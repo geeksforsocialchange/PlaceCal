@@ -154,13 +154,87 @@ Core declares optional copy (a standfirst, a list heading, a prefix) as an empty
 
 ## CSS
 
-Themes are Tailwind plus CSS custom properties that override core's tokens (`app/tailwind/public/_theme.css`). Build with `@tailwindcss/cli`, pinned in the extension's `package.json`:
+Themes are Tailwind plus CSS custom properties that override core's tokens (`app/tailwind/public/_theme.css`), targeting core's markup only through the styling hooks below. Build with `@tailwindcss/cli`, pinned in the extension's `package.json`:
 
 ```bash
 tailwindcss -i ./app/tailwind/theme.css -o ./app/assets/builds/my_ext/theme.css --minify
 ```
 
 Commit the built CSS; CI fails if it is stale. Propshaft serves and fingerprints it, so core's Dockerfile needs no extension build step.
+
+## Styling hooks
+
+A theme restyles core through three public layers:
+
+1. **Tokens:** the custom properties in `app/tailwind/public/_theme.css` (colour, font, radius, shadow, type scale). Override their values in the theme's stylesheet.
+2. **Scopes, parts and states:** data attributes on the meaningful elements of a component, which theme CSS targets.
+3. **Replacement points:** the theme settings that swap a whole view or component (`homepage_view`, `footer`, `page`, `head`), for a design that needs different structure.
+
+Everything else is internal and can change in any release: every class name, including Tailwind utilities and any BEM-style name, and any markup structure the hooks don't name (wrapper elements, element order, nesting).
+
+### Scopes and parts
+
+- `data-scope` names the component, in kebab-case: `hero`, `event`, `event-details`, `pill`.
+- `data-part` names a piece of it by what it is, not how it is laid out: `title`, `standfirst`, `date`. The outer element is `root`.
+- Every part element carries both attributes. Within one component, use both in one compound selector, so a part of a component nested inside can't match:
+
+  ```css
+  [data-scope="hero"][data-part="title"] {
+  	font-family: var(--font-display);
+  }
+  ```
+
+- Across components, use a descendant selector:
+
+  ```css
+  [data-scope="event"][data-part="root"] [data-scope="pill"][data-part="root"] {
+  	border-radius: 0.3rem;
+  }
+  ```
+
+- **Variants:** `data-variant` on a part says which variant or context it renders in. The event's root is `card` in a listing and `page` on the event's own page:
+
+  ```css
+  [data-scope="event"][data-variant="page"]
+  	[data-scope="event"][data-part="date"] {
+  	font-size: 1.8rem;
+  }
+  ```
+
+- **States:** a state is a bare attribute on the part it describes, such as `data-online` on an online event's root (`[data-scope="event"][data-online]`). Where an ARIA attribute already says the same thing (`aria-current`, `aria-expanded`), that is the hook.
+- Inside a part, a theme may style the content the part holds: the link in a standfirst, the paragraphs and headings of a description, a detail's icon. It shouldn't rely on wrappers core puts around that content, or on position (`:nth-child`, `+`, `>` between parts).
+
+`[data-scope][data-part]` has the specificity of two classes. Theme CSS is unlayered and core styles parts only with layered utilities, so a theme rule always wins over core's.
+
+### Where the hooks are listed
+
+Every scoped component's Lookbook page has a **Theming** panel in its drawer, listing its scope, parts with their selectors, variants, states and the tokens it reads. The scopes so far are `hero`, `event`, `event-details`, `pill`, `link`, `button` and `ruled-heading`. Components without a scope have no public hooks.
+
+`PlaceCal::Theming.contract` returns the same list as data (`{ "hero" => { parts: [...], states: {...}, variants: {...}, tokens: [...] } }`). A theme's `spec/host_contract_spec.rb` should check every `data-scope` and `data-part` its CSS names against it, so the theme's CI fails when core drops one.
+
+### Declaring hooks in core
+
+A component or view declares its scope once, and marks each part with `part`, which merges the attributes into the element's own:
+
+```ruby
+class Components::Shared::Hero < Components::Base
+  theme_scope :hero, parts: %i[root title standfirst], tokens: %i[--color-primary]
+
+  def view_template
+    div(**part(:root, class: "bg-primary")) do
+      h1(**part(:title)) { @title }
+    end
+  end
+end
+```
+
+`variants:` and `states:` take a hash of part to allowed names, rendered with `part(:root, variant: :page, states: { online: true })`. A part, variant or state the scope doesn't declare raises in development and test. Each declared part must render in the component's Lookbook previews (`spec/requests/theming_parts_spec.rb`). Core never targets a part with unlayered CSS.
+
+### Stability
+
+PlaceCal is in alpha: until the contract is declared stable, a scope, part, state or token can be renamed or removed in any release, and the themes core ships move with it in the same release.
+
+Once it is declared stable, a renamed or removed scope, part, state or token keeps working alongside its replacement for at least one minor release and at least one month, the release notes say what to change, and it is removed in a release marked as breaking for themes. Class names and markup outside the contract carry no promise.
 
 ## Installation and Gemfile
 

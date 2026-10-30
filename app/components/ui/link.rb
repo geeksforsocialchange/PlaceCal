@@ -10,6 +10,9 @@ class Components::UI::Link < Components::Base
   # :inherit takes the colour of the surrounding text, e.g. breadcrumbs on a coloured band.
   TONES = { foreground: 'text-foreground', muted: 'text-tertiary', inherit: 'text-inherit' }.freeze
 
+  theme_scope :link, parts: %i[root], variants: { root: VARIANTS.keys },
+                     tokens: %i[--color-primary --color-foreground --color-tertiary]
+
   prop :href, String
   prop :variant, _Union(*VARIANTS.keys), default: :underline
   prop :tone, _Union(*TONES.keys), default: :foreground
@@ -22,6 +25,6 @@ class Components::UI::Link < Components::Base
 
   def view_template(&)
     css = [self.class.css(variant: @variant, tone: @tone), @attributes[:class]].compact.join(' ')
-    a(href: @href, class: css, **@attributes.except(:class), &)
+    a(href: @href, **part(:root, variant: @variant, class: css, **@attributes.except(:class)), &)
   end
 end

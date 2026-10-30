@@ -30,6 +30,8 @@ class Components::Base < Phlex::HTML
 
   # I18n translate helper, theme-aware (PlaceCal::ThemeTranslation)
   include PlaceCal::ThemeTranslation
+  # theme_scope and part (doc/extensions.md, "Styling hooks")
+  include PlaceCal::Theming::Hooks
 
   def sidebar_heading(text)
     h3(class: 'allcaps-label text-tertiary mt-1 mb-2') { text }

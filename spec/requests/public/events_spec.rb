@@ -194,11 +194,21 @@ RSpec.describe "Public Events", type: :request do
       end
     end
 
+    it "marks every declared event-details part when the event has a venue and a webpage" do
+      venue = create(:partner, name: "The Venue", address:)
+      full_event = create(:event, organiser: partner, place: venue, publisher_url: "https://example.org/event",
+                                  dtstart: 1.day.from_now, address:)
+      get event_url(full_event, host: "#{site.slug}.lvh.me")
+
+      rendered = Nokogiri::HTML(response.body).css('[data-scope="event-details"]').map { it["data-part"] }
+      expect(rendered.uniq).to match_array(PlaceCal::Theming.contract["event-details"][:parts])
+    end
+
     # Hero back link (#3368): "All events" above the event page hero.
     it "links the hero back link to the events index" do
       get event_url(event, host: "#{site.slug}.lvh.me")
 
-      back = Nokogiri::HTML(response.body).at_css("a.hero__back")
+      back = Nokogiri::HTML(response.body).at_css('a[data-scope="hero"][data-part="back"]')
       expect(back.text).to eq(I18n.t("events.show.back"))
       expect(back[:href]).to eq(events_path)
     end
@@ -433,7 +443,7 @@ RSpec.describe "Public Events", type: :request do
       get event_url(event, host: "#{site.slug}.lvh.me")
       expect(response.body).to include("Contact information")
       expect(response.body).to match(%r{<h2[^>]*>Contact information</h2>})
-      expect(response.body).to match(%r{<p class="contact_details__partner"><a href="/partners/[^"]+">})
+      expect(Nokogiri::HTML(response.body).at_css('[data-scope="event-details"][data-part="contact-name"] a[href^="/partners/"]')).to be_present
     end
 
     it "shows event address with consistent heading level" do

@@ -70,6 +70,8 @@ module PlaceCal
       config.lookbook.preview_embed_panels = []
       # Previews mirror app/components, so two can share a name (Sites::Footer, Directory::Footer)
       config.lookbook.preview_url_param = :named_uuid
+      Lookbook.add_panel(:theming, 'lookbook/panels/theming', label: 'Theming',
+                                                              disabled: ->(data) { PlaceCal::Theming.scope_of("Components::#{data.preview.preview_class_name.delete_suffix('Preview')}").nil? })
       # Themes register in initializers, so the dropdown can only be built after them
       config.after_initialize do
         config.lookbook.preview_display_options = { theme: PlaceCal::Extensions.theme_names }

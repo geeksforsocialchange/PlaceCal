@@ -30,8 +30,8 @@ RSpec.describe "Site page heading order", type: :request do
 
     it "renders the hero tagline as a paragraph, not a heading" do
       expect(response.body).to include(site.tagline)
-      expect(document.at_css(".hero p.allcaps")&.text).to eq(site.tagline)
-      expect(document.css(".hero h4")).to be_empty
+      expect(document.at_css('[data-scope="hero"][data-part="subtitle"]')&.text).to eq(site.tagline)
+      expect(document.css('[data-scope="hero"][data-part="root"] h4')).to be_empty
     end
 
     it "puts only the site name h2 before the h1" do

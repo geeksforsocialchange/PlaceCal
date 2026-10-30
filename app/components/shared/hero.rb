@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 class Components::Shared::Hero < Components::Base
+  theme_scope :hero,
+              parts: %i[root content back kicker subtitle divider title standfirst standfirst_detail],
+              tokens: %i[--color-primary --color-foreground-dark --color-background --font-serif --text-3xl --text-sm
+                         --font-weight-extra-bold --tracking-wide]
+
   prop :title, String, :positional
   prop :subtitle, _Nilable(String), :positional, default: ''
   # RDFa property name for the h1, when the page wraps the hero in a vocab.
@@ -22,22 +27,18 @@ class Components::Shared::Hero < Components::Base
   end
 
   def view_template
-    div(class: 'hero hero-pattern bg-primary text-foreground-dark text-center pt-8 pb-4 print:bg-none print:bg-transparent') do
-      div(class: 'container-public') do
+    div(**part(:root, class: 'hero-pattern bg-primary text-foreground-dark text-center pt-8 pb-4 print:bg-none print:bg-transparent')) do
+      div(**part(:content, class: 'container-public')) do
         render_back if @back
-        p(class: 'hero__section') { @section } if @section.present?
+        p(**part(:kicker)) { @section } if @section.present?
         if @subtitle.present?
           # A paragraph, not a heading, so the outline never skips a level before the h1.
-          p(class: 'allcaps inline-block mt-2 mb-6 leading-tight max-md:max-w-56') { @subtitle }
-          div(role: 'presentation', class: 'hero__divider mx-auto w-18 border-b-4 border-background')
+          p(**part(:subtitle, class: 'allcaps inline-block mt-2 mb-6 leading-tight max-md:max-w-56')) { @subtitle }
+          div(role: 'presentation', **part(:divider, class: 'mx-auto w-18 border-b-4 border-background'))
         end
-        if @schema
-          h1(property: @schema, class: 'mt-5') { render_title }
-        else
-          h1(class: 'mt-5') { render_title }
-        end
-        p(class: 'hero__standfirst') { @standfirst } if @standfirst.present?
-        p(class: 'hero__standfirst-detail') { @standfirst_detail } if @standfirst_detail.present?
+        h1(**part(:title, class: 'mt-5', property: @schema)) { render_title }
+        p(**part(:standfirst)) { @standfirst } if @standfirst.present?
+        p(**part(:standfirst_detail)) { @standfirst_detail } if @standfirst_detail.present?
       end
     end
   end
@@ -46,7 +47,7 @@ class Components::Shared::Hero < Components::Base
 
   def render_back
     label, path = @back
-    link_to(label, path, class: "hero__back block w-fit mx-auto mb-2 text-sm print:hidden #{UI::Link.css(tone: :inherit)}")
+    link_to(label, path, **part(:back, class: "block w-fit mx-auto mb-2 text-sm print:hidden #{UI::Link.css(tone: :inherit)}"))
   end
 
   # The title is user or feed supplied (partner names, event summaries, article

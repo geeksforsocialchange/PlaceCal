@@ -44,19 +44,19 @@ RSpec.describe Components::Shared::Hero, type: :component do
     it "renders nothing when back is not given" do
       render_inline(described_class.new("Riverside Hub", nil))
 
-      expect(page).not_to have_css("a.hero__back")
+      expect(page).not_to have_css('a[data-scope="hero"][data-part="back"]')
     end
 
     it "renders the label and path when back is given" do
       render_inline(described_class.new("Riverside Hub", nil, back: ["All events", "/events"]))
 
-      expect(page).to have_link("All events", href: "/events", class: "hero__back")
+      expect(page).to have_css('a[data-scope="hero"][data-part="back"][href="/events"]', text: "All events")
     end
 
     it "renders above the section name and the title" do
       render_inline(described_class.new("Riverside Hub", nil, section: "Partner", back: ["All partners", "/partners"]))
 
-      order = page.all("a.hero__back, p.hero__section, h1").map(&:tag_name)
+      order = page.all('[data-part="back"], [data-part="kicker"], [data-part="title"]').map(&:tag_name)
 
       expect(order).to eq(%w[a p h1])
     end
