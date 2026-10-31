@@ -1,44 +1,32 @@
-/* Public site stylesheet. Content detection is off, so each public section is listed here; admin_tailwind.css has the mirror-image list. */
+/* Public site stylesheet. Content detection is off, so every public source is listed; admin_tailwind.css has the mirror-image list. */
+
 /* tokens sits above Tailwind's theme layer, so core's tokens beat a theme's Tailwind defaults but not its unlayered :root */
 @layer theme, tokens, base, components, utilities;
 @import "tailwindcss" source(none);
-@import "./public/_fonts.css";
-/* Leaflet's own CSS, unlayered, before the overrides in components/_map.css */
-@import "leaflet/dist/leaflet.css";
 
-@source "../views/{directory,join,sites,shared,devise}/**/*.rb";
+@source "../components/*.rb";
+@source "../components/{directory,join,shared,sites,ui}/**/*.rb";
+@source "../helpers/**/*.rb";
+@source "../javascript/**/*.js";
+@source "../views/*.rb";
+@source "../views/{devise,directory,join,shared,sites}/**/*.rb";
 @source "../views/layouts/application.rb";
 @source "../views/layouts/lookbook_preview.html.erb";
 @source "../../spec/components/previews/**/*.rb";
-@source "../views/*.rb";
-@source "../components/{ui,shared,sites,directory,join}/**/*.rb";
-@source "../components/*.rb";
-@source "../helpers/**/*.rb";
-@source "../javascript/**/*.js";
 
 /* Drop Tailwind's default theme: every token is declared in _theme.css */
 @theme {
 	--*: initial;
 }
-
 @import "./public/_theme.css" layer(tokens);
 @import "./public/_themes.css" layer(tokens);
 
-/* Root sizing reads the tokens; unlayered, as it was, so preflight's html rules don't override it */
-:root {
-	font-size: var(--root-font-size);
-	line-height: var(--root-line-height);
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	/* allow transition between keywords (i.e. `auto`, `min-content`) and numerics; not in Firefox yet */
-	interpolate-size: allow-keywords;
-	/* transition discrete properties (i.e. `display`) at the start/end of transition rather than at 50% */
-	transition-behavior: allow-discrete;
-}
+@import "./public/_fonts.css";
 @import "./public/_variants.css";
 @import "./public/_base.css";
 @import "./public/_utilities.css";
 @import "./public/components/_markdown.css";
 
-/* Unlayered, so they win over utilities */
+/* Leaflet's CSS, then the overrides that must beat it; both unlayered, so they also win over utilities */
+@import "leaflet/dist/leaflet.css";
 @import "./public/components/_map.css";
