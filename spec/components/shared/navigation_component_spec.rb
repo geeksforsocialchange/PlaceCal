@@ -27,8 +27,8 @@ RSpec.describe Components::Shared::Navigation, type: :component do
   it "renders header structure" do
     render_inline(described_class.new(navigation:, site: nil))
 
-    expect(page).to have_css(".header")
-    expect(page).to have_css("nav.nav")
+    expect(page).to have_css("header[data-scope='navigation'][data-part='root']")
+    expect(page).to have_css("nav[data-scope='navigation'][data-part='menu']")
   end
 
   # nav_region_filter (#3368): a theme opt-in, only visible once the site has

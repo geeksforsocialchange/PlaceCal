@@ -1,6 +1,19 @@
 # frozen_string_literal: true
 
 class Components::Shared::Navigation < Components::Base
+  theme_scope :navigation,
+              parts: {
+                root: 'The site header: branding, menu toggle and menu. The variant says whether it is the directory\'s or a site\'s.',
+                branding: 'The link home holding the logo.',
+                toggle: 'The menu button below lg on the directory and md on a site.',
+                toggle_label: 'The visible "Menu" beside the toggle\'s icon. On the directory, and on a site whose theme sets menu_label.',
+                menu: 'The nav holding the menu\'s list of links.',
+                cta: 'The menu item holding the theme\'s call-to-action button. Only when the theme sets nav_cta.'
+              },
+              variants: { root: %i[directory site] },
+              tokens: %i[--color-background --color-foreground --color-home-background --color-primary --color-rules --color-secondary --color-tertiary
+                         --font-weight-semibold --font-weight-bold --font-weight-extra-bold --text-base --text-xl --text-2xl --tracking-wide]
+
   # Each element's classes for the nationwide directory and for a site, appended to its shared base classes.
   CONTEXTS = {
     directory: {
@@ -26,7 +39,7 @@ class Components::Shared::Navigation < Components::Base
       link_active: 'after:bg-foreground'
     },
     site: {
-      header: ['header__partner mx-4 pt-4', 'lg:mx-12 lg:py-6'],
+      header: ['mx-4 pt-4', 'lg:mx-12 lg:py-6'],
       branding: ['w-42 h-12'],
       toggle: ['text-background', 'md:me-4', 'md:hidden'],
       menu: [
@@ -65,7 +78,8 @@ class Components::Shared::Navigation < Components::Base
   prop :home_heading, _Boolean, default: true
 
   def view_template
-    header(class: ['header grid grid-cols-main-auto items-center print:hidden', *look[:header]], data: { controller: 'mobile-menu' }) do
+    header(**part(:root, variant: @site.nil? ? :directory : :site,
+                         class: ['grid grid-cols-main-auto items-center print:hidden', *look[:header]], data: { controller: 'mobile-menu' })) do
       render_branding
       render_toggle
       render_menu
@@ -79,27 +93,15 @@ class Components::Shared::Navigation < Components::Base
   end
 
   def render_branding
-    link_to(root_path, class: [
-              'header__branding row-start-1 col-start-1 ',
-              ("header__branding--theme-#{branding_theme_name}" if branding_theme_name),
-              # svg for the bundled inline logos, img for uploaded ones
-              'logo:object-contain logo:max-w-full logo:max-h-full',
-              *look[:branding]
-            ]) do
+    link_to(root_path, **part(:branding, class: [
+                                'row-start-1 col-start-1',
+                                # svg for the bundled inline logos, img for uploaded ones
+                                'logo:object-contain logo:max-w-full logo:max-h-full',
+                                *look[:branding]
+                              ])) do
       render_logo
       render_site_name
     end
-  end
-
-  # A theme's branding CSS hooks onto this, not the site slug, which admins can rename (#3368).
-  #
-  # @return [String, nil] the registered theme's name, or nil for a site with
-  #   no theme and for the nationwide directory
-  def branding_theme_name
-    return @branding_theme_name if defined?(@branding_theme_name)
-
-    theme = Current.theme
-    @branding_theme_name = (theme.name unless @site.nil? || theme.equal?(PlaceCal::Theme::NONE))
   end
 
   def render_logo
@@ -131,8 +133,8 @@ class Components::Shared::Navigation < Components::Base
   end
 
   def render_menu
-    nav(id: 'site-menu', class: menu_nav_classes, aria_label: t('navigation.primary'),
-        data: { mobile_menu_target: 'menu' }) do
+    nav(**part(:menu, id: 'site-menu', class: menu_nav_classes, aria_label: t('navigation.primary'),
+                      data: { mobile_menu_target: 'menu' })) do
       ul(class: 'contents') do
         @navigation.each do |link_text, link_path|
           li(class: menu_li_classes) { active_link_to(link_text, link_path, data: { turbolinks: false }, base_css_class: menu_link_classes, active_css_class: menu_active_classes) }
@@ -174,8 +176,8 @@ class Components::Shared::Navigation < Components::Base
       options[:rel] = 'noopener'
     end
 
-    li(class: 'text-center max-md:py-3 header__cta') do
-      UI::Button(variant: :light, href: theme_cta[:url], class: 'header__cta-link', **options) { t(theme_cta[:label_key]) }
+    li(**part(:cta, class: 'text-center max-md:py-3')) do
+      UI::Button(variant: :light, href: theme_cta[:url], **options) { t(theme_cta[:label_key]) }
     end
   end
 
@@ -209,7 +211,7 @@ class Components::Shared::Navigation < Components::Base
 
   def menu_nav_classes
     [
-      'nav header__menu row-start-2 col-start-1 col-span-2 flex flex-col justify-evenly is-hidden',
+      'row-start-2 col-start-1 col-span-2 flex flex-col justify-evenly is-hidden',
       'h-auto overflow-clip transition-[display,height,margin-top,padding-block] duration-300',
       'md:flex-row',
       *look[:menu]
@@ -223,13 +225,13 @@ class Components::Shared::Navigation < Components::Base
   end
 
   def render_toggle
-    button(type: 'button', class: ['header__toggle row-start-1 col-start-2 flex gap-2 ms-auto me-1.5 items-center', *look[:toggle]],
-           aria_label: t('navigation.menu'),
-           aria_expanded: 'false', aria_controls: 'site-menu',
-           data: { mobile_menu_target: 'toggle', action: 'click->mobile-menu#toggle', turbo: 'false' }) do
+    button(**part(:toggle, type: 'button', class: ['row-start-1 col-start-2 flex gap-2 ms-auto me-1.5 items-center', *look[:toggle]],
+                           aria_label: t('navigation.menu'),
+                           aria_expanded: 'false', aria_controls: 'site-menu',
+                           data: { mobile_menu_target: 'toggle', action: 'click->mobile-menu#toggle', turbo: 'false' })) do
       # The accessible name is always there; the visible label beside the icon
       # is what a theme opts into.
-      span(class: 'text-base font-semibold header__toggle-label') { t('navigation.menu') } if show_menu_label?
+      span(**part(:toggle_label, class: 'text-base font-semibold')) { t('navigation.menu') } if show_menu_label?
       raw(view_context.icon(:misc_menu, size: nil, css_class: 'size-8 fill-secondary'))
     end
   end
