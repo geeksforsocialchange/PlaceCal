@@ -85,7 +85,7 @@ RSpec.describe Components::Shared::ContactDetails, type: :phlex do
     let(:long_url) { "https://www.manchester.gov.uk/directory_record/44123/powerhouse_library/category/1234/libraries" }
 
     it "keeps every row's icon from shrinking beside a truncated label" do
-      render_inline(described_class.new(partner: contact_partner, url: long_url, variant: :tailwind))
+      render_inline(described_class.new(partner: contact_partner, url: long_url, variant: :card))
 
       expect(page).to have_css("a[href='#{long_url}'] span.truncate", text: "manchester.gov.uk/directory_record/44123")
       expect(page).to have_css("a[href='#{long_url}'] svg[data-icon-name='contact_website'].shrink-0")

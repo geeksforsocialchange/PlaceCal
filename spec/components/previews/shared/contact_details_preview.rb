@@ -27,7 +27,7 @@ class Shared::ContactDetailsPreview < Lookbook::Preview
       email: "powerhouse.library@example.org",
       phone: "0161 234 5678",
       url: "https://www.manchester.gov.uk/directory_record/44123/powerhouse_library/category/1234/libraries_in_the_city_centre_and_surrounding_neighbourhoods?utm_source=placecal",
-      variant: :tailwind
+      variant: :card
     )
   end
 
