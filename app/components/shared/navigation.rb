@@ -154,7 +154,7 @@ class Components::Shared::Navigation < Components::Base
   # Stays on get-in-touch until the join site's copy is agreed.
   def render_join_button
     li(class: 'text-center max-md:py-3') do
-      UI::Button(variant: :secondary, href: @cta_path || get_in_touch_path) { @cta_label || t('navigation.directory.join') }
+      UI::Button(variant: :primary, href: @cta_path || get_in_touch_path) { @cta_label || t('navigation.directory.join') }
     end
   end
 
