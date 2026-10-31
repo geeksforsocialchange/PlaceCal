@@ -1,6 +1,20 @@
 # frozen_string_literal: true
 
 class Views::Sites::News::Show < Views::Base
+  theme_scope :article,
+              parts: {
+                root: 'The article under the hero: the date column, then the main column.',
+                aside: 'The date column.',
+                published: 'The publication date.',
+                main: 'The main column: byline, partners, image, text and the back link.',
+                author: 'The byline. Only when the article has an author.',
+                partners: 'The partners the article is about, linked. Only when it names some.',
+                image: 'The article\'s image and its credit. Only when it has an image.',
+                image_credit: 'The image\'s credit. Only when it has one.',
+                content: 'The article\'s text, with the pull quote.',
+                back: 'The link back to the news index.'
+              }
+
   register_output_helper :article_partner_links
   register_value_helper :article_date
 
@@ -35,25 +49,25 @@ class Views::Sites::News::Show < Views::Base
   private
 
   def render_article_body
-    div(class: 'article grid gap-x-4.5 lg:grid-cols-aside-main') do
-      div(class: 'article__aside') do
-        p(class: 'article__published m-0 font-bold text-right', title: article.published_at.to_s) do
+    div(**part(:root, class: 'grid gap-x-4.5 lg:grid-cols-aside-main')) do
+      div(**part(:aside)) do
+        p(**part(:published, class: 'm-0 font-bold text-right'), title: article.published_at.to_s) do
           plain article_date(article.published_at, t('news.show.date_format'))
         end
       end
 
-      div(class: 'article__main pr-40 max-md:px-2') do
+      div(**part(:main, class: 'pr-40 max-md:px-2')) do
         if article.author&.full_name.present?
           # A byline, not a section heading: as an h3 straight after the
           # hero h1 it failed axe's heading-order rule on every article.
-          p(class: 'article__author mt-0 text-base') do
+          p(**part(:author, class: 'mt-0 text-base')) do
             plain t('news.show.by')
             em { article.author.full_name }
           end
         end
 
         if article.partners.present?
-          p(class: 'article__partners text-sm') do
+          p(**part(:partners, class: 'text-sm')) do
             article_partner_links(article)
             plain '.'
           end
@@ -61,9 +75,9 @@ class Views::Sites::News::Show < Views::Base
 
         render_image
 
-        div(class: 'article__content') { render_body_with_pull_quote }
+        div(**part(:content)) { render_body_with_pull_quote }
 
-        div(class: 'article__back') do
+        div(**part(:back)) do
           link_to t('news.show.back'), news_index_path
         end
       end
@@ -84,9 +98,9 @@ class Views::Sites::News::Show < Views::Base
   def render_image
     return if article.article_image.blank?
 
-    div(class: 'article__image') do
+    div(**part(:image)) do
       image_tag article.article_image.url, class: 'border rounded-card overflow-hidden'
-      p(class: 'article__image-credit') { article.image_credit } if article.image_credit.present?
+      p(**part(:image_credit)) { article.image_credit } if article.image_credit.present?
     end
   end
 

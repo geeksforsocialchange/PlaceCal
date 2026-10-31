@@ -1,6 +1,21 @@
 # frozen_string_literal: true
 
 class Views::Sites::News::Index < Views::Base
+  theme_scope :news_index,
+              parts: {
+                root: 'The list of article cards.',
+                card: 'One article.',
+                aside: 'The card\'s date column.',
+                published: 'The publication date.',
+                main: 'The card\'s main column: title, partners, then the summary and image.',
+                title: 'The card\'s h2, holding the link to the article.',
+                partners: 'The partners the article is about, linked. Only when it names some.',
+                content: 'The row holding the summary and the image.',
+                body: 'The summary and the read-more button.',
+                image: 'The article\'s image. Only when it has one.',
+                pagination: 'The newer and older links. Only when there is more than one page.'
+              }
+
   register_output_helper :article_partner_links
   register_value_helper :article_summary_text
   register_value_helper :article_date
@@ -15,7 +30,7 @@ class Views::Sites::News::Index < Views::Base
 
     Shared::Hero(t('news.index.title'), site.tagline, standfirst: t('news.index.standfirst'))
 
-    div(class: 'articles w-9/10 mx-auto my-8') do
+    div(**part(:root, class: 'w-9/10 mx-auto my-8')) do
       articles.each do |article|
         render_article_card(article)
       end
@@ -27,31 +42,31 @@ class Views::Sites::News::Index < Views::Base
   private
 
   def render_article_card(article)
-    div(class: 'articles__article-card grid gap-x-4.5 lg:grid-cols-aside-main my-4 border-b-2 border-tertiary-light') do
-      div(class: 'articles__aside') do
-        p(class: 'articles__published m-0 font-bold text-right max-md:text-left max-md:pb-4', title: article.published_at.to_s) do
+    div(**part(:card, class: 'grid gap-x-4.5 lg:grid-cols-aside-main my-4 border-b-2 border-tertiary-light')) do
+      div(**part(:aside)) do
+        p(**part(:published, class: 'm-0 font-bold text-right max-md:text-left max-md:pb-4'), title: article.published_at.to_s) do
           plain article_date(article.published_at, t('news.index.date_format'))
         end
       end
 
-      div(class: 'articles__main') do
-        h2(class: 'articles__title mt-0 leading-none') { link_to article.title, news_path(article), class: 'text-foreground no-underline' }
+      div(**part(:main)) do
+        h2(**part(:title, class: 'mt-0 leading-none')) { link_to article.title, news_path(article), class: 'text-foreground no-underline' }
 
-        p(class: 'articles__partners text-sm') { article_partner_links(article) } if article.partners.present?
+        p(**part(:partners, class: 'text-sm')) { article_partner_links(article) } if article.partners.present?
 
-        div(class: 'articles__content flex gap-x-4.5') do
-          div(class: 'articles__body grow-5 max-md:order-2') do
+        div(**part(:content, class: 'flex gap-x-4.5')) do
+          div(**part(:body, class: 'grow-5 max-md:order-2')) do
             p { article_summary_text(article) }
           end
 
           if article.article_image.present?
-            div(class: 'articles__image grow-5 max-md:order-1') do
+            div(**part(:image, class: 'grow-5 max-md:order-1')) do
               image_tag article.article_image.url, class: 'border max-w-full rounded-card overflow-hidden'
             end
           end
         end
 
-        p { UI::Button(variant: :outline, href: news_path(article), class: 'btn btn--alt mt-4') { t('news.index.read_more') } }
+        p { UI::Button(variant: :outline, href: news_path(article), class: 'mt-4') { t('news.index.read_more') } }
       end
     end
   end
@@ -62,7 +77,7 @@ class Views::Sites::News::Index < Views::Base
   def render_pagination
     return unless offset.positive? || has_more
 
-    nav(class: 'articles__pagination p-8') do
+    nav(**part(:pagination, class: 'p-8')) do
       render_newer_link
       render_older_link
     end
