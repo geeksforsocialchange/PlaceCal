@@ -29,23 +29,11 @@ class Components::Sites::RegionFilter < Components::Base
   private
 
   def render_option(tag, label)
-    active = active?(tag)
-    li do
-      link_to(label, href_for(tag),
-              class: option_classes(active),
-              aria: { current: (active ? 'page' : nil) })
-    end
+    li { UI::Pill(variant: :segment, selected: active?(tag), href: href_for(tag)) { label } }
   end
 
   def active?(tag)
     tag.nil? ? @selected.nil? : @selected&.id == tag.id
-  end
-
-  def option_classes(active)
-    [
-      'inline-flex items-center rounded-pill border px-3 py-1 text-detail no-underline',
-      (active ? 'bg-primary text-foreground-dark border-primary font-bold' : 'bg-background text-foreground border-rules hover:border-foreground')
-    ].join(' ')
   end
 
   # Preserve every other filter in the URL, replacing only the region.

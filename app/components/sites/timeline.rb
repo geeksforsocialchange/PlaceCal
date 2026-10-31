@@ -4,11 +4,12 @@ class Components::Sites::Timeline < Components::Base
   DEFAULT_STEPS = 7
 
   LIST = 'paginator__buttons relative grid grid-cols-paginator gap-1 md:gap-2 list-none m-0 px-10 pb-2 font-bold'
-  TAB = 'border-2 border-primary rounded-pill text-center hover:bg-primary'
-  TAB_LINK = 'text-foreground no-underline flex items-center justify-center size-full py-1 px-4 whitespace-nowrap'
+  # The pill fills its cell; a label wider than the cell overflows rather than widening the column.
+  TAB = 'grid grid-cols-1'
   ARROW = 'paginator__arrow absolute top-0 size-9 p-0 bg-primary hover:bg-foreground'
   ARROW_LINK = 'flex items-center justify-center size-full text-inherit'
   ARROW_ICON = 'size-4 text-background'
+  TURBO = { turbo_frame: 'events-browser', turbo_action: 'advance' }.freeze
 
   prop :pointer, _Union(Date, String)
   prop :period, _Nilable(String), default: nil
@@ -36,20 +37,20 @@ class Components::Sites::Timeline < Components::Base
         btn[:data].each do |k, v|
           li_attrs[:"data-#{k.to_s.dasherize}"] = v
         end
-        li(**li_attrs) do
-          a(href: btn[:link], class: btn[:link_css], aria_label: btn[:label], data: { turbo_frame: 'events-browser', turbo_action: 'advance' }) do
-            if btn[:svg]
-              raw(btn[:svg])
-            else
-              plain btn[:text]
-            end
-          end
-        end
+        li(**li_attrs) { btn[:svg] ? render_arrow(btn) : render_tab(btn) }
       end
     end
   end
 
   private
+
+  def render_arrow(btn)
+    a(href: btn[:link], class: btn[:link_css], aria_label: btn[:label], data: TURBO) { raw(btn[:svg]) }
+  end
+
+  def render_tab(btn)
+    UI::Pill(variant: :segment, selected: btn[:active], href: btn[:link], data: TURBO) { btn[:text] }
+  end
 
   def renderable?
     %w[day week month upcoming].include?(@period)
@@ -64,13 +65,13 @@ class Components::Sites::Timeline < Components::Base
                css: "#{ARROW} left-0", link_css: "#{ARROW_LINK} pr-0.5", data: {} }
 
     if @show_upcoming
-      pages << { text: t('components.timeline.upcoming'), link: upcoming_url, css: tab_class(@period == 'upcoming'), link_css: TAB_LINK,
+      pages << { text: t('components.timeline.upcoming'), link: upcoming_url, active: @period == 'upcoming', css: tab_class(@period == 'upcoming'),
                  data: { paginator_target: 'button' } }
     end
 
     current = window_start
     date_steps.times do
-      pages << { text: format_date(current), link: url_for(current), css: tab_class(date_tab_active?(current)), link_css: TAB_LINK,
+      pages << { text: format_date(current), link: url_for(current), active: date_tab_active?(current), css: tab_class(date_tab_active?(current)),
                  data: { paginator_target: 'button' } }
       current = step_forward(current)
     end
@@ -80,7 +81,7 @@ class Components::Sites::Timeline < Components::Base
   end
 
   def tab_class(active)
-    active ? "#{TAB} active bg-primary" : TAB
+    active ? "#{TAB} active" : TAB
   end
 
   def date_steps

@@ -11,8 +11,10 @@ class Components::Shared::ContactForm < Components::Base
   prop :email_cta, _Boolean, default: true
 
   def view_template
-    render_form
-    render_email_cta if @email_cta
+    UI::Stack(gap: :md) do
+      render_form
+      render_email_cta if @email_cta
+    end
   end
 
   private

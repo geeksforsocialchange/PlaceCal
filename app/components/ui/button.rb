@@ -14,6 +14,8 @@ class Components::UI::Button < Components::Base
     join: 'bg-secondary-strong border-secondary-strong text-background hover:bg-foreground hover:border-foreground',
     # Secondary fill inside a ring, e.g. the local-site home call to action; dark text keeps AA on every colour theme.
     secondary: 'bg-secondary border-background ring-2 ring-secondary text-foreground-dark hover:bg-foreground hover:ring-foreground hover:text-background',
+    # The same fill without the ring, for a row that clips overflow, e.g. the directory header's join call to action.
+    secondary_flat: 'bg-secondary border-secondary text-foreground-dark hover:bg-foreground hover:border-foreground hover:text-background',
     # Dark fill that turns to the page colour on hover, outlined by a ring outside the border.
     dark_invert: 'bg-foreground border-transparent ring-2 ring-foreground text-background hover:bg-background hover:text-foreground'
   }.freeze
