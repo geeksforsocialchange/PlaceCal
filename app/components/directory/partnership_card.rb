@@ -29,10 +29,10 @@ class Components::Directory::PartnershipCard < Components::Directory::Base
   def render_body
     div(class: 'bg-home-background-3 px-5 py-4 flex-1') do
       div(class: 'flex flex-wrap gap-1.5 mb-2') do
-        if @partnership.primary_neighbourhood
+        if @partnership.place_name.present?
           UI::Pill(variant: :tag) do
             raw(view_context.icon(:neighbourhood, size: nil, css_class: 'size-3'))
-            plain @partnership.primary_neighbourhood.name
+            plain @partnership.place_name
           end
         end
         UI::Pill(variant: :count) do

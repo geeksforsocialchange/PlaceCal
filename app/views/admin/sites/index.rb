@@ -11,15 +11,15 @@ class Views::Admin::Sites::Index < Views::Admin::Base
       title: 'Sites',
       model: :sites,
       column_titles: [
-        'Site', 'Neighbourhood',
+        'Site', attr_label(:site, :place_name),
         icon_column_header(:partner, 'Partners'),
         icon_column_header(:calendar, 'Events'),
         'Site Admin', 'Last Updated', ''
       ],
-      columns: %i[name primary_neighbourhood partners_count events_count site_admin updated_at actions],
+      columns: %i[name place_name partners_count events_count site_admin updated_at actions],
       column_config: {
         name: {},
-        primary_neighbourhood: { sortable: false },
+        place_name: {},
         partners_count: { align: :center, fit: true, sort_default: 'desc' },
         events_count: { align: :center, fit: true, sort_default: 'desc' },
         site_admin: { sortable: false },

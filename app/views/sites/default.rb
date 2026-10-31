@@ -40,13 +40,18 @@ class Views::Sites::Default < Views::Base
   def render_mission
     section(class: 'bg-rules py-4 mt-4 text-center') do
       div(class: 'container-narrow') do
-        p do
-          raw(t('sites.home.mission_html',
-                link: view_context.link_to(t('sites.home.mission_link'), partners_path),
-                place: site.place_name))
-        end
+        p { raw(mission_sentence) }
         UI::Button(variant: :secondary, href: events_path, class: 'mt-4') { t('sites.home.whats_on') }
       end
+    end
+  end
+
+  def mission_sentence
+    link = view_context.link_to(t('sites.home.mission_link'), partners_path)
+    if site.place_name.present?
+      t('sites.home.mission_html', link:, place: site.place_name)
+    else
+      t('sites.home.mission_no_place_html', link:)
     end
   end
 

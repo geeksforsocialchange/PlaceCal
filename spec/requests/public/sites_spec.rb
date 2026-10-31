@@ -42,6 +42,25 @@ RSpec.describe "Public Sites", type: :request do
     end
   end
 
+  describe "mission sentence" do
+    def mission_text
+      Capybara.string(response.body).find("p", text: I18n.t("sites.home.mission_link")).text
+    end
+
+    it "names the site's place" do
+      get "http://hulme.lvh.me"
+      expect(mission_text).to end_with("everything that's on in Hulme Community.")
+    end
+
+    it "ends at 'on' when the place name is blank" do
+      site.update!(place_name: nil)
+      site.sites_neighbourhoods.create!(neighbourhood: create(:neighbourhood, name: "Primaryshire"), relation_type: "Primary")
+      get "http://hulme.lvh.me"
+      expect(mission_text).to end_with("everything that's on.")
+      expect(response.body).not_to include("Primaryshire")
+    end
+  end
+
   describe "tag cards" do
     it "hides tag cards by default" do
       get "http://hulme.lvh.me"

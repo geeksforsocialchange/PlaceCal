@@ -767,6 +767,27 @@ RSpec.describe "Public Partners", type: :request do
       end
     end
 
+    context "with partnerships that contain the partner" do
+      let(:partner) { create(:partner, address: create(:address, neighbourhood: ward)) }
+      let!(:named_site) { create(:site, name: "Named Partnership", is_published: true, place_name: "Hulme") }
+      let!(:unnamed_site) { create(:site, name: "Unnamed Partnership", is_published: true) }
+
+      before do
+        named_site.sites_neighbourhoods.create!(neighbourhood: ward, relation_type: "Primary")
+        unnamed_site.sites_neighbourhoods.create!(neighbourhood: ward, relation_type: "Primary")
+      end
+
+      def sidebar_link(site)
+        Capybara.string(response.body).find("a[href='#{site.canonical_url}/partners/#{partner.slug}']")
+      end
+
+      it "shows each partnership's place name and nothing when it is blank" do
+        get partner_url(partner, host: "lvh.me")
+        expect(sidebar_link(named_site).text).to include("Hulme")
+        expect(sidebar_link(unnamed_site).text.strip).to eq("Unnamed Partnership\u2197")
+      end
+    end
+
     context "with service areas" do
       let(:partner) { create(:ashton_service_area_partner) }
 

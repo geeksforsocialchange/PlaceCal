@@ -44,9 +44,7 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
           class: 'flex items-center justify-between py-2 no-underline text-foreground hover:bg-background/50 transition-colors rounded-sm px-1') do
           div do
             div(class: 'font-extra-bold text-sm') { site_record.name }
-            div(class: 'text-sm text-tertiary') do
-              plain site_record.primary_neighbourhood&.name if site_record.primary_neighbourhood
-            end
+            div(class: 'text-sm text-tertiary') { site_record.place_name } if site_record.place_name.present?
           end
           span(class: 'text-tertiary') { safe('&#8599;') }
         end
