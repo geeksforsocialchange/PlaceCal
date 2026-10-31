@@ -117,7 +117,7 @@ class Components::Sites::EventFilter < Components::Base
   # along only when they differ from the controller defaults.
   def render_day_strip
     nav(class: 'day-strip min-w-0 overflow-x-auto', aria: { label: t('filters.day_strip.label') }) do
-      ul(class: 'flex list-none gap-2 whitespace-nowrap p-0 m-0') do
+      UI::Cluster(as: :ul, gap: :sm, align: :stretch, wrap: false, class: 'whitespace-nowrap') do
         day_strip_dates.each_with_index do |date, index|
           li(class: 'shrink-0') { render_day_strip_day(date, index) }
         end

@@ -30,7 +30,7 @@ class Components::Directory::Hero < Components::Directory::Base
   end
 
   def render_search
-    UI::SearchBar(action: @search_path, tone: :light, class: 'max-w-(--width-search-hero)',
+    UI::SearchBar(action: @search_path, tone: :light, width: :lg,
                   placeholder: t('directory.hero.search_placeholder'), button_label: t('directory.hero.search_button'))
   end
 

@@ -19,20 +19,25 @@ class Views::Directory::Partnerships::Index < Views::Base
     )
 
     div(class: 'container-public py-6') do
-      render_search
-      div(class: 'lg:columns-2 gap-x-4') do
-        partnership_list.each do |partnership|
-          Directory::PartnershipCard(partnership:)
+      UI::Stack(gap: :lg) do
+        render_search
+        if partnership_list.any?
+          div(class: 'lg:columns-2 gap-x-4') do
+            partnership_list.each do |partnership|
+              Directory::PartnershipCard(partnership:)
+            end
+          end
+        else
+          render_empty_state
         end
       end
-      render_empty_state if partnership_list.empty?
     end
   end
 
   private
 
   def render_search
-    UI::SearchBar(action: partnerships_path, value: @query, size: :sm, class: 'mb-6 max-w-(--width-search)',
+    UI::SearchBar(action: partnerships_path, value: @query, size: :sm, width: :md,
                   placeholder: t('directory.partnerships.index.search_placeholder'),
                   button_label: t('directory.partnerships.index.search_button'))
   end

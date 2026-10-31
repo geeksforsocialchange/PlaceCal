@@ -38,14 +38,16 @@ class Views::Sites::Default < Views::Base
   end
 
   def render_mission
-    section(class: 'bg-rules py-4 mt-4 text-center') do
+    section(class: 'bg-rules pt-8 pb-4 mt-4 text-center') do
       div(class: 'container-narrow') do
-        p do
-          raw(t('sites.home.mission_html',
-                link: view_context.link_to(t('sites.home.mission_link'), partners_path),
-                place: site.place_name))
+        UI::Stack(gap: :xl, align: :center) do
+          p do
+            raw(t('sites.home.mission_html',
+                  link: view_context.link_to(t('sites.home.mission_link'), partners_path),
+                  place: site.place_name))
+          end
+          UI::Button(variant: :secondary, href: events_path) { t('sites.home.whats_on') }
         end
-        UI::Button(variant: :secondary, href: events_path, class: 'mt-4') { t('sites.home.whats_on') }
       end
     end
   end

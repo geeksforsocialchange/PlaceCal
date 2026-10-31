@@ -16,7 +16,8 @@ class Components::Directory::EmptyState < Components::Directory::Base
 
   private
 
+  # Padding, not margin, so the space adds to the message's own margin instead of collapsing into it.
   def render_link
-    UI::Link(href: @link_href, variant: :action, class: 'mt-3') { @link_text }
+    div(class: 'pt-3') { UI::Link(href: @link_href, variant: :action) { @link_text } }
   end
 end
