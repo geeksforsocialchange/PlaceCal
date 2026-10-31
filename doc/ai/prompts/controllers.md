@@ -130,7 +130,43 @@ end
 - Use constraints for advanced routing
 - Keep routes RESTful
 
-Remember: Controllers should be thin coordinators. Business logic belongs in models or service objects.
+## Rules that must hold
+
+### No business rules in an action
+
+```ruby
+# ❌ never: the site-scoping rule lives in this one action, so the GraphQL
+# resolver and the next controller must copy it
+def index
+  @events = Event.joins(:address)
+                 .where(addresses: { neighbourhood_id: current_site.neighbourhood_ids })
+                 .where('dtstart >= ?', Time.current)
+end
+
+# ✅ always: the query object owns the rule; every caller gets the same answer
+def index
+  @events = EventsQuery.new(site: current_site).call(period: :future)
+end
+```
+
+Controllers coordinate: resolve the site, authorise, call the owning query or
+service, render. A `where` chain, a visibility check, or a date window written
+inline in an action is a violation.
+
+### Every action is authorised
+
+```ruby
+# ❌ never: relies on a before_action existing somewhere
+def destroy
+  @partner.destroy
+end
+
+# ✅ always: the policy is named at the point of use
+def destroy
+  authorize @partner
+  @partner.destroy
+end
+```
 
 ## MCP-Enhanced Capabilities
 
