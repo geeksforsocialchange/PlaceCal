@@ -4,15 +4,10 @@
 @layer theme, tokens, base, components, utilities;
 @import "tailwindcss" source(none);
 
-@source "../components/*.rb";
-@source "../components/{directory,join,shared,sites,ui}/**/*.rb";
-@source "../helpers/**/*.rb";
-@source "../javascript/**/*.js";
-@source "../views/*.rb";
-@source "../views/{devise,directory,join,shared,sites}/**/*.rb";
-@source "../views/layouts/application.rb";
-@source "../views/layouts/lookbook_preview.html.erb";
-@source "../../spec/components/previews/**/*.rb";
+@source "../{components,helpers,javascript,views}";
+@source "../../spec/components/previews";
+@source not "../{components,views,views/layouts}/admin";
+@source not "../views/{lookbook,mailers}";
 
 /* Drop Tailwind's default theme: every token is declared in _theme.css */
 @theme {
