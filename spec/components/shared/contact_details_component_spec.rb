@@ -37,7 +37,7 @@ RSpec.describe Components::Shared::ContactDetails, type: :phlex do
     expect(page).to have_text("No contact information")
   end
 
-  it "wraps each scss-variant link in an item span" do
+  it "wraps each sites-variant link in an item span" do
     render_inline(described_class.new(partner: contact_partner,
                                       email: contact_email,
                                       phone: contact_phone,
@@ -87,7 +87,7 @@ RSpec.describe Components::Shared::ContactDetails, type: :phlex do
                                         email: contact_email,
                                         phone: contact_phone,
                                         url: contact_url,
-                                        variant: :tailwind))
+                                        variant: :card))
 
       expect(page).to have_text("Get in touch")
       expect(page).to have_text(contact_phone)
@@ -103,7 +103,7 @@ RSpec.describe Components::Shared::ContactDetails, type: :phlex do
                                         email: fallback_email,
                                         phone: fallback_phone,
                                         url: fallback_url,
-                                        variant: :tailwind))
+                                        variant: :card))
 
       expect(page).not_to have_text("Get in touch")
       expect(page).not_to have_text("No contact information")

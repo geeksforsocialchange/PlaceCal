@@ -19,7 +19,7 @@ class Components::Directory::PageHero < Components::Directory::Base
   prop :root_label, _Nilable(String), default: nil
 
   def view_template(&block)
-    section(class: 'bg-foreground pt-6 pb-4 relative overflow-hidden', style: 'color: var(--color-background)') do
+    section(class: 'bg-foreground text-background pt-6 pb-4 relative overflow-hidden') do
       render_background_image if @background_image_url
       div(class: 'container-public relative z-10') do
         render_breadcrumb if @breadcrumb_label || @breadcrumbs
@@ -45,7 +45,7 @@ class Components::Directory::PageHero < Components::Directory::Base
   end
 
   def render_breadcrumb
-    nav(class: 'text-sm mb-2', style: 'color: var(--color-background)', aria_label: t('directory.aria.breadcrumb')) do
+    nav(class: 'text-sm mb-2 text-background', aria_label: t('directory.aria.breadcrumb')) do
       root_label = @root_label || t('directory.breadcrumbs.root')
       UI::Link(href: root_path, variant: :quiet, tone: :inherit) { root_label }
       crumb_items.each do |item|
@@ -68,7 +68,7 @@ class Components::Directory::PageHero < Components::Directory::Base
   end
 
   def render_subtitle
-    div(class: "text-base leading-relaxed max-w-(--width-prose-md) mb-2 #{'bg-foreground/80 rounded-sm px-2 py-1.5 -mx-2' if @background_image_url}",
-        style: @background_image_url ? nil : 'opacity: 0.8') { @subtitle }
+    div(class: ['text-base leading-relaxed max-w-(--width-prose-md) mb-2',
+                @background_image_url ? 'bg-foreground/80 rounded-sm px-2 py-1.5 -mx-2' : 'opacity-80']) { @subtitle }
   end
 end

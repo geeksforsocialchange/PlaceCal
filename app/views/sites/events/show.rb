@@ -136,7 +136,7 @@ class Views::Sites::Events::Show < Views::Base
   def render_where_section
     div(class: 'py-4') do
       section_heading(t('directory.events.show.where'))
-      div(class: 'grid grid-cols-[1fr_auto] gap-4 items-start') do
+      div(class: 'grid grid-cols-main-auto gap-4 items-start') do
         # No style: override — a single point resolves to map--single, whose
         # compact height actually applies (map--multiple's 500px wins the
         # cascade over map--compact). Matches directory/partners/show.
@@ -207,7 +207,7 @@ class Views::Sites::Events::Show < Views::Base
     # contactless organiser gets a clean titled card, not an empty strip.
     if organiser.contactable?
       Directory::SidebarCard(**card_args) do
-        render Components::Shared::ContactDetails.new(partner: organiser, variant: :tailwind_rows)
+        render Components::Shared::ContactDetails.new(partner: organiser, variant: :rows)
       end
     else
       Directory::SidebarCard(**card_args)
