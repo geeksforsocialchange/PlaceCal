@@ -4,8 +4,8 @@ class Components::Sites::Timeline < Components::Base
   DEFAULT_STEPS = 7
 
   LIST = 'paginator__buttons relative grid grid-cols-paginator gap-1 md:gap-2 list-none m-0 px-10 pb-2 font-bold'
-  # A grid cell, so the pill inside stretches to fill it.
-  TAB = 'grid'
+  # The pill fills its cell; a label wider than the cell overflows rather than widening the column.
+  TAB = 'grid grid-cols-1'
   ARROW = 'paginator__arrow absolute top-0 size-9 p-0 bg-primary hover:bg-foreground'
   ARROW_LINK = 'flex items-center justify-center size-full text-inherit'
   ARROW_ICON = 'size-4 text-background'
