@@ -14,7 +14,7 @@ class Components::Shared::Hero < Components::Base
                 standfirst_detail: 'A smaller second paragraph after the standfirst, its sibling. Only when the page passes one.'
               },
               tokens: %i[--color-primary --color-foreground-dark --color-foreground --color-background --font-serif --text-3xl --text-sm
-                         --font-weight-extra-bold --tracking-wide --leading-tight]
+                         --font-weight-extra-bold --tracking-wide --leading-none --leading-tight]
 
   prop :title, String, :positional
   prop :subtitle, _Nilable(String), :positional, default: ''
