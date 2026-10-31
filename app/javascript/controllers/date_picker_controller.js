@@ -45,7 +45,9 @@ export default class extends Controller {
 	}
 
 	getBasePath() {
-		const paginatorLink = document.querySelector(".paginator__buttons a[href]");
+		const paginatorLink = document.querySelector(
+			'[data-controller~="paginator"] a[href]',
+		);
 		if (paginatorLink) {
 			const href = paginatorLink.getAttribute("href");
 			const match = href.match(/^(.*\/events)\/\d{4}/);

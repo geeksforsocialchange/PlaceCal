@@ -41,7 +41,7 @@ RSpec.describe Components::Shared::Address, type: :component do
     it "offers Apple Maps and OpenStreetMap alongside Google when there are coordinates" do
       render_inline(described_class.new(address:, raw_location: nil))
 
-      list = page.find("div.place_info__directions-list[role='group']")
+      list = page.find("div[data-scope='address'][data-part='directions'][role='group']")
       expect(list["aria-label"]).to eq("Directions")
       expect(list.all("a").map(&:text)).to eq(["Google Maps", "Apple Maps", "OSM"])
 
@@ -76,7 +76,7 @@ RSpec.describe Components::Shared::Address, type: :component do
       render_inline(described_class.new(address: nil, raw_location:))
 
       expect(page).not_to have_link("Directions")
-      expect(page).not_to have_css(".place_info__directions-list")
+      expect(page).not_to have_css("[data-scope='address'][data-part='directions']")
     end
   end
 end

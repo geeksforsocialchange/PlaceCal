@@ -43,19 +43,19 @@ RSpec.describe Components::Shared::ContactDetails, type: :phlex do
                                       phone: contact_phone,
                                       url: contact_url))
 
-    expect(page).to have_css("span.contact_details__item a[href='tel:#{contact_phone}']", text: contact_phone)
-    expect(page).to have_css("span.contact_details__item a[href='mailto:#{contact_email}']", text: contact_email)
-    expect(page).to have_css("span.contact_details__item a[href='#{contact_url}']")
-    expect(page).to have_css("span.contact_details__item a[href^='https://facebook.com/']")
-    expect(page).to have_css("span.contact_details__item a[href^='https://twitter.com/']")
-    expect(page).to have_css("span.contact_details__item a[href^='https://www.instagram.com/']")
+    expect(page).to have_css("span[data-scope='contact-details'][data-part='item'] a[href='tel:#{contact_phone}']", text: contact_phone)
+    expect(page).to have_css("span[data-scope='contact-details'][data-part='item'] a[href='mailto:#{contact_email}']", text: contact_email)
+    expect(page).to have_css("span[data-scope='contact-details'][data-part='item'] a[href='#{contact_url}']")
+    expect(page).to have_css("span[data-scope='contact-details'][data-part='item'] a[href^='https://facebook.com/']")
+    expect(page).to have_css("span[data-scope='contact-details'][data-part='item'] a[href^='https://twitter.com/']")
+    expect(page).to have_css("span[data-scope='contact-details'][data-part='item'] a[href^='https://www.instagram.com/']")
   end
 
   it "marks the social links as social items" do
     render_inline(described_class.new(partner: contact_partner))
 
-    expect(page).to have_css("span.contact_details__item--social", count: 3)
-    expect(page).not_to have_css("span.contact_details__item--social a[href^='mailto:']")
+    expect(page).to have_css("span[data-scope='contact-details'][data-variant='social']", count: 3)
+    expect(page).not_to have_css("span[data-scope='contact-details'][data-variant='social'] a[href^='mailto:']")
   end
 
   context "with social_labels: :network" do

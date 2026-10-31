@@ -36,7 +36,7 @@ RSpec.describe "Public Events", type: :request do
     it "shows the iCal and CSV export links under the events box" do
       get events_url(host: "#{site.slug}.lvh.me")
 
-      meta = Nokogiri::HTML(response.body).at_css(".meta")
+      meta = Nokogiri::HTML(response.body).at_css("[data-scope='meta'][data-part='root']")
       ical_link = meta.css("a").find { |a| a.text.include?("Subscribe") }
       csv_link = meta.css("a").find { |a| a.text.include?("Download as CSV") }
 
@@ -47,7 +47,7 @@ RSpec.describe "Public Events", type: :request do
     it "has no permalink, since the listing has no single page on placecal.org" do
       get events_url(host: "#{site.slug}.lvh.me")
 
-      meta = Nokogiri::HTML(response.body).at_css(".meta")
+      meta = Nokogiri::HTML(response.body).at_css("[data-scope='meta'][data-part='root']")
       expect(meta.css("a").map(&:text)).not_to include("Permalink")
     end
   end
@@ -139,13 +139,13 @@ RSpec.describe "Public Events", type: :request do
     # events, add to calendar, back to the events index.
     describe "the page actions row" do
       def page_actions
-        Nokogiri::HTML(response.body).at_css("nav.page-actions")
+        Nokogiri::HTML(response.body).at_css("nav[data-scope='page-actions']")
       end
 
       it "links to the organiser's own page, add-to-calendar and the events index" do
         get event_url(event, host: "#{site.slug}.lvh.me")
 
-        links = page_actions.css("a.page-actions__link")
+        links = page_actions.css("a[data-scope='page-actions'][data-part='link']")
         expect(links.map(&:text)).to contain_exactly(
           I18n.t("events.show.organiser_events", name: partner.name),
           I18n.t("events.show.add_to_calendar"),
@@ -166,7 +166,7 @@ RSpec.describe "Public Events", type: :request do
 
     describe "the more from organiser section" do
       def more_from
-        Nokogiri::HTML(response.body).at_css("section.event__more")
+        Nokogiri::HTML(response.body).at_css("section[data-scope='event-details'][data-part='more']")
       end
 
       it "lists another upcoming event from the same organiser" do
@@ -194,10 +194,11 @@ RSpec.describe "Public Events", type: :request do
       end
     end
 
-    it "marks every declared event-details part, and declares its tokens, when the event has a venue and a webpage" do
+    it "marks every declared event-details part, and declares its tokens, when the event has a venue, a webpage and a sibling event" do
       venue = create(:partner, name: "The Venue", address:)
       full_event = create(:event, organiser: partner, place: venue, publisher_url: "https://example.org/event",
                                   dtstart: 1.day.from_now, address:)
+      create(:event, organiser: partner, dtstart: 2.days.from_now, address:)
       get event_url(full_event, host: "#{site.slug}.lvh.me")
 
       html = Nokogiri::HTML(response.body)
