@@ -32,10 +32,7 @@ class Components::Base < Phlex::HTML
   include PlaceCal::ThemeTranslation
   # theme_scope and part (doc/extensions.md, "Styling hooks")
   include PlaceCal::Theming::Hooks
-
-  def sidebar_heading(text)
-    h3(class: 'allcaps-label text-tertiary mt-1 mb-2') { text }
-  end
+  include Components::SidebarHeading
 
   if Rails.env.development?
     def before_template

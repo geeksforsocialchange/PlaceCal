@@ -8,7 +8,7 @@ class Views::Join::Features < Views::Join::Base
       div(class: 'container-public') do
         breadcrumb([t('join.nav.features')])
         h1(class: 'join-headline m-0 mb-2') { t('join.features.title') }
-        p(class: 'text-base leading-relaxed max-w-(--width-prose) mt-0 mb-8') { t('join.features.lede') }
+        UI::Text(measure: :prose, spacing: :xl) { t('join.features.lede') }
         UI::Grid(cols: { md: 2, lg: 3 }) do
           t('join.features.list').each do |feature|
             Join::FeatureCard(title: feature[:title], body: feature[:body], heading_level: 2)

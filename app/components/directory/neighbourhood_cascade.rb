@@ -14,12 +14,11 @@ class Components::Directory::NeighbourhoodCascade < Components::Directory::Base
   prop :label_text, String, default: 'Neighbourhood'
 
   def view_template
-    div(
+    UI::Field(
+      label: @label_text, id: 'neighbourhood_cascade', group: true,
       class: 'basis-full md:basis-auto md:shrink-0',
-      role: 'group', aria: { labelledby: 'neighbourhood_cascade_label' },
       data: { controller: 'neighbourhood-cascade', action: 'change->neighbourhood-cascade#onChange' }
     ) do
-      span(id: 'neighbourhood_cascade_label', class: 'block allcaps-label text-tertiary mb-1') { @label_text }
       UI::Cluster(gap: :sm, align: :stretch) do
         cascade_levels.each do |level|
           div(class: 'flex-1 min-w-0 md:flex-none md:w-56') do

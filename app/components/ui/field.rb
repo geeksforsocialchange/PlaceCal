@@ -11,7 +11,7 @@ class Components::UI::Field < Components::Base
   }.freeze
 
   prop :label, String
-  # The id of the control the label is for.
+  # The id of the control the label is for, or of the group when group: is true.
   prop :id, String
   prop :hint, _Nilable(String), default: nil
   prop :variant, _Union(*VARIANTS.keys), default: :caps
@@ -19,11 +19,14 @@ class Components::UI::Field < Components::Base
   prop :required, _Nilable(_Boolean), default: nil
   # A hook for themes to style the label by.
   prop :label_class, _Nilable(String), default: nil
+  # Labels a group of controls rather than one: the wrapper becomes the group and the label is a span that names it.
+  prop :group, _Boolean, default: false
   prop :attributes, Hash, :**
 
   def view_template
-    div(class: [VARIANTS[@variant][:wrapper], @attributes[:class]].compact.join(' ').presence, **@attributes.except(:class)) do
-      label(id: label_id, for: @id, class: [VARIANTS[@variant][:label], @label_class].compact.join(' ')) do
+    group = @group ? { role: 'group', aria: { labelledby: label_id } } : {}
+    div(class: [VARIANTS[@variant][:wrapper], @attributes[:class]].compact.join(' ').presence, **group, **@attributes.except(:class)) do
+      public_send(@group ? :span : :label, id: label_id, for: (@id unless @group), class: [VARIANTS[@variant][:label], @label_class].compact.join(' ')) do
         plain @label
         render_marker
       end
