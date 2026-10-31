@@ -20,9 +20,9 @@ class Views::Join::Home < Views::Join::Base
     section(class: 'py-12 bg-home-background border-b border-rules') do
       div(class: 'container-public grid lg:grid-cols-[1.3fr_1fr] gap-10 items-center') do
         div do
-          div(class: 'allcaps-label text-secondary-strong mb-2') { t('join.home.hero.kicker') }
+          UI::Kicker(tone: :accent, spacing: :sm) { t('join.home.hero.kicker') }
           h1(class: 'join-headline m-0 mb-4') { t('join.home.hero.title') }
-          p(class: 'text-base leading-relaxed max-w-(--width-prose) mt-0 mb-6') { t('join.home.hero.intro') }
+          UI::Text(measure: :prose, spacing: :lg) { t('join.home.hero.intro') }
           UI::Cluster(gap: :sm) do
             UI::Button(variant: :join, size: :lg, href: join_demo_path) { t('join.home.hero.cta_demo') }
             UI::Button(variant: :outline, href: join_our_story_path) { t('join.home.hero.cta_how') }
@@ -60,7 +60,7 @@ class Views::Join::Home < Views::Join::Base
           lede: t('join.home.audiences.lede'),
           center: true
         )
-        div(class: 'grid md:grid-cols-2 lg:grid-cols-3 gap-4') do
+        UI::Grid(cols: { md: 2, lg: 3 }) do
           Join::Base::AUDIENCE_KEYS.each { |key| Join::AudienceCard(audience: key) }
         end
       end
@@ -71,7 +71,7 @@ class Views::Join::Home < Views::Join::Base
     section(class: 'py-10 bg-home-background-3') do
       div(class: 'container-public grid lg:grid-cols-[1fr_1.2fr] gap-10 items-center') do
         div do
-          div(class: 'allcaps-label text-tertiary mb-1') { t('join.home.why.kicker') }
+          UI::Kicker(tone: :muted, spacing: :xs) { t('join.home.why.kicker') }
           UI::Heading(spacing: :md) { t('join.home.why.heading') }
           p(class: 'mt-0 mb-4') { t('join.home.why.intro') }
           ul(class: 'list-none p-0 m-0') do
@@ -93,8 +93,8 @@ class Views::Join::Home < Views::Join::Base
 
   def render_quote
     blockquote(class: 'bg-home-background border-l-5 border-secondary-deep rounded-sm p-6 m-0') do
-      p(class: 'font-serif text-card leading-snug m-0') { t('join.home.why.quote') }
-      footer(class: 'allcaps-label text-tertiary mt-3') { t('join.home.why.quote_by') }
+      p(class: 'font-serif text-card leading-snug mt-0 mb-3') { t('join.home.why.quote') }
+      UI::Kicker(as: :footer, tone: :muted) { t('join.home.why.quote_by') }
     end
   end
 
@@ -106,7 +106,7 @@ class Views::Join::Home < Views::Join::Base
           heading: t('join.home.features.heading'),
           center: true
         )
-        div(class: 'grid md:grid-cols-2 lg:grid-cols-3 gap-4') do
+        UI::Grid(cols: { md: 2, lg: 3 }) do
           t('join.features.list').first(6).each do |feature|
             Join::FeatureCard(title: feature[:title], body: feature[:body])
           end
@@ -124,8 +124,8 @@ class Views::Join::Home < Views::Join::Base
   def render_cta
     section(class: 'py-12 bg-secondary') do
       div(class: 'container-narrow text-center') do
-        h2(class: 'font-serif font-regular text-3xl leading-tight text-foreground-dark m-0 mb-3') { t('join.home.cta.heading') }
-        p(class: 'text-base leading-relaxed text-foreground-dark mt-0 mb-6') { t('join.home.cta.body') }
+        UI::Heading(size: :title, tone: :strong, spacing: :md) { t('join.home.cta.heading') }
+        UI::Text(tone: :strong, spacing: :lg) { t('join.home.cta.body') }
         UI::Button(variant: :dark, href: join_demo_path) { t('join.home.cta.button') }
       end
     end

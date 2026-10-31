@@ -23,11 +23,9 @@ class Views::Join::Audience < Views::Join::Base
     section(class: 'bg-secondary py-10') do
       div(class: 'container-public') do
         breadcrumb([t('join.breadcrumbs.audiences'), join_audiences_path], [t("#{prefix}.title")], on_secondary: true)
-        div(class: 'allcaps-label text-foreground-dark mb-2') do
-          t('join.audiences.for_kicker', audience: t("#{prefix}.title"))
-        end
+        UI::Kicker(tone: :strong, spacing: :sm) { t('join.audiences.for_kicker', audience: t("#{prefix}.title")) }
         h1(class: 'join-headline max-w-(--width-prose-lg) m-0 mb-4') { t("#{prefix}.hero") }
-        p(class: 'text-base leading-relaxed text-foreground-dark max-w-(--width-prose) mt-0 mb-6') { t("#{prefix}.subhero") }
+        UI::Text(tone: :strong, measure: :prose, spacing: :lg) { t("#{prefix}.subhero") }
         UI::Cluster(gap: :sm) do
           UI::Button(variant: :dark, href: join_demo_path) { t('join.audiences.cta_demo') }
           UI::Button(variant: :outline, href: join_features_path) { t('join.audiences.cta_features') }
@@ -41,7 +39,7 @@ class Views::Join::Audience < Views::Join::Base
       div(class: 'container-public grid lg:grid-cols-[1.4fr_1fr] gap-10 items-start') do
         div do
           UI::Heading(spacing: :md) { t('join.audiences.how_heading') }
-          p(class: 'text-base leading-relaxed mt-0 mb-8') { t("#{prefix}.details") }
+          UI::Text(spacing: :xl) { t("#{prefix}.details") }
           UI::Heading(spacing: :md) { t('join.audiences.impact_heading') }
           t("#{prefix}.impact").each do |impact|
             Join::FeatureCard(title: impact[:title], body: impact[:body])
@@ -54,14 +52,12 @@ class Views::Join::Audience < Views::Join::Base
 
   def render_rollout
     UI::Card(variant: :highlight, tag: :aside) do
-      h2(class: 'font-serif font-regular text-card m-0') { t('join.rollout.heading') }
+      UI::Heading(size: :card, tone: :inherit, spacing: :none) { t('join.rollout.heading') }
       steps = t('join.rollout.steps')
       steps.each_with_index do |step, index|
         last = index == steps.length - 1
         div(class: "flex gap-5 items-start py-4 #{'border-b-2 border-rules' unless last}") do
-          div(class: 'size-13 shrink-0 rounded-full bg-home-background text-foreground grid place-items-center font-serif text-subhead') do
-            plain (index + 1).to_s
-          end
+          UI::CircleBadge(size: :md, tone: :background) { (index + 1).to_s }
           div do
             strong { step[:title] }
             p(class: 'text-sm m-0') { step[:body] }
@@ -78,10 +74,10 @@ class Views::Join::Audience < Views::Join::Base
     section(class: 'py-10 bg-home-background-3') do
       div(class: 'container-public') do
         div(class: 'text-center mb-6') do
-          div(class: 'allcaps-label text-tertiary mb-1') { t('join.audiences.others.kicker') }
+          UI::Kicker(tone: :muted, spacing: :xs) { t('join.audiences.others.kicker') }
           UI::Heading(spacing: :none) { t('join.audiences.others.heading') }
         end
-        div(class: 'grid md:grid-cols-2 lg:grid-cols-3 gap-4') do
+        UI::Grid(cols: { md: 2, lg: 3 }) do
           others.first(3).each { |key| Join::AudienceCard(audience: key) }
         end
       end

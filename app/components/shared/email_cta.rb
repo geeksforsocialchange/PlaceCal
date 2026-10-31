@@ -11,9 +11,9 @@ class Components::Shared::EmailCta < Components::Base
   def view_template
     UI::Card(variant: :highlight, padding: :lg, class: 'join-email-cta') do
       UI::Cluster(gap: :lg, justify: :between) do
-        div do
+        div(class: 'text-foreground-darker') do
           # h2 (not h3) to keep the heading order correct after the page's h1.
-          h2(class: 'join-email-cta__heading font-serif font-regular text-xl leading-tight text-foreground-darker mt-0 mb-0.75') { @heading }
+          UI::Heading(size: :card, tone: :inherit, spacing: :xs, class: 'join-email-cta__heading') { @heading }
           p(class: 'join-email-cta__body text-detail text-foreground-darker') { @body }
         end
         UI::Button(variant: :dark_invert, size: :lg, href: "mailto:#{@address}", class: 'join-email-link') do

@@ -8,7 +8,7 @@ class Components::Directory::Hero < Components::Directory::Base
   prop :jump_neighbourhoods, _Interface(:each), default: -> { [] }
 
   def view_template
-    section(class: 'bg-foreground py-10 lg:py-14', style: 'color: var(--color-background)') do
+    section(class: 'bg-foreground text-background py-10 lg:py-14') do
       div(class: 'container-public') do
         div(class: 'lg:grid lg:grid-cols-sidebar-lg lg:gap-8') do
           render_content
@@ -23,14 +23,14 @@ class Components::Directory::Hero < Components::Directory::Base
   def render_content
     div(class: 'pb-6 lg:pb-10') do
       h1(class: 'hero-title') { @title }
-      div(class: 'text-base leading-relaxed max-w-(--width-prose) mb-6') { @subtitle } if @subtitle
+      UI::Text(as: :div, measure: :prose, spacing: :lg) { @subtitle } if @subtitle
       render_search if @search_path
       render_jump_links
     end
   end
 
   def render_search
-    UI::SearchBar(action: @search_path, tone: :light, class: 'max-w-(--width-search-hero)',
+    UI::SearchBar(action: @search_path, tone: :light, width: :lg,
                   placeholder: t('directory.hero.search_placeholder'), button_label: t('directory.hero.search_button'))
   end
 
@@ -42,8 +42,7 @@ class Components::Directory::Hero < Components::Directory::Base
       span(class: 'text-sm') { t('directory.hero.jump_to') }
       links.each do |link|
         a(href: partners_path(neighbourhood: link[:neighbourhood_id]),
-          class: 'font-bold text-detail no-underline hover:underline hover:decoration-primary',
-          style: 'color: inherit') { link[:name] }
+          class: 'font-bold text-detail text-inherit no-underline hover:underline hover:decoration-primary') { link[:name] }
       end
     end
   end

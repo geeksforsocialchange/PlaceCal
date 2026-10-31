@@ -32,6 +32,17 @@ class UI::FieldPreview < Lookbook::Preview
     render(Frame.new { |f| f.render Components::UI::Select.new(name: "category", label_text: "Category", options: [{ id: "arts", name: "Arts" }]) })
   end
 
+  # @label Group
+  # @notes `group: true` labels several controls at once, such as the directory's neighbourhood dropdowns: the wrapper is the group, named by the label.
+  def group
+    render(Frame.new do |f|
+      f.render(Components::UI::Field.new(label: "Neighbourhood", id: "neighbourhood_cascade", group: true)) do
+        f.render Components::UI::Select.new(name: "region", options: [{ id: "north", name: "Northvale" }])
+        f.render Components::UI::Select.new(name: "district", options: [{ id: "millbrook", name: "Millbrook" }])
+      end
+    end)
+  end
+
   class Frame < Phlex::HTML
     def view_template(&)
       div { yield(self) }

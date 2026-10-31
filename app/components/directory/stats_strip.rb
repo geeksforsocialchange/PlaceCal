@@ -16,14 +16,6 @@ class Components::Directory::StatsStrip < Components::Directory::Base
   private
 
   def render_bead(value, label, _icon_name = nil)
-    # min-w-0 lets the bead shrink below its content in the 2-col mobile grid;
-    # wrap-anywhere breaks long single-word labels (e.g. "Neighbourhoods") so the
-    # letter-spaced uppercase text can't overflow the cell and widen the page
-    UI::Card(padding: :sm, class: 'flex flex-col min-w-0') do
-      span(class: 'font-serif text-stat leading-none text-foreground') do
-        plain ActiveSupport::NumberHelper.number_to_delimited(value)
-      end
-      span(class: 'allcaps-label text-tertiary mt-1.5 wrap-anywhere') { label }
-    end
+    UI::Stat(value: ActiveSupport::NumberHelper.number_to_delimited(value), label:)
   end
 end

@@ -19,7 +19,7 @@ class Components::Sites::RegionFilter < Components::Base
     return if @tags.size < 2
 
     nav(class: ['region-filter', (@embedded ? 'region-filter--nav' : 'mb-4')], aria: { label: t('region_filter.label') }) do
-      ul(class: 'reset flex flex-wrap items-center gap-2') do
+      UI::Cluster(as: :ul, gap: :sm) do
         render_option(nil, t('region_filter.all'))
         @tags.each { |tag| render_option(tag, tag.name) }
       end

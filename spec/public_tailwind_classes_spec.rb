@@ -8,7 +8,6 @@ RSpec.describe "Public Tailwind classes" do
   # Genuine exceptions, keyed by the class without its variant prefixes.
   let(:exceptions) do
     {
-      "grid-cols-[1fr_auto]" => "content beside a control that keeps its own width",
       "max-h-[60vh]" => "keeps an open select list inside the viewport",
       "[column-span:all]" => "Tailwind has no column-span utility",
       "border-x-[calc(--spacing(8))]" => "border widths are px; this one follows the spacing scale so it scales with the root size",
@@ -20,7 +19,6 @@ RSpec.describe "Public Tailwind classes" do
   let(:to_replace) do
     {
       "grid-cols-[64px_1fr]" => "the event row's date tile column: move to the spacing scale",
-      "grid-cols-[44px_1fr_auto]" => "the partner row's avatar column: move to the spacing scale",
       "grid-cols-[1.4fr_1fr]" => "join audience split: grid-cols-2 or a named utility",
       "grid-cols-[1.3fr_1fr]" => "join home split: grid-cols-2 or a named utility",
       "grid-cols-[1fr_1.2fr]" => "join home split: grid-cols-2 or a named utility",

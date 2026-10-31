@@ -7,7 +7,7 @@ class Components::Directory::PartnerRow < Components::Directory::Base
   def view_template
     a(href: partner_path(@partner),
       class: [
-        'grid grid-cols-[44px_1fr_auto] gap-3 items-center',
+        'grid grid-cols-partner-row gap-3 items-center',
         'py-2.5 px-3 rounded-card border-2 border-transparent',
         'no-underline text-foreground hover:border-foreground transition-colors'
       ].join(' ')) do
@@ -20,9 +20,7 @@ class Components::Directory::PartnerRow < Components::Directory::Base
   private
 
   def render_avatar
-    div(class: 'w-11 h-11 rounded-full bg-home-background-3 flex items-center justify-center font-serif text-lg') do
-      plain initials
-    end
+    UI::CircleBadge(size: :sm, tone: :muted) { initials }
   end
 
   def render_info

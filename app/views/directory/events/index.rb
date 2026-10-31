@@ -48,7 +48,7 @@ class Views::Directory::Events::Index < Views::Base
 
   def render_filters
     UI::Card(variant: :panel, padding: :sm, tag: :form, action: events_path, method: 'get') do
-      div(class: 'flex flex-wrap gap-3 items-end') do
+      UI::Cluster(gap: :sm_md, align: :end) do
         render_search_field
         render_partnership_select
         render_period_select
@@ -85,7 +85,7 @@ class Views::Directory::Events::Index < Views::Base
   end
 
   def render_buttons
-    div(class: 'flex gap-2 items-end') do
+    UI::Cluster(gap: :sm, align: :end, wrap: false) do
       UI::Button(variant: :dark, size: :sm, shape: :field, type: 'submit') { t('directory.filters.apply') }
       UI::Button(variant: :dark_outline, size: :sm, shape: :field, href: events_path) { t('directory.filters.clear') } if any_filter_active?
     end
