@@ -30,10 +30,10 @@
 	--font-serif: Trocchi, Georgia, serif;
 	/* URLs and code: system fonts, so nothing extra downloads */
 	--font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-	--font-weight-extra-bold: 800;
-	--font-weight-bold: 700;
 	--font-weight-regular: 500;
 	--font-weight-semibold: 600;
+	--font-weight-bold: 700;
+	--font-weight-extra-bold: 800;
 
 	/* Type scale. Themes override these by name, so a name never changes meaning: add or retire, don't reuse. */
 
@@ -174,17 +174,14 @@ Every themeable entry below is `var(--x)` so the utility resolves against the
 this file).
 */
 @theme inline {
-	/* One step is 4.5px at the 18px root */
-	--spacing: 0.25rem;
-
 	/* Fonts */
 	--font-sans: var(--font-sans);
 	--font-serif: var(--font-serif);
 	--font-mono: var(--font-mono);
-	--font-weight-extra-bold: var(--font-weight-extra-bold);
-	--font-weight-bold: var(--font-weight-bold);
 	--font-weight-regular: var(--font-weight-regular);
 	--font-weight-semibold: var(--font-weight-semibold);
+	--font-weight-bold: var(--font-weight-bold);
+	--font-weight-extra-bold: var(--font-weight-extra-bold);
 
 	/* Type scale */
 	--text-2xs: var(--text-2xs);
@@ -194,12 +191,12 @@ this file).
 	--text-detail: var(--text-detail);
 	--text-base: var(--text-base);
 	--text-md: var(--text-md);
-	--text-card: var(--text-card);
 	--text-lg: var(--text-lg);
 	--text-xl: var(--text-xl);
+	--text-card: var(--text-card);
 	--text-subhead: var(--text-subhead);
-	--text-section: var(--text-section);
 	--text-2xl: var(--text-2xl);
+	--text-section: var(--text-section);
 	--text-stat: var(--text-stat);
 	--text-3xl: var(--text-3xl);
 	--text-hero: var(--text-hero);
@@ -216,33 +213,15 @@ this file).
 	--leading-normal: var(--leading-normal);
 	--leading-relaxed: var(--leading-relaxed);
 
-	/* Content measure (max-widths for readability) */
-	--width-search: 440px;
-	--width-search-hero: 540px;
-	--width-prose: 620px;
-	--width-prose-md: 700px;
-	--width-prose-lg: 800px;
-	/* short helper notes beside a button */
-	--width-note: 34ch;
-
-	/* Layout widths */
-	--width-sidebar: 340px;
-	--width-sidebar-lg: 380px;
-
-	/* Map heights */
-	--height-map: 280px;
-	--height-map-lg: 360px;
-	/* Local-site event and partner maps */
-	--height-map-compact: 330px;
-	--height-map-full: 500px;
-	--height-field: var(--height-field);
-
 	/* Border radii */
 	--radius-card: var(--radius-card);
 	--radius-sm: var(--radius-sm);
 	--radius-field: var(--radius-field);
 	--radius-check: var(--radius-check);
 	--radius-pill: var(--radius-pill);
+
+	/* Sizes */
+	--height-field: var(--height-field);
 
 	/* Colours */
 	--color-primary: var(--color-primary);
@@ -276,6 +255,31 @@ this file).
 	--shadow-dot: var(--shadow-dot);
 	--shadow-dropdown: var(--shadow-dropdown);
 	--shadow-lg: var(--shadow-lg);
+
+	/* Fixed layout metrics below: literal, so not themeable */
+
+	/* One step is 4.5px at the 18px root */
+	--spacing: 0.25rem;
+
+	/* Content measure (max-widths for readability) */
+	--width-search: 440px;
+	--width-search-hero: 540px;
+	--width-prose: 620px;
+	--width-prose-md: 700px;
+	--width-prose-lg: 800px;
+	/* short helper notes beside a button */
+	--width-note: 34ch;
+
+	/* Layout widths */
+	--width-sidebar: 340px;
+	--width-sidebar-lg: 380px;
+
+	/* Map heights */
+	--height-map: 280px;
+	--height-map-lg: 360px;
+	/* Local-site event and partner maps */
+	--height-map-compact: 330px;
+	--height-map-full: 500px;
 
 	/* Used by transition-* utilities that have no duration-* class; reduced motion still zeroes them in _base.css */
 	--default-transition-duration: 150ms;
