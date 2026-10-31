@@ -21,6 +21,12 @@ RSpec.describe Components::UI::Cluster, type: :component do
     expect(page).to have_css("nav[aria-label='Filters']")
   end
 
+  it "spaces its items by the step between sm and md" do
+    render_inline(described_class.new(gap: :sm_md)) { "x" }
+
+    expect(page).to have_css("div.gap-x-3.gap-y-3")
+  end
+
   it "lines its items up at the bottom" do
     render_inline(described_class.new(align: :end)) { "x" }
 
