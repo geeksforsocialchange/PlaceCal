@@ -2,6 +2,12 @@
 
 class Components::Shared::Map < Components::Base
   register_value_helper :args_for_map
+  register_value_helper :map_layout
+
+  theme_scope :map,
+              parts: { root: 'The map. The variant says whether it shows one place, boxed, or several at full height.' },
+              variants: { root: %i[single multiple] },
+              tokens: %i[]
 
   prop :points, _Nilable(Array)
   prop :style, _Nilable(Symbol), default: nil
@@ -10,10 +16,8 @@ class Components::Shared::Map < Components::Base
   def view_template
     return if @points.blank?
 
-    div(
-      class: @compact ? 'min-h-(--height-map-compact)' : 'min-h-(--height-map-full)',
-      data_controller: 'leaflet',
-      data_leaflet_args_value: args_for_map(@points, @style, @compact)
-    )
+    div(**part(:root, variant: map_layout(@points, @style),
+                      class: @compact ? 'min-h-(--height-map-compact)' : 'min-h-(--height-map-full)',
+                      data: { controller: 'leaflet', leaflet_args_value: args_for_map(@points, @style, @compact) }))
   end
 end

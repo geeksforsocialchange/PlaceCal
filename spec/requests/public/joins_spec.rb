@@ -53,14 +53,14 @@ RSpec.describe "Public Joins (Contact Form)", type: :request do
     it "shows only the site's own email address on a site host" do
       site = create(:site, contact_email: "hello@example.org")
       get "/get-in-touch", headers: { "Host" => "#{site.slug}.lvh.me" }
-      expect(response.body.scan("join-email-cta__heading").size).to eq(1)
+      expect(Nokogiri::HTML(response.body).css("[data-scope='email-cta'][data-part='heading']").size).to eq(1)
       expect(response.body).to include("mailto:hello@example.org")
     end
 
     it "shows no email box on a site with no contact address" do
       site = create(:site, contact_email: nil)
       get "/get-in-touch", headers: { "Host" => "#{site.slug}.lvh.me" }
-      expect(response.body).not_to include("join-email-cta__heading")
+      expect(Nokogiri::HTML(response.body).at_css("[data-scope='email-cta']")).to be_nil
     end
 
     it "renders the site form on a site host" do

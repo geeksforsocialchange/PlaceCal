@@ -113,7 +113,12 @@
 	turbo-frame {
 		display: block;
 	}
-	turbo-frame[aria-busy="true"] :is(.partners, .paginator, .events, #map) {
+	turbo-frame[aria-busy="true"]
+		:is(
+			[data-scope="partner-index"]:is([data-part="list"], [data-part="map"]),
+			.paginator,
+			.events
+		) {
 		opacity: 0.4;
 		pointer-events: none;
 		transition: opacity 0.1s ease-out;

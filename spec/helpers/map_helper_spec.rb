@@ -68,9 +68,9 @@ RSpec.describe MapHelper, type: :helper do
   end
 
   describe "#map_style_class" do
-    it "returns 'map--single' for single style mode" do
+    it "returns the single-point classes for single style mode" do
       result = helper.send(:map_style_class, [], :single, false)
-      expect(result).to include("map--single")
+      expect(result).to eq(MapHelper::SINGLE_CLASSES)
     end
 
     it "returns the multiple-point classes for multi style mode" do
@@ -81,7 +81,7 @@ RSpec.describe MapHelper, type: :helper do
     it "auto-detects single for one marker" do
       markers = [{ position: [53.0, -2.0] }]
       result = helper.send(:map_style_class, markers, nil, false)
-      expect(result).to include("map--single")
+      expect(result).to eq(MapHelper::SINGLE_CLASSES)
     end
 
     it "auto-detects multiple for several markers" do

@@ -1,12 +1,19 @@
 # frozen_string_literal: true
 
 class Components::Sites::Timeline < Components::Base
+  theme_scope :timeline,
+              parts: {
+                root: 'The list of period tabs, with an arrow at each end.',
+                arrow: 'The previous or next arrow at each end of the list.'
+              },
+              tokens: %i[--color-primary --color-foreground --color-background --font-weight-bold]
+
   DEFAULT_STEPS = 7
 
-  LIST = 'paginator__buttons relative grid grid-cols-paginator gap-1 md:gap-2 list-none m-0 px-10 pb-2 font-bold'
+  LIST = 'relative grid grid-cols-paginator gap-1 md:gap-2 list-none m-0 px-10 pb-2 font-bold'
   # The pill fills its cell; a label wider than the cell overflows rather than widening the column.
   TAB = 'grid grid-cols-1'
-  ARROW = 'paginator__arrow absolute top-0 size-9 p-0 bg-primary hover:bg-foreground'
+  ARROW = 'absolute top-0 size-9 p-0 bg-primary hover:bg-foreground'
   ARROW_LINK = 'flex items-center justify-center size-full text-inherit'
   ARROW_ICON = 'size-4 text-background'
   TURBO = { turbo_frame: 'events-browser', turbo_action: 'advance' }.freeze
@@ -31,12 +38,13 @@ class Components::Sites::Timeline < Components::Base
   def view_template
     return unless renderable?
 
-    ol(class: LIST, data: { controller: 'paginator' }) do
+    ol(**part(:root, class: LIST, data: { controller: 'paginator' })) do
       buttons.each do |btn|
         li_attrs = { class: btn[:css] }
         btn[:data].each do |k, v|
           li_attrs[:"data-#{k.to_s.dasherize}"] = v
         end
+        li_attrs = part(:arrow, **li_attrs) if btn[:svg]
         li(**li_attrs) { btn[:svg] ? render_arrow(btn) : render_tab(btn) }
       end
     end

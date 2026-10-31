@@ -1,6 +1,17 @@
 # frozen_string_literal: true
 
 class Views::Sites::Partners::Show < Views::Base
+  theme_scope :partner_details,
+              parts: {
+                root: 'The partner\'s details under the hero: the main column, then the aside.',
+                main: 'The main column: the description, then contact and address.',
+                description: 'The partner\'s description.',
+                service_area: 'The sentence naming the neighbourhoods the partner serves. Only when it has service areas.',
+                aside: 'The side column: the image, the map on core themes, opening times and accessibility.',
+                image: 'The box holding the partner\'s image. Only when it has one.',
+                opening_times: 'The list of opening hours. Only when the partner has some.'
+              }
+
   include Phlex::Rails::Helpers::SelectTag
   include Phlex::Rails::Helpers::OptionsForSelect
 
@@ -84,7 +95,7 @@ class Views::Sites::Partners::Show < Views::Base
 
   def render_partner_description
     if partner.summary
-      div(class: 'partner-details__description text-xl leading-snug') do
+      div(**part(:description, class: 'text-xl leading-snug')) do
         content_tag(:p, partner.summary)
       end
     end
@@ -117,12 +128,12 @@ class Views::Sites::Partners::Show < Views::Base
   end
 
   def render_partner_details
-    div(class: 'partner-details grid grid-areas-partner-details') do
-      div(class: 'partner-details__main grid-area-main') do
+    div(**part(:root, class: 'grid grid-areas-partner-details')) do
+      div(**part(:main, class: 'grid-area-main')) do
         render_partner_description
         render_contact_and_address
       end
-      aside(class: 'partner-details__aside grid-area-right') do
+      aside(**part(:aside, class: 'grid-area-right')) do
         render_partner_image
         Shared::Map(points: map, compact: true) if site.core_theme?
         render_opening_times
@@ -167,7 +178,7 @@ class Views::Sites::Partners::Show < Views::Base
   def render_address
     UI::RuledHeading(caps: true, rule: :full, size: :lg, spacing: :section) { t('partners.show.address_heading') }
     if partner.service_areas?
-      p(class: 'place_info__service_area') do
+      p(**part(:service_area)) do
         raw(t('partners.show.service_area_html', areas: partner_service_area_text(partner)))
       end
     end
@@ -177,12 +188,12 @@ class Views::Sites::Partners::Show < Views::Base
   def render_partner_image
     return unless partner.image?
 
-    div(class: 'partner-details__image text-center my-6 print:hidden') do
+    div(**part(:image, class: 'text-center my-6 print:hidden')) do
       img(
         src: partner.image.standard.url,
         srcset: "#{partner.image.standard.url} 1x, #{partner.image.retina.url} 2x",
         alt: t('partners.show.image_alt', name: partner.name),
-        class: 'map--single max-w-full'
+        class: 'max-w-full'
       )
     end
   end
@@ -193,7 +204,7 @@ class Views::Sites::Partners::Show < Views::Base
 
     section(class: SIDEBAR_SECTION) do
       UI::RuledHeading(caps: true, rule: :full, size: :lg, spacing: :section) { t('partners.show.opening_times_heading') }
-      ul(class: 'opening_times reset text-left') do
+      ul(**part(:opening_times, class: 'reset text-left')) do
         times.each do |slot|
           Shared::OpeningTime(**slot)
         end

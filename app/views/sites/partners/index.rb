@@ -1,6 +1,14 @@
 # frozen_string_literal: true
 
 class Views::Sites::Partners::Index < Views::Base
+  theme_scope :partner_index,
+              parts: {
+                root: 'Everything under the hero: the heading, the breadcrumb and filters, the list, then the map.',
+                list: 'The list of partners. Only when some match.',
+                empty: 'The line saying no partners match.',
+                map: 'The box holding the map of the listed partners.'
+              }
+
   prop :partners, ActiveRecord::Relation, reader: :private
   prop :site, Site, reader: :private
   prop :map, _Nilable(Array), reader: :private
@@ -17,7 +25,7 @@ class Views::Sites::Partners::Index < Views::Base
 
     Shared::Hero(t('partners.index.title'), site.tagline, standfirst: t('partners.index.standfirst'),
                                                           standfirst_detail: t('partners.index.standfirst_detail'))
-    turbo_frame_tag 'partner_previews', data: { turbo_action: 'advance' } do
+    turbo_frame_tag 'partner_previews', **part(:root, data: { turbo_action: 'advance' }) do
       div(class: 'container-public mb-32') do
         list_heading('partners.index.list_heading')
         Sites::Breadcrumb(trail: [[t('navigation.site.partners'), partners_path]], site_name: site.name) do
@@ -35,16 +43,16 @@ class Views::Sites::Partners::Index < Views::Base
         hr(class: 'mt-1')
 
         if partners.empty?
-          p(class: 'partners__empty') { t('partners.index.empty') }
+          p(**part(:empty)) { t('partners.index.empty') }
         else
-          ul(class: 'partners list-none p-0 m-0 mt-5.5 grid gap-4 items-start lg:grid-cols-2', id: 'partners') do
+          ul(**part(:list, class: 'list-none p-0 m-0 mt-5.5 grid gap-4 items-start lg:grid-cols-2', id: 'partners')) do
             partners.each do |partner|
               Sites::PartnerPreview(partner:, site:)
             end
           end
         end
       end
-      div(id: 'map') do
+      div(**part(:map, id: 'map')) do
         div(class: 'border-t-10 border-tertiary-light', aria_hidden: 'true') if site.core_theme? && map.present? && map.length > 1
         Shared::Map(points: map)
       end

@@ -3,6 +3,14 @@
 class Components::Shared::ContactDetails < Components::Base
   include Phlex::Rails::Helpers::MailTo
 
+  theme_scope :contact_details,
+              parts: {
+                root: 'The local-site list of contact lines. The directory card and rows variants have no hooks.',
+                item: 'One contact line, its icon then its link; the variant says which. Each line only when the partner has it.'
+              },
+              variants: { item: %i[phone email website social] },
+              tokens: %i[--color-foreground --color-primary]
+
   prop :partner, ::Partner
   prop :email, _Nilable(String), default: nil
   prop :phone, _Nilable(String), default: nil
@@ -62,7 +70,7 @@ class Components::Shared::ContactDetails < Components::Base
   # ── Local-site variant ──
 
   def render_sites
-    p(class: 'contact_details grid grid-cols-auto-main gap-x-2 items-center') do
+    p(**part(:root, class: 'grid grid-cols-auto-main gap-x-2 items-center')) do
       render_phone
       render_email
       render_website
@@ -76,7 +84,7 @@ class Components::Shared::ContactDetails < Components::Base
   def render_phone
     return if @phone.blank?
 
-    span(class: 'contact_details__item contents') do
+    span(**part(:item, variant: :phone, class: 'contents')) do
       raw(view_context.icon(:contact_phone, size: '4', css_class: 'mt-1'))
       if @partner.valid_public_phone?
         link_to(@phone, "tel:#{@phone}", target: '_blank', rel: 'noopener')
@@ -89,7 +97,7 @@ class Components::Shared::ContactDetails < Components::Base
   def render_email
     return if @email.blank?
 
-    span(class: 'contact_details__item contents') do
+    span(**part(:item, variant: :email, class: 'contents')) do
       raw(view_context.icon(:contact_email, size: '4', css_class: 'mt-1'))
       mail_to(@email, @email, target: '_blank')
     end
@@ -98,7 +106,7 @@ class Components::Shared::ContactDetails < Components::Base
   def render_website
     return if @url.blank?
 
-    span(class: 'contact_details__item contents') do
+    span(**part(:item, variant: :website, class: 'contents')) do
       raw(view_context.icon(:contact_website, size: '4', css_class: 'mt-1'))
       link_to(strip_url(@url), @url, target: '_blank', rel: 'noopener')
     end
@@ -123,7 +131,7 @@ class Components::Shared::ContactDetails < Components::Base
   end
 
   def social_link(network, handle, href)
-    span(class: 'contact_details__item contact_details__item--social contents') do
+    span(**part(:item, variant: :social, class: 'contents')) do
       raw(view_context.icon(:"contact_#{network}", size: '4', css_class: 'mt-1'))
       if @social_labels == :network
         link_to(t("directory.contact.networks.#{network}"), href, title: handle, target: '_blank', rel: 'noopener')

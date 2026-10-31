@@ -21,7 +21,7 @@ RSpec.describe Components::Sites::Timeline, type: :component do
       it "renders timeline buttons" do
         render_inline(described_class.new(**base_attrs))
 
-        expect(page).to have_css("ol.paginator__buttons")
+        expect(page).to have_css("ol[data-scope='timeline'][data-part='root']")
       end
 
       it "renders navigation arrows" do
@@ -70,7 +70,7 @@ RSpec.describe Components::Sites::Timeline, type: :component do
       it "renders timeline buttons" do
         render_inline(described_class.new(**attrs))
 
-        expect(page).to have_css("ol.paginator__buttons")
+        expect(page).to have_css("ol[data-scope='timeline'][data-part='root']")
       end
 
       it "shows Next 7 days for current week" do
@@ -93,7 +93,7 @@ RSpec.describe Components::Sites::Timeline, type: :component do
       it "renders timeline buttons" do
         render_inline(described_class.new(**attrs))
 
-        expect(page).to have_css("ol.paginator__buttons")
+        expect(page).to have_css("ol[data-scope='timeline'][data-part='root']")
       end
 
       it "shows This month for current month" do
@@ -139,7 +139,7 @@ RSpec.describe Components::Sites::Timeline, type: :component do
       it "renders timeline with Upcoming tab" do
         render_inline(described_class.new(**attrs))
 
-        expect(page).to have_css("ol.paginator__buttons")
+        expect(page).to have_css("ol[data-scope='timeline'][data-part='root']")
         expect(page).to have_text("Upcoming")
       end
 
@@ -191,7 +191,7 @@ RSpec.describe Components::Sites::Timeline, type: :component do
       it "does not render" do
         render_inline(described_class.new(**attrs))
 
-        expect(page).not_to have_css("ol.paginator__buttons")
+        expect(page).not_to have_css("ol[data-scope='timeline'][data-part='root']")
       end
     end
   end
@@ -220,7 +220,7 @@ RSpec.describe Components::Sites::Timeline, type: :component do
 
       it "parses string dates" do
         expect { render_inline(described_class.new(**attrs)) }.not_to raise_error
-        expect(page).to have_css("ol.paginator__buttons")
+        expect(page).to have_css("ol[data-scope='timeline'][data-part='root']")
       end
     end
 
