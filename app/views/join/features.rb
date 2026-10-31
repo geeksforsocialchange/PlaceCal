@@ -9,7 +9,7 @@ class Views::Join::Features < Views::Join::Base
         breadcrumb([t('join.nav.features')])
         h1(class: 'join-headline m-0 mb-2') { t('join.features.title') }
         UI::Text(measure: :prose, spacing: :xl) { t('join.features.lede') }
-        div(class: 'grid md:grid-cols-2 lg:grid-cols-3 gap-4') do
+        UI::Grid(cols: { md: 2, lg: 3 }) do
           t('join.features.list').each do |feature|
             Join::FeatureCard(title: feature[:title], body: feature[:body], heading_level: 2)
           end
