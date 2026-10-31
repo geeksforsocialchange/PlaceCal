@@ -69,6 +69,6 @@ class Components::Directory::PageHero < Components::Directory::Base
 
   def render_subtitle
     div(class: ['text-base leading-relaxed max-w-(--width-prose-md) mb-2',
-                @background_image_url ? 'bg-foreground/80 rounded px-2 py-1.5 -mx-2' : 'opacity-80']) { @subtitle }
+                @background_image_url ? 'bg-foreground/80 rounded-sm px-2 py-1.5 -mx-2' : 'opacity-80']) { @subtitle }
   end
 end
