@@ -37,7 +37,7 @@ RSpec.describe Components::Shared::ContactDetails, type: :phlex do
     expect(page).to have_text("No contact information")
   end
 
-  it "wraps each scss-variant link in an item span" do
+  it "wraps each sites-variant link in an item span" do
     render_inline(described_class.new(partner: contact_partner,
                                       email: contact_email,
                                       phone: contact_phone,
@@ -81,13 +81,25 @@ RSpec.describe Components::Shared::ContactDetails, type: :phlex do
     end
   end
 
+  context "with a long website address" do
+    let(:long_url) { "https://www.manchester.gov.uk/directory_record/44123/powerhouse_library/category/1234/libraries" }
+
+    it "keeps every row's icon from shrinking beside a truncated label" do
+      render_inline(described_class.new(partner: contact_partner, url: long_url, variant: :card))
+
+      expect(page).to have_css("a[href='#{long_url}'] span.truncate", text: "manchester.gov.uk/directory_record/44123")
+      expect(page).to have_css("a[href='#{long_url}'] svg[data-icon-name='contact_website'].shrink-0")
+      expect(page).not_to have_css("svg[data-icon-name^='contact_']:not(.shrink-0)")
+    end
+  end
+
   context "tailwind variant" do
     it "renders contact details in card layout" do
       render_inline(described_class.new(partner: contact_partner,
                                         email: contact_email,
                                         phone: contact_phone,
                                         url: contact_url,
-                                        variant: :tailwind))
+                                        variant: :card))
 
       expect(page).to have_text("Get in touch")
       expect(page).to have_text(contact_phone)
@@ -103,7 +115,7 @@ RSpec.describe Components::Shared::ContactDetails, type: :phlex do
                                         email: fallback_email,
                                         phone: fallback_phone,
                                         url: fallback_url,
-                                        variant: :tailwind))
+                                        variant: :card))
 
       expect(page).not_to have_text("Get in touch")
       expect(page).not_to have_text("No contact information")

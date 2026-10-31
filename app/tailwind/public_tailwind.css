@@ -41,5 +41,4 @@
 @import "./public/components/_markdown.css";
 
 /* Unlayered, so they win over utilities */
-@import "./public/components/_select.css";
 @import "./public/components/_map.css";
