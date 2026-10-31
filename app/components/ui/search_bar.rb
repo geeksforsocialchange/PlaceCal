@@ -10,6 +10,8 @@ class Components::UI::SearchBar < Components::Base
   FOCUS = 'input-focused:outline-solid input-focused:outline-2 input-focused:outline-offset-2 ' \
           'input-focused:outline-current'
   SIZES = { md: { input: 'text-detail', button: :md }, sm: { input: 'text-sm', button: :sm } }.freeze
+  # Caps the bar's width; :full fills its parent.
+  WIDTHS = { full: nil, md: 'max-w-(--width-search)', lg: 'max-w-(--width-search-hero)' }.freeze
 
   prop :action, String
   prop :placeholder, String
@@ -18,11 +20,12 @@ class Components::UI::SearchBar < Components::Base
   prop :value, _Nilable(String), default: nil
   prop :tone, _Union(*TONES.keys), default: :panel
   prop :size, _Union(*SIZES.keys), default: :md
+  prop :width, _Union(*WIDTHS.keys), default: :full
   prop :attributes, Hash, :**
 
   def view_template
     form(action: @action, method: 'get',
-         class: ['flex items-center rounded-pill p-1 pl-2', FOCUS, TONES[@tone][:bar], @attributes[:class]].compact.join(' '),
+         class: ['flex items-center rounded-pill p-1 pl-2', FOCUS, TONES[@tone][:bar], WIDTHS[@width], @attributes[:class]].compact.join(' '),
          **@attributes.except(:class)) do
       div(class: 'px-2 text-tertiary') { raw(view_context.icon(:search, size: nil, css_class: 'size-4')) }
       input(type: 'text', name: @name, value: @value, placeholder: @placeholder, aria_label: @placeholder,

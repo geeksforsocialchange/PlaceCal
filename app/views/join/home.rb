@@ -60,7 +60,7 @@ class Views::Join::Home < Views::Join::Base
           lede: t('join.home.audiences.lede'),
           center: true
         )
-        div(class: 'grid md:grid-cols-2 lg:grid-cols-3 gap-4') do
+        UI::Grid(cols: { md: 2, lg: 3 }) do
           Join::Base::AUDIENCE_KEYS.each { |key| Join::AudienceCard(audience: key) }
         end
       end
@@ -106,7 +106,7 @@ class Views::Join::Home < Views::Join::Base
           heading: t('join.home.features.heading'),
           center: true
         )
-        div(class: 'grid md:grid-cols-2 lg:grid-cols-3 gap-4') do
+        UI::Grid(cols: { md: 2, lg: 3 }) do
           t('join.features.list').first(6).each do |feature|
             Join::FeatureCard(title: feature[:title], body: feature[:body])
           end

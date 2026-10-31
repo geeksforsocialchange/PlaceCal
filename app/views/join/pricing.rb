@@ -256,9 +256,7 @@ class Views::Join::Pricing < Views::Join::Base
       div(class: 'relative self-stretch row-span-2 md:row-span-1 flex justify-center') do
         # The spine runs through the row padding so the steps join up, and stops at the first and last circles.
         span(class: 'absolute -inset-y-6 group-first/step:top-1/2 group-last/step:bottom-1/2 left-1/2 -translate-x-1/2 w-0.5 bg-rules')
-        div(class: 'relative z-1 self-center size-11 md:size-14 rounded-full bg-secondary text-foreground-dark grid place-items-center font-serif text-lg md:text-2xl') do
-          plain (index + 1).to_s
-        end
+        UI::CircleBadge(size: :sm, md_size: :lg, tone: :secondary, class: 'relative z-1 self-center') { (index + 1).to_s }
       end
       div(class: 'col-start-2 md:col-start-auto mb-3 md:mb-0 flex justify-start md:justify-center') do
         image_tag(ROLLOUT_ART[index], alt: '', class: 'w-32 md:w-42 h-auto') if ROLLOUT_ART[index]

@@ -16,11 +16,7 @@ RSpec.describe "Public Tailwind classes" do
   end
 
   # Debt to replace with tokens or named utilities. Don't add to this list.
-  let(:to_replace) do
-    {
-      "grid-cols-[44px_1fr_auto]" => "the partner row's avatar column: move to the spacing scale"
-    }
-  end
+  let(:to_replace) { {} }
 
   let(:allowed) { exceptions.merge(to_replace) }
 

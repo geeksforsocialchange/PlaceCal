@@ -120,6 +120,11 @@
 	grid-template-columns: --spacing(14) --spacing(44) 1fr;
 }
 
+/* Directory partner row: the avatar's column, then the name, then the events count */
+@utility grid-cols-partner-row {
+	grid-template-columns: --spacing(11) 1fr auto;
+}
+
 /* Brand column, then three link columns */
 @utility grid-cols-footer {
 	grid-template-columns: 1.4fr 1fr 1fr 1fr;

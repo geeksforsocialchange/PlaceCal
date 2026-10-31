@@ -11,4 +11,12 @@ RSpec.describe Components::UI::SearchBar, type: :component do
     expect(page).to have_css("input[aria-label='Search partners']")
     expect(page).to have_button("Search")
   end
+
+  it "caps its width from a preset and fills its parent by default" do
+    render_inline(described_class.new(action: "/", placeholder: "Search", button_label: "Search", width: :md))
+    expect(page).to have_css("form.max-w-\\(--width-search\\)")
+
+    render_inline(described_class.new(action: "/", placeholder: "Search", button_label: "Search"))
+    expect(page.find("form")[:class]).not_to include("max-w-")
+  end
 end

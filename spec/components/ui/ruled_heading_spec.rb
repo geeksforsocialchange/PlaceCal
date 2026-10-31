@@ -13,6 +13,12 @@ RSpec.describe Components::UI::RuledHeading, type: :component do
     expect { described_class.new(rule: :half) }.to raise_error(Literal::TypeError)
   end
 
+  it "spaces itself from a preset" do
+    render_inline(described_class.new(spacing: :illustrated)) { "Free wifi" }
+
+    expect(page).to have_css("h2.mt-8.mb-6")
+  end
+
   it "rejects a spacing that isn't one of its presets" do
     expect { described_class.new(spacing: :huge) }.to raise_error(Literal::TypeError)
   end

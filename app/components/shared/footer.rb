@@ -34,7 +34,7 @@ class Components::Shared::Footer < Components::Base
       h2(class: 'allcaps-label text-foreground mb-3') { title }
       ul(class: 'list-none space-y-1') do
         links.each do |label, href|
-          li { UI::Link(href:, variant: :quiet, class: 'font-serif text-detail') { label } }
+          li { UI::Link(href:, variant: :quiet, size: :detail, font: :serif) { label } }
         end
       end
     end

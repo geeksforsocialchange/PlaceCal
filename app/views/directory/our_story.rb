@@ -66,14 +66,8 @@ class Views::Directory::OurStory < Views::Base
     end
   end
 
-  # Matches the homepage StatsStrip bead (Components::Directory::StatsStrip):
-  # foreground numeral on a bordered cream card. The foreground brown also
-  # clears WCAG AA on cream, unlike the previous lime/green.
   def render_stat(stat)
-    UI::Card(padding: :sm, class: 'flex flex-col min-w-0') do
-      span(class: 'font-serif text-stat leading-none text-foreground') { stat[:value] }
-      span(class: 'allcaps-label text-tertiary mt-1.5 wrap-anywhere') { stat[:label] }
-    end
+    UI::Stat(value: stat[:value], label: stat[:label])
   end
 
   def render_quote
