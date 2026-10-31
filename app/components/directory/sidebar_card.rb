@@ -11,7 +11,7 @@ class Components::Directory::SidebarCard < Components::Directory::Base
 
   def view_template(&block)
     div(class: 'rounded-card overflow-hidden') do
-      div(class: 'bg-foreground px-4 py-3', style: 'color: var(--color-background)') do
+      div(class: 'bg-foreground text-background px-4 py-3') do
         UI::Kicker(tone: :faded, spacing: :xs) { @eyebrow } if @eyebrow
         render_title
       end

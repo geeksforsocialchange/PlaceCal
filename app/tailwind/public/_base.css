@@ -102,9 +102,6 @@
 		margin-block: 3px;
 		margin-inline: 4px 3px;
 	}
-	textarea {
-		@apply bg-home-background;
-	}
 
 	/* Turbo frames lay out like the blocks they replace, and dim what they're reloading */
 	turbo-frame {

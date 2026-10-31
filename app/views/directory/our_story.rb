@@ -127,7 +127,7 @@ class Views::Directory::OurStory < Views::Base
       UI::Stack(gap: :sm) do
         UI::Cluster(gap: :sm, align: :baseline) do
           # Deepened coral (vs --color-secondary-deep) so the large numeral clears WCAG AA (3:1) on cream.
-          span(class: 'font-serif text-2xl leading-none', style: 'color: var(--color-secondary-dark)') { feature[:num] } if feature[:num]
+          span(class: 'font-serif text-2xl leading-none text-secondary-dark') { feature[:num] } if feature[:num]
           UI::Kicker(as: :span, tone: :muted) { t("#{base}.kicker") }
         end
         h3(class: 'text-subhead leading-tight font-bold text-foreground') { t("#{base}.title") }
