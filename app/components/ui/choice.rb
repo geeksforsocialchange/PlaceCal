@@ -12,14 +12,14 @@ class Components::UI::Choice < Components::Base
   TICK = 'text-background opacity-0 scale-60 transition group-has-checked:opacity-100 group-has-checked:scale-100'
 
   prop :label, String
-  # A hook for themes to style the tick box by.
-  prop :box_class, _Nilable(String), default: nil
+  # Attributes for the tick box, such as a theming part.
+  prop :box_attributes, Hash, default: -> { {} }
   prop :attributes, Hash, :**
 
   def view_template(&)
     label(class: [CHIP, @attributes[:class]].compact.join(' '), **@attributes.except(:class)) do
       span(class: 'sr-only', &)
-      span(class: [BOX, @box_class].compact.join(' ')) { icon(:check, size: '4', css_class: TICK) }
+      span(class: [BOX, @box_attributes[:class]].compact.join(' '), **@box_attributes.except(:class)) { icon(:check, size: '4', css_class: TICK) }
       plain @label
     end
   end

@@ -11,9 +11,9 @@ RSpec.describe Components::UI::Fieldset, type: :component do
     expect(page).to have_css("fieldset input[type='checkbox'][name='ringback']")
   end
 
-  it "passes attributes to the fieldset and the legend hook to the legend" do
-    render_inline(described_class.new(legend: "Choices", legend_class: "join-label", class: "join-block")) { nil }
+  it "passes attributes to the fieldset and legend attributes to the legend" do
+    render_inline(described_class.new(legend: "Choices", legend_attributes: { class: "extra", data: { part: "label" } }, class: "outer")) { nil }
 
-    expect(page).to have_css("fieldset.join-block > legend.join-label", text: "Choices")
+    expect(page).to have_css("fieldset.outer > legend.extra[data-part='label']", text: "Choices")
   end
 end

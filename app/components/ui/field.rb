@@ -17,8 +17,8 @@ class Components::UI::Field < Components::Base
   prop :variant, _Union(*VARIANTS.keys), default: :caps
   # true marks the label with an asterisk, false with "optional"; nil marks nothing.
   prop :required, _Nilable(_Boolean), default: nil
-  # A hook for themes to style the label by.
-  prop :label_class, _Nilable(String), default: nil
+  # Attributes for the label, such as a theming part.
+  prop :label_attributes, Hash, default: -> { {} }
   # Labels a group of controls rather than one: the wrapper becomes the group and the label is a span that names it.
   prop :group, _Boolean, default: false
   prop :attributes, Hash, :**
@@ -26,7 +26,8 @@ class Components::UI::Field < Components::Base
   def view_template
     group = @group ? { role: 'group', aria: { labelledby: label_id } } : {}
     div(class: [VARIANTS[@variant][:wrapper], @attributes[:class]].compact.join(' ').presence, **group, **@attributes.except(:class)) do
-      public_send(@group ? :span : :label, id: label_id, for: (@id unless @group), class: [VARIANTS[@variant][:label], @label_class].compact.join(' ')) do
+      public_send(@group ? :span : :label, id: label_id, for: (@id unless @group), class: [VARIANTS[@variant][:label], @label_attributes[:class]].compact.join(' '),
+                                           **@label_attributes.except(:class)) do
         plain @label
         render_marker
       end

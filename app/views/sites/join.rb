@@ -2,6 +2,9 @@
 
 # The get-in-touch form on a local site, delivered to the site's own contact_email.
 class Views::Sites::Join < Views::Base
+  theme_scope :get_in_touch,
+              parts: { intro: 'The line above the form saying the message goes to the site.' }
+
   prop :contact_request, ContactRequest, reader: :private
   prop :site, Site, reader: :private
 
@@ -12,7 +15,7 @@ class Views::Sites::Join < Views::Base
     Shared::Hero(t('sites.join.hero.title'), site.tagline)
 
     div(class: 'container-editorial py-8') do
-      p(class: 'join-note max-w-(--width-note) mb-6 text-sm leading-normal text-tertiary') { t('sites.join.intro', site: site.name) }
+      p(**part(:intro, class: 'max-w-(--width-note) mb-6 text-sm leading-normal text-tertiary')) { t('sites.join.intro', site: site.name) }
       UI::Stack(gap: :md) do
         Shared::ContactForm(contact_request:, url: get_in_touch_path, email_cta: false)
         render_email_cta
