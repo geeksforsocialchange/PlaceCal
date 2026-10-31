@@ -7,7 +7,7 @@ class Components::Directory::MarkdownContent < Components::Directory::Base
   prop :slug, String
 
   def view_template
-    div(class: 'markdown-content max-w-(--width-prose-lg) text-base leading-relaxed') do
+    UI::Text(as: :div, measure: :prose_lg, class: 'markdown-content') do
       raw safe(rendered_html)
     end
   end

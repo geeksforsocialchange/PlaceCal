@@ -64,7 +64,7 @@ class Components::Directory::PageHero < Components::Directory::Base
   end
 
   def render_kicker
-    div(class: 'allcaps-label mb-1 opacity-80') { @kicker }
+    UI::Kicker(tone: :faded, spacing: :xs) { @kicker }
   end
 
   def render_subtitle
