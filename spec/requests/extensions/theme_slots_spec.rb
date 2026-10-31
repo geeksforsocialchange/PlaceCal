@@ -230,11 +230,12 @@ RSpec.describe "Theme slots", type: :request do
 
   # A theme's branding CSS needs a hook that does not move when an admin
   # renames the site (#3368).
-  it "marks the branding with the theme name as well as the site slug" do
+  it "marks the branding with the theme name, not the site slug" do
     get "http://themed.lvh.me"
 
-    branding = Nokogiri::HTML(response.body).at_css("a.header__branding")
-    expect(branding["class"].split).to include("header__branding--themed", "header__branding--theme-example_theme")
+    classes = Nokogiri::HTML(response.body).at_css("a.header__branding")["class"].split
+    expect(classes).to include("header__branding--theme-example_theme")
+    expect(classes).not_to include("header__branding--themed")
   end
 
   # One negative for every slot at once: this catches a slot leaking onto core

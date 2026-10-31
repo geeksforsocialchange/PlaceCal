@@ -51,7 +51,7 @@ class Views::Directory::Partners::Show < Views::Sites::Partners::Show
     div(class: 'py-4') do
       UI::RuledHeading(caps: true, rule: :full, size: :lg) { t('directory.partners.show.location') }
       p(class: 'mb-3') { t('directory.partners.show.serves', area: partner_service_area_text(partner)) } if partner.service_areas?
-      div(class: 'grid grid-cols-[1fr_auto] gap-4 items-start') do
+      div(class: 'grid grid-cols-main-auto gap-4 items-start') do
         Shared::Map(points: map, compact: true) if map
         Shared::Address(address: partner.address) if partner.address
       end
