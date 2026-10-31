@@ -127,7 +127,7 @@ class Views::Directory::OurStory < Views::Base
       UI::Stack(gap: :sm) do
         UI::Cluster(gap: :sm, align: :baseline) do
           # Deepened coral (vs --color-secondary-deep) so the large numeral clears WCAG AA (3:1) on cream.
-          span(class: 'font-serif text-2xl leading-none', style: 'color: var(--color-secondary-dark)') { feature[:num] } if feature[:num]
+          span(class: 'font-serif text-2xl leading-none text-secondary-dark') { feature[:num] } if feature[:num]
           span(class: 'allcaps-label text-tertiary') { t("#{base}.kicker") }
         end
         h3(class: 'text-subhead leading-tight font-bold text-foreground') { t("#{base}.title") }
@@ -145,7 +145,7 @@ class Views::Directory::OurStory < Views::Base
               t("#{T}.turning.heading")
             end
             # --color-foreground-dark (the design's text-on-colour brown) clears WCAG AA on the pink panel; the prior opacity-85 brown did not.
-            p(class: 'mx-auto max-w-(--width-prose) text-base leading-relaxed', style: 'color: var(--color-foreground-dark)') do
+            p(class: 'mx-auto max-w-(--width-prose) text-base leading-relaxed text-foreground-dark') do
               t("#{T}.turning.body")
             end
           end

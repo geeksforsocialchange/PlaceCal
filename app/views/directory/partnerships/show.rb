@@ -137,7 +137,7 @@ class Views::Directory::Partnerships::Show < Views::Base
 
     div(class: 'rounded-card overflow-hidden') do
       div(class: 'bg-secondary px-4 py-3') do
-        div(class: 'font-serif text-lg', style: 'color: var(--color-foreground-dark)') { t('directory.partnerships.show.get_involved') }
+        div(class: 'font-serif text-lg text-foreground-dark') { t('directory.partnerships.show.get_involved') }
       end
       div(class: 'bg-home-background-3 px-4 py-3') do
         area_name = @partnership.primary_neighbourhood&.name
