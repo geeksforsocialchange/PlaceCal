@@ -1,3 +1,15 @@
+/* Root sizing reads the tokens; unlayered, so preflight's html rules don't override it */
+:root {
+	font-size: var(--root-font-size);
+	line-height: var(--root-line-height);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	/* Transitions between keywords (e.g. `auto`, `min-content`) and numbers; not in Firefox yet */
+	interpolate-size: allow-keywords;
+	/* Discrete properties (e.g. `display`) switch at the start or end of a transition rather than halfway */
+	transition-behavior: allow-discrete;
+}
+
 /* Element defaults. Preflight zeroes browser styles; these restore the margins and sizes the public pages are built on. */
 @layer base {
 	body {

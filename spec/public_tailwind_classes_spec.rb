@@ -16,15 +16,7 @@ RSpec.describe "Public Tailwind classes" do
   end
 
   # Debt to replace with tokens or named utilities. Don't add to this list.
-  let(:to_replace) do
-    {
-      "grid-cols-[64px_1fr]" => "the event row's date tile column: move to the spacing scale",
-      "grid-cols-[1.4fr_1fr]" => "join audience split: grid-cols-2 or a named utility",
-      "grid-cols-[1.3fr_1fr]" => "join home split: grid-cols-2 or a named utility",
-      "grid-cols-[1fr_1.2fr]" => "join home split: grid-cols-2 or a named utility",
-      "min-h-[2.4em]" => "pricing card subtitles: line the cards up with subgrid instead"
-    }
-  end
+  let(:to_replace) { {} }
 
   let(:allowed) { exceptions.merge(to_replace) }
 
