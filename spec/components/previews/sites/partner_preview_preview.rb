@@ -18,4 +18,17 @@ class Sites::PartnerPreviewPreview < Lookbook::Preview
     )
     render Components::Sites::PartnerPreview.new(partner:, site:)
   end
+
+  # @label With a neighbourhood
+  def with_neighbourhood
+    partner = Partner.new(
+      id: 2,
+      slug: "moss-side-library",
+      name: "Moss Side Library",
+      summary: "Books, computers and a warm space, five days a week.",
+      description: "Full description here.",
+      address: Address.new(neighbourhood: Neighbourhood.new(name: "Moss Side"))
+    )
+    render Components::Sites::PartnerPreview.new(partner:, site: Site.new(name: "Hulme & Moss Side", slug: "hulme-moss-side"))
+  end
 end

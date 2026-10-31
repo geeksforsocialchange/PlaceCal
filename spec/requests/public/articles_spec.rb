@@ -214,7 +214,7 @@ RSpec.describe "Public Articles (News)", type: :request do
       end
 
       def page_action_links
-        Nokogiri::HTML(response.body).css("nav.page-actions a.page-actions__link")
+        Nokogiri::HTML(response.body).css("nav[data-scope='page-actions'] a[data-scope='page-actions'][data-part='link']")
       end
 
       it "links to the newer and older articles either side of the middle one" do

@@ -3,11 +3,18 @@
 class Components::Shared::Address < Components::Base
   include Phlex::Rails::Helpers::Sanitize
 
+  theme_scope :address,
+              parts: {
+                postal_address: 'The address lines, or the raw location when there is no address.',
+                directions: 'The directions links: Google Maps, then Apple Maps and OpenStreetMap when the place has coordinates. Only when there is somewhere to direct to.'
+              },
+              tokens: %i[--color-foreground --color-primary]
+
   prop :address, _Nilable(::Address), default: nil
   prop :raw_location, _Nilable(String), default: nil
 
   def view_template
-    p(class: 'place_info__address', property: 'address', typeof: 'PostalAddress') do
+    p(**part(:postal_address, property: 'address', typeof: 'PostalAddress')) do
       sanitize(formatted_address)
     end
     render_directions_link if directions_url
@@ -29,7 +36,7 @@ class Components::Shared::Address < Components::Base
 
   # Apple Maps and OpenStreetMap only take coordinates, so without them Google stays the lone "Directions" link.
   def render_directions_link
-    div(class: 'place_info__directions-list', role: 'group', aria_label: t('address.directions')) do
+    div(**part(:directions, role: 'group', aria_label: t('address.directions'))) do
       a(href: directions_url, target: '_blank', rel: 'noopener') do
         coordinates? ? t('address.google_maps') : t('address.directions')
       end

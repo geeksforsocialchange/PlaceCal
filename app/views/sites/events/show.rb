@@ -14,7 +14,8 @@ class Views::Sites::Events::Show < Views::Base
                 address: 'The event\'s address section.',
                 organiser: 'The organiser section, linking to their page.',
                 venue: 'The venue section. Only when the venue is a different partner from the organiser.',
-                section_body: 'The text under each section\'s heading.'
+                section_body: 'The text under each section\'s heading.',
+                more: 'The "More from" list of the organiser\'s other events. Only when the organiser has other upcoming events.'
               },
               tokens: %i[--text-sm --leading-normal --color-foreground --color-primary]
 
@@ -334,7 +335,7 @@ class Views::Sites::Events::Show < Views::Base
   end
 
   def render_site_more_from_organiser
-    section(class: 'container-narrowish event__more') do
+    section(**part(:more, class: 'container-narrowish')) do
       UI::RuledHeading { t('events.show.more_from', name: event.organiser.name) }
       ul(class: 'events reset') do
         Array(more_from_organiser).each do |other_event|
