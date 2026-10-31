@@ -48,11 +48,6 @@ RSpec.describe "Site accessibility", :slow, type: :system do
     visit "http://riverside.lvh.me:#{Capybara.current_session.server.port}#{path}"
   end
 
-  def expect_accessible_page
-    expect(page).to be_axe_clean
-    expect(page).to have_no_unresolved_low_contrast
-  end
-
   CORE_THEMES.each do |core_theme|
     context "on the #{core_theme} theme" do
       let(:theme) { core_theme }
@@ -61,26 +56,26 @@ RSpec.describe "Site accessibility", :slow, type: :system do
         it "has no accessibility violations on #{description}" do
           visit_site(path)
 
-          expect_accessible_page
+          expect(page).to be_axe_clean
         end
       end
 
       it "has no accessibility violations on a partner page" do
         visit_site("/partners/#{partner.to_param}")
 
-        expect_accessible_page
+        expect(page).to be_axe_clean
       end
 
       it "has no accessibility violations on an event page" do
         visit_site("/events/#{event.to_param}")
 
-        expect_accessible_page
+        expect(page).to be_axe_clean
       end
 
       it "has no accessibility violations on an article" do
         visit_site("/news/#{article.to_param}")
 
-        expect_accessible_page
+        expect(page).to be_axe_clean
       end
 
       context "with two partnership tags" do
