@@ -82,6 +82,27 @@ RSpec.describe "Site accessibility", :slow, type: :system do
 
         expect_accessible_page
       end
+
+      context "with two partnership tags" do
+        before do
+          site.tags << create(:partnership, name: "North")
+          site.tags << create(:partnership, name: "South")
+        end
+
+        it "has no accessibility violations on the region filter" do
+          visit_site("/events")
+
+          expect(page).to have_css("nav.region-filter a[aria-current='page']", text: "All")
+          expect(page).to be_axe_clean
+        end
+
+        it "has no accessibility violations on a hovered region filter option" do
+          visit_site("/events")
+          find("nav.region-filter a", text: "North").hover
+
+          expect(page).to be_axe_clean
+        end
+      end
     end
   end
 end

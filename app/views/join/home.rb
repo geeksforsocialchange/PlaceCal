@@ -18,7 +18,7 @@ class Views::Join::Home < Views::Join::Base
 
   def render_hero
     section(class: 'py-12 bg-home-background border-b border-rules') do
-      div(class: 'container-public grid lg:grid-cols-[1.3fr_1fr] gap-10 items-center') do
+      div(class: 'container-public grid lg:grid-cols-split-start gap-10 items-center') do
         div do
           UI::Kicker(tone: :accent, spacing: :sm) { t('join.home.hero.kicker') }
           h1(class: 'join-headline m-0 mb-4') { t('join.home.hero.title') }
@@ -69,7 +69,7 @@ class Views::Join::Home < Views::Join::Base
 
   def render_why
     section(class: 'py-10 bg-home-background-3') do
-      div(class: 'container-public grid lg:grid-cols-[1fr_1.2fr] gap-10 items-center') do
+      div(class: 'container-public grid lg:grid-cols-split-end gap-10 items-center') do
         div do
           UI::Kicker(tone: :muted, spacing: :xs) { t('join.home.why.kicker') }
           UI::Heading(spacing: :md) { t('join.home.why.heading') }

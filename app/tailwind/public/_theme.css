@@ -15,9 +15,9 @@
    baking in the default hex. Anything declared with a literal value in
    `@theme inline` is NOT overridable at runtime. Breakpoints and containers
    have to stay literal because they are used in media queries; the remaining
-   literals are fixed layout metrics (spacing step, avatar sizes, content
-   measures, map heights) and the default transition timing, which are not
-   part of a theme's surface.
+   literals are fixed layout metrics (spacing step, content measures, map
+   heights) and the default transition timing, which are not part of a
+   theme's surface.
 */
 :root {
 	--root-font-size: 18px;
@@ -30,10 +30,10 @@
 	--font-serif: Trocchi, Georgia, serif;
 	/* URLs and code: system fonts, so nothing extra downloads */
 	--font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-	--font-weight-extra-bold: 800;
-	--font-weight-bold: 700;
 	--font-weight-regular: 500;
 	--font-weight-semibold: 600;
+	--font-weight-bold: 700;
+	--font-weight-extra-bold: 800;
 
 	/* Type scale. Themes override these by name, so a name never changes meaning: add or retire, don't reuse. */
 
@@ -70,6 +70,8 @@
 	--text-hero: clamp(2rem, 4vw, 2.8rem);
 	/* responsive section titles on marketing pages */
 	--text-display: clamp(1.8rem, 3.6vw, 2.5rem);
+	/* join site page headlines (join-headline) */
+	--text-headline: clamp(2.4rem, 5vw, 3.6rem);
 
 	--tracking-normal: normal;
 	--tracking-badge: 0.086667rem;
@@ -110,7 +112,7 @@
 	--color-foreground-darker: #3d342e;
 	/* Horizontal lines, for example around events */
 	--color-rules: #f1e9da;
-	/* Currently just used on breadcrumb */
+	/* Form field borders, filter and breadcrumb underlines, the local-site footer's small print */
 	--color-rules-dark: #decbba;
 	/* Contrast colours */
 	--color-secondary: #f19089;
@@ -127,14 +129,18 @@
 	--color-cream-warm: #fdf0dd;
 	/* Muted text and icons, and navigation in some states */
 	--color-tertiary: #786551;
-	/* Muted small print and rules on the dark footer, and the band above a full-width map */
+	/* Page background around the content column, and rules on the local-site footer, news cards and above a full-width map */
 	--color-tertiary-light: #998675;
 	/* Plain white surfaces: focused inputs, unchecked checkbox boxes */
 	--color-surface: #fff;
 	/* Translucent white over a dark/branded panel */
 	--color-overlay-light: rgb(255 255 255 / 0.15);
-	/* Focus ring tint (--color-foreground at 12%) */
-	--color-focus-ring: rgb(91 78 70 / 0.12);
+	/* Focus ring tint: the copy colour at 12% */
+	--color-focus-ring: color-mix(
+		in srgb,
+		var(--color-foreground) 12%,
+		transparent
+	);
 	/* Map marker drop shadows */
 	--color-marker-shadow: rgb(0 0 0 / 0.25);
 	--color-dot-shadow: rgb(0 0 0 / 0.3);
@@ -151,8 +157,9 @@
 	/* map cluster bubbles and partner dots */
 	--shadow-marker: 0 2px 6px var(--color-marker-shadow);
 	--shadow-dot: 0 1px 3px var(--color-dot-shadow);
-	/* Filter dropdowns */
-	--shadow-dropdown: 7px 7px 20px 0 rgb(153 134 117 / 0.83);
+	/* Filter dropdowns, in the page background colour */
+	--shadow-dropdown: 7px 7px 20px 0
+		color-mix(in srgb, var(--color-tertiary-light) 83%, transparent);
 	/* raised panels: dropdowns, hovered cards */
 	--shadow-lg:
 		0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
@@ -167,17 +174,14 @@ Every themeable entry below is `var(--x)` so the utility resolves against the
 this file).
 */
 @theme inline {
-	/* One step is 4.5px at the 18px root */
-	--spacing: 0.25rem;
-
 	/* Fonts */
 	--font-sans: var(--font-sans);
 	--font-serif: var(--font-serif);
 	--font-mono: var(--font-mono);
-	--font-weight-extra-bold: var(--font-weight-extra-bold);
-	--font-weight-bold: var(--font-weight-bold);
 	--font-weight-regular: var(--font-weight-regular);
 	--font-weight-semibold: var(--font-weight-semibold);
+	--font-weight-bold: var(--font-weight-bold);
+	--font-weight-extra-bold: var(--font-weight-extra-bold);
 
 	/* Type scale */
 	--text-2xs: var(--text-2xs);
@@ -187,16 +191,17 @@ this file).
 	--text-detail: var(--text-detail);
 	--text-base: var(--text-base);
 	--text-md: var(--text-md);
-	--text-card: var(--text-card);
 	--text-lg: var(--text-lg);
 	--text-xl: var(--text-xl);
+	--text-card: var(--text-card);
 	--text-subhead: var(--text-subhead);
-	--text-section: var(--text-section);
 	--text-2xl: var(--text-2xl);
+	--text-section: var(--text-section);
 	--text-stat: var(--text-stat);
 	--text-3xl: var(--text-3xl);
 	--text-hero: var(--text-hero);
 	--text-display: var(--text-display);
+	--text-headline: var(--text-headline);
 
 	--tracking-normal: var(--tracking-normal);
 	--tracking-badge: var(--tracking-badge);
@@ -208,9 +213,53 @@ this file).
 	--leading-normal: var(--leading-normal);
 	--leading-relaxed: var(--leading-relaxed);
 
-	/* Avatar sizes */
-	--size-avatar-sm: 44px;
-	--size-avatar-md: 52px;
+	/* Border radii */
+	--radius-card: var(--radius-card);
+	--radius-sm: var(--radius-sm);
+	--radius-field: var(--radius-field);
+	--radius-check: var(--radius-check);
+	--radius-pill: var(--radius-pill);
+
+	/* Sizes */
+	--height-field: var(--height-field);
+
+	/* Colours */
+	--color-primary: var(--color-primary);
+	--color-primary-light: var(--color-primary-light);
+	--color-background: var(--color-background);
+	--color-foreground: var(--color-foreground);
+	--color-foreground-dark: var(--color-foreground-dark);
+	--color-foreground-darker: var(--color-foreground-darker);
+	--color-rules: var(--color-rules);
+	--color-rules-dark: var(--color-rules-dark);
+	--color-secondary: var(--color-secondary);
+	--color-secondary-deep: var(--color-secondary-deep);
+	--color-secondary-dark: var(--color-secondary-dark);
+	--color-secondary-strong: var(--color-secondary-strong);
+	--color-cream: var(--color-cream);
+	--color-cream-warm: var(--color-cream-warm);
+	--color-tertiary: var(--color-tertiary);
+	--color-tertiary-light: var(--color-tertiary-light);
+	--color-surface: var(--color-surface);
+	--color-overlay-light: var(--color-overlay-light);
+	--color-focus-ring: var(--color-focus-ring);
+	--color-marker-shadow: var(--color-marker-shadow);
+	--color-dot-shadow: var(--color-dot-shadow);
+	--color-home-background: var(--color-home-background);
+	--color-home-background-3: var(--color-home-background-3);
+	--color-home-blue: var(--color-home-blue);
+
+	/* Shadows */
+	--shadow-hero-search: var(--shadow-hero-search);
+	--shadow-marker: var(--shadow-marker);
+	--shadow-dot: var(--shadow-dot);
+	--shadow-dropdown: var(--shadow-dropdown);
+	--shadow-lg: var(--shadow-lg);
+
+	/* Fixed layout metrics below: literal, so not themeable */
+
+	/* One step is 4.5px at the 18px root */
+	--spacing: 0.25rem;
 
 	/* Content measure (max-widths for readability) */
 	--width-search: 440px;
@@ -231,56 +280,6 @@ this file).
 	/* Local-site event and partner maps */
 	--height-map-compact: 330px;
 	--height-map-full: 500px;
-	--height-field: var(--height-field);
-
-	/* Border radii */
-	--radius-card: var(--radius-card);
-	--radius-sm: var(--radius-sm);
-	--radius-field: var(--radius-field);
-	--radius-check: var(--radius-check);
-	--radius-pill: var(--radius-pill);
-
-	/* Colours */
-
-	/* Partner sites */
-	--color-primary: var(--color-primary);
-	--color-primary-light: var(--color-primary-light);
-	/* Main page background */
-	--color-background: var(--color-background);
-	/* Main copy colour */
-	--color-foreground: var(--color-foreground);
-	--color-foreground-dark: var(--color-foreground-dark);
-	--color-foreground-darker: var(--color-foreground-darker);
-	/* Horizontal lines, for example around events */
-	--color-rules: var(--color-rules);
-	/* Currently just used on breadcrumb */
-	--color-rules-dark: var(--color-rules-dark);
-	/* Contrast colours */
-	--color-secondary: var(--color-secondary);
-	--color-secondary-deep: var(--color-secondary-deep);
-	--color-secondary-dark: var(--color-secondary-dark);
-	--color-secondary-strong: var(--color-secondary-strong);
-	--color-cream: var(--color-cream);
-	--color-cream-warm: var(--color-cream-warm);
-	--color-tertiary: var(--color-tertiary);
-	--color-tertiary-light: var(--color-tertiary-light);
-	--color-surface: var(--color-surface);
-	--color-overlay-light: var(--color-overlay-light);
-	--color-focus-ring: var(--color-focus-ring);
-	--color-marker-shadow: var(--color-marker-shadow);
-	--color-dot-shadow: var(--color-dot-shadow);
-
-	/* Default-site */
-	--color-home-background: var(--color-home-background);
-	--color-home-background-3: var(--color-home-background-3);
-	--color-home-blue: var(--color-home-blue);
-
-	/* Shadows */
-	--shadow-hero-search: var(--shadow-hero-search);
-	--shadow-marker: var(--shadow-marker);
-	--shadow-dot: var(--shadow-dot);
-	--shadow-dropdown: var(--shadow-dropdown);
-	--shadow-lg: var(--shadow-lg);
 
 	/* Used by transition-* utilities that have no duration-* class; reduced motion still zeroes them in _base.css */
 	--default-transition-duration: 150ms;
