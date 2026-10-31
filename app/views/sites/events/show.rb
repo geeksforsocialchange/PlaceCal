@@ -137,9 +137,6 @@ class Views::Sites::Events::Show < Views::Base
     div(class: 'py-4') do
       section_heading(t('directory.events.show.where'))
       div(class: 'grid grid-cols-main-auto gap-4 items-start') do
-        # No style: override — a single point resolves to map--single, whose
-        # compact height actually applies (map--multiple's 500px wins the
-        # cascade over map--compact). Matches directory/partners/show.
         Shared::Map(points: map, compact: true) if map
         div do
           div(class: 'font-extra-bold') { event.partner_at_location.name } if event.partner_at_location

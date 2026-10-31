@@ -507,7 +507,7 @@ RSpec.describe "Public Partners", type: :request do
 
         expect(html.scan("Busy Event").size).to eq(60)
         expect(html).to include("Busy Event 59")
-        expect(html).not_to include("partner-events__more")
+        expect(html).not_to include("more day")
       end
     end
   end

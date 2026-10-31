@@ -1,13 +1,4 @@
-/*
- * Admin Tailwind CSS
- *
- * Tailwind v4 uses CSS-first configuration.
- */
-
-/* Disable automatic content detection so we only scan admin templates.
-   The public site has its own entrypoint (public_tailwind.css); scanning its
-   pages/components here would generate unused CSS. See #3139.
-*/
+/* Admin stylesheet. Content detection is off, so every admin source is listed; public_tailwind.css has the mirror-image list. */
 @import "tailwindcss" source(none);
 @plugin "daisyui" {
 	themes:
@@ -15,28 +6,15 @@
 		corporate;
 }
 
-/* Admin-only source paths for content detection.
-   Admin templates live under the admin/ subdirs of views/ and components/,
-   plus the admin layout. Datatables, helpers and Stimulus controllers are
-   shared utilities that also emit classes used by the admin UI.
-*/
-@source "../../app/datatables/**/*.rb";
-@source "../javascript/**/*.js";
-@source "../helpers/**/*.rb";
-@source "../views/admin/**/*.{erb,rb}";
-@source "../views/layouts/admin/**/*.{erb,rb}";
-@source "../components/admin/**/*.rb";
+@source "../{datatables,helpers,javascript}";
+@source "../{components,views,views/layouts}/admin";
 
 /* PlaceCal brand colors as CSS custom properties */
 @theme {
-	--color-placecal-brown: #5b4e46;
-	--color-placecal-cream: #f5f1eb;
 	--color-placecal-orange: #e87d1e;
 	--color-placecal-orange-dark: #b35500; /* WCAG AA compliant for text on white (5.0:1) */
 	--color-placecal-teal: #00a9a5;
 	--color-placecal-teal-dark: #007a77; /* WCAG AA compliant for text on white (4.7:1) */
-	--color-placecal-pink: #e91e63;
-	--color-placecal-purple: #9c27b0;
 }
 
 /* Leaflet map styles */

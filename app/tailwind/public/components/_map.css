@@ -19,7 +19,7 @@
 	border-radius: 50%;
 	background: var(--color-foreground);
 	color: var(--color-background);
-	font-weight: 800;
+	font-weight: var(--font-weight-extra-bold);
 	font-size: 0.75rem;
 	box-shadow: var(--shadow-marker);
 }
