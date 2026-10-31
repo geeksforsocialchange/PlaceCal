@@ -18,9 +18,8 @@ class Components::UI::Pill < Components::Base
     page: 'rounded-pill justify-center min-w-9 h-9 px-2 text-sm font-bold bg-home-background-3 text-foreground hover:bg-primary hover:text-foreground-dark',
     # A letter in an A to Z index, square until the label is wider, such as "All"
     letter: 'rounded-sm justify-center min-w-7 h-7 px-2 text-sm font-bold text-foreground hover:bg-home-background-3',
-    # An outlined option in a filter row, such as a region, a day or a time period; it takes the row's text size and line height
-    segment: 'rounded-pill justify-center whitespace-nowrap border-2 px-4 py-1 font-bold bg-background text-foreground border-primary ' \
-             'hover:border-foreground'
+    # An outlined option in a filter row, such as a region, a day or a time period; it takes the row's text size, line height and resting weight
+    segment: 'rounded-pill justify-center whitespace-nowrap border-2 px-4 py-1 bg-background text-foreground border-primary hover:border-foreground'
   }.freeze
 
   # Variants without their own selected look take the tab's.
