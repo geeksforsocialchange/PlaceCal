@@ -19,7 +19,7 @@ class Components::UI::Pill < Components::Base
     # A letter in an A to Z index, square until the label is wider, such as "All"
     letter: 'rounded-sm justify-center min-w-7 h-7 px-2 text-sm font-bold text-foreground hover:bg-home-background-3',
     # An outlined option in a filter row, such as a region, a day or a time period
-    segment: 'rounded-pill justify-center whitespace-nowrap border-2 px-4 py-1 text-base font-bold bg-background text-foreground border-primary ' \
+    segment: 'rounded-pill justify-center whitespace-nowrap border-2 px-4 py-1 text-base leading-snug font-bold bg-background text-foreground border-primary ' \
              'hover:border-foreground'
   }.freeze
 
@@ -29,7 +29,7 @@ class Components::UI::Pill < Components::Base
     page: 'rounded-pill justify-center min-w-9 h-9 px-2 text-sm font-bold bg-foreground text-background',
     letter: 'rounded-sm justify-center min-w-7 h-7 px-2 text-sm font-bold bg-foreground text-background',
     # Dark text on the theme fill keeps AA on every colour theme.
-    segment: 'rounded-pill justify-center whitespace-nowrap border-2 px-4 py-1 text-base font-bold bg-primary text-foreground-dark border-primary'
+    segment: 'rounded-pill justify-center whitespace-nowrap border-2 px-4 py-1 text-base leading-snug font-bold bg-primary text-foreground-dark border-primary'
   }.freeze
 
   # A selected segment stays a link: themes style filter options as `a[aria-current]`.
@@ -39,7 +39,8 @@ class Components::UI::Pill < Components::Base
                      variants: { root: VARIANTS.keys },
                      tokens: %i[--radius-pill --radius-sm --color-primary --color-primary-light --color-foreground --color-foreground-dark
                                 --color-background --color-home-background-3 --color-tertiary --color-overlay-light
-                                --text-sm --text-2xs --text-base --text-badge --text-badge-sm --tracking-badge --font-weight-bold --font-weight-extra-bold]
+                                --text-sm --text-2xs --text-base --text-badge --text-badge-sm --tracking-badge --leading-snug --font-weight-bold
+                                --font-weight-extra-bold]
 
   prop :variant, _Union(*VARIANTS.keys), default: :tab
   prop :selected, _Boolean, default: false
