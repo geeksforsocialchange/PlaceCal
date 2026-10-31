@@ -1,3 +1,5 @@
+/* --- Containers and sizing --- */
+
 /* Page containers: a centred measure with gutters that widen at each breakpoint */
 @utility container-public {
 	max-width: 1240px;
@@ -42,22 +44,40 @@
 	padding-inline: 1.5rem;
 }
 
-/* Hero page title — shared across all brown hero sections */
+/* Keeps a popover inside the viewport with a gutter either side */
+@utility max-w-screen-inset {
+	max-width: calc(100vw - --spacing(8));
+}
+
+/* An icon the size of the text around it */
+@utility size-em {
+	width: 1em;
+	height: 1em;
+}
+
+/* Two lines of the element's own text, so labels that wrap differently still line up what follows */
+@utility min-h-two-lines {
+	min-height: 2lh;
+}
+
+/* --- Type --- */
+
+/* Hero page title, shared by every brown hero section */
 @utility hero-title {
 	font-family: var(--font-serif);
 	font-weight: var(--font-weight-regular);
 	font-size: var(--text-hero);
 	line-height: var(--leading-hero);
 	margin-top: 0;
-	margin-bottom: calc(var(--spacing) * 3);
+	margin-bottom: --spacing(3);
 }
 
 /* Join site display headline: bigger than hero-title, used on join.placecal.org */
 @utility join-headline {
 	font-family: var(--font-serif);
 	font-weight: var(--font-weight-regular);
-	font-size: clamp(2.4rem, 5vw, 3.6rem);
-	line-height: 1.05;
+	font-size: var(--text-headline);
+	line-height: var(--leading-hero);
 	text-wrap: balance;
 	color: var(--color-foreground);
 }
@@ -71,33 +91,25 @@
 
 /* Allcaps label used for kickers, section labels, form labels, sidebar headings */
 @utility allcaps-label {
+	@apply allcaps;
 	font-size: var(--text-2xs);
-	font-weight: var(--font-weight-extra-bold);
-	text-transform: uppercase;
-	letter-spacing: var(--tracking-wide);
 }
 
-/* Main content beside a fixed-width sidebar */
-@utility grid-cols-sidebar {
-	grid-template-columns: 1fr var(--width-sidebar);
+/* Underlines that break around descenders, unlike the base link rule's */
+@utility skip-ink-auto {
+	text-decoration-skip-ink: auto;
 }
 
-@utility grid-cols-sidebar-lg {
-	grid-template-columns: 1fr var(--width-sidebar-lg);
+/* --- Grids: general --- */
+
+/* Date or meta column beside an article */
+@utility grid-cols-aside-main {
+	grid-template-columns: 1fr 4fr;
 }
 
-/* Join pricing rollout: circle column, then circle, art and text columns from md */
-@utility grid-cols-rollout {
-	grid-template-columns: --spacing(11) 1fr;
-}
-
-@utility grid-cols-rollout-wide {
-	grid-template-columns: --spacing(14) --spacing(44) 1fr;
-}
-
-/* Brand column, then three link columns */
-@utility grid-cols-footer {
-	grid-template-columns: 1.4fr 1fr 1fr 1fr;
+/* A label beside its value, e.g. a day and its opening hours */
+@utility grid-cols-label-value {
+	grid-template-columns: 2fr 3fr;
 }
 
 /* A column that fills beside one sized to its content, and the reverse */
@@ -109,19 +121,61 @@
 	grid-template-columns: auto 1fr;
 }
 
-/* A label beside its value, e.g. a day and its opening hours */
-@utility grid-cols-label-value {
-	grid-template-columns: 2fr 3fr;
+/* Main content beside a fixed-width sidebar */
+@utility grid-cols-sidebar {
+	grid-template-columns: 1fr var(--width-sidebar);
 }
+
+@utility grid-cols-sidebar-lg {
+	grid-template-columns: 1fr var(--width-sidebar-lg);
+}
+
+/* Two columns, the start one wider, and the mirror */
+@utility grid-cols-split-start {
+	grid-template-columns: 4fr 3fr;
+}
+
+@utility grid-cols-split-end {
+	grid-template-columns: 3fr 4fr;
+}
+
+/* --- Grids: page-specific --- */
 
 /* An avatar column beside the details it belongs to */
 @utility grid-cols-avatar {
 	grid-template-columns: --spacing(33) auto;
 }
 
-/* Date or meta column beside an article */
-@utility grid-cols-aside-main {
-	grid-template-columns: 1fr 4fr;
+/* Directory event row: the date tile's column, then the details */
+@utility grid-cols-date-row {
+	grid-template-columns: --spacing(14) 1fr;
+}
+
+/* Brand column, then three link columns */
+@utility grid-cols-footer {
+	grid-template-columns: 1.4fr 1fr 1fr 1fr;
+}
+
+/* Paginator tabs: as many as fit, none narrower than its label needs */
+@utility grid-cols-paginator {
+	grid-template-columns: repeat(auto-fit, minmax(--spacing(24), 1fr));
+	@media (width >= theme(--breakpoint-md)) {
+		grid-template-columns: repeat(auto-fit, minmax(--spacing(28), 1fr));
+	}
+}
+
+/* Directory partner row: the avatar's column, then the name, then the events count */
+@utility grid-cols-partner-row {
+	grid-template-columns: --spacing(11) 1fr auto;
+}
+
+/* Join pricing rollout: circle column, then circle, art and text columns from md */
+@utility grid-cols-rollout {
+	grid-template-columns: --spacing(11) 1fr;
+}
+
+@utility grid-cols-rollout-wide {
+	grid-template-columns: --spacing(14) --spacing(44) 1fr;
 }
 
 /* Partner page: description, a gutter, then image, map and opening times. Themes re-lay it out by these area names. */
@@ -140,6 +194,8 @@
 @utility grid-area-right {
 	grid-area: right;
 }
+
+/* --- Decorations --- */
 
 /* The local-site hero's corner patterns; themes replace or drop them */
 @utility hero-pattern {
@@ -160,25 +216,6 @@
 		background-position:
 			5% -1rem,
 			right 5% top -1rem;
-	}
-}
-
-/* An icon the size of the text around it */
-@utility size-em {
-	width: 1em;
-	height: 1em;
-}
-
-/* Keeps a popover inside the viewport with a gutter either side */
-@utility max-w-screen-inset {
-	max-width: calc(100vw - --spacing(8));
-}
-
-/* Paginator tabs: as many as fit, none narrower than its label needs */
-@utility grid-cols-paginator {
-	grid-template-columns: repeat(auto-fit, minmax(--spacing(24), 1fr));
-	@media (width >= theme(--breakpoint-md)) {
-		grid-template-columns: repeat(auto-fit, minmax(--spacing(28), 1fr));
 	}
 }
 
@@ -210,9 +247,4 @@
 	margin: 0;
 	padding: 0;
 	list-style-type: none;
-}
-
-/* Underlines that break around descenders, unlike the base link rule's */
-@utility skip-ink-auto {
-	text-decoration-skip-ink: auto;
 }

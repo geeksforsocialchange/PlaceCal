@@ -5,7 +5,7 @@ class Components::Directory::EventRow < Components::Directory::Base
   prop :context_partner, _Nilable(::Partner), default: nil
 
   def view_template
-    div(class: 'grid grid-cols-[64px_1fr] gap-4 items-start py-3 border-b border-rules') do
+    div(class: 'grid grid-cols-date-row gap-4 items-start py-3 border-b border-rules') do
       render_date_badge
       render_body
     end

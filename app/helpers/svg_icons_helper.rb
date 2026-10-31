@@ -216,8 +216,8 @@ module SvgIconsHelper
             else
               ''
             end
-    classes = size_class
-    classes += " #{css_class}" if css_class.present?
+    # A flex row whose text truncates or wraps would otherwise squash the icon.
+    classes = [size_class, 'shrink-0', *css_class.to_s.split].compact_blank.uniq.join(' ')
 
     tag.svg(
       class: classes,

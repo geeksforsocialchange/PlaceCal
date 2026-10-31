@@ -34,4 +34,11 @@ RSpec.describe Components::UI::Field, type: :component do
 
     expect(page).not_to have_css("[aria-describedby]")
   end
+
+  it "labels a group of controls without pointing the label at one of them" do
+    render_inline(described_class.new(label: "Neighbourhood", id: "area", group: true)) { "controls" }
+
+    expect(page).to have_css("div[role='group'][aria-labelledby='area_label'] span#area_label", text: "Neighbourhood")
+    expect(page).to have_no_css("label")
+  end
 end

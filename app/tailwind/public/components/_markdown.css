@@ -1,29 +1,32 @@
-/* Rendered markdown documents from app/content (privacy, terms, the MCP page) */
-.markdown-content > :first-child {
-	@apply mt-0;
+/* Rendered markdown: app/content documents (privacy, terms, the MCP page) and theme content pages. Layered, so a theme's unlayered rules and utilities beat it */
+@layer components {
+	.markdown-content {
+		& > :first-child {
+			@apply mt-0;
+		}
+		& h2 {
+			@apply text-2xl font-bold mt-8 mb-3;
+		}
+		& h3 {
+			@apply text-xl font-bold mt-6 mb-2;
+		}
+		& p {
+			@apply my-4;
+		}
+		& ul {
+			@apply list-disc pl-6 my-4 space-y-1;
+		}
+		& ol {
+			@apply list-decimal pl-6 my-4 space-y-1;
+		}
+		& li {
+			@apply pl-1;
+		}
+	}
 }
-.markdown-content h2 {
-	@apply text-2xl font-bold mt-8 mb-3;
-}
-.markdown-content h3 {
-	@apply text-xl font-bold mt-6 mb-2;
-}
-.markdown-content p {
-	@apply my-4;
-}
-.markdown-content ul {
-	@apply list-disc pl-6 my-4 space-y-1;
-}
-.markdown-content ol {
-	@apply list-decimal pl-6 my-4 space-y-1;
-}
-.markdown-content li {
-	@apply pl-1;
-}
-.markdown-content a {
-	@apply underline;
-	color: var(--color-foreground);
-}
-.markdown-content a:hover {
-	@apply no-underline;
+/* In base so a theme's own link rules can override it */
+@layer base {
+	.markdown-content a:hover {
+		@apply no-underline;
+	}
 }

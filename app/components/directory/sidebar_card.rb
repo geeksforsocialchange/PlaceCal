@@ -11,8 +11,8 @@ class Components::Directory::SidebarCard < Components::Directory::Base
 
   def view_template(&block)
     div(class: 'rounded-card overflow-hidden') do
-      div(class: 'bg-foreground px-4 py-3', style: 'color: var(--color-background)') do
-        div(class: 'allcaps-label mb-0.5 opacity-80') { @eyebrow } if @eyebrow
+      div(class: 'bg-foreground text-background px-4 py-3') do
+        UI::Kicker(tone: :faded, spacing: :xs) { @eyebrow } if @eyebrow
         render_title
       end
       div(class: 'bg-home-background-3 px-4 py-3', &block) if block
@@ -23,7 +23,7 @@ class Components::Directory::SidebarCard < Components::Directory::Base
 
   def render_title
     if @title_href
-      UI::Link(href: @title_href, variant: :quiet, tone: :inherit, class: 'font-serif text-lg') { @title }
+      UI::Link(href: @title_href, variant: :quiet, tone: :inherit, size: :lg, font: :serif) { @title }
     else
       div(class: 'font-serif text-lg') { @title }
     end

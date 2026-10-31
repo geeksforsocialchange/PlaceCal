@@ -8,7 +8,7 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
     div(class: 'flex flex-col gap-4') do
       render_image if @partner.read_attribute(:image).present?
       render_partnerships if Array(@containing_sites).any?
-      render Shared::ContactDetails.new(partner: @partner, variant: :tailwind)
+      render Shared::ContactDetails.new(partner: @partner, variant: :card)
       render_opening_times if opening_times.any?
       render_categories if @partner.categories.any?
       render_neighbourhood if @partner.address&.neighbourhood
@@ -102,18 +102,18 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
       sidebar_heading(t('directory.sidebar.share_subscribe'))
 
       div do
-        UI::Link(href: "https://placecal.org/partners/#{@partner.slug}", variant: :quiet, class: 'font-mono text-sm break-all') do
+        UI::Link(href: "https://placecal.org/partners/#{@partner.slug}", variant: :quiet, font: :code) do
           plain "placecal.org/partners/#{@partner.slug}"
         end
       end
       div(class: 'mt-3') do
-        UI::Link(href: partner_url(@partner, protocol: :webcal, format: :ics), variant: :action, class: 'text-sm') do
+        UI::Link(href: partner_url(@partner, protocol: :webcal, format: :ics), variant: :action, size: :sm) do
           raw(view_context.icon(:calendar, size: '3.5'))
           plain t('directory.sidebar.subscribe_ical')
         end
       end
       div(class: 'mt-1.5') do
-        UI::Link(href: partner_url(@partner, format: :csv), variant: :action, class: 'text-sm') do
+        UI::Link(href: partner_url(@partner, format: :csv), variant: :action, size: :sm) do
           raw(view_context.icon(:arrow_down, size: '3.5'))
           plain t('directory.sidebar.download_csv')
         end

@@ -12,4 +12,10 @@ class UI::RuledHeadingPreview < Lookbook::Preview
   def plain_inline
     render(Components::UI::RuledHeading.new) { "Event address" }
   end
+
+  # Small, centred caps titling a card, with `spacing: :card` below it; `:illustrated` adds room above for a picture, as on the help cards.
+  # @label Card title
+  def card_title
+    render(Components::UI::RuledHeading.new(level: 3, caps: true, tone: :secondary, rule: :centered, size: :sm, spacing: :card)) { "Your local contact" }
+  end
 end

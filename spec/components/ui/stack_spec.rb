@@ -15,6 +15,12 @@ RSpec.describe Components::UI::Stack, type: :component do
     expect(page).to have_css("section[aria-labelledby='times']")
   end
 
+  it "spaces its children by the step between sm and md" do
+    render_inline(described_class.new(gap: :sm_md)) { "x" }
+
+    expect(page).to have_css("div.flex-col.gap-3")
+  end
+
   it "rejects a gap off the scale" do
     expect { described_class.new(gap: :huge) }.to raise_error(Literal::TypeError)
   end

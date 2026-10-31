@@ -8,11 +8,11 @@ class Components::Join::AudienceCard < Components::Join::Base
 
   def view_template
     UI::Card(href: audience_path(audience), class: 'flex flex-col gap-2') do
-      div(class: 'aspect-square rounded-sm overflow-hidden bg-home-background-3') do
+      div(class: 'aspect-square rounded-sm overflow-hidden bg-home-background-3 mb-1') do
         image_tag(AUDIENCES.fetch(audience), class: 'w-full h-full object-cover', alt: t("join.audiences.#{audience}.image_alt"))
       end
-      send(:"h#{@heading_level}", class: 'font-serif font-regular text-card m-0 mt-1') { t("join.audiences.#{audience}.title") }
-      p(class: 'text-detail text-tertiary leading-relaxed m-0') { t("join.audiences.#{audience}.lede") }
+      UI::Heading(level: @heading_level, size: :card, spacing: :none) { t("join.audiences.#{audience}.title") }
+      UI::Text(variant: :lede, tone: :muted, spacing: :none) { t("join.audiences.#{audience}.lede") }
       div(class: 'mt-auto pt-1 text-secondary-strong font-bold text-detail') do
         plain t('join.audiences.see_pitch')
         span { safe(' &rarr;') }

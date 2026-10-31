@@ -2,15 +2,15 @@
 
 # @display context directory
 class UI::SearchBarPreview < Lookbook::Preview
-  # White bar with a shadow and a primary button, for the directory hero.
+  # White bar with a shadow and a primary button, for the directory hero. `width:` caps it at `:md` or `:lg`, or `:full` to fill its parent.
   # @label Light
   def light
-    render(Components::UI::SearchBar.new(action: "#", tone: :light, placeholder: "Search for events, groups or places", button_label: "Search"))
+    render(Components::UI::SearchBar.new(action: "#", tone: :light, width: :lg, placeholder: "Search for events, groups or places", button_label: "Search"))
   end
 
   # Panel-coloured bar with a smaller dark button, for search inside a page.
   # @label Panel, small
   def panel
-    render(Components::UI::SearchBar.new(action: "#", size: :sm, placeholder: "Search partnerships", button_label: "Search"))
+    render(Components::UI::SearchBar.new(action: "#", size: :sm, width: :md, placeholder: "Search partnerships", button_label: "Search"))
   end
 end

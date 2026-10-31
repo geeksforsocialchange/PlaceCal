@@ -136,7 +136,7 @@ class Views::Sites::Events::Show < Views::Base
   def render_where_section
     div(class: 'py-4') do
       section_heading(t('directory.events.show.where'))
-      div(class: 'grid grid-cols-[1fr_auto] gap-4 items-start') do
+      div(class: 'grid grid-cols-main-auto gap-4 items-start') do
         # No style: override — a single point resolves to map--single, whose
         # compact height actually applies (map--multiple's 500px wins the
         # cascade over map--compact). Matches directory/partners/show.
@@ -207,7 +207,7 @@ class Views::Sites::Events::Show < Views::Base
     # contactless organiser gets a clean titled card, not an empty strip.
     if organiser.contactable?
       Directory::SidebarCard(**card_args) do
-        render Components::Shared::ContactDetails.new(partner: organiser, variant: :tailwind_rows)
+        render Components::Shared::ContactDetails.new(partner: organiser, variant: :rows)
       end
     else
       Directory::SidebarCard(**card_args)
@@ -218,12 +218,12 @@ class Views::Sites::Events::Show < Views::Base
     UI::Card(variant: :panel, padding: :sm) do
       sidebar_heading(t('directory.sidebar.share_subscribe'))
       div do
-        UI::Link(href: "https://placecal.org/events/#{event.id}", variant: :quiet, class: 'font-mono text-sm break-all') do
+        UI::Link(href: "https://placecal.org/events/#{event.id}", variant: :quiet, font: :code) do
           plain "placecal.org/events/#{event.id}"
         end
       end
       div(class: 'mt-3') do
-        UI::Link(href: event_url(event, protocol: :webcal, format: :ics), variant: :action, class: 'text-sm') do
+        UI::Link(href: event_url(event, protocol: :webcal, format: :ics), variant: :action, size: :sm) do
           raw(view_context.icon(:calendar, size: '3.5'))
           plain t('directory.sidebar.subscribe_ical')
         end

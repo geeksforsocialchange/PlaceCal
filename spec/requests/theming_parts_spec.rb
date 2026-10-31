@@ -8,9 +8,6 @@ RSpec.describe "Theming parts", type: :request do
     Lookbook::Previews.all.find { PlaceCal::Theming.component_for_preview(it) == component.name }
   end
 
-  # Classes the link previews pass in to show call sites, not the link's own.
-  PREVIEW_ONLY_TOKENS = { "link" => %w[--font-serif --text-detail --text-sm] }.freeze
-
   def rendered_previews(preview)
     preview.scenarios.map do |scenario|
       get "#{preview.url_path}/#{scenario.name}/preview"
@@ -43,7 +40,7 @@ RSpec.describe "Theming parts", type: :request do
     it "declares every token the #{scope.css_name} previews read" do
       read = rendered_previews(preview_for(scope.owner)).flat_map { ThemingTokens.read_by(it, scope.css_name) }.uniq
 
-      expect(read - scope.tokens.map(&:to_s) - PREVIEW_ONLY_TOKENS.fetch(scope.css_name, [])).to be_empty
+      expect(read - scope.tokens.map(&:to_s)).to be_empty
     end
   end
 

@@ -1,20 +1,38 @@
-/* Override leaflet.markercluster default styles */
-.marker-cluster-small,
-.marker-cluster-medium,
-.marker-cluster-large {
-	background: transparent !important;
-}
-
 /* Leaflet builds its own popup markup and ships unlayered CSS, so these stay unlayered too */
-.map :is(.leaflet-container, .leaflet-popup-content) {
+.leaflet-container {
 	font-family: var(--font-sans);
 }
-.map :is(.leaflet-container, .leaflet-popup-content) a {
-	color: var(--color-foreground);
-	font-size: 0.9rem;
+.leaflet-popup-content a {
+	font-size: var(--text-detail);
 }
 
 /* Leaflet colours its own links blue or black; every map keeps them in the text colour */
 .leaflet-container a {
 	color: var(--color-foreground);
+}
+
+/* The directory homepage cluster map's markers; display: flex has to beat Leaflet's display: block on marker icons */
+.cluster-marker {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	background: var(--color-foreground);
+	color: var(--color-background);
+	font-weight: 800;
+	font-size: 0.75rem;
+	box-shadow: var(--shadow-marker);
+}
+.cluster-md {
+	font-size: 0.85rem;
+}
+.cluster-lg {
+	font-size: 1rem;
+}
+
+.partner-dot {
+	background: var(--color-secondary);
+	border-radius: 50%;
+	border: 2px solid var(--color-background);
+	box-shadow: var(--shadow-dot);
 }

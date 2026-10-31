@@ -1,8 +1,57 @@
 # frozen_string_literal: true
 
-# Tailwind classes are generally [ base, directory, partner site]. each section may be split into targets and breakpoints depending on complexity
-
 class Components::Shared::Navigation < Components::Base
+  # Each element's classes for the nationwide directory and for a site, appended to its shared base classes.
+  CONTEXTS = {
+    directory: {
+      header: ['container-public py-6 bg-background border-b border-rules'],
+      branding: ['w-32 h-10 md:w-42 md:h-12'],
+      toggle: ['text-foreground', 'md:me-4', 'lg:hidden'],
+      menu: [
+        # Matches container-public's padding so the dropdown sits flush without overflowing.
+        '-mx-3 md:-mx-5',
+        'pt-4 gap-0.5  lg:row-start-1 lg:col-start-2 lg:col-span-1',
+        'md:flex-row md:gap-8 md:pt-3 md:pb-4 md:mt-6',
+        'md:max-lg:is-hidden:py-0 md:max-lg:is-hidden:mt-4.5 md:max-lg:bg-home-background',
+        # invisible takes the collapsed menu's links out of the tab order.
+        'max-lg:is-hidden:h-0 max-lg:is-hidden:invisible',
+        'lg:justify-end lg:items-baseline lg:mx-0 lg:mt-1.5 lg:py-0'
+      ],
+      item: ['max-md:bg-home-background max-md:py-3'],
+      link: [
+        'text-foreground font-bold',
+        'after:h-0.75 after:mt-0.5 after:transition-colors after:duration-300',
+        'hover:after:bg-foreground'
+      ],
+      link_active: 'after:bg-foreground'
+    },
+    site: {
+      header: ['header__partner mx-4 pt-4', 'lg:mx-12 lg:py-6'],
+      branding: ['w-42 h-12'],
+      toggle: ['text-background', 'md:me-4', 'md:hidden'],
+      menu: [
+        '-mx-6 gap-1 mt-4',
+        'max-md:pb-1 max-md:bg-tertiary max-md:is-hidden:h-0 max-md:is-hidden:pb-0',
+        'max-md:is-hidden:invisible',
+        'md:-mx-6',
+        'md:max-lg:px-2 md:max-lg:bg-foreground',
+        'lg:row-start-1 lg:col-start-2 lg:col-span-1 lg:gap-8 lg:m-0'
+      ],
+      item: [
+        'py-4 duration-300 transition-none',
+        'max-md:bg-foreground max-md:transition-colors max-md:hover:bg-tertiary',
+        'md:max-lg:justify-evenly md:max-lg:grow'
+      ],
+      link: [
+        'text-background font-extra-bold tracking-wide uppercase',
+        'max-md:text-xl',
+        'md:after:h-1 md:hover:after:bg-primary',
+        'lg:text-foreground'
+      ],
+      link_active: 'md:after:bg-primary'
+    }
+  }.transform_values { |looks| looks.transform_values(&:freeze).freeze }.freeze
+
   prop :navigation, Array # Array of tuples of [name, URL]
   prop :site, _Nilable(::Site), default: nil
   # Passed down from the layout so the component stays a pure renderer.
@@ -16,16 +65,7 @@ class Components::Shared::Navigation < Components::Base
   prop :home_heading, _Boolean, default: true
 
   def view_template
-    header(class: [
-             'header grid grid-cols-[1fr_auto] items-center print:hidden',
-             *(
-               if @site.nil?
-                 ['container-public py-6 bg-background border-b border-rules']
-               else
-                 ['header__partner mx-4 pt-4', 'lg:py-4 lg:mx-12 lg:py-6']
-               end
-             )
-           ], data: { controller: 'mobile-menu' }) do
+    header(class: ['header grid grid-cols-main-auto items-center print:hidden', *look[:header]], data: { controller: 'mobile-menu' }) do
       render_branding
       render_toggle
       render_menu
@@ -34,27 +74,24 @@ class Components::Shared::Navigation < Components::Base
 
   private
 
+  def look
+    CONTEXTS[@site.nil? ? :directory : :site]
+  end
+
   def render_branding
     link_to(root_path, class: [
               'header__branding row-start-1 col-start-1 ',
-              ("header__branding--#{@site.slug}" if @site&.slug.presence),
               ("header__branding--theme-#{branding_theme_name}" if branding_theme_name),
               # svg for the bundled inline logos, img for uploaded ones
               'logo:object-contain logo:max-w-full logo:max-h-full',
-              *(if @site.nil?
-                  ['w-32 h-10 md:w-42 md:h-12']
-                else
-                  ['w-42 h-12']
-                end)
+              *look[:branding]
             ]) do
       render_logo
       render_site_name
     end
   end
 
-  # A theme's own branding CSS hooks onto this rather than onto the slug class
-  # above: the slug is admin-editable, so a rename would silently drop the
-  # theme's styling (#3368).
+  # A theme's branding CSS hooks onto this, not the site slug, which admins can rename (#3368).
   #
   # @return [String, nil] the registered theme's name, or nil for a site with
   #   no theme and for the nationwide directory
@@ -162,43 +199,15 @@ class Components::Shared::Navigation < Components::Base
   end
 
   def menu_li_classes
-    [
-      'text-center',
-      *(if @site.nil?
-          ['max-md:bg-home-background max-md:py-3']
-        else
-          [
-            'py-4 duration-300 transition-none',
-            'max-md:bg-foreground max-md:transition-colors max-md:hover:bg-tertiary',
-            'md:max-lg:justify-evenly md:max-lg:grow'
-          ]
-        end)
-    ]
+    ['text-center', *look[:item]]
   end
 
   def menu_link_classes
-    [
-      'text-base no-underline',
-      'after:block after:mx-auto after:w-10',
-      *(if @site.nil?
-          [
-            'text-foreground font-bold',
-            'after:h-0.75 after:mt-0.5 after:transition-colors after:duration-300',
-            'hover:after:bg-foreground'
-          ]
-        else
-          [
-            'text-background font-extra-bold tracking-wide uppercase',
-            'max-md:text-xl',
-            'md:after:h-1 md:hover:after:bg-primary',
-            'lg:text-foreground'
-          ]
-        end)
-    ].join(' ')
+    ['text-base no-underline', 'after:block after:mx-auto after:w-10', *look[:link]].join(' ')
   end
 
   def menu_active_classes
-    (@site.nil? ? 'after:bg-foreground' : 'md:after:bg-primary')
+    look[:link_active]
   end
 
   def menu_nav_classes
@@ -206,29 +215,7 @@ class Components::Shared::Navigation < Components::Base
       'nav header__menu row-start-2 col-start-1 col-span-2 flex flex-col justify-evenly is-hidden',
       'h-auto overflow-clip transition-[display,height,margin-top,padding-block] duration-300',
       'md:flex-row',
-      *(if @site.nil?
-          [
-            # negative margins must match container-public's padding (0.75rem, then 1.25rem at md)
-            # so the dropdown sits flush to the edges without overflowing the viewport; lg:mx-0 below
-            '-mx-3 md:-mx-5',
-            'pt-4 gap-0.5  lg:row-start-1 lg:col-start-2 lg:col-span-1',
-            'md:flex-row md:gap-8 md:pt-3 md:pb-4 md:mt-6',
-            'md:max-lg:is-hidden:py-0 md:max-lg:is-hidden:mt-4.5 md:max-lg:bg-home-background',
-            # invisible alongside h-0 so the collapsed menu's links leave the
-            # tab order instead of being reachable but off-screen.
-            'max-lg:is-hidden:h-0 max-lg:is-hidden:invisible',
-            'lg:justify-end lg:items-baseline lg:mx-0 lg:mt-1.5 lg:py-0'
-          ]
-        else
-          [
-            '-mx-6 gap-1 mt-4',
-            'max-md:pb-1 max-md:bg-tertiary max-md:is-hidden:h-0 max-md:is-hidden:pb-0',
-            'max-md:is-hidden:invisible',
-            'md:-mx-6',
-            'md:max-lg:px-2 md:max-lg:bg-foreground',
-            'lg:row-start-1 lg:col-start-2 lg:col-span-1 lg:gap-8 lg:m-0'
-          ]
-        end)
+      *look[:menu]
     ]
   end
 
@@ -239,16 +226,8 @@ class Components::Shared::Navigation < Components::Base
   end
 
   def render_toggle
-    button(type: 'button', class: [
-             'header__toggle row-start-1 col-start-2 flex gap-2 ms-auto me-1.5 items-center',
-             (@site.nil? ? 'text-foreground' : 'text-background'),
-             'md:me-4',
-             *(if @site.nil?
-                 ['lg:hidden']
-               else
-                 ['md:hidden']
-               end)
-           ], aria_label: t('navigation.menu'),
+    button(type: 'button', class: ['header__toggle row-start-1 col-start-2 flex gap-2 ms-auto me-1.5 items-center', *look[:toggle]],
+           aria_label: t('navigation.menu'),
            aria_expanded: 'false', aria_controls: 'site-menu',
            data: { mobile_menu_target: 'toggle', action: 'click->mobile-menu#toggle', turbo: 'false' }) do
       # The accessible name is always there; the visible label beside the icon
