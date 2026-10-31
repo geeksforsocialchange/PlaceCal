@@ -40,7 +40,7 @@
 	/* allcaps kickers, tiny badges, micro labels */
 	--text-2xs: 0.72rem;
 	/* neighbourhood pills */
-	--text-badge: 0.77777778rem;
+	--text-badge: 0.7778rem;
 	--text-badge-sm: 0.6rem;
 	/* meta text, secondary info */
 	--text-sm: 0.8rem;
@@ -51,21 +51,21 @@
 	/* lead paragraphs, emphasised body */
 	--text-md: 1.1rem;
 	/* h4 */
-	--text-lg: 1.222222222rem;
+	--text-lg: 1.2222rem;
 	/* h3 */
-	--text-xl: 1.33333rem;
+	--text-xl: 1.3333rem;
 	/* card headings */
 	--text-card: var(--text-xl);
 	/* subheadings on marketing pages */
 	--text-subhead: 1.5rem;
 	/* h2 */
-	--text-2xl: 1.77778rem;
+	--text-2xl: 1.7778rem;
 	/* section headings on directory */
 	--text-section: var(--text-2xl);
 	/* stat numbers */
 	--text-stat: 2rem;
 	/* h1 */
-	--text-3xl: 2.22222rem;
+	--text-3xl: 2.2222rem;
 	/* directory hero and not-found titles (hero-title, text-hero); the local-site hero title is an h1 at --text-3xl */
 	--text-hero: clamp(2rem, 4vw, 2.8rem);
 	/* responsive section titles on marketing pages */
@@ -74,8 +74,8 @@
 	--text-headline: clamp(2.4rem, 5vw, 3.6rem);
 
 	--tracking-normal: normal;
-	--tracking-badge: 0.086667rem;
-	--tracking-wide: 0.16667rem;
+	--tracking-badge: 0.0867rem;
+	--tracking-wide: 0.1667rem;
 	--leading-none: 1;
 	--leading-hero: 1.05;
 	--leading-tight: 1.15;

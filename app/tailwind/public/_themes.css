@@ -3,6 +3,7 @@
 html[data-theme="pink"] {
 	--color-primary: #f19089;
 	--color-primary-light: #f4aca6;
+	--color-secondary: #f19089;
 	--color-secondary-deep: #e66f67;
 	--color-secondary-dark: #d65a52;
 	--color-secondary-strong: #b5443d;
