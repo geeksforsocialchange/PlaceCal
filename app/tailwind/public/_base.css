@@ -13,8 +13,8 @@
 /* Element defaults. Preflight zeroes browser styles; these restore the margins and sizes the public pages are built on. */
 @layer base {
 	body {
-		@apply font-sans font-regular;
-		margin: 0;
+		font-family: var(--font-sans);
+		font-weight: var(--font-weight-regular);
 		color: var(--color-foreground);
 		background-color: var(--color-tertiary-light);
 		@media (width >= theme(--breakpoint-xl)) {
@@ -41,26 +41,29 @@
 		font-family: var(--font-serif);
 		font-weight: normal;
 		font-size: var(--text-3xl);
-		line-height: 1;
+		line-height: var(--leading-none);
 		margin-block: 0.67em;
 		@media (width >= theme(--breakpoint-md)) {
 			line-height: 1.25;
 		}
 	}
 	h2 {
-		@apply text-2xl font-bold;
+		font-size: var(--text-2xl);
+		font-weight: var(--font-weight-bold);
 		margin-block: 0.83em;
 	}
 	h3 {
-		@apply text-xl font-bold;
+		font-size: var(--text-xl);
+		font-weight: var(--font-weight-bold);
 		margin-block: 1em;
 	}
 	h4 {
-		@apply text-base font-bold;
+		font-size: var(--text-base);
+		font-weight: var(--font-weight-bold);
 	}
 	h5 {
 		font-size: 0.83em;
-		font-weight: bold;
+		font-weight: var(--font-weight-bold);
 		margin-block: 1.67em;
 	}
 
@@ -94,21 +97,12 @@
 		max-height: 100%;
 	}
 
+	/* Preflight resets the rest of the button and input styles */
 	button {
-		margin: 0;
 		padding-block: 1px;
 		padding-inline: 4px;
-		border: 0;
-		font-size: 100%;
 		line-height: normal;
-		overflow: visible;
-		text-transform: none;
 		cursor: pointer;
-		-webkit-appearance: button;
-	}
-	input {
-		font-family: var(--font-sans);
-		font-size: inherit;
 	}
 	input[type="checkbox"] {
 		margin-block: 3px;

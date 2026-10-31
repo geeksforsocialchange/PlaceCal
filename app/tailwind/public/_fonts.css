@@ -1,75 +1,11 @@
 /* Rawline and Trocchi, woff2 only (https://caniuse.com/woff2) */
 
-/* Rawline
+/* Rawline, the weights the font-weight tokens use (500 to 800)
 	Open Font License
 	Originally by https://www.theleagueofmoveabletype.com/ according to https://fontlibrary.org/en/font/rawline
 */
 @font-face {
-	font-family: "rawline";
-	src: url("rawline/rawline-100.woff2") format("woff2");
-	font-weight: 100;
-	font-style: normal;
-	font-display: optional;
-}
-
-@font-face {
-	font-family: "rawline";
-	src: url("rawline/rawline-100i.woff2") format("woff2");
-	font-weight: 100;
-	font-style: italic;
-	font-display: optional;
-}
-
-@font-face {
-	font-family: "rawline";
-	src: url("rawline/rawline-200.woff2") format("woff2");
-	font-weight: 200;
-	font-style: normal;
-	font-display: optional;
-}
-
-@font-face {
-	font-family: "rawline";
-	src: url("rawline/rawline-200i.woff2") format("woff2");
-	font-weight: 200;
-	font-style: italic;
-	font-display: optional;
-}
-
-@font-face {
-	font-family: "rawline";
-	src: url("rawline/rawline-300.woff2") format("woff2");
-	font-weight: 300;
-	font-style: normal;
-	font-display: optional;
-}
-
-@font-face {
-	font-family: "rawline";
-	src: url("rawline/rawline-300i.woff2") format("woff2");
-	font-weight: 300;
-	font-style: italic;
-	font-display: optional;
-}
-
-@font-face {
-	font-family: "rawline";
-	src: url("rawline/rawline-400.woff2") format("woff2");
-	font-weight: 400;
-	font-style: normal;
-	font-display: optional;
-}
-
-@font-face {
-	font-family: "rawline";
-	src: url("rawline/rawline-400i.woff2") format("woff2");
-	font-weight: 400;
-	font-style: italic;
-	font-display: optional;
-}
-
-@font-face {
-	font-family: "rawline";
+	font-family: "Rawline";
 	src: url("rawline/rawline-500.woff2") format("woff2");
 	font-weight: 500;
 	font-style: normal;
@@ -77,7 +13,7 @@
 }
 
 @font-face {
-	font-family: "rawline";
+	font-family: "Rawline";
 	src: url("rawline/rawline-500i.woff2") format("woff2");
 	font-weight: 500;
 	font-style: italic;
@@ -85,7 +21,7 @@
 }
 
 @font-face {
-	font-family: "rawline";
+	font-family: "Rawline";
 	src: url("rawline/rawline-600.woff2") format("woff2");
 	font-weight: 600;
 	font-style: normal;
@@ -93,7 +29,7 @@
 }
 
 @font-face {
-	font-family: "rawline";
+	font-family: "Rawline";
 	src: url("rawline/rawline-600i.woff2") format("woff2");
 	font-weight: 600;
 	font-style: italic;
@@ -101,7 +37,7 @@
 }
 
 @font-face {
-	font-family: "rawline";
+	font-family: "Rawline";
 	src: url("rawline/rawline-700.woff2") format("woff2");
 	font-weight: 700;
 	font-style: normal;
@@ -109,7 +45,7 @@
 }
 
 @font-face {
-	font-family: "rawline";
+	font-family: "Rawline";
 	src: url("rawline/rawline-700i.woff2") format("woff2");
 	font-weight: 700;
 	font-style: italic;
@@ -117,7 +53,7 @@
 }
 
 @font-face {
-	font-family: "rawline";
+	font-family: "Rawline";
 	src: url("rawline/rawline-800.woff2") format("woff2");
 	font-weight: 800;
 	font-style: normal;
@@ -125,25 +61,9 @@
 }
 
 @font-face {
-	font-family: "rawline";
+	font-family: "Rawline";
 	src: url("rawline/rawline-800i.woff2") format("woff2");
 	font-weight: 800;
-	font-style: italic;
-	font-display: optional;
-}
-
-@font-face {
-	font-family: "rawline";
-	src: url("rawline/rawline-900.woff2") format("woff2");
-	font-weight: 900;
-	font-style: normal;
-	font-display: optional;
-}
-
-@font-face {
-	font-family: "rawline";
-	src: url("rawline/rawline-900i.woff2") format("woff2");
-	font-weight: 900;
 	font-style: italic;
 	font-display: optional;
 }

@@ -1,13 +1,3 @@
-/* Spin animation for loading spinners */
-@keyframes spin {
-	from {
-		transform: rotate(0deg);
-	}
-	to {
-		transform: rotate(360deg);
-	}
-}
-
 /* Pulse animation for save bar unsaved changes indicator */
 @keyframes pulse-dot {
 	0%,
