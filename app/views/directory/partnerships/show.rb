@@ -148,7 +148,7 @@ class Views::Directory::Partnerships::Show < Views::Base
         if coordinator
           div(class: 'mb-4') do
             div(class: 'font-bold text-sm text-foreground') { coordinator.full_name } if coordinator.full_name.present?
-            UI::Link(href: "mailto:#{coordinator.email}", class: 'text-sm') { coordinator.email } if coordinator.email.present?
+            UI::Link(href: "mailto:#{coordinator.email}", size: :sm) { coordinator.email } if coordinator.email.present?
           end
         end
         contact_href = coordinator&.email.present? ? "mailto:#{coordinator.email}" : '/get-in-touch'

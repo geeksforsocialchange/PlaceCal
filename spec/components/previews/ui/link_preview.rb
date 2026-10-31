@@ -18,16 +18,28 @@ class UI::LinkPreview < Lookbook::Preview
   # @label Quiet
   def quiet
     render(Sentence.new do |s|
-      s.render(Components::UI::Link.new(href: "#", variant: :quiet, class: "font-serif text-detail")) { "Our story" }
+      s.render(Components::UI::Link.new(href: "#", variant: :quiet, size: :detail, font: :serif)) { "Our story" }
       s.plain " · "
-      s.render(Components::UI::Link.new(href: "#", variant: :quiet, tone: :muted, class: "text-sm")) { "Privacy policy" }
+      s.render(Components::UI::Link.new(href: "#", variant: :quiet, tone: :muted, size: :sm)) { "Privacy policy" }
     end)
   end
 
   # Bold, with room for an icon in the block, for standalone actions like subscribing to a calendar.
   # @label Action
   def action
-    render(Components::UI::Link.new(href: "#", variant: :action, class: "text-sm")) { "Subscribe with iCal" }
+    render(Components::UI::Link.new(href: "#", variant: :action, size: :sm)) { "Subscribe with iCal" }
+  end
+
+  # `size:` is `:inherit`, `:sm`, `:detail` or `:lg`; `font:` is `:inherit`, `:serif`, `:mono` or `:code`, a small mono URL that breaks anywhere.
+  # @label Sizes and fonts
+  def sizes_and_fonts
+    render(Sentence.new do |s|
+      s.render(Components::UI::Link.new(href: "#", variant: :quiet, size: :lg, font: :serif)) { "Riverside Community Hub" }
+      s.plain " · "
+      s.render(Components::UI::Link.new(href: "#", variant: :quiet, size: :sm, font: :serif)) { "support@placecal.org" }
+      s.plain " · "
+      s.render(Components::UI::Link.new(href: "#", variant: :quiet, font: :code)) { "placecal.org/partners/riverside-community-hub" }
+    end)
   end
 
   class Sentence < Phlex::HTML

@@ -5,8 +5,8 @@ class Components::Sites::Breadcrumb < Components::Base
   prop :site_name, String, default: 'The Community Calendar'
 
   ELEMENT = 'breadcrumb__element flex items-center gap-1 mr-2 max-md:mb-2'
-  # The filters and actions a page passes in: their own row below the trail, beside it and right-aligned from xl.
-  SLOT = 'breadcrumb__slot w-full max-md:mb-2 xl:w-auto xl:flex-auto xl:justify-end'
+  # The filters and actions a page passes in: their own row below the trail, beside it from xl.
+  SLOT = 'breadcrumb__slot w-full max-md:mb-2 xl:w-auto xl:flex-auto'
   LINK = 'text-foreground no-underline border-b-2 border-rules-dark'
 
   def view_template(&)
@@ -20,7 +20,7 @@ class Components::Sites::Breadcrumb < Components::Base
           link_to(link[0], link[1], class: LINK)
         end
       end
-      UI::Cluster(gap: :md, row_gap: :sm, class: SLOT, &)
+      UI::Cluster(gap: :md, row_gap: :sm, justify: :end, justify_from: :xl, class: SLOT, &)
     end
 
     emit_breadcrumb_json_ld
