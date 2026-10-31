@@ -8,15 +8,19 @@ RSpec.describe SvgIconsHelper, type: :helper do
   end
 
   it "renders a custom size" do
-    expect(helper.icon(:triangle_up, size: "6")).to include('class="size-6"')
+    expect(helper.icon(:triangle_up, size: "6")).to include('class="size-6 shrink-0"')
   end
 
   it "renders a fallback size" do
-    expect(helper.icon(:triangle_up)).to include('class="size-5"')
+    expect(helper.icon(:triangle_up)).to include('class="size-5 shrink-0"')
   end
 
   it "renders a nil size" do
-    expect(helper.icon(:triangle_up, size: nil)).to include('class=""')
+    expect(helper.icon(:triangle_up, size: nil)).to include('class="shrink-0"')
+  end
+
+  it "keeps the icon from shrinking in a flex row, once" do
+    expect(helper.icon(:triangle_up, css_class: "shrink-0 text-primary")).to include('class="size-5 shrink-0 text-primary"')
   end
 
   it "renders the icon name" do

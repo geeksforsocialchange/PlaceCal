@@ -8,3 +8,5 @@
 @custom-variant first-p (& > p:first-child);
 /* A wrapper showing focus for the input inside it, but not when focus is on a button beside it */
 @custom-variant input-focused (&:has(input:focus-visible));
+/* custom_select_controller marks the chosen option */
+@custom-variant selected (&[data-selected="true"]);

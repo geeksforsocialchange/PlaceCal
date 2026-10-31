@@ -8,7 +8,6 @@ RSpec.describe "Public Tailwind classes" do
   # Genuine exceptions, keyed by the class without its variant prefixes.
   let(:exceptions) do
     {
-      "grid-cols-[1fr_auto]" => "content beside a control that keeps its own width",
       "max-h-[60vh]" => "keeps an open select list inside the viewport",
       "[column-span:all]" => "Tailwind has no column-span utility",
       "border-x-[calc(--spacing(8))]" => "border widths are px; this one follows the spacing scale so it scales with the root size",
