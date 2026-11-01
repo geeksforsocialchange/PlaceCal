@@ -1,17 +1,17 @@
 GIT
   remote: https://github.com/geeksforsocialchange/placecal-theme-mossley.git
-  revision: b631133dd9bda1e5e23a595a0d2f3a791bcb00d5
-  tag: v0.1.8
+  revision: 106327de0279f0f8ff49ec9d75e42dfd490c3ac2
+  tag: v0.1.9
   specs:
-    placecal-theme-mossley (0.1.8)
+    placecal-theme-mossley (0.1.9)
       rails (>= 8.0)
 
 GIT
   remote: https://github.com/geeksforsocialchange/placecal-theme-transdimension.git
-  revision: e85a00431a7438adb6efe3e3500f7907e65bad37
-  tag: v0.7.9
+  revision: 6842ad9abd887708b877adc401b6966918fe856c
+  tag: v0.7.10
   specs:
-    placecal-theme-transdimension (0.7.9)
+    placecal-theme-transdimension (0.7.10)
       rails (>= 8.0)
 
 GEM
