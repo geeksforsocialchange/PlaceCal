@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class Components::Sites::EventList < Components::Base
+  theme_scope :event_list,
+              parts: { day: 'One day\'s list of events, under its date heading.' },
+              tokens: %i[]
+
   prop :events, Hash
   prop :period, _Nilable(String), default: nil
   prop :show_neighbourhoods, _Boolean, default: false
@@ -27,7 +31,7 @@ class Components::Sites::EventList < Components::Base
   end
 
   def render_day(day_events)
-    ol(class: 'events reset') do
+    ol(**part(:day, class: 'reset')) do
       day_events.each do |event|
         li(class: 'block w-full') { render_event(event) }
       end

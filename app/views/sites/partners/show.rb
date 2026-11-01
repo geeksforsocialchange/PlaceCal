@@ -9,7 +9,16 @@ class Views::Sites::Partners::Show < Views::Base
                 service_area: 'The sentence naming the neighbourhoods the partner serves. Only when it has service areas.',
                 aside: 'The side column: the image, the map on core themes, opening times and accessibility.',
                 image: 'The box holding the partner\'s image. Only when it has one.',
-                opening_times: 'The list of opening hours. Only when the partner has some.'
+                opening_times: 'The list of opening hours. Only when the partner has some.',
+                events_browser: 'The turbo frame holding the partner\'s events, replaced as the visitor moves through dates.',
+                paginator: 'The timeline tabs and event filter above the events. Only when the partner has enough events to page through.',
+                events_header: 'The row above the events: the heading, the count and the repeating filter.',
+                events_heading: 'The "Upcoming events" heading.',
+                events_count: 'How many events, over how many days. Hidden on core themes.',
+                events_repeating_filter: 'The repeating-events filter in the header.',
+                events_repeating: 'The repeating-events select.',
+                events_actions: 'The row under the events holding the show-more link. Only when there are more days to show.',
+                events_more: 'The link that shows more days.'
               }
 
   include Phlex::Rails::Helpers::SelectTag
@@ -250,7 +259,7 @@ class Views::Sites::Partners::Show < Views::Base
   end
 
   def render_events_section
-    turbo_frame_tag 'events-browser', data: { turbo_action: 'advance' } do
+    turbo_frame_tag 'events-browser', **part(:events_browser, data: { turbo_action: 'advance' }) do
       render_events_header if events_total_count&.positive?
       render_events_paginator if paginator
 
@@ -275,19 +284,19 @@ class Views::Sites::Partners::Show < Views::Base
   def render_events_actions
     return unless more_days.positive?
 
-    div(class: events_class(:actions)) { render_show_more_days }
+    div(**events_part(:actions)) { render_show_more_days }
   end
 
   def render_events_header
-    div(class: events_class(:header)) do
-      h2(class: events_class(:heading)) { t('partners.show.upcoming_events') }
-      span(class: events_class(:count)) { events_count_text }
+    div(**events_part(:header)) do
+      h2(**events_part(:heading)) { t('partners.show.upcoming_events') }
+      span(**events_part(:count)) { events_count_text }
       render_repeating_filter
     end
   end
 
-  def events_class(part)
-    ["partner-events__#{part.to_s.dasherize}", (CORE_EVENTS[part] if site.core_theme?)].compact.join(' ')
+  def events_part(name, **attributes)
+    part(:"events_#{name}", class: (CORE_EVENTS[name] if site.core_theme?), **attributes)
   end
 
   def events_count_text
@@ -297,7 +306,7 @@ class Views::Sites::Partners::Show < Views::Base
   end
 
   def render_repeating_filter
-    div(class: events_class(:repeating_filter), data: { controller: 'filters' }) do
+    div(**events_part(:repeating_filter, data: { controller: 'filters' })) do
       form_tag('', method: :get, enforce_utf8: false,
                    data: { turbo_frame: 'events-browser', turbo_action: 'advance',
                            filters_target: 'form', action: 'change->filters#submit' }) do
@@ -309,7 +318,7 @@ class Views::Sites::Partners::Show < Views::Base
         # "repeating"-derived ids, and this form can render alongside them.
         label(class: (CORE_EVENTS[:label] if site.core_theme?)) do
           plain t('partners.show.show_label')
-          select_tag(:repeating, class: events_class(:repeating), id: nil) do
+          select_tag(:repeating, **events_part(:repeating), id: nil) do
             options_for_select(repeating_options, repeating)
           end
         end
@@ -323,7 +332,7 @@ class Views::Sites::Partners::Show < Views::Base
 
   def render_show_more_days
     count = [more_days, 4].min
-    a(href: show_more_days_url, class: events_class(:more), data: { turbo_frame: 'events-browser' }) do
+    a(href: show_more_days_url, **events_part(:more, data: { turbo_frame: 'events-browser' })) do
       t('partners.show.show_more_days', count:)
     end
   end
@@ -340,7 +349,7 @@ class Views::Sites::Partners::Show < Views::Base
     path = "partners/#{partner.slug}/events"
     today = Time.zone.today
     filter_period = date_period || period
-    div(class: 'paginator leading-snug print:hidden', id: 'paginator') do
+    div(**part(:paginator, class: 'leading-snug print:hidden', id: 'paginator')) do
       Sites::Timeline(
         pointer: current_day,
         period:,

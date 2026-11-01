@@ -337,7 +337,7 @@ class Views::Sites::Events::Show < Views::Base
   def render_site_more_from_organiser
     section(**part(:more, class: 'container-narrowish')) do
       UI::RuledHeading { t('events.show.more_from', name: event.organiser.name) }
-      ul(class: 'events reset') do
+      ul(class: 'reset') do
         Array(more_from_organiser).each do |other_event|
           li(class: 'block w-full') { Sites::Event(event: other_event, context_partner: event.organiser) }
         end

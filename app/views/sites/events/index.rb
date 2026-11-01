@@ -1,6 +1,14 @@
 # frozen_string_literal: true
 
 class Views::Sites::Events::Index < Views::Base
+  theme_scope :event_index,
+              parts: {
+                browser: 'The turbo frame holding the paginator and the list, replaced as the visitor moves through dates.',
+                paginator: 'The breadcrumb with the filters, then the timeline tabs.',
+                context: 'The breadcrumb row inside the paginator.',
+                filter_bar: 'The row holding the event filter, inside the breadcrumb\'s controls.'
+              }
+
   prop :events, Hash, reader: :private
   prop :period, String, reader: :private
   prop :sort, String, reader: :private
@@ -23,7 +31,7 @@ class Views::Sites::Events::Index < Views::Base
 
     div(class: 'container-public mb-32') do
       list_heading('events.index.list_heading')
-      turbo_frame_tag 'events-browser', data: { turbo_action: 'advance' } do
+      turbo_frame_tag 'events-browser', **part(:browser, data: { turbo_action: 'advance' }) do
         render_paginator
         hr
         render_event_list
@@ -40,11 +48,11 @@ class Views::Sites::Events::Index < Views::Base
   end
 
   def render_paginator
-    div(class: 'paginator leading-snug print:hidden', id: 'paginator') do
-      div(class: 'paginator__context') do
+    div(**part(:paginator, class: 'leading-snug print:hidden', id: 'paginator')) do
+      div(**part(:context)) do
         Sites::Breadcrumb(trail: [[t('navigation.site.events'), events_path]], site_name: site.name) do
           # A day strip is wider than the row, so it scrolls inside it and the sort filter wraps underneath.
-          UI::Cluster(gap: :sm, wrap: day_strip?, class: day_strip? ? 'filter-bar min-w-0 max-w-full' : 'filter-bar') do
+          UI::Cluster(gap: :sm, wrap: day_strip?, **part(:filter_bar, class: ('min-w-0 max-w-full' if day_strip?))) do
             today = Time.zone.today
             region_param = selected_region ? "&region=#{selected_region.slug}" : ''
             today_url = "/events/#{today.year}/#{today.month}/#{today.day}?period=#{period}&sort=#{sort}&repeating=#{repeating}#{region_param}#paginator"

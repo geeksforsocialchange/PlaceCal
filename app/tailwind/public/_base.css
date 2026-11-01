@@ -116,8 +116,8 @@
 	turbo-frame[aria-busy="true"]
 		:is(
 			[data-scope="partner-index"]:is([data-part="list"], [data-part="map"]),
-			.paginator,
-			.events
+			[data-part="paginator"],
+			[data-scope="event-list"]
 		) {
 		opacity: 0.4;
 		pointer-events: none;
