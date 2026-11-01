@@ -6,7 +6,8 @@ class Views::Sites::Partners::Index < Views::Base
                 root: 'Everything under the hero: the heading, the breadcrumb and filters, the list, then the map.',
                 list: 'The list of partners. Only when some match.',
                 empty: 'The line saying no partners match.',
-                map: 'The box holding the map of the listed partners.'
+                map: 'The box holding the map of the listed partners.',
+                list_heading: 'A heading above the breadcrumb. Blank in core; a theme fills it.'
               }
 
   prop :partners, ActiveRecord::Relation, reader: :private

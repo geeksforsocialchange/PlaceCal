@@ -303,13 +303,13 @@ RSpec.describe "Public Articles (News)", type: :request do
         paragraphs = content.css("> p")
         expect(paragraphs.map(&:text)).to eq(["Paragraph one.", "Paragraph two.", "Paragraph three.", "Paragraph four."])
 
-        pull_quote_node = content.at_css(".pullquote")
+        pull_quote_node = content.at_css("[data-scope='pull-quote'][data-part='root']")
         expect(pull_quote_node).to be_present
         expect(pull_quote_node.text).to include("This is the pulled-out quote.")
 
         # The quote sits after the third paragraph, before the fourth.
         third_paragraph = paragraphs[2]
-        expect(third_paragraph.next_element["class"]).to include("pullquote")
+        expect(third_paragraph.next_element["data-scope"]).to eq("pull-quote")
       end
     end
 
@@ -324,7 +324,7 @@ RSpec.describe "Public Articles (News)", type: :request do
 
         content = Nokogiri::HTML(response.body).at_css("[data-scope='article'][data-part='content']")
         last_element = content.children.to_a.rfind(&:element?)
-        expect(last_element["class"]).to include("pullquote")
+        expect(last_element["data-scope"]).to eq("pull-quote")
       end
     end
 

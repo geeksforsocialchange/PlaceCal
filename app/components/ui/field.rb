@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
 class Components::UI::Field < Components::Base
+  theme_scope :field,
+              parts: {
+                required: 'The asterisk after a required field\'s label.',
+                optional: 'The "optional" note after an optional field\'s label.'
+              },
+              tokens: %i[--color-secondary-strong --color-tertiary --font-weight-semibold --font-weight-extra-bold --text-sm]
+
   # Sentence-case bold label, shared with UI::Fieldset's legend.
   STRONG_LABEL = 'flex items-center gap-1.25 font-bold text-detail text-foreground'
 
@@ -45,8 +52,8 @@ class Components::UI::Field < Components::Base
 
   def render_marker
     case @required
-    when true then span(class: 'req text-secondary-strong font-extra-bold', aria_hidden: 'true') { '*' }
-    when false then span(class: 'opt text-tertiary font-semibold text-sm') { t('components.field.optional') }
+    when true then span(**part(:required, class: 'text-secondary-strong font-extra-bold', aria_hidden: 'true')) { '*' }
+    when false then span(**part(:optional, class: 'text-tertiary font-semibold text-sm')) { t('components.field.optional') }
     end
   end
 end

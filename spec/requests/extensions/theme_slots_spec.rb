@@ -116,10 +116,10 @@ RSpec.describe "Theme slots", type: :request do
 
   it "renders the theme's list headings on the index pages" do
     get "http://themed.lvh.me/events"
-    expect(response.body).to include('class="list-heading">Fixture events list heading</h2>')
+    expect(response.body).to include('data-part="list-heading">Fixture events list heading</h2>')
 
     get "http://themed.lvh.me/partners"
-    expect(response.body).to include('class="list-heading">Fixture partners list heading</h2>')
+    expect(response.body).to include('data-part="list-heading">Fixture partners list heading</h2>')
   end
 
   it "renders the theme's nav call to action and menu label" do
@@ -258,7 +258,7 @@ RSpec.describe "Theme slots", type: :request do
       expect(response.body).to include('id="footer-nav-heading"')
       expect(response.body).not_to include('data-example-theme="footer"')
       expect(response.body).not_to include('data-part="standfirst"')
-      expect(response.body).not_to include("list-heading")
+      expect(response.body).not_to include('data-part="list-heading"')
       expect(response.body).not_to include('data-part="cta"')
       expect(response.body).not_to include('data-part="toggle-label"')
       expect(response.body).to include("Go to date")
@@ -275,7 +275,7 @@ RSpec.describe "Theme slots", type: :request do
       # Core sites carry their own partners heading (the outline would skip a
       # level without it); what must not leak is the fixture theme's wording.
       get "http://plain.lvh.me/partners"
-      expect(response.body).to include('class="list-heading">All partners</h2>')
+      expect(response.body).to include('data-part="list-heading">All partners</h2>')
       expect(response.body).not_to include("Fixture partners list heading")
     end
 

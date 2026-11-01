@@ -6,7 +6,8 @@ class Views::Sites::Events::Index < Views::Base
                 browser: 'The turbo frame holding the paginator and the list, replaced as the visitor moves through dates.',
                 paginator: 'The breadcrumb with the filters, then the timeline tabs.',
                 context: 'The breadcrumb row inside the paginator.',
-                filter_bar: 'The row holding the event filter, inside the breadcrumb\'s controls.'
+                filter_bar: 'The row holding the event filter, inside the breadcrumb\'s controls.',
+                list_heading: 'A heading above the breadcrumb. Blank in core; a theme fills it.'
               }
 
   prop :events, Hash, reader: :private
