@@ -18,7 +18,10 @@ RSpec.describe "Lookbook previews", type: :request do
 
   def render_failure(path)
     get path
-    "#{path} returned #{response.status}" unless response.successful?
+    return "#{path} returned #{response.status}" unless response.successful?
+
+    # A nested render(...) in a preview returns Lookbook's render arguments, which print as an object.
+    "#{path} printed a Ruby object" if response.body.include?("#&lt;")
   rescue StandardError => e
     "#{path} raised #{e.class}: #{e.message.lines.first&.strip}"
   end
