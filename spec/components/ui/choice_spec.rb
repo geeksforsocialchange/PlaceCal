@@ -12,8 +12,8 @@ RSpec.describe Components::UI::Choice, type: :component do
   end
 
   it "keeps extra classes alongside its own" do
-    render_inline(described_class.new(label: "More information", box_class: "join-choice__box", class: "join-choice")) { nil }
+    render_inline(described_class.new(label: "More information", box_attributes: { class: "extra", data: { part: "box" } }, class: "outer")) { nil }
 
-    expect(page).to have_css("label.join-choice.rounded-pill .join-choice__box svg", visible: :all)
+    expect(page).to have_css("label.outer.rounded-pill .extra[data-part='box'] svg", visible: :all)
   end
 end
