@@ -24,20 +24,20 @@ RSpec.describe Components::Sites::Filter, type: :component do
   it "renders nothing when there are no items" do
     render_inline(described_class.new(**base_attrs, items: []))
 
-    expect(page).to have_no_css(".filters__toggle")
+    expect(page).to have_no_css("[data-scope='filter'][data-part='toggle']")
   end
 
   describe "idle toggle" do
     it "always shows the facet label in the label span" do
       render_inline(described_class.new(**base_attrs))
 
-      expect(page).to have_css("span.filters__toggle-label", text: "Category")
+      expect(page).to have_css("span[data-part='toggle-label']", text: "Category")
     end
 
     it "shows the show_all copy in the value span" do
       render_inline(described_class.new(**base_attrs))
 
-      expect(page).to have_css("span.filters__toggle-value", text: I18n.t("filters.show_all"))
+      expect(page).to have_css("span[data-part='toggle-value']", text: I18n.t("filters.show_all"))
     end
 
     it "keeps the triangle icon" do
@@ -57,13 +57,13 @@ RSpec.describe Components::Sites::Filter, type: :component do
     it "keeps the facet label unchanged in the label span" do
       render_inline(described_class.new(**base_attrs, selected_id: 1))
 
-      expect(page).to have_css("span.filters__toggle-label", text: "Category")
+      expect(page).to have_css("span[data-part='toggle-label']", text: "Category")
     end
 
     it "shows the selected item's name in the value span" do
       render_inline(described_class.new(**base_attrs, selected_id: 1))
 
-      expect(page).to have_css("span.filters__toggle-value", text: "Alpha")
+      expect(page).to have_css("span[data-part='toggle-value']", text: "Alpha")
     end
 
     it "shows a reset button" do
@@ -76,6 +76,6 @@ RSpec.describe Components::Sites::Filter, type: :component do
   it "keeps the same Stimulus target name on the value span" do
     render_inline(described_class.new(**base_attrs))
 
-    expect(page).to have_css("[data-partner-filter-component-target='categoryText'].filters__toggle-value")
+    expect(page).to have_css("[data-partner-filter-component-target='categoryText'][data-part='toggle-value']")
   end
 end

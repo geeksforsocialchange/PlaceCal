@@ -166,7 +166,7 @@ RSpec.describe "Theme slots", type: :request do
     get "http://themed.lvh.me/events"
 
     expect(response).to have_http_status(:ok)
-    expect(response.body).to include("day-strip")
+    expect(response.body).to include('data-part="day-strip"')
     expect(response.body).to include("All upcoming")
     expect(response.body).to include("Tomorrow")
     expect(response.body).not_to include("Go to date")
@@ -185,7 +185,7 @@ RSpec.describe "Theme slots", type: :request do
 
     today = Time.zone.today
     expect(response).to have_http_status(:ok)
-    hrefs = Nokogiri::HTML(response.body).css("a.day-strip__link").map { it["href"] }
+    hrefs = Nokogiri::HTML(response.body).css("[data-part='day-strip'] a").map { it["href"] }
     expect(hrefs).to include(
       "/events/#{today.year}/#{today.month}/#{today.day}?period=day&region=#{south.slug}#paginator",
       "/events?period=future&region=#{south.slug}#paginator"
@@ -262,7 +262,7 @@ RSpec.describe "Theme slots", type: :request do
       expect(response.body).not_to include('data-part="cta"')
       expect(response.body).not_to include('data-part="toggle-label"')
       expect(response.body).to include("Go to date")
-      expect(response.body).not_to include("day-strip")
+      expect(response.body).not_to include('data-part="day-strip"')
       expect(response.body).to include(" 9 Nov")
       expect(response.body).not_to include('data-part="organiser-prefix"')
     end

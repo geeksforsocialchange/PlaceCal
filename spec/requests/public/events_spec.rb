@@ -607,7 +607,7 @@ RSpec.describe "Public Events", type: :request do
         get events_url(host: "regions.lvh.me")
 
         expect(response).to be_successful
-        expect(response.body).not_to include("region-filter")
+        expect(response.body).not_to include('data-scope="region-filter"')
       end
     end
 
@@ -621,7 +621,7 @@ RSpec.describe "Public Events", type: :request do
       it "shows the region control" do
         get events_url(host: "regions.lvh.me")
 
-        expect(response.body).to include("region-filter")
+        expect(response.body).to include('data-scope="region-filter"')
         expect(response.body).to include("North")
       end
 
@@ -703,7 +703,7 @@ RSpec.describe "Public Events", type: :request do
     it "shows the filter when events span two neighbourhoods" do
       get events_url(host: "wards.lvh.me", period: "future")
 
-      expect(response.body).to include("filters__group--neighbourhood")
+      expect(response.body).to include('data-scope="filter" data-part="group" data-variant="neighbourhood"')
     end
 
     it "is left out when the theme turns it off", :theme_registry do
@@ -713,7 +713,7 @@ RSpec.describe "Public Events", type: :request do
       get events_url(host: "wards.lvh.me", period: "future")
 
       expect(response).to be_successful
-      expect(response.body).not_to include("filters__group--neighbourhood")
+      expect(response.body).not_to include('data-scope="filter" data-part="group" data-variant="neighbourhood"')
     end
   end
 end

@@ -9,20 +9,20 @@ RSpec.describe Components::Sites::RegionFilter, type: :component do
   it "renders nothing when the site has one tag" do
     render_inline(described_class.new(tags: [north]))
 
-    expect(page).not_to have_css("nav.region-filter")
+    expect(page).not_to have_css("nav[data-scope='region-filter']")
   end
 
   it "renders nothing when the site has no tags" do
     render_inline(described_class.new(tags: []))
 
-    expect(page).not_to have_css("nav.region-filter")
+    expect(page).not_to have_css("nav[data-scope='region-filter']")
   end
 
   describe "with two tags" do
     it "renders an All option plus one link per tag" do
       render_inline(described_class.new(tags: [north, south]))
 
-      expect(page).to have_css("nav.region-filter")
+      expect(page).to have_css("nav[data-scope='region-filter']")
       expect(page).to have_link("All")
       expect(page).to have_link("North")
       expect(page).to have_link("South")

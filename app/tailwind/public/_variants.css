@@ -1,7 +1,7 @@
 /* mobile_menu_controller toggles .is-hidden on the collapsible menu */
 @custom-variant is-hidden (&.is-hidden);
-/* The filter controllers toggle .filters__dropdown--hidden on their dropdowns */
-@custom-variant dropdown-hidden (&.filters__dropdown--hidden);
+/* The filter controllers set data-state on their dropdowns */
+@custom-variant dropdown-hidden (&[data-state="closed"]);
 @custom-variant details-marker (&::-webkit-details-marker);
 @custom-variant logo (& > :is(svg, img));
 /* The first paragraph of rich text a view doesn't control, e.g. an event description */

@@ -36,4 +36,18 @@ class Sites::FilterPreview < Lookbook::Preview
       reset_action: "resetCategory"
     )
   end
+
+  # @label Neighbourhood
+  def neighbourhood
+    render Components::Sites::Filter.new(
+      name: "neighbourhood",
+      label: "Neighbourhood",
+      items: [{ id: 1, name: "Hulme", count: 9 }, { id: 2, name: "Moss Side", count: 4 }],
+      selected_id: 0,
+      controller: "event-filter",
+      toggle_action: "toggleNeighbourhood",
+      submit_action: "submitNeighbourhood",
+      reset_action: "resetNeighbourhood"
+    )
+  end
 end
