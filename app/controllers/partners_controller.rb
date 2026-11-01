@@ -7,9 +7,7 @@ class PartnersController < ApplicationController
 
   before_action :set_partner, only: [:show]
   before_action :set_day, only: [:show]
-  before_action :set_primary_neighbourhood, only: [:index]
   before_action :set_site
-  before_action :set_title, only: %i[index show]
 
   PAGINATION_THRESHOLD = 30
   # Default/step size for the days-based "Show N more days" paging on the
@@ -149,15 +147,6 @@ class PartnersController < ApplicationController
     else
       'This partner has no upcoming events.'
     end
-  end
-
-  def set_title
-    @title =
-      if current_site&.primary_neighbourhood
-        "Partners #{current_site.join_word} #{current_site.primary_neighbourhood.name}"
-      else
-        'All Partners'
-      end
   end
 
   def render_directory_index
