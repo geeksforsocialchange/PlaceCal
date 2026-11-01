@@ -108,7 +108,7 @@ RSpec.describe "Public Sites", type: :request do
         get "http://regions.lvh.me"
 
         expect(response).to be_successful
-        expect(response.body).not_to include("region-filter")
+        expect(response.body).not_to include('data-scope="region-filter"')
       end
     end
 
@@ -118,7 +118,7 @@ RSpec.describe "Public Sites", type: :request do
       it "shows the region control on the homepage" do
         get "http://regions.lvh.me"
 
-        expect(response.body).to include("region-filter")
+        expect(response.body).to include('data-scope="region-filter"')
         expect(response.body).to include("South")
       end
 
@@ -126,7 +126,7 @@ RSpec.describe "Public Sites", type: :request do
         get "http://regions.lvh.me?region=nowhere"
 
         expect(response).to be_successful
-        expect(response.body).to include("region-filter")
+        expect(response.body).to include('data-scope="region-filter"')
       end
 
       # The control is only worth having if the lists below it obey it (D7).

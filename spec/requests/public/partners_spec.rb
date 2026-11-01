@@ -1004,7 +1004,7 @@ RSpec.describe "Public Partners", type: :request do
         get partners_url(host: "regions.lvh.me")
 
         expect(response).to be_successful
-        expect(response.body).not_to include("region-filter")
+        expect(response.body).not_to include('data-scope="region-filter"')
       end
     end
 
@@ -1017,7 +1017,7 @@ RSpec.describe "Public Partners", type: :request do
       it "shows the region control" do
         get partners_url(host: "regions.lvh.me")
 
-        expect(response.body).to include("region-filter")
+        expect(response.body).to include('data-scope="region-filter"')
       end
 
       it "filters partners to the selected region" do

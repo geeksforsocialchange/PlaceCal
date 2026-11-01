@@ -9,7 +9,8 @@ export default class extends Controller {
 	toggle(event) {
 		event.preventDefault();
 		this.dropdownTargets.forEach((dropdown) => {
-			dropdown.classList.toggle("filters__dropdown--hidden");
+			dropdown.dataset.state =
+				dropdown.dataset.state === "closed" ? "open" : "closed";
 		});
 	}
 

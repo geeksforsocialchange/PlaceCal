@@ -29,7 +29,8 @@ export default class extends Controller {
 
 	toggleDropdownHidden(dropdown, hidden) {
 		if (!dropdown) return;
-		dropdown.classList.toggle("filters__dropdown--hidden", hidden);
+		const closed = hidden ?? dropdown.dataset.state !== "closed";
+		dropdown.dataset.state = closed ? "closed" : "open";
 	}
 
 	updateLabel() {

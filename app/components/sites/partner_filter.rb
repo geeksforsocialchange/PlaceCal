@@ -1,6 +1,20 @@
 # frozen_string_literal: true
 
 class Components::Sites::PartnerFilter < Components::Base
+  theme_scope :partner_filter,
+              parts: {
+                root: 'The bar: the region filter, then the form.',
+                form: 'The form holding the filters and the search box.',
+                controls: 'The row inside the form: the label, the filters, the reset link and the search box.',
+                label: 'The "Filter by" label.',
+                filter: 'The wrapper of one filter or of the search box (see the variant). Each filter only when it has options.',
+                reset: 'The wrapper of the reset link. Only when a filter is applied.',
+                link: 'The reset link.',
+                search: 'The search box.'
+              },
+              variants: { filter: %i[category neighbourhood search] },
+              tokens: %i[--color-background --color-foreground --color-primary --color-rules-dark --font-sans]
+
   include Phlex::Rails::Helpers::FormWith
 
   prop :site, ::Site
@@ -14,7 +28,7 @@ class Components::Sites::PartnerFilter < Components::Base
   prop :query, _Nilable(::PartnersQuery), default: nil
 
   # Inside the form, filling the bar's row, then sharing it from xl as the breadcrumb slot does.
-  CONTROLS = 'filter-bar__controls w-full max-md:mb-2 xl:w-auto xl:flex-auto'
+  CONTROLS = 'w-full max-md:mb-2 xl:w-auto xl:flex-auto'
 
   def after_initialize
     @selected_category = @selected_category.to_i
@@ -23,13 +37,13 @@ class Components::Sites::PartnerFilter < Components::Base
   end
 
   def view_template
-    UI::Cluster(gap: :md, row_gap: :sm, justify: :end, justify_from: :xl, class: 'filter-bar') do
+    UI::Cluster(gap: :md, row_gap: :sm, justify: :end, justify_from: :xl, **part(:root)) do
       Sites::RegionFilter(tags: @region_tags, selected: @selected_region)
 
-      form_with(**form_data, class: 'filters__form relative') do
+      form_with(**part(:form, class: 'relative', **form_data)) do
         hidden_field_tag(:region, @selected_region.slug, id: nil) if @selected_region
-        UI::Cluster(gap: :md, row_gap: :sm, justify: :end, justify_from: :xl, class: CONTROLS) do
-          span(class: 'filter-bar__label') { t('filters.filter_by') }
+        UI::Cluster(gap: :md, row_gap: :sm, justify: :end, justify_from: :xl, **part(:controls, class: CONTROLS)) do
+          span(**part(:label)) { t('filters.filter_by') }
           render_category_filter if show_category_filter?
           render_neighbourhood_filter if show_neighbourhood_filter?
           render_reset_link if any_filter_active?
@@ -53,7 +67,7 @@ class Components::Sites::PartnerFilter < Components::Base
   end
 
   def render_category_filter
-    UI::Cluster(gap: :md, justify: :end, wrap: false, class: 'filters filter-bar__category') do
+    UI::Cluster(gap: :md, justify: :end, wrap: false, **part(:filter, variant: :category)) do
       Sites::Filter(
         name: 'category',
         label: t('filters.category'),
@@ -68,7 +82,7 @@ class Components::Sites::PartnerFilter < Components::Base
   end
 
   def render_neighbourhood_filter
-    UI::Cluster(gap: :md, justify: :end, wrap: false, class: 'filters filter-bar__neighbourhood') do
+    UI::Cluster(gap: :md, justify: :end, wrap: false, **part(:filter, variant: :neighbourhood)) do
       Sites::Filter(
         name: 'neighbourhood',
         label: t('filters.neighbourhood'),
@@ -83,9 +97,9 @@ class Components::Sites::PartnerFilter < Components::Base
   end
 
   def render_reset_link
-    UI::Cluster(gap: :md, justify: :end, wrap: false, class: 'filter-bar__reset') do
-      link_to(t('filters.reset'), partners_path(@selected_region ? { region: @selected_region.slug } : {}), class: "#{Sites::Breadcrumb::LINK} filters__link",
-                                                                                                            data: { turbo_frame: 'partner_previews' })
+    UI::Cluster(gap: :md, justify: :end, wrap: false, **part(:reset)) do
+      link_to(t('filters.reset'), partners_path(@selected_region ? { region: @selected_region.slug } : {}),
+              **part(:link, class: Sites::Breadcrumb::LINK, data: { turbo_frame: 'partner_previews' }))
     end
   end
 
@@ -93,14 +107,14 @@ class Components::Sites::PartnerFilter < Components::Base
   # whole form (so region/category/neighbourhood ride along) on Enter, when
   # the field loses focus after a change, or when its clear button empties it.
   def render_search
-    UI::Cluster(gap: :md, justify: :end, wrap: false, class: 'filters filter-bar__search') do
+    UI::Cluster(gap: :md, justify: :end, wrap: false, **part(:filter, variant: :search)) do
       input(
+        **part(:search, class: 'font-sans border-2 border-rules-dark bg-background py-1 px-2',
+                        data: { action: 'change->partner-filter-component#submitForm ' \
+                                        'input->partner-filter-component#submitIfCleared search->partner-filter-component#submitIfCleared' }),
         type: 'search', name: 'q', value: @selected_query,
-        class: 'filters__search font-sans border-2 border-rules-dark bg-background py-1 px-2',
         placeholder: t('filters.search_partners'),
-        aria_label: t('filters.search_partners'),
-        data: { action: 'change->partner-filter-component#submitForm ' \
-                        'input->partner-filter-component#submitIfCleared search->partner-filter-component#submitIfCleared' }
+        aria_label: t('filters.search_partners')
       )
     end
   end

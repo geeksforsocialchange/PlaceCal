@@ -63,7 +63,7 @@ RSpec.describe "Public site navigation", type: :request do
     let(:south) { create(:partnership, name: "South") }
 
     def region_control
-      Nokogiri::HTML(response.body).at_css("nav.region-filter--nav")
+      Nokogiri::HTML(response.body).at_css("nav[data-scope='region-filter'][data-variant='nav']")
     end
 
     it "does not render on a core theme, even with two tags", :theme_registry do

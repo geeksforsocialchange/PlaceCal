@@ -42,7 +42,7 @@ RSpec.describe Components::Sites::PartnerFilter, type: :component do
                       selected_neighbourhood: nil
                     ))
 
-      expect(page).to have_selector("button span.filters__toggle-label", text: "Neighbourhood")
+      expect(page).to have_selector("button span[data-part='toggle-label']", text: "Neighbourhood")
     end
 
     it "does not show category filter when no partners have categories" do
@@ -52,7 +52,7 @@ RSpec.describe Components::Sites::PartnerFilter, type: :component do
                       selected_neighbourhood: nil
                     ))
 
-      expect(page).not_to have_selector("button span.filters__toggle-label", text: "Category")
+      expect(page).not_to have_selector("button span[data-part='toggle-label']", text: "Category")
     end
   end
 
@@ -80,7 +80,7 @@ RSpec.describe Components::Sites::PartnerFilter, type: :component do
                       selected_neighbourhood: nil
                     ))
 
-      expect(page).to have_selector("button span.filters__toggle-label", text: "Category")
+      expect(page).to have_selector("button span[data-part='toggle-label']", text: "Category")
     end
   end
 
@@ -106,7 +106,7 @@ RSpec.describe Components::Sites::PartnerFilter, type: :component do
                     ))
 
       # Component should render without errors - neighbourhood filter shows when multiple neighbourhoods
-      expect(page).to have_selector("button span.filters__toggle-label", text: "Neighbourhood")
+      expect(page).to have_selector("button span[data-part='toggle-label']", text: "Neighbourhood")
     end
 
     it "renders with selected neighbourhood and shows selected name" do
@@ -117,7 +117,7 @@ RSpec.describe Components::Sites::PartnerFilter, type: :component do
                     ))
 
       # When a neighbourhood is selected, it shows the neighbourhood name instead of "Neighbourhood"
-      expect(page).to have_selector("button span.filters__toggle-value", text: neighbourhood1.name)
+      expect(page).to have_selector("button span[data-part='toggle-value']", text: neighbourhood1.name)
     end
 
     it "shows reset link when a filter is active" do
@@ -167,7 +167,7 @@ RSpec.describe Components::Sites::PartnerFilter, type: :component do
                       selected_neighbourhood: nil
                     ))
 
-      expect(page).not_to have_selector("button span.filters__toggle-label", text: "Neighbourhood")
+      expect(page).not_to have_selector("button span[data-part='toggle-label']", text: "Neighbourhood")
     end
 
     it "shows only relevant categories when a neighbourhood is selected" do
@@ -177,7 +177,7 @@ RSpec.describe Components::Sites::PartnerFilter, type: :component do
                       selected_neighbourhood: neighbourhood1.id.to_s
                     ))
 
-      expect(page).not_to have_selector("button span.filters__toggle-label", text: "Category")
+      expect(page).not_to have_selector("button span[data-part='toggle-label']", text: "Category")
     end
   end
 
@@ -190,13 +190,13 @@ RSpec.describe Components::Sites::PartnerFilter, type: :component do
     it "is hidden when the site has one partnership tag" do
       render_inline(described_class.new(site:, region_tags: [north]))
 
-      expect(page).not_to have_css("nav.region-filter")
+      expect(page).not_to have_css("nav[data-scope='region-filter']")
     end
 
     it "is shown when the site has two partnership tags" do
       render_inline(described_class.new(site:, region_tags: [north, south]))
 
-      expect(page).to have_css("nav.region-filter")
+      expect(page).to have_css("nav[data-scope='region-filter']")
       expect(page).to have_link("South")
     end
 
@@ -213,7 +213,7 @@ RSpec.describe Components::Sites::PartnerFilter, type: :component do
     it "renders a search input named q" do
       render_inline(described_class.new(site:))
 
-      expect(page).to have_css("input[type=search][name=q].filters__search")
+      expect(page).to have_css("input[type=search][name=q][data-part='search']")
     end
 
     it "labels and placeholders the field from the locale key" do

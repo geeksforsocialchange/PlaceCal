@@ -1,6 +1,20 @@
 # frozen_string_literal: true
 
 class Components::Sites::Filter < Components::Base
+  theme_scope :filter,
+              parts: {
+                toggle: 'The row holding the toggle button.',
+                toggle_label: 'What the filter is, such as "Neighbourhood", inside the toggle button.',
+                toggle_value: 'The chosen option, or "Show all", inside the toggle button.',
+                dropdown: 'The panel of options. The state says whether it is open.',
+                group: 'The list of options. The variant says which filter it belongs to.',
+                option: 'One option: its radio button, then its label.',
+                label: 'An option\'s label, with the number of matches.'
+              },
+              states: { dropdown: %i[open closed] },
+              variants: { group: %i[category neighbourhood] },
+              tokens: %i[--color-background --color-primary --color-rules-dark --font-sans --shadow-dropdown]
+
   prop :name, String
   prop :label, String
   prop :items, Array
@@ -9,17 +23,12 @@ class Components::Sites::Filter < Components::Base
   prop :submit_action, String
   prop :reset_action, String
   prop :selected_id, Integer, default: 0
-  # Extra class on the options group, so a caller with more than one Filter on
-  # a page (the neighbourhood filter, say) can give its dropdown a hook of
-  # its own, alongside the shared filters__group class.
-  prop :group_class, _Nilable(String), default: nil
-
-  TOGGLE = 'filters__toggle flex items-center'
+  TOGGLE = 'flex items-center'
   TOGGLE_BUTTON = 'border-0 bg-transparent font-sans cursor-pointer flex items-center gap-1'
   TOGGLE_ICON = 'size-2 text-primary'
-  DROPDOWN = 'filters__dropdown filters__dropdown--hidden dropdown-hidden:hidden bg-background shadow-dropdown p-3 absolute top-8 left-0 ' \
+  DROPDOWN = 'dropdown-hidden:hidden bg-background shadow-dropdown p-3 absolute top-8 left-0 ' \
              'z-500 text-left whitespace-nowrap max-w-screen-inset overflow-x-auto'
-  OPTION = 'filters__option py-1 grid grid-cols-auto-main gap-2 items-center'
+  OPTION = 'py-1 grid grid-cols-auto-main gap-2 items-center'
 
   def view_template
     return unless @items.any?
@@ -31,11 +40,11 @@ class Components::Sites::Filter < Components::Base
   private
 
   def render_toggle
-    div(class: TOGGLE) do
+    div(**part(:toggle, class: TOGGLE)) do
       button(type: 'button', class: TOGGLE_BUTTON, data: { action: toggle_action_value }) do
         raw(view_context.icon(:triangle_down, size: nil, css_class: TOGGLE_ICON))
-        span(class: 'filters__toggle-label mr-1') { @label }
-        span(class: 'filters__toggle-value border-b-2 border-rules-dark', data: { "#{@controller}-target": "#{@name}Text" }) do
+        span(**part(:toggle_label, class: 'mr-1')) { @label }
+        span(**part(:toggle_value, class: 'border-b-2 border-rules-dark', data: { "#{@controller}-target": "#{@name}Text" })) do
           toggle_value
         end
       end
@@ -43,20 +52,20 @@ class Components::Sites::Filter < Components::Base
   end
 
   def render_dropdown
-    div(class: DROPDOWN, data: { "#{@controller}-target": "#{@name}Dropdown" }) do
+    div(**part(:dropdown, state: :closed, class: DROPDOWN, data: { "#{@controller}-target": "#{@name}Dropdown" })) do
       render_filter_options
       render_reset_button
     end
   end
 
   def render_filter_options
-    div(class: ['filters__group', @group_class].compact.join(' ')) do
+    div(**part(:group, variant: @name.to_sym)) do
       @items.each { |item| render_filter_option(item) }
     end
   end
 
   def render_filter_option(item)
-    div(class: OPTION) do
+    div(**part(:option, class: OPTION)) do
       radio_button_tag(
         @name,
         item[:id],
@@ -70,7 +79,7 @@ class Components::Sites::Filter < Components::Base
       label_tag(
         "#{@name}_#{item[:id]}",
         "#{item[:name]} (#{item[:count]})",
-        class: 'filters__label text-left ml-1 peer-checked:font-bold'
+        **part(:label, class: 'text-left ml-1 peer-checked:font-bold')
       )
     end
   end

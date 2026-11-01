@@ -10,15 +10,18 @@
 class Components::Sites::RegionFilter < Components::Base
   prop :tags, Array, default: -> { [] }
   prop :selected, _Nilable(::Tag), default: nil
-  # True when rendered as a nav item (Components::Navigation) rather than as
-  # its own block above a listing. Swaps the standalone bottom margin for the
-  # `region-filter--nav` hook a theme can style as a segmented control.
+  # True when rendered as a nav item (Components::Navigation) rather than as its own block above a listing.
   prop :embedded, _Boolean, default: false
+
+  theme_scope :region_filter,
+              parts: { root: 'The row of region options, each a pill. The variant says whether it sits in the site menu or above a listing.' },
+              variants: { root: %i[nav listing] },
+              tokens: %i[]
 
   def view_template
     return if @tags.size < 2
 
-    nav(class: ['region-filter', (@embedded ? 'region-filter--nav' : 'mb-4')], aria: { label: t('region_filter.label') }) do
+    nav(**part(:root, variant: @embedded ? :nav : :listing, class: ('mb-4' unless @embedded), aria: { label: t('region_filter.label') })) do
       UI::Cluster(as: :ul, gap: :sm) do
         render_option(nil, t('region_filter.all'))
         @tags.each { |tag| render_option(tag, tag.name) }
