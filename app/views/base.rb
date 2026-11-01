@@ -46,7 +46,7 @@ class Views::Base < Phlex::HTML
   # unless a theme overrides `<ns>.index.list_heading`.
   def list_heading(key)
     text = t(key)
-    h2(class: 'list-heading') { text } if text.present?
+    h2(**part(:list_heading)) { text } if text.present?
   end
 
   if Rails.env.development?

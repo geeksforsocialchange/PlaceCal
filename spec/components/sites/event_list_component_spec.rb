@@ -40,7 +40,7 @@ RSpec.describe Components::Sites::EventList, type: :component do
   it "renders event list structure" do
     render_inline(described_class.new(**attrs))
 
-    expect(page).to have_css("ol.events")
+    expect(page).to have_css("ol[data-scope='event-list'][data-part='day']")
   end
 
   context "with no events" do

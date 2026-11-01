@@ -27,7 +27,7 @@ RSpec.describe "Theme content page", type: :request do
     get "http://themed.lvh.me/fixture-content"
 
     page = Nokogiri::HTML(response.body).at_css("[data-page-slug]")
-    expect(page["class"].split).to include("page", "page--fixture-content")
+    expect(page["data-scope"]).to eq("content-page")
     expect(page["data-page-slug"]).to eq("fixture-content")
     expect(page.at_css("h1").text).to eq("Fixture content page")
     expect(page.at_css(".markdown-content")).to be_present
@@ -195,7 +195,7 @@ RSpec.describe Views::ThemeContentPage, type: :component do
     render_inline(page.new(site:))
 
     expect(Rails.logger).to have_received(:warn).with(/content file missing, skipping block/)
-    expect(self.page).to have_css(".page--gappy .markdown-content", text: "Fixture markdown intro paragraph.")
+    expect(self.page).to have_css("[data-page-slug='gappy'] .markdown-content", text: "Fixture markdown intro paragraph.")
   end
 
   # A file that is permanently missing used to log on every request for the
@@ -222,8 +222,8 @@ RSpec.describe Views::ThemeContentPage, type: :component do
 
     render_inline(page.new(site:))
 
-    expect(self.page).to have_css(".page--fixture-content > h1", text: "Fixture content page")
-    expect(self.page).to have_css(".page--fixture-content > section.own-section", text: "Fixture markdown intro paragraph.")
+    expect(self.page).to have_css("[data-page-slug='fixture-content'] > h1", text: "Fixture content page")
+    expect(self.page).to have_css("[data-page-slug='fixture-content'] > section.own-section", text: "Fixture markdown intro paragraph.")
     expect(self.page).to have_no_css(".markdown-content")
   end
 

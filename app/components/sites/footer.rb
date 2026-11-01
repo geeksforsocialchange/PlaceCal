@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 class Components::Sites::Footer < Components::Base
+  theme_scope :footer,
+              parts: { root: 'The site footer.' },
+              tokens: %i[--color-background --color-foreground --color-primary --color-rules --color-rules-dark --color-tertiary-light
+                         --font-weight-bold --font-weight-extra-bold --leading-normal --text-sm --text-detail --text-base --text-2xl --tracking-wide]
+
   include Phlex::Rails::Helpers::MailTo
 
   prop :site, _Nilable(::Site), :positional, default: nil
@@ -13,7 +18,7 @@ class Components::Sites::Footer < Components::Base
   HR = 'col-span-full w-full border-3 border-tertiary-light'
 
   def view_template
-    footer(class: 'footer bg-foreground text-background text-detail leading-normal py-12 print:hidden') do
+    footer(**part(:root, class: 'bg-foreground text-background text-detail leading-normal py-12 print:hidden')) do
       div(class: 'container-public') do
         UI::Grid(cols: footer_cols) { render_footer_content }
       end

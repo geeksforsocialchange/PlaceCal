@@ -10,6 +10,9 @@ class Views::Layouts::Application < Phlex::HTML
   include Phlex::Rails::Helpers::CurrentPage
   include Phlex::Rails::Helpers::Request
   include Components
+  include PlaceCal::Theming::Hooks
+
+  theme_scope :layout, parts: { page: 'The page column holding the header, the main content and the footer.' }
 
   # I18n translate helper, theme-aware (PlaceCal::ThemeTranslation), so a theme
   # can override page metadata strings for its own sites (#3368 D19).
@@ -39,21 +42,20 @@ class Views::Layouts::Application < Phlex::HTML
       end
 
       body do
-        # Outside .page so it spans the viewport, not the page column.
+        # Outside the page column so it spans the viewport.
         Join::WipBanner() if join_site?
-        div(class: [
-              'page',
-              *(if site.nil?
-                  ['max-w-home bg-background border-none mx-auto']
-                else
-                  [
-                    'max-w-xl bg-background mx-auto',
-                    # tailwind border-n is px, not multiples of --spacing
-                    'xl:border xl:border-x-[calc(--spacing(8))]',
-                    'xl:border-foreground'
-                  ]
-                end)
-            ]) do
+        div(**part(:page, class: [
+                     *(if site.nil?
+                         ['max-w-home bg-background border-none mx-auto']
+                       else
+                         [
+                           'max-w-xl bg-background mx-auto',
+                           # tailwind border-n is px, not multiples of --spacing
+                           'xl:border xl:border-x-[calc(--spacing(8))]',
+                           'xl:border-foreground'
+                         ]
+                       end)
+                   ])) do
           if join_site?
             Join::Header()
           else

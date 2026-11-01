@@ -174,7 +174,7 @@ RSpec.describe "Public Events", type: :request do
         get event_url(event, host: "#{site.slug}.lvh.me")
 
         expect(more_from.at_css("h2").text).to eq(I18n.t("events.show.more_from", name: partner.name))
-        expect(more_from.css("ul.events li").map(&:text)).to contain_exactly(a_string_including("Second Event"))
+        expect(more_from.css("ul li").map(&:text)).to contain_exactly(a_string_including("Second Event"))
       end
 
       it "is absent when the organiser has no other upcoming event" do

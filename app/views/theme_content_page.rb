@@ -2,6 +2,12 @@
 
 # Base for a theme's markdown content pages (About, Privacy); usage is in doc/extensions.md.
 class Views::ThemeContentPage < Views::Base
+  theme_scope :content_page,
+              parts: {
+                root: 'The page\'s column. Its data-page-slug names the page, such as about.',
+                title: 'The page\'s h1.'
+              }
+
   prop :site, ::Site, reader: :private
 
   # Explicit so tables and heading ids survive; nothing that executes or loads is allowed.
@@ -114,8 +120,8 @@ class Views::ThemeContentPage < Views::Base
     content_for(:title) { page_title }
     content_for(:description) { page_description } if page_description
 
-    div(class: "container-public py-8 page page--#{page_slug}", data: { page_slug: }) do
-      h1(class: 'h1') { page_title }
+    div(**part(:root, class: 'container-public py-8', data: { page_slug: })) do
+      h1(**part(:title)) { page_title }
       page_content
     end
   end
