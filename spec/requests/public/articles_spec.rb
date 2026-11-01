@@ -33,7 +33,7 @@ RSpec.describe "Public Articles (News)", type: :request do
       it "renders the byline as links, with no trailing full stop" do
         get news_index_url(host: "#{site.slug}.lvh.me")
 
-        byline = Nokogiri::HTML(response.body).at_css(".articles__partners")
+        byline = Nokogiri::HTML(response.body).at_css("[data-scope='news-index'][data-part='partners']")
 
         expect(byline.css("a").map(&:text)).to contain_exactly(partner1.name, partner2.name)
         expect(byline.text.strip).not_to end_with(".")
@@ -46,7 +46,7 @@ RSpec.describe "Public Articles (News)", type: :request do
       it "does not show partner link component" do
         get news_index_url(host: "#{site.slug}.lvh.me")
         expect(response).to be_successful
-        expect(response.body).not_to include("articles__partners")
+        expect(Nokogiri::HTML(response.body).at_css("[data-scope='news-index'][data-part='partners']")).to be_nil
       end
     end
 
@@ -141,7 +141,7 @@ RSpec.describe "Public Articles (News)", type: :request do
       it "does not show partner link component" do
         get news_url(article, host: "#{site.slug}.lvh.me")
         expect(response).to be_successful
-        expect(response.body).not_to include("article__partners")
+        expect(Nokogiri::HTML(response.body).at_css("[data-scope='article'][data-part='partners']")).to be_nil
       end
     end
 
@@ -153,7 +153,7 @@ RSpec.describe "Public Articles (News)", type: :request do
       it "points at the news index, not at the article itself" do
         get news_url(article, host: "#{site.slug}.lvh.me")
 
-        back = Nokogiri::HTML(response.body).at_css(".article__back a")
+        back = Nokogiri::HTML(response.body).at_css("[data-scope='article'][data-part='back'] a")
 
         expect(back).to be_present
         expect(back[:href]).to eq(news_index_path)
@@ -177,7 +177,7 @@ RSpec.describe "Public Articles (News)", type: :request do
       it "does not show author component" do
         get news_url(article, host: "#{site.slug}.lvh.me")
         expect(response).to be_successful
-        expect(response.body).not_to include("article__author")
+        expect(Nokogiri::HTML(response.body).at_css("[data-scope='article'][data-part='author']")).to be_nil
       end
     end
 
@@ -254,7 +254,7 @@ RSpec.describe "Public Articles (News)", type: :request do
 
         it "steps through them in the order the index lists them" do
           get news_index_url(host: "#{site.slug}.lvh.me")
-          listed = Nokogiri::HTML(response.body).css("h2.articles__title a").pluck(:href)
+          listed = Nokogiri::HTML(response.body).css("h2[data-scope='news-index'][data-part='title'] a").pluck(:href)
           expect(listed).to eq([newest, twin_second, twin_first, middle, oldest].map { |a| news_path(a) })
 
           listed.each_with_index do |path, index|
@@ -275,7 +275,7 @@ RSpec.describe "Public Articles (News)", type: :request do
       it "shows the credit under the image" do
         get news_url(article, host: "#{site.slug}.lvh.me")
 
-        credit = Nokogiri::HTML(response.body).at_css(".article__image-credit")
+        credit = Nokogiri::HTML(response.body).at_css("[data-scope='article'][data-part='image-credit']")
         expect(credit).to be_present
         expect(credit.text).to eq("Photo by Jane Doe")
       end
@@ -286,7 +286,7 @@ RSpec.describe "Public Articles (News)", type: :request do
 
       it "does not show a credit" do
         get news_url(article, host: "#{site.slug}.lvh.me")
-        expect(response.body).not_to include("article__image-credit")
+        expect(Nokogiri::HTML(response.body).at_css("[data-scope='article'][data-part='image-credit']")).to be_nil
       end
     end
 
@@ -299,7 +299,7 @@ RSpec.describe "Public Articles (News)", type: :request do
       it "renders the pull quote after the third paragraph" do
         get news_url(article, host: "#{site.slug}.lvh.me")
 
-        content = Nokogiri::HTML(response.body).at_css(".article__content")
+        content = Nokogiri::HTML(response.body).at_css("[data-scope='article'][data-part='content']")
         paragraphs = content.css("> p")
         expect(paragraphs.map(&:text)).to eq(["Paragraph one.", "Paragraph two.", "Paragraph three.", "Paragraph four."])
 
@@ -322,7 +322,7 @@ RSpec.describe "Public Articles (News)", type: :request do
       it "appends the pull quote at the end" do
         get news_url(article, host: "#{site.slug}.lvh.me")
 
-        content = Nokogiri::HTML(response.body).at_css(".article__content")
+        content = Nokogiri::HTML(response.body).at_css("[data-scope='article'][data-part='content']")
         last_element = content.children.to_a.rfind(&:element?)
         expect(last_element["class"]).to include("pullquote")
       end

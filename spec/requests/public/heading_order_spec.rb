@@ -118,8 +118,8 @@ RSpec.describe "Site page heading order", type: :request do
 
       it "renders the byline as a paragraph, not a heading" do
         expect(response).to be_successful
-        expect(document.at_css("p.article__author")).to be_present
-        expect(document.at_css("h3.article__author")).to be_nil
+        expect(document.at_css("p[data-scope='article'][data-part='author']")).to be_present
+        expect(document.at_css("h3[data-scope='article'][data-part='author']")).to be_nil
       end
 
       it "never skips a heading level in the page body" do
