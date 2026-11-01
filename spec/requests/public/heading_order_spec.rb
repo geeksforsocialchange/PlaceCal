@@ -132,7 +132,7 @@ RSpec.describe "Site page heading order", type: :request do
     before { get "http://#{site.slug}.lvh.me/" }
 
     it "reports its state and names the menu it controls" do
-      toggle = document.at_css(".header__toggle")
+      toggle = document.at_css("[data-scope='navigation'][data-part='toggle']")
 
       expect(toggle["aria-expanded"]).to eq("false")
       expect(document.at_css("##{toggle['aria-controls']}")).to be_present

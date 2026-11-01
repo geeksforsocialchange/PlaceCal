@@ -12,7 +12,7 @@ RSpec.describe "Public site navigation", type: :request do
 
   # Header nav link labels, in document order.
   def nav_labels
-    Nokogiri::HTML(response.body).css("nav.header__menu ul li a").map { |a| a.text.strip }
+    Nokogiri::HTML(response.body).css("nav[data-scope='navigation'][data-part='menu'] ul li a").map { |a| a.text.strip }
   end
 
   context "with news and a contact email" do
@@ -113,7 +113,7 @@ RSpec.describe "Public site navigation", type: :request do
     it "carries the region on Home, Events and Partners only" do
       get "http://navsite.lvh.me?region=#{north.slug}"
 
-      hrefs = Nokogiri::HTML(response.body).css("nav.header__menu ul li a").map { |a| a["href"] }
+      hrefs = Nokogiri::HTML(response.body).css("nav[data-scope='navigation'][data-part='menu'] ul li a").map { |a| a["href"] }
 
       expect(hrefs).to eq(
         [

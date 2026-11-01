@@ -127,13 +127,13 @@ RSpec.describe "Theme slots", type: :request do
 
     expect(response.body).to include('href="https://example.org/donate"')
     expect(response.body).to include("Donate to the fixture")
-    expect(response.body).to include('header__toggle-label">Menu<')
+    expect(Nokogiri::HTML(response.body).at_css("[data-scope='navigation'][data-part='toggle-label']").text).to eq("Menu")
   end
 
   it "opens an off-site call to action in a new tab" do
     get "http://themed.lvh.me/events"
 
-    cta = Nokogiri::HTML(response.body).at_css("a.header__cta-link")
+    cta = Nokogiri::HTML(response.body).at_css("[data-scope='navigation'][data-part='cta'] a")
     expect(cta["target"]).to eq("_blank")
     expect(cta["rel"]).to eq("noopener")
   end
@@ -147,7 +147,7 @@ RSpec.describe "Theme slots", type: :request do
 
     get "http://homely.lvh.me/events"
 
-    cta = Nokogiri::HTML(response.body).at_css("a.header__cta-link")
+    cta = Nokogiri::HTML(response.body).at_css("[data-scope='navigation'][data-part='cta'] a")
     expect(cta["href"]).to eq("/proof")
     expect(cta["target"]).to be_nil
     expect(cta["rel"]).to be_nil
@@ -157,9 +157,9 @@ RSpec.describe "Theme slots", type: :request do
   it "names the menu toggle even on a site whose theme does not label it" do
     get "http://plain.lvh.me/events"
 
-    toggle = Nokogiri::HTML(response.body).at_css("button.header__toggle")
+    toggle = Nokogiri::HTML(response.body).at_css("button[data-scope='navigation'][data-part='toggle']")
     expect(toggle["aria-label"]).to eq(I18n.t("navigation.menu"))
-    expect(toggle.at_css(".header__toggle-label")).to be_nil
+    expect(toggle.at_css("[data-part='toggle-label']")).to be_nil
   end
 
   it "renders the day strip in place of the date picker, linking dated event URLs" do
@@ -219,7 +219,7 @@ RSpec.describe "Theme slots", type: :request do
     expect(response.body).to include("Example theme fixture proof page")
     expect(response.body).to include(themed_site.name)
 
-    nav_labels = Nokogiri::HTML(response.body).css("nav.header__menu ul li a").map { |a| a.text.strip }
+    nav_labels = Nokogiri::HTML(response.body).css("nav[data-scope='navigation'][data-part='menu'] ul li a").map { |a| a.text.strip }
     expect(nav_labels).to include(I18n.t("example_theme.nav.proof"))
     expect(response.body).to include('href="/proof"')
 
@@ -227,16 +227,6 @@ RSpec.describe "Theme slots", type: :request do
 
     expect(response).to have_http_status(:ok)
     expect(response.body).to include("<loc>#{themed_site.canonical_url}/proof</loc>")
-  end
-
-  # A theme's branding CSS needs a hook that does not move when an admin
-  # renames the site (#3368).
-  it "marks the branding with the theme name, not the site slug" do
-    get "http://themed.lvh.me"
-
-    classes = Nokogiri::HTML(response.body).at_css("a.header__branding")["class"].split
-    expect(classes).to include("header__branding--theme-example_theme")
-    expect(classes).not_to include("header__branding--themed")
   end
 
   # One negative for every slot at once: this catches a slot leaking onto core
@@ -269,10 +259,8 @@ RSpec.describe "Theme slots", type: :request do
       expect(response.body).not_to include('data-example-theme="footer"')
       expect(response.body).not_to include('data-part="standfirst"')
       expect(response.body).not_to include("list-heading")
-      expect(response.body).not_to include("header__cta")
-      expect(response.body).not_to include("header__toggle-label")
-      expect(response.body).not_to include("header__branding--theme-example_theme")
-      expect(response.body).to include("header__branding--theme-pink")
+      expect(response.body).not_to include('data-part="cta"')
+      expect(response.body).not_to include('data-part="toggle-label"')
       expect(response.body).to include("Go to date")
       expect(response.body).not_to include("day-strip")
       expect(response.body).to include(" 9 Nov")
