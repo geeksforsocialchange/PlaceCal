@@ -9,6 +9,22 @@ RSpec.describe "Public Partnerships", type: :request do
     end
   end
 
+  describe "on a local site" do
+    let(:site) { create(:site, slug: "local-site") }
+
+    it "301-redirects the index to the directory, keeping the search" do
+      get partnerships_url(host: "#{site.slug}.lvh.me", params: { q: "Test" })
+      expect(response).to redirect_to("https://placecal.org/partnerships?q=Test")
+      expect(response).to have_http_status(:moved_permanently)
+    end
+
+    it "301-redirects a partnership page to the directory" do
+      get partnership_url(partnerships.first, host: "#{site.slug}.lvh.me")
+      expect(response).to redirect_to("https://placecal.org/partnerships/#{partnerships.first.slug}")
+      expect(response).to have_http_status(:moved_permanently)
+    end
+  end
+
   describe "GET /partnerships (directory)" do
     it "returns successful response" do
       get partnerships_url(host: "lvh.me")

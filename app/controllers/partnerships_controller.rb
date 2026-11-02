@@ -2,6 +2,7 @@
 
 # TODO(#3163): Move to app/directory/controllers/partnerships_controller.rb
 class PartnershipsController < ApplicationController
+  before_action :redirect_local_site_to_directory
   before_action :set_site
 
   def index
@@ -36,6 +37,13 @@ class PartnershipsController < ApplicationController
   end
 
   private
+
+  # Partnerships list every site, so they belong on the directory, not on a local site's own host.
+  def redirect_local_site_to_directory
+    return if current_site.nil?
+
+    redirect_to "#{Site::DIRECTORY_URL.chomp('/')}#{request.fullpath}", status: :moved_permanently, allow_other_host: true
+  end
 
   # Map markers for the partnership's partners that have geocoded addresses.
   def partner_map_locations(partners)
