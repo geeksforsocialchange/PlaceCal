@@ -11,8 +11,9 @@ class Views::Sites::News::Index < Views::Base
                 title: 'The card\'s h2, holding the link to the article.',
                 partners: 'The partners the article is about, linked. Only when it names some.',
                 content: 'The row holding the summary and the image.',
-                body: 'The summary and the read-more button.',
+                body: 'The summary.',
                 image: 'The article\'s image. Only when it has one.',
+                actions: 'The line holding the read-more button.',
                 pagination: 'The newer and older links. Only when there is more than one page.'
               }
 
@@ -66,7 +67,7 @@ class Views::Sites::News::Index < Views::Base
           end
         end
 
-        p { UI::Button(variant: :outline, href: news_path(article), class: 'mt-4') { t('news.index.read_more') } }
+        p(**part(:actions)) { UI::Button(variant: :outline, href: news_path(article), class: 'mt-4') { t('news.index.read_more') } }
       end
     end
   end
