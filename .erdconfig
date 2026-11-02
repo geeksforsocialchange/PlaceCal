@@ -3,6 +3,7 @@ attributes:
   - foreign_keys
   - inheritance
 disconnected: true
+filename: doc/erd
 indirect: true
 inheritance: false
 orientation: vertical

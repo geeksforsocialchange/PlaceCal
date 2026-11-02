@@ -45,9 +45,6 @@ notes.md
 # Coverage
 coverage
 
-# Schema diagram, regenerated on every db:migrate
-erd.mmd
-
 # Ignore the dump directory
 dump/
 
