@@ -7,9 +7,7 @@ class Components::Directory::MarkdownContent < Components::Directory::Base
   prop :slug, String
 
   def view_template
-    UI::Text(as: :div, measure: :prose_lg, class: 'markdown-content') do
-      raw safe(rendered_html)
-    end
+    Shared::Markdown { raw safe(rendered_html) }
   end
 
   private

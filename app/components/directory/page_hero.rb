@@ -1,6 +1,15 @@
 # frozen_string_literal: true
 
 class Components::Directory::PageHero < Components::Directory::Base
+  theme_scope :page_hero,
+              parts: {
+                root: 'The dark band at the top of a directory page.',
+                breadcrumb: 'The trail of links above the title, a <nav>. Only when the page passes one.',
+                title: 'The page\'s h1.'
+              },
+              tokens: %i[--color-background --color-foreground --font-serif --font-weight-regular --font-weight-extra-bold --leading-hero
+                         --leading-none --leading-relaxed --text-hero --text-3xl --text-base --text-sm --text-2xs --tracking-wide]
+
   FADE = 'background: linear-gradient(to right, var(--color-foreground) 50%, ' \
          'color-mix(in srgb, var(--color-foreground) 75%, transparent) 62%, ' \
          'color-mix(in srgb, var(--color-foreground) 40%, transparent) 75%, ' \
@@ -19,12 +28,12 @@ class Components::Directory::PageHero < Components::Directory::Base
   prop :root_label, _Nilable(String), default: nil
 
   def view_template(&block)
-    section(class: 'bg-foreground text-background pt-6 pb-4 relative overflow-hidden') do
+    section(**part(:root, class: 'bg-foreground text-background pt-6 pb-4 relative overflow-hidden')) do
       render_background_image if @background_image_url
       div(class: 'container-public relative z-10') do
         render_breadcrumb if @breadcrumb_label || @breadcrumbs
         render_kicker if @kicker
-        h1(class: 'hero-title') { @title }
+        h1(**part(:title, class: 'hero-title')) { @title }
         render_subtitle if @subtitle
         yield if block
       end
@@ -45,7 +54,7 @@ class Components::Directory::PageHero < Components::Directory::Base
   end
 
   def render_breadcrumb
-    nav(class: 'text-sm mb-2 text-background', aria_label: t('directory.aria.breadcrumb')) do
+    nav(**part(:breadcrumb, class: 'text-sm mb-2 text-background', aria_label: t('directory.aria.breadcrumb'))) do
       root_label = @root_label || t('directory.breadcrumbs.root')
       UI::Link(href: root_path, variant: :quiet, tone: :inherit) { root_label }
       crumb_items.each do |item|
