@@ -4,7 +4,8 @@
 class Components::Sites::PageActions < Components::Base
   theme_scope :page_actions,
               parts: {
-                root: 'The nav holding the row of links.',
+                root: 'The nav holding the list of links.',
+                list: 'The row of links.',
                 link: 'One link. In the meta band (see the variant) it reads as plain text.'
               },
               variants: { root: %i[meta_band] },
@@ -20,7 +21,7 @@ class Components::Sites::PageActions < Components::Base
     return if @links.empty?
 
     nav(**part(:root, variant: (:meta_band if @in_meta_band), aria_label: t('page_actions.label'))) do
-      UI::Cluster(as: :ul, gap: @in_meta_band ? :lg : :md, row_gap: (:sm if @in_meta_band), justify: @in_meta_band ? :start : :center) do
+      UI::Cluster(as: :ul, gap: @in_meta_band ? :lg : :md, row_gap: (:sm if @in_meta_band), justify: @in_meta_band ? :start : :center, **part(:list)) do
         @links.each do |label, href, options|
           li { link_to(label, href, part(:link, **(options || {}), class: @in_meta_band ? Sites::Meta::LINK : 'underline')) }
         end

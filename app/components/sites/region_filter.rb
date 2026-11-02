@@ -14,7 +14,11 @@ class Components::Sites::RegionFilter < Components::Base
   prop :embedded, _Boolean, default: false
 
   theme_scope :region_filter,
-              parts: { root: 'The row of region options, each a pill. The variant says whether it sits in the site menu or above a listing.' },
+              parts: {
+                root: 'The row of region options. The variant says whether it sits in the site menu or above a listing.',
+                list: 'The list of options.',
+                item: 'One option, holding its pill: All, then each region.'
+              },
               variants: { root: %i[nav listing] },
               tokens: %i[]
 
@@ -22,7 +26,7 @@ class Components::Sites::RegionFilter < Components::Base
     return if @tags.size < 2
 
     nav(**part(:root, variant: @embedded ? :nav : :listing, class: ('mb-4' unless @embedded), aria: { label: t('region_filter.label') })) do
-      UI::Cluster(as: :ul, gap: :sm) do
+      UI::Cluster(as: :ul, gap: :sm, **part(:list)) do
         render_option(nil, t('region_filter.all'))
         @tags.each { |tag| render_option(tag, tag.name) }
       end
@@ -32,7 +36,7 @@ class Components::Sites::RegionFilter < Components::Base
   private
 
   def render_option(tag, label)
-    li { UI::Pill(variant: :segment, selected: active?(tag), href: href_for(tag)) { label } }
+    li(**part(:item)) { UI::Pill(variant: :segment, selected: active?(tag), href: href_for(tag)) { label } }
   end
 
   def active?(tag)
