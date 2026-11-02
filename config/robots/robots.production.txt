@@ -11,6 +11,7 @@ Disallow: /assets/
 # Training and scraping bots (search-AI bots removed from block list)
 User-agent: AgentDataBot
 User-agent: AgentTimes
+User-agent: AGI Agent
 User-agent: AI2Bot
 User-agent: AI2Bot-DeepResearchEval
 User-agent: Ai2Bot-Dolma
@@ -35,11 +36,13 @@ User-agent: Brightbot
 User-agent: Brightbot 1.0
 User-agent: BuddyBot
 User-agent: Bytespider
+User-agent: CartAI Agentic Commerce
 User-agent: CCBot
 User-agent: ChatGLM-Spider
 User-agent: Claude-Code
 User-agent: Claude-Web
 User-agent: ClaudeBot
+User-agent: CledaraBot
 User-agent: Cloudflare-AutoRAG
 User-agent: CloudflareBrowserRenderingCrawler
 User-agent: CloudVertexBot
@@ -56,9 +59,12 @@ User-agent: DeepSeekBot
 User-agent: Devin
 User-agent: Diffbot
 User-agent: Diffbot-User
+User-agent: Dot
 User-agent: DoubaoBot
 User-agent: Echobot Bot
 User-agent: EchoboxBot
+User-agent: ElevenlabsBot
+User-agent: ElevenlabsCrawler
 User-agent: ERNIEBot
 User-agent: ExaUser
 User-agent: FacebookBot
@@ -80,6 +86,7 @@ User-agent: GoogleOther-Image
 User-agent: GoogleOther-Video
 User-agent: GPTBot
 User-agent: Grok Bot
+User-agent: HarkBot
 User-agent: HenkBot
 User-agent: Hunyuan
 User-agent: iAskBot
@@ -128,6 +135,7 @@ User-agent: Operator
 User-agent: PanguBot
 User-agent: Panscient
 User-agent: panscient.com
+User-agent: Payhawk Invoice Fetching Agent
 User-agent: Poggio-Citations
 User-agent: Poseidon Research Crawler
 User-agent: qodercli
@@ -140,6 +148,7 @@ User-agent: QwenBot
 User-agent: Reflectionbot
 User-agent: SBIntuitionsBot
 User-agent: Scrapy
+User-agent: ScryBot
 User-agent: SemrushBot-OCOB
 User-agent: SemrushBot-SWA
 User-agent: Shap-User
