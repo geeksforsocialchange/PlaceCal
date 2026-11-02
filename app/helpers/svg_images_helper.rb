@@ -8,10 +8,11 @@ module SvgImagesHelper
   # See `config/initializers/assets.rb`
   # @param alt_text [String] Mapped to <title/> inside the rendered <svg/>
   # @param css_class [String] Additional CSS classes
+  # @param data [Hash] data attributes for the <svg/>
   # @return [String] HTML-safe SVG element
   # Usage:
   # <%= svg_image('logo-footer', alt_text: 'PlaceCal') %>
-  def svg_image(name, alt_text: '', css_class: '')
+  def svg_image(name, alt_text: '', css_class: '', data: {})
     file_name = if name.match?(/\.svg$/i)
                   name
                 else
@@ -24,7 +25,8 @@ module SvgImagesHelper
       file_name,
       aria: true,
       class: css_class,
-      title: alt_text
+      title: alt_text,
+      data:
     )
   end
 end

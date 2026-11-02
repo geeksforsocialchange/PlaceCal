@@ -7,17 +7,20 @@ class Components::Sites::EventFilter < Components::Base
                 filter: 'The wrapper of one filter: the neighbourhood filter or the filter-and-sort menu.',
                 form: 'The form inside each filter.',
                 toggle: 'The row holding a toggle button: the date picker or the filter-and-sort menu.',
-                toggle_button: 'A toggle button. The variant says which; the state says when filter-and-sort has something applied.',
+                toggle_button: 'A toggle button. The variant says which. On filter-and-sort, the state says when something is applied ' \
+                               'and aria-expanded whether the panel is open.',
                 link: 'The underlined label inside a toggle button, and the Today link.',
                 dropdown: 'The filter-and-sort panel. The state says whether it is open.',
                 group: 'One group of radio buttons in the panel: sort, period or repeating.',
                 option: 'One radio button and its label.',
+                label: 'An option\'s label.',
                 applied: 'The line saying what is applied, with its reset link. Only when something is.',
                 applied_reset: 'The link that clears what is applied.',
                 day_strip: 'The strip of day links, each a pill, ending with All upcoming.',
-                day_strip_all: 'The strip\'s last item, holding the All upcoming pill.'
+                day_strip_list: 'The list of days inside the strip.',
+                day_strip_item: 'One day of the strip, holding its pill. The last is All upcoming (see the variant).'
               },
-              variants: { toggle_button: %i[date sort], group: %i[sort period repeating] },
+              variants: { toggle_button: %i[date sort], group: %i[sort period repeating], day_strip_item: %i[all] },
               states: { toggle_button: %i[active], dropdown: %i[open closed] },
               tokens: %i[--color-background --color-foreground --color-primary --color-rules --color-rules-dark --font-sans --shadow-dropdown]
 
@@ -136,11 +139,11 @@ class Components::Sites::EventFilter < Components::Base
   # along only when they differ from the controller defaults.
   def render_day_strip
     nav(**part(:day_strip, class: 'min-w-0 overflow-x-auto', aria: { label: t('filters.day_strip.label') })) do
-      UI::Cluster(as: :ul, gap: :sm, align: :stretch, wrap: false, class: 'whitespace-nowrap') do
+      UI::Cluster(as: :ul, gap: :sm, align: :stretch, wrap: false, **part(:day_strip_list, class: 'whitespace-nowrap')) do
         day_strip_dates.each_with_index do |date, index|
-          li(class: 'shrink-0') { render_day_strip_day(date, index) }
+          li(**part(:day_strip_item, class: 'shrink-0')) { render_day_strip_day(date, index) }
         end
-        li(**part(:day_strip_all, class: 'shrink-0')) { render_day_strip_all_upcoming }
+        li(**part(:day_strip_item, variant: :all, class: 'shrink-0')) { render_day_strip_all_upcoming }
       end
     end
   end
@@ -228,7 +231,7 @@ class Components::Sites::EventFilter < Components::Base
   def build_sort_toggle
     view_context.content_tag(:div, **part(:toggle, class: Sites::Filter::TOGGLE)) do
       view_context.content_tag(:button, **part(:toggle_button, variant: :sort, state: (:active if filters_active?), type: 'button', class: Sites::Filter::TOGGLE_BUTTON,
-                                                               data: { action: 'click->filters#toggle' })) do
+                                                               aria: { expanded: 'false' }, data: { action: 'click->filters#toggle' })) do
         safe_join([view_context.icon(:triangle_down, size: nil, css_class: Sites::Filter::TOGGLE_ICON), ' ',
                    view_context.content_tag(:span, t('filters.filter_and_sort'), **part(:link, class: 'border-b-2 border-rules-dark'))])
       end
@@ -325,7 +328,7 @@ class Components::Sites::EventFilter < Components::Base
   def render_radio(name, value, checked, label_text)
     view_context.content_tag(:div, **part(:option, class: Sites::Filter::OPTION)) do
       view_context.radio_button_tag(name, value, checked, class: 'peer') +
-        view_context.label_tag("#{name}_#{value}", label_text, class: 'peer-checked:font-bold')
+        view_context.label_tag("#{name}_#{value}", label_text, **part(:label, class: 'peer-checked:font-bold'))
     end
   end
 

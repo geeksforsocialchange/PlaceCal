@@ -2,7 +2,12 @@
 
 class Components::Sites::EventList < Components::Base
   theme_scope :event_list,
-              parts: { day: 'One day\'s list of events, under its date heading.' },
+              parts: {
+                day: 'One day\'s list of events, under its date heading.',
+                item: 'One event in a day\'s list, holding its card.',
+                truncated: 'The line saying only the first events are shown. Only when the list is cut short.',
+                empty: 'A line of the empty state: that there are no events, then a link to the next date with events when there is one.'
+              },
               tokens: %i[]
 
   prop :events, Hash
@@ -27,13 +32,13 @@ class Components::Sites::EventList < Components::Base
       UI::RuledHeading(rule: :full, size: (@nested ? :lg : :inherit)) { I18n.l(day, format: :event_day) }
       render_day(day_events)
     end
-    p { t('components.event_list.truncated') } if @truncated
+    p(**part(:truncated)) { t('components.event_list.truncated') } if @truncated
   end
 
   def render_day(day_events)
     ol(**part(:day, class: 'reset')) do
       day_events.each do |event|
-        li(class: 'block w-full') { render_event(event) }
+        li(**part(:item, class: 'block w-full')) { render_event(event) }
       end
     end
   end
@@ -51,7 +56,7 @@ class Components::Sites::EventList < Components::Base
   end
 
   def render_empty_state
-    p { t('components.event_list.empty') }
-    p { link_to(t('components.event_list.skip_to_next'), next_url(@next_date)) } if @next_date.present?
+    p(**part(:empty)) { t('components.event_list.empty') }
+    p(**part(:empty)) { link_to(t('components.event_list.skip_to_next'), next_url(@next_date)) } if @next_date.present?
   end
 end

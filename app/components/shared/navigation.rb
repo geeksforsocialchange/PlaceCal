@@ -5,9 +5,12 @@ class Components::Shared::Navigation < Components::Base
               parts: {
                 root: 'The site header: branding, menu toggle and menu. The variant says whether it is the directory\'s or a site\'s.',
                 branding: 'The link home holding the logo.',
+                logo: 'The logo: an inline svg, or an img for an uploaded one.',
                 toggle: 'The menu button below lg on the directory and md on a site.',
                 toggle_label: 'The visible "Menu" beside the toggle\'s icon. On the directory, and on a site whose theme sets menu_label.',
                 menu: 'The nav holding the menu\'s list of links.',
+                item: 'One menu item, holding its link.',
+                link: 'A menu link. The current page\'s carries aria-current.',
                 cta: 'The menu item holding the theme\'s call-to-action button. Only when the theme sets nav_cta.'
               },
               variants: { root: %i[directory site] },
@@ -107,12 +110,12 @@ class Components::Shared::Navigation < Components::Base
   def render_logo
     logo_url = @site&.logo&.url.presence
     if @site.nil?
-      raw(view_context.svg_image('home/icons/logo-dark.svg', alt_text: 'PlaceCal'))
+      raw(view_context.svg_image('home/icons/logo-dark.svg', alt_text: 'PlaceCal', **part(:logo)))
     elsif logo_url
       # An <img>, not inline markup: an uploaded SVG then can't run script or restyle the page.
-      image_tag(logo_url, alt: @site.name)
+      image_tag(logo_url, alt: @site.name, **part(:logo))
     else
-      raw(view_context.svg_image('header.svg', alt_text: 'PlaceCal'))
+      raw(view_context.svg_image('header.svg', alt_text: 'PlaceCal', **part(:logo)))
     end
   end
 
@@ -137,7 +140,9 @@ class Components::Shared::Navigation < Components::Base
                       data: { mobile_menu_target: 'menu' })) do
       ul(class: 'contents') do
         @navigation.each do |link_text, link_path|
-          li(class: menu_li_classes) { active_link_to(link_text, link_path, data: { turbolinks: false }, base_css_class: menu_link_classes, active_css_class: menu_active_classes) }
+          li(**part(:item, class: menu_li_classes)) do
+            active_link_to(link_text, link_path, **part(:link, data: { turbolinks: false }), base_css_class: menu_link_classes, active_css_class: menu_active_classes)
+          end
         end
         render_join_button if @site.nil?
         render_region_filter if show_region_filter?

@@ -3,11 +3,15 @@
 class Views::Sites::Partners::Show < Views::Base
   theme_scope :partner_details,
               parts: {
-                content: 'The width-limited column under the hero: the breadcrumb, the details, then the events.',
-                root: 'The partner\'s details under the hero: the main column, then the aside.',
-                main: 'The main column: the description, then contact and address.',
-                description: 'The partner\'s description.',
+                root: 'The width-limited column under the hero: the breadcrumb, the details, the child places, then the events.',
+                details: 'The partner\'s details: the main column, then the aside.',
+                main: 'The main column: the summary and description, the contact and address sections, then the family sentence.',
+                summary: 'The partner\'s summary. Only when it has one.',
+                description: 'The partner\'s description, as they wrote it (paragraphs, lists, headings). Only when it has one.',
+                contact: 'The contact section: its heading, then the contact details.',
+                address: 'The address section: its heading, the service area, then the address.',
                 service_area: 'The sentence naming the neighbourhoods the partner serves. Only when it has service areas.',
+                family: 'The sentence naming the partner\'s parent, or the places it manages. Only when it has either.',
                 aside: 'The side column: the image, the map on core themes, opening times and accessibility.',
                 image: 'The box holding the partner\'s image. Only when it has one.',
                 opening_times: 'The list of opening hours. Only when the partner has some.',
@@ -17,6 +21,7 @@ class Views::Sites::Partners::Show < Views::Base
                 events_heading: 'The "Upcoming events" heading.',
                 events_count: 'How many events, over how many days. Hidden on core themes.',
                 events_repeating_filter: 'The repeating-events filter in the header.',
+                events_repeating_label: 'The label holding the repeating-events select.',
                 events_repeating: 'The repeating-events select.',
                 events_actions: 'The row under the events holding the show-more link. Only when there are more days to show.',
                 events_more: 'The link that shows more days.'
@@ -59,7 +64,7 @@ class Views::Sites::Partners::Show < Views::Base
     heading: 'allcaps text-xl m-0',
     count: 'hidden',
     repeating_filter: 'ml-auto print:hidden',
-    label: 'inline-flex items-center gap-2 text-sm allcaps whitespace-nowrap',
+    repeating_label: 'inline-flex items-center gap-2 text-sm allcaps whitespace-nowrap',
     repeating: 'select-caret appearance-none py-1 pl-3 pr-9 border-2 border-primary rounded-check bg-background text-foreground ' \
                'font-sans text-sm font-bold normal-case tracking-normal cursor-pointer',
     actions: 'flex justify-center mt-6 print:hidden',
@@ -105,13 +110,13 @@ class Views::Sites::Partners::Show < Views::Base
 
   def render_partner_description
     if partner.summary
-      div(**part(:description, class: 'text-xl leading-snug')) do
+      div(**part(:summary, class: 'text-xl leading-snug')) do
         content_tag(:p, partner.summary)
       end
     end
     return if partner.description_html.blank?
 
-    div do
+    div(**part(:description)) do
       raw safe(partner.description_html.to_s)
     end
   end
@@ -122,7 +127,7 @@ class Views::Sites::Partners::Show < Views::Base
     div do
       Shared::Hero(partner.name, site.tagline, section: t('partners.show.section'))
 
-      div(**part(:content, class: 'container-public mb-32')) do
+      div(**part(:root, class: 'container-public mb-32')) do
         Sites::Breadcrumb(
           trail: [[t('navigation.site.partners'), partners_path], [partner.name, partner_path(partner)]],
           site_name: site.name
@@ -138,7 +143,7 @@ class Views::Sites::Partners::Show < Views::Base
   end
 
   def render_partner_details
-    div(**part(:root, class: 'grid grid-areas-partner-details')) do
+    div(**part(:details, class: 'grid grid-areas-partner-details')) do
       div(**part(:main, class: 'grid-area-main')) do
         render_partner_description
         render_contact_and_address
@@ -153,8 +158,10 @@ class Views::Sites::Partners::Show < Views::Base
   end
 
   def render_contact_and_address
-    UI::RuledHeading(caps: true, rule: :full, size: :lg, spacing: :section) { t('partners.show.contact_heading') }
-    Shared::ContactDetails(partner:, social_labels: site&.core_theme? ? :handle : :network)
+    div(**part(:contact)) do
+      UI::RuledHeading(caps: true, rule: :full, size: :lg, spacing: :section) { t('partners.show.contact_heading') }
+      Shared::ContactDetails(partner:, social_labels: site&.core_theme? ? :handle : :network)
+    end
 
     render_address
     render_family_sentence
@@ -164,12 +171,12 @@ class Views::Sites::Partners::Show < Views::Base
   # straight to the buffer, ahead of the sentence the links are interpolated into.
   def render_family_sentence
     if visible_parent
-      div(class: 'text-sm leading-normal') do
+      div(**part(:family, class: 'text-sm leading-normal')) do
         raw(t('partners.show.part_of_html', parent: view_context.link_to(visible_parent.name, partner_path(visible_parent))))
       end
     elsif visible_children.any?
       places = safe_join(visible_children.map { |child| view_context.link_to(child.name, partner_path(child)) }, ', ')
-      div(class: 'text-sm leading-normal') do
+      div(**part(:family, class: 'text-sm leading-normal')) do
         raw(t('partners.show.children_html', name: partner.name, places:))
       end
     end
@@ -186,13 +193,15 @@ class Views::Sites::Partners::Show < Views::Base
   end
 
   def render_address
-    UI::RuledHeading(caps: true, rule: :full, size: :lg, spacing: :section) { t('partners.show.address_heading') }
-    if partner.service_areas?
-      p(**part(:service_area)) do
-        raw(t('partners.show.service_area_html', areas: partner_service_area_text(partner)))
+    div(**part(:address)) do
+      UI::RuledHeading(caps: true, rule: :full, size: :lg, spacing: :section) { t('partners.show.address_heading') }
+      if partner.service_areas?
+        p(**part(:service_area)) do
+          raw(t('partners.show.service_area_html', areas: partner_service_area_text(partner)))
+        end
       end
+      Shared::Address(address: partner.address) if partner.address
     end
-    Shared::Address(address: partner.address) if partner.address
   end
 
   def render_partner_image
@@ -317,7 +326,7 @@ class Views::Sites::Partners::Show < Views::Base
         # The select is wrapped in its label (implicit association) rather
         # than paired by id: the paginator's own repeating radios reuse
         # "repeating"-derived ids, and this form can render alongside them.
-        label(class: (CORE_EVENTS[:label] if site.core_theme?)) do
+        label(**events_part(:repeating_label)) do
           plain t('partners.show.show_label')
           select_tag(:repeating, **events_part(:repeating), id: nil) do
             options_for_select(repeating_options, repeating)

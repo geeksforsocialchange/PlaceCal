@@ -8,6 +8,7 @@ class Components::Shared::ContactForm < Components::Base
   theme_scope :contact_form,
               parts: {
                 card: 'The card holding the form.',
+                body: 'The card\'s contents: the short fields, the choices, the why field, then the actions.',
                 grid: 'The two-column grid of short fields.',
                 field: 'One field: its label, then its control. The why field spans the grid (see the variant).',
                 label: 'A field\'s label, or the choices\' legend.',
@@ -44,7 +45,7 @@ class Components::Shared::ContactForm < Components::Base
       invisible_captcha
 
       UI::Card(padding: :xl, **part(:card)) do
-        UI::Stack(gap: :lg) do
+        UI::Stack(gap: :lg, **part(:body)) do
           div(**part(:grid, class: 'grid grid-cols-1 md:grid-cols-2 gap-4')) do
             render_field(f, :name, required: true)
             render_field(f, :email, type: 'email', required: true)
