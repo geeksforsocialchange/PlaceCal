@@ -4,6 +4,7 @@ class Views::Sites::Partners::Index < Views::Base
   theme_scope :partner_index,
               parts: {
                 root: 'Everything under the hero: the heading, the breadcrumb and filters, the list, then the map.',
+                content: 'The width-limited column holding the heading, the breadcrumb and filters, and the list.',
                 list: 'The list of partners. Only when some match.',
                 empty: 'The line saying no partners match.',
                 map: 'The box holding the map of the listed partners.',
@@ -27,7 +28,7 @@ class Views::Sites::Partners::Index < Views::Base
     Shared::Hero(t('partners.index.title'), site.tagline, standfirst: t('partners.index.standfirst'),
                                                           standfirst_detail: t('partners.index.standfirst_detail'))
     turbo_frame_tag 'partner_previews', **part(:root, data: { turbo_action: 'advance' }) do
-      div(class: 'container-public mb-32') do
+      div(**part(:content, class: 'container-public mb-32')) do
         list_heading('partners.index.list_heading')
         Sites::Breadcrumb(trail: [[t('navigation.site.partners'), partners_path]], site_name: site.name) do
           Sites::PartnerFilter(

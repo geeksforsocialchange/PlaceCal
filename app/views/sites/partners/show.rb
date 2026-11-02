@@ -3,6 +3,7 @@
 class Views::Sites::Partners::Show < Views::Base
   theme_scope :partner_details,
               parts: {
+                content: 'The width-limited column under the hero: the breadcrumb, the details, then the events.',
                 root: 'The partner\'s details under the hero: the main column, then the aside.',
                 main: 'The main column: the description, then contact and address.',
                 description: 'The partner\'s description.',
@@ -121,7 +122,7 @@ class Views::Sites::Partners::Show < Views::Base
     div do
       Shared::Hero(partner.name, site.tagline, section: t('partners.show.section'))
 
-      div(class: 'container-public mb-32') do
+      div(**part(:content, class: 'container-public mb-32')) do
         Sites::Breadcrumb(
           trail: [[t('navigation.site.partners'), partners_path], [partner.name, partner_path(partner)]],
           site_name: site.name

@@ -3,6 +3,7 @@
 class Views::Sites::News::Show < Views::Base
   theme_scope :article,
               parts: {
+                divider: 'The rule under the breadcrumb.',
                 root: 'The article under the hero: the date column, then the main column.',
                 aside: 'The date column.',
                 published: 'The publication date.',
@@ -39,7 +40,7 @@ class Views::Sites::News::Show < Views::Base
           trail: [[t('navigation.site.news'), news_index_path], [article.title, news_path(article)]],
           site_name: site.name
         )
-        hr(class: 'mt-1')
+        hr(**part(:divider, class: 'mt-1'))
         render_article_body
         render_page_actions
       end
