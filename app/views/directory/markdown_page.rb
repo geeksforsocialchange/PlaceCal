@@ -4,6 +4,8 @@
 # through the directory page chrome. Keeps long-form legal copy reviewable in
 # diffs and editable without touching Ruby — see issue #3248.
 class Views::Directory::MarkdownPage < Views::Base
+  theme_scope :markdown_page, parts: { root: 'The column under the hero holding the document.' }
+
   prop :slug, String
   prop :title, String
   prop :breadcrumb_label, String
@@ -17,7 +19,7 @@ class Views::Directory::MarkdownPage < Views::Base
       breadcrumb_label: @breadcrumb_label
     )
 
-    div(class: 'container-public py-8') do
+    div(**part(:root, class: 'container-public py-8')) do
       Directory::MarkdownContent(slug: @slug)
     end
   end

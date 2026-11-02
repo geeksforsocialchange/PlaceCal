@@ -4,6 +4,7 @@ class Components::Sites::Meta < Components::Base
   theme_scope :meta,
               parts: {
                 root: 'The band below a page\'s content: the links a page passes in, then the permalink.',
+                content: 'The width-limited column inside the band that holds the links and the permalink.',
                 permalink: 'The link to this page on placecal.org. Only when the page passes a permalink.'
               },
               tokens: %i[--text-sm --leading-normal --color-rules --color-foreground --color-primary]
@@ -25,7 +26,7 @@ class Components::Sites::Meta < Components::Base
     yield self if block_given?
 
     div(**part(:root, class: 'text-sm leading-normal bg-rules py-8 print:hidden')) do
-      div(class: 'container-public flex flex-wrap items-baseline gap-x-6') do
+      div(**part(:content, class: 'container-public flex flex-wrap items-baseline gap-x-6')) do
         raw(view_context.capture(&@link_content)) if @link_content
         if @permalink
           div(**part(:permalink, class: 'ms-auto')) do

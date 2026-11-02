@@ -17,7 +17,7 @@ export default class extends Controller {
 		const email = this.emailTarget.value.trim();
 		if (!email) return;
 
-		this.element.classList.add("is-busy");
+		this.element.setAttribute("aria-busy", "true");
 		try {
 			const integrityToken = await this.fetchIntegrityToken();
 			await this.sendMagicLink(email, integrityToken);
@@ -27,7 +27,7 @@ export default class extends Controller {
 		} catch {
 			this.showMessage(this.errorMessageValue);
 		} finally {
-			this.element.classList.remove("is-busy");
+			this.element.removeAttribute("aria-busy");
 		}
 	}
 

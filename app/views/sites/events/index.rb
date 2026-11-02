@@ -3,6 +3,7 @@
 class Views::Sites::Events::Index < Views::Base
   theme_scope :event_index,
               parts: {
+                root: 'The listing under the hero: the list heading, then the browser.',
                 browser: 'The turbo frame holding the paginator and the list, replaced as the visitor moves through dates.',
                 paginator: 'The breadcrumb with the filters, then the timeline tabs.',
                 context: 'The breadcrumb row inside the paginator.',
@@ -30,7 +31,7 @@ class Views::Sites::Events::Index < Views::Base
 
     Shared::Hero(t('events.index.title'), site.tagline, standfirst: t('events.index.standfirst'))
 
-    div(class: 'container-public mb-32') do
+    div(**part(:root, class: 'container-public mb-32')) do
       list_heading('events.index.list_heading')
       turbo_frame_tag 'events-browser', **part(:browser, data: { turbo_action: 'advance' }) do
         render_paginator

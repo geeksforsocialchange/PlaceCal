@@ -144,9 +144,7 @@ class Views::ThemeContentPage < Views::Base
 
   # Override for a page laid out in its own sections rather than one markdown column.
   def page_content
-    UI::Text(as: :div, measure: :prose_lg, class: 'markdown-content') do
-      page_body
-    end
+    Shared::Markdown { page_body }
   end
 
   # Override for a page that needs more than headings and markdown blocks.
