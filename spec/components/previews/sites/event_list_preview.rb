@@ -6,6 +6,11 @@ class Sites::EventListPreview < Lookbook::Preview
     render Components::Sites::EventList.new(events: PreviewSupport.sample_events_by_day)
   end
 
+  # @label Cut short
+  def truncated
+    render Components::Sites::EventList.new(events: PreviewSupport.sample_events_by_day, truncated: true)
+  end
+
   # @label Empty state
   def empty
     render Components::Sites::EventList.new(events: {})
