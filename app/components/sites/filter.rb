@@ -4,6 +4,7 @@ class Components::Sites::Filter < Components::Base
   theme_scope :filter,
               parts: {
                 toggle: 'The row holding the toggle button.',
+                toggle_button: 'The button that opens the options. The state says when an option is chosen.',
                 toggle_label: 'What the filter is, such as "Neighbourhood", inside the toggle button.',
                 toggle_value: 'The chosen option, or "Show all", inside the toggle button.',
                 dropdown: 'The panel of options. The state says whether it is open.',
@@ -11,7 +12,7 @@ class Components::Sites::Filter < Components::Base
                 option: 'One option: its radio button, then its label.',
                 label: 'An option\'s label, with the number of matches.'
               },
-              states: { dropdown: %i[open closed] },
+              states: { toggle_button: %i[active], dropdown: %i[open closed] },
               variants: { group: %i[category neighbourhood] },
               tokens: %i[--color-background --color-primary --color-rules-dark --font-sans --shadow-dropdown]
 
@@ -41,7 +42,7 @@ class Components::Sites::Filter < Components::Base
 
   def render_toggle
     div(**part(:toggle, class: TOGGLE)) do
-      button(type: 'button', class: TOGGLE_BUTTON, data: { action: toggle_action_value }) do
+      button(**part(:toggle_button, state: (:active if option_selected?), type: 'button', class: TOGGLE_BUTTON, data: { action: toggle_action_value })) do
         raw(view_context.icon(:triangle_down, size: nil, css_class: TOGGLE_ICON))
         span(**part(:toggle_label, class: 'mr-1')) { @label }
         span(**part(:toggle_value, class: 'border-b-2 border-rules-dark', data: { "#{@controller}-target": "#{@name}Text" })) do
@@ -98,6 +99,10 @@ class Components::Sites::Filter < Components::Base
 
   def filter_active?
     @selected_id.positive?
+  end
+
+  def option_selected?
+    @items.any? { selected?(it[:id]) }
   end
 
   def selected_item_name

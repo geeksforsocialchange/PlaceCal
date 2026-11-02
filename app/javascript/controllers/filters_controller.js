@@ -11,6 +11,10 @@ export default class extends Controller {
 		this.dropdownTargets.forEach((dropdown) => {
 			dropdown.dataset.state =
 				dropdown.dataset.state === "closed" ? "open" : "closed";
+			event.currentTarget.setAttribute(
+				"aria-expanded",
+				String(dropdown.dataset.state === "open"),
+			);
 		});
 	}
 

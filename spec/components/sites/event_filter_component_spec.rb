@@ -423,11 +423,11 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
       expect(page).to have_css("a[aria-current='true']", text: "All upcoming")
     end
 
-    it "gives the All upcoming item its own class hook, leaving day items with theirs" do
+    it "marks the All upcoming item with its own variant of the day strip item" do
       render_inline(described_class.new(**day_strip_attrs))
 
-      expect(page).to have_css("li[data-part='day-strip-all']", count: 1)
-      expect(page).to have_css("nav[data-part='day-strip'] li.shrink-0", count: 8)
+      expect(page).to have_css("li[data-part='day-strip-item'][data-variant='all']", count: 1)
+      expect(page).to have_css("li[data-part='day-strip-item']", count: 8)
     end
 
     it "does not render the toggles row" do
