@@ -40,8 +40,8 @@ gem 'simple_form'                 # Form builder
 gem 'strict_ivars', require: false # Catch undefined instance variable reads
 
 # Auth and permissions
-gem 'devise'                      # User authentication
-gem 'devise_invitable'            # User invitation emails
+gem 'devise', '~> 5.0'            # User authentication
+gem 'devise_invitable', '~> 2.0'  # User invitation emails
 gem 'pundit'                      # Authorization policies
 
 # Geolocation
