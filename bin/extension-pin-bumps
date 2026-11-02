@@ -42,7 +42,7 @@ def open_pin_pr(name, repo, from, to, branch)
   base = run!('git', 'rev-parse', '--abbrev-ref', 'HEAD').strip
   run!('git', 'checkout', '-q', '-B', branch)
   File.write('Gemfile', PlaceCal::ExtensionRelease.bump(File.read('Gemfile'), name, to))
-  run!('bundle', 'lock', '--update', name)
+  run!('bundle', 'lock', '--update', name, '--conservative')
   run!('git', 'commit', '-q', '-m', "Pin #{name} at v#{to}", '--', 'Gemfile', 'Gemfile.lock')
   run!('git', 'push', '-q', '--force', 'origin', branch)
   run!('gh', 'pr', 'create', '--base', base, '--head', branch, '--label', 'dependencies',

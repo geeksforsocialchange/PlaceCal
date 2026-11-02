@@ -26,12 +26,12 @@ namespace :placecal do
         puts "Pinned #{name} at #{PlaceCal::ExtensionRelease.normalize_version(version)} in #{gemfile}."
       end
 
-      # Only this gem's entry moves: a full `bundle install` here would also
-      # pick up unrelated updates and put them in the same commit.
-      puts "Running bundle lock --update #{name}"
+      # Only this gem's entry moves: without --conservative, bundler also updates
+      # its dependencies (rails, nokogiri...) and puts them in the same commit.
+      puts "Running bundle lock --update #{name} --conservative"
       # Rails has this process bundled already; bundler refuses to re-resolve
       # from inside that environment, so run it in a clean one.
-      locked = Bundler.with_unbundled_env { system('bundle', 'lock', '--update', name) }
+      locked = Bundler.with_unbundled_env { system('bundle', 'lock', '--update', name, '--conservative') }
       unless locked
         # An unreachable tag, a resolution conflict or a dropped network leaves
         # a bumped Gemfile beside a stale Gemfile.lock, which is exactly the
