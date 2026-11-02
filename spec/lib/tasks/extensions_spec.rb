@@ -43,6 +43,16 @@ RSpec.describe "placecal:extension:bump", type: :task do
     expect(gemfile.read).to include("tag: 'v0.1.2'")
   end
 
+  it "relocks only the bumped gem, leaving its dependencies where they are" do
+    allow(Bundler).to receive(:with_unbundled_env).and_yield
+    allow(TOPLEVEL_BINDING.receiver).to receive(:system).and_return(true)
+
+    expect { run_task("placecal-theme-mossley", "0.1.2") }.to output(/Pinned/).to_stdout
+
+    expect(TOPLEVEL_BINDING.receiver).to have_received(:system)
+      .with("bundle", "lock", "--update", "placecal-theme-mossley", "--conservative")
+  end
+
   # A bumped Gemfile beside a stale Gemfile.lock is exactly the pair the task's
   # own closing line says must be committed together, so a failed relock must
   # not leave one behind.
