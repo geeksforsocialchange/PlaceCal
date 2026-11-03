@@ -33,8 +33,6 @@ Automated crawlers account for more of PlaceCal's footprint than people do. Each
 
 The highest possible figure, counting all the data our server sends, is about 200 kg CO2e a year.
 
-For the full calculation, including the traffic figures behind it, email [support@placecal.org](mailto:support@placecal.org).
-
 ## What we're working on
 
 - Cutting crawler traffic, our biggest source of emissions
@@ -49,4 +47,4 @@ For the full calculation, including the traffic figures behind it, email [suppor
 - **Carbon**: calculated with [CO2.js](https://www.thegreenwebfoundation.org/co2-js/) using the Sustainable Web Design model (version 4), with green hosting. That gives about 0.12 g CO2e per MB transferred. Crawler requests are counted without the share for the viewer's device, since no one views them.
 - **Not included**: making the servers beyond the share the model includes, and our staff travel and office energy.
 
-The full method and the scripts we use are [on GitHub](https://github.com/geeksforsocialchange/PlaceCal/blob/main/doc/sustainability.md). If you spot a mistake, email [support@placecal.org](mailto:support@placecal.org).
+Our method and measuring script are [on GitHub](https://github.com/geeksforsocialchange/PlaceCal/blob/main/doc/sustainability.md). For the full calculation, including the traffic figures behind it, or if you spot a mistake, email [support@placecal.org](mailto:support@placecal.org).
