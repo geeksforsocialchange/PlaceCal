@@ -77,12 +77,13 @@ export default class extends Controller {
 
 		this.map.setView(this.argsValue.center, this.argsValue.zoom);
 
+		// A map of several places repeats links listed on the page, so its markers stay out of the tab order.
+		const single = this.argsValue.markers.length === 1;
 		const markers = this.argsValue.markers.map((m) => {
-			// Only a marker with a popup does anything, so only it is a named tab stop.
 			const mapMarker = L.marker(m.position, {
 				icon: mapIcon,
 				alt: m.anchor ? (m.label ?? "") : "",
-				keyboard: !!m.anchor,
+				keyboard: single && !!m.anchor,
 			});
 			mapMarker.addTo(this.map);
 			if (m.anchor)
