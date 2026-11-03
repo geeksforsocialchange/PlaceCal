@@ -56,7 +56,7 @@ class ApplicationController < ActionController::Base
   end
 
   def resource_not_found
-    render Views::Shared::ResourceNotFound.new, status: :not_found
+    render Views::Shared::ResourceNotFound.new(directory: directory_request?), status: :not_found
   end
 
   def not_acceptable
