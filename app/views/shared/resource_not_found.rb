@@ -12,7 +12,7 @@ class Views::Shared::ResourceNotFound < Views::Base
   prop :directory, _Boolean, default: false
 
   def view_template
-    Directory::PageHero(title: t('shared.resource_not_found.title')) if @directory
+    Directory::PageHero(title: t('shared.resource_not_found.title'), kicker: t('shared.resource_not_found.kicker')) if @directory
     div(**part(:root, class: 'container-narrow py-16 text-center')) do
       UI::Stack(gap: :lg, align: :center) do
         UI::Stack(gap: :sm, align: :center) do
