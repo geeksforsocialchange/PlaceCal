@@ -11,6 +11,8 @@ class Views::Sites::Partners::Index < Views::Base
                 list_heading: 'A heading above the breadcrumb. Blank in core; a theme fills it.'
               }
 
+  STATUS_ID = 'partner-previews-status'
+
   prop :partners, ActiveRecord::Relation, reader: :private
   prop :site, Site, reader: :private
   prop :map, _Nilable(Array), reader: :private
@@ -27,7 +29,8 @@ class Views::Sites::Partners::Index < Views::Base
 
     Shared::Hero(t('partners.index.title'), site.tagline, standfirst: t('partners.index.standfirst'),
                                                           standfirst_detail: t('partners.index.standfirst_detail'))
-    turbo_frame_tag 'partner_previews', **part(:root, data: { turbo_action: 'advance' }) do
+    turbo_frame_tag 'partner_previews', **part(:root, **results_frame_attributes(STATUS_ID, data: { turbo_action: 'advance' })) do
+      results_summary(t('partners.index.results_summary', count: partners.load.size))
       div(**part(:content, class: 'container-public mb-32')) do
         list_heading('partners.index.list_heading')
         Sites::Breadcrumb(trail: [[t('navigation.site.partners'), partners_path]], site_name: site.name) do
@@ -59,5 +62,6 @@ class Views::Sites::Partners::Index < Views::Base
         Shared::Map(points: map)
       end
     end
+    results_status(STATUS_ID)
   end
 end

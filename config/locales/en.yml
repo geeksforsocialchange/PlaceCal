@@ -580,6 +580,11 @@ en:
     index:
       page_title: "Partners"
       title: "Our Partners"
+      # Read out by screen readers when a filter reloads the list.
+      results_summary:
+        zero: "No partners match"
+        one: "1 partner"
+        other: "%{count} partners"
       standfirst: ""
       standfirst_detail: ""
       # Real text, not blank: it is the h2 between the hero h1 and the h3 of
@@ -646,6 +651,11 @@ en:
 
   events:
     index:
+      # Read out by screen readers when a filter or date change reloads the list.
+      results_summary:
+        zero: "No events"
+        one: "1 event"
+        other: "%{count} events"
       page_title: "Events"
       title: "Events & activities"
       standfirst: ""

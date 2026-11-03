@@ -58,6 +58,8 @@ class Views::Sites::Partners::Show < Views::Base
   # Padding, not margin, so the gap above each sidebar section adds to the heading's margin rather than collapsing into it.
   SIDEBAR_SECTION = 'pt-6'
 
+  EVENTS_STATUS_ID = 'partner-events-status'
+
   # Themes style the events section themselves; these are the built-in themes' look.
   CORE_EVENTS = {
     header: 'flex flex-wrap items-center gap-y-2 gap-x-6 mt-8 mb-2 pb-2 border-b-3 border-rules',
@@ -269,7 +271,8 @@ class Views::Sites::Partners::Show < Views::Base
   end
 
   def render_events_section
-    turbo_frame_tag 'events-browser', **part(:events_browser, data: { turbo_action: 'advance' }) do
+    turbo_frame_tag 'events-browser', **part(:events_browser, **results_frame_attributes(EVENTS_STATUS_ID, data: { turbo_action: 'advance' })) do
+      results_summary(events_total_count&.positive? ? events_count_text : (no_event_message || empty_period_message))
       render_events_header if events_total_count&.positive?
       render_events_paginator if paginator
 
@@ -288,6 +291,7 @@ class Views::Sites::Partners::Show < Views::Base
       end
       render_events_actions
     end
+    results_status(EVENTS_STATUS_ID)
   end
 
   # Closes the event browser with the next page of days, inside the frame it pages.
