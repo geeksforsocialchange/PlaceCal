@@ -49,9 +49,9 @@
 		& .footnotes {
 			@apply text-sm mt-8;
 		}
-		/* Block so a wide table scrolls inside the column instead of the page */
+		/* Block so a wide table scrolls inside the column instead of the page, with words kept whole */
 		& table {
-			@apply block overflow-x-auto border-collapse my-6;
+			@apply block overflow-x-auto border-collapse my-6 wrap-normal;
 		}
 		& th,
 		& td {
