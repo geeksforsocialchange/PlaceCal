@@ -155,6 +155,19 @@ RSpec.describe "Site page heading order", type: :request do
     end
   end
 
+  describe "the directory's event and partner pages" do
+    # Online, so no "Where" h2 sits between the page h1 and the sidebar cards.
+    let(:event) { create(:online_event, organiser: partner) }
+
+    it "never skips from the page h1 to a sidebar card heading" do
+      [event_url(event, host: "lvh.me"), partner_url(partner, host: "lvh.me")].each do |url|
+        get url
+        expect(response).to be_successful
+        expect(skipped_levels(headings)).to be_empty, "#{url}: #{skipped_levels(headings).join(', ')}"
+      end
+    end
+  end
+
   describe "the mobile menu disclosure" do
     before { get "http://#{site.slug}.lvh.me/" }
 

@@ -15,7 +15,8 @@ class Components::Sites::Profile < Components::Base
         UI::RuledHeading(level: 3, caps: true, tone: :secondary, size: :sm, spacing: :card, class: 'text-center') { t('components.profile.heading') }
       end
       div(class: 'md:mt-2 md:mx-4') do
-        image_tag(@user.avatar.retina.url, class: 'rounded-full max-w-27') if @user.avatar.retina.url
+        # Decorative: the admin's name is beside it.
+        image_tag(@user.avatar.retina.url, alt: '', class: 'rounded-full max-w-27') if @user.avatar.retina.url
       end
       div(class: 'md:text-left') do
         p { strong { @user.full_name } }
