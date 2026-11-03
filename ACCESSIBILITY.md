@@ -43,7 +43,10 @@ Event and partner details come from the groups themselves, often imported straig
 - We check every page type in a browser for the WCAG 2.2 AA requirements automated tools miss: reflow, text spacing, target size, focus, and the contrast of form fields and focus outlines.
 - We test with VoiceOver on macOS in Google Chrome.
 
-We have not yet tested with screen readers on Windows (such as NVDA or JAWS), on phones (VoiceOver on iOS or TalkBack on Android), or with VoiceOver in Safari.
+## Known limitations
+
+- **Screen readers we haven't tested with.** We have not yet tested PlaceCal with screen readers on Windows (such as NVDA or JAWS), on phones (VoiceOver on iOS or TalkBack on Android), or with VoiceOver in Safari. If you use one of these and something doesn't work, please tell us.
+- **Moving around a map.** You move around a map by dragging it. Without dragging, you can use its zoom in and zoom out buttons, double-click a spot to zoom in on it, or select a group of places to zoom to them, and everything shown on a map is also listed on the page as text, with its address. We think this meets WCAG 2.5.7 (dragging movements), but if it doesn't work for you, tell us and we'll add buttons to move the map.
 
 ## Tell us about a problem
 
