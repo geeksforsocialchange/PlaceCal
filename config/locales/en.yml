@@ -619,7 +619,7 @@ en:
     resource_not_found:
       kicker: "Error"
       title: "404: Not Found"
-      body: "The page you were looking for does not exist"
+      body: "The page you were looking for does not exist."
       home: "Home"
       events: "Events"
       partners: "Partners"
