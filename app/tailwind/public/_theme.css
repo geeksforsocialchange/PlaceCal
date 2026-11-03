@@ -112,8 +112,10 @@
 	--color-foreground-darker: #3d342e;
 	/* Horizontal lines, for example around events */
 	--color-rules: #f1e9da;
-	/* Form field borders, filter and breadcrumb underlines, the local-site footer's small print */
+	/* Filter and breadcrumb underlines, the local-site footer's small print */
 	--color-rules-dark: #decbba;
+	/* Form control borders: 3:1 against the page and panels, so a field's edge can be seen (WCAG 1.4.11) */
+	--color-control-border: var(--color-tertiary);
 	/* Contrast colours */
 	--color-secondary: #f19089;
 	/* Deeper salmon for small text / numerals that need contrast on cream */
@@ -232,6 +234,7 @@ this file).
 	--color-foreground-darker: var(--color-foreground-darker);
 	--color-rules: var(--color-rules);
 	--color-rules-dark: var(--color-rules-dark);
+	--color-control-border: var(--color-control-border);
 	--color-secondary: var(--color-secondary);
 	--color-secondary-deep: var(--color-secondary-deep);
 	--color-secondary-dark: var(--color-secondary-dark);

@@ -276,7 +276,7 @@ class Views::Join::Pricing < Views::Join::Base
           div(class: 'max-w-(--width-prose-lg)') do
             t('join.pricing.faq.items').each_with_index do |item, index|
               details(class: 'group border-b-2 border-rules', open: index.zero?) do
-                summary(class: 'cursor-pointer list-none py-4 font-serif text-lg text-foreground flex justify-between items-center gap-4 ' \
+                summary(class: 'cursor-pointer list-none py-4 pr-1 font-serif text-lg text-foreground flex justify-between items-center gap-4 ' \
                                'details-marker:hidden') do
                   plain item[:question]
                   span(class: 'font-sans font-bold text-2xl text-secondary-strong transition-transform group-open:rotate-45', aria_hidden: 'true') { '+' }

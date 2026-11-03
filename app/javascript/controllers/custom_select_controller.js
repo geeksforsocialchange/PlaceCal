@@ -27,6 +27,7 @@ export default class extends Controller {
 	}
 
 	openValueChanged() {
+		this.triggerTarget.setAttribute("aria-expanded", String(this.openValue));
 		if (this.openValue) {
 			this.panelTarget.style.display = "block";
 			this.arrowTarget.style.transform = "rotate(180deg)";
@@ -44,7 +45,10 @@ export default class extends Controller {
 		this.triggerTarget.querySelector("[data-role='label']").textContent = label;
 
 		this.optionTargets.forEach((opt) => {
-			opt.dataset.selected = opt.dataset.value === value ? "true" : "false";
+			const chosen = opt.dataset.value === value;
+			opt.dataset.selected = String(chosen);
+			if (chosen) opt.setAttribute("aria-current", "true");
+			else opt.removeAttribute("aria-current");
 		});
 
 		this.openValue = false;
@@ -66,6 +70,9 @@ export default class extends Controller {
 	handleKeydown(event) {
 		if (!this.openValue) return;
 		if (event.key === "Escape") {
+			// Focus would otherwise stay on an option inside the hidden panel.
+			if (this.element.contains(document.activeElement))
+				this.triggerTarget.focus();
 			this.openValue = false;
 		}
 	}

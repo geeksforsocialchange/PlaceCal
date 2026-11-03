@@ -11,6 +11,13 @@
 	color: var(--color-foreground);
 }
 
+/* Attribution links are 18px tall by default; WCAG 2.5.8 wants 24px targets */
+.leaflet-control-attribution a {
+	display: inline-block;
+	min-height: 24px;
+	line-height: 24px;
+}
+
 /* The directory homepage cluster map's markers; display: flex has to beat Leaflet's display: block on marker icons */
 .cluster-marker {
 	display: flex;
