@@ -155,6 +155,7 @@ Rails.application.routes.draw do
   post 'get-in-touch', to: 'joins#create'
   get 'privacy', to: 'pages#privacy'
   get 'terms-of-use', to: 'pages#terms_of_use'
+  get 'sustainability', to: 'pages#sustainability'
 
   # ============================================================
   # Legacy & deprecated

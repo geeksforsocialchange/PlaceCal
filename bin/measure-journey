@@ -1,0 +1,60 @@
+#!/usr/bin/env node
+// Data transferred to find an event: listing, three screens of scrolling, one event. See doc/sustainability.md.
+const { chromium } = require("playwright");
+
+const [listUrl, eventPattern] = process.argv.slice(2);
+if (!listUrl || !eventPattern) {
+	console.error("Usage: bin/measure-journey <listing URL> <event URL regex>");
+	process.exit(1);
+}
+
+(async () => {
+	const browser = await chromium.launch();
+	const context = await browser.newContext({
+		viewport: { width: 1280, height: 800 },
+		locale: "en-GB",
+	});
+	const page = await context.newPage();
+	const cdp = await context.newCDPSession(page);
+	await cdp.send("Network.enable");
+	let bytes = 0;
+	cdp.on("Network.loadingFinished", (e) => {
+		bytes += e.encodedDataLength;
+	});
+
+	const settle = async () => {
+		await page
+			.waitForLoadState("networkidle", { timeout: 15000 })
+			.catch(() => {});
+		await page.waitForTimeout(1500);
+	};
+
+	const journey = async () => {
+		bytes = 0;
+		await page.goto(listUrl, { waitUntil: "domcontentloaded" });
+		await settle();
+		for (let i = 0; i < 3; i += 1) {
+			await page.mouse.wheel(0, 800);
+			await page.waitForTimeout(1000);
+		}
+		await settle();
+		const href = await page.$$eval(
+			"a[href]",
+			(links, re) =>
+				links.map((a) => a.href).find((h) => new RegExp(re).test(h)),
+			eventPattern,
+		);
+		if (!href)
+			throw new Error(`No link matching ${eventPattern} on ${listUrl}`);
+		await page.goto(href, { waitUntil: "domcontentloaded" });
+		await settle();
+		return { href, kb: Math.round(bytes / 1024) };
+	};
+
+	const first = await journey();
+	const repeat = await journey();
+	console.log(`Event: ${first.href}`);
+	console.log(`First visit: ${first.kb} KB`);
+	console.log(`Repeat visit: ${repeat.kb} KB`);
+	await browser.close();
+})();

@@ -21,6 +21,11 @@ RSpec.describe "Directory Accessibility", :slow, type: :system do
       expect(page).to be_axe_clean
     end
 
+    it "sustainability page has no accessibility violations" do
+      visit public_url("/sustainability")
+      expect(page).to be_axe_clean
+    end
+
     it "get in touch page has no accessibility violations" do
       visit public_url("/get-in-touch")
       expect(page).to be_axe_clean

@@ -17,6 +17,15 @@ class PagesController < ApplicationController
     )
   end
 
+  def sustainability
+    render Views::Directory::MarkdownPage.new(
+      slug: 'sustainability',
+      title: t('directory.pages.sustainability.title'),
+      breadcrumb_label: t('directory.pages.sustainability.breadcrumb'),
+      document_title: t('directory.pages.sustainability.document_title')
+    )
+  end
+
   def privacy
     # A theme may serve its own privacy copy at the conventional URL (#3368,
     # D14). Core routes /privacy, so the theme's `privacy` page is never
