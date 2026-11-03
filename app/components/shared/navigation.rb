@@ -107,15 +107,16 @@ class Components::Shared::Navigation < Components::Base
     end
   end
 
+  # Decorative: the sr-only heading beside it names the link.
   def render_logo
     logo_url = @site&.logo&.url.presence
     if @site.nil?
-      raw(view_context.svg_image('home/icons/logo-dark.svg', alt_text: 'PlaceCal', **part(:logo)))
+      raw(view_context.svg_image('home/icons/logo-dark.svg', **part(:logo)))
     elsif logo_url
       # An <img>, not inline markup: an uploaded SVG then can't run script or restyle the page.
-      image_tag(logo_url, alt: @site.name, **part(:logo))
+      image_tag(logo_url, alt: '', **part(:logo))
     else
-      raw(view_context.svg_image('header.svg', alt_text: 'PlaceCal', **part(:logo)))
+      raw(view_context.svg_image('header.svg', **part(:logo)))
     end
   end
 
