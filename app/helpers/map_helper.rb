@@ -6,6 +6,7 @@ module MapHelper
       {}.tap do |pin|
         pin[:position] = [mrkr[:lat], mrkr[:lon]]
         pin[:anchor] = link_to(mrkr[:name], partner_path(mrkr[:id]), data: { turbo_frame: '_top', turbo_action: 'replace' }) if mrkr[:id]
+        pin[:label] = mrkr[:name] if mrkr[:name].present?
       end
     end
 
@@ -17,7 +18,9 @@ module MapHelper
       shadowUrl: image_path('icons/map/map-shadow.png'),
       markers: group_colocated_markers(data_for_markers),
       styleUrl: map_style_url,
-      styleClass: map_style_class(data_for_markers, style_mode, compact_mode)
+      styleClass: map_style_class(data_for_markers, style_mode, compact_mode),
+      zoomIn: t('components.map.zoom_in'),
+      zoomOut: t('components.map.zoom_out')
     }.to_json.html_safe
   end
 
@@ -45,8 +48,10 @@ module MapHelper
       next group.first if group.length == 1
 
       anchors = group.filter_map { |m| m[:anchor] }
+      labels = group.filter_map { |m| m[:label] }
       merged = { position: }
       merged[:anchor] = safe_join(anchors, tag.br) if anchors.any?
+      merged[:label] = labels.join(', ') if labels.any?
       merged
     end
   end

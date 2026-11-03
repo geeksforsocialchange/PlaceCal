@@ -38,14 +38,25 @@ export default class extends Controller {
 	}
 
 	createMap() {
-		this.map = L.map(this.element);
+		this.map = L.map(this.element, { zoomControl: false });
 		this.map.scrollWheelZoom.disable();
+		L.control
+			.zoom({
+				zoomInTitle: this.argsValue.zoomIn,
+				zoomOutTitle: this.argsValue.zoomOut,
+			})
+			.addTo(this.map);
 
 		L.maplibreGL({
 			style: this.argsValue.styleUrl,
 			attribution:
 				'&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-		}).addTo(this.map);
+		})
+			// MapLibre names its canvas "Map" too; the map's own container is the one landmark.
+			.on("add", (e) =>
+				e.target.getContainer().setAttribute("aria-hidden", "true"),
+			)
+			.addTo(this.map);
 
 		this.map.invalidateSize(true);
 
@@ -67,7 +78,12 @@ export default class extends Controller {
 		this.map.setView(this.argsValue.center, this.argsValue.zoom);
 
 		const markers = this.argsValue.markers.map((m) => {
-			const mapMarker = L.marker(m.position, { icon: mapIcon });
+			// Only a marker with a popup does anything, so only it is a named tab stop.
+			const mapMarker = L.marker(m.position, {
+				icon: mapIcon,
+				alt: m.anchor ? (m.label ?? "") : "",
+				keyboard: !!m.anchor,
+			});
 			mapMarker.addTo(this.map);
 			if (m.anchor)
 				mapMarker.bindPopup(m.anchor, { permanent: true, closeButton: false });

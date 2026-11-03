@@ -129,6 +129,15 @@ RSpec.describe MapHelper, type: :helper do
       expect(result.first[:position]).to eq([53.0, -2.0])
     end
 
+    it "joins the names of markers at the same position" do
+      markers = [
+        { position: [53.0, -2.0], anchor: "<a>A</a>".html_safe, label: "Place A" },
+        { position: [53.0, -2.0], anchor: "<a>B</a>".html_safe, label: "Place B" }
+      ]
+      result = helper.send(:group_colocated_markers, markers)
+      expect(result.first[:label]).to eq("Place A, Place B")
+    end
+
     it "combines anchor HTML with br separators" do
       markers = [
         { position: [53.0, -2.0], anchor: "<a>A</a>".html_safe },
