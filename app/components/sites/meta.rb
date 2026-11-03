@@ -11,7 +11,8 @@ class Components::Sites::Meta < Components::Base
 
   prop :permalink, _Nilable(String), :positional, default: nil
   # The pink underline is for body copy; links in this band underline in the text colour.
-  LINK = 'text-foreground underline decoration-current decoration-auto underline-offset-auto skip-ink-auto'
+  # inline-block py-0.5 makes each link a 24px-tall target (WCAG 2.5.8).
+  LINK = 'inline-block py-0.5 text-foreground underline decoration-current decoration-auto underline-offset-auto skip-ink-auto'
 
   def after_initialize
     @link_content = nil

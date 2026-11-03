@@ -18,6 +18,13 @@ RSpec.describe Components::Sites::Profile, type: :component do
     expect(page).to have_text("Jane Doe")
   end
 
+  it "shows the avatar as decorative, since the name sits beside it" do
+    with_avatar = double(full_name: "Jane Doe", email: "jane@example.com", phone: nil, avatar: double(retina: double(url: "/uploads/avatar.jpg")))
+    render_inline(described_class.new(user: with_avatar))
+
+    expect(page.find("img[src='/uploads/avatar.jpg']")[:alt]).to eq("")
+  end
+
   it "renders user email" do
     render_inline(described_class.new(user:))
 
