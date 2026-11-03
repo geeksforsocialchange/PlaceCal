@@ -8,6 +8,12 @@ RSpec.describe "Join marketing site", type: :request do
   include ActiveJob::TestHelper
 
   describe "the join subdomain" do
+    it "links the footer to the accessibility statement on the apex" do
+      get "http://join.lvh.me/"
+      footer_link = Nokogiri::HTML(response.body).at_css("footer a[href='http://lvh.me/accessibility']")
+      expect(footer_link&.text).to eq(I18n.t("join.footer.accessibility"))
+    end
+
     it "serves the homepage" do
       get "http://join.lvh.me/"
       expect(response).to be_successful

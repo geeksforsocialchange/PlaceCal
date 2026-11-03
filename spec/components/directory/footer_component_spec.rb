@@ -26,6 +26,13 @@ RSpec.describe Components::Directory::Footer, type: :component do
     expect(link[:href]).to eq("/sustainability")
   end
 
+  it "links to the accessibility statement" do
+    render_inline(described_class.new)
+
+    link = page.find("a", text: I18n.t("directory.footer.accessibility"))
+    expect(link[:href]).to eq("/accessibility")
+  end
+
   context "when APP_VERSION is set" do
     before do
       stub_const("ENV", ENV.to_hash.merge("APP_VERSION" => "v0.9.1"))

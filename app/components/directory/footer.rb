@@ -28,7 +28,8 @@ class Components::Directory::Footer < Components::Directory::Base
         [t('directory.footer.for_ai_assistants'), '/mcp'],
         [t('directory.footer.privacy_policy'), privacy_path],
         [t('directory.footer.terms_of_use'), terms_of_use_path],
-        [t('directory.footer.sustainability'), sustainability_path]
+        [t('directory.footer.sustainability'), sustainability_path],
+        [t('directory.footer.accessibility'), accessibility_path]
       ]]
     ]
   end

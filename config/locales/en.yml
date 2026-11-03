@@ -149,6 +149,7 @@ en:
       join: "Get in touch"
       privacy: "Privacy"
       terms: "Terms"
+      accessibility: "Accessibility"
       log_in: "Log in"
       # Screen-reader-only line under the site name. Blank in core so a themed
       # site is not told it is "The Community Calendar"; a theme may set its own.
@@ -374,6 +375,10 @@ en:
         title: "PlaceCal's climate impact"
         breadcrumb: "Sustainability"
         document_title: "Sustainability"
+      accessibility:
+        title: "Accessibility statement"
+        breadcrumb: "Accessibility"
+        document_title: "Accessibility statement"
       our_story:
         heading: "Our story"
         hero_title: "We set out to examine the causes of social isolation and loneliness within neighbourhoods, and figure out how to combat them."
@@ -533,6 +538,7 @@ en:
       privacy_policy: "Privacy policy"
       terms_of_use: "Terms of use"
       sustainability: "Sustainability"
+      accessibility: "Accessibility"
       placecal_logo_alt: "PlaceCal logo"
 
   # ===========================================================================
