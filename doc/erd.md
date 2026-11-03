@@ -87,4 +87,5 @@ erDiagram
 	Site ||--}o SitesNeighbourhood : ""
 	Site o{--}o Supporter : ""
 	User o|--}o Site : ""
+	User o|..}o Partnership : ""
 ```
