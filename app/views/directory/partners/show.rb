@@ -63,7 +63,7 @@ class Views::Directory::Partners::Show < Views::Sites::Partners::Show
 
     div(class: 'py-4') do
       UI::RuledHeading(caps: true, rule: :full, size: :lg) { t('directory.partners.show.accessibility_info') }
-      div do
+      div(class: 'markdown-content') do
         raw safe(partner.accessibility_info_html.to_s)
       end
     end

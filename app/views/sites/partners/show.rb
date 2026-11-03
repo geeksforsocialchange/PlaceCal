@@ -116,7 +116,7 @@ class Views::Sites::Partners::Show < Views::Base
     end
     return if partner.description_html.blank?
 
-    div(**part(:description)) do
+    div(**part(:description, class: 'markdown-content')) do
       raw safe(partner.description_html.to_s)
     end
   end
@@ -236,7 +236,7 @@ class Views::Sites::Partners::Show < Views::Base
 
     section(class: SIDEBAR_SECTION) do
       UI::RuledHeading(caps: true, rule: :full, size: :lg, spacing: :section, id: 'accessibility-info') { t('partners.show.accessibility_heading') }
-      details(class: 'group wrap-anywhere') do
+      details(class: 'group markdown-content') do
         summary(class: 'cursor-pointer group-open:mb-3') { t('partners.show.accessibility_summary') }
         raw safe(partner.accessibility_info_html.to_s)
       end

@@ -76,7 +76,7 @@ class Views::Sites::News::Show < Views::Base
 
         render_image
 
-        div(**part(:content)) { render_body_with_pull_quote }
+        div(**part(:content, class: 'markdown-content')) { render_body_with_pull_quote }
 
         div(**part(:back)) do
           link_to t('news.show.back'), news_index_path
