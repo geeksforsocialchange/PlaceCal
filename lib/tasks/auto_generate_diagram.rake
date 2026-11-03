@@ -19,6 +19,22 @@ if Rails.env.development?
 
   Rake::Task['erd:generate'].enhance do
     mmd = Rails.root.join('doc/erd.mmd')
+
+    # With `inheritance: true`, the gem's Mermaid writer copies every edge of
+    # an STI base class onto each subclass, so Category, Facility and
+    # Partnership would each be drawn joined to Article, Site and User through
+    # Tag's associations. Keep only the edges whose two models an association
+    # actually connects. A polymorphic interface (such as PaperTrail's `item`)
+    # isn't drawn, so its edges still go to every model that implements it.
+    domain = RailsERD::Domain.generate(RailsERD.options.merge(warn: false))
+    names = ->(entity) { entity.generalized? ? entity.children.map(&:name) : [entity.name] }
+    connected = domain.relationships.flat_map { |r| names[r.source].product(names[r.destination]) }.to_set
+    edge = /\A\t"?([\w:]+)"? \S+ "?([\w:]+)"? : ""\z/
+    lines = mmd.read.split("\n").reject do |line|
+      (match = edge.match(line)) && connected.exclude?(match.captures)
+    end
+    mmd.write(lines.join("\n"))
+
     Rails.root.join('doc/erd.md').write(<<~MARKDOWN)
       # Database schema diagram
 

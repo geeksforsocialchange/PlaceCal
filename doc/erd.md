@@ -21,12 +21,16 @@ erDiagram
 		integer organiser_id FK
 		integer place_id FK
 	}
+	Category {
+	}
 	Event {
 		integer address_id FK
 		integer calendar_id FK
 		integer online_address_id FK
 		integer organiser_id FK
 		integer place_id FK
+	}
+	Facility {
 	}
 	Neighbourhood {
 	}
@@ -38,6 +42,8 @@ erDiagram
 	Partner {
 		integer address_id FK
 		integer parent_id FK
+	}
+	Partnership {
 	}
 	Site {
 		integer site_admin_id FK
@@ -52,6 +58,9 @@ erDiagram
 	}
 	User {
 	}
+	Tag ||--o{ Category : "specializes"
+	Tag ||--o{ Facility : "specializes"
+	Tag ||--o{ Partnership : "specializes"
 	Address o|--}o Event : ""
 	Address o|--}o Partner : ""
 	Neighbourhood o|--}o Address : ""
@@ -71,6 +80,9 @@ erDiagram
 	Neighbourhood o|..}o User : ""
 	Neighbourhood o|..}o Partner : ""
 	Partner o{--}o User : ""
+	Partner o|..}o Category : ""
+	Partner o|..}o Facility : ""
+	Partner o|..}o Partnership : ""
 	Partner o|--}o Partner : ""
 	Site ||--}o SitesNeighbourhood : ""
 	Site o{--}o Supporter : ""

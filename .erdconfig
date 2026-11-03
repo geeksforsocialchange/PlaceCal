@@ -3,7 +3,7 @@ attributes:
 disconnected: false
 filename: doc/erd
 indirect: true
-inheritance: false
+inheritance: true
 orientation: horizontal
 polymorphism: false
 sort: true
