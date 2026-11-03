@@ -211,9 +211,16 @@ end
 
 ## Accessibility
 
-- Semantic HTML5 elements; ARIA labels where needed
-- Keyboard navigation and visible focus states
-- Sufficient colour contrast (WCAG AA — the suite has `axe-core-rspec` coverage)
+The public sites meet WCAG 2.2 AA, and `ACCESSIBILITY.md` (served at `/accessibility`) says so. Keep it true:
+
+- **Headings and landmarks.** One `h1` per page and no skipped levels (`spec/requests/public/heading_order_spec.rb`). Name every `nav`. `main` is the skip link's target; don't add another.
+- **Links say where they go.** Repeated link text ("Find out more", a social handle) gets the rest of its name in a visually hidden span after the visible words, so the visible text starts the accessible name.
+- **Images.** A logo or icon beside text that already names it is decorative: `alt: ''`, or `svg_image` with no `alt_text:` (which hides the svg).
+- **Organiser content.** HTML partners and site admins write goes through `OrganiserHtml.call(html, under: <level of the heading above>)`, which fits their headings into the page and empties missing alt.
+- **Forms.** Every control has a label (`UI::Field`). Personal details get `autocomplete`. A server-side error goes to `UI::Field`'s `error:`, with the control's `aria: { invalid: 'true', describedby: field.error_id }`. Control borders use `border-control-border` (3:1 against the page).
+- **Size and space.** Targets are at least 24px in both directions unless they sit inside a sentence. Nothing may widen a 320px page: give flex children `min-w-0`, and let long words and addresses break (`wrap-anywhere`, `wrap-break-word`) rather than truncate.
+- **Contrast.** Text 4.5:1 (3:1 at large sizes); field edges and focus rings 3:1. The colour-theme specs check the palettes; check new pairs the same way.
+- **New public pages** get an axe check in `spec/system/*/accessibility_spec.rb`, which runs on every core colour theme and on Trans Dimension.
 
 Remember: views are clean, typed, semantic Phlex focused on presentation.
 Business logic belongs in models, query objects (`app/queries/`), or services —
