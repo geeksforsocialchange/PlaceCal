@@ -60,10 +60,18 @@ class Components::Directory::Hero < Components::Directory::Base
       if @partner_locations.any?
         div(
           class: 'rounded-card overflow-hidden h-full',
+          role: 'region',
+          aria_label: t('components.map.directory'),
           data: {
             controller: 'cluster-map',
             cluster_map_markers_value: @partner_locations.to_json,
-            cluster_map_style_url_value: '/map-styles/pink.json'
+            cluster_map_style_url_value: '/map-styles/pink.json',
+            cluster_map_labels_value: {
+              zoomIn: t('components.map.zoom_in'),
+              zoomOut: t('components.map.zoom_out'),
+              clusterOne: t('components.map.cluster.one'),
+              clusterOther: t('components.map.cluster.other')
+            }.to_json
           }
         )
       else

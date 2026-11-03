@@ -24,6 +24,33 @@ RSpec.describe Components::Shared::Navigation, type: :component do
     expect(page).to have_link(I18n.t("navigation.site.home"))
   end
 
+  describe "the link home" do
+    def branding
+      page.find("[data-scope='navigation'][data-part='branding']")
+    end
+
+    it "is named once on the directory, by its heading" do
+      render_inline(described_class.new(navigation:, site: nil))
+
+      expect(branding).to have_css("h1.sr-only, h2.sr-only", text: "PlaceCal")
+      expect(branding).to have_css("svg[aria-hidden='true']:not([role])", visible: :all)
+    end
+
+    it "is named once on a site with an uploaded logo" do
+      site = create(:site, name: "Riverside", logo: Rack::Test::UploadedFile.new(Rails.root.join("spec/fixtures/files/test-image.png"), "image/png"))
+      render_inline(described_class.new(navigation:, site:))
+
+      expect(branding).to have_css("h2.sr-only", text: "Riverside")
+      expect(branding.find("img[data-part='logo']")[:alt]).to eq("")
+    end
+
+    it "is named once on a site with the default logo" do
+      render_inline(described_class.new(navigation:, site: create(:site, name: "Riverside")))
+
+      expect(branding).to have_css("svg[aria-hidden='true']:not([role])", visible: :all)
+    end
+  end
+
   it "renders header structure" do
     render_inline(described_class.new(navigation:, site: nil))
 

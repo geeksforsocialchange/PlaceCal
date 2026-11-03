@@ -126,7 +126,11 @@ class Views::Sites::Events::Show < Views::Base
 
   def render_about_section
     div(class: 'pb-4') do
-      div(class: 'e-content markdown-content first-p:text-xl first-p:leading-snug max-w-(--width-prose-md)') { raw safe(event.description_html.to_s) } if event.description_html.present?
+      if event.description_html.present?
+        div(class: 'e-content markdown-content first-p:text-xl first-p:leading-snug max-w-(--width-prose-md)') do
+          raw safe(OrganiserHtml.call(event.description_html, under: 1))
+        end
+      end
       div(class: 'mt-3') do
         render_event_link
         render_online_link
@@ -273,7 +277,7 @@ class Views::Sites::Events::Show < Views::Base
 
   def render_event_details
     div(**part(:root, class: 'container-narrowish mb-12 e-content')) do
-      div(**part(:description, class: 'markdown-content')) { raw safe(event.description_html.to_s) }
+      div(**part(:description, class: 'markdown-content')) { raw safe(OrganiserHtml.call(event.description_html, under: 1)) }
       div(**part(:links, class: 'flex flex-col items-start gap-2 mt-10 empty:hidden')) do
         render_event_link
         render_online_link

@@ -20,6 +20,23 @@ RSpec.describe Components::Shared::Map, type: :phlex do
     expect(page).to have_css('[data-controller="leaflet"]')
   end
 
+  it "is a region named after its one place" do
+    render_inline(described_class.new(points:))
+    expect(page).to have_css("[role='region'][aria-label='#{I18n.t('components.map.place', name: 'Test Place')}']")
+  end
+
+  it "is a region named for the places on the page when it shows several" do
+    render_inline(described_class.new(points: points + [{ lat: 53.5, lon: -2.3, name: "Other Place", id: 2 }]))
+    expect(page).to have_css("[role='region'][aria-label='#{I18n.t('components.map.places')}']")
+  end
+
+  it "gives markers their place's name and the zoom buttons translated names" do
+    render_inline(described_class.new(points:))
+    args = JSON.parse(page.find("[data-leaflet-args-value]")["data-leaflet-args-value"])
+    expect(args["markers"].first["label"]).to eq("Test Place")
+    expect(args.values_at("zoomIn", "zoomOut")).to eq([I18n.t("components.map.zoom_in"), I18n.t("components.map.zoom_out")])
+  end
+
   it "sets the leaflet args data attribute" do
     render_inline(described_class.new(points:))
     expect(page).to have_css("[data-leaflet-args-value]")
