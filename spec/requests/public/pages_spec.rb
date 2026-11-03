@@ -109,7 +109,7 @@ RSpec.describe "Public Pages", type: :request do
       get "/accessibility", headers: { "Host" => "lvh.me" }
       expect(response).to be_successful
       expect(response.body).to include(I18n.t("directory.pages.accessibility.title"))
-      expect(response.body).to include("<h2>Known problems</h2>")
+      expect(response.body).to include("<h2>Content written by partners</h2>")
     end
 
     it "is served on local sites too" do
