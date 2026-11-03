@@ -13,6 +13,24 @@ RSpec.describe "Public Articles (News)", type: :request do
   end
 
   describe "GET /news (index)" do
+    context "with two articles" do
+      let!(:partner) { create(:partner, address:) }
+
+      before do
+        [create(:article, is_draft: false, title: "Summer fair"), create(:article, is_draft: false, title: "Winter hours")]
+          .each { |article| article.partners << partner }
+      end
+
+      it "names each card's read more link after its article" do
+        get news_index_url(host: "#{site.slug}.lvh.me")
+
+        actions = Nokogiri::HTML(response.body).css("[data-scope='news-index'][data-part='actions'] a")
+
+        expect(actions.map { |link| link.text.squish }).to contain_exactly("Find out more about Summer fair", "Find out more about Winter hours")
+        expect(actions.css(".sr-only").map { |span| span.text.strip }).to contain_exactly("about Summer fair", "about Winter hours")
+      end
+    end
+
     context "with articles linked to partners" do
       let!(:article) { create(:article, is_draft: false) }
       let!(:partner1) { create(:partner, address:) }

@@ -81,6 +81,21 @@ RSpec.describe Components::Shared::ContactDetails, type: :phlex do
     end
   end
 
+  it "names the network in each handle link for screen readers" do
+    render_inline(described_class.new(partner: contact_partner))
+
+    expect(page).to have_link("@rchtwit on Twitter", href: "https://twitter.com/rchtwit")
+    expect(page).to have_link("@rchinsta on Instagram", href: "https://www.instagram.com/rchinsta/")
+    expect(page).to have_css("a[href^='https://twitter.com/'] .sr-only", text: "on Twitter")
+  end
+
+  it "names the network in each card handle link for screen readers" do
+    render_inline(described_class.new(partner: contact_partner, variant: :card))
+
+    expect(page).to have_link("@rchtwit on Twitter", href: "https://twitter.com/rchtwit")
+    expect(page).to have_link("@rchinsta on Instagram", href: "https://www.instagram.com/rchinsta/")
+  end
+
   context "with a long website address" do
     let(:long_url) { "https://www.manchester.gov.uk/directory_record/44123/powerhouse_library/category/1234/libraries" }
 
