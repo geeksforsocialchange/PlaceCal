@@ -24,11 +24,13 @@ RSpec.describe "Unknown paths", type: :request do
     expect(hrefs).to eq(["/", "/events", "/partners"])
   end
 
-  it "renders the not-found page on the directory" do
+  it "renders the not-found page in the directory's hero band" do
     get "http://lvh.me/no-such-page"
 
     expect(response).to have_http_status(:not_found)
-    expect(not_found_part(:title)).to be_present
+    hero_title = response.parsed_body.at_css('[data-scope="page-hero"][data-part="title"]')
+    expect(hero_title.text).to eq(I18n.t("shared.resource_not_found.title"))
+    expect(not_found_part(:links)).to be_present
   end
 
   it "leaves paths with a file extension to the static 404" do

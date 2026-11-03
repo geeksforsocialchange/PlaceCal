@@ -491,7 +491,6 @@ RSpec.describe "Public Events", type: :request do
       get event_url(99_999, host: "lvh.me")
       expect(response).to have_http_status(:not_found)
       expect(response.body).to include(I18n.t("shared.resource_not_found.title"))
-      expect(response.parsed_body.at_css('[data-scope="not-found"][data-part="title"]').text).to eq(I18n.t("shared.resource_not_found.title"))
     end
   end
 
