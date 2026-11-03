@@ -51,7 +51,7 @@ class Views::Layouts::Application < Phlex::HTML
         a(href: "##{MAIN_ID}", **part(:skip_link, class: [
                                         'sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50',
                                         'focus:rounded-card focus:bg-foreground focus:px-4 focus:py-2',
-                                        'focus:font-bold focus:text-background'
+                                        'focus:font-bold focus:text-background focus-visible:-outline-offset-4'
                                       ])) { t('navigation.skip_to_content') }
         # Outside the page column so it spans the viewport.
         Join::WipBanner() if join_site?

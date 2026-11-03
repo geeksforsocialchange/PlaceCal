@@ -4,10 +4,10 @@
 class Components::UI::Choice < Components::Base
   register_output_helper :icon
 
-  CHIP = 'group relative inline-flex items-center gap-2.5 py-2.5 pr-4.5 pl-3.25 border-2 border-rules-dark rounded-pill bg-background ' \
-         'cursor-pointer font-bold text-detail text-foreground select-none transition-colors hover:border-tertiary ' \
+  CHIP = 'group relative inline-flex items-center gap-2.5 py-2.5 pr-4.5 pl-3.25 border-2 border-control-border rounded-pill bg-background ' \
+         'cursor-pointer font-bold text-detail text-foreground select-none transition-colors hover:border-foreground ' \
          'has-checked:border-foreground has-checked:bg-home-background-3 has-focus-visible:ring-3 has-focus-visible:ring-focus-ring'
-  BOX = 'grid place-items-center size-5 shrink-0 border-2 border-rules-dark rounded-check bg-surface transition-colors ' \
+  BOX = 'grid place-items-center size-5 shrink-0 border-2 border-control-border rounded-check bg-surface transition-colors ' \
         'group-has-checked:bg-foreground group-has-checked:border-foreground'
   TICK = 'text-background opacity-0 scale-60 transition group-has-checked:opacity-100 group-has-checked:scale-100'
 

@@ -99,10 +99,10 @@ RSpec.describe Components::Shared::ContactDetails, type: :phlex do
   context "with a long website address" do
     let(:long_url) { "https://www.manchester.gov.uk/directory_record/44123/powerhouse_library/category/1234/libraries" }
 
-    it "keeps every row's icon from shrinking beside a truncated label" do
+    it "wraps the whole address beside an icon that keeps its size" do
       render_inline(described_class.new(partner: contact_partner, url: long_url, variant: :card))
 
-      expect(page).to have_css("a[href='#{long_url}'] span.truncate", text: "manchester.gov.uk/directory_record/44123")
+      expect(page).to have_css("a[href='#{long_url}'] span.wrap-anywhere", text: "manchester.gov.uk/directory_record/44123/powerhouse_library/category/1234/libraries")
       expect(page).to have_css("a[href='#{long_url}'] svg[data-icon-name='contact_website'].shrink-0")
       expect(page).not_to have_css("svg[data-icon-name^='contact_']:not(.shrink-0)")
     end

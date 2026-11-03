@@ -46,10 +46,11 @@ class Components::Shared::Navigation < Components::Base
       branding: ['w-42 h-12'],
       toggle: ['text-background', 'md:me-4', 'md:hidden'],
       menu: [
-        '-mx-6 gap-1 mt-4',
+        # Matches the header's mx-4, so the open dropdown runs edge to edge without widening the page.
+        '-mx-4 gap-1 mt-4',
         'max-md:pb-1 max-md:bg-tertiary max-md:is-hidden:h-0 max-md:is-hidden:pb-0',
         'max-md:is-hidden:invisible',
-        'md:-mx-6',
+        'md:-mx-4',
         'md:max-lg:px-2 md:max-lg:bg-foreground',
         'lg:row-start-1 lg:col-start-2 lg:col-span-1 lg:gap-8 lg:m-0'
       ],

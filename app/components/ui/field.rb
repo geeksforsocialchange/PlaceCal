@@ -21,6 +21,7 @@ class Components::UI::Field < Components::Base
   # The id of the control the label is for, or of the group when group: is true.
   prop :id, String
   prop :hint, _Nilable(String), default: nil
+  prop :error, _Nilable(String), default: nil
   prop :variant, _Union(*VARIANTS.keys), default: :caps
   # true marks the label with an asterisk, false with "optional"; nil marks nothing.
   prop :required, _Nilable(_Boolean), default: nil
@@ -39,6 +40,7 @@ class Components::UI::Field < Components::Base
         render_marker
       end
       p(id: hint_id, class: 'text-sm text-tertiary mt-0 mb-1') { @hint } if @hint
+      p(id: error_id, class: 'text-sm font-bold text-secondary-strong mt-0 mb-1') { @error } if @error
       yield(self)
     end
   end
@@ -47,6 +49,9 @@ class Components::UI::Field < Components::Base
 
   # Pass to the control as aria-describedby; nil without a hint.
   def hint_id = ("#{@id}_hint" if @hint)
+
+  # Pass to the control as aria-describedby, with aria-invalid; nil without an error.
+  def error_id = ("#{@id}_error" if @error)
 
   private
 

@@ -9,7 +9,8 @@ class Components::UI::Select < Components::Base
   prop :include_blank, _Boolean, default: true
 
   def view_template
-    wrapper = { class: 'min-w-0 flex-1 relative', data: { controller: 'custom-select' } }
+    # A select narrower than this can't show its label or value, so a wrapping row moves it onto its own line.
+    wrapper = { class: 'min-w-40 flex-1 relative', data: { controller: 'custom-select' } }
     if labelled?
       UI::Field(label: @label_text, id: trigger_id, **wrapper) { render_controls }
     else

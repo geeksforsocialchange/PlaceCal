@@ -57,6 +57,14 @@ RSpec.describe "Public Joins (Contact Form)", type: :request do
       expect(response.body).to include("mailto:hello@example.org")
     end
 
+    it "lets browsers fill in the visitor's own details" do
+      get "/get-in-touch", headers: { "Host" => "lvh.me" }
+
+      page = Nokogiri::HTML(response.body)
+      expect(%w[name email job_title phone job_org].index_with { |field| page.at_css("#contact_request_#{field}")["autocomplete"] })
+        .to eq("name" => "name", "email" => "email", "job_title" => "organization-title", "phone" => "tel", "job_org" => "organization")
+    end
+
     it "shows no email box on a site with no contact address" do
       site = create(:site, contact_email: nil)
       get "/get-in-touch", headers: { "Host" => "#{site.slug}.lvh.me" }
@@ -153,6 +161,18 @@ RSpec.describe "Public Joins (Contact Form)", type: :request do
       it "queues no mail" do
         expect { submit_form(host: "lvh.me", params: invalid_params, perform: false) }
           .not_to have_enqueued_mail(JoinMailer, :join_us)
+      end
+
+      # A name of only spaces passes the browser's required check, so the server's message is the only one.
+      it "names each field in error and links its message to the input" do
+        submit_form(host: "lvh.me", params: { contact_request: valid_params[:contact_request].merge(name: "   ") }, perform: false)
+
+        page = Nokogiri::HTML(response.body)
+        input = page.at_css("#contact_request_name")
+        message = page.at_css("##{input['aria-describedby']}")
+        expect(input["aria-invalid"]).to eq("true")
+        expect(message.text).to eq(ContactRequest.new(name: "").tap(&:validate).errors.full_messages_for(:name).first)
+        expect(page.at_css("#contact_request_email")["aria-invalid"]).to be_nil
       end
     end
   end

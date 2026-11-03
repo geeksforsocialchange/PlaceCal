@@ -74,7 +74,7 @@ class Views::Directory::OurStory < Views::Base
     section(class: 'pb-10') do
       narrow do
         figure(class: 'border-l-6 border-primary m-0') do
-          blockquote(class: 'mx-0 mt-0 mb-3.5 pl-8 font-serif text-display leading-tight text-foreground text-balance') do
+          blockquote(class: 'mx-0 mt-0 mb-3.5 pl-8 font-serif text-display leading-tight text-foreground text-balance wrap-break-word') do
             t("#{T}.quote.text")
           end
           UI::Text(as: :figcaption, tone: :muted, measure: :prose, class: 'pl-8') { t("#{T}.quote.caption") }
