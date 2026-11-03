@@ -49,6 +49,21 @@ class Views::Base < Phlex::HTML
     h2(**part(:list_heading)) { text } if text.present?
   end
 
+  # For a turbo frame that reloads its own filters; results_status goes after the frame, since themes style it by its preceding sibling.
+  def results_frame_attributes(status_id, data: {})
+    { tabindex: '-1', class: 'focus:outline-none',
+      data: data.merge(controller: 'results-frame', results_frame_status_value: status_id,
+                       action: 'focusin->results-frame#remember turbo:frame-load->results-frame#loaded') }
+  end
+
+  def results_status(id)
+    div(id:, role: 'status', class: 'sr-only')
+  end
+
+  def results_summary(text)
+    span(hidden: true, data: { results_frame_target: 'summary' }) { text }
+  end
+
   if Rails.env.development?
     def before_template
       comment { self.class.name.to_s }
