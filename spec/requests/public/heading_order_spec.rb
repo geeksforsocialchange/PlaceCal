@@ -54,6 +54,33 @@ RSpec.describe "Site page heading order", type: :request do
     end
   end
 
+  describe "a partner page whose description has headings of its own" do
+    before do
+      partner.update!(description: "# Our hall\n\nText.\n\n#### Hiring it\n\nMore.", accessibility_info: "# Getting in\n\nStep-free.")
+      get partner_url(partner, host: "#{site.slug}.lvh.me")
+    end
+
+    it "fits them under the page's headings without skipping a level" do
+      expect(document.css("[data-scope='partner-details'][data-part='description'] h2, [data-scope='partner-details'][data-part='description'] h3").map(&:text)).to eq(["Our hall", "Hiring it"])
+      expect(document.css("h1").size).to eq(1)
+      expect(skipped_levels(headings)).to be_empty
+    end
+  end
+
+  describe "an event page whose description has headings of its own" do
+    let(:event) do
+      create(:event, address: create(:riverside_address, neighbourhood: ward), organiser: partner,
+                     description: "# Big news\n\n### Details")
+    end
+
+    before { get event_url(event, host: "#{site.slug}.lvh.me") }
+
+    it "keeps one h1 and never skips a level" do
+      expect(document.css("h1").size).to eq(1)
+      expect(skipped_levels(headings)).to be_empty
+    end
+  end
+
   describe "an event page" do
     let(:event) do
       create(:event, address: create(:riverside_address, neighbourhood: ward), organiser: partner)
