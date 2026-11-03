@@ -21,12 +21,15 @@ class Components::Shared::ContactForm < Components::Base
                 note: 'The note beside the submit button.'
               },
               variants: { field: %i[wide] },
-              tokens: %i[--color-background --color-foreground --color-surface --color-tertiary --color-rules --color-rules-dark --color-focus-ring
+              tokens: %i[--color-background --color-foreground --color-surface --color-tertiary --color-rules --color-rules-dark --color-control-border --color-focus-ring
                          --color-secondary-strong --color-home-background --color-home-background-3 --font-weight-regular --font-weight-semibold
                          --font-weight-bold --font-weight-extra-bold --text-sm --text-detail --text-base --leading-normal --radius-card --radius-field
                          --radius-check --radius-pill]
 
   prop :contact_request, ContactRequest, reader: :private
+  # WCAG 1.3.5: lets browsers and assistive tech fill in the visitor's own details.
+  AUTOCOMPLETE = { name: 'name', email: 'email', job_title: 'organization-title', phone: 'tel', job_org: 'organization' }.freeze
+
   prop :url, String, reader: :private
   # Site pages show their own contact address instead of PlaceCal's.
   prop :email_cta, _Boolean, default: true
@@ -64,10 +67,12 @@ class Components::Shared::ContactForm < Components::Base
 
   def render_field(form, attribute, type: 'text', required: false, rows: nil, wide: false)
     id = form.field_id(attribute)
-    UI::Field(label: ContactRequest.human_attribute_name(attribute), id:, variant: :strong, required:, label_attributes: part(:label),
-              **part(:field, variant: (:wide if wide))) do
+    error = contact_request.errors.full_messages_for(attribute).first
+    UI::Field(label: ContactRequest.human_attribute_name(attribute), id:, variant: :strong, required:, error:, label_attributes: part(:label),
+              **part(:field, variant: (:wide if wide))) do |field|
       UI::Input(variant: :roomy, type:, rows:, id:, name: form.field_name(attribute), value: contact_request.public_send(attribute),
-                required:, placeholder: t("contact_form.placeholders.#{attribute}"), **part(:control))
+                required:, autocomplete: AUTOCOMPLETE[attribute], aria: ({ invalid: 'true', describedby: field.error_id } if error),
+                placeholder: t("contact_form.placeholders.#{attribute}"), **part(:control))
     end
   end
 

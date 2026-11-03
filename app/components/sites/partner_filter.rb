@@ -13,7 +13,7 @@ class Components::Sites::PartnerFilter < Components::Base
                 search: 'The search box.'
               },
               variants: { filter: %i[category neighbourhood search] },
-              tokens: %i[--color-background --color-foreground --color-primary --color-rules-dark --font-sans]
+              tokens: %i[--color-background --color-foreground --color-primary --color-rules-dark --color-control-border --font-sans]
 
   include Phlex::Rails::Helpers::FormWith
 
@@ -109,7 +109,7 @@ class Components::Sites::PartnerFilter < Components::Base
   def render_search
     UI::Cluster(gap: :md, justify: :end, wrap: false, **part(:filter, variant: :search)) do
       input(
-        **part(:search, class: 'font-sans border-2 border-rules-dark bg-background py-1 px-2',
+        **part(:search, class: 'font-sans border-2 border-control-border bg-background py-1 px-2',
                         data: { action: 'change->partner-filter-component#submitForm ' \
                                         'input->partner-filter-component#submitIfCleared search->partner-filter-component#submitIfCleared' }),
         type: 'search', name: 'q', value: @selected_query,

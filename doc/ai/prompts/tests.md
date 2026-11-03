@@ -195,6 +195,12 @@ Always test:
 - Error scenarios
 - Authorization failures
 
+### Accessibility
+
+- A new public page or page type gets an `be_axe_clean` example in the matching `spec/system/*/accessibility_spec.rb`.
+- axe can't see keyboard behaviour, reflow or what a screen reader announces. For those, a system spec presses real keys (`send_keys(:tab)`, `:enter`, `:space`) and asserts `document.activeElement`, sets the window to 320px wide (`spec/system/reflow_spec.rb`), or reads the `role="status"` region.
+- Check a new accessibility spec fails with the fix switched off before trusting it.
+
 ## Performance Considerations
 
 1. Use transactional fixtures/database cleaner

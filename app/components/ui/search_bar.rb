@@ -4,7 +4,7 @@
 class Components::UI::SearchBar < Components::Base
   TONES = {
     light: { bar: 'bg-background shadow-hero-search', button: :primary },
-    panel: { bar: 'bg-home-background-3', button: :dark }
+    panel: { bar: 'bg-home-background-3 border-2 border-control-border', button: :dark }
   }.freeze
   # The input has no outline of its own, so the bar shows keyboard focus; current colour reads on both the dark hero and a cream page.
   FOCUS = 'input-focused:outline-solid input-focused:outline-2 input-focused:outline-offset-2 ' \
@@ -29,7 +29,7 @@ class Components::UI::SearchBar < Components::Base
          **@attributes.except(:class)) do
       div(class: 'px-2 text-tertiary') { raw(view_context.icon(:search, size: nil, css_class: 'size-4')) }
       input(type: 'text', name: @name, value: @value, placeholder: @placeholder, aria_label: @placeholder,
-            class: "flex-1 border-0 bg-transparent py-2 text-foreground outline-none placeholder:text-tertiary #{SIZES[@size][:input]}")
+            class: "min-w-0 flex-1 border-0 bg-transparent py-2 text-foreground outline-none placeholder:text-tertiary #{SIZES[@size][:input]}")
       UI::Button(variant: TONES[@tone][:button], size: SIZES[@size][:button], type: 'submit') { @button_label }
     end
   end

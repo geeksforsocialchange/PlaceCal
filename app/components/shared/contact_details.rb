@@ -63,7 +63,7 @@ class Components::Shared::ContactDetails < Components::Base
   def contact_row(icon_name, label, href, network: nil)
     UI::Link(href:, variant: :quiet, target: '_blank', rel: 'noopener', size: :sm, class: 'flex items-center gap-2.5') do
       raw(view_context.icon(icon_name, size: '4'))
-      span(class: 'truncate') do
+      span(class: 'min-w-0 wrap-anywhere') do
         plain label
         network_name(network) if network
       end

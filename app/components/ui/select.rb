@@ -9,7 +9,8 @@ class Components::UI::Select < Components::Base
   prop :include_blank, _Boolean, default: true
 
   def view_template
-    wrapper = { class: 'min-w-0 flex-1 relative', data: { controller: 'custom-select' } }
+    # A select narrower than this can't show its label or value, so a wrapping row moves it onto its own line.
+    wrapper = { class: 'min-w-40 flex-1 relative', data: { controller: 'custom-select' } }
     if labelled?
       UI::Field(label: @label_text, id: trigger_id, **wrapper) { render_controls }
     else
@@ -26,6 +27,8 @@ class Components::UI::Select < Components::Base
   end
 
   def labelled? = @label_text.present?
+
+  def panel_id = "#{trigger_id}_options"
 
   def trigger_id = "#{@name.parameterize(separator: '_')}_select"
 
@@ -48,7 +51,7 @@ class Components::UI::Select < Components::Base
       type: 'button',
       # Named by the label and the current value, so both are announced.
       id: (trigger_id if labelled?),
-      aria: { labelledby: ("#{trigger_id}_label #{trigger_id}_value" if labelled?) },
+      aria: { labelledby: ("#{trigger_id}_label #{trigger_id}_value" if labelled?), expanded: 'false', controls: panel_id },
       data: { custom_select_target: 'trigger', action: 'custom-select#toggle' },
       class: "#{UI::Input::BOX} flex items-center gap-2 cursor-pointer hover:border-foreground"
     ) do
@@ -62,6 +65,7 @@ class Components::UI::Select < Components::Base
 
   def render_panel
     div(
+      id: panel_id,
       data: { custom_select_target: 'panel' },
       style: 'display: none',
       class: 'absolute z-50 left-0 right-0 mt-1 bg-foreground rounded-sm overflow-hidden shadow-lg'
@@ -78,6 +82,7 @@ class Components::UI::Select < Components::Base
     is_selected = opt[:value].to_s == @selected.to_s
     button(
       type: 'button',
+      aria: { current: ('true' if is_selected) },
       data: {
         custom_select_target: 'option',
         action: 'custom-select#select',

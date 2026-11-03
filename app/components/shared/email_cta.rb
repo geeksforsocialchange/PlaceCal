@@ -28,7 +28,7 @@ class Components::Shared::EmailCta < Components::Base
         end
         UI::Button(variant: :dark_invert, size: :lg, href: "mailto:#{@address}") do
           icon(:mail, size: '4')
-          plain @address
+          span(class: 'min-w-0 wrap-anywhere') { @address }
         end
       end
     end

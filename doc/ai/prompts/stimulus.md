@@ -81,6 +81,12 @@ export default class extends Controller {
 }
 ```
 
+## Accessibility
+
+- A toggle that shows and hides something sets `aria-expanded` on its button, and `aria-controls` when the panel has an id.
+- When a Turbo Frame replaces the control that had focus (a filter inside its own results frame), put focus back and announce the result: `results-frame` does both, from a server-rendered summary into a `role="status"` region outside the frame.
+- Leaflet maps: name the container region from Rails, keep markers that only repeat on-page links out of the tab order, and take every label (zoom buttons, cluster counts) from data attributes.
+
 ## Turbo Frames
 
 ### Frame Navigation
