@@ -22,20 +22,17 @@ On every public page:
 - the links PlaceCal adds say where they go, even out of context, such as in a screen reader's list of links
 - the event and partner filters keep your place when the list updates, and tell screen readers how many results there are
 - menus and filters tell screen readers whether they are open or closed
+- maps work with a keyboard, and the map and each place on it are named for screen readers
 
 ## Known problems
 
-- **News images have no text description.** Pictures on news articles and the news listing have no alt text, so a screen reader cannot say what they show.
-- **The site name is read twice.** On local sites, screen readers read the site's name twice at the top of each page.
-- **Maps.** We have not yet tested the maps with a keyboard or a screen reader. Everything shown on a map is also listed on the page as text, with its address.
-- **Content written by partners.** Event and partner details come from the groups themselves, often imported straight from their own calendars. We can't always make sure that content has clear headings, descriptive link text or descriptions of its images.
-- **Sites with their own design.** Some local sites, such as The Trans Dimension, use a design of their own. Our automated accessibility checks don't cover those designs yet.
+- **Content written by partners.** Event and partner details come from the groups themselves, often imported straight from their own calendars. PlaceCal fits their headings into the page and hides images that have no description, but we can't make sure their link text and image descriptions are clear.
 
 ## How we test PlaceCal
 
-- Every change to PlaceCal is checked automatically with [axe](https://github.com/dequelabs/axe-core) on every type of public page, and local site pages are checked on each of our colour themes.
+- Every change to PlaceCal is checked automatically with [axe](https://github.com/dequelabs/axe-core) on every type of public page, and local site pages are checked on each of our colour themes and on The Trans Dimension's design.
 - Every colour theme is checked automatically for text contrast.
-- Automated tests use the keyboard alone to reach the skip link and to filter partners.
+- Automated tests use the keyboard alone to reach the skip link and to filter partners, and we have tested the maps with a keyboard.
 - We test with VoiceOver on macOS in Google Chrome.
 
 We have not yet tested with screen readers on Windows (such as NVDA or JAWS), on phones (VoiceOver on iOS or TalkBack on Android), or with VoiceOver in Safari. We haven't finished checking every page by hand against each WCAG 2.2 AA requirement, and we fix what we find as we go.
