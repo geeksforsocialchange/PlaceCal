@@ -26,6 +26,15 @@ class PagesController < ApplicationController
     )
   end
 
+  def accessibility
+    render Views::Directory::MarkdownPage.new(
+      slug: 'accessibility',
+      title: t('directory.pages.accessibility.title'),
+      breadcrumb_label: t('directory.pages.accessibility.breadcrumb'),
+      document_title: t('directory.pages.accessibility.document_title')
+    )
+  end
+
   def privacy
     # A theme may serve its own privacy copy at the conventional URL (#3368,
     # D14). Core routes /privacy, so the theme's `privacy` page is never

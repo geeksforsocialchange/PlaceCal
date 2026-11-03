@@ -156,6 +156,7 @@ Rails.application.routes.draw do
   get 'privacy', to: 'pages#privacy'
   get 'terms-of-use', to: 'pages#terms_of_use'
   get 'sustainability', to: 'pages#sustainability'
+  get 'accessibility', to: 'pages#accessibility'
 
   # ============================================================
   # Legacy & deprecated

@@ -104,6 +104,20 @@ RSpec.describe "Public Pages", type: :request do
     end
   end
 
+  describe "GET /accessibility" do
+    it "renders the statement from ACCESSIBILITY.md" do
+      get "/accessibility", headers: { "Host" => "lvh.me" }
+      expect(response).to be_successful
+      expect(response.body).to include(I18n.t("directory.pages.accessibility.title"))
+      expect(response.body).to include("<h2>Known problems</h2>")
+    end
+
+    it "is served on local sites too" do
+      get "/accessibility", headers: { "Host" => "#{site.slug}.lvh.me" }
+      expect(response).to be_successful
+    end
+  end
+
   describe "GET /our-story" do
     it "returns successful response" do
       get "/our-story", headers: { "Host" => "lvh.me" }

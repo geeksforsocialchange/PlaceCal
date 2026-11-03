@@ -116,7 +116,7 @@ class SitemapsController < ApplicationController
 
   # Skips /get-in-touch on sites with no Join link, and slugs the theme serves itself.
   def static_page_slugs
-    slugs = current_site ? %w[privacy get-in-touch] : %w[privacy terms-of-use sustainability get-in-touch]
+    slugs = current_site ? %w[privacy get-in-touch] : %w[privacy terms-of-use sustainability accessibility get-in-touch]
     slugs -= %w[get-in-touch] if current_site && !join_link?
     slugs - theme_page_slugs
   end
