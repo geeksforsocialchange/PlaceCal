@@ -28,6 +28,8 @@ class Components::UI::Select < Components::Base
 
   def labelled? = @label_text.present?
 
+  def panel_id = "#{trigger_id}_options"
+
   def trigger_id = "#{@name.parameterize(separator: '_')}_select"
 
   def render_hidden_select
@@ -49,7 +51,7 @@ class Components::UI::Select < Components::Base
       type: 'button',
       # Named by the label and the current value, so both are announced.
       id: (trigger_id if labelled?),
-      aria: { labelledby: ("#{trigger_id}_label #{trigger_id}_value" if labelled?) },
+      aria: { labelledby: ("#{trigger_id}_label #{trigger_id}_value" if labelled?), expanded: 'false', controls: panel_id },
       data: { custom_select_target: 'trigger', action: 'custom-select#toggle' },
       class: "#{UI::Input::BOX} flex items-center gap-2 cursor-pointer hover:border-foreground"
     ) do
@@ -63,6 +65,7 @@ class Components::UI::Select < Components::Base
 
   def render_panel
     div(
+      id: panel_id,
       data: { custom_select_target: 'panel' },
       style: 'display: none',
       class: 'absolute z-50 left-0 right-0 mt-1 bg-foreground rounded-sm overflow-hidden shadow-lg'
@@ -79,6 +82,7 @@ class Components::UI::Select < Components::Base
     is_selected = opt[:value].to_s == @selected.to_s
     button(
       type: 'button',
+      aria: { current: ('true' if is_selected) },
       data: {
         custom_select_target: 'option',
         action: 'custom-select#select',
