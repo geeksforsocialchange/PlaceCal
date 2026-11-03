@@ -1,15 +1,14 @@
 attributes:
-  - content
   - foreign_keys
-  - inheritance
-disconnected: true
+disconnected: false
+filename: doc/erd
 indirect: true
-inheritance: false
-orientation: vertical
+inheritance: true
+orientation: horizontal
 polymorphism: false
 sort: true
 warn: true
-exclude: ActiveRecord::InternalMetadata, ActiveRecord::SchemaMigration, Delayed::Backend::ActiveRecord::Job
+exclude: ActiveRecord::InternalMetadata, ActiveRecord::SchemaMigration, Delayed::Backend::ActiveRecord::Job, ArticlePartner, ArticleTag, NeighbourhoodsUser, PartnerTag, ServiceArea, SitesSupporter, SitesTag, TagsUser
 only: null
 only_recursion_depth: null
 prepend_primary: false

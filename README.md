@@ -134,7 +134,7 @@ Further documentation for PlaceCal is in the [PlaceCal Handbook](https://handboo
 
 The developer Procfile will load a `yard` language server, this is visible at `http://localhost:8808`.
 
-`bin/rails erd` writes a [Mermaid](https://mermaid.js.org/) entity-relationship diagram of the models to `erd.mmd` (configured in `.erdconfig`). It is also regenerated after every `db:migrate` in development. Open it in the [Mermaid Live Editor](https://mermaid.live/) or any editor with a Mermaid preview.
+The [database schema diagram](doc/erd.md) shows the models and how they relate. It is a [Mermaid](https://mermaid.js.org/) entity-relationship diagram, which GitHub renders in `doc/erd.md`; the raw diagram is in `doc/erd.mmd`. `bin/rails erd` writes both files (configured in `.erdconfig`), and in development they are regenerated after every `db:migrate` and `db:rollback`. Commit them with the migration that changes them.
 
 If you are working with the code and are completely lost you can also try the [GFSC discord server](http://discord.gfsc.studio) where you can prod a human for answers.
 
