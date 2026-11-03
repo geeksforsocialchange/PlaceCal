@@ -617,8 +617,11 @@ en:
 
   shared:
     resource_not_found:
-      title: "Not found"
+      title: "404: Not Found"
       body: "The page you were looking for does not exist"
+      home: "Home"
+      events: "Events"
+      partners: "Partners"
 
   # ===========================================================================
   # EVENT EXPORTS (shared by local sites and the directory)

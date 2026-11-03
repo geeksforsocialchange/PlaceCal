@@ -1053,8 +1053,10 @@ RSpec.describe "Public Partners", type: :request do
     end
   end
 
-  it "doesn't route the old partner embed URLs" do
-    expect { get "http://#{site.slug}.lvh.me/partners/anything/embed" }.to raise_error(ActionController::RoutingError)
-    expect { get "http://#{site.slug}.lvh.me/places/anything/embed" }.to raise_error(ActionController::RoutingError)
+  it "404s the old partner embed URLs" do
+    get "http://#{site.slug}.lvh.me/partners/anything/embed"
+    expect(response).to have_http_status(:not_found)
+    get "http://#{site.slug}.lvh.me/places/anything/embed"
+    expect(response).to have_http_status(:not_found)
   end
 end

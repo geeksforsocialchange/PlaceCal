@@ -11,10 +11,9 @@
 # name twice.
 Rails.application.routes.append do
   # Only a slug some registered theme actually serves is recognised
-  # (PlaceCal::Extensions::ThemePage). Anything else stays a routing 404
-  # rather than entering PagesController and running the whole public filter
-  # chain to render a 404 page. Which theme serves the slug is still the
-  # controller's business: the router cannot know the site.
+  # (PlaceCal::Extensions::ThemePage), so other paths reach the not-found
+  # route below instead of PagesController. Which theme serves the slug is
+  # still the controller's business: the router cannot know the site.
   constraints(PlaceCal::Extensions::ThemePage) do
     # Bare paths only: `format: false` drops the optional .:format segment, so
     # /about.json and /about.html do not route at all rather than serving the
@@ -23,4 +22,7 @@ Rails.application.routes.append do
                   format: false,
                   constraints: { slug: /[a-z0-9-]+/ }
   end
+
+  # Paths with a dot (favicon.ico, wp-login.php) keep Rails' static 404, so file probes stay cheap.
+  get '*path', to: 'not_found#show', format: false, constraints: { path: /[^.]+/ }
 end
