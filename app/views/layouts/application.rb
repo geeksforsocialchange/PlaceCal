@@ -12,7 +12,13 @@ class Views::Layouts::Application < Phlex::HTML
   include Components
   include PlaceCal::Theming::Hooks
 
-  theme_scope :layout, parts: { page: 'The page column holding the header, the main content and the footer.' }
+  theme_scope :layout, parts: {
+    skip_link: 'The first link on the page, hidden until focused, that jumps to the main content.',
+    page: 'The page column holding the header, the main content and the footer.',
+    main: 'The main element holding the flash messages and the page content.'
+  }
+
+  MAIN_ID = 'main-content'
 
   # I18n translate helper, theme-aware (PlaceCal::ThemeTranslation), so a theme
   # can override page metadata strings for its own sites (#3368 D19).
@@ -42,6 +48,11 @@ class Views::Layouts::Application < Phlex::HTML
       end
 
       body do
+        a(href: "##{MAIN_ID}", **part(:skip_link, class: [
+                                        'sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50',
+                                        'focus:rounded-card focus:bg-foreground focus:px-4 focus:py-2',
+                                        'focus:font-bold focus:text-background'
+                                      ])) { t('navigation.skip_to_content') }
         # Outside the page column so it spans the viewport.
         Join::WipBanner() if join_site?
         div(**part(:page, class: [
@@ -63,7 +74,8 @@ class Views::Layouts::Application < Phlex::HTML
                                region_tags: view_context.region_tags, selected_region: view_context.current_region)
           end
           # FIXME: move main elem into component to save excess divs
-          main do
+          # tabindex lets Safari and Chrome move focus here from the skip link; it needs no ring of its own.
+          main(id: MAIN_ID, tabindex: '-1', **part(:main, class: 'focus:outline-none')) do
             Shared::Flash()
             yield
           end

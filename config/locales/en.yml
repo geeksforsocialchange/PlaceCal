@@ -122,6 +122,7 @@ en:
   # contribute their own labels.
   navigation:
     menu: "Menu"
+    skip_to_content: "Skip to main content"
     directory:
       home: "Home"
       partners: "Partners"
