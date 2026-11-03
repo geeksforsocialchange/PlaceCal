@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-	static values = { markers: Array, styleUrl: String };
+	static values = { markers: Array, styleUrl: String, labels: Object };
 
 	connect() {
 		if ("requestIdleCallback" in window) {
@@ -40,13 +40,25 @@ export default class extends Controller {
 			zoomSnap: 0.1,
 		});
 
-		L.control.zoom({ position: "topright" }).addTo(this.map);
+		L.control
+			.zoom({
+				position: "topright",
+				zoomInTitle: this.labelsValue.zoomIn,
+				zoomOutTitle: this.labelsValue.zoomOut,
+			})
+			.addTo(this.map);
+		const plural = new Intl.PluralRules(document.documentElement.lang);
 
 		L.maplibreGL({
 			style: this.styleUrlValue,
 			attribution:
 				'&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-		}).addTo(this.map);
+		})
+			// MapLibre names its canvas "Map" too; the map's own container is the one landmark.
+			.on("add", (e) =>
+				e.target.getContainer().setAttribute("aria-hidden", "true"),
+			)
+			.addTo(this.map);
 
 		const cluster = L.markerClusterGroup({
 			showCoverageOnHover: false,
@@ -56,8 +68,13 @@ export default class extends Controller {
 				const count = c.getChildCount();
 				const size = count > 50 ? "lg" : count > 10 ? "md" : "sm";
 				const dims = { sm: 36, md: 44, lg: 52 }[size];
+				const label = (
+					plural.select(count) === "one"
+						? this.labelsValue.clusterOne
+						: this.labelsValue.clusterOther
+				).replace("%{count}", count);
 				return L.divIcon({
-					html: `<span>${count}</span>`,
+					html: `<span aria-hidden="true">${count}</span><span class="sr-only">${label}</span>`,
 					className: `cluster-marker cluster-${size}`,
 					iconSize: L.point(dims, dims),
 				});
@@ -74,7 +91,8 @@ export default class extends Controller {
 			if (!m.lat || !m.lon) continue;
 			const marker = L.marker([m.lat, m.lon], {
 				icon,
-				title: m.name || "Partner location",
+				title: m.name ?? "",
+				keyboard: !!m.name,
 			});
 			if (m.name) {
 				marker.bindPopup(m.url ? `<a href="${m.url}">${m.name}</a>` : m.name, {

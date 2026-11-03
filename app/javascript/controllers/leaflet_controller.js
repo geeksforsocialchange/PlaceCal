@@ -38,14 +38,25 @@ export default class extends Controller {
 	}
 
 	createMap() {
-		this.map = L.map(this.element);
+		this.map = L.map(this.element, { zoomControl: false });
 		this.map.scrollWheelZoom.disable();
+		L.control
+			.zoom({
+				zoomInTitle: this.argsValue.zoomIn,
+				zoomOutTitle: this.argsValue.zoomOut,
+			})
+			.addTo(this.map);
 
 		L.maplibreGL({
 			style: this.argsValue.styleUrl,
 			attribution:
 				'&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-		}).addTo(this.map);
+		})
+			// MapLibre names its canvas "Map" too; the map's own container is the one landmark.
+			.on("add", (e) =>
+				e.target.getContainer().setAttribute("aria-hidden", "true"),
+			)
+			.addTo(this.map);
 
 		this.map.invalidateSize(true);
 
@@ -66,8 +77,14 @@ export default class extends Controller {
 
 		this.map.setView(this.argsValue.center, this.argsValue.zoom);
 
+		// A map of several places repeats links listed on the page, so its markers stay out of the tab order.
+		const single = this.argsValue.markers.length === 1;
 		const markers = this.argsValue.markers.map((m) => {
-			const mapMarker = L.marker(m.position, { icon: mapIcon });
+			const mapMarker = L.marker(m.position, {
+				icon: mapIcon,
+				alt: m.anchor ? (m.label ?? "") : "",
+				keyboard: single && !!m.anchor,
+			});
 			mapMarker.addTo(this.map);
 			if (m.anchor)
 				mapMarker.bindPopup(m.anchor, { permanent: true, closeButton: false });

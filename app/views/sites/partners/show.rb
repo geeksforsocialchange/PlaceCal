@@ -119,7 +119,7 @@ class Views::Sites::Partners::Show < Views::Base
     return if partner.description_html.blank?
 
     div(**part(:description, class: 'markdown-content')) do
-      raw safe(partner.description_html.to_s)
+      raw safe(OrganiserHtml.call(partner.description_html, under: 1))
     end
   end
 
@@ -240,7 +240,7 @@ class Views::Sites::Partners::Show < Views::Base
       UI::RuledHeading(caps: true, rule: :full, size: :lg, spacing: :section, id: 'accessibility-info') { t('partners.show.accessibility_heading') }
       details(class: 'group markdown-content') do
         summary(class: 'cursor-pointer group-open:mb-3') { t('partners.show.accessibility_summary') }
-        raw safe(partner.accessibility_info_html.to_s)
+        raw safe(OrganiserHtml.call(partner.accessibility_info_html, under: 2))
       end
     end
   end
@@ -252,7 +252,7 @@ class Views::Sites::Partners::Show < Views::Base
       h2(class: 'mb-2') { link_to place.name, partner_path(place), class: 'inline-block pb-2 border-b-3 border-secondary no-underline' }
       div(class: 'grid gap-x-4.5 lg:grid-cols-2') do
         div do
-          raw safe(place.summary_html.to_s) if place.summary_html.present?
+          raw safe(OrganiserHtml.call(place.summary_html, under: 2)) if place.summary_html.present?
         end
         div do
           if place.address

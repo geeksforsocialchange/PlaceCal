@@ -58,7 +58,7 @@ class Views::Sites::Default < Views::Base
         UI::RuledHeading(caps: true, tone: :background, size: :sm) { t('sites.home.about_us') }
       end
       div(class: 'container-narrow') do
-        div(class: 'markdown-content first-p:font-serif first-p:text-xl') { raw safe(site.description_html.to_s) }
+        div(class: 'markdown-content first-p:font-serif first-p:text-xl') { raw safe(OrganiserHtml.call(site.description_html, under: 2)) }
         Sites::Profile(user: site.site_admin) if site.site_admin.present?
       end
     end

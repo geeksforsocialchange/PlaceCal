@@ -27,7 +27,7 @@ RSpec.describe "Public site logo", type: :request do
     page = Nokogiri::HTML5(response.body)
     expect(page.css("#probe, #probe-script")).to be_empty
     expect(page.at_css("[data-scope='navigation'][data-part='branding'] img")["src"]).to eq("/uploads/site/logo/#{site.id}/logo.svg")
-    expect(page.at_css("[data-scope='navigation'][data-part='branding'] img")["alt"]).to eq(site.name)
+    expect(page.at_css("[data-scope='navigation'][data-part='branding'] img")["alt"]).to eq("")
   end
 
   it "serves the uploaded SVG with headers that stop it running script when opened directly" do

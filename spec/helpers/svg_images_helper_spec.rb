@@ -16,6 +16,13 @@ RSpec.describe SvgImagesHelper, type: :helper do
     expect(helper.svg_image("home/icons/logo-dark", alt_text: "A custom title")).to include(%r{<title[^>]*>A custom title</title>})
   end
 
+  it "hides an svg with no alt text from assistive technology" do
+    svg = helper.svg_image("home/icons/logo-dark")
+
+    expect(svg).to include('aria-hidden="true"')
+    expect(svg).not_to include("role=\"img\"")
+  end
+
   it "renders a custom class" do
     expect(helper.svg_image("home/icons/logo-dark", css_class: "custom-class")).to include('class="custom-class"')
   end

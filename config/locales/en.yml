@@ -76,6 +76,17 @@ en:
       answer_no: "No"
 
   components:
+    # Read by screen readers; the zoom button names replace Leaflet's built-in English ones.
+    map:
+      label: "Map"
+      place: "Map of %{name}"
+      places: "Map of the places listed on this page"
+      directory: "Map of PlaceCal partners"
+      zoom_in: "Zoom in"
+      zoom_out: "Zoom out"
+      cluster:
+        one: "1 partner, zoom in"
+        other: "%{count} partners, zoom in"
     meta:
       permalink: "Permalink"
     timeline:
