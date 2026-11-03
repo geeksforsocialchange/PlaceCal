@@ -188,6 +188,8 @@ RSpec.describe "GraphQL Events", type: :request do
     end
 
     it "returns at most the documented number of events, soonest first" do
+      # Load the schema first, or its field description is built with the stubbed limit
+      PlaceCalSchema.query
       stub_const("Types::EventQueries::EVENTS_BY_FILTER_LIMIT", 2)
       soonest = create(:event, organiser: partner, dtstart: 1.hour.from_now, address:)
 
