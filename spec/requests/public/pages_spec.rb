@@ -95,6 +95,15 @@ RSpec.describe "Public Pages", type: :request do
     end
   end
 
+  describe "GET /sustainability" do
+    it "renders the page with its comparison tables" do
+      get "/sustainability", headers: { "Host" => "lvh.me" }
+      expect(response).to be_successful
+      expect(response.body).to include(I18n.t("directory.pages.sustainability.title").gsub("'", "&#39;"))
+      expect(response.body).to include("<table>", "<th>Platform</th>")
+    end
+  end
+
   describe "GET /our-story" do
     it "returns successful response" do
       get "/our-story", headers: { "Host" => "lvh.me" }

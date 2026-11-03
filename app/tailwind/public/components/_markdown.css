@@ -22,6 +22,17 @@
 		& li {
 			@apply pl-1;
 		}
+		/* Block so a wide table scrolls inside the column instead of the page */
+		& table {
+			@apply block overflow-x-auto border-collapse my-6;
+		}
+		& th,
+		& td {
+			@apply text-left align-top px-3 py-2 border-b-2 border-rules;
+		}
+		& th {
+			@apply font-bold;
+		}
 	}
 }
 /* In base so a theme's own link rules can override it */

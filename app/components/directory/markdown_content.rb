@@ -3,6 +3,7 @@
 # A document from app/content/*.md, in the site's prose styles.
 class Components::Directory::MarkdownContent < Components::Directory::Base
   CONTENT_DIR = Rails.root.join('app/content')
+  ALLOWED_TAGS = (Rails::HTML5::SafeListSanitizer.allowed_tags + %w[table thead tbody tr th td]).freeze
 
   prop :slug, String
 
@@ -15,6 +16,6 @@ class Components::Directory::MarkdownContent < Components::Directory::Base
   def rendered_html
     markdown = CONTENT_DIR.join("#{@slug}.md").read
     html = Kramdown::Document.new(markdown).to_html
-    Rails::HTML5::SafeListSanitizer.new.sanitize(html)
+    Rails::HTML5::SafeListSanitizer.new.sanitize(html, tags: ALLOWED_TAGS)
   end
 end

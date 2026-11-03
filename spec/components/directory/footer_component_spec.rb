@@ -19,6 +19,13 @@ RSpec.describe Components::Directory::Footer, type: :component do
     expect(link[:href]).to eq("http://discord.gfsc.studio/")
   end
 
+  it "links to the sustainability page" do
+    render_inline(described_class.new)
+
+    link = page.find("a", text: I18n.t("directory.footer.sustainability"))
+    expect(link[:href]).to eq("/sustainability")
+  end
+
   context "when APP_VERSION is set" do
     before do
       stub_const("ENV", ENV.to_hash.merge("APP_VERSION" => "v0.9.1"))
