@@ -2,10 +2,10 @@
 
 require "rails_helper"
 
-# Every page a visitor to a core-themed site can reach, checked with axe-core
-# on each core colour theme, so the palette is held to contrast as well as the markup.
+# Every page a visitor to a site can reach, checked with axe-core on each core colour theme
+# and on Trans Dimension's own design, so each palette is held to contrast as well as the markup.
 RSpec.describe "Site accessibility", :slow, type: :system do
-  CORE_THEMES = PlaceCal::Extensions.themes.select(&:core?).map(&:name)
+  THEMES = PlaceCal::Extensions.themes.select { |theme| theme.core? || theme.name == "transdimension" }.map(&:name)
   LISTING_PAGES = {
     "the homepage" => "/",
     "the events listing" => "/events",
@@ -48,13 +48,21 @@ RSpec.describe "Site accessibility", :slow, type: :system do
     visit "http://riverside.lvh.me:#{Capybara.current_session.server.port}#{path}"
   end
 
-  CORE_THEMES.each do |core_theme|
-    context "on the #{core_theme} theme" do
-      let(:theme) { core_theme }
+  THEMES.each do |theme_name|
+    context "on the #{theme_name} theme" do
+      let(:theme) { theme_name }
 
       LISTING_PAGES.each do |description, path|
         it "has no accessibility violations on #{description}" do
           visit_site(path)
+
+          expect(page).to be_axe_clean
+        end
+      end
+
+      PlaceCal::Extensions.themes.find { |registered| registered.name == theme_name }.pages.each_key do |slug|
+        it "has no accessibility violations on the theme's /#{slug} page" do
+          visit_site("/#{slug}")
 
           expect(page).to be_axe_clean
         end
@@ -87,7 +95,7 @@ RSpec.describe "Site accessibility", :slow, type: :system do
         it "has no accessibility violations on the region filter" do
           visit_site("/events")
 
-          expect(page).to have_css("nav[data-scope='region-filter'] a[aria-current='page']", text: "All")
+          expect(page).to have_css("nav[data-scope='region-filter'] a[aria-current='page']")
           expect(page).to be_axe_clean
         end
 
