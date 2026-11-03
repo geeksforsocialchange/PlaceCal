@@ -31,8 +31,6 @@ That means, for example:
 
 Every partner on PlaceCal can describe the accessibility of their venue and events: level access or how many steps, toilets, transport, quiet spaces, and anything else that helps you decide whether an event will work for you. The [PlaceCal handbook](https://handbook.placecal.org/how-to/configure-a-partner/) asks partners to be as detailed as they can.
 
-We wrote [The Trans Dimension Guide to Inclusive Events](https://gfsc.studio/project/guide-to-inclusive-events/) with Gendered Intelligence and the Greater Manchester Coalition of Disabled People, so that groups can put on events that include trans and disabled people, and write a full access statement for their venue. [The Trans Dimension](https://transdimension.uk/about), a PlaceCal site run by and for trans people, asks every venue it lists for this information.
-
 ## Content written by partners
 
 Event and partner details come from the groups themselves, often imported straight from their own calendars. That content isn't ours, so it's outside our WCAG claim: in WCAG's terms, this is [partial conformance because of third-party content](https://www.w3.org/TR/WCAG22/#conformance-partial). PlaceCal fits their headings into the page and hides images that have no description, but we can't make sure their link text and image descriptions are clear.
