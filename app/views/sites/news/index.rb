@@ -67,7 +67,12 @@ class Views::Sites::News::Index < Views::Base
           end
         end
 
-        p(**part(:actions)) { UI::Button(variant: :outline, href: news_path(article), class: 'mt-4') { t('news.index.read_more') } }
+        p(**part(:actions)) do
+          UI::Button(variant: :outline, href: news_path(article), class: 'mt-4') do
+            plain t('news.index.read_more')
+            span(class: 'sr-only') { " #{t('news.index.read_more_about', title: article.title)}" }
+          end
+        end
       end
     end
   end

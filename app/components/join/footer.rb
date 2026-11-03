@@ -18,7 +18,7 @@ class Components::Join::Footer < Components::Join::Base
       ]],
       [t('join.footer.about'), [
         [t('join.footer.our_story'), join_our_story_path],
-        [t('join.footer.gfsc'), 'https://gfsc.studio'],
+        [t('join.footer.gfsc'), 'https://gfsc.community'],
         [t('contact.email'), "mailto:#{t('contact.email')}"]
       ]]
     ]

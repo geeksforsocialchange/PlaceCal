@@ -491,6 +491,8 @@ en:
     contact:
       get_in_touch: "Get in touch"
       no_contact: "No contact information — let us know!"
+      # Screen-reader-only end of a social handle link; the icon beside it shows the network visually.
+      on_network: "on %{network}"
       networks:
         facebook: "Facebook"
         twitter: "Twitter"
@@ -595,6 +597,8 @@ en:
     index:
       page_title: "News from your area"
       read_more: "Find out more"
+      # Screen-reader-only end of the read_more link, so each card's link names its article.
+      read_more_about: "about %{title}"
       newer: "Recent news"
       older: "Older news"
       # strftime pattern for the article card date; themes may override

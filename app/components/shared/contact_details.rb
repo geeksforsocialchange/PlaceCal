@@ -55,16 +55,23 @@ class Components::Shared::ContactDetails < Components::Base
       contact_row(:contact_email, @email, "mailto:#{@email}") if @email.present?
       contact_row(:contact_website, strip_url(@url), @url) if @url.present?
       contact_row(:contact_facebook, 'Facebook', "https://facebook.com/#{@partner.facebook_link}") if @partner.facebook_link.present?
-      contact_row(:contact_twitter, "@#{@partner.twitter_handle}", "https://twitter.com/#{@partner.twitter_handle}") if @partner.twitter_handle.present?
-      contact_row(:contact_instagram, "@#{@partner.instagram_handle}", "https://www.instagram.com/#{@partner.instagram_handle}/") if @partner.instagram_handle.present?
+      contact_row(:contact_twitter, "@#{@partner.twitter_handle}", "https://twitter.com/#{@partner.twitter_handle}", network: :twitter) if @partner.twitter_handle.present?
+      contact_row(:contact_instagram, "@#{@partner.instagram_handle}", "https://www.instagram.com/#{@partner.instagram_handle}/", network: :instagram) if @partner.instagram_handle.present?
     end
   end
 
-  def contact_row(icon_name, label, href)
+  def contact_row(icon_name, label, href, network: nil)
     UI::Link(href:, variant: :quiet, target: '_blank', rel: 'noopener', size: :sm, class: 'flex items-center gap-2.5') do
       raw(view_context.icon(icon_name, size: '4'))
-      span(class: 'truncate') { label }
+      span(class: 'truncate') do
+        plain label
+        network_name(network) if network
+      end
     end
+  end
+
+  def network_name(network)
+    span(class: 'sr-only') { " #{t('directory.contact.on_network', network: t("directory.contact.networks.#{network}"))}" }
   end
 
   # ── Local-site variant ──
@@ -136,7 +143,10 @@ class Components::Shared::ContactDetails < Components::Base
       if @social_labels == :network
         link_to(t("directory.contact.networks.#{network}"), href, title: handle, target: '_blank', rel: 'noopener')
       else
-        link_to(handle, href, target: '_blank', rel: 'noopener')
+        a(href:, target: '_blank', rel: 'noopener') do
+          plain handle
+          network_name(network)
+        end
       end
     end
   end
