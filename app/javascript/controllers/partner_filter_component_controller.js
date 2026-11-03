@@ -58,6 +58,9 @@ export default class extends Controller {
 		if (!dropdown) return;
 		const closed = hidden ?? dropdown.dataset.state !== "closed";
 		dropdown.dataset.state = closed ? "closed" : "open";
+		this.element
+			.querySelector(`[aria-controls="${dropdown.id}"]`)
+			?.setAttribute("aria-expanded", String(!closed));
 	}
 
 	updateLabels() {

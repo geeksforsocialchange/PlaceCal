@@ -42,7 +42,8 @@ class Components::Sites::Filter < Components::Base
 
   def render_toggle
     div(**part(:toggle, class: TOGGLE)) do
-      button(**part(:toggle_button, state: (:active if option_selected?), type: 'button', class: TOGGLE_BUTTON, data: { action: toggle_action_value })) do
+      button(**part(:toggle_button, state: (:active if option_selected?), type: 'button', class: TOGGLE_BUTTON,
+                                    aria: { expanded: 'false', controls: dropdown_id }, data: { action: toggle_action_value })) do
         raw(view_context.icon(:triangle_down, size: nil, css_class: TOGGLE_ICON))
         span(**part(:toggle_label, class: 'mr-1')) { @label }
         span(**part(:toggle_value, class: 'border-b-2 border-rules-dark', data: { "#{@controller}-target": "#{@name}Text" })) do
@@ -53,7 +54,7 @@ class Components::Sites::Filter < Components::Base
   end
 
   def render_dropdown
-    div(**part(:dropdown, state: :closed, class: DROPDOWN, data: { "#{@controller}-target": "#{@name}Dropdown" })) do
+    div(**part(:dropdown, state: :closed, id: dropdown_id, class: DROPDOWN, data: { "#{@controller}-target": "#{@name}Dropdown" })) do
       render_filter_options
       render_reset_button
     end
@@ -112,6 +113,10 @@ class Components::Sites::Filter < Components::Base
 
   def toggle_value
     filter_active? ? selected_item_name : t('filters.show_all')
+  end
+
+  def dropdown_id
+    "#{@name}-filter-options"
   end
 
   def toggle_action_value
