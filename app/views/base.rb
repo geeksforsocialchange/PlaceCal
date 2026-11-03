@@ -49,7 +49,7 @@ class Views::Base < Phlex::HTML
     h2(**part(:list_heading)) { text } if text.present?
   end
 
-  # For a turbo frame that reloads its own filters; status_id names the live region results_status renders outside it.
+  # For a turbo frame that reloads its own filters; results_status goes after the frame, since themes style it by its preceding sibling.
   def results_frame_attributes(status_id, data: {})
     { tabindex: '-1', class: 'focus:outline-none',
       data: data.merge(controller: 'results-frame', results_frame_status_value: status_id,

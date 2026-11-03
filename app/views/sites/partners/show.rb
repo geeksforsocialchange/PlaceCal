@@ -271,7 +271,6 @@ class Views::Sites::Partners::Show < Views::Base
   end
 
   def render_events_section
-    results_status(EVENTS_STATUS_ID)
     turbo_frame_tag 'events-browser', **part(:events_browser, **results_frame_attributes(EVENTS_STATUS_ID, data: { turbo_action: 'advance' })) do
       results_summary(events_total_count&.positive? ? events_count_text : (no_event_message || empty_period_message))
       render_events_header if events_total_count&.positive?
@@ -292,6 +291,7 @@ class Views::Sites::Partners::Show < Views::Base
       end
       render_events_actions
     end
+    results_status(EVENTS_STATUS_ID)
   end
 
   # Closes the event browser with the next page of days, inside the frame it pages.

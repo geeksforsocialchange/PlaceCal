@@ -29,7 +29,6 @@ class Views::Sites::Partners::Index < Views::Base
 
     Shared::Hero(t('partners.index.title'), site.tagline, standfirst: t('partners.index.standfirst'),
                                                           standfirst_detail: t('partners.index.standfirst_detail'))
-    results_status(STATUS_ID)
     turbo_frame_tag 'partner_previews', **part(:root, **results_frame_attributes(STATUS_ID, data: { turbo_action: 'advance' })) do
       results_summary(t('partners.index.results_summary', count: partners.load.size))
       div(**part(:content, class: 'container-public mb-32')) do
@@ -63,5 +62,6 @@ class Views::Sites::Partners::Index < Views::Base
         Shared::Map(points: map)
       end
     end
+    results_status(STATUS_ID)
   end
 end

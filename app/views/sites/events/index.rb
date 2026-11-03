@@ -35,13 +35,13 @@ class Views::Sites::Events::Index < Views::Base
 
     div(**part(:root, class: 'container-public mb-32')) do
       list_heading('events.index.list_heading')
-      results_status(STATUS_ID)
       turbo_frame_tag 'events-browser', **part(:browser, **results_frame_attributes(STATUS_ID, data: { turbo_action: 'advance' })) do
         results_summary(t('events.index.results_summary', count: events.values.sum(&:size)))
         render_paginator
         hr
         render_event_list
       end
+      results_status(STATUS_ID)
     end
 
     render_meta_section
