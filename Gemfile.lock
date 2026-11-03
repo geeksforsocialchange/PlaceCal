@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/geeksforsocialchange/placecal-theme-mossley.git
-  revision: 263f67bd950497970b49f4999578a1bea4e81053
-  tag: v0.1.10
+  revision: 328783a6b312996de973b224bbf8095fb20b597c
+  tag: v0.1.11
   specs:
-    placecal-theme-mossley (0.1.10)
+    placecal-theme-mossley (0.1.11)
       rails (>= 8.0)
 
 GIT
