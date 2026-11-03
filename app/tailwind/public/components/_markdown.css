@@ -1,16 +1,25 @@
-/* Rendered markdown: app/content documents (privacy, terms, the MCP page) and theme content pages. Layered, so a theme's unlayered rules and utilities beat it */
+/* Rendered markdown: app/content documents, theme content pages, and the descriptions, accessibility info and news bodies organisers write. Layered, so a theme's unlayered rules and utilities beat it */
 @layer components {
 	.markdown-content {
+		/* A long URL or unbroken word would otherwise widen the page on phones */
+		@apply wrap-anywhere;
+
 		& > :first-child {
 			@apply mt-0;
 		}
-		& h2 {
+		& :is(h1, h2) {
 			@apply text-2xl font-bold mt-8 mb-3;
 		}
 		& h3 {
 			@apply text-xl font-bold mt-6 mb-2;
 		}
-		& p {
+		& h4 {
+			@apply text-lg font-bold mt-6 mb-2;
+		}
+		& :is(h5, h6) {
+			@apply text-base font-bold mt-4 mb-2;
+		}
+		& :is(p, blockquote, dl) {
 			@apply my-4;
 		}
 		& ul {
@@ -21,6 +30,24 @@
 		}
 		& li {
 			@apply pl-1;
+		}
+		& li > :is(ul, ol) {
+			@apply my-1;
+		}
+		& blockquote {
+			@apply border-l-4 border-rules pl-4 italic;
+		}
+		& hr {
+			@apply border-rules my-6;
+		}
+		& dt {
+			@apply font-bold;
+		}
+		& dd {
+			@apply pl-6;
+		}
+		& .footnotes {
+			@apply text-sm mt-8;
 		}
 	}
 }

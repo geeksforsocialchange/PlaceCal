@@ -57,8 +57,8 @@ class Views::Sites::Default < Views::Base
       div(class: 'bg-rules py-2') do
         UI::RuledHeading(caps: true, tone: :background, size: :sm) { t('sites.home.about_us') }
       end
-      div(class: 'container-narrow first-p:mt-0 first-p:font-serif first-p:text-xl') do
-        raw safe(site.description_html.to_s)
+      div(class: 'container-narrow') do
+        div(class: 'markdown-content first-p:font-serif first-p:text-xl') { raw safe(site.description_html.to_s) }
         Sites::Profile(user: site.site_admin) if site.site_admin.present?
       end
     end
