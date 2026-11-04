@@ -10,7 +10,7 @@ class Views::Admin::Tags::FormTabPartners < Views::Admin::Base
     tag_partners = tag_record.partners.order(:name)
 
     div(class: 'max-w-4xl') do
-      h3(class: 'text-lg font-bold mb-1 flex items-center gap-2') do
+      h2(class: 'text-lg font-bold mb-1 flex items-center gap-2') do
         raw icon(:partner, size: '5')
         plain t('admin.tags.sections.tagged_partners')
         span(class: 'inline-flex items-center justify-center h-6 px-2 text-xs rounded-full font-bold bg-emerald-100 text-emerald-700') do
@@ -59,7 +59,7 @@ class Views::Admin::Tags::FormTabPartners < Views::Admin::Base
   def render_partner_row(partner)
     tr do
       td do
-        link_to(edit_admin_partner_path(partner), class: 'link link-hover text-placecal-orange font-medium') do
+        link_to(edit_admin_partner_path(partner), class: 'link link-hover text-placecal-orange-dark font-medium') do
           plain partner.name
         end
         span(class: 'badge badge-error badge-xs ml-1') { t('admin.labels.hidden') } if partner.hidden

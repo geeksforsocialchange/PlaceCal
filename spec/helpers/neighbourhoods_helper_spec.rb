@@ -5,33 +5,33 @@ require "rails_helper"
 RSpec.describe NeighbourhoodsHelper, type: :helper do
   describe "#neighbourhood_colour" do
     it "returns correct colour for level 5 (country)" do
-      expect(helper.neighbourhood_colour(5)).to eq("bg-rose-100 text-rose-700")
+      expect(helper.neighbourhood_colour(5)).to eq("bg-rose-100 text-rose-800")
     end
 
     it "returns correct colour for level 4 (region)" do
-      expect(helper.neighbourhood_colour(4)).to eq("bg-orange-100 text-orange-700")
+      expect(helper.neighbourhood_colour(4)).to eq("bg-orange-100 text-orange-800")
     end
 
     it "returns correct colour for level 3 (county)" do
-      expect(helper.neighbourhood_colour(3)).to eq("bg-emerald-100 text-emerald-700")
+      expect(helper.neighbourhood_colour(3)).to eq("bg-emerald-100 text-emerald-800")
     end
 
     it "returns correct colour for level 2 (district)" do
-      expect(helper.neighbourhood_colour(2)).to eq("bg-sky-100 text-sky-700")
+      expect(helper.neighbourhood_colour(2)).to eq("bg-sky-100 text-sky-800")
     end
 
     it "returns correct colour for level 1 (ward)" do
-      expect(helper.neighbourhood_colour(1)).to eq("bg-violet-100 text-violet-700")
+      expect(helper.neighbourhood_colour(1)).to eq("bg-violet-100 text-violet-800")
     end
 
     it "returns default colour for unknown level" do
-      expect(helper.neighbourhood_colour(0)).to eq("bg-gray-100 text-gray-700")
-      expect(helper.neighbourhood_colour(nil)).to eq("bg-gray-100 text-gray-700")
+      expect(helper.neighbourhood_colour(0)).to eq("bg-gray-100 text-gray-800")
+      expect(helper.neighbourhood_colour(nil)).to eq("bg-gray-100 text-gray-800")
     end
 
     it "accepts unit string and converts to level" do
-      expect(helper.neighbourhood_colour("ward")).to eq("bg-violet-100 text-violet-700")
-      expect(helper.neighbourhood_colour("country")).to eq("bg-rose-100 text-rose-700")
+      expect(helper.neighbourhood_colour("ward")).to eq("bg-violet-100 text-violet-800")
+      expect(helper.neighbourhood_colour("country")).to eq("bg-rose-100 text-rose-800")
     end
   end
 
@@ -44,7 +44,7 @@ RSpec.describe NeighbourhoodsHelper, type: :helper do
     it "applies correct colour classes" do
       result = helper.level_badge(5)
       expect(result).to include("bg-rose-100")
-      expect(result).to include("text-rose-700")
+      expect(result).to include("text-rose-800")
     end
 
     it "renders with default size" do

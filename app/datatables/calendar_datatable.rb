@@ -117,60 +117,21 @@ class CalendarDatatable < Datatable
   def render_state_cell(record)
     state = record.calendar_state.to_s
     case state
-    when 'idle'
-      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
-        <span class="inline-flex items-center text-emerald-600" title="Idle - ready for import">
-          #{icon(:check)}
-        </span>
-      HTML
-    when 'in_queue'
-      <<~HTML.html_safe
-        <span class="inline-flex items-center text-orange-500" title="Queued for import">
-          <span class="dots-loading"><span></span><span></span><span></span></span>
-        </span>
-      HTML
-    when 'in_worker'
-      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
-        <span class="inline-flex items-center text-orange-500" title="Importing...">
-          #{icon(:loader, css_class: 'animate-spin')}
-        </span>
-      HTML
-    when 'error'
-      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
-        <span class="inline-flex items-center text-red-600" title="Import error">
-          #{icon(:warning)}
-        </span>
-      HTML
-    when 'bad_source'
-      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
-        <span class="inline-flex items-center text-red-600" title="Bad source URL">
-          #{icon(:link_off)}
-        </span>
-      HTML
-    else
-      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
-        <span class="inline-flex items-center text-gray-500" title="Unknown state">
-          #{icon(:x)}
-        </span>
-      HTML
+    when 'idle' then render_indicator(:ok, 'Idle - ready for import', icon(:check))
+    when 'in_queue' then render_indicator(:queued, 'Queued for import', '<span class="dots-loading"><span></span><span></span><span></span></span>')
+    when 'in_worker' then render_indicator(:working, 'Importing...', icon(:loader, css_class: 'animate-spin'))
+    when 'error' then render_indicator(:error, 'Import error', icon(:warning))
+    when 'bad_source' then render_indicator(:error, 'Bad source URL', icon(:link_off))
+    else render_indicator(:none, 'Unknown state', icon(:x))
     end
   end
 
   def render_notices_cell(record)
     count = record.notice_count || 0
     if count.positive?
-      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
-        <span class="inline-flex items-center text-amber-700" title="#{count} notice#{'s' if count != 1}">
-          #{icon(:warning)}
-          <span class="ml-1 text-xs">#{count}</span>
-        </span>
-      HTML
+      render_indicator(:warning, "#{count} notice#{'s' if count != 1}", icon(:warning), count:)
     else
-      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
-        <span class="inline-flex items-center text-emerald-600" title="No notices">
-          #{icon(:check)}
-        </span>
-      HTML
+      render_indicator(:ok, 'No notices', icon(:check))
     end
   end
 

@@ -22,7 +22,7 @@ class Views::Admin::Sites::FormTabImages < Views::Admin::Base
     return unless policy(site).permitted_attributes.include?(:theme)
 
     fieldset(class: 'fieldset max-w-xs mb-8') do
-      legend(class: 'fieldset-legend') { attr_label(:site, :theme) }
+      label(for: form.field_id(:theme), class: 'fieldset-legend') { attr_label(:site, :theme) }
       raw form.input_field(:theme, as: :select,
                                    collection: policy(site).permitted_themes.map { |theme| [theme.label, theme.name] },
                                    include_blank: false,
@@ -65,10 +65,10 @@ class Views::Admin::Sites::FormTabImages < Views::Admin::Base
         if image_url
           if preview_wrapper_class
             div(class: preview_wrapper_class) do
-              image_tag(image_url, class: preview_class, data: { image_preview_target: 'img' })
+              image_tag(image_url, class: preview_class, alt: '', data: { image_preview_target: 'img' })
             end
           else
-            image_tag(image_url, class: preview_class, data: { image_preview_target: 'img' })
+            image_tag(image_url, class: preview_class, alt: '', data: { image_preview_target: 'img' })
           end
         end
       end
@@ -96,14 +96,14 @@ class Views::Admin::Sites::FormTabImages < Views::Admin::Base
         plain t('admin.sites.fields.hero_image_description')
         whitespace
         a(href: 'https://gfsc.notion.site/Homepage-Images-f0a19b7f8f5446948bc4601950c9a0a2',
-          class: 'link link-hover text-placecal-orange', target: '_blank') { t('admin.sites.fields.hero_handbook_link') }
+          class: 'link text-placecal-orange-dark', target: '_blank') { t('admin.sites.fields.hero_handbook_link') }
       end
 
       div(data: { controller: 'image-preview' }) do
         render_hero_upload_label(site)
         if form.object.hero_image.url
           image_tag(form.object.hero_image.url,
-                    class: 'max-w-md rounded-lg border border-base-300 mb-4',
+                    class: 'max-w-md rounded-lg border border-base-300 mb-4', alt: '',
                     data: { image_preview_target: 'img' })
         end
       end
@@ -129,13 +129,13 @@ class Views::Admin::Sites::FormTabImages < Views::Admin::Base
   def render_hero_credit_fields
     div(class: 'grid grid-cols-1 md:grid-cols-2 gap-4') do
       fieldset(class: 'fieldset') do
-        legend(class: 'fieldset-legend') { attr_label(:site, :hero_image_credit) }
+        label(for: form.field_id(:hero_image_credit), class: 'fieldset-legend') { attr_label(:site, :hero_image_credit) }
         raw form.input_field(:hero_image_credit, class: 'input input-bordered w-full input-sm bg-base-100')
         p(class: 'fieldset-label') { t('admin.sites.fields.image_credit_hint') }
       end
 
       fieldset(class: 'fieldset') do
-        legend(class: 'fieldset-legend') { attr_label(:site, :hero_image_alt) }
+        label(for: form.field_id(:hero_alttext), class: 'fieldset-legend') { attr_label(:site, :hero_image_alt) }
         raw form.input_field(:hero_alttext, class: 'input input-bordered w-full input-sm bg-base-100')
         p(class: 'fieldset-label') { t('admin.sites.fields.alt_text_hint') }
       end

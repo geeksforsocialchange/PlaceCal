@@ -160,7 +160,7 @@ RSpec.describe PartnerDatatable do
 
         partnerships_html = datatable.data.first[:partnerships]
         expect(partnerships_html).to include("svg")
-        expect(partnerships_html).to include("text-gray-500")
+        expect(partnerships_html).to include('data-status="none"')
       end
 
       it "shows partnership names when present" do
@@ -202,7 +202,7 @@ RSpec.describe PartnerDatatable do
         datatable = create_datatable
 
         calendars_html = datatable.data.first[:calendars]
-        expect(calendars_html).to include("text-gray-500")
+        expect(calendars_html).to include('data-status="none"')
       end
 
       it "shows check icon when calendar connected" do
@@ -211,7 +211,7 @@ RSpec.describe PartnerDatatable do
         datatable = create_datatable
 
         calendars_html = datatable.data.first[:calendars]
-        expect(calendars_html).to include("text-emerald-600")
+        expect(calendars_html).to include('data-status="ok"')
       end
 
       it "shows error icon when calendar has errors" do
@@ -222,7 +222,7 @@ RSpec.describe PartnerDatatable do
         datatable = create_datatable
 
         calendars_html = datatable.data.first[:calendars]
-        expect(calendars_html).to include("text-red-600")
+        expect(calendars_html).to include('data-status="error"')
       end
     end
 
@@ -231,7 +231,7 @@ RSpec.describe PartnerDatatable do
         datatable = create_datatable
 
         admins_html = datatable.data.first[:admins]
-        expect(admins_html).to include("text-gray-500")
+        expect(admins_html).to include('data-status="none"')
       end
 
       it "shows check icon when has admins" do
@@ -240,7 +240,7 @@ RSpec.describe PartnerDatatable do
         datatable = create_datatable
 
         admins_html = datatable.data.first[:admins]
-        expect(admins_html).to include("text-emerald-600")
+        expect(admins_html).to include('data-status="ok"')
       end
 
       it "includes count in title" do
@@ -261,7 +261,7 @@ RSpec.describe PartnerDatatable do
         datatable = create_datatable
 
         categories_html = datatable.data.first[:categories]
-        expect(categories_html).to include("text-gray-500")
+        expect(categories_html).to include('data-status="none"')
       end
 
       it "shows check icon when has categories" do
@@ -270,7 +270,7 @@ RSpec.describe PartnerDatatable do
         datatable = create_datatable
 
         categories_html = datatable.data.first[:categories]
-        expect(categories_html).to include("text-emerald-600")
+        expect(categories_html).to include('data-status="ok"')
       end
     end
 

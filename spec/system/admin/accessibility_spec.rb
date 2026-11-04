@@ -5,136 +5,107 @@ require "rails_helper"
 RSpec.describe "Admin Accessibility", :slow, type: :system do
   include_context "admin login"
 
-  # Create test data for pages that need it
-  let!(:article) { create(:article) }
-  let!(:partner) { create(:partner) }
-  let!(:site) { create(:site) }
-  let!(:tag) { create(:tag) }
-  let!(:calendar) { create(:calendar, organiser: partner) }
-  let!(:neighbourhood) { create(:neighbourhood) }
-  let!(:partnership) { create(:partnership) }
+  let(:image) { Rails.root.join("spec/fixtures/files/test_image.jpg") }
+  let(:ward) { create(:neighbourhood) }
+  let(:editor) { create(:user, first_name: "Edie", last_name: "Tor", avatar: File.open(image)) }
+
+  let!(:partner) do
+    create(:riverside_community_hub, image: File.open(image)).tap do |p|
+      create(:service_area, partner: p, neighbourhood: ward)
+      p.users << editor
+    end
+  end
+  let!(:calendar) { create(:calendar, organiser: partner, place: partner) }
+  let!(:event) { create(:event, organiser: partner, calendar:) }
+  let!(:site) do
+    create(:site, site_admin: editor, hero_image: File.open(image)).tap do |s|
+      s.neighbourhoods << ward
+    end
+  end
+  let!(:partnership) { create(:partnership).tap { |t| t.partners << partner } }
+  let!(:tag) { create(:tag).tap { |t| t.partners << partner } }
+  let!(:article) { create(:article, author: editor, article_image: File.open(image)).tap { |a| a.partners << partner } }
   let!(:supporter) { create(:supporter) }
 
-  describe "index pages" do
-    it "dashboard has no accessibility violations" do
-      visit admin_url("/")
-      expect(page).to be_axe_clean
+  # axe skips hidden panels, so each tab of a tabbed form is checked on its own.
+  def expect_every_tab_axe_clean
+    expect(page).to be_axe_clean
+    tab_count = all("input.tab[type=radio]").size
+    tab_count.times do |index|
+      tab = all("input.tab[type=radio]")[index]
+      aggregate_failures("tab #{tab['aria-label']}") do
+        tab.click
+        expect(page).to have_css("input.tab[type=radio]:checked[aria-label='#{tab['aria-label']}']")
+        expect(page).to be_axe_clean
+      end
     end
+  end
 
-    it "articles index has no accessibility violations" do
-      visit admin_url("/articles")
-      await_datatables
-      expect(page).to be_axe_clean
-    end
-
-    it "partners index has no accessibility violations" do
-      visit admin_url("/partners")
-      await_datatables
-      expect(page).to be_axe_clean
-    end
-
-    it "sites index has no accessibility violations" do
-      visit admin_url("/sites")
-      await_datatables
-      expect(page).to be_axe_clean
-    end
-
-    it "users index has no accessibility violations" do
-      visit admin_url("/users")
-      await_datatables
-      expect(page).to be_axe_clean
-    end
-
-    it "tags index has no accessibility violations" do
-      visit admin_url("/tags")
-      await_datatables
-      expect(page).to be_axe_clean
-    end
-
-    it "calendars index has no accessibility violations" do
-      visit admin_url("/calendars")
-      await_datatables
-      expect(page).to be_axe_clean
-    end
-
-    it "neighbourhoods index has no accessibility violations" do
-      visit admin_url("/neighbourhoods")
-      await_datatables
-      expect(page).to be_axe_clean
-    end
-
-    it "partnerships index has no accessibility violations" do
-      visit admin_url("/partnerships")
-      await_datatables
-      expect(page).to be_axe_clean
-    end
-
-    it "supporters index has no accessibility violations" do
-      visit admin_url("/supporters")
+  {
+    "dashboard" => "/",
+    "partners index" => "/partners",
+    "calendars index" => "/calendars",
+    "users index" => "/users",
+    "sites index" => "/sites",
+    "neighbourhoods index" => "/neighbourhoods",
+    "partnerships index" => "/partnerships",
+    "tags index" => "/tags",
+    "articles index" => "/articles",
+    "supporters index" => "/supporters",
+    "jobs" => "/jobs"
+  }.each do |name, path|
+    it "#{name} has no accessibility violations" do
+      visit admin_url(path)
+      await_datatables if page.has_css?("[data-controller~='admin-table']", wait: 0)
       expect(page).to be_axe_clean
     end
   end
 
-  describe "edit forms" do
-    it "article edit form has no accessibility violations" do
-      visit admin_url("/articles/#{article.id}/edit")
-      expect(page).to be_axe_clean
-    end
-
-    it "partner edit form has no accessibility violations" do
-      visit admin_url("/partners/#{partner.id}/edit")
-      expect(page).to be_axe_clean
-    end
-
-    it "site edit form has no accessibility violations" do
-      visit admin_url("/sites/#{site.id}/edit")
-      expect(page).to be_axe_clean
-    end
-
-    it "tag edit form has no accessibility violations" do
-      visit admin_url("/tags/#{tag.id}/edit")
-      expect(page).to be_axe_clean
-    end
-
-    it "calendar edit form has no accessibility violations" do
-      visit admin_url("/calendars/#{calendar.id}/edit")
-      expect(page).to be_axe_clean
-    end
-
-    it "neighbourhood edit form has no accessibility violations" do
-      visit admin_url("/neighbourhoods/#{neighbourhood.id}/edit")
-      expect(page).to be_axe_clean
-    end
-
-    it "user edit form has no accessibility violations" do
-      visit admin_url("/users/#{admin_user.id}/edit")
-      expect(page).to be_axe_clean
+  {
+    "calendar page" => -> { "/calendars/#{calendar.id}" },
+    "site page" => -> { "/sites/#{site.id}" },
+    "neighbourhood page" => -> { "/neighbourhoods/#{ward.id}" },
+    "partner edit form" => -> { "/partners/#{partner.id}/edit" },
+    "calendar edit form" => -> { "/calendars/#{calendar.id}/edit" },
+    "user edit form" => -> { "/users/#{editor.id}/edit" },
+    "profile" => -> { "/profile" },
+    "site edit form" => -> { "/sites/#{site.id}/edit" },
+    "neighbourhood edit form" => -> { "/neighbourhoods/#{ward.id}/edit" },
+    "partnership edit form" => -> { "/partnerships/#{partnership.id}/edit" },
+    "tag edit form" => -> { "/tags/#{tag.id}/edit" },
+    "article edit form" => -> { "/articles/#{article.id}/edit" },
+    "supporter edit form" => -> { "/supporters/#{supporter.id}/edit" },
+    "new partner form" => -> { "/partners/new" },
+    "new calendar form" => -> { "/calendars/new" },
+    "new user form" => -> { "/users/new" },
+    "new site form" => -> { "/sites/new" },
+    "new partnership form" => -> { "/partnerships/new" },
+    "new tag form" => -> { "/tags/new" },
+    "new article form" => -> { "/articles/new" },
+    "new supporter form" => -> { "/supporters/new" }
+  }.each do |name, path|
+    it "#{name} has no accessibility violations on any tab" do
+      visit admin_url(instance_exec(&path))
+      expect_every_tab_axe_clean
     end
   end
 
-  describe "new forms" do
-    it "new article form has no accessibility violations" do
-      visit admin_url("/articles/new")
+  describe "signed out pages" do
+    before { click_button I18n.t("admin.topbar.sign_out") }
+
+    it "sign in page has no accessibility violations" do
+      visit public_url("/users/sign_in")
       expect(page).to be_axe_clean
     end
 
-    it "new partner form has no accessibility violations" do
-      visit admin_url("/partners/new")
+    it "password reset page has no accessibility violations" do
+      visit public_url("/users/password/new")
       expect(page).to be_axe_clean
     end
 
-    it "new tag form has no accessibility violations" do
-      visit admin_url("/tags/new")
-      expect(page).to be_axe_clean
-    end
-
-    it "new user form has no accessibility violations" do
-      visit admin_url("/users/new")
-      expect(page).to be_axe_clean
-    end
-
-    it "new calendar form has no accessibility violations" do
-      visit admin_url("/calendars/new")
+    it "invitation page has no accessibility violations" do
+      token = create(:user).tap(&:invite!).raw_invitation_token
+      visit public_url("/users/invitation/accept?invitation_token=#{token}")
       expect(page).to be_axe_clean
     end
   end

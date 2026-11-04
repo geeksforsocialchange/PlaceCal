@@ -4,14 +4,14 @@ module NeighbourhoodsHelper
   # Colour classes for neighbourhood levels (rainbow order: red → orange → green → blue → violet)
   # Used in datatables, badges, and hierarchy displays
   LEVEL_COLOURS = {
-    5 => 'bg-rose-100 text-rose-700',     # country - red
-    4 => 'bg-orange-100 text-orange-700', # region - orange
-    3 => 'bg-emerald-100 text-emerald-700', # county - green
-    2 => 'bg-sky-100 text-sky-700',       # district - blue
-    1 => 'bg-violet-100 text-violet-700'  # ward - violet
+    5 => 'bg-rose-100 text-rose-800',     # country - red
+    4 => 'bg-orange-100 text-orange-800', # region - orange
+    3 => 'bg-emerald-100 text-emerald-800', # county - green
+    2 => 'bg-sky-100 text-sky-800',       # district - blue
+    1 => 'bg-violet-100 text-violet-800'  # ward - violet
   }.freeze
 
-  DEFAULT_COLOUR = 'bg-gray-100 text-gray-700'
+  DEFAULT_COLOUR = 'bg-gray-100 text-gray-800'
 
   # Get colour classes for a neighbourhood level (Integer) or unit (String)
   def neighbourhood_colour(level_or_unit)

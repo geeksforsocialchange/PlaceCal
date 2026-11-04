@@ -149,7 +149,7 @@ RSpec.describe "Admin::Tags Datatable JSON API", type: :request do
         json = response.parsed_body
         tag_data = json["data"].find { |d| d["name"].include?("Render Test") }
         expect(tag_data["partners_count"]).to include("1")
-        expect(tag_data["partners_count"]).to include("text-emerald-600")
+        expect(tag_data["partners_count"]).to include('data-status="ok"')
       end
 
       it_behaves_like "datatable renders relative time", field: :updated_at

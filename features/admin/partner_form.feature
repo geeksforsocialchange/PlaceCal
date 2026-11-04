@@ -66,7 +66,7 @@ Feature: Partner Editing
     Given there is a partner called "Downtown Office"
     When I edit the partner "Downtown Office"
     And I go to the "Place" step
-    And I fill in "Street address" with "456 High Street"
+    And I fill in "Street Address" with "456 High Street"
     And I fill in "City" with "Millbrook"
     And I click the "Save" button
     Then I should see a success message

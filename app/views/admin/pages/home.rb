@@ -169,7 +169,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base
               p(class: 'text-xs text-gray-600') { site.display_url }
             end
             div(class: 'text-right flex-shrink-0') do
-              span(class: 'text-sm font-semibold text-placecal-orange') { site.events_this_week.to_s }
+              span(class: 'text-sm font-semibold text-placecal-orange-dark') { site.events_this_week.to_s }
               span(class: 'text-xs text-gray-600 ml-1') { 'events' }
             end
           end
@@ -177,7 +177,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base
       end
       if sites.count > 4
         link_to t('admin.dashboard.cards.view_all_sites', count: sites.count), admin_sites_path,
-                class: 'text-xs text-placecal-orange hover:text-orange-600 mt-2 block text-center'
+                class: 'text-xs text-placecal-orange-dark hover:text-orange-800 mt-2 block text-center'
       end
     end
   end
@@ -192,7 +192,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base
         div(class: 'space-y-1') do
           render_calendar_issue_links(errored_calendars.take(5), :warning, 'text-error',
                                       bg_class: 'bg-error/10 hover:bg-error/20', badge_text: 'Error')
-          render_calendar_issue_links(bad_source_calendars.take(5), :link, 'text-warning',
+          render_calendar_issue_links(bad_source_calendars.take(5), :link, 'text-amber-800',
                                       bg_class: 'bg-warning/10 hover:bg-warning/20', badge_text: 'Bad URL')
           render_view_all_issues_link
         end
@@ -227,7 +227,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base
     div(class: 'flex items-center gap-3') do
       icon(:check, size: '8', css_class: 'text-success')
       div do
-        p(class: 'font-medium text-green-700') { t('admin.dashboard.cards.all_healthy') }
+        p(class: 'font-medium text-green-800') { t('admin.dashboard.cards.all_healthy') }
         p(class: 'text-xs text-gray-600') { t('admin.dashboard.cards.no_issues') }
       end
     end
@@ -240,7 +240,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base
           upcoming_events.take(6).each do |event|
             div(class: 'flex items-center gap-3 py-2 rounded-lg hover:bg-base-200/50 transition-colors') do
               div(class: 'flex-shrink-0 w-10 text-center') do
-                div(class: 'text-[10px] font-medium text-placecal-orange uppercase') { event.dtstart.strftime('%b') }
+                div(class: 'text-[10px] font-medium text-placecal-orange-dark uppercase') { event.dtstart.strftime('%b') }
                 div(class: 'text-lg font-bold text-base-content leading-tight') { event.dtstart.strftime('%d') }
               end
               div(class: 'flex-1 min-w-0') do
@@ -278,14 +278,14 @@ class Views::Admin::Pages::Home < Views::Admin::Base
       else
         render_empty_card(:partner, t('admin.dashboard.cards.no_partners'))
         link_to t('admin.dashboard.cards.add_first_partner'), new_admin_partner_path,
-                class: 'text-xs text-placecal-orange hover:text-orange-600 mt-1'
+                class: 'text-xs text-placecal-orange-dark hover:text-orange-800 mt-1'
       end
     end
   end
 
   def render_partner_avatar(partner)
     if partner.image.url
-      image_tag(partner.image.url, class: 'w-9 h-9 rounded-lg object-cover flex-shrink-0')
+      image_tag(partner.image.url, class: 'w-9 h-9 rounded-lg object-cover flex-shrink-0', alt: '')
     else
       div(class: 'w-9 h-9 rounded-lg bg-base-300 flex items-center justify-center flex-shrink-0') do
         icon(:partner, size: '4', css_class: 'text-gray-400 stroke-[1.5]')
@@ -363,7 +363,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base
       if user_partnerships.count > 6
         link_to t('admin.dashboard.cards.view_all_partnerships', count: user_partnerships.count),
                 admin_tags_path(type: 'Partnership'),
-                class: 'text-xs text-placecal-orange hover:text-orange-600 mt-3 block text-center'
+                class: 'text-xs text-placecal-orange-dark hover:text-orange-800 mt-3 block text-center'
       end
     end
   end

@@ -84,11 +84,14 @@ When("I fill in {string} with {string}") do |field, value|
   # Try standard fill_in first (works with label, name, or id)
 
   fill_in field, with: value
+rescue Capybara::Ambiguous
+  # "Street Address" also matches "Street Address 2"
+  fill_in field, with: value, exact: true
 rescue Capybara::ElementNotFound
   # Fall back to finding by fieldset legend (daisyUI pattern)
   # First try matching the legend text directly for better accuracy
   fieldsets = page.all("fieldset").select do |fs|
-    legend = fs.first("legend")
+    legend = fs.first("legend", minimum: 0)
     next false unless legend
 
     # Match against legend text - exact or starts with (to handle "Partner Name *" for "Name")
@@ -99,7 +102,7 @@ rescue Capybara::ElementNotFound
   end
 
   # If multiple fieldsets match, prefer exact match
-  fieldset = fieldsets.find { |fs| fs.first("legend")&.text&.strip == field }
+  fieldset = fieldsets.find { |fs| fs.first("legend", minimum: 0)&.text&.strip == field }
   fieldset ||= fieldsets.first
 
   raise Capybara::ElementNotFound, "Could not find fieldset for '#{field}'" unless fieldset

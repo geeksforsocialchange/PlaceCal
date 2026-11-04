@@ -119,17 +119,9 @@ class TagDatatable < Datatable
 
   def render_system_tag_cell(record)
     if record.system_tag?
-      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
-        <span class="inline-flex items-center text-amber-700" title="System tag">
-          #{icon(:lock)}
-        </span>
-      HTML
+      render_indicator(:system, 'System tag', icon(:lock))
     else
-      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
-        <span class="inline-flex items-center text-gray-300" title="User-created tag">
-          #{icon(:unlock)}
-        </span>
-      HTML
+      render_indicator(:custom, 'User-created tag', icon(:unlock))
     end
   end
 end

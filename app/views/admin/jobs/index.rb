@@ -82,7 +82,7 @@ class Views::Admin::Jobs::Index < Views::Admin::Base
 
   def render_error_row(cal)
     tr(class: 'hover') do
-      td { link_to cal.name, edit_admin_calendar_path(cal), class: 'link link-hover text-placecal-orange font-medium' }
+      td { link_to cal.name, edit_admin_calendar_path(cal), class: 'link link-hover text-placecal-orange-dark font-medium' }
       td(class: 'text-sm') { link_to cal.organiser.name, admin_partner_path(cal.organiser), class: 'link link-hover' }
       td { span(class: 'badge badge-error badge-sm') { cal.calendar_state } }
       td(class: 'text-sm text-error max-w-md truncate') { cal.critical_error }
@@ -123,7 +123,7 @@ class Views::Admin::Jobs::Index < Views::Admin::Base
 
   def render_busy_row(cal)
     tr(class: 'hover') do
-      td { link_to cal.name, edit_admin_calendar_path(cal), class: 'link link-hover text-placecal-orange font-medium' }
+      td { link_to cal.name, edit_admin_calendar_path(cal), class: 'link link-hover text-placecal-orange-dark font-medium' }
       td(class: 'text-sm') { link_to cal.organiser.name, admin_partner_path(cal.organiser), class: 'link link-hover' }
       td { span(class: 'badge badge-info badge-sm') { cal.calendar_state } }
       td(class: 'text-sm') { cal.strategy }

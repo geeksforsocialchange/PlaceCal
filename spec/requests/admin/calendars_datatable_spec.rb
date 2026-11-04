@@ -284,7 +284,7 @@ RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
         json = response.parsed_body
         state_html = json["data"].first["state"]
         expect(state_html).to include("svg")
-        expect(state_html).to include("text-emerald-600")
+        expect(state_html).to include('data-status="ok"')
       end
 
       it "renders events cell" do
@@ -301,7 +301,7 @@ RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
         json = response.parsed_body
         notices_html = json["data"].first["notices"]
         expect(notices_html).to include("3")
-        expect(notices_html).to include("text-amber-700")
+        expect(notices_html).to include('data-status="warning"')
       end
 
       it_behaves_like "datatable renders relative time", field: :last_import_at

@@ -160,57 +160,17 @@ end
 # Status Indicator Steps
 # ===========================================
 
-Then("I should see a green check indicator for {string}") do |row_identifier|
+Then("I should see an ok status for {string}") do |row_identifier|
   await_datatables
   row = find("tr", text: row_identifier)
   within(row) do
-    expect(page).to have_selector(".text-emerald-600 svg", visible: :all)
-  end
-end
-
-Then("I should see a red cross indicator for {string}") do |row_identifier|
-  await_datatables
-  row = find("tr", text: row_identifier)
-  within(row) do
-    expect(page).to have_selector(".text-red-500 svg", visible: :all)
-  end
-end
-
-Then("I should see an orange warning indicator for {string}") do |row_identifier|
-  await_datatables
-  row = find("tr", text: row_identifier)
-  within(row) do
-    expect(page).to have_selector(".text-orange-500 svg", visible: :all)
+    expect(page).to have_selector("[data-status='ok']")
   end
 end
 
 # ===========================================
 # Badge Steps
 # ===========================================
-
-Then("I should see a {string} badge for {string}") do |badge_type, row_identifier|
-  await_datatables
-  row = find("tr", text: row_identifier)
-
-  # Map badge types to Tailwind color classes
-  badge_colors = {
-    "green" => "bg-green",
-    "emerald" => "bg-emerald",
-    "blue" => "bg-blue",
-    "purple" => "bg-purple",
-    "teal" => "bg-teal",
-    "orange" => "bg-orange",
-    "red" => "bg-red",
-    "gray" => "bg-gray"
-  }
-
-  color_class = badge_colors[badge_type.downcase]
-  raise "Unknown badge type: #{badge_type}" unless color_class
-
-  within(row) do
-    expect(page).to have_selector("[class*='#{color_class}']")
-  end
-end
 
 Then("I should see a badge with text {string} for {string}") do |badge_text, row_identifier|
   await_datatables

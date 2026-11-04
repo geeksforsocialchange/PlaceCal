@@ -91,17 +91,9 @@ class PartnershipDatatable < Datatable
 
   def render_system_tag_cell(record)
     if record.system_tag?
-      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
-        <span class="inline-flex items-center text-amber-700" title="System tag">
-          #{icon(:lock)}
-        </span>
-      HTML
+      render_indicator(:system, 'System tag', icon(:lock))
     else
-      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
-        <span class="inline-flex items-center text-gray-300" title="User-created">
-          #{icon(:unlock)}
-        </span>
-      HTML
+      render_indicator(:custom, 'User-created', icon(:unlock))
     end
   end
 
@@ -109,11 +101,7 @@ class PartnershipDatatable < Datatable
     admins = record.users
     count = admins.size
 
-    return <<~HTML.html_safe if count.zero? # rubocop:disable Rails/OutputSafety
-      <span class="inline-flex items-center text-gray-500" title="No admins">
-        #{icon(:x)}
-      </span>
-    HTML
+    return render_indicator(:none, 'No admins', icon(:x)) if count.zero?
 
     links = admins.first(2).map do |user|
       name = [user.first_name, user.last_name].compact.join(' ')

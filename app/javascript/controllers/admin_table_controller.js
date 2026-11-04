@@ -24,6 +24,8 @@ export default class extends Controller {
 		pageLength: { type: Number, default: 25 },
 		defaultSortColumn: { type: String, default: "" },
 		defaultSortDirection: { type: String, default: "desc" },
+		previousLabel: String,
+		nextLabel: String,
 	};
 
 	connect() {
@@ -655,16 +657,16 @@ export default class extends Controller {
 			"inline-flex items-center justify-center w-9 h-9 text-sm font-medium rounded-lg transition-colors";
 		const btnEnabled = "text-gray-700 hover:bg-gray-100";
 		const btnDisabled = "text-gray-300 cursor-not-allowed";
-		const btnActive = "bg-orange-500 text-white shadow-sm";
+		const btnActive = "bg-placecal-orange-dark text-white shadow-sm";
 
 		// Previous button
 		pages.push(`
       <li>
         <a class="${btnBase} ${
 					this.currentPage === 0 ? btnDisabled : btnEnabled
-				}" href="#" data-action="admin-table#previousPage" ${
-					this.currentPage === 0 ? 'tabindex="-1"' : ""
-				}>
+				}" href="#" data-action="admin-table#previousPage" aria-label="${
+					this.previousLabelValue
+				}" ${this.currentPage === 0 ? 'tabindex="-1" aria-disabled="true"' : ""}>
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
           </svg>
@@ -678,9 +680,9 @@ export default class extends Controller {
         <li>
           <a class="${btnBase} ${
 						i === this.currentPage ? btnActive : btnEnabled
-					}" href="#" data-action="admin-table#goToPage" data-page="${i}">${
-						i + 1
-					}</a>
+					}" href="#" data-action="admin-table#goToPage" data-page="${i}"${
+						i === this.currentPage ? ' aria-current="page"' : ""
+					}>${i + 1}</a>
         </li>
       `);
 		}
@@ -690,8 +692,12 @@ export default class extends Controller {
       <li>
         <a class="${btnBase} ${
 					this.currentPage >= this.totalPages - 1 ? btnDisabled : btnEnabled
-				}" href="#" data-action="admin-table#nextPage" ${
-					this.currentPage >= this.totalPages - 1 ? 'tabindex="-1"' : ""
+				}" href="#" data-action="admin-table#nextPage" aria-label="${
+					this.nextLabelValue
+				}" ${
+					this.currentPage >= this.totalPages - 1
+						? 'tabindex="-1" aria-disabled="true"'
+						: ""
 				}>
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>

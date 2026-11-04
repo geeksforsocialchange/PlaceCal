@@ -5,7 +5,8 @@ class Components::Admin::OpeningTimes < Components::Admin::Base
   prop :partner, ::Partner
 
   def view_template
-    div(data_controller: 'opening-times', data_opening_times_data_value: @partner.opening_times_data) do
+    div(data_controller: 'opening-times', data_opening_times_data_value: @partner.opening_times_data,
+        data_opening_times_remove_label_value: t('admin.actions.remove')) do
       div(class: 'grid grid-cols-1 lg:grid-cols-2 gap-6') do
         render_times_display
         render_add_form
@@ -41,10 +42,10 @@ class Components::Admin::OpeningTimes < Components::Admin::Base
 
   def render_day_selector
     div(class: 'form-control') do
-      label(class: 'label') do
+      label(for: 'opening-times-day', class: 'label') do
         span(class: 'label-text font-medium') { t('admin.opening_times.day') }
       end
-      select(class: 'select select-bordered w-full', data_opening_times_target: 'day') do
+      select(id: 'opening-times-day', class: 'select select-bordered w-full', data_opening_times_target: 'day') do
         ordered_day_names.each do |day_name|
           option(value: day_name) { day_name }
         end
@@ -55,17 +56,17 @@ class Components::Admin::OpeningTimes < Components::Admin::Base
   def render_time_inputs
     div(class: 'grid grid-cols-2 gap-3') do
       div(class: 'form-control') do
-        label(class: 'label') do
+        label(for: 'opening-times-open', class: 'label') do
           span(class: 'label-text font-medium') { t('admin.opening_times.opens') }
         end
-        input(class: 'input input-bordered w-full', type: 'time', value: '09:00',
+        input(id: 'opening-times-open', class: 'input input-bordered w-full', type: 'time', value: '09:00',
               data_opening_times_target: 'open')
       end
       div(class: 'form-control') do
-        label(class: 'label') do
+        label(for: 'opening-times-close', class: 'label') do
           span(class: 'label-text font-medium') { t('admin.opening_times.closes') }
         end
-        input(class: 'input input-bordered w-full', type: 'time', value: '17:00',
+        input(id: 'opening-times-close', class: 'input input-bordered w-full', type: 'time', value: '17:00',
               data_opening_times_target: 'close')
       end
     end

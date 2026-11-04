@@ -51,7 +51,7 @@ class Views::Admin::Calendars::FormTabPreview < Views::Admin::Base
 
   def render_past_events(past_events)
     div(class: 'collapse collapse-arrow bg-base-200/50 border border-base-300 rounded-lg') do
-      input(type: 'checkbox')
+      input(type: 'checkbox', aria_label: t('admin.calendars.events.past'))
       div(class: 'collapse-title font-semibold flex items-center gap-2') do
         span(class: 'text-gray-600') { "\u25CF" }
         plain t('admin.calendars.events.past')
@@ -59,13 +59,13 @@ class Views::Admin::Calendars::FormTabPreview < Views::Admin::Base
       end
       div(class: 'collapse-content') do
         div(class: 'overflow-x-auto') do
-          render_events_table(past_events, opacity: true)
+          render_events_table(past_events)
         end
       end
     end
   end
 
-  def render_events_table(events, opacity: false)
+  def render_events_table(events)
     table(class: 'table table-sm table-zebra') do
       thead do
         tr do
@@ -76,14 +76,14 @@ class Views::Admin::Calendars::FormTabPreview < Views::Admin::Base
       end
       tbody do
         events.each do |event|
-          render_event_row(event, opacity:)
+          render_event_row(event)
         end
       end
     end
   end
 
-  def render_event_row(event, opacity: false)
-    tr(class: opacity ? 'opacity-70' : nil) do
+  def render_event_row(event)
+    tr do
       td do
         div(class: 'font-medium') { truncate(event.summary, length: 60) }
       end

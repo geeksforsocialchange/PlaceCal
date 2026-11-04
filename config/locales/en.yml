@@ -926,6 +926,7 @@ en:
         <<: *default_attrs
         title: "Title"
         body: "Body"
+        published_at: "Publication Date"
 
       calendar:
         <<: *default_attrs

@@ -8,7 +8,7 @@ class Views::Admin::Supporters::Form < Views::Admin::Base
       Error(supporter) if supporter.errors.any?
 
       div(class: 'bg-white shadow-sm rounded-lg p-6 space-y-4') do
-        h3(class: 'text-lg font-medium text-gray-900 border-b border-gray-200 pb-2') { 'Supporter Details' }
+        h2(class: 'text-lg font-medium text-gray-900 border-b border-gray-200 pb-2') { t('admin.supporters.sections.details') }
         raw form.input(:name, wrapper: :tw_vertical_form,
                               input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' })
         raw form.input(:url, wrapper: :tw_vertical_form,
@@ -18,7 +18,7 @@ class Views::Admin::Supporters::Form < Views::Admin::Base
       end
 
       div(class: 'bg-white shadow-sm rounded-lg p-6 space-y-4') do
-        h3(class: 'text-lg font-medium text-gray-900 border-b border-gray-200 pb-2') { 'Logo' }
+        h2(class: 'text-lg font-medium text-gray-900 border-b border-gray-200 pb-2') { t('admin.supporters.sections.logo') }
         raw form.input(:logo, wrapper: :tw_file)
         if form.object.logo.url
           div(class: 'mt-4') do
@@ -29,7 +29,7 @@ class Views::Admin::Supporters::Form < Views::Admin::Base
       end
 
       div(class: 'bg-white shadow-sm rounded-lg p-6 space-y-4') do
-        h3(class: 'text-lg font-medium text-gray-900 border-b border-gray-200 pb-2') { 'Display Settings' }
+        h2(class: 'text-lg font-medium text-gray-900 border-b border-gray-200 pb-2') { t('admin.supporters.sections.display') }
         raw form.input(:weight, wrapper: :tw_vertical_form,
                                 input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' },
                                 hint: 'Higher weight = appears first')
@@ -37,7 +37,7 @@ class Views::Admin::Supporters::Form < Views::Admin::Base
       end
 
       div(class: 'bg-white shadow-sm rounded-lg p-6 space-y-4') do
-        h3(class: 'text-lg font-medium text-gray-900 border-b border-gray-200 pb-2') { 'Sites' }
+        h2(class: 'text-lg font-medium text-gray-900 border-b border-gray-200 pb-2') { t('admin.supporters.sections.sites') }
         p(class: 'text-sm text-gray-600') { 'Select which sites this supporter should appear on' }
         raw form.association(:sites, as: :check_boxes, wrapper: :tw_collection)
       end

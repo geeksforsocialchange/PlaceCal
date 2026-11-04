@@ -186,54 +186,30 @@ class PartnerDatatable < Datatable # rubocop:disable Metrics/ClassLength
     calendars = record.calendars
 
     if calendars.empty?
-      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
-        <span class="inline-flex items-center text-gray-500" title="No calendars">
-          #{icon(:x)}
-        </span>
-      HTML
+      render_indicator(:none, 'No calendars', icon(:x))
     else
       # Check for any calendars with errors
       error_calendars = calendars.select { |c| c.calendar_state.to_s.in?(%w[error bad_source]) }
 
       if error_calendars.any?
-        <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
-          <span class="inline-flex items-center text-red-600" title="#{error_calendars.size} calendar#{'s' if error_calendars.size != 1} with errors">
-            #{icon(:warning)}
-          </span>
-        HTML
+        render_indicator(:error, "#{error_calendars.size} calendar#{'s' if error_calendars.size != 1} with errors", icon(:warning))
       else
-        <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
-          <span class="inline-flex items-center text-emerald-600" title="#{count} calendar#{'s' if count != 1} connected">
-            #{icon(:check)}
-          </span>
-        HTML
+        render_indicator(:ok, "#{count} calendar#{'s' if count != 1} connected", icon(:check))
       end
     end
   end
 
   def render_tick_cross(has_items, title_yes, title_no)
     if has_items
-      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
-        <span class="inline-flex items-center text-emerald-600" title="#{title_yes}">
-          #{icon(:check)}
-        </span>
-      HTML
+      render_indicator(:ok, title_yes, icon(:check))
     else
-      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
-        <span class="inline-flex items-center text-gray-500" title="#{title_no}">
-          #{icon(:x)}
-        </span>
-      HTML
+      render_indicator(:none, title_no, icon(:x))
     end
   end
 
   def render_partnerships(partnerships)
     if partnerships.empty?
-      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
-        <span class="inline-flex items-center text-gray-500" title="No partnerships">
-          #{icon(:x)}
-        </span>
-      HTML
+      render_indicator(:none, 'No partnerships', icon(:x))
     else
       # Show first 2 partnerships, abbreviate long names
       visible = partnerships.first(2)

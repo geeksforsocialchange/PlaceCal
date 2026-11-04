@@ -55,11 +55,11 @@ Then("I should not see {string} in the partner table") do |content|
 end
 
 Then("I should see a calendar connected indicator for {string}") do |partner_name|
-  step "I should see a green check indicator for \"#{partner_name}\""
+  step "I should see an ok status for \"#{partner_name}\""
 end
 
 Then("I should see an admin indicator for {string}") do |partner_name|
-  step "I should see a green check indicator for \"#{partner_name}\""
+  step "I should see an ok status for \"#{partner_name}\""
 end
 
 # ===========================================

@@ -154,6 +154,8 @@ en:
     datatable:
       clear_filters: "Clear filters"
       loading: "Loading data..."
+      next_page: "Next page"
+      previous_page: "Previous page"
       reset_sort: "Reset sort"
       search: "Search"
       showing: "Showing %{start} to %{end} of %{total} entries"
@@ -385,6 +387,9 @@ en:
         stale: "Potential stale calendar - not updated in over 6 months."
       danger_zone:
         delete_description: "Permanently remove this calendar and all %{count} associated events. This action cannot be undone."
+      show:
+        past_tab: "Past (%{count})"
+        upcoming_tab: "Upcoming (%{count})"
 
     # -------------------------------------------------------------------------
     # Jobs / Import Status
@@ -610,6 +615,15 @@ en:
         empty:
           hint: "Add neighbourhoods to this site to include their calendars"
           title: "No calendars on this site"
+    # -------------------------------------------------------------------------
+    # Supporters
+    # -------------------------------------------------------------------------
+    supporters:
+      sections:
+        details: "Supporter Details"
+        display: "Display Settings"
+        logo: "Logo"
+        sites: "Sites"
     # -------------------------------------------------------------------------
     # Users
     # -------------------------------------------------------------------------

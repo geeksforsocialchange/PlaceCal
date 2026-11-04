@@ -89,50 +89,39 @@ class Datatable < AjaxDatatablesRails::ActiveRecord
     HTML
   end
 
-  # Shared status icon rendering
-  def render_status_icon(status, tooltip: nil)
-    config = status_icon_config(status)
-    title = tooltip || config[:tooltip]
+  INDICATOR_COLOURS = {
+    ok: 'text-emerald-700',
+    none: 'text-gray-500',
+    warning: 'text-amber-700',
+    error: 'text-red-600',
+    queued: 'text-orange-700',
+    working: 'text-orange-700',
+    system: 'text-amber-700',
+    custom: 'text-gray-500'
+  }.freeze
+
+  # An icon-only status: data-status is the hook for specs, the label is what screen readers hear.
+  def render_indicator(status, label, icon_html, count: nil)
+    label = ERB::Util.html_escape(label)
+    count_html = count ? %(<span class="ml-1 text-xs">#{count}</span>) : ''
 
     <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
-      <span class="inline-flex items-center #{config[:color]}" title="#{title}">
-        #{icon(config[:icon])}
+      <span class="inline-flex items-center #{INDICATOR_COLOURS.fetch(status)}" role="img" aria-label="#{label}" title="#{label}" data-status="#{status}">
+        #{icon_html}#{count_html}
       </span>
     HTML
   end
 
-  # Shared count cell with checkmark/count or dash
   def render_count_cell(count, label)
     if count.positive?
-      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
-        <span class="inline-flex items-center text-emerald-600" title="#{count} #{label}#{'s' if count != 1}">
-          #{icon(:check)}
-          <span class="ml-1 text-xs">#{count}</span>
-        </span>
-      HTML
+      render_indicator(:ok, "#{count} #{label}#{'s' if count != 1}", icon(:check), count:)
     else
-      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
-        <span class="inline-flex items-center text-gray-500" title="No #{label}s">
-          #{icon(:x)}
-        </span>
-      HTML
+      render_indicator(:none, "No #{label}s", icon(:x))
     end
   end
 
   # Empty cell placeholder
   def empty_cell
     '<span class="text-gray-500">—</span>'.html_safe
-  end
-
-  private
-
-  def status_icon_config(status)
-    {
-      success: { icon: :check, color: 'text-emerald-600', tooltip: 'Success' },
-      warning: { icon: :warning, color: 'text-amber-700', tooltip: 'Warning' },
-      error: { icon: :warning, color: 'text-red-600', tooltip: 'Error' },
-      pending: { icon: :x, color: 'text-gray-500', tooltip: 'Pending' },
-      loading: { icon: :swap, color: 'text-orange-500', tooltip: 'Loading' }
-    }.fetch(status.to_sym, { icon: :x, color: 'text-gray-500', tooltip: 'Unknown' })
   end
 end

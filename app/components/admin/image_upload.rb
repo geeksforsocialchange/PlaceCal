@@ -88,7 +88,7 @@ class Components::Admin::ImageUpload < Components::Admin::Base
 
   def render_existing_image
     div(class: "relative #{@rounded} overflow-hidden border border-base-300 bg-base-200") do
-      image_tag image_url, class: "w-full h-auto #{@aspect} object-cover",
+      image_tag image_url, class: "w-full h-auto #{@aspect} object-cover", alt: '',
                            data: { image_preview_target: 'img' }
       div(class: 'absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100') do
         label(class: 'btn btn-sm bg-white/90 hover:bg-white text-base-content border-0 shadow-lg cursor-pointer') do
@@ -117,7 +117,7 @@ class Components::Admin::ImageUpload < Components::Admin::Base
         p(class: 'text-xs mt-1') { t('admin.images.upload_hint') }
       end
     end
-    image_tag '', style: 'display:none;',
+    image_tag '', style: 'display:none;', alt: '',
                   class: "w-full h-auto #{@aspect} object-cover #{@rounded} border border-base-300",
                   data: { image_preview_target: 'img' }
   end

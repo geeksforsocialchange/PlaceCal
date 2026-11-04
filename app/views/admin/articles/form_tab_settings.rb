@@ -32,7 +32,7 @@ class Views::Admin::Articles::FormTabSettings < Views::Admin::Base
 
         if !article.new_record? && disabled_fields.exclude?(:published_at)
           fieldset(class: 'fieldset mt-4') do
-            legend(class: 'fieldset-legend') { 'Publication Date' }
+            label(for: form.field_id(:published_at), class: 'fieldset-legend') { attr_label(:article, :published_at) }
             raw form.date_field(:published_at, class: 'input input-bordered w-full max-w-xs')
           end
         end

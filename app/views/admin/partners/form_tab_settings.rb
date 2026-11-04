@@ -28,7 +28,7 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base
       )
       div(class: 'max-w-md') do
         fieldset(class: 'fieldset') do
-          legend(class: 'fieldset-legend') do
+          label(for: form.field_id(:slug), class: 'fieldset-legend') do
             plain attr_label(:partner, :url)
             whitespace
             plain attr_label(:partner, :slug)
@@ -73,12 +73,13 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base
           plain is_enabled ? t('admin.partners.event_matching.enabled') : t('admin.partners.event_matching.disabled')
         end
         div(class: 'flex items-center gap-3') do
-          span(class: 'label-text text-sm font-medium text-base-content/40', id: 'event-matching-label-disabled') do
+          span(class: 'label-text text-sm font-medium text-base-content/60', id: 'event-matching-label-disabled') do
             t('admin.labels.disabled')
           end
           raw form.check_box(:can_be_assigned_events,
                              class: 'toggle toggle-success',
                              id: 'partner_can_be_assigned_events',
+                             aria: { label: t('admin.partners.sections.event_matching') },
                              onchange: 'updateEventMatchingTitle(this.checked)')
           span(class: toggle_on_label_class(is_enabled), id: 'event-matching-label-enabled') do
             t('admin.labels.enabled')
@@ -93,7 +94,7 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base
   end
 
   def toggle_on_label_class(on)
-    "label-text text-sm font-medium #{on ? 'text-success' : 'text-base-content/40'}"
+    "label-text text-sm font-medium #{on ? 'text-success' : 'text-base-content/60'}"
   end
 
   def render_event_matching_benefits
@@ -123,7 +124,7 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base
           const title = document.getElementById('event-matching-title');
           title.textContent = isEnabled ? '#{t('admin.partners.event_matching.enabled')}' : '#{t('admin.partners.event_matching.disabled')}';
 
-          const faded = 'text-base-content/40';
+          const faded = 'text-base-content/60';
           const enabledLabel = document.getElementById('event-matching-label-enabled');
           enabledLabel.classList.toggle('text-success', isEnabled);
           enabledLabel.classList.toggle(faded, !isEnabled);
@@ -173,11 +174,11 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base
           plain partner.hidden? ? t('admin.partners.moderation.hidden_label') : t('admin.partners.moderation.visible_label')
         end
         div(class: 'flex items-center gap-3') do
-          span(class: 'label-text text-sm font-medium text-base-content/40') { t('admin.labels.hidden') }
+          span(class: 'label-text text-sm font-medium text-base-content/60') { t('admin.labels.hidden') }
           raw form.hidden_field(:hidden,
                                 value: partner.hidden? ? '1' : '0',
                                 data: { inverted_toggle_target: 'hidden' })
-          raw safe('<input type="checkbox" id="partner_hidden_toggle" class="toggle toggle-success" ' \
+          raw safe("<input type=\"checkbox\" id=\"partner_hidden_toggle\" aria-label=\"#{ERB::Util.html_escape(t('admin.labels.visible'))}\" class=\"toggle toggle-success\" " \
                    'data-inverted-toggle-target="checkbox" data-action="change->inverted-toggle#toggle" ' \
                    'onchange="updateVisibilityTitle(this.checked)" />')
           span(class: toggle_on_label_class(!partner.hidden?), id: 'partner-visibility-label-visible') do
@@ -244,7 +245,7 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base
 
           const visibleLabel = document.getElementById('partner-visibility-label-visible');
           visibleLabel.classList.toggle('text-success', isVisible);
-          visibleLabel.classList.toggle('text-base-content/40', !isVisible);
+          visibleLabel.classList.toggle('text-base-content/60', !isVisible);
         }
       JS
     end
