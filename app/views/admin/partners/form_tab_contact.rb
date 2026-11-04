@@ -24,7 +24,7 @@ class Views::Admin::Partners::FormTabContact < Views::Admin::Base
       description: t('admin.partners.sections.online_presence_description')
     ) do
       fieldset(class: 'fieldset') do
-        legend(class: 'fieldset-legend') { attr_label(:partner, :website) }
+        label(for: form.field_id(:url), class: 'fieldset-legend') { attr_label(:partner, :website) }
         raw form.input_field(:url, class: 'input input-bordered w-full bg-base-100',
                                    placeholder: t('admin.partners.fields.website_placeholder'),
                                    'data-validate-url': 'true',
@@ -43,7 +43,7 @@ class Views::Admin::Partners::FormTabContact < Views::Admin::Base
       legend(class: 'fieldset-legend') { label_text }
       label(class: "input input-bordered flex items-center gap-1 bg-base-100#{" #{label_class}" if label_class}") do
         span(class: 'text-gray-600 text-sm shrink-0') { prefix }
-        raw form.input_field(field, class: 'grow bg-transparent border-0 focus:outline-none min-w-0')
+        raw form.input_field(field, class: 'grow bg-transparent border-0 focus:outline-none min-w-0', 'aria-label': label_text)
       end
     end
   end
@@ -55,17 +55,17 @@ class Views::Admin::Partners::FormTabContact < Views::Admin::Base
       description: t('admin.hints.shown_publicly')
     ) do
       fieldset(class: 'fieldset') do
-        legend(class: 'fieldset-legend') { attr_label(:partner, :name) }
+        label(for: form.field_id(:public_name), class: 'fieldset-legend') { attr_label(:partner, :name) }
         raw form.input_field(:public_name, class: 'input input-bordered w-full bg-base-100')
       end
       fieldset(class: 'fieldset') do
-        legend(class: 'fieldset-legend') { attr_label(:partner, :email) }
+        label(for: form.field_id(:public_email), class: 'fieldset-legend') { attr_label(:partner, :email) }
         raw form.input_field(:public_email, class: 'input input-bordered w-full bg-base-100',
                                             'data-validate-email': 'true',
                                             'data-validate-email-message': t('admin.hints.email_validation'))
       end
       fieldset(class: 'fieldset') do
-        legend(class: 'fieldset-legend') { attr_label(:partner, :phone) }
+        label(for: form.field_id(:public_phone), class: 'fieldset-legend') { attr_label(:partner, :phone) }
         raw form.input_field(:public_phone, class: 'input input-bordered w-full bg-base-100')
       end
     end
@@ -78,13 +78,13 @@ class Views::Admin::Partners::FormTabContact < Views::Admin::Base
       description: t('admin.partners.sections.partnership_contact_description')
     ) do
       fieldset(class: 'fieldset') do
-        legend(class: 'fieldset-legend') { attr_label(:partner, :name) }
+        label(for: form.field_id(:partner_name), class: 'fieldset-legend') { attr_label(:partner, :name) }
         raw form.input_field(:partner_name,
                              class: 'input input-bordered w-full bg-base-100 placeholder:text-gray-400',
                              placeholder: partner.public_name)
       end
       fieldset(class: 'fieldset') do
-        legend(class: 'fieldset-legend') { attr_label(:partner, :email) }
+        label(for: form.field_id(:partner_email), class: 'fieldset-legend') { attr_label(:partner, :email) }
         raw form.input_field(:partner_email,
                              class: 'input input-bordered w-full bg-base-100 placeholder:text-gray-400',
                              placeholder: partner.public_email,
@@ -92,7 +92,7 @@ class Views::Admin::Partners::FormTabContact < Views::Admin::Base
                              'data-validate-email-message': t('admin.hints.email_validation'))
       end
       fieldset(class: 'fieldset') do
-        legend(class: 'fieldset-legend') { attr_label(:partner, :phone) }
+        label(for: form.field_id(:partner_phone), class: 'fieldset-legend') { attr_label(:partner, :phone) }
         raw form.input_field(:partner_phone,
                              class: 'input input-bordered w-full bg-base-100 placeholder:text-gray-400',
                              placeholder: partner.public_phone)

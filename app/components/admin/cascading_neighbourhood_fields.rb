@@ -62,8 +62,9 @@ class Components::Admin::CascadingNeighbourhoodFields < Components::Admin::Base
 
   def render_selector(target, label_text, action, enabled: false, initial_option: '')
     div(class: 'flex items-center gap-3') do
-      label(class: 'text-sm text-base-content/70 w-16 shrink-0') { label_text }
+      label(for: selector_id(target), class: 'text-sm text-base-content/70 w-16 shrink-0') { label_text }
       select(
+        id: selector_id(target),
         class: "select select-bordered select-sm bg-base-100 #{'disabled:bg-base-200 disabled:text-gray-400 ' unless enabled}flex-1",
         **{ 'data-cascading-neighbourhood-target' => target },
         **{ 'data-action' => "change->cascading-neighbourhood##{action}" },
@@ -74,11 +75,16 @@ class Components::Admin::CascadingNeighbourhoodFields < Components::Admin::Base
     end
   end
 
+  def selector_id(target)
+    @form.field_id(:neighbourhood_id, target)
+  end
+
   def render_hidden_selector(target, row_target, label_text, action, initial_option)
     div(class: 'flex items-center gap-3 hidden',
         **{ 'data-cascading-neighbourhood-target' => row_target }) do
-      label(class: 'text-sm text-base-content/70 w-16 shrink-0') { label_text }
+      label(for: selector_id(target), class: 'text-sm text-base-content/70 w-16 shrink-0') { label_text }
       select(
+        id: selector_id(target),
         class: 'select select-bordered select-sm bg-base-100 disabled:bg-base-200 disabled:text-gray-400 flex-1',
         **{ 'data-cascading-neighbourhood-target' => target },
         **{ 'data-action' => "change->cascading-neighbourhood##{action}" },

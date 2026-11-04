@@ -6,6 +6,16 @@
 		corporate;
 }
 
+/* daisyUI's light error and success fail AA as text on white; these pass as text and under white content. */
+@plugin "daisyui/theme" {
+	name: "light";
+	default: true;
+	--color-error: #b91c1c;
+	--color-error-content: #ffffff;
+	--color-success: #15803d;
+	--color-success-content: #ffffff;
+}
+
 @source "../{datatables,helpers,javascript}";
 @source "../{components,views,views/layouts}/admin";
 

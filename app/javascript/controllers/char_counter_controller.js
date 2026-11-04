@@ -26,7 +26,7 @@ export default class extends Controller {
 			// Update counter styling based on thresholds
 			this.counterTarget.classList.remove(
 				"text-gray-500",
-				"text-placecal-orange",
+				"text-placecal-orange-dark",
 				"text-error",
 				"font-medium",
 			);
@@ -34,7 +34,10 @@ export default class extends Controller {
 			if (percent >= this.dangerAtValue) {
 				this.counterTarget.classList.add("text-error", "font-medium");
 			} else if (percent >= this.warningAtValue) {
-				this.counterTarget.classList.add("text-placecal-orange", "font-medium");
+				this.counterTarget.classList.add(
+					"text-placecal-orange-dark",
+					"font-medium",
+				);
 			} else {
 				this.counterTarget.classList.add("text-gray-500");
 			}

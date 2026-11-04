@@ -27,7 +27,9 @@ class Components::Admin::Datatable < Components::Admin::Base
       data_admin_table_columns_value: columns_json,
       data_admin_table_page_length_value: '25',
       data_admin_table_default_sort_column_value: @default_sort[:column] || '',
-      data_admin_table_default_sort_direction_value: @default_sort[:direction] || 'asc'
+      data_admin_table_default_sort_direction_value: @default_sort[:direction] || 'asc',
+      data_admin_table_previous_label_value: t('admin.datatable.previous_page'),
+      data_admin_table_next_label_value: t('admin.datatable.next_page')
     ) do
       render_header(model_name)
       render_filter_bar

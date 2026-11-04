@@ -144,8 +144,6 @@ export default class extends Controller {
 				this.showSelect(target);
 				this.populateSelect(target, data, this.getPlaceholder(level));
 				target.value = data[0].id;
-				// Visual hint that it was auto-selected
-				target.parentElement.classList.add("opacity-60");
 				this.updateOutput(data[0].id);
 
 				// Load next level from the parent scope, not the auto-selected item.
@@ -163,7 +161,6 @@ export default class extends Controller {
 			} else {
 				// Multiple options: show the dropdown
 				this.showSelect(target);
-				target.parentElement.classList.remove("opacity-60");
 				this.populateSelect(target, data, this.getPlaceholder(level));
 				// Add a "skip" option so users can bypass this optional level
 				// (e.g., select a district without picking a county first).
@@ -234,7 +231,6 @@ export default class extends Controller {
 		// Remove auto-select styling if user manually selected
 		const target = this.getTargetForLevel(level);
 		if (target) {
-			target.parentElement.classList.remove("opacity-60");
 		}
 
 		// Load children for the next level down
@@ -274,7 +270,6 @@ export default class extends Controller {
 	clearSelect(select, placeholder = "Select...") {
 		select.innerHTML = `<option value="">${placeholder}</option>`;
 		select.disabled = true;
-		select.parentElement.classList.remove("opacity-60");
 	}
 
 	// Clear all levels below the given level

@@ -35,7 +35,7 @@ class Views::Admin::Sites::FormTabSettings < Views::Admin::Base
   def render_domain_slug_fields(site)
     div(class: 'grid grid-cols-1 md:grid-cols-2 gap-4') do
       fieldset(class: 'fieldset') do
-        legend(class: 'fieldset-legend') { plain attr_label(:site, :domain) }
+        label(for: form.field_id(:domain), class: 'fieldset-legend') { plain attr_label(:site, :domain) }
         if policy(site).permitted_attributes.include?(:domain)
           raw form.input_field(:domain, class: 'input input-bordered w-full font-mono text-sm', placeholder: t('admin.sites.fields.domain_placeholder'))
         else
@@ -46,7 +46,7 @@ class Views::Admin::Sites::FormTabSettings < Views::Admin::Base
       end
 
       fieldset(class: 'fieldset') do
-        legend(class: 'fieldset-legend') { plain attr_label(:site, :slug) }
+        label(for: form.field_id(:slug), class: 'fieldset-legend') { plain attr_label(:site, :slug) }
         if policy(site).permitted_attributes.include?(:slug)
           raw form.input_field(:slug, class: 'input input-bordered w-full font-mono text-sm')
         else

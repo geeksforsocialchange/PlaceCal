@@ -64,14 +64,14 @@ class Views::Admin::Partners::FormTabPreview < Views::Admin::Base
     return if partner.accessibility_info.blank?
 
     div(class: 'mt-6') do
-      h3(class: 'font-semibold mb-2') { t('admin.sections.accessibility') }
+      h2(class: 'font-semibold mb-2') { t('admin.sections.accessibility') }
       p(class: 'text-sm') { partner.accessibility_info }
     end
   end
 
   def render_image(partner)
     if partner.image.present?
-      image_tag partner.image.standard.url, class: 'rounded-box w-full'
+      image_tag partner.image.standard.url, class: 'rounded-box w-full', alt: ''
     else
       div(class: 'bg-base-200 rounded-box aspect-square flex items-center justify-center') do
         span(class: 'text-gray-400 text-sm') { t('admin.images.no_image') }
@@ -92,7 +92,7 @@ class Views::Admin::Partners::FormTabPreview < Views::Admin::Base
         div(class: 'mb-3') do
           div(class: 'font-semibold text-xs uppercase text-gray-600 mb-1') { attr_label(:partner, :website) }
           link_to partner.url, partner.url,
-                  target: '_blank', class: 'link text-placecal-orange hover:text-orange-600 break-all', rel: 'noopener'
+                  target: '_blank', class: 'link text-placecal-orange-dark hover:text-orange-800 break-all', rel: 'noopener'
         end
       end
 
@@ -100,7 +100,7 @@ class Views::Admin::Partners::FormTabPreview < Views::Admin::Base
         div(class: 'mb-3') do
           div(class: 'font-semibold text-xs uppercase text-gray-600 mb-1') { attr_label(:partner, :email) }
           mail_to partner.public_email, partner.public_email,
-                  class: 'link text-placecal-orange hover:text-orange-600'
+                  class: 'link text-placecal-orange-dark hover:text-orange-800'
         end
       end
 
@@ -116,8 +116,7 @@ class Views::Admin::Partners::FormTabPreview < Views::Admin::Base
   def render_upcoming_events(partner)
     SectionHeader(
       title: t('admin.sections.upcoming_events'),
-      description: t('admin.partners.sections.upcoming_events_description'),
-      tag: :h3
+      description: t('admin.partners.sections.upcoming_events_description')
     )
 
     upcoming_events = partner.events.upcoming.where(dtstart: ..30.days.from_now).order(:dtstart).limit(20)
@@ -151,7 +150,7 @@ class Views::Admin::Partners::FormTabPreview < Views::Admin::Base
               td do
                 if event.calendar
                   link_to event.calendar.name, edit_admin_calendar_path(event.calendar),
-                          class: 'link text-placecal-orange hover:text-orange-600 text-sm'
+                          class: 'link text-placecal-orange-dark hover:text-orange-800 text-sm'
                 end
               end
             end

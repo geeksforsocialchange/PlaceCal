@@ -23,7 +23,7 @@ class Views::Admin::Calendars::Show < Views::Admin::Base
           p(class: 'text-sm text-gray-600 mt-1') do
             plain 'Calendar for '
             link_to calendar.organiser.name, edit_admin_partner_path(calendar.organiser),
-                    class: 'link link-hover text-placecal-orange'
+                    class: 'link link-hover text-placecal-orange-dark'
           end
         end
         div(class: 'flex items-center gap-2') do
@@ -41,7 +41,7 @@ class Views::Admin::Calendars::Show < Views::Admin::Base
     div(class: 'grid grid-cols-1 md:grid-cols-3 gap-4 mb-8') do
       InfoCard(icon: :partner, label: 'Partner', color: :orange) do
         link_to calendar.organiser.name, edit_admin_partner_path(calendar.organiser),
-                class: 'font-semibold link link-hover text-placecal-orange'
+                class: 'font-semibold link link-hover text-placecal-orange-dark'
       end
       InfoCard(
         icon: :cog, label: 'Strategy', value: calendar.strategy.to_s.titleize, color: :info
@@ -49,7 +49,7 @@ class Views::Admin::Calendars::Show < Views::Admin::Base
       InfoCard(icon: :map_pin, label: 'Default Location', color: :success) do
         if calendar.place
           link_to calendar.place.name, edit_admin_partner_path(calendar.place),
-                  class: 'font-semibold link link-hover text-placecal-orange'
+                  class: 'font-semibold link link-hover text-placecal-orange-dark'
         end
       end
     end
@@ -78,8 +78,8 @@ class Views::Admin::Calendars::Show < Views::Admin::Base
   end
 
   def render_upcoming_tab(upcoming)
-    input(type: 'radio', name: 'events_tabs', role: 'tab', class: 'tab',
-          aria_label: "Upcoming (#{upcoming.count})", checked: true)
+    input(type: 'radio', name: 'events_tabs', class: 'tab',
+          aria_label: t('admin.calendars.show.upcoming_tab', count: upcoming.count), checked: true)
     div(role: 'tabpanel', class: 'tab-content py-4') do
       if upcoming.any?
         render_events_table(upcoming, :upcoming)
@@ -91,8 +91,8 @@ class Views::Admin::Calendars::Show < Views::Admin::Base
   end
 
   def render_past_tab(past)
-    input(type: 'radio', name: 'events_tabs', role: 'tab', class: 'tab',
-          aria_label: "Past (#{past.count})")
+    input(type: 'radio', name: 'events_tabs', class: 'tab',
+          aria_label: t('admin.calendars.show.past_tab', count: past.count))
     div(role: 'tabpanel', class: 'tab-content py-4') do
       if past.any?
         render_events_table(past, :past)
@@ -123,7 +123,7 @@ class Views::Admin::Calendars::Show < Views::Admin::Base
   end
 
   def render_event_row(event, type)
-    tr(class: "hover#{' opacity-70' if type == :past}") do
+    tr(class: 'hover') do
       td(class: 'whitespace-nowrap') do
         div(class: 'font-semibold text-sm') { event.dtstart.strftime('%d %b') }
         div(class: 'text-xs text-gray-600') do

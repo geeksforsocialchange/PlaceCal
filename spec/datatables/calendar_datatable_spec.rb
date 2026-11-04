@@ -142,7 +142,7 @@ RSpec.describe CalendarDatatable do
         datatable = create_datatable
 
         state_html = datatable.data.first[:state]
-        expect(state_html).to include("text-emerald-600")
+        expect(state_html).to include('data-status="ok"')
         expect(state_html).to include("Idle")
       end
 
@@ -151,7 +151,7 @@ RSpec.describe CalendarDatatable do
         datatable = create_datatable
 
         state_html = datatable.data.first[:state]
-        expect(state_html).to include("text-orange-500")
+        expect(state_html).to include('data-status="queued"')
         expect(state_html).to include("Queued")
       end
 
@@ -160,7 +160,7 @@ RSpec.describe CalendarDatatable do
         datatable = create_datatable
 
         state_html = datatable.data.first[:state]
-        expect(state_html).to include("text-red-600")
+        expect(state_html).to include('data-status="error"')
         expect(state_html).to include("error")
       end
     end
@@ -171,7 +171,7 @@ RSpec.describe CalendarDatatable do
 
         notices_html = datatable.data.first[:notices]
         expect(notices_html).to include("5")
-        expect(notices_html).to include("text-amber-700")
+        expect(notices_html).to include('data-status="warning"')
       end
 
       it "shows green check when no notices" do
@@ -179,7 +179,7 @@ RSpec.describe CalendarDatatable do
         datatable = create_datatable
 
         notices_html = datatable.data.first[:notices]
-        expect(notices_html).to include("text-emerald-600")
+        expect(notices_html).to include('data-status="ok"')
       end
     end
 
@@ -189,14 +189,14 @@ RSpec.describe CalendarDatatable do
         datatable = create_datatable
 
         events_html = datatable.data.first[:events]
-        expect(events_html).to include("text-emerald-600")
+        expect(events_html).to include('data-status="ok"')
       end
 
       it "shows cross for calendar without events" do
         datatable = create_datatable
 
         events_html = datatable.data.first[:events]
-        expect(events_html).to include("text-gray-500")
+        expect(events_html).to include('data-status="none"')
       end
     end
 

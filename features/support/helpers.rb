@@ -72,7 +72,7 @@ module CucumberHelpers
   rescue Capybara::ElementNotFound
     # Fall back to finding by fieldset legend
     fieldsets = page.all("fieldset").select do |fs|
-      legend = fs.first("legend")
+      legend = fs.first("legend", minimum: 0)
       next false unless legend
 
       legend_text_actual = legend.text.strip
@@ -81,7 +81,7 @@ module CucumberHelpers
         legend_text_actual.downcase.include?(legend_text.downcase)
     end
 
-    fieldset = fieldsets.find { |fs| fs.first("legend")&.text&.strip == legend_text }
+    fieldset = fieldsets.find { |fs| fs.first("legend", minimum: 0)&.text&.strip == legend_text }
     fieldset ||= fieldsets.first
 
     raise Capybara::ElementNotFound, "Could not find fieldset for '#{legend_text}'" unless fieldset

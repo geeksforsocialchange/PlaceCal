@@ -60,7 +60,7 @@ class Views::Admin::Users::FormTabSettings < Views::Admin::Base
   def render_site_admin_warning
     div(class: 'card bg-base-200/50 border border-base-300') do
       div(class: 'card-body p-5') do
-        h4(class: 'font-semibold flex items-center gap-2 mb-2 text-base-content/70') do
+        h2(class: 'font-semibold flex items-center gap-2 mb-2 text-base-content/70') do
           raw icon(:trash, size: '5')
           plain t('admin.danger_zone.delete_title', model: User.model_name.human)
         end

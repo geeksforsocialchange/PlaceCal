@@ -11,7 +11,7 @@ class Components::Admin::DangerZone < Components::Admin::Base
   def view_template
     div(class: 'card bg-error/5 border border-error/20') do
       div(class: 'card-body p-4') do
-        h3(class: 'font-semibold flex items-center gap-2 text-error') do
+        h2(class: 'font-semibold flex items-center gap-2 text-error') do
           icon(:warning, size: '5')
           plain @title
         end

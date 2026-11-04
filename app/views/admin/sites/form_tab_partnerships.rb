@@ -22,6 +22,7 @@ class Views::Admin::Sites::FormTabPartnerships < Views::Admin::Base
                                  collection: options_for_tags,
                                  multiple: true,
                                  class: 'select select-bordered w-full',
+                                 aria: { label: t('admin.sites.fields.partnership_tags') },
                                  data: { controller: 'tom-select' })
           else
             raw form.input_field(:tag_ids,
@@ -30,6 +31,7 @@ class Views::Admin::Sites::FormTabPartnerships < Views::Admin::Base
                                  multiple: true,
                                  class: 'select select-bordered w-full bg-base-200',
                                  disabled: true,
+                                 aria: { label: t('admin.sites.fields.partnership_tags') },
                                  data: { controller: 'tom-select' })
           end
         end

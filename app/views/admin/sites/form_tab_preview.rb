@@ -71,7 +71,7 @@ class Views::Admin::Sites::FormTabPreview < Views::Admin::Base
   def render_partner_row(partner)
     tr do
       td do
-        link_to(edit_admin_partner_path(partner), class: 'link link-hover text-placecal-orange font-medium') do
+        link_to(edit_admin_partner_path(partner), class: 'link link-hover text-placecal-orange-dark font-medium') do
           plain partner.name
         end
         span(class: 'badge badge-error badge-xs ml-1') { t('admin.labels.hidden') } if partner.hidden
@@ -142,14 +142,14 @@ class Views::Admin::Sites::FormTabPreview < Views::Admin::Base
         if event.organiser
           link_to(truncate(event.organiser.name, length: 25),
                   edit_admin_partner_path(event.organiser),
-                  class: 'link text-placecal-orange hover:text-orange-600 text-sm')
+                  class: 'link text-placecal-orange-dark hover:text-orange-800 text-sm')
         end
       end
       td do
         if event.calendar
           link_to(truncate(event.calendar.name, length: 20),
                   edit_admin_calendar_path(event.calendar),
-                  class: 'link text-placecal-orange hover:text-orange-600 text-sm')
+                  class: 'link text-placecal-orange-dark hover:text-orange-800 text-sm')
         end
       end
     end

@@ -99,23 +99,6 @@ class SiteDatatable < Datatable
     HTML
   end
 
-  def render_count_cell(count, label)
-    if count.positive?
-      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
-        <span class="inline-flex items-center text-emerald-600" title="#{count} #{label}#{'s' if count != 1}">
-          #{icon(:check)}
-          <span class="ml-1 text-xs">#{count}</span>
-        </span>
-      HTML
-    else
-      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
-        <span class="inline-flex items-center text-gray-500" title="No #{label}s">
-          #{icon(:x)}
-        </span>
-      HTML
-    end
-  end
-
   def render_site_admin_cell(record)
     admin = record.site_admin
     return empty_cell unless admin

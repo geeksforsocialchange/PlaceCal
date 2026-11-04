@@ -394,14 +394,14 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
     it "shows check icon for partner with calendar" do
       within("[data-admin-table-target='tbody'] tr", text: "Alpha Community Centre") do
         # Calendar column should have green check
-        expect(page).to have_css(".text-emerald-600 svg")
+        expect(page).to have_css("[data-status='ok']")
       end
     end
 
     it "shows cross icon for partner without calendar" do
       within("[data-admin-table-target='tbody'] tr", text: "Beta Youth Club") do
         # Calendar column should have gray cross
-        expect(page).to have_css(".text-gray-500 svg")
+        expect(page).to have_css("[data-status='none']")
       end
     end
   end
