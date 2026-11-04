@@ -68,9 +68,9 @@ RSpec.describe Components::Sites::Footer, type: :component do
             I18n.t("navigation.site.news"),
             "About",
             I18n.t("navigation.site.join"),
+            I18n.t("navigation.site.accessibility"),
             I18n.t("navigation.site.privacy"),
             I18n.t("navigation.site.terms"),
-            I18n.t("navigation.site.accessibility"),
             I18n.t("navigation.site.log_in")
           ]
         )
@@ -84,9 +84,9 @@ RSpec.describe Components::Sites::Footer, type: :component do
             I18n.t("navigation.site.home"),
             I18n.t("navigation.site.events"),
             I18n.t("navigation.site.partners"),
+            I18n.t("navigation.site.accessibility"),
             I18n.t("navigation.site.privacy"),
             I18n.t("navigation.site.terms"),
-            I18n.t("navigation.site.accessibility"),
             I18n.t("navigation.site.log_in")
           ]
         )
@@ -138,9 +138,9 @@ RSpec.describe Components::Sites::Footer, type: :component do
           I18n.t("navigation.site.home"),
           I18n.t("navigation.site.events"),
           I18n.t("navigation.site.partners"),
+          I18n.t("navigation.site.accessibility"),
           I18n.t("navigation.site.privacy"),
           I18n.t("navigation.site.terms"),
-          I18n.t("navigation.site.accessibility"),
           I18n.t("navigation.site.log_in")
         ]
       )

@@ -14,6 +14,17 @@ RSpec.describe "Join marketing site", type: :request do
       expect(footer_link&.text).to eq(I18n.t("join.footer.accessibility"))
     end
 
+    it "lists the same about links as the directory, on the apex" do
+      get "http://join.lvh.me/"
+      links = Nokogiri::HTML(response.body).css("footer a").to_h { |a| [a.text, a[:href]] }
+      expect(links).to include(
+        I18n.t("join.footer.sustainability") => "http://lvh.me/sustainability",
+        I18n.t("join.footer.for_ai_assistants") => "http://lvh.me/mcp",
+        I18n.t("join.footer.privacy_policy") => "http://lvh.me/privacy",
+        I18n.t("join.footer.terms_of_use") => "http://lvh.me/terms-of-use"
+      )
+    end
+
     it "serves the homepage" do
       get "http://join.lvh.me/"
       expect(response).to be_successful

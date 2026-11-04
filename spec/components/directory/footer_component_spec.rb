@@ -33,6 +33,13 @@ RSpec.describe Components::Directory::Footer, type: :component do
     expect(link[:href]).to eq("/accessibility")
   end
 
+  it "lists the about links from the story to the legal pages" do
+    render_inline(described_class.new)
+
+    about = %w[our_story accessibility sustainability for_ai_assistants privacy_policy terms_of_use].map { |key| I18n.t("directory.footer.#{key}") }
+    expect(page.all("footer a").map(&:text) & about).to eq(about)
+  end
+
   context "when APP_VERSION is set" do
     before do
       stub_const("ENV", ENV.to_hash.merge("APP_VERSION" => "v0.9.1"))
