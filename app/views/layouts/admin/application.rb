@@ -14,6 +14,9 @@ class Views::Layouts::Admin::Application < Phlex::HTML
   include Phlex::Rails::Helpers::AssetPath
   include Components::Admin::SvgIcons
 
+  MAIN_ID = 'main-content'
+  SIDEBAR_ID = 'admin-sidebar'
+
   def view_template
     doctype
     html(lang: 'en') do
@@ -36,13 +39,17 @@ class Views::Layouts::Admin::Application < Phlex::HTML
         render_meta
       end
 
-      body(class: 'bg-gray-50') do
+      body(class: 'bg-gray-50', data: { controller: 'mobile-menu' }) do
+        render_skip_link
         render_topbar
-        div(class: 'flex pt-14 min-h-screen') do
-          nav(aria_label: 'Main navigation', class: 'hidden md:block w-56 flex-shrink-0 bg-gray-100 border-r border-gray-200') do
+        div(class: 'flex flex-col md:flex-row md:pt-14 min-h-screen') do
+          nav(id: SIDEBAR_ID, aria_label: t('admin.leftbar.label'), data: { mobile_menu_target: 'menu' },
+              class: 'is-hidden max-md:[&.is-hidden]:hidden md:w-56 flex-shrink-0 bg-gray-100 ' \
+                     'border-b md:border-b-0 md:border-r border-gray-200') do
             div(class: 'py-4') { render_leftbar }
           end
-          main(role: 'main', class: 'flex-1 min-h-screen px-6 py-6') do
+          # tabindex lets the skip link move focus here; it needs no ring of its own.
+          main(id: MAIN_ID, tabindex: '-1', class: 'flex-1 min-w-0 min-h-screen px-4 md:px-6 py-6 focus:outline-none') do
             render Components::Admin::Flash.new
             yield
             if Rails.env.development?
@@ -58,6 +65,22 @@ class Views::Layouts::Admin::Application < Phlex::HTML
 
   private
 
+  def render_skip_link
+    a(href: "##{MAIN_ID}",
+      class: 'sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[60] focus:rounded-md ' \
+             'focus:bg-white focus:px-4 focus:py-2 focus:font-semibold focus:text-gray-900 ' \
+             'focus:outline-2 focus:outline-offset-2 focus:outline-gray-900') { t('navigation.skip_to_content') }
+  end
+
+  def render_menu_toggle
+    button(type: 'button', aria_controls: SIDEBAR_ID, aria_expanded: 'false',
+           data: { mobile_menu_target: 'toggle', action: 'click->mobile-menu#toggle' },
+           class: 'md:hidden flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-gray-300 hover:text-white hover:bg-gray-800/80') do
+      icon(:menu, size: '5')
+      span(class: 'text-sm') { t('admin.topbar.menu') }
+    end
+  end
+
   def render_meta
     meta(property: 'og:site_name', content: 'PlaceCal Admin')
     link(rel: 'icon', type: 'image/png', href: image_url('favicon.png'))
@@ -67,9 +90,11 @@ class Views::Layouts::Admin::Application < Phlex::HTML
   end
 
   def render_topbar
-    nav(aria_label: 'Top bar', class: 'fixed top-0 left-0 right-0 h-14 bg-gray-900 flex items-center justify-between px-4 z-50') do
+    # Fixed only from md, so the menu below it is always in view when opened.
+    header(class: 'relative md:fixed top-0 left-0 right-0 h-14 bg-gray-900 flex items-center justify-between gap-2 px-2 md:px-4 z-50') do
       # Left zone: Logo
-      div(class: 'flex items-center gap-6 min-w-[180px]') do
+      div(class: 'flex items-center gap-2 md:gap-6 md:min-w-[180px]') do
+        render_menu_toggle
         link_to admin_root_path, class: 'flex items-center gap-2 font-bold text-lg text-white hover:text-placecal-orange transition-colors' do
           span(class: 'text-placecal-orange') { 'PlaceCal' }
           span(class: 'text-xs font-normal text-gray-400') { t('admin.topbar.admin') }
@@ -77,7 +102,7 @@ class Views::Layouts::Admin::Application < Phlex::HTML
       end
 
       # Center zone: Quick actions
-      div(class: 'flex items-center gap-1') do
+      div(class: 'hidden md:flex items-center gap-1') do
         topbar_quick_action(new_admin_partner_path, Partner) if policy(Partner).new?
         topbar_quick_action(new_admin_calendar_path, Calendar) if policy(Calendar).new?
         topbar_quick_action(new_admin_user_path, User) if policy(User).new?
@@ -85,7 +110,7 @@ class Views::Layouts::Admin::Application < Phlex::HTML
 
       # Right zone: User menu
       div(class: 'flex items-center gap-2 justify-end') do
-        link_to admin_profile_path, class: 'flex items-center gap-2 px-3 py-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800/80 transition-colors' do
+        link_to admin_profile_path, class: 'flex items-center gap-2 px-2 md:px-3 py-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800/80 transition-colors' do
           if current_user&.avatar.present?
             image_tag current_user.avatar.standard.url, class: 'w-7 h-7 rounded-full object-cover', alt: ''
           else
@@ -93,11 +118,11 @@ class Views::Layouts::Admin::Application < Phlex::HTML
               icon(:user, size: '4')
             end
           end
-          span(class: 'text-sm') { current_user&.email }
-          icon(:crown, size: '4', css_class: 'text-amber-400') if current_user&.role == :root
+          span(class: 'sr-only lg:not-sr-only text-sm') { current_user&.email }
+          icon(:crown, size: '4', css_class: 'hidden lg:block text-amber-400') if current_user&.role == :root
         end
         button_to destroy_user_session_path, method: :delete,
-                                             class: 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-gray-500 hover:text-white hover:bg-gray-800/80 transition-colors',
+                                             class: 'flex items-center gap-1.5 px-2 md:px-3 py-1.5 rounded-lg text-gray-500 hover:text-white hover:bg-gray-800/80 transition-colors',
                                              title: t('admin.topbar.sign_out'),
                                              form: { data: { turbo: 'false' } } do
           icon(:logout, size: '4')
@@ -117,12 +142,24 @@ class Views::Layouts::Admin::Application < Phlex::HTML
   end
 
   def render_leftbar
-    nav(class: 'flex flex-col') do
+    div(class: 'flex flex-col') do
       leftbar_main_links
+      leftbar_quick_actions
       leftbar_content_types
       leftbar_support_links
       leftbar_dev_links
       leftbar_build_info
+    end
+  end
+
+  # The top bar has no room for these below md, so the menu carries them.
+  def leftbar_quick_actions
+    div(class: 'md:hidden') do
+      leftbar_section(t('admin.leftbar.quick_actions')) do
+        admin_nav_link(t('admin.actions.new_model', model: Partner.model_name.human), new_admin_partner_path, :plus) if policy(Partner).new?
+        admin_nav_link(t('admin.actions.new_model', model: Calendar.model_name.human), new_admin_calendar_path, :plus) if policy(Calendar).new?
+        admin_nav_link(t('admin.actions.new_model', model: User.model_name.human), new_admin_user_path, :plus) if policy(User).new?
+      end
     end
   end
 
@@ -169,7 +206,7 @@ class Views::Layouts::Admin::Application < Phlex::HTML
   end
 
   def leftbar_section(heading, &)
-    h6(class: 'px-4 mt-6 mb-2 text-xs font-semibold text-gray-600 uppercase tracking-wider') { heading }
+    h2(class: 'px-4 mt-6 mb-2 text-xs font-semibold text-gray-600 uppercase tracking-wider') { heading }
     ul(class: 'space-y-1 px-2', &)
   end
 
@@ -191,10 +228,11 @@ class Views::Layouts::Admin::Application < Phlex::HTML
     base_classes = 'flex items-center gap-2 px-3 py-2 text-sm rounded-md transition-colors'
     active_classes = 'bg-placecal-orange-dark text-white'
     inactive_classes = 'text-gray-700 hover:bg-gray-200'
-    klass = current_page?(path) ? "#{base_classes} #{active_classes}" : "#{base_classes} #{inactive_classes}"
+    active = current_page?(path)
+    klass = active ? "#{base_classes} #{active_classes}" : "#{base_classes} #{inactive_classes}"
 
     li do
-      link_to path, class: klass do
+      link_to path, class: klass, aria: { current: ('page' if active) } do
         icon(icon_name.to_sym, size: '4') if icon_name
         span(class: 'flex-1') { name }
         icon(:crown, size: '3', css_class: 'text-amber-500') if root_only

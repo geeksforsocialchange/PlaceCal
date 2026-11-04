@@ -238,7 +238,8 @@ class Components::Admin::Datatable < Components::Admin::Base
   end
 
   def render_table
-    div(class: 'overflow-x-auto') do
+    # relative keeps the sr-only header labels inside the scroll box, so they don't widen the page.
+    div(class: 'relative overflow-x-auto') do
       table(class: 'min-w-full', data_admin_table_target: 'table') do
         thead do
           tr(class: 'bg-gray-50 border-b border-gray-200') do

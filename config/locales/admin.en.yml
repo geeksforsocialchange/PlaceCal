@@ -173,6 +173,7 @@ en:
 
     topbar:
       admin: "Admin"
+      menu: "Menu"
       sign_out: "Sign out"
 
     leftbar:
@@ -183,6 +184,8 @@ en:
       handbook: "Handbook"
       import_status: "Import status"
       in_development: "In development"
+      label: "Main navigation"
+      quick_actions: "Quick actions"
       report_bug: "Report a bug"
 
     # =========================================================================
