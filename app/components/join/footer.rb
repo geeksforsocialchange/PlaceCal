@@ -20,6 +20,10 @@ class Components::Join::Footer < Components::Join::Base
         [t('join.footer.our_story'), join_our_story_path],
         [t('join.footer.gfsc'), 'https://gfsc.community'],
         [t('join.footer.accessibility'), "#{apex_url}/accessibility"],
+        [t('join.footer.sustainability'), "#{apex_url}/sustainability"],
+        [t('join.footer.for_ai_assistants'), "#{apex_url}/mcp"],
+        [t('join.footer.privacy_policy'), "#{apex_url}/privacy"],
+        [t('join.footer.terms_of_use'), "#{apex_url}/terms-of-use"],
         [t('contact.email'), "mailto:#{t('contact.email')}"]
       ]]
     ]

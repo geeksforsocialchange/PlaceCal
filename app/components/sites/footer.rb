@@ -81,9 +81,9 @@ class Components::Sites::Footer < Components::Base
   # with, so the footer is never empty.
   def nav_links
     links = Array(@navigation).presence&.dup || core_nav_links
+    links << [t('navigation.site.accessibility'), accessibility_path]
     links << [t('navigation.site.privacy'), privacy_path] unless links.any? { |(_label, path)| path == privacy_path }
     links << [t('navigation.site.terms'), terms_of_use_path]
-    links << [t('navigation.site.accessibility'), accessibility_path]
     links << [t('navigation.site.log_in'), new_user_session_path]
     links
   end
