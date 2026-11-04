@@ -53,5 +53,15 @@ RSpec.describe "Admin layout", :slow, type: :system do
 
       expect(page_width).to be <= 320
     end
+
+    it "does not scroll sideways on the dashboard, a site form or the article editor" do
+      site = create(:site, site_admin: create(:user, first_name: "Alexandria", last_name: "Longname-Featherstonehaugh",
+                                                     email: "a-very-long-site-admin-address@placecal.org"))
+
+      [admin_url("/"), admin_url("/sites/#{site.id}/edit"), admin_url("/articles/new")].each do |url|
+        visit url
+        expect(page_width).to be <= 320
+      end
+    end
   end
 end

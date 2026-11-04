@@ -149,6 +149,25 @@ RSpec.describe "Admin Partners Datatable", :slow, type: :system do
       expect(rows.first.text).to include("Gamma")
     end
 
+    it "sorts from the keyboard and reports the direction (WCAG 2.1.1, 4.1.2)" do
+      header = find("th[data-column='name']")
+      expect(header["aria-sort"]).to eq("none")
+
+      header.find("button").send_keys(:enter)
+      wait_for_datatable
+      expect(header["aria-sort"]).to eq("ascending")
+      expect(all("[data-admin-table-target='tbody'] tr").first.text).to include("Alpha")
+
+      header.find("button").send_keys(:space)
+      wait_for_datatable
+      expect(header["aria-sort"]).to eq("descending")
+      expect(find("th[data-column='updated_at']")["aria-sort"]).to eq("none")
+    end
+
+    it "announces the record count in a status region" do
+      expect(page).to have_css("[data-admin-table-target='summary'][role='status']", text: "3 total records")
+    end
+
     it "shows reset sort button after changing sort" do
       expect(page).not_to have_button("Reset sort")
 

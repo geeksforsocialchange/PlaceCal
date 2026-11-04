@@ -32,7 +32,7 @@
 
 /* Control input area */
 .ts-wrapper .ts-control {
-	border: 1px solid #d1d5db !important;
+	border: 1px solid var(--color-control-border) !important;
 	background-color: #ffffff !important;
 	border-radius: 0.5rem !important;
 	padding: 0.5rem 0.75rem !important;
@@ -40,20 +40,20 @@
 }
 
 .ts-wrapper .ts-control:hover {
-	border-color: #9ca3af !important;
+	border-color: var(--color-gray-700) !important;
 }
 
 .ts-wrapper.focus .ts-control {
-	border-color: var(--color-placecal-orange) !important;
-	outline: 2px solid rgba(232, 125, 30, 0.2) !important;
-	outline-offset: 0 !important;
+	border-color: var(--color-placecal-orange-dark) !important;
+	outline: 2px solid var(--color-placecal-orange-dark) !important;
+	outline-offset: 1px !important;
 	box-shadow: none !important;
 }
 
 /* Selected items (tags) */
 .ts-wrapper.multi .ts-control > div,
 .ts-wrapper.multi .ts-control [data-value] {
-	background: var(--color-placecal-orange) !important;
+	background: var(--color-placecal-orange-dark) !important;
 	background-image: none !important;
 	color: white !important;
 	border: 0 !important;
@@ -123,11 +123,11 @@
 .ts-dropdown .option:hover,
 .ts-dropdown .active {
 	background-color: rgba(232, 125, 30, 0.1) !important;
-	color: var(--color-placecal-orange) !important;
+	color: var(--color-placecal-orange-dark) !important;
 }
 
 .ts-dropdown .option.selected {
-	background: var(--color-placecal-orange) !important;
+	background: var(--color-placecal-orange-dark) !important;
 	color: white !important;
 }
 
@@ -199,4 +199,16 @@
 .ts-filter .ts-dropdown .option {
 	padding: 0.375rem 0.75rem !important;
 	font-size: 0.75rem !important;
+}
+
+/* Long single choices (a site admin's name and email) wrap instead of widening the page */
+.ts-wrapper,
+.ts-wrapper .ts-control {
+	min-width: 0 !important;
+}
+
+.ts-wrapper.single .ts-control > .item {
+	min-width: 0;
+	white-space: normal !important;
+	overflow-wrap: anywhere;
 }

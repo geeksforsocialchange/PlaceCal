@@ -96,7 +96,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base
       label: t('admin.dashboard.stats.calendars'), value: nil,
       subtitle: t('admin.dashboard.stats.calendars_total', count: total_calendars)
     ) do
-      div(class: 'flex items-baseline gap-3') do
+      div(class: 'flex flex-wrap items-baseline gap-x-3') do
         render_calendar_stat_tooltip('working_calendars', working_calendars_count, 'text-success',
                                      t('admin.dashboard.stats.working'))
         render_calendar_stat_tooltip('processing_calendars', processing_calendars_count, 'text-info',
@@ -113,9 +113,11 @@ class Views::Admin::Pages::Home < Views::Admin::Base
 
   def render_calendar_stat_tooltip(tooltip_key, count, color_class, label_text, tooltip_text = nil)
     tooltip_text ||= t("admin.dashboard.tooltips.#{tooltip_key}")
-    div(class: 'tooltip tooltip-bottom', data_tip: tooltip_text) do
+    # The bubble overflows narrow screens and never reaches keyboard or screen reader users, so the text is also in the page.
+    div(class: 'md:tooltip md:tooltip-bottom', data_tip: tooltip_text) do
       span(class: "text-lg font-bold #{color_class}") { count.to_s }
       span(class: 'text-[10px] text-gray-600 ml-0.5') { label_text }
+      span(class: 'sr-only') { " (#{tooltip_text})" }
     end
   end
 
@@ -165,7 +167,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base
                          'hover:border-placecal-orange/30 hover:bg-base-200/50 transition-colors group') do
             div(class: 'flex-1 min-w-0') do
               h3(class: 'text-sm font-medium text-base-content group-hover:text-placecal-orange ' \
-                        'transition-colors truncate') { site.name }
+                        'transition-colors wrap-break-word min-w-0') { site.name }
               p(class: 'text-xs text-gray-600') { site.display_url }
             end
             div(class: 'text-right flex-shrink-0') do
@@ -207,7 +209,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base
       link_to(edit_admin_calendar_path(calendar),
               class: "flex items-center gap-2 py-2 px-2 rounded-lg #{bg_class} transition-colors group") do
         icon(icon_name, size: '4', css_class: "#{icon_class} flex-shrink-0")
-        span(class: 'text-sm truncate flex-1') { calendar.name }
+        span(class: 'text-sm wrap-break-word min-w-0 flex-1') { calendar.name }
         span(class: "text-xs #{icon_class}") { badge_text }
       end
     end
@@ -244,8 +246,8 @@ class Views::Admin::Pages::Home < Views::Admin::Base
                 div(class: 'text-lg font-bold text-base-content leading-tight') { event.dtstart.strftime('%d') }
               end
               div(class: 'flex-1 min-w-0') do
-                span(class: 'text-sm font-medium text-base-content truncate') { event.summary }
-                p(class: 'text-xs text-gray-600 truncate') do
+                span(class: 'text-sm font-medium text-base-content wrap-break-word min-w-0') { event.summary }
+                p(class: 'text-xs text-gray-600 wrap-break-word min-w-0') do
                   plain event.dtstart.strftime('%H:%M')
                   plain " \u00B7 #{event.organiser.name}" if event.organiser
                 end
@@ -269,7 +271,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base
               render_partner_avatar(partner)
               div(class: 'flex-1 min-w-0') do
                 span(class: 'text-sm font-medium text-base-content group-hover:text-placecal-orange ' \
-                            'transition-colors truncate') { partner.name }
+                            'transition-colors wrap-break-word min-w-0') { partner.name }
                 p(class: 'text-xs text-gray-600') { "#{time_ago_in_words(partner.updated_at)} ago" }
               end
             end
@@ -305,7 +307,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base
               end
               div(class: 'flex-1 min-w-0') do
                 span(class: 'text-sm font-medium text-base-content group-hover:text-placecal-orange ' \
-                            'transition-colors truncate') { calendar.name }
+                            'transition-colors wrap-break-word min-w-0') { calendar.name }
                 p(class: 'text-xs text-gray-600') { "#{time_ago_in_words(calendar.updated_at)} ago" }
               end
             end
@@ -329,7 +331,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base
               end
               div(class: 'flex-1 min-w-0') do
                 span(class: 'text-sm font-medium text-base-content group-hover:text-placecal-orange ' \
-                            'transition-colors truncate') { u.full_name.presence || u.email }
+                            'transition-colors wrap-break-word min-w-0') { u.full_name.presence || u.email }
                 p(class: 'text-xs text-gray-600') { "#{time_ago_in_words(u.updated_at)} ago" }
               end
             end
@@ -352,7 +354,7 @@ class Views::Admin::Pages::Home < Views::Admin::Base
                          'hover:bg-base-200/50 transition-colors group') do
             div(class: 'flex-1 min-w-0') do
               span(class: 'text-sm font-medium text-base-content group-hover:text-placecal-orange ' \
-                          'transition-colors truncate') { partnership.name }
+                          'transition-colors wrap-break-word min-w-0') { partnership.name }
               p(class: 'text-xs text-gray-600') { pluralize(partnership.partners.count, 'partner') }
             end
             icon(:chevron_right, size: '4',

@@ -6,7 +6,7 @@
 		corporate;
 }
 
-/* daisyUI's light error and success fail AA as text on white; these pass as text and under white content. */
+/* daisyUI's light error, success and info fail AA as text on white; these pass as text and under white content. */
 @plugin "daisyui/theme" {
 	name: "light";
 	default: true;
@@ -14,6 +14,8 @@
 	--color-error-content: #ffffff;
 	--color-success: #15803d;
 	--color-success-content: #ffffff;
+	--color-info: #1d4ed8;
+	--color-info-content: #ffffff;
 }
 
 @source "../{datatables,helpers,javascript}";
@@ -25,6 +27,7 @@
 	--color-placecal-orange-dark: #b35500; /* WCAG AA compliant for text on white (5.0:1) */
 	--color-placecal-teal: #00a9a5;
 	--color-placecal-teal-dark: #007a77; /* WCAG AA compliant for text on white (4.7:1) */
+	--color-control-border: #6b7280; /* 3:1 or better on white and the gray-50 to gray-100 surfaces */
 }
 
 /* Leaflet map styles */

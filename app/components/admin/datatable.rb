@@ -29,7 +29,12 @@ class Components::Admin::Datatable < Components::Admin::Base
       data_admin_table_default_sort_column_value: @default_sort[:column] || '',
       data_admin_table_default_sort_direction_value: @default_sort[:direction] || 'asc',
       data_admin_table_previous_label_value: t('admin.datatable.previous_page'),
-      data_admin_table_next_label_value: t('admin.datatable.next_page')
+      data_admin_table_next_label_value: t('admin.datatable.next_page'),
+      data_admin_table_no_entries_text_value: t('admin.datatable.no_entries'),
+      data_admin_table_range_text_value: t('admin.datatable.range'),
+      data_admin_table_filtered_range_text_value: t('admin.datatable.filtered_range'),
+      data_admin_table_total_text_value: t('admin.datatable.total'),
+      data_admin_table_filtered_total_text_value: t('admin.datatable.filtered_total')
     ) do
       render_header(model_name)
       render_filter_bar
@@ -55,7 +60,7 @@ class Components::Admin::Datatable < Components::Admin::Base
       div(class: 'flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4') do
         div do
           h1(class: 'text-xl font-semibold text-gray-900') { @title }
-          p(class: 'mt-1 text-sm text-gray-500', data_admin_table_target: 'summary') { t('admin.labels.loading') }
+          p(class: 'mt-1 text-sm text-gray-600', role: 'status', data_admin_table_target: 'summary') { t('admin.labels.loading') }
         end
         render_new_link(model_name) if @new_link
       end
@@ -89,13 +94,14 @@ class Components::Admin::Datatable < Components::Admin::Base
 
   def render_search_input
     if @search_fieldset
-      fieldset(class: 'relative flex items-center px-3 py-2 pt-3 border border-gray-300 rounded-lg bg-gray-100') do
-        legend(class: 'font-medium text-gray-400 uppercase tracking-wider px-1 ml-1 bg-gray-50',
+      fieldset(class: 'relative flex items-center px-3 py-2 pt-3 border border-control-border rounded-lg bg-gray-100 ' \
+                      'focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-placecal-orange-dark') do
+        legend(class: 'font-medium text-gray-600 uppercase tracking-wider px-1 ml-1 bg-gray-50',
                style: 'font-size: 9px; line-height: 1;') { t('admin.datatable.search') }
         div(class: 'flex items-center gap-2') do
           icon(:search, size: '3.5', css_class: 'text-gray-400 shrink-0')
           input(type: 'search',
-                class: 'w-44 bg-transparent text-xs text-gray-700 placeholder-gray-400 focus:outline-none',
+                class: 'w-44 bg-transparent text-xs text-gray-700 placeholder-gray-500 focus:outline-none',
                 placeholder: t('admin.placeholders.type_to_filter'),
                 data_admin_table_target: 'search',
                 data_action: 'input->admin-table#search')
@@ -107,8 +113,8 @@ class Components::Admin::Datatable < Components::Admin::Base
           icon(:search, size: '4', css_class: 'text-gray-400')
         end
         input(type: 'search',
-              class: 'block w-56 pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-xs placeholder-gray-400 ' \
-                     'focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent',
+              class: 'block w-56 pl-10 pr-3 py-2 border border-control-border rounded-lg text-xs placeholder-gray-500 ' \
+                     'focus:outline-none focus:ring-2 focus:ring-placecal-orange-dark focus:border-transparent',
               placeholder: t('admin.placeholders.search'),
               data_admin_table_target: 'search',
               data_action: 'input->admin-table#search')
@@ -271,25 +277,41 @@ class Components::Admin::Datatable < Components::Admin::Base
     # compares data-column against the underscored names in columns_json
     attrs = { data_column: @columns[index].to_s,
               class: "px-4 py-3 #{align_class} text-xs font-semibold text-gray-600 uppercase tracking-wider " \
-                     "#{width_class} #{'cursor-pointer hover:bg-gray-100 select-none' if sortable}" }
-    attrs[:data_action] = 'click->admin-table#sort' if sortable
-    attrs[:data_sort_default] = sort_default_dir if sort_default_dir
+                     "#{width_class} #{'hover:bg-gray-100' if sortable}" }
+    attrs[:aria_sort] = initial_aria_sort(index) if sortable
 
     th(**attrs) do
       justify = col_config&.dig(:align) == :center ? ' justify-center' : ''
-      div(class: "flex items-center gap-1#{justify}") do
-        if col_title.present?
-          raw safe(col_title.to_s)
-        else
-          span(class: 'sr-only') { t('admin.labels.actions') }
+      if sortable
+        button(type: 'button', data_action: 'admin-table#sort', data_column: @columns[index].to_s,
+               data_sort_default: sort_default_dir,
+               class: "group flex w-full items-center gap-1#{justify} uppercase tracking-wider cursor-pointer select-none") do
+          render_column_title(col_title)
+          render_sort_icon(index)
         end
-        render_sort_icon(index) if sortable
+      else
+        div(class: "flex items-center gap-1#{justify}") { render_column_title(col_title) }
       end
     end
   end
 
+  def render_column_title(col_title)
+    if col_title.present?
+      raw safe(col_title.to_s)
+    else
+      span(class: 'sr-only') { t('admin.labels.actions') }
+    end
+  end
+
+  def initial_aria_sort(index)
+    return 'none' unless @default_sort[:column].to_s == @columns[index].to_s
+
+    @default_sort[:direction].to_s == 'desc' ? 'descending' : 'ascending'
+  end
+
   def render_sort_icon(index)
-    span(class: 'text-gray-400 opacity-0 group-hover:opacity-100',
+    span(class: 'text-gray-400 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100',
+         aria_hidden: 'true',
          data_admin_table_target: 'sortIcon',
          data_column: @columns[index].to_s) do
       icon(:arrow_up_down, size: nil)

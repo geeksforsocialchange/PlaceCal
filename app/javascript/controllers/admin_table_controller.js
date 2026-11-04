@@ -26,6 +26,11 @@ export default class extends Controller {
 		defaultSortDirection: { type: String, default: "desc" },
 		previousLabel: String,
 		nextLabel: String,
+		noEntriesText: String,
+		rangeText: String,
+		filteredRangeText: String,
+		totalText: String,
+		filteredTotalText: String,
 	};
 
 	connect() {
@@ -722,11 +727,18 @@ export default class extends Controller {
 		);
 
 		if (this.filteredRecords === 0) {
-			this.infoTarget.textContent = "No entries";
+			this.infoTarget.textContent = this.noEntriesTextValue;
 		} else if (this.filteredRecords === this.totalRecords) {
-			this.infoTarget.textContent = `${start}–${end} of ${this.totalRecords}`;
+			this.infoTarget.textContent = this.interpolate(this.rangeTextValue, {
+				start,
+				end,
+				total: this.totalRecords,
+			});
 		} else {
-			this.infoTarget.textContent = `${start}–${end} of ${this.filteredRecords} (filtered)`;
+			this.infoTarget.textContent = this.interpolate(
+				this.filteredRangeTextValue,
+				{ start, end, total: this.filteredRecords },
+			);
 		}
 	}
 
@@ -734,13 +746,32 @@ export default class extends Controller {
 		if (!this.hasSummaryTarget) return;
 
 		if (this.filteredRecords === this.totalRecords) {
-			this.summaryTarget.textContent = `${this.totalRecords} total records`;
+			this.summaryTarget.textContent = this.interpolate(this.totalTextValue, {
+				total: this.totalRecords,
+			});
 		} else {
-			this.summaryTarget.textContent = `Showing ${this.filteredRecords} of ${this.totalRecords} records`;
+			this.summaryTarget.textContent = this.interpolate(
+				this.filteredTotalTextValue,
+				{ count: this.filteredRecords, total: this.totalRecords },
+			);
 		}
 	}
 
+	interpolate(template, values) {
+		return template.replace(/%\{(\w+)\}/g, (_, key) => values[key]);
+	}
+
 	updateSortIndicators() {
+		this.element.querySelectorAll("th[aria-sort]").forEach((th) => {
+			const sorted = th.dataset.column === this.sortColumn;
+			const direction =
+				this.sortDirection === "asc" ? "ascending" : "descending";
+			th.setAttribute("aria-sort", sorted ? direction : "none");
+		});
+
+		const svg = (d) =>
+			`<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${d}"></path></svg>`;
+
 		// Only update SVGs with sortIcon target, not header icons
 		this.sortIconTargets.forEach((icon) => {
 			const column = icon.dataset.column;
@@ -748,12 +779,13 @@ export default class extends Controller {
 				icon.style.opacity = "1";
 				icon.innerHTML =
 					this.sortDirection === "asc"
-						? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>'
-						: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>';
+						? svg("M5 15l7-7 7 7")
+						: svg("M19 9l-7 7-7-7");
 			} else {
 				icon.style.opacity = "0.3";
-				icon.innerHTML =
-					'<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>';
+				icon.innerHTML = svg(
+					"M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4",
+				);
 			}
 		});
 	}
