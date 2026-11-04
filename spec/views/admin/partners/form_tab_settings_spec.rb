@@ -45,10 +45,10 @@ RSpec.describe Views::Admin::Partners::FormTabSettings, type: :phlex do
       expect(page).to have_css("input#partner_can_be_assigned_events[checked]")
     end
 
-    it "renders the enabled label in the success colour and the disabled label faded" do
+    it "marks the enabled label active and the disabled label inactive" do
       page = render_settings(partner)
-      expect(page).to have_css("#event-matching-label-enabled.text-success")
-      expect(page).to have_css("#event-matching-label-disabled.text-base-content\\/40")
+      expect(page).to have_css("#event-matching-label-enabled[data-active='true']")
+      expect(page).to have_css("#event-matching-label-disabled[data-active='false']")
     end
   end
 
@@ -60,27 +60,25 @@ RSpec.describe Views::Admin::Partners::FormTabSettings, type: :phlex do
       expect(page).to have_no_css("input#partner_can_be_assigned_events[checked]")
     end
 
-    it "renders both labels faded" do
+    it "marks both labels inactive" do
       page = render_settings(partner)
-      expect(page).to have_css("#event-matching-label-disabled.text-base-content\\/40")
-      expect(page).to have_css("#event-matching-label-enabled.text-base-content\\/40")
-      expect(page).to have_no_css("#event-matching-label-enabled.text-success")
+      expect(page).to have_css("#event-matching-label-disabled[data-active='false']")
+      expect(page).to have_css("#event-matching-label-enabled[data-active='false']")
     end
   end
 
   context "with the moderation section" do
     let(:permitted_attributes) { %i[slug hidden] }
 
-    it "shows Visible in the success colour and Hidden faded when the partner is visible" do
+    it "marks Visible active and Hidden inactive when the partner is visible" do
       page = render_settings(build_stubbed(:partner, hidden: false))
-      expect(page).to have_css("#partner-visibility-label-visible.text-success")
-      expect(page).to have_css("span.text-base-content\\/40", text: I18n.t("admin.labels.hidden"))
+      expect(page).to have_css("#partner-visibility-label-visible[data-active='true']")
+      expect(page).to have_css("span[data-active='false']", text: I18n.t("admin.labels.hidden"))
     end
 
-    it "fades both labels when the partner is hidden" do
+    it "marks both labels inactive when the partner is hidden" do
       page = render_settings(build_stubbed(:partner, hidden: true))
-      expect(page).to have_css("#partner-visibility-label-visible.text-base-content\\/40")
-      expect(page).to have_no_css("#partner-visibility-label-visible.text-success")
+      expect(page).to have_css("#partner-visibility-label-visible[data-active='false']")
     end
   end
 end

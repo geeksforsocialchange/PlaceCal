@@ -73,7 +73,7 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base
           plain is_enabled ? t('admin.partners.event_matching.enabled') : t('admin.partners.event_matching.disabled')
         end
         div(class: 'flex items-center gap-3') do
-          span(class: 'label-text text-sm font-medium text-base-content/60', id: 'event-matching-label-disabled') do
+          span(class: 'label-text text-sm font-medium text-base-content/60', id: 'event-matching-label-disabled', data: { active: 'false' }) do
             t('admin.labels.disabled')
           end
           raw form.check_box(:can_be_assigned_events,
@@ -81,7 +81,7 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base
                              id: 'partner_can_be_assigned_events',
                              aria: { label: t('admin.partners.sections.event_matching') },
                              onchange: 'updateEventMatchingTitle(this.checked)')
-          span(class: toggle_on_label_class(is_enabled), id: 'event-matching-label-enabled') do
+          span(class: toggle_on_label_class(is_enabled), id: 'event-matching-label-enabled', data: { active: is_enabled.to_s }) do
             t('admin.labels.enabled')
           end
         end
@@ -128,6 +128,7 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base
           const enabledLabel = document.getElementById('event-matching-label-enabled');
           enabledLabel.classList.toggle('text-success', isEnabled);
           enabledLabel.classList.toggle(faded, !isEnabled);
+          enabledLabel.dataset.active = String(isEnabled);
         }
       JS
     end
@@ -174,14 +175,14 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base
           plain partner.hidden? ? t('admin.partners.moderation.hidden_label') : t('admin.partners.moderation.visible_label')
         end
         div(class: 'flex items-center gap-3') do
-          span(class: 'label-text text-sm font-medium text-base-content/60') { t('admin.labels.hidden') }
+          span(class: 'label-text text-sm font-medium text-base-content/60', data: { active: 'false' }) { t('admin.labels.hidden') }
           raw form.hidden_field(:hidden,
                                 value: partner.hidden? ? '1' : '0',
                                 data: { inverted_toggle_target: 'hidden' })
           raw safe("<input type=\"checkbox\" id=\"partner_hidden_toggle\" aria-label=\"#{ERB::Util.html_escape(t('admin.labels.visible'))}\" class=\"toggle toggle-success\" " \
                    'data-inverted-toggle-target="checkbox" data-action="change->inverted-toggle#toggle" ' \
                    'onchange="updateVisibilityTitle(this.checked)" />')
-          span(class: toggle_on_label_class(!partner.hidden?), id: 'partner-visibility-label-visible') do
+          span(class: toggle_on_label_class(!partner.hidden?), id: 'partner-visibility-label-visible', data: { active: (!partner.hidden?).to_s }) do
             t('admin.labels.visible')
           end
         end
@@ -246,6 +247,7 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base
           const visibleLabel = document.getElementById('partner-visibility-label-visible');
           visibleLabel.classList.toggle('text-success', isVisible);
           visibleLabel.classList.toggle('text-base-content/60', !isVisible);
+          visibleLabel.dataset.active = String(isVisible);
         }
       JS
     end
