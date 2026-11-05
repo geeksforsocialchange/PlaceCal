@@ -41,7 +41,7 @@ gem 'strict_ivars', require: false # Catch undefined instance variable reads
 
 # Auth and permissions
 gem 'devise', '~> 5.0'            # User authentication
-gem 'devise_invitable', '~> 2.0'  # User invitation emails
+gem 'devise_invitable', '~> 3.0'  # User invitation emails
 gem 'pundit'                      # Authorization policies
 
 # Geolocation

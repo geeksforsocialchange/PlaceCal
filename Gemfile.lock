@@ -219,9 +219,9 @@ GEM
       railties (>= 7.0)
       responders
       warden (~> 1.2.3)
-    devise_invitable (2.0.14)
-      actionmailer (>= 5.0)
-      devise (>= 4.6)
+    devise_invitable (3.1.0)
+      actionmailer (>= 7.0)
+      devise (>= 5.0)
     diff-lcs (1.6.2)
     domain_name (0.7.20261007)
     dotenv (3.2.0)
@@ -424,21 +424,21 @@ GEM
       logger
     netrc (0.11.0)
     nio4r (2.7.5)
-    nokogiri (1.19.6-aarch64-linux-gnu)
+    nokogiri (1.19.7-aarch64-linux-gnu)
       racc (~> 1.4)
-    nokogiri (1.19.6-aarch64-linux-musl)
+    nokogiri (1.19.7-aarch64-linux-musl)
       racc (~> 1.4)
-    nokogiri (1.19.6-arm-linux-gnu)
+    nokogiri (1.19.7-arm-linux-gnu)
       racc (~> 1.4)
-    nokogiri (1.19.6-arm-linux-musl)
+    nokogiri (1.19.7-arm-linux-musl)
       racc (~> 1.4)
-    nokogiri (1.19.6-arm64-darwin)
+    nokogiri (1.19.7-arm64-darwin)
       racc (~> 1.4)
-    nokogiri (1.19.6-x86_64-darwin)
+    nokogiri (1.19.7-x86_64-darwin)
       racc (~> 1.4)
-    nokogiri (1.19.6-x86_64-linux-gnu)
+    nokogiri (1.19.7-x86_64-linux-gnu)
       racc (~> 1.4)
-    nokogiri (1.19.6-x86_64-linux-musl)
+    nokogiri (1.19.7-x86_64-linux-musl)
       racc (~> 1.4)
     orm_adapter (0.5.0)
     ostruct (0.6.3)
@@ -761,7 +761,7 @@ DEPENDENCIES
   database_consistency
   delayed_job_active_record
   devise (~> 5.0)
-  devise_invitable (~> 2.0)
+  devise_invitable (~> 3.0)
   dotenv-rails
   enumerize
   eventbrite_sdk
