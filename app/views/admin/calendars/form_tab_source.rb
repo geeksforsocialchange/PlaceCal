@@ -35,13 +35,9 @@ class Views::Admin::Calendars::FormTabSource < Views::Admin::Base
   end
 
   def render_partner_field(calendar)
-    fieldset(class: 'fieldset') do
-      label(for: 'calendar_organiser_id', class: 'fieldset-legend') do
-        plain t('admin.calendars.fields.partner_organiser')
-        whitespace
-        span(class: 'text-error', aria_hidden: 'true') { t('admin.labels.required') }
-      end
-      raw form.input_field(:organiser_id,
+    Field(for: form.field_id(:organiser_id), label: t('admin.calendars.fields.partner_organiser'), required: true,
+          hint: t('admin.calendars.fields.partner_hint')) do |f|
+      raw form.input_field(:organiser_id, **f.aria,
                            as: :select,
                            collection: options_for_organiser,
                            include_blank: t('admin.placeholders.select_model', model: Partner.model_name.human.downcase),
@@ -53,20 +49,14 @@ class Views::Admin::Calendars::FormTabSource < Views::Admin::Base
                              'calendar-name-suggest-target': 'partner',
                              action: 'change->calendar-name-suggest#partnerChanged'
                            })
-      p(class: 'fieldset-label') { t('admin.calendars.fields.partner_hint') }
     end
   end
 
   def render_name_field
-    fieldset(class: 'fieldset') do
-      label(for: 'calendar_name', class: 'fieldset-legend') do
-        plain t('admin.calendars.fields.calendar_name')
-        whitespace
-        span(class: 'text-error', aria_hidden: 'true') { t('admin.labels.required') }
-      end
-      raw form.input_field(:name,
-                           class: 'input input-bordered w-full',
-                           data: { 'calendar-name-suggest-target': 'name' })
+    # The hint shares its line with the suggestion button, so the field is described by the hint's text alone
+    Field(for: form.field_id(:name), label: t('admin.calendars.fields.calendar_name'), required: true) do |f|
+      raw form.input_field(:name, class: 'input input-bordered w-full', **f.aria, 'aria-describedby': 'calendar_name-hint',
+                                  data: { 'calendar-name-suggest-target': 'name' })
       p(class: 'fieldset-label') do
         span(data: { 'calendar-name-suggest-target': 'suggestion' }, class: 'hidden') do
           button(type: 'button',
@@ -75,7 +65,7 @@ class Views::Admin::Calendars::FormTabSource < Views::Admin::Base
             plain t('admin.calendars.fields.apply_suggestion')
           end
         end
-        span { t('admin.calendars.fields.name_hint') }
+        span(id: 'calendar_name-hint') { t('admin.calendars.fields.name_hint') }
       end
     end
   end

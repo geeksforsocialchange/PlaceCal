@@ -17,6 +17,8 @@ class Components::Admin::StackedListSelector < Components::Admin::Base
   prop :wrapper_class, _Nilable(String), default: nil
   prop :link_path, _Nilable(Symbol), default: nil
   prop :read_only, _Boolean, default: false
+  # The id of a hint that describes the add dropdown.
+  prop :describedby, _Nilable(String), default: nil
 
   def after_initialize
     @empty_text = I18n.t('admin.empty.none_assigned', items: 'items') if @empty_text.nil?
@@ -135,6 +137,7 @@ class Components::Admin::StackedListSelector < Components::Admin::Base
       select(
         class: 'w-full',
         aria_label: @add_placeholder,
+        aria_describedby: @describedby,
         **{ "data-#{@controller}-target" => 'select' },
         data_action: "change->#{@controller}#add",
         data_controller: 'tom-select',
