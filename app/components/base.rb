@@ -34,6 +34,14 @@ class Components::Base < Phlex::HTML
   include PlaceCal::Theming::Hooks
   include Components::SidebarHeading
 
+  # Screen readers get the whole text: a cut-off name reads out as "dot dot dot".
+  def truncated(text, length)
+    return plain(text) if text.length <= length
+
+    span(aria_hidden: 'true') { text.truncate(length) }
+    span(class: 'sr-only') { text }
+  end
+
   if Rails.env.development?
     def before_template
       comment { self.class.name.to_s }

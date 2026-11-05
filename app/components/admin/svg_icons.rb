@@ -39,6 +39,7 @@ module Components::Admin::SvgIcons
 
     svg(
       class: classes,
+      aria_hidden: 'true',
       style:,
       fill:,
       stroke:,

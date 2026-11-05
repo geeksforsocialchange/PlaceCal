@@ -186,6 +186,17 @@ RSpec.describe Components::Sites::Event, type: :component do
       expect(page).to have_css('[data-scope="event"][data-part="detail"][data-variant="place"]', text: "Central Library")
     end
 
+    context "when the organiser's name is too long for the card" do
+      let(:organiser) { Partner.new(id: 10, name: "Beachfront Community Garden Society", slug: "garden") }
+
+      it "cuts it short on screen and gives screen readers the whole name" do
+        rendered
+        link = page.find('[data-variant="organiser"] a')
+        expect(link).to have_css("span[aria-hidden='true']", text: "Beachfront Community G...")
+        expect(link).to have_css("span.sr-only", text: "Beachfront Community Garden Society")
+      end
+    end
+
     context "when organiser is the same as place" do
       let(:event_organiser) { place }
 

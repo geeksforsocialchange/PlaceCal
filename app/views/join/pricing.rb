@@ -65,16 +65,21 @@ class Views::Join::Pricing < Views::Join::Base
           col(class: 'w-1/4')
           TIER_KEYS.each { col }
         end
+        # The tier details sit in their own row, so a cell's column header is just the tier name
         thead do
           tr do
             td
             TIER_KEYS.each { |tier| render_tier_column_header(tier) }
           end
-        end
-        tbody do
-          t('join.pricing.rows').each { |row| render_compare_row(row) }
           tr do
-            th(scope: 'colgroup', colspan: 4, class: 'text-left px-4 pt-6 pb-2 border-b-2 border-rules') do
+            td
+            TIER_KEYS.each { |tier| render_tier_details(tier) }
+          end
+        end
+        tbody { t('join.pricing.rows').each { |row| render_compare_row(row) } }
+        tbody do
+          tr do
+            th(scope: 'rowgroup', colspan: 4, class: 'text-left px-4 pt-6 pb-2 border-b-2 border-rules') do
               UI::Kicker(tone: :accent) { t('join.pricing.table.support_heading') }
             end
           end
@@ -85,8 +90,13 @@ class Views::Join::Pricing < Views::Join::Base
   end
 
   def render_tier_column_header(tier)
-    th(scope: 'col', class: 'text-left align-top px-4 pb-4 border-b-2 border-foreground') do
+    th(scope: 'col', class: 'text-left align-top px-4') do
       UI::Kicker(tone: :accent) { t("join.pricing.tiers.#{tier}.name") }
+    end
+  end
+
+  def render_tier_details(tier)
+    td(class: 'align-top px-4 pb-4 border-b-2 border-foreground font-bold') do
       p(class: 'font-serif text-base leading-tight text-foreground mt-2 mb-2.5 min-h-two-lines') do
         t("join.pricing.tiers.#{tier}.who")
       end

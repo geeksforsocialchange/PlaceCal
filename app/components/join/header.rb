@@ -24,7 +24,10 @@ class Components::Join::Header < Components::Join::Base
         UI::Cluster(gap: :md, justify: :between) do
           UI::Kicker(as: :span) { t('join.band.host') }
           UI::Kicker(as: :span) do
-            UI::Link(href: apex_url, variant: :quiet, tone: :inherit) { plain "← #{t('join.band.directory_link')}" }
+            UI::Link(href: apex_url, variant: :quiet, tone: :inherit) do
+              span(aria_hidden: 'true') { '← ' }
+              plain t('join.band.directory_link')
+            end
           end
         end
       end

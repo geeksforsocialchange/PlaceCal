@@ -40,7 +40,7 @@ class Components::Sites::RegionFilter < Components::Base
   end
 
   def active?(tag)
-    tag.nil? ? @selected.nil? : @selected&.id == tag.id
+    tag.nil? ? @selected.nil? : @selected == tag
   end
 
   # Preserve every other filter in the URL, replacing only the region.

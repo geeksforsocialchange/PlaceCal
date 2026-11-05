@@ -18,6 +18,12 @@ RSpec.describe Components::Sites::RegionFilter, type: :component do
     expect(page).not_to have_css("nav[data-scope='region-filter']")
   end
 
+  it "marks only All as current when no region is chosen, even for unsaved tags" do
+    render_inline(described_class.new(tags: [Tag.new(name: "North", slug: "north"), Tag.new(name: "South", slug: "south")]))
+
+    expect(page).to have_css("[aria-current]", count: 1, text: I18n.t("region_filter.all"))
+  end
+
   describe "with two tags" do
     it "renders an All option plus one link per tag" do
       render_inline(described_class.new(tags: [north, south]))

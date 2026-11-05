@@ -24,7 +24,19 @@ export default class extends Controller {
 		const previous =
 			this.lastFocused && this.element.querySelector(this.lastFocused);
 		const target = previous ? this.visibleFocusable(previous) : null;
-		(target ?? this.element).focus({ preventScroll: true });
+		if (target) target.focus({ preventScroll: true });
+		else this.focusFrame();
+	}
+
+	// A focusable frame reads as one block to a screen reader, so it's focusable only while it has focus
+	focusFrame() {
+		this.element.setAttribute("tabindex", "-1");
+		this.element.addEventListener(
+			"blur",
+			() => this.element.removeAttribute("tabindex"),
+			{ once: true },
+		);
+		this.element.focus({ preventScroll: true });
 	}
 
 	announce() {

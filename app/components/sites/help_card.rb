@@ -14,7 +14,7 @@ class Components::Sites::HelpCard < Components::Base
   }.freeze
 
   COMPUTER_SVG = <<~SVG
-    <svg width="191px" height="150px" viewBox="0 0 191 150" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <svg aria-hidden="true" width="191px" height="150px" viewBox="0 0 191 150" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
       <defs></defs>
       <g id="support/getting-online" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
       <g id="Group-9">
@@ -28,7 +28,7 @@ class Components::Sites::HelpCard < Components::Base
   SVG
 
   WIFI_SVG = <<~SVG
-    <svg width="191px" height="150px" viewBox="0 0 191 150" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <svg aria-hidden="true" width="191px" height="150px" viewBox="0 0 191 150" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
       <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <rect fill="var(--color-rules)" x="0" y="0" width="191" height="150" rx="20"></rect>
         <path d="M37.1,101.2h121.9V35.5H37.1V101.2z M160,29H36c-2.8,0-5,2.3-5,5v72.8c0,2.8,2.3,5,5,5h44.7v12.8 h-7.4v5.4h49.4v-5.4h-7.4v-12.8H160c2.8,0,5-2.3,5-5V34C165,31.3,162.7,29,160,29z" fill="var(--color-foreground)"></path>
@@ -41,7 +41,7 @@ class Components::Sites::HelpCard < Components::Base
   SVG
 
   HELP_SVG = <<~SVG
-    <svg width="191px" height="150px" viewBox="0 0 191 150" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <svg aria-hidden="true" width="191px" height="150px" viewBox="0 0 191 150" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
       <g id="support/getting-help" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="Group-11">
           <rect fill="var(--color-rules)" x="0" y="0" width="191" height="150" rx="20"></rect>
@@ -56,7 +56,7 @@ class Components::Sites::HelpCard < Components::Base
   SVG
 
   CALENDAR_SVG = <<~SVG
-    <svg width="191px" height="150px" viewBox="0 0 191 150" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <svg aria-hidden="true" width="191px" height="150px" viewBox="0 0 191 150" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
       <defs>
         <polygon id="path-1" points="0.142579412 0.582017647 38.5598735 0.582017647 38.5598735 39 0.142579412 39"></polygon>
       </defs>

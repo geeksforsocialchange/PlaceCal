@@ -18,11 +18,17 @@ class Components::Directory::Paginator < Components::Directory::Base
   private
 
   def render_prev
-    UI::Pill(variant: :page, href: (pagy_url(@pagy.previous) if @pagy.previous), disabled: !@pagy.previous) { safe('&larr;') }
+    UI::Pill(variant: :page, href: (pagy_url(@pagy.previous) if @pagy.previous), disabled: !@pagy.previous) do
+      span(aria_hidden: 'true') { safe('&larr;') }
+      span(class: 'sr-only') { t('directory.aria.previous_page') }
+    end
   end
 
   def render_next
-    UI::Pill(variant: :page, href: (pagy_url(@pagy.next) if @pagy.next), disabled: !@pagy.next) { safe('&rarr;') }
+    UI::Pill(variant: :page, href: (pagy_url(@pagy.next) if @pagy.next), disabled: !@pagy.next) do
+      span(aria_hidden: 'true') { safe('&rarr;') }
+      span(class: 'sr-only') { t('directory.aria.next_page') }
+    end
   end
 
   def render_pages

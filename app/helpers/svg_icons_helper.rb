@@ -223,6 +223,8 @@ module SvgIconsHelper
     tag.svg(
       class: classes,
       data: { icon_name: name.to_s, **data },
+      # Icons sit beside text or inside a named control, so screen readers skip them
+      aria: { hidden: true },
       fill:,
       stroke:,
       'stroke-linecap': stroke_linecap,
