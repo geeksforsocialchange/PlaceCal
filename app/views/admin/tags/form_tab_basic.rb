@@ -29,13 +29,8 @@ class Views::Admin::Tags::FormTabBasic < Views::Admin::Base
       title: t('admin.sections.details'),
       fit_height: true
     ) do
-      div(class: 'fieldset') do
-        label(for: 'tag_name', class: 'fieldset-legend') do
-          plain attr_label(:tag, :name)
-          whitespace
-          span(class: 'text-error', aria_hidden: 'true') { t('admin.labels.required') }
-        end
-        raw form.input_field(:name, class: 'input input-bordered w-full', disabled: tag_record.system_tag, id: 'tag_name')
+      Field(for: 'tag_name', label: attr_label(:tag, :name), required: true) do |f|
+        raw form.input_field(:name, class: 'input input-bordered w-full', disabled: tag_record.system_tag, id: 'tag_name', **f.aria)
       end
 
       div(class: 'fieldset') do

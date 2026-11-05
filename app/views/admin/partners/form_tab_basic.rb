@@ -30,12 +30,8 @@ class Views::Admin::Partners::FormTabBasic < Views::Admin::Base
   private
 
   def render_name_field
-    fieldset(class: 'fieldset') do
-      raw form.label(:name, class: 'fieldset-legend') {
-        "#{Partner.model_name.human} #{attr_label(:partner, :name)} " \
-        "<span class=\"text-error\" aria-hidden=\"true\">#{t('admin.labels.required')}</span>".html_safe
-      }
-      raw form.input_field(:name, class: 'input input-bordered w-full',
+    Field(for: form.field_id(:name), label: "#{Partner.model_name.human} #{attr_label(:partner, :name)}", required: true) do |f|
+      raw form.input_field(:name, class: 'input input-bordered w-full', **f.aria,
                                   'data-controller': 'partner-form-validation',
                                   'data-partner-form-validation-target': 'source',
                                   'data-action': 'input->partner-form-validation#checkInput',
@@ -47,35 +43,27 @@ class Views::Admin::Partners::FormTabBasic < Views::Admin::Base
   end
 
   def render_summary_field
-    fieldset(class: 'fieldset', data: { controller: 'char-counter', 'char-counter-max-value': '200' }) do
-      raw form.label(:summary, attr_label(:partner, :summary), class: 'fieldset-legend')
-      raw form.input_field(:summary, as: :text,
-                                     class: 'textarea textarea-bordered w-full min-h-16',
-                                     maxlength: 200,
+    Field(for: form.field_id(:summary), label: attr_label(:partner, :summary),
+          hint: t('admin.partners.fields.summary_hint'), counter: 200) do |f|
+      raw form.input_field(:summary, as: :text, class: 'textarea textarea-bordered w-full min-h-16', maxlength: 200, **f.aria,
                                      data: { controller: 'auto-expand', char_counter_target: 'input',
                                              action: 'input->char-counter#update' })
-      div(class: 'flex items-center justify-between mt-1') do
-        p(class: 'fieldset-label') { t('admin.partners.fields.summary_hint') }
-        span(class: 'text-xs tabular-nums transition-colors', data: { char_counter_target: 'counter' }) { '0 / 200' }
-      end
     end
   end
 
   def render_description_field
-    fieldset(class: 'fieldset') do
-      raw form.label(:description, attr_label(:partner, :description), class: 'fieldset-legend')
-      raw form.input_field(:description, class: 'textarea textarea-bordered w-full min-h-32',
+    Field(for: form.field_id(:description), label: attr_label(:partner, :description),
+          hint: t('admin.partners.fields.description_hint')) do |f|
+      raw form.input_field(:description, class: 'textarea textarea-bordered w-full min-h-32', **f.aria,
                                          data: { controller: 'auto-expand' })
-      p(class: 'fieldset-label') { t('admin.partners.fields.description_hint') }
     end
   end
 
   def render_accessibility_field
-    fieldset(class: 'fieldset') do
-      raw form.label(:accessibility_info, attr_label(:partner, :accessibility_info), class: 'fieldset-legend')
-      raw form.input_field(:accessibility_info, class: 'textarea textarea-bordered w-full min-h-20',
+    Field(for: form.field_id(:accessibility_info), label: attr_label(:partner, :accessibility_info),
+          hint: t('admin.partners.fields.accessibility_hint')) do |f|
+      raw form.input_field(:accessibility_info, class: 'textarea textarea-bordered w-full min-h-20', **f.aria,
                                                 data: { controller: 'auto-expand' })
-      p(class: 'fieldset-label') { t('admin.partners.fields.accessibility_hint') }
     end
   end
 end

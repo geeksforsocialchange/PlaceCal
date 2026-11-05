@@ -31,11 +31,8 @@ class Views::Admin::Articles::FormTabText < Views::Admin::Base
   end
 
   def render_title_field
-    fieldset(class: 'fieldset') do
-      raw form.label(:title, class: 'fieldset-legend') {
-        "#{attr_label(:article, :title)} <span class=\"text-error\" aria-hidden=\"true\">#{t('admin.labels.required')}</span>".html_safe
-      }
-      raw form.input_field(:title, as: :string, class: 'input input-bordered w-full text-xl font-semibold',
+    Field(for: 'article_title', label: attr_label(:article, :title), required: true) do |f|
+      raw form.input_field(:title, as: :string, class: 'input input-bordered w-full text-xl font-semibold', **f.aria,
                                    id: 'article_title',
                                    placeholder: t('admin.articles.fields.title_placeholder'))
     end
@@ -187,7 +184,7 @@ class Views::Admin::Articles::FormTabText < Views::Admin::Base
                    markdown_preview_target: 'input',
                    action: 'input->markdown-preview#updatePreview keydown->markdown-preview#handleKeydown'
                  },
-                 id: 'article_body'
+                 id: 'article_body', 'aria-required': 'true'
         )
       end
 

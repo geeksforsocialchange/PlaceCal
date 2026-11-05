@@ -83,14 +83,10 @@ class Views::Admin::Calendars::New < Views::Admin::Base
   end
 
   def render_source_url_field(form)
-    fieldset(class: 'fieldset bg-base-200/50 rounded-xl p-6') do
-      legend(class: 'fieldset-legend text-base font-semibold') do
-        plain attr_label(:calendar, :source)
-        whitespace
-        span(class: 'text-error', aria_hidden: 'true') { t('admin.labels.required') }
-      end
+    Field(for: form.field_id(:source), label: attr_label(:calendar, :source), required: true, prominent: true,
+          hint: t('admin.calendars.handbook_hint_html').html_safe, class: 'bg-base-200/50 rounded-xl p-6') do |f|
       div(class: 'flex gap-2') do
-        raw form.input_field(:source,
+        raw form.input_field(:source, **f.aria,
                              class: 'input input-bordered input-lg flex-1 font-mono text-sm',
                              placeholder: t('admin.calendars.fields.source_placeholder'),
                              autocomplete: 'off',
@@ -106,8 +102,7 @@ class Views::Admin::Calendars::New < Views::Admin::Base
           span(data: { 'calendar-wizard-target': 'testButtonText' }) { t('admin.calendars.wizard.source.test_button') }
         end
       end
-      p(class: 'text-sm text-gray-600 mt-2') { raw safe(t('admin.calendars.handbook_hint_html')) }
-      render_source_feedback
+      f.after { render_source_feedback }
     end
   end
 
@@ -135,35 +130,29 @@ class Views::Admin::Calendars::New < Views::Admin::Base
   end
 
   def render_importer_mode_field(form)
-    fieldset(class: 'fieldset bg-base-200/50 rounded-xl px-6 pb-6 pt-2 hidden !mt-0',
-             data: { 'calendar-wizard-target': 'importerModeSection' }) do
-      legend(class: 'fieldset-legend text-base font-semibold') { t('admin.calendars.fields.calendar_type') }
-      raw form.input_field(:importer_mode,
+    Field(for: form.field_id(:importer_mode), label: t('admin.calendars.fields.calendar_type'), prominent: true,
+          hint: t('admin.calendars.wizard.source.importer_hint'),
+          class: 'bg-base-200/50 rounded-xl px-6 pb-6 pt-2 hidden !mt-0', data: { 'calendar-wizard-target': 'importerModeSection' }) do |f|
+      raw form.input_field(:importer_mode, **f.aria,
                            as: :select,
                            collection: options_for_importer,
                            selected: 'auto',
                            class: 'select select-bordered w-full',
                            data: { 'calendar-wizard-target': 'importerModeSelect', action: 'change->calendar-wizard#importerModeChanged' })
-      p(class: 'text-sm text-gray-600 mt-2') { t('admin.calendars.wizard.source.importer_hint') }
     end
   end
 
   def render_api_token_field(form)
-    fieldset(class: 'fieldset bg-base-200/50 rounded-xl px-6 pb-6 pt-2 hidden !mt-0',
-             data: { 'calendar-wizard-target': 'apiTokenSection' }) do
-      legend(class: 'fieldset-legend text-base font-semibold') do
-        plain t('admin.calendars.fields.api_token')
-        whitespace
-        span(class: 'text-error', aria_hidden: 'true') { t('admin.labels.required') }
-      end
-      raw form.input_field(:api_token,
+    Field(for: form.field_id(:api_token), label: t('admin.calendars.fields.api_token'), required: true, prominent: true,
+          hint: t('admin.calendars.fields.api_token_hint'),
+          class: 'bg-base-200/50 rounded-xl px-6 pb-6 pt-2 hidden !mt-0', data: { 'calendar-wizard-target': 'apiTokenSection' }) do |f|
+      raw form.input_field(:api_token, **f.aria,
                            type: :password,
                            class: 'input input-bordered w-full font-mono text-sm',
                            placeholder: t('admin.calendars.fields.api_token_placeholder'),
                            autocomplete: 'off',
                            'data-calendar-wizard-target': 'apiTokenInput',
                            'data-action': 'input->calendar-wizard#apiTokenChanged')
-      p(class: 'text-sm text-gray-600 mt-2') { t('admin.calendars.fields.api_token_hint') }
     end
   end
 
@@ -197,13 +186,9 @@ class Views::Admin::Calendars::New < Views::Admin::Base
         render_step_header(:partner, t('admin.calendars.wizard.organiser.title'),
                            t('admin.calendars.wizard.organiser.description'))
         div(class: 'space-y-6') do
-          fieldset(class: 'fieldset bg-base-200/50 rounded-xl p-6') do
-            legend(class: 'fieldset-legend text-base font-semibold') do
-              plain t('admin.calendars.fields.partner_organiser')
-              whitespace
-              span(class: 'text-error', aria_hidden: 'true') { t('admin.labels.required') }
-            end
-            raw form.input_field(:organiser_id,
+          Field(for: form.field_id(:organiser_id), label: t('admin.calendars.fields.partner_organiser'), required: true, prominent: true,
+                hint: t('admin.calendars.fields.partner_hint'), class: 'bg-base-200/50 rounded-xl p-6') do |f|
+            raw form.input_field(:organiser_id, **f.aria,
                                  as: :select,
                                  collection: options_for_organiser,
                                  include_blank: t('admin.placeholders.select_model', model: Partner.model_name.human.downcase),
@@ -211,20 +196,14 @@ class Views::Admin::Calendars::New < Views::Admin::Base
                                  class: 'select select-bordered w-full',
                                  data: { controller: 'tom-select', 'calendar-wizard-target': 'partnerSelect',
                                          action: 'change->calendar-wizard#partnerChanged' })
-            p(class: 'text-sm text-gray-600 mt-2') { t('admin.calendars.fields.partner_hint') }
           end
-          fieldset(class: 'fieldset bg-base-200/50 rounded-xl p-6') do
-            legend(class: 'fieldset-legend text-base font-semibold') do
-              plain t('admin.calendars.fields.calendar_name')
-              whitespace
-              span(class: 'text-error', aria_hidden: 'true') { t('admin.labels.required') }
-            end
-            raw form.input_field(:name,
+          Field(for: form.field_id(:name), label: t('admin.calendars.fields.calendar_name'), required: true, prominent: true,
+                hint: t('admin.calendars.fields.name_hint'), class: 'bg-base-200/50 rounded-xl p-6') do |f|
+            raw form.input_field(:name, **f.aria,
                                  class: 'input input-bordered w-full',
                                  placeholder: t('admin.calendars.wizard.organiser.name_placeholder'),
                                  'data-calendar-wizard-target': 'nameInput',
                                  'data-action': 'input->calendar-wizard#nameChanged')
-            p(class: 'text-sm text-gray-600 mt-2') { t('admin.calendars.fields.name_hint') }
           end
         end
       end
@@ -246,21 +225,20 @@ class Views::Admin::Calendars::New < Views::Admin::Base
             )
             p(class: 'text-sm text-gray-600 mt-2') { t('admin.calendars.wizard.location.strategy_hint') }
           end
-          fieldset(class: 'fieldset bg-base-200/50 rounded-xl p-6') do
-            legend(class: 'fieldset-legend text-base font-semibold') { t('admin.calendars.fields.default_location') }
+          Field(for: form.field_id(:place_id), label: t('admin.calendars.fields.default_location'), prominent: true,
+                hint: t('admin.calendars.wizard.location.default_hint'), class: 'bg-base-200/50 rounded-xl p-6') do |f|
             if partner && partner.address_id.blank?
               div(class: 'alert alert-warning mb-4') do
                 raw icon(:warning, size: '5', css_class: 'shrink-0')
                 span { t('admin.calendars.wizard.location.partner_no_address', partner: partner.name) }
               end
             end
-            raw form.input_field(:place_id,
+            raw form.input_field(:place_id, **f.aria,
                                  as: :select,
                                  collection: options_for_location,
                                  include_blank: t('admin.calendars.fields.default_location_blank'),
                                  class: 'select select-bordered w-full',
                                  data: { controller: 'tom-select', 'calendar-wizard-target': 'placeSelect' })
-            p(class: 'text-sm text-gray-600 mt-2') { t('admin.calendars.wizard.location.default_hint') }
           end
         end
       end

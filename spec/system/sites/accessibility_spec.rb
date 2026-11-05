@@ -2,10 +2,11 @@
 
 require "rails_helper"
 
-# Every page a visitor to a site can reach, checked with axe-core on each core colour theme
-# and on Trans Dimension's own design, so each palette is held to contrast as well as the markup.
+# Every page a visitor to a site can reach, checked with axe-core on the core design and on Trans Dimension's own.
+# The core colour themes differ only in colours, so each page also has its contrast checked under every palette.
 RSpec.describe "Site accessibility", :slow, type: :system do
-  THEMES = PlaceCal::Extensions.themes.select { |theme| theme.core? || theme.name == "transdimension" }.map(&:name)
+  CORE_THEMES = PlaceCal::Extensions.themes.select(&:core?).map(&:name)
+  THEMES = [CORE_THEMES.first, "transdimension"].freeze
   LISTING_PAGES = {
     "the homepage" => "/",
     "the events listing" => "/events",
@@ -48,6 +49,18 @@ RSpec.describe "Site accessibility", :slow, type: :system do
     visit "http://riverside.lvh.me:#{Capybara.current_session.server.port}#{path}"
   end
 
+  # A core theme's palette is the data-theme attribute on <html>, so the other palettes need no reload.
+  def expect_accessible
+    expect(page).to be_axe_clean
+    return unless theme == CORE_THEMES.first
+
+    expect(page).to have_css("html[data-theme='#{theme}']", visible: :all)
+    CORE_THEMES.drop(1).each do |palette|
+      page.execute_script("document.documentElement.dataset.theme = arguments[0]", palette)
+      aggregate_failures("on the #{palette} palette") { expect(page).to be_axe_clean.checking_only(:"color-contrast") }
+    end
+  end
+
   THEMES.each do |theme_name|
     context "on the #{theme_name} theme" do
       let(:theme) { theme_name }
@@ -56,7 +69,7 @@ RSpec.describe "Site accessibility", :slow, type: :system do
         it "has no accessibility violations on #{description}" do
           visit_site(path)
 
-          expect(page).to be_axe_clean
+          expect_accessible
         end
       end
 
@@ -64,26 +77,26 @@ RSpec.describe "Site accessibility", :slow, type: :system do
         it "has no accessibility violations on the theme's /#{slug} page" do
           visit_site("/#{slug}")
 
-          expect(page).to be_axe_clean
+          expect_accessible
         end
       end
 
       it "has no accessibility violations on a partner page" do
         visit_site("/partners/#{partner.to_param}")
 
-        expect(page).to be_axe_clean
+        expect_accessible
       end
 
       it "has no accessibility violations on an event page" do
         visit_site("/events/#{event.to_param}")
 
-        expect(page).to be_axe_clean
+        expect_accessible
       end
 
       it "has no accessibility violations on an article" do
         visit_site("/news/#{article.to_param}")
 
-        expect(page).to be_axe_clean
+        expect_accessible
       end
 
       context "with two partnership tags" do
@@ -96,14 +109,14 @@ RSpec.describe "Site accessibility", :slow, type: :system do
           visit_site("/events")
 
           expect(page).to have_css("nav[data-scope='region-filter'] a[aria-current='page']")
-          expect(page).to be_axe_clean
+          expect_accessible
         end
 
         it "has no accessibility violations on a hovered region filter option" do
           visit_site("/events")
           find("nav[data-scope='region-filter'] a", text: "North").hover
 
-          expect(page).to be_axe_clean
+          expect_accessible
         end
       end
     end

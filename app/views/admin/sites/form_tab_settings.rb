@@ -36,23 +36,22 @@ class Views::Admin::Sites::FormTabSettings < Views::Admin::Base
     div(class: 'grid grid-cols-1 md:grid-cols-2 gap-4') do
       fieldset(class: 'fieldset') do
         label(for: form.field_id(:domain), class: 'fieldset-legend') { plain attr_label(:site, :domain) }
+        aria = { 'aria-describedby': 'site_domain-hint' }
         if policy(site).permitted_attributes.include?(:domain)
-          raw form.input_field(:domain, class: 'input input-bordered w-full font-mono text-sm', placeholder: t('admin.sites.fields.domain_placeholder'))
+          raw form.input_field(:domain, class: 'input input-bordered w-full font-mono text-sm', placeholder: t('admin.sites.fields.domain_placeholder'), **aria)
         else
-          raw form.input_field(:domain, class: 'input input-bordered w-full font-mono text-sm bg-base-200', disabled: true)
+          raw form.input_field(:domain, class: 'input input-bordered w-full font-mono text-sm bg-base-200', disabled: true, **aria)
         end
-        p(class: 'fieldset-label whitespace-normal') { t('admin.sites.fields.domain_hint', subdomain: subdomain_host(site)) }
+        p(id: 'site_domain-hint', class: 'fieldset-label whitespace-normal') { t('admin.sites.fields.domain_hint', subdomain: subdomain_host(site)) }
         render_domain_status(site)
       end
 
-      fieldset(class: 'fieldset') do
-        label(for: form.field_id(:slug), class: 'fieldset-legend') { plain attr_label(:site, :slug) }
+      Field(for: form.field_id(:slug), label: attr_label(:site, :slug), hint: t('admin.hints.leave_blank_to_autogenerate')) do |f|
         if policy(site).permitted_attributes.include?(:slug)
-          raw form.input_field(:slug, class: 'input input-bordered w-full font-mono text-sm')
+          raw form.input_field(:slug, class: 'input input-bordered w-full font-mono text-sm', **f.aria)
         else
-          raw form.input_field(:slug, class: 'input input-bordered w-full font-mono text-sm bg-base-200', disabled: true)
+          raw form.input_field(:slug, class: 'input input-bordered w-full font-mono text-sm bg-base-200', disabled: true, **f.aria)
         end
-        p(class: 'fieldset-label') { t('admin.hints.leave_blank_to_autogenerate') }
       end
     end
   end

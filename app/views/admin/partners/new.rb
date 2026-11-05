@@ -86,12 +86,9 @@ class Views::Admin::Partners::New < Views::Admin::Base
   end
 
   def render_name_field(form)
-    fieldset(class: 'fieldset bg-base-200/50 rounded-xl p-6') do
-      legend(class: 'fieldset-legend text-base font-semibold') do
-        plain 'Partner Name '
-        span(class: 'text-error', aria_hidden: 'true') { '*' }
-      end
-      raw form.input_field(:name,
+    Field(for: form.field_id(:name), label: "#{Partner.model_name.human} #{attr_label(:partner, :name)}", required: true,
+          prominent: true, class: 'bg-base-200/50 rounded-xl p-6') do |f|
+      raw form.input_field(:name, **f.aria,
                            class: 'input input-bordered input-lg w-full text-lg',
                            placeholder: 'e.g. Community Centre Name',
                            autocomplete: 'off',
@@ -129,27 +126,19 @@ class Views::Admin::Partners::New < Views::Admin::Base
   end
 
   def render_summary_field(form)
-    div(class: 'fieldset bg-base-200/50 rounded-xl p-6 mt-6',
-        data: { controller: 'char-counter', 'char-counter-max-value': '200' }) do
-      label(for: 'partner_summary', class: 'fieldset-legend text-base font-semibold') { attr_label(:partner, :summary) }
-      raw form.input_field(:summary, as: :text,
-                                     class: 'textarea textarea-bordered w-full bg-base-100 min-h-16',
-                                     maxlength: 200, id: 'partner_summary',
+    Field(for: form.field_id(:summary), label: attr_label(:partner, :summary), hint: t('admin.partners.fields.summary_hint'),
+          counter: 200, prominent: true, class: 'bg-base-200/50 rounded-xl p-6 mt-6') do |f|
+      raw form.input_field(:summary, as: :text, **f.aria,
+                                     class: 'textarea textarea-bordered w-full bg-base-100 min-h-16', maxlength: 200,
                                      data: { controller: 'auto-expand', char_counter_target: 'input', action: 'input->char-counter#update' })
-      div(class: 'flex items-center justify-between mt-2') do
-        p(class: 'text-sm text-gray-600') { t('admin.partners.fields.summary_hint') }
-        span(class: 'text-xs tabular-nums transition-colors', data: { 'char-counter-target': 'counter' }) { '0 / 200' }
-      end
     end
   end
 
   def render_description_field(form)
-    div(class: 'fieldset bg-base-200/50 rounded-xl p-6 mt-6') do
-      label(for: 'partner_description', class: 'fieldset-legend text-base font-semibold') { attr_label(:partner, :description) }
-      raw form.input_field(:description,
-                           class: 'textarea textarea-bordered w-full bg-base-100 min-h-32',
-                           id: 'partner_description', data: { controller: 'auto-expand' })
-      p(class: 'text-sm text-gray-600 mt-2') { t('admin.partners.fields.description_hint') }
+    Field(for: form.field_id(:description), label: attr_label(:partner, :description), hint: t('admin.partners.fields.description_hint'),
+          prominent: true, class: 'bg-base-200/50 rounded-xl p-6 mt-6') do |f|
+      raw form.input_field(:description, **f.aria, class: 'textarea textarea-bordered w-full bg-base-100 min-h-32',
+                                                   data: { controller: 'auto-expand' })
     end
   end
 
@@ -370,32 +359,31 @@ class Views::Admin::Partners::New < Views::Admin::Base
   end
 
   def render_admin_email_field(_form)
-    fieldset(class: 'fieldset') do
-      legend(class: 'fieldset-legend') do
-        plain attr_label(:user, :email)
-        whitespace
-        span(class: 'text-error', aria_hidden: 'true') { t('admin.labels.required') }
-      end
-      input(type: 'email', name: 'partner[invited_admin][email]',
+    Field(for: 'partner_invited_admin_email', label: attr_label(:user, :email), required: true,
+          hint: t('admin.hints.invitation_email')) do |f|
+      input(type: 'email', id: 'partner_invited_admin_email', name: 'partner[invited_admin][email]', **f.aria,
             class: 'input input-bordered w-full bg-base-100',
             data: { 'partner-wizard-target': 'adminEmail', action: 'input->partner-wizard#checkAdminEmail' })
-      p(class: 'text-sm text-gray-600 mt-2') { 'An invitation email will be sent to this address.' }
-      div(class: 'mt-3 hidden', data: { 'partner-wizard-target': 'adminEmailFeedback' }) do
-        div(class: 'alert alert-success text-sm hidden', data: { 'partner-wizard-target': 'adminEmailAvailable' }) do
-          raw icon(:check_circle, size: '5', css_class: 'shrink-0')
-          span { 'This email address is available.' }
+      f.after { render_admin_email_feedback }
+    end
+  end
+
+  def render_admin_email_feedback
+    div(class: 'mt-3 hidden', data: { 'partner-wizard-target': 'adminEmailFeedback' }) do
+      div(class: 'alert alert-success text-sm hidden', data: { 'partner-wizard-target': 'adminEmailAvailable' }) do
+        raw icon(:check_circle, size: '5', css_class: 'shrink-0')
+        span { 'This email address is available.' }
+      end
+      div(class: 'alert alert-warning text-sm hidden', data: { 'partner-wizard-target': 'adminEmailTaken' }) do
+        raw icon(:warning, size: '5', css_class: 'shrink-0')
+        div(class: 'flex-1') do
+          p(class: 'font-semibold') { 'A user with this email already exists' }
+          p(class: 'text-xs mt-1') { 'They will be added as an admin for this partner.' }
         end
-        div(class: 'alert alert-warning text-sm hidden', data: { 'partner-wizard-target': 'adminEmailTaken' }) do
-          raw icon(:warning, size: '5', css_class: 'shrink-0')
-          div(class: 'flex-1') do
-            p(class: 'font-semibold') { 'A user with this email already exists' }
-            p(class: 'text-xs mt-1') { 'They will be added as an admin for this partner.' }
-          end
-        end
-        div(class: 'alert alert-error text-sm hidden', data: { 'partner-wizard-target': 'adminEmailInvalid' }) do
-          raw icon(:x_circle, size: '5', css_class: 'shrink-0')
-          span { 'Please enter a valid email address.' }
-        end
+      end
+      div(class: 'alert alert-error text-sm hidden', data: { 'partner-wizard-target': 'adminEmailInvalid' }) do
+        raw icon(:x_circle, size: '5', css_class: 'shrink-0')
+        span { 'Please enter a valid email address.' }
       end
     end
   end

@@ -27,14 +27,9 @@ class Views::Admin::Partners::FormTabSettings < Views::Admin::Base
         margin: 4
       )
       div(class: 'max-w-md') do
-        fieldset(class: 'fieldset') do
-          label(for: form.field_id(:slug), class: 'fieldset-legend') do
-            plain attr_label(:partner, :url)
-            whitespace
-            plain attr_label(:partner, :slug)
-          end
-          raw form.input_field(:slug, class: 'input input-bordered w-full')
-          p(class: 'fieldset-label') { t('admin.hints.leave_blank_to_autogenerate') }
+        Field(for: form.field_id(:slug), label: "#{attr_label(:partner, :url)} #{attr_label(:partner, :slug)}",
+              hint: t('admin.hints.leave_blank_to_autogenerate')) do |f|
+          raw form.input_field(:slug, class: 'input input-bordered w-full', **f.aria)
         end
       end
     end

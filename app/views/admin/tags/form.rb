@@ -66,19 +66,12 @@ class Views::Admin::Tags::Form < Views::Admin::Base
       div(class: 'card-body p-6') do
         SectionHeader(title: t('admin.sections.basic_information'), margin: 4)
 
-        div(class: 'fieldset') do
-          label(for: 'tag_name', class: 'fieldset-legend') do
-            plain attr_label(:tag, :name)
-            whitespace
-            span(class: 'text-error', aria_hidden: 'true') { t('admin.labels.required') }
-          end
-          raw form.input_field(:name, class: 'input input-bordered w-full', id: 'tag_name')
+        Field(for: 'tag_name', label: attr_label(:tag, :name), required: true) do |f|
+          raw form.input_field(:name, class: 'input input-bordered w-full', id: 'tag_name', **f.aria)
         end
 
-        div(class: 'fieldset') do
-          label(for: 'tag_slug', class: 'fieldset-legend') { attr_label(:tag, :slug) }
-          raw form.input_field(:slug, class: 'input input-bordered w-full', id: 'tag_slug')
-          p(class: 'fieldset-label') { t('admin.hints.leave_blank_to_autogenerate') }
+        Field(for: 'tag_slug', label: attr_label(:tag, :slug), hint: t('admin.hints.leave_blank_to_autogenerate')) do |f|
+          raw form.input_field(:slug, class: 'input input-bordered w-full', id: 'tag_slug', **f.aria)
         end
 
         div(class: 'fieldset') do

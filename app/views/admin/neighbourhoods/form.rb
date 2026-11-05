@@ -34,10 +34,9 @@ class Views::Admin::Neighbourhoods::Form < Views::Admin::Base
           raw form.label(:name, attr_label(:neighbourhood, :name), class: 'fieldset-legend')
           raw form.input_field(:name, class: 'input input-bordered w-full')
         end
-        fieldset(class: 'fieldset') do
-          raw form.label(:name_abbr, attr_label(:neighbourhood, :name_abbr), class: 'fieldset-legend')
-          raw form.input_field(:name_abbr, class: 'input input-bordered w-full')
-          p(class: 'fieldset-label mt-1') { t('admin.neighbourhoods.form.name_abbr_hint') }
+        Field(for: form.field_id(:name_abbr), label: attr_label(:neighbourhood, :name_abbr),
+              hint: t('admin.neighbourhoods.form.name_abbr_hint')) do |f|
+          raw form.input_field(:name_abbr, class: 'input input-bordered w-full', **f.aria)
         end
       end
     end
