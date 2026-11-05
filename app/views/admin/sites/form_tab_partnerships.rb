@@ -14,7 +14,7 @@ class Views::Admin::Sites::FormTabPartnerships < Views::Admin::Base
     div(class: 'max-w-xl') do
       fieldset(class: 'fieldset') do
         legend(class: 'fieldset-legend') { t('admin.sites.fields.partnership_tags') }
-        p(class: 'fieldset-label mb-3') { t('admin.sites.fields.partnership_tags_hint') }
+        p(id: 'site_tag_ids-hint', class: 'fieldset-label mb-3') { t('admin.sites.fields.partnership_tags_hint') }
         div(class: 'site_tags') do
           if policy(site).permitted_attributes.include?(:tags)
             raw form.input_field(:tag_ids,
@@ -22,7 +22,7 @@ class Views::Admin::Sites::FormTabPartnerships < Views::Admin::Base
                                  collection: options_for_tags,
                                  multiple: true,
                                  class: 'select select-bordered w-full',
-                                 aria: { label: t('admin.sites.fields.partnership_tags') },
+                                 aria: { label: t('admin.sites.fields.partnership_tags'), describedby: 'site_tag_ids-hint' },
                                  data: { controller: 'tom-select' })
           else
             raw form.input_field(:tag_ids,
@@ -31,7 +31,7 @@ class Views::Admin::Sites::FormTabPartnerships < Views::Admin::Base
                                  multiple: true,
                                  class: 'select select-bordered w-full bg-base-200',
                                  disabled: true,
-                                 aria: { label: t('admin.sites.fields.partnership_tags') },
+                                 aria: { label: t('admin.sites.fields.partnership_tags'), describedby: 'site_tag_ids-hint' },
                                  data: { controller: 'tom-select' })
           end
         end

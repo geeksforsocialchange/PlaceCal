@@ -23,15 +23,13 @@ class Views::Admin::Calendars::FormTabContact < Views::Admin::Base
   private
 
   def render_contact_name
-    fieldset(class: 'fieldset') do
-      label(for: form.field_id(:public_contact_name), class: 'fieldset-legend') { attr_label(:calendar, :public_contact_name) }
+    Field(for: form.field_id(:public_contact_name), label: attr_label(:calendar, :public_contact_name)) do
       raw form.input_field(:public_contact_name, class: 'input input-bordered input-sm w-full bg-base-100')
     end
   end
 
   def render_contact_email
-    fieldset(class: 'fieldset') do
-      label(for: form.field_id(:public_contact_email), class: 'fieldset-legend') { attr_label(:calendar, :public_contact_email) }
+    Field(for: form.field_id(:public_contact_email), label: attr_label(:calendar, :public_contact_email)) do
       raw form.input_field(:public_contact_email, class: 'input input-bordered input-sm w-full bg-base-100',
                                                   'data-validate-email': 'true',
                                                   'data-validate-email-message': t('admin.hints.email_validation'))
@@ -39,8 +37,7 @@ class Views::Admin::Calendars::FormTabContact < Views::Admin::Base
   end
 
   def render_contact_phone
-    fieldset(class: 'fieldset') do
-      label(for: form.field_id(:public_contact_phone), class: 'fieldset-legend') { attr_label(:calendar, :public_contact_phone) }
+    Field(for: form.field_id(:public_contact_phone), label: attr_label(:calendar, :public_contact_phone)) do
       raw form.input_field(:public_contact_phone, class: 'input input-bordered input-sm w-full bg-base-100')
     end
   end

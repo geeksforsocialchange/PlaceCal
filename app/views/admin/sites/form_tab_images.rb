@@ -21,8 +21,7 @@ class Views::Admin::Sites::FormTabImages < Views::Admin::Base
   def render_theme_field(site)
     return unless policy(site).permitted_attributes.include?(:theme)
 
-    fieldset(class: 'fieldset max-w-xs mb-8') do
-      label(for: form.field_id(:theme), class: 'fieldset-legend') { attr_label(:site, :theme) }
+    Field(for: form.field_id(:theme), label: attr_label(:site, :theme), class: 'max-w-xs mb-8') do
       raw form.input_field(:theme, as: :select,
                                    collection: policy(site).permitted_themes.map { |theme| [theme.label, theme.name] },
                                    include_blank: false,
@@ -128,16 +127,13 @@ class Views::Admin::Sites::FormTabImages < Views::Admin::Base
 
   def render_hero_credit_fields
     div(class: 'grid grid-cols-1 md:grid-cols-2 gap-4') do
-      fieldset(class: 'fieldset') do
-        label(for: form.field_id(:hero_image_credit), class: 'fieldset-legend') { attr_label(:site, :hero_image_credit) }
-        raw form.input_field(:hero_image_credit, class: 'input input-bordered w-full input-sm bg-base-100')
-        p(class: 'fieldset-label') { t('admin.sites.fields.image_credit_hint') }
+      Field(for: form.field_id(:hero_image_credit), label: attr_label(:site, :hero_image_credit),
+            hint: t('admin.sites.fields.image_credit_hint')) do |f|
+        raw form.input_field(:hero_image_credit, class: 'input input-bordered w-full input-sm bg-base-100', **f.aria)
       end
 
-      fieldset(class: 'fieldset') do
-        label(for: form.field_id(:hero_alttext), class: 'fieldset-legend') { attr_label(:site, :hero_image_alt) }
-        raw form.input_field(:hero_alttext, class: 'input input-bordered w-full input-sm bg-base-100')
-        p(class: 'fieldset-label') { t('admin.sites.fields.alt_text_hint') }
+      Field(for: form.field_id(:hero_alttext), label: attr_label(:site, :hero_image_alt), hint: t('admin.sites.fields.alt_text_hint')) do |f|
+        raw form.input_field(:hero_alttext, class: 'input input-bordered w-full input-sm bg-base-100', **f.aria)
       end
     end
   end

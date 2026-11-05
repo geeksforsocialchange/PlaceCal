@@ -110,6 +110,7 @@ en:
     # Form hints
     hints:
       email_validation: "Enter a valid email address"
+      invitation_email: "An invitation email will be sent to this address."
       leave_blank_to_autogenerate: "Leave blank to auto-generate from name"
       select_to_add: "Select to add to this tag"
       shown_publicly: "Shown on PlaceCal to the public."

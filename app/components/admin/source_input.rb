@@ -24,14 +24,10 @@ class Components::Admin::SourceInput < Components::Admin::Base
   end
 
   def render_source_field
-    fieldset(class: 'fieldset') do
-      label(for: 'calendar_source', class: 'fieldset-legend') do
-        plain I18n.t('activerecord.attributes.calendar.source')
-        whitespace
-        span(class: 'text-error', aria_hidden: 'true') { I18n.t('admin.labels.required') }
-      end
+    Field(for: @form.field_id(:source), label: I18n.t('activerecord.attributes.calendar.source'), required: true,
+          hint: I18n.t('admin.calendars.handbook_hint_html').html_safe) do |f|
       div(class: 'flex gap-2') do
-        raw(@form.input_field(:source,
+        raw(@form.input_field(:source, **f.aria,
                               class: 'input input-bordered flex-1 font-mono text-sm',
                               placeholder: I18n.t('admin.calendars.fields.source_placeholder'),
                               autocomplete: 'off',
@@ -39,8 +35,7 @@ class Components::Admin::SourceInput < Components::Admin::Base
                               'data-action': 'input->source-validator#sourceChanged'))
         render_test_button
       end
-      p(class: 'fieldset-label') { safe(I18n.t('admin.calendars.handbook_hint_html')) }
-      render_feedback
+      f.after { render_feedback }
     end
   end
 
@@ -86,8 +81,7 @@ class Components::Admin::SourceInput < Components::Admin::Base
   end
 
   def render_importer_field
-    fieldset(class: 'fieldset mt-4') do
-      raw(@form.label(:importer_mode, I18n.t('admin.calendars.fields.calendar_type'), class: 'fieldset-legend'))
+    Field(for: @form.field_id(:importer_mode), label: I18n.t('admin.calendars.fields.calendar_type'), class: 'mt-4') do
       raw(@form.input_field(:importer_mode,
                             as: :select,
                             collection: options_for_importer,
@@ -107,20 +101,16 @@ class Components::Admin::SourceInput < Components::Admin::Base
     classes = %w[fieldset mt-4]
     classes << 'hidden' unless api_token_field_visible?
 
-    fieldset(class: classes.join(' '), data: { 'source-validator-target': 'apiTokenSection' }) do
-      label(for: 'calendar_api_token', class: 'fieldset-legend') do
-        plain I18n.t('admin.calendars.fields.api_token')
-        whitespace
-        span(class: 'text-error', aria_hidden: 'true') { I18n.t('admin.labels.required') }
-      end
-      raw(@form.input_field(:api_token,
+    Field(for: @form.field_id(:api_token), label: I18n.t('admin.calendars.fields.api_token'), required: true,
+          hint: I18n.t('admin.calendars.fields.api_token_hint'),
+          class: classes.drop(1).join(' '), data: { 'source-validator-target': 'apiTokenSection' }) do |f|
+      raw(@form.input_field(:api_token, **f.aria,
                             type: :password,
                             class: 'input input-bordered w-full font-mono text-sm',
                             placeholder: I18n.t('admin.calendars.fields.api_token_placeholder'),
                             autocomplete: 'off',
                             value: @form.object.api_token,
                             'data-source-validator-target': 'apiTokenInput'))
-      p(class: 'fieldset-label') { I18n.t('admin.calendars.fields.api_token_hint') }
     end
   end
 

@@ -56,17 +56,12 @@ class Views::Admin::Users::ProfileTabPassword < Views::Admin::Base
   end
 
   def render_current_password_field
-    div(class: 'fieldset') do
-      label(for: 'user_current_password', class: 'fieldset-legend') do
-        plain t('admin.users.profile.current_password')
-        whitespace
-        span(class: 'text-error', aria_hidden: 'true') { t('admin.labels.required') }
-      end
-      raw form.input_field(:current_password, type: :password,
+    Field(for: 'user_current_password', label: t('admin.users.profile.current_password'), required: true,
+          hint: t('admin.users.profile.current_password_hint')) do |f|
+      raw form.input_field(:current_password, type: :password, **f.aria,
                                               class: 'input input-bordered w-full',
                                               autocomplete: 'current-password',
                                               id: 'user_current_password')
-      p(class: 'fieldset-label') { t('admin.users.profile.current_password_hint') }
     end
   end
 end

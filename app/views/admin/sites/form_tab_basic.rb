@@ -25,12 +25,8 @@ class Views::Admin::Sites::FormTabBasic < Views::Admin::Base
   private
 
   def render_name_field
-    fieldset(class: 'fieldset') do
-      raw form.label(:name, class: 'fieldset-legend') {
-        "#{Site.model_name.human} #{attr_label(:site, :name)} " \
-        "<span class=\"text-error\" aria-hidden=\"true\">#{t('admin.labels.required')}</span>".html_safe
-      }
-      raw form.input_field(:name, class: 'input input-bordered w-full')
+    Field(for: form.field_id(:name), label: "#{Site.model_name.human} #{attr_label(:site, :name)}", required: true) do |f|
+      raw form.input_field(:name, class: 'input input-bordered w-full', **f.aria)
     end
   end
 
@@ -43,8 +39,7 @@ class Views::Admin::Sites::FormTabBasic < Views::Admin::Base
   end
 
   def render_editable_admin_field
-    fieldset(class: 'fieldset') do
-      raw form.label(:site_admin_id, t('admin.sites.fields.site_admin'), class: 'fieldset-legend')
+    Field(for: form.field_id(:site_admin_id), label: t('admin.sites.fields.site_admin')) do
       raw form.select(:site_admin_id,
                       User.order(:last_name, :first_name).map { |u| [u.display_name, u.id] },
                       { include_blank: t('admin.placeholders.select_model', model: t('admin.models.admin.one').downcase) },
@@ -65,45 +60,34 @@ class Views::Admin::Sites::FormTabBasic < Views::Admin::Base
   end
 
   def render_place_name_field
-    fieldset(class: 'fieldset') do
-      raw form.label(:place_name, attr_label(:site, :place_name), class: 'fieldset-legend')
-      raw form.input_field(:place_name, class: 'input input-bordered w-full')
-      p(class: 'fieldset-label') { t('admin.sites.fields.place_name_hint') }
+    Field(for: form.field_id(:place_name), label: attr_label(:site, :place_name), hint: t('admin.sites.fields.place_name_hint')) do |f|
+      raw form.input_field(:place_name, class: 'input input-bordered w-full', **f.aria)
     end
   end
 
   def render_contact_email_field
-    fieldset(class: 'fieldset') do
-      raw form.label(:contact_email, attr_label(:site, :contact_email), class: 'fieldset-legend')
-      raw form.input_field(:contact_email, as: :email, class: 'input input-bordered w-full')
-      p(class: 'fieldset-label') { t('admin.sites.fields.contact_email_hint') }
+    Field(for: form.field_id(:contact_email), label: attr_label(:site, :contact_email),
+          hint: t('admin.sites.fields.contact_email_hint')) do |f|
+      raw form.input_field(:contact_email, as: :email, class: 'input input-bordered w-full', **f.aria)
     end
   end
 
   def render_tagline_field
-    fieldset(class: 'fieldset') do
-      raw form.label(:tagline, attr_label(:site, :tagline), class: 'fieldset-legend')
+    Field(for: form.field_id(:tagline), label: attr_label(:site, :tagline)) do
       raw form.input_field(:tagline, class: 'input input-bordered w-full')
     end
   end
 
   def render_hero_text_field
-    fieldset(class: 'fieldset', data: { controller: 'char-counter', char_counter_max_value: '120' }) do
-      raw form.label(:hero_text, attr_label(:site, :hero_text), class: 'fieldset-legend')
-      raw form.input_field(:hero_text, as: :text,
-                                       class: 'textarea textarea-bordered w-full min-h-20',
-                                       maxlength: 120,
+    Field(for: form.field_id(:hero_text), label: attr_label(:site, :hero_text),
+          hint: t('admin.sites.fields.hero_text_hint'), counter: 120) do |f|
+      raw form.input_field(:hero_text, as: :text, class: 'textarea textarea-bordered w-full min-h-20', maxlength: 120, **f.aria,
                                        data: { controller: 'auto-expand', char_counter_target: 'input', action: 'input->char-counter#update' })
-      div(class: 'flex items-center justify-between mt-1') do
-        p(class: 'fieldset-label') { t('admin.sites.fields.hero_text_hint') }
-        span(class: 'text-xs tabular-nums transition-colors', data: { char_counter_target: 'counter' }) { '0 / 120' }
-      end
     end
   end
 
   def render_description_field
-    fieldset(class: 'fieldset') do
-      raw form.label(:description, attr_label(:site, :description), class: 'fieldset-legend')
+    Field(for: form.field_id(:description), label: attr_label(:site, :description)) do
       raw form.input_field(:description, as: :text,
                                          class: 'textarea textarea-bordered w-full min-h-32',
                                          data: { controller: 'auto-expand' })

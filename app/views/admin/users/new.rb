@@ -79,39 +79,39 @@ class Views::Admin::Users::New < Views::Admin::Base
   end
 
   def render_text_field(form, field, label_text)
-    fieldset(class: 'fieldset bg-base-200/50 rounded-xl p-4') do
-      raw form.label(field, label_text, class: 'fieldset-legend font-semibold')
+    Field(for: form.field_id(field), label: label_text, class: 'bg-base-200/50 rounded-xl p-4') do
       raw form.input_field(field, class: 'input input-bordered w-full')
     end
   end
 
   def render_email_field(form)
-    fieldset(class: 'fieldset bg-base-200/50 rounded-xl p-4') do
-      raw form.label(:email, class: 'fieldset-legend font-semibold') {
-        "#{attr_label(:user, :email)} <span class=\"text-error\" aria-hidden=\"true\">#{t('admin.labels.required')}</span>".html_safe
-      }
-      raw form.input_field(:email,
+    Field(for: form.field_id(:email), label: attr_label(:user, :email), required: true,
+          hint: t('admin.hints.invitation_email'), class: 'bg-base-200/50 rounded-xl p-4') do |f|
+      raw form.input_field(:email, **f.aria,
                            class: 'input input-bordered w-full',
                            autocomplete: 'off',
                            data: { user_wizard_target: 'emailInput', action: 'input->user-wizard#checkEmail' })
-      p(class: 'text-sm text-gray-600 mt-2') { 'An invitation email will be sent to this address.' }
-      div(class: 'mt-3 hidden', data: { 'user-wizard-target': 'emailFeedback' }) do
-        div(class: 'alert alert-success text-sm hidden', data: { 'user-wizard-target': 'emailAvailable' }) do
-          raw icon(:check_circle, size: '5', css_class: 'shrink-0')
-          span { 'This email address is available.' }
+      f.after { render_email_feedback }
+    end
+  end
+
+  def render_email_feedback
+    div(class: 'mt-3 hidden', data: { 'user-wizard-target': 'emailFeedback' }) do
+      div(class: 'alert alert-success text-sm hidden', data: { 'user-wizard-target': 'emailAvailable' }) do
+        raw icon(:check_circle, size: '5', css_class: 'shrink-0')
+        span { 'This email address is available.' }
+      end
+      div(class: 'alert alert-warning text-sm hidden', data: { 'user-wizard-target': 'emailTaken' }) do
+        raw icon(:warning, size: '5', css_class: 'shrink-0')
+        div(class: 'flex-1') do
+          p(class: 'font-semibold') { 'A user with this email already exists' }
+          p(class: 'text-xs mt-1') { 'You may want to edit the existing user instead.' }
         end
-        div(class: 'alert alert-warning text-sm hidden', data: { 'user-wizard-target': 'emailTaken' }) do
-          raw icon(:warning, size: '5', css_class: 'shrink-0')
-          div(class: 'flex-1') do
-            p(class: 'font-semibold') { 'A user with this email already exists' }
-            p(class: 'text-xs mt-1') { 'You may want to edit the existing user instead.' }
-          end
-          a(href: '#', class: 'btn btn-sm btn-warning', data: { 'user-wizard-target': 'emailTakenLink' }) { 'View User' }
-        end
-        div(class: 'alert alert-error text-sm hidden', data: { 'user-wizard-target': 'emailInvalid' }) do
-          raw icon(:x_circle, size: '5', css_class: 'shrink-0')
-          span { 'Please enter a valid email address.' }
-        end
+        a(href: '#', class: 'btn btn-sm btn-warning', data: { 'user-wizard-target': 'emailTakenLink' }) { 'View User' }
+      end
+      div(class: 'alert alert-error text-sm hidden', data: { 'user-wizard-target': 'emailInvalid' }) do
+        raw icon(:x_circle, size: '5', css_class: 'shrink-0')
+        span { 'Please enter a valid email address.' }
       end
     end
   end
