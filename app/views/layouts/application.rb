@@ -163,6 +163,8 @@ class Views::Layouts::Application < Phlex::HTML
       meta(property: 'og:image:alt', content: t('og_image.alt.site', name: site.name))
       meta(property: 'og:image:width', content: theme_og[:width].to_s) if theme_og[:width]
       meta(property: 'og:image:height', content: theme_og[:height].to_s) if theme_og[:height]
+    elsif content_for?(:og_page)
+      render_page_og_image(content_for(:og_page).to_s)
     elsif site
       # Generated share card for site homepages and other site pages (#2077)
       meta(property: 'og:image', content: og_image_url)
@@ -176,6 +178,15 @@ class Views::Layouts::Application < Phlex::HTML
       meta(property: 'og:image:width', content: '1200')
       meta(property: 'og:image:height', content: '630')
     end
+  end
+
+  # A listing or static page's own card. The directory's are served on the apex, like its main card.
+  def render_page_og_image(page)
+    url = site ? page_og_image_url(page:) : "#{::Site::DIRECTORY_URL.chomp('/')}#{page_og_image_path(page:)}"
+    meta(property: 'og:image', content: url)
+    meta(property: 'og:image:alt', content: t('og_image.alt.page', page: captured_title, site: site&.name || 'PlaceCal'))
+    meta(property: 'og:image:width', content: '1200')
+    meta(property: 'og:image:height', content: '630')
   end
 
   # A theme may supply its own favicons, touch icon and Safari mask icon

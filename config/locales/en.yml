@@ -804,6 +804,7 @@ en:
       partner: "Details for the partner %{name} on %{site}"
       partnership: "Details for the partnership %{name} on PlaceCal"
       site: "%{name}, powered by PlaceCal"
+      page: "%{page} on %{site}"
       directory: "PlaceCal: events and activities by and for your community"
 
   # ===========================================================================

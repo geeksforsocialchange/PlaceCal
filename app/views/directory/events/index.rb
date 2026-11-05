@@ -18,6 +18,7 @@ class Views::Directory::Events::Index < Views::Base
 
   def view_template
     content_for(:title) { ::Event.model_name.human(count: 2) }
+    content_for(:og_page) { 'events' }
     content_for(:description) { t('directory.events.index.description', count: @total_count) }
 
     Directory::PageHero(

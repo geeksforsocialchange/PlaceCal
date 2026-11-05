@@ -63,6 +63,22 @@ RSpec.describe "Open Graph images", type: :request do
     end
   end
 
+  describe "GET /opengraph/:page.png" do
+    it "returns a page card on the main domain and on a site" do
+      [nil, site].each do |card_site|
+        get page_og_image_url(page: "events", host: card_site ? "#{card_site.slug}.lvh.me" : "lvh.me")
+
+        expect(response).to be_successful
+        expect(response.content_type).to eq("image/png")
+      end
+    end
+
+    it "only draws the pages it knows" do
+      get page_og_image_url(page: "anything_else", host: "lvh.me")
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
   describe "og:image meta tags" do
     it "points event pages at the event card" do
       event = create(:event)

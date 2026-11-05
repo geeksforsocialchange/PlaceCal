@@ -47,7 +47,8 @@ RSpec.describe "Public page meta tags", type: :request do
 
   def description = head_meta("name", "description")
 
-  def directory_card = %r{\A#{Regexp.escape(Site::DIRECTORY_URL.chomp('/'))}/opengraph\.png\z}
+  # The directory's main card, or a listing or static page's own
+  def directory_card = %r{\A#{Regexp.escape(Site::DIRECTORY_URL.chomp('/'))}/opengraph(/[a-z_]+)?\.png\z}
 
   shared_examples "a page with its own meta tags" do |pages, image:|
     pages.each do |name, path|
@@ -84,6 +85,13 @@ RSpec.describe "Public page meta tags", type: :request do
       expect(description).not_to eq(I18n.t("meta.description", site: nil).squish)
     end
 
+    it "gives a listing page a card that names it" do
+      get "http://lvh.me/events"
+
+      expect(head_meta("property", "og:image")).to end_with("/opengraph/events.png")
+      expect(head_meta("property", "og:image:alt")).to eq(I18n.t("og_image.alt.page", page: "Events", site: "PlaceCal"))
+    end
+
     it "uses the generated 1200 by 630 card" do
       get "http://lvh.me/privacy"
 
@@ -107,7 +115,7 @@ RSpec.describe "Public page meta tags", type: :request do
   describe "a site" do
     let(:host) { "http://#{millbrook_site.slug}.lvh.me" }
 
-    it_behaves_like "a page with its own meta tags", MetaTagPages::SITE, image: -> { %r{\A#{host}/opengraph\.png\z} }
+    it_behaves_like "a page with its own meta tags", MetaTagPages::SITE, image: -> { %r{\A#{host}/opengraph(/[a-z_]+)?\.png\z} }
 
     it "describes its listing pages differently from its homepage" do
       descriptions = %w[/ /events /partners /news].map do |path|
@@ -116,6 +124,13 @@ RSpec.describe "Public page meta tags", type: :request do
       end
 
       expect(descriptions.uniq.size).to eq(4)
+    end
+
+    it "gives its static pages a card naming the page and the site" do
+      get "#{host}/privacy"
+
+      expect(head_meta("property", "og:image")).to eq("#{host}/opengraph/privacy.png")
+      expect(head_meta("property", "og:image:alt")).to include(millbrook_site.name)
     end
 
     it "names the site, not PlaceCal, in an event's share image alt text" do

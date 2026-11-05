@@ -9,6 +9,7 @@ class Views::Directory::Partnerships::Index < Views::Base
 
   def view_template
     content_for(:title) { Partnership.model_name.human(count: 2) }
+    content_for(:og_page) { 'partnerships' }
     content_for(:description) { t('directory.partnerships.index.description', count: @partnership_count, partners: @total_partners) }
 
     Directory::PageHero(
