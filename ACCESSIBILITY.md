@@ -1,16 +1,15 @@
 PlaceCal is for everyone in a neighbourhood, including people who use a screen reader, a keyboard, voice control, magnification or high contrast settings. Finding out whether you can get into a venue matters as much as finding the event, so this statement covers both: how accessible the PlaceCal websites are, and the access information groups give about their venues and events. It also says how to tell us when something doesn't work.
 
-**Last reviewed: 3 November 2026.**
+**Last reviewed: 4 November 2026.**
 
 ## What this covers
 
-This statement covers the public PlaceCal websites:
+This statement covers:
 
 - the nationwide directory at [placecal.org](https://placecal.org)
 - local sites such as manchester.placecal.org
 - [join.placecal.org](https://join.placecal.org), which tells community groups about PlaceCal
-
-It does not cover the admin area where partners and site admins manage their listings. That has its own accessibility work in progress. If it gets in your way, email us and we'll help.
+- the admin area at admin.placecal.org, where partners and site admins manage their listings, and the pages for signing in, resetting a password and accepting an invitation
 
 ## How accessible PlaceCal is
 
@@ -22,6 +21,7 @@ That means, for example:
 - you can use every page with a keyboard alone, and you can always see where you are on the page
 - pages fit a screen 320 pixels wide, or zoomed to 400%, without scrolling sideways, and nothing is cut off if you increase text spacing
 - links say where they go, even read out of context in a screen reader's list of links
+- tables in the admin area can be sorted with the keyboard, and tell screen readers which column they're sorted by and how many records they show
 - the event and partner filters keep your place when the list updates, and tell screen readers how many results there are
 - menus and filters tell screen readers whether they are open or closed, and maps say what they show
 - buttons and other controls are at least 24 pixels across, and form fields, focus outlines and text all have enough contrast
@@ -37,15 +37,16 @@ Event and partner details come from the groups themselves, often imported straig
 
 ## How we test PlaceCal
 
-- Every change to PlaceCal is checked automatically with [axe](https://github.com/dequelabs/axe-core) on every type of public page, and local site pages are checked on each of our colour themes and on The Trans Dimension's design.
+- Every change to PlaceCal is checked automatically with [axe](https://github.com/dequelabs/axe-core) on every type of public page and on every tab of every admin page, and local site pages are checked on each of our colour themes and on The Trans Dimension's design.
 - Every colour theme is checked automatically for text contrast.
-- Automated tests use the keyboard alone to reach the skip link, use the filters and custom menus, and check pages at 320 pixels wide.
-- We check every page type in a browser for the WCAG 2.2 AA requirements automated tools miss: reflow, text spacing, target size, focus, and the contrast of form fields and focus outlines.
+- Automated tests use the keyboard alone to reach the skip link, use the filters and custom menus, and sort admin tables, and check pages at 320 pixels wide.
+- We check every page type, public and admin, in a browser for the WCAG 2.2 AA requirements automated tools miss: reflow, text spacing, target size, focus, and the contrast of form fields and focus outlines.
 - We test with VoiceOver on macOS in Google Chrome.
 
 ## Known limitations
 
 - **Screen readers we haven't tested with.** We have not yet tested PlaceCal with screen readers on Windows (such as NVDA or JAWS), on phones (VoiceOver on iOS or TalkBack on Android), or with VoiceOver in Safari. If you use one of these and something doesn't work, please tell us.
+- **Tabs on admin forms.** The tabs that split up long admin forms are radio buttons, so a screen reader announces them as radio buttons rather than tabs. They work the same way: the arrow keys move between them and show each part of the form, and Tab moves into it.
 - **Moving around a map.** You move around a map by dragging it. Without dragging, you can use its zoom in and zoom out buttons, double-click a spot to zoom in on it, or select a group of places to zoom to them, and everything shown on a map is also listed on the page as text, with its address. We think this meets WCAG 2.5.7 (dragging movements), but if it doesn't work for you, tell us and we'll add buttons to move the map.
 
 ## Tell us about a problem
@@ -60,7 +61,7 @@ PlaceCal is open source, so you can also report a problem on [GitHub](https://gi
 
 Accessibility is part of every change to PlaceCal, not a separate task:
 
-- New public pages and components get an axe check in the accessibility specs.
+- New pages and components, public or admin, get an axe check in the accessibility specs. Admin forms are checked on every tab.
 - All text comes from the locale files, so screen reader labels are translated with everything else.
 - Interactive components need to work with a keyboard, report their state (such as whether a menu is open) and move focus somewhere sensible when content changes.
 
