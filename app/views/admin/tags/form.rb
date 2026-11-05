@@ -70,7 +70,7 @@ class Views::Admin::Tags::Form < Views::Admin::Base
           label(for: 'tag_name', class: 'fieldset-legend') do
             plain attr_label(:tag, :name)
             whitespace
-            span(class: 'text-error') { t('admin.labels.required') }
+            span(class: 'text-error', aria_hidden: 'true') { t('admin.labels.required') }
           end
           raw form.input_field(:name, class: 'input input-bordered w-full', id: 'tag_name')
         end

@@ -7,12 +7,16 @@ class Components::Admin::TabPanel < Components::Admin::Base
   prop :controller_name, String
   prop :checked, _Boolean, default: false
 
+  # A leading emoji is decoration: shown through data-icon, kept out of the accessible name.
+  LEADING_EMOJI = /\A((?:\p{Extended_Pictographic}[\u{FE0F}\u{200D}]*)+)\s+/
+
   def view_template(&block)
     input(
       type: 'radio',
       name: @name,
       class: 'tab',
-      aria_label: @label,
+      aria_label: @label.sub(LEADING_EMOJI, ''),
+      data_icon: @label[LEADING_EMOJI, 1],
       **{ "data-#{@controller_name}-target" => 'tab' },
       data_hash: @hash,
       **(@checked ? { checked: 'checked' } : {})

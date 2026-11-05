@@ -33,7 +33,7 @@ class Views::Admin::Tags::FormTabBasic < Views::Admin::Base
         label(for: 'tag_name', class: 'fieldset-legend') do
           plain attr_label(:tag, :name)
           whitespace
-          span(class: 'text-error') { t('admin.labels.required') }
+          span(class: 'text-error', aria_hidden: 'true') { t('admin.labels.required') }
         end
         raw form.input_field(:name, class: 'input input-bordered w-full', disabled: tag_record.system_tag, id: 'tag_name')
       end

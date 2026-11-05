@@ -74,6 +74,10 @@ export default class extends Controller {
 		}
 	}
 
+	choose() {
+		this.inputTarget.click();
+	}
+
 	file(event) {
 		const file = event.target.files[0];
 		if (file) {

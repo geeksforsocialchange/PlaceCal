@@ -22,6 +22,11 @@ RSpec.describe Components::Admin::TabPanel, type: :phlex do
     expect(page).to have_css("input[aria-label='Basic Info']")
   end
 
+  it "keeps a leading emoji out of the accessible name" do
+    render_inline(described_class.new(**default_attrs, label: "\u{2699}\u{FE0F} Settings"))
+    expect(page).to have_css("input[aria-label='Settings'][data-icon='\u{2699}\u{FE0F}']")
+  end
+
   it "sets data-hash attribute" do
     render_inline(described_class.new(**default_attrs))
     expect(page).to have_css("input[data-hash='basic']")

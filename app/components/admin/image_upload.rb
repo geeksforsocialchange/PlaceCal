@@ -91,11 +91,11 @@ class Components::Admin::ImageUpload < Components::Admin::Base
       image_tag image_url, class: "w-full h-auto #{@aspect} object-cover", alt: '',
                            data: { image_preview_target: 'img' }
       div(class: 'absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100') do
-        label(class: 'btn btn-sm bg-white/90 hover:bg-white text-base-content border-0 shadow-lg cursor-pointer') do
+        # Mouse-only shortcut: keyboard and screen reader users have the file input above
+        span(class: 'btn btn-sm bg-white/90 hover:bg-white text-base-content border-0 shadow-lg cursor-pointer',
+             aria_hidden: 'true', data: { action: 'click->image-preview#choose' }) do
           icon(:upload, size: '4')
           plain " #{t('admin.images.replace')}"
-          raw(@form.input_field(@attribute, as: :file, class: 'sr-only',
-                                            data: { action: 'change->image-preview#file' }))
         end
       end
     end

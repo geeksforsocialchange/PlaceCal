@@ -89,7 +89,7 @@ class Views::Admin::Partners::New < Views::Admin::Base
     fieldset(class: 'fieldset bg-base-200/50 rounded-xl p-6') do
       legend(class: 'fieldset-legend text-base font-semibold') do
         plain 'Partner Name '
-        span(class: 'text-error') { '*' }
+        span(class: 'text-error', aria_hidden: 'true') { '*' }
       end
       raw form.input_field(:name,
                            class: 'input input-bordered input-lg w-full text-lg',
@@ -374,7 +374,7 @@ class Views::Admin::Partners::New < Views::Admin::Base
       legend(class: 'fieldset-legend') do
         plain attr_label(:user, :email)
         whitespace
-        span(class: 'text-error') { t('admin.labels.required') }
+        span(class: 'text-error', aria_hidden: 'true') { t('admin.labels.required') }
       end
       input(type: 'email', name: 'partner[invited_admin][email]',
             class: 'input input-bordered w-full bg-base-100',
