@@ -15,6 +15,7 @@ class Views::Directory::MarkdownPage < Views::Base
   def view_template
     content_for(:title) { @document_title }
     content_for(:description) { @description }
+    content_for(:og_page) { @slug }
 
     Directory::PageHero(
       title: @title,

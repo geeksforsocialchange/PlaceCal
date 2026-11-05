@@ -132,6 +132,7 @@ Rails.application.routes.draw do
 
   # Open Graph share card images (#2077)
   get '/opengraph.png', to: 'og_images#default', as: :og_image
+  get '/opengraph/:page.png', to: 'og_images#page', as: :page_og_image, constraints: { page: /[a-z_]+/ }
   get '/events/:id/opengraph.png', to: 'og_images#event', as: :event_og_image
   get '/partners/:id/opengraph.png', to: 'og_images#partner', as: :partner_og_image
   get '/partnerships/:id/opengraph.png', to: 'og_images#partnership', as: :partnership_og_image

@@ -8,6 +8,7 @@ class Views::Directory::Mcp < Views::Base
 
   def view_template
     content_for(:title) { t("#{T}.heading") }
+    content_for(:og_page) { 'mcp' }
     content_for(:description) { t("#{T}.hero_lede") }
 
     Directory::PageHero(breadcrumb_label: t("#{T}.heading"), kicker: t("#{T}.heading"),

@@ -24,6 +24,7 @@ class Views::Directory::OurStory < Views::Base
 
   def view_template
     content_for(:title) { t("#{T}.heading") }
+    content_for(:og_page) { 'our_story' }
     content_for(:description) { t("#{T}.hero_lede") }
 
     Directory::PageHero(
