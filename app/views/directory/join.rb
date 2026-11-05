@@ -5,6 +5,7 @@ class Views::Directory::Join < Views::Base
 
   def view_template
     content_for(:title) { t('directory.join.hero.title') }
+    content_for(:description) { t('directory.join.hero.subtitle') }
 
     Directory::PageHero(
       title: t('directory.join.hero.title'),

@@ -31,8 +31,8 @@ class Views::Sites::Events::Show < Views::Base
     # so they stop eating crawl budget and diluting the indexed site.
     content_for(:robots) { 'noindex, noarchive' } if event.past?
     content_for(:image) { event_og_image_url(event) }
-    content_for(:image_alt) { t('og_image.alt.event', name: event.summary) }
-    content_for(:description) { html_to_plaintext(event.description_html) }
+    content_for(:image_alt) { t('og_image.alt.event', name: event.summary, site: site&.name || 'PlaceCal') }
+    content_for(:description) { html_to_plaintext(event.description_html).presence || fallback_description }
     # Directory apex, matching the canonical tag — see partners/show.rb.
     content_for(:json_ld) { safe(event.to_json_ld(base_url: ::Site::DIRECTORY_URL).to_json) }
 
@@ -55,6 +55,14 @@ class Views::Sites::Events::Show < Views::Base
   end
 
   private
+
+  def fallback_description
+    organiser = event.organiser&.name
+    place = (event.partner_at_location || event.address)&.then { |at| at.try(:name) || at.try(:street_address) }
+    place = nil if place == organiser
+    key = ['meta_description', ('organiser' if organiser), ('place' if place)].compact.join('_')
+    t("events.show.#{key}", summary: event.summary, date: event.dtstart.strftime(t('events.show.meta_date_format')), organiser:, place:)
+  end
 
   # ── Directory layout (nil site) ──
   # Follows the design handoff for the directory event page: hero with

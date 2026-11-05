@@ -239,9 +239,9 @@ class Event < ApplicationRecord
     (dtend - dtstart).seconds.iso8601
   end
 
-  # @return [String] short date, e.g. " 1 Jan"
+  # @return [String] short date, e.g. "1 Jan"
   def date
-    dtstart.strftime('%e %b')
+    dtstart.strftime('%-d %b')
   end
 
   # @return [String] date with year, e.g. " 1 Jan 2026"
@@ -285,9 +285,15 @@ class Event < ApplicationRecord
 
   # @return [String] Open Graph title combining summary, date, time, and organiser
   def og_title
-    str = "#{summary}, #{date}, #{time}"
+    str = all_day? ? "#{summary}, #{date}" : "#{summary}, #{date}, #{time}"
     str += " @ #{organiser.name}" if organiser
     str
+  end
+
+  # Starts at midnight and ends at midnight, or has no end: imported all-day events look like this.
+  # @return [Boolean]
+  def all_day?
+    dtstart == dtstart.beginning_of_day && (dtend.nil? || dtend == dtend.beginning_of_day)
   end
 
   # Whether the event is over (dtend-aware, so a multi-day event still

@@ -48,6 +48,11 @@ RSpec.describe EventsQuery do
         query.call(period: "future")
         expect(query.truncated).to be true
       end
+
+      it "counts every future event, not just the ones it lists" do
+        query = described_class.new(site:, day: today)
+        expect(query.count_for_period("future")).to eq(described_class::FUTURE_LIMIT + 10)
+      end
     end
 
     describe "period: 'day'" do

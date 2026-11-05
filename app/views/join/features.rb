@@ -3,6 +3,7 @@
 class Views::Join::Features < Views::Join::Base
   def view_template
     content_for(:title) { t('join.features.title') }
+    content_for(:description) { t('join.features.lede') }
 
     section(class: 'py-10') do
       div(class: 'container-public') do

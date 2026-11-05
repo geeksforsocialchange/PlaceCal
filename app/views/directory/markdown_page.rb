@@ -10,9 +10,11 @@ class Views::Directory::MarkdownPage < Views::Base
   prop :title, String
   prop :breadcrumb_label, String
   prop :document_title, String
+  prop :description, String
 
   def view_template
     content_for(:title) { @document_title }
+    content_for(:description) { @description }
 
     Directory::PageHero(
       title: @title,

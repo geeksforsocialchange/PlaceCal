@@ -7,6 +7,7 @@ class Views::Join::Demo < Views::Join::Base
 
   def view_template
     content_for(:title) { t('join.demo.title') }
+    content_for(:description) { t('join.demo.lede') }
 
     section(class: 'py-10') do
       div(class: 'container-editorial') do

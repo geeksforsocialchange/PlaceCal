@@ -369,18 +369,22 @@ en:
         title: "PlaceCal Privacy Policy"
         breadcrumb: "Privacy"
         document_title: "Privacy Policy"
+        description: "How PlaceCal collects, uses and looks after personal information, and the choices you have about it."
       terms_of_use:
         title: "PlaceCal Terms of Use"
         breadcrumb: "Terms"
         document_title: "Terms of Use"
+        description: "The terms for using PlaceCal, and the community rules for events, partner listings and talking with the PlaceCal team."
       sustainability:
         title: "PlaceCal's climate impact"
         breadcrumb: "Sustainability"
         document_title: "Sustainability"
+        description: "How PlaceCal measures and cuts its climate impact, from where it's hosted to how much each page weighs."
       accessibility:
         title: "Accessibility statement"
         breadcrumb: "Accessibility"
         document_title: "Accessibility statement"
+        description: "How accessible the PlaceCal websites are, what we know doesn't work yet, and how to tell us about a problem."
       our_story:
         heading: "Our story"
         hero_title: "We set out to examine the causes of social isolation and loneliness within neighbourhoods, and figure out how to combat them."
@@ -476,8 +480,10 @@ en:
         search_button: "Search"
         empty: "No partnerships found."
         clear_search: "Clear search"
+        description: "Explore %{count} partnerships serving %{partners} partners on PlaceCal."
       show:
         kicker: "Partnership"
+        description: "%{name}, a PlaceCal partnership bringing together community partners and events."
         visit: "Visit %{url}"
         partners_heading: "Partners in this partnership"
         see_all_partners: "See all %{count} partners"
@@ -593,6 +599,7 @@ en:
     index:
       page_title: "Partners"
       title: "Our Partners"
+      description: "The community groups, venues and services in %{site}, with their opening times, contact details and events."
       # Read out by screen readers when a filter reloads the list.
       results_summary:
         zero: "No partners match"
@@ -620,6 +627,7 @@ en:
       go_back: "Back to news"
     index:
       page_title: "News from your area"
+      description: "News and updates from community groups and services in %{site}."
       read_more: "Find out more"
       # Screen-reader-only end of the read_more link, so each card's link names its article.
       read_more_about: "about %{title}"
@@ -670,6 +678,7 @@ en:
         one: "1 event"
         other: "%{count} events"
       page_title: "Events"
+      description: "What's on in %{site}: upcoming events and activities from local groups, venues and services."
       title: "Events & activities"
       standfirst: ""
       # Blank by design: the event list opens with an h2 per day, so there is
@@ -706,6 +715,12 @@ en:
     show:
       # Section name above the event page title, blank in core
       section: ""
+      # Share and search description for an event with no description of its own.
+      meta_description: "%{summary} on %{date}."
+      meta_description_organiser: "%{summary} on %{date}, run by %{organiser}."
+      meta_description_place: "%{summary} on %{date} at %{place}."
+      meta_description_organiser_place: "%{summary} on %{date}, run by %{organiser} at %{place}."
+      meta_date_format: "%A %-d %B"
       # Hero back link (#3368), above the section name and title.
       back: "All events"
       contact_heading: "Contact information"
@@ -785,11 +800,11 @@ en:
     generic:
       statement: "Events and activities by and for your community"
     alt:
-      event: "Details for the event %{name} on PlaceCal"
-      partner: "Details for the partner %{name} on PlaceCal"
+      event: "Details for the event %{name} on %{site}"
+      partner: "Details for the partner %{name} on %{site}"
       partnership: "Details for the partnership %{name} on PlaceCal"
       site: "%{name}, powered by PlaceCal"
-      directory: "PlaceCal logo"
+      directory: "PlaceCal: events and activities by and for your community"
 
   # ===========================================================================
   # ENUMERIZE (Calendar types)

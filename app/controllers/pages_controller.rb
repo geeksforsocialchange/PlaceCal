@@ -13,7 +13,8 @@ class PagesController < ApplicationController
       slug: 'terms_of_use',
       title: t('directory.pages.terms_of_use.title'),
       breadcrumb_label: t('directory.pages.terms_of_use.breadcrumb'),
-      document_title: t('directory.pages.terms_of_use.document_title')
+      document_title: t('directory.pages.terms_of_use.document_title'),
+      description: t('directory.pages.terms_of_use.description')
     )
   end
 
@@ -22,7 +23,8 @@ class PagesController < ApplicationController
       slug: 'sustainability',
       title: t('directory.pages.sustainability.title'),
       breadcrumb_label: t('directory.pages.sustainability.breadcrumb'),
-      document_title: t('directory.pages.sustainability.document_title')
+      document_title: t('directory.pages.sustainability.document_title'),
+      description: t('directory.pages.sustainability.description')
     )
   end
 
@@ -31,7 +33,8 @@ class PagesController < ApplicationController
       slug: 'accessibility',
       title: t('directory.pages.accessibility.title'),
       breadcrumb_label: t('directory.pages.accessibility.breadcrumb'),
-      document_title: t('directory.pages.accessibility.document_title')
+      document_title: t('directory.pages.accessibility.document_title'),
+      description: t('directory.pages.accessibility.description')
     )
   end
 
@@ -46,7 +49,8 @@ class PagesController < ApplicationController
       slug: 'privacy',
       title: t('directory.pages.privacy.title'),
       breadcrumb_label: t('directory.pages.privacy.breadcrumb'),
-      document_title: t('directory.pages.privacy.document_title')
+      document_title: t('directory.pages.privacy.document_title'),
+      description: t('directory.pages.privacy.description')
     )
   end
 

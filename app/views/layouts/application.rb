@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class Views::Layouts::Application < Phlex::HTML
+  # Search engines show about this many characters of a description.
+  DESCRIPTION_LENGTH = 160
+
   include Phlex::Rails::Layout
   include Phlex::Rails::Helpers::Routes
   include Phlex::Rails::Helpers::ContentFor
@@ -167,10 +170,11 @@ class Views::Layouts::Application < Phlex::HTML
       meta(property: 'og:image:width', content: '1200')
       meta(property: 'og:image:height', content: '630')
     else
-      meta(property: 'og:image', content: image_url('og/wide.png'))
+      # The directory's generated card; the join site points at it on the apex, which serves it
+      meta(property: 'og:image', content: "#{::Site::DIRECTORY_URL.chomp('/')}#{og_image_path}")
       meta(property: 'og:image:alt', content: t('og_image.alt.directory'))
-      meta(property: 'og:image:width', content: '1920')
-      meta(property: 'og:image:height', content: '1080')
+      meta(property: 'og:image:width', content: '1200')
+      meta(property: 'og:image:height', content: '630')
     end
   end
 
@@ -221,12 +225,17 @@ class Views::Layouts::Application < Phlex::HTML
     controller.respond_to?(:devise_controller?) && controller.devise_controller?
   end
 
+  # Unescaped first like the title, so truncating can't cut an entity in half.
   def compute_description
-    if content_for?(:description)
-      content_for(:description).to_s
-    else
-      t('meta.description', site: site&.name)
-    end
+    text = content_for?(:description) ? CGI.unescapeHTML(content_for(:description).to_s) : default_description
+    text.squish.truncate(DESCRIPTION_LENGTH, separator: ' ')
+  end
+
+  def default_description
+    return t('join.home.description') if join_site?
+    return t('directory.home.description') unless site
+
+    site.og_description || t('meta.description', site: site.name)
   end
 
   def preload_font(path)
