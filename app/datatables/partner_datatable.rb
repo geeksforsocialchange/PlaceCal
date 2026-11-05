@@ -163,7 +163,7 @@ class PartnerDatatable < Datatable # rubocop:disable Metrics/ClassLength
 
         <<~BUTTON.strip
           <button type="button"
-                  class="block text-left text-gray-600 hover:text-orange-600 hover:underline cursor-pointer truncate max-w-[140px]"
+                  class="block text-left text-gray-600 hover:text-orange-600 hover:underline cursor-pointer wrap-break-word min-w-0 max-w-[140px]"
                   data-action="click->admin-table#filterByValue"
                   data-filter-column="ward"
                   data-filter-value="#{neighbourhood.id}"
@@ -221,7 +221,7 @@ class PartnerDatatable < Datatable # rubocop:disable Metrics/ClassLength
 
         <<~BUTTON.strip
           <button type="button"
-                  class="block text-left text-gray-700 hover:text-orange-600 hover:underline cursor-pointer truncate max-w-[150px]"
+                  class="block text-left text-gray-700 hover:text-orange-600 hover:underline cursor-pointer wrap-break-word min-w-0 max-w-[150px]"
                   data-action="click->admin-table#filterByValue"
                   data-filter-column="partnership"
                   data-filter-value="#{p.id}"

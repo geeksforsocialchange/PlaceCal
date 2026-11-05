@@ -141,7 +141,7 @@ class Views::Admin::Articles::FormTabText < Views::Admin::Base
   end
 
   def render_markdown_toolbar
-    div(class: 'flex items-center gap-0.5', data: { markdown_preview_target: 'toolbar' }) do
+    div(class: 'flex flex-wrap items-center gap-0.5', data: { markdown_preview_target: 'toolbar' }) do
       toolbar_button('click->markdown-preview#insertBold', t('admin.articles.markdown.toolbar.bold')) do
         strong { 'B' }
       end

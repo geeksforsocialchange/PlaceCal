@@ -9,6 +9,17 @@
 		content: attr(aria-label);
 	}
 
+	/* Keeps a focused field clear of the fixed top bar and the sticky save bar (WCAG 2.4.11). */
+	html {
+		scroll-padding-top: 4.5rem;
+		scroll-padding-bottom: 6rem;
+	}
+
+	/* A fieldset's default min-width is its widest content, so a long option pushed forms off narrow screens. */
+	.fieldset {
+		min-width: 0;
+	}
+
 	/* The partner page map */
 	.map-marker {
 		height: 300px !important;
@@ -19,12 +30,12 @@
 .checkbox-warning:checked,
 .checkbox-warning[checked="checked"],
 .checkbox-warning:indeterminate {
-	--chkbg: var(--color-placecal-orange) !important;
-	border-color: var(--color-placecal-orange) !important;
+	--chkbg: var(--color-placecal-orange-dark) !important;
+	border-color: var(--color-placecal-orange-dark) !important;
 }
 
 .checkbox-warning {
-	border-color: var(--color-placecal-orange) !important;
+	border-color: var(--color-placecal-orange-dark) !important;
 }
 
 /* Clear filters button with red hover state */
@@ -48,8 +59,8 @@
 
 /* Custom select dropdown with chevron */
 .select-filter {
-	@apply block pl-3 pr-6 py-2 text-xs border border-gray-300 rounded-md bg-white;
-	@apply focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent;
+	@apply block pl-3 pr-6 py-2 text-xs border border-control-border rounded-md bg-white;
+	@apply focus:outline-none focus:ring-2 focus:ring-placecal-orange-dark focus:border-transparent;
 	@apply appearance-none cursor-pointer;
 	background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%236B7280%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
 	background-repeat: no-repeat;
@@ -96,5 +107,20 @@
 	40%,
 	100% {
 		opacity: 1;
+	}
+}
+
+/* daisyUI field edges are 20% base-content, about 1.5:1; this sits in daisyUI's own base layer so focus and colour variants still win. */
+@layer utilities {
+	@layer daisyui.l1.l2.l3 {
+		.input,
+		.select,
+		.textarea,
+		.file-input,
+		.toggle,
+		.checkbox,
+		.radio {
+			--input-color: var(--color-control-border);
+		}
 	}
 }

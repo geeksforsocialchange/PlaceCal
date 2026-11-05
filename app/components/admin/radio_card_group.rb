@@ -11,7 +11,7 @@ class Components::Admin::RadioCardGroup < Components::Admin::Base
       @values.each do |value|
         label(class: 'flex items-start gap-3 p-3 rounded-lg border border-base-300 bg-base-100 hover:bg-base-200/50 cursor-pointer ' \
                      'transition-colors has-[:checked]:border-placecal-orange has-[:checked]:bg-orange-50/50') do
-          raw(@form.radio_button(@attribute, value, class: 'radio radio-warning mt-0.5'))
+          raw(@form.radio_button(@attribute, value, class: 'radio mt-0.5 [--input-color:var(--color-placecal-orange-dark)]'))
           span(class: 'text-sm leading-relaxed') { label_for(value) }
         end
       end

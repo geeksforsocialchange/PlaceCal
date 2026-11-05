@@ -153,12 +153,17 @@ en:
 
     datatable:
       clear_filters: "Clear filters"
+      filtered_range: "%{start}–%{end} of %{total} (filtered)"
+      filtered_total: "Showing %{count} of %{total} records"
       loading: "Loading data..."
       next_page: "Next page"
+      no_entries: "No entries"
       previous_page: "Previous page"
+      range: "%{start}–%{end} of %{total}"
       reset_sort: "Reset sort"
       search: "Search"
       showing: "Showing %{start} to %{end} of %{total} entries"
+      total: "%{total} total records"
 
     images:
       choose_file: "Choose file"

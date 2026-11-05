@@ -124,7 +124,7 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base
               level_badge(ancestor.level)
               div(class: 'flex-1 min-w-0') do
                 span(class: 'text-sm font-medium text-base-content group-hover:text-placecal-orange ' \
-                            'transition-colors truncate block') { safe_neighbourhood_name(ancestor) }
+                            'transition-colors wrap-break-word min-w-0 block') { safe_neighbourhood_name(ancestor) }
                 span(class: 'text-xs text-gray-600') { ancestor.unit&.titleize }
               end
               icon(:chevron_right, size: '4',
@@ -172,7 +172,7 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base
         level_badge(child.level)
         div(class: 'flex-1 min-w-0') do
           span(class: 'text-sm font-medium text-base-content group-hover:text-placecal-orange ' \
-                      'transition-colors truncate block') { safe_neighbourhood_name(child) }
+                      'transition-colors wrap-break-word min-w-0 block') { safe_neighbourhood_name(child) }
           span(class: 'text-xs text-gray-600') { child.unit&.titleize }
         end
         span(class: 'badge badge-sm badge-ghost') { child.descendants.count.to_s } if child.descendants.any?
@@ -183,7 +183,7 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base
       div(class: 'flex items-center gap-3 p-2 text-gray-600') do
         level_badge(child.level)
         div(class: 'flex-1 min-w-0') do
-          span(class: 'text-sm truncate block') { safe_neighbourhood_name(child) }
+          span(class: 'text-sm wrap-break-word min-w-0 block') { safe_neighbourhood_name(child) }
           span(class: 'text-xs text-gray-600') { child.unit&.titleize }
         end
       end
@@ -233,14 +233,14 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base
           icon(:partner, size: '4', css_class: 'text-placecal-orange')
         end
         span(class: 'text-sm font-medium text-base-content group-hover:text-placecal-orange ' \
-                    'transition-colors truncate flex-1') { partner.name }
+                    'transition-colors wrap-break-word min-w-0 flex-1') { partner.name }
       end
     else
       div(class: 'flex items-center gap-3 p-2 text-gray-600') do
         div(class: 'w-8 h-8 rounded-lg bg-base-300 flex items-center justify-center shrink-0') do
           icon(:partner, size: '4', css_class: 'text-gray-500')
         end
-        span(class: 'text-sm truncate flex-1') { partner.name }
+        span(class: 'text-sm wrap-break-word min-w-0 flex-1') { partner.name }
       end
     end
   end
@@ -258,7 +258,7 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base
               end
               div(class: 'flex-1 min-w-0') do
                 span(class: 'text-sm font-medium text-base-content group-hover:text-placecal-orange ' \
-                            'transition-colors truncate block') { site.name }
+                            'transition-colors wrap-break-word min-w-0 block') { site.name }
                 span(class: 'text-xs text-gray-600') { site.display_url }
               end
             end
@@ -300,7 +300,7 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base
         end
         div(class: 'flex-1 min-w-0') do
           span(class: 'text-sm font-medium text-base-content group-hover:text-placecal-orange ' \
-                      'transition-colors truncate block') { admin_user.full_name.presence || admin_user.email }
+                      'transition-colors wrap-break-word min-w-0 block') { admin_user.full_name.presence || admin_user.email }
           span(class: 'text-xs text-gray-600') { admin_user.email } if admin_user.full_name.present?
         end
       end
@@ -309,7 +309,7 @@ class Views::Admin::Neighbourhoods::Show < Views::Admin::Base
         div(class: 'w-8 h-8 rounded-lg bg-base-300 flex items-center justify-center shrink-0') do
           icon(:user, size: '4', css_class: 'text-gray-500')
         end
-        span(class: 'text-sm truncate flex-1') { admin_user.full_name.presence || admin_user.email }
+        span(class: 'text-sm wrap-break-word min-w-0 flex-1') { admin_user.full_name.presence || admin_user.email }
       end
     end
   end

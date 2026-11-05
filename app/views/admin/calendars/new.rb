@@ -169,7 +169,7 @@ class Views::Admin::Calendars::New < Views::Admin::Base
 
   def render_supported_sources
     details(class: 'collapse collapse-arrow bg-base-200/50 border border-base-300 rounded-box') do
-      summary(class: 'collapse-title text-sm font-medium') do
+      summary(class: 'collapse-title text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900') do
         raw icon(:info, size: '4', css_class: 'inline mr-2 text-gray-600')
         plain t('admin.calendars.sections.supported_sources')
       end

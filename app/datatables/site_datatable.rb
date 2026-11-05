@@ -64,7 +64,7 @@ class SiteDatatable < Datatable
 
   def render_name_cell(record)
     url_display = <<~URL_HTML
-      <a href="#{ERB::Util.html_escape(record.public_url)}" target="_blank" class="text-xs text-gray-500 font-mono hover:text-orange-600 flex items-center gap-1">
+      <a href="#{ERB::Util.html_escape(record.public_url)}" target="_blank" class="text-xs text-gray-600 font-mono hover:text-orange-600 flex items-center gap-1 py-1">
         #{ERB::Util.html_escape(record.display_url)}
         #{icon(:external_link, size: '3')}
       </a>
@@ -73,7 +73,7 @@ class SiteDatatable < Datatable
 
     <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
       <div class="flex flex-col gap-0.5">
-        <a href="#{edit_admin_site_path(record)}" class="font-medium text-gray-900 hover:text-orange-600">
+        <a href="#{edit_admin_site_path(record)}" class="inline-block py-0.5 font-medium text-gray-900 hover:text-orange-600">
           #{ERB::Util.html_escape(record.name)}
         </a>
         #{url_display}

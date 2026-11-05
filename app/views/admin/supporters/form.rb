@@ -10,11 +10,11 @@ class Views::Admin::Supporters::Form < Views::Admin::Base
       div(class: 'bg-white shadow-sm rounded-lg p-6 space-y-4') do
         h2(class: 'text-lg font-medium text-gray-900 border-b border-gray-200 pb-2') { t('admin.supporters.sections.details') }
         raw form.input(:name, wrapper: :tw_vertical_form,
-                              input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' })
+                              input_html: { class: 'input input-bordered w-full' })
         raw form.input(:url, wrapper: :tw_vertical_form,
-                             input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' })
+                             input_html: { class: 'input input-bordered w-full' })
         raw form.input(:description, wrapper: :tw_vertical_form,
-                                     input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm', rows: 3 })
+                                     input_html: { class: 'textarea textarea-bordered w-full', rows: 3 })
       end
 
       div(class: 'bg-white shadow-sm rounded-lg p-6 space-y-4') do
@@ -22,7 +22,7 @@ class Views::Admin::Supporters::Form < Views::Admin::Base
         raw form.input(:logo, wrapper: :tw_file)
         if form.object.logo.url
           div(class: 'mt-4') do
-            image_tag(form.object.logo.url, class: 'rounded-lg max-w-xs')
+            image_tag(form.object.logo.url, class: 'rounded-lg max-w-xs', alt: '')
             p(class: 'text-sm text-gray-500 mt-2') { 'Current logo' }
           end
         end
@@ -31,7 +31,7 @@ class Views::Admin::Supporters::Form < Views::Admin::Base
       div(class: 'bg-white shadow-sm rounded-lg p-6 space-y-4') do
         h2(class: 'text-lg font-medium text-gray-900 border-b border-gray-200 pb-2') { t('admin.supporters.sections.display') }
         raw form.input(:weight, wrapper: :tw_vertical_form,
-                                input_html: { class: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-placecal-orange focus:ring-placecal-orange sm:text-sm' },
+                                input_html: { class: 'input input-bordered w-full' },
                                 hint: 'Higher weight = appears first')
         raw form.input(:is_global, wrapper: :tw_boolean, hint: 'Show this supporter on all sites')
       end
