@@ -9,6 +9,10 @@
 		content: attr(aria-label);
 	}
 
+	.tabs-lift > input[type="radio"].tab[data-icon]::after {
+		content: attr(data-icon) " " attr(aria-label);
+	}
+
 	/* Keeps a focused field clear of the fixed top bar and the sticky save bar (WCAG 2.4.11). */
 	html {
 		scroll-padding-top: 4.5rem;

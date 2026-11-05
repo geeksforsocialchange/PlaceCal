@@ -39,7 +39,7 @@ class Views::Layouts::Admin::Application < Phlex::HTML
         render_meta
       end
 
-      body(class: 'bg-gray-50', data: { controller: 'mobile-menu' }) do
+      body(class: 'bg-gray-50', data: { controller: 'mobile-menu field-a11y' }) do
         render_skip_link
         render_topbar
         div(class: 'flex flex-col md:flex-row md:pt-14 min-h-screen') do

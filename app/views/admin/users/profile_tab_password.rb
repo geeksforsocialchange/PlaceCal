@@ -60,7 +60,7 @@ class Views::Admin::Users::ProfileTabPassword < Views::Admin::Base
       label(for: 'user_current_password', class: 'fieldset-legend') do
         plain t('admin.users.profile.current_password')
         whitespace
-        span(class: 'text-error') { t('admin.labels.required') }
+        span(class: 'text-error', aria_hidden: 'true') { t('admin.labels.required') }
       end
       raw form.input_field(:current_password, type: :password,
                                               class: 'input input-bordered w-full',

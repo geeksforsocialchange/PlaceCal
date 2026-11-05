@@ -88,7 +88,7 @@ class Views::Admin::Users::New < Views::Admin::Base
   def render_email_field(form)
     fieldset(class: 'fieldset bg-base-200/50 rounded-xl p-4') do
       raw form.label(:email, class: 'fieldset-legend font-semibold') {
-        "#{attr_label(:user, :email)} <span class=\"text-error\">#{t('admin.labels.required')}</span>".html_safe
+        "#{attr_label(:user, :email)} <span class=\"text-error\" aria-hidden=\"true\">#{t('admin.labels.required')}</span>".html_safe
       }
       raw form.input_field(:email,
                            class: 'input input-bordered w-full',

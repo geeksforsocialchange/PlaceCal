@@ -87,7 +87,7 @@ class Views::Admin::Calendars::New < Views::Admin::Base
       legend(class: 'fieldset-legend text-base font-semibold') do
         plain attr_label(:calendar, :source)
         whitespace
-        span(class: 'text-error') { t('admin.labels.required') }
+        span(class: 'text-error', aria_hidden: 'true') { t('admin.labels.required') }
       end
       div(class: 'flex gap-2') do
         raw form.input_field(:source,
@@ -154,7 +154,7 @@ class Views::Admin::Calendars::New < Views::Admin::Base
       legend(class: 'fieldset-legend text-base font-semibold') do
         plain t('admin.calendars.fields.api_token')
         whitespace
-        span(class: 'text-error') { t('admin.labels.required') }
+        span(class: 'text-error', aria_hidden: 'true') { t('admin.labels.required') }
       end
       raw form.input_field(:api_token,
                            type: :password,
@@ -201,7 +201,7 @@ class Views::Admin::Calendars::New < Views::Admin::Base
             legend(class: 'fieldset-legend text-base font-semibold') do
               plain t('admin.calendars.fields.partner_organiser')
               whitespace
-              span(class: 'text-error') { t('admin.labels.required') }
+              span(class: 'text-error', aria_hidden: 'true') { t('admin.labels.required') }
             end
             raw form.input_field(:organiser_id,
                                  as: :select,
@@ -217,7 +217,7 @@ class Views::Admin::Calendars::New < Views::Admin::Base
             legend(class: 'fieldset-legend text-base font-semibold') do
               plain t('admin.calendars.fields.calendar_name')
               whitespace
-              span(class: 'text-error') { t('admin.labels.required') }
+              span(class: 'text-error', aria_hidden: 'true') { t('admin.labels.required') }
             end
             raw form.input_field(:name,
                                  class: 'input input-bordered w-full',

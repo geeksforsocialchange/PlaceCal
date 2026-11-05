@@ -21,7 +21,7 @@ module TabHelpers
     click_tab_matching("input.tab[data-hash='#{hash}']")
   end
 
-  # Navigate to a partner form tab by its aria-label (includes emoji prefix)
+  # Navigate to a partner form tab by its aria-label
   def go_to_partner_tab(tab_label)
     click_tab_matching("input.tab[aria-label='#{tab_label}']")
   end
@@ -38,13 +38,13 @@ module TabHelpers
     expect(page).to have_css("#{selector}:checked")
   end
 
-  def go_to_basic_info_tab = go_to_partner_tab("📋 Basic Info")
-  def go_to_place_tab = go_to_partner_tab("📍 Location")
-  def go_to_contact_tab = go_to_partner_tab("📞 Contact")
-  def go_to_tags_tab = go_to_partner_tab("🏷️ Tags")
-  def go_to_calendars_tab = go_to_partner_tab("📅 Calendars")
-  def go_to_admins_tab = go_to_partner_tab("👥 Admins")
-  def go_to_settings_tab = go_to_partner_tab("⚙ Settings")
+  def go_to_basic_info_tab = go_to_partner_tab("Basic Info")
+  def go_to_place_tab = go_to_partner_tab("Location")
+  def go_to_contact_tab = go_to_partner_tab("Contact")
+  def go_to_tags_tab = go_to_partner_tab("Tags")
+  def go_to_calendars_tab = go_to_partner_tab("Calendars")
+  def go_to_admins_tab = go_to_partner_tab("Admins")
+  def go_to_settings_tab = go_to_partner_tab("Settings")
 end
 
 RSpec.configure do |config|

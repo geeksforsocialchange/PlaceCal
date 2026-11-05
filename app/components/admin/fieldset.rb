@@ -27,7 +27,7 @@ class Components::Admin::Fieldset < Components::Admin::Base
         plain @label
         if @required
           whitespace
-          span(class: 'text-error') { '*' }
+          span(class: 'text-error', aria_hidden: 'true') { '*' }
         end
         if @char_counter.present?
           whitespace

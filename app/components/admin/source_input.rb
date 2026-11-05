@@ -28,7 +28,7 @@ class Components::Admin::SourceInput < Components::Admin::Base
       label(for: 'calendar_source', class: 'fieldset-legend') do
         plain I18n.t('activerecord.attributes.calendar.source')
         whitespace
-        span(class: 'text-error') { I18n.t('admin.labels.required') }
+        span(class: 'text-error', aria_hidden: 'true') { I18n.t('admin.labels.required') }
       end
       div(class: 'flex gap-2') do
         raw(@form.input_field(:source,
@@ -111,7 +111,7 @@ class Components::Admin::SourceInput < Components::Admin::Base
       label(for: 'calendar_api_token', class: 'fieldset-legend') do
         plain I18n.t('admin.calendars.fields.api_token')
         whitespace
-        span(class: 'text-error') { I18n.t('admin.labels.required') }
+        span(class: 'text-error', aria_hidden: 'true') { I18n.t('admin.labels.required') }
       end
       raw(@form.input_field(:api_token,
                             type: :password,

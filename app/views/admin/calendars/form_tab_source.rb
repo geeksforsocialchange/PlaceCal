@@ -39,7 +39,7 @@ class Views::Admin::Calendars::FormTabSource < Views::Admin::Base
       label(for: 'calendar_organiser_id', class: 'fieldset-legend') do
         plain t('admin.calendars.fields.partner_organiser')
         whitespace
-        span(class: 'text-error') { t('admin.labels.required') }
+        span(class: 'text-error', aria_hidden: 'true') { t('admin.labels.required') }
       end
       raw form.input_field(:organiser_id,
                            as: :select,
@@ -62,7 +62,7 @@ class Views::Admin::Calendars::FormTabSource < Views::Admin::Base
       label(for: 'calendar_name', class: 'fieldset-legend') do
         plain t('admin.calendars.fields.calendar_name')
         whitespace
-        span(class: 'text-error') { t('admin.labels.required') }
+        span(class: 'text-error', aria_hidden: 'true') { t('admin.labels.required') }
       end
       raw form.input_field(:name,
                            class: 'input input-bordered w-full',

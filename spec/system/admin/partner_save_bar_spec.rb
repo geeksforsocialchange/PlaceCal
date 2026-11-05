@@ -22,7 +22,7 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
 
     loop do
       attempts += 1
-      break if page.has_css?('input[aria-label="📋 Basic Info"]')
+      break if page.has_css?('input[aria-label="Basic Info"]')
 
       if attempts >= max_attempts
         # Debug output on final failure
@@ -76,7 +76,7 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
     end
 
     it "shows Back and Save buttons on Preview tab (no Continue)" do
-      go_to_partner_tab("👁️ Preview")
+      go_to_partner_tab("Preview")
 
       expect(page).to have_button("Back")
       expect(page).to have_button("Save")
@@ -125,11 +125,11 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
       # Go to location tab again
       # Accept the confirmation dialog
       accept_confirm do
-        find('input[aria-label="📍 Location"]').click
+        find('input[aria-label="Location"]').click
       end
 
       # Wait for the accepted tab switch to land before asserting the buttons
-      expect(page).to have_css('input[aria-label="📍 Location"]:checked', visible: :all)
+      expect(page).to have_css('input[aria-label="Location"]:checked', visible: :all)
 
       # Now should show "Save & Back" and "Save & Continue"
       expect(page).to have_button("Save & Back")
@@ -148,22 +148,22 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
 
       # Try to switch tabs - should prompt
       dismiss_confirm do
-        find('input[aria-label="📍 Location"]').click
+        find('input[aria-label="Location"]').click
       end
 
       # Should still be on Basic Info tab
-      expect(page).to have_css('input[aria-label="📋 Basic Info"]:checked', visible: :all)
+      expect(page).to have_css('input[aria-label="Basic Info"]:checked', visible: :all)
     end
 
     it "allows tab switch when confirmed" do
       modify_field('input[name="partner[name]"]', "Modified Partner Name")
 
       accept_confirm do
-        find('input[aria-label="📍 Location"]').click
+        find('input[aria-label="Location"]').click
       end
 
       # Should now be on Location tab
-      expect(page).to have_css('input[aria-label="📍 Location"]:checked', visible: :all)
+      expect(page).to have_css('input[aria-label="Location"]:checked', visible: :all)
     end
 
     it "does not prompt when switching tabs without changes" do
@@ -199,7 +199,7 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
       click_button "Continue"
 
       # Wait for tab navigation and verify Location tab is checked
-      expect(page).to have_css('input[aria-label="📍 Location"]:checked', visible: :all)
+      expect(page).to have_css('input[aria-label="Location"]:checked', visible: :all)
     end
 
     it "navigates to previous tab when clicking Back without changes" do
@@ -210,7 +210,7 @@ RSpec.describe "Partner Save Bar", :slow, type: :system do
       click_button "Back"
 
       # Should be back on Basic Info tab
-      expect(page).to have_css('input[aria-label="📋 Basic Info"]:checked', visible: :all)
+      expect(page).to have_css('input[aria-label="Basic Info"]:checked', visible: :all)
     end
   end
 end
