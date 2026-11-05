@@ -9,6 +9,18 @@ RSpec.describe Components::UI::RuledHeading, type: :component do
     expect(page).to have_css("h3#opening-times", text: "Opening times")
   end
 
+  it "names a capitalised heading in its own case, so screen readers don't spell it out" do
+    render_inline(described_class.new(caps: true)) { "About Us" }
+
+    expect(page).to have_css("h2[aria-label='About Us']", text: "About Us")
+  end
+
+  it "leaves an uncapitalised heading to its text" do
+    render_inline(described_class.new) { "About Us" }
+
+    expect(page).to have_no_css("h2[aria-label]")
+  end
+
   it "rejects an unknown rule width" do
     expect { described_class.new(rule: :half) }.to raise_error(Literal::TypeError)
   end

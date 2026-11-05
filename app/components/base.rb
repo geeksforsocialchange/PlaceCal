@@ -34,12 +34,14 @@ class Components::Base < Phlex::HTML
   include PlaceCal::Theming::Hooks
   include Components::SidebarHeading
 
-  # Screen readers get the whole text: a cut-off name reads out as "dot dot dot".
-  def truncated(text, length)
-    return plain(text) if text.length <= length
+  # Shows one text and gives screen readers another: an arrow said as "Next page", a cut-off name said in full.
+  def show_say(shown, said)
+    span(aria_hidden: 'true') { shown }
+    span(class: 'sr-only') { said }
+  end
 
-    span(aria_hidden: 'true') { text.truncate(length) }
-    span(class: 'sr-only') { text }
+  def truncated(text, length)
+    text.length > length ? show_say(text.truncate(length), text) : plain(text)
   end
 
   if Rails.env.development?
