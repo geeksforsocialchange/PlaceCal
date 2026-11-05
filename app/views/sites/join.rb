@@ -13,7 +13,7 @@ class Views::Sites::Join < Views::Base
 
   def view_template
     content_for(:title) { t('sites.join.hero.title') }
-    content_for(:description) { site.og_description }
+    content_for(:description) { t('sites.join.intro', site: site.name) }
 
     Shared::Hero(t('sites.join.hero.title'), site.tagline)
 

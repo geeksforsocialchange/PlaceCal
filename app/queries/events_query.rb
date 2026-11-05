@@ -117,8 +117,9 @@ class EventsQuery
   #
   # @param period [String] 'day', 'week', or 'future'
   # @return [Integer]
+  # The listing caps how many events it shows; the count is of them all.
   def count_for_period(period)
-    apply_period(base_scope, period).count
+    apply_period(base_scope, period).unscope(:limit).count
   end
 
   # Count methods for determining default period.

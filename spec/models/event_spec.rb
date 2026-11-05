@@ -131,6 +131,18 @@ RSpec.describe Event, type: :model do
       event = build(:event, summary: "Tea Dance", organiser: nil)
       expect(event.og_title).to include("Tea Dance")
     end
+
+    it "puts a single space before a one-digit date" do
+      event = build(:event, summary: "Tea Dance", organiser: nil,
+                            dtstart: Time.zone.local(2026, 11, 2, 14), dtend: Time.zone.local(2026, 11, 2, 16))
+      expect(event.og_title).to eq("Tea Dance, 2 Nov, 14:00 – 16:00")
+    end
+
+    it "leaves out the times of an all-day event" do
+      event = build(:event, summary: "Bin collection", organiser: nil,
+                            dtstart: Time.zone.local(2026, 11, 2), dtend: Time.zone.local(2026, 11, 3))
+      expect(event.og_title).to eq("Bin collection, 2 Nov")
+    end
   end
 
   describe "scopes" do

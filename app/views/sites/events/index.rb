@@ -29,7 +29,7 @@ class Views::Sites::Events::Index < Views::Base
 
   def view_template
     content_for(:title) { t('events.index.page_title') }
-    content_for(:description) { site.og_description }
+    content_for(:description) { t('events.index.description', site: site.name) }
 
     Shared::Hero(t('events.index.title'), site.tagline, standfirst: t('events.index.standfirst'))
 

@@ -9,7 +9,7 @@ class Views::Directory::Partnerships::Index < Views::Base
 
   def view_template
     content_for(:title) { Partnership.model_name.human(count: 2) }
-    content_for(:description) { "Explore #{@partnership_count} partnerships serving #{@total_partners} partners on PlaceCal." }
+    content_for(:description) { t('directory.partnerships.index.description', count: @partnership_count, partners: @total_partners) }
 
     Directory::PageHero(
       title: t('directory.partnerships.index.hero_title'),

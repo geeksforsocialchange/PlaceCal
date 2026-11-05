@@ -298,11 +298,6 @@ class Site < ApplicationRecord
     PlaceCal::Theme.for(self).core?
   end
 
-  # @return [String, false] Open Graph image URL, or false
-  def og_image
-    hero_image&.opengraph&.url ? hero_image.opengraph.url : false
-  end
-
   # @return [String, false] tagline for OG description, or false
   def og_description
     tagline && tagline.empty? ? false : tagline

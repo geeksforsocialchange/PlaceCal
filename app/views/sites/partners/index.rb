@@ -25,7 +25,7 @@ class Views::Sites::Partners::Index < Views::Base
 
   def view_template
     content_for(:title) { t('partners.index.page_title') }
-    content_for(:description) { site.og_description }
+    content_for(:description) { t('partners.index.description', site: site.name) }
 
     Shared::Hero(t('partners.index.title'), site.tagline, standfirst: t('partners.index.standfirst'),
                                                           standfirst_detail: t('partners.index.standfirst_detail'))

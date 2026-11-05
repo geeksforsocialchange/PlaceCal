@@ -3,6 +3,8 @@
 class Views::Directory::Partnerships::Show < Views::Base
   include Views::Directory::Concerns::FlattensEvents
 
+  register_value_helper :html_to_plaintext
+
   prop :partnership, ::Site
   prop :partners, _Interface(:each)
   prop :upcoming_events, _Interface(:each)
@@ -15,7 +17,9 @@ class Views::Directory::Partnerships::Show < Views::Base
     content_for(:title) { @partnership.name }
     content_for(:image) { partnership_og_image_url(@partnership) }
     content_for(:image_alt) { t('og_image.alt.partnership', name: @partnership.name) }
-    content_for(:description) { @partnership.description.presence || "#{@partnership.name} — a PlaceCal partnership bringing together community partners and events." }
+    content_for(:description) do
+      html_to_plaintext(@partnership.description_html).presence || t('directory.partnerships.show.description', name: @partnership.name)
+    end
 
     Directory::PageHero(
       title: @partnership.name,

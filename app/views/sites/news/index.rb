@@ -28,6 +28,7 @@ class Views::Sites::News::Index < Views::Base
 
   def view_template
     content_for(:title) { t('news.index.page_title') }
+    content_for(:description) { t('news.index.description', site: site.name) }
 
     Shared::Hero(t('news.index.title'), site.tagline, standfirst: t('news.index.standfirst'))
 
