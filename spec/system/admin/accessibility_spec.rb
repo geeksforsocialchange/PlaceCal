@@ -30,7 +30,8 @@ RSpec.describe "Admin Accessibility", :slow, type: :system do
   # axe skips hidden panels, so each tab of a tabbed form is checked on its own.
   def expect_every_tab_axe_clean
     expect(page).to be_axe_clean
-    tab_count = all("input.tab[type=radio]").size
+    # Tabs render with the page, so don't let `all` wait out its timeout on a form without them
+    tab_count = all("input.tab[type=radio]", wait: false).size
     tab_count.times do |index|
       tab = all("input.tab[type=radio]")[index]
       aggregate_failures("tab #{tab['aria-label']}") do
