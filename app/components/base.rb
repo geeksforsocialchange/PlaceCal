@@ -34,6 +34,16 @@ class Components::Base < Phlex::HTML
   include PlaceCal::Theming::Hooks
   include Components::SidebarHeading
 
+  # Shows one text and gives screen readers another: an arrow said as "Next page", a cut-off name said in full.
+  def show_say(shown, said)
+    span(aria_hidden: 'true') { shown }
+    span(class: 'sr-only') { said }
+  end
+
+  def truncated(text, length)
+    text.length > length ? show_say(text.truncate(length), text) : plain(text)
+  end
+
   if Rails.env.development?
     def before_template
       comment { self.class.name.to_s }

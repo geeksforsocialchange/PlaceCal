@@ -26,6 +26,16 @@ class Components::UI::RuledHeading < Components::Base
   def view_template(&)
     css = ['ruled-heading text-foreground pb-2 border-b-3', TONES[@tone], RULES[@rule], SIZES[@size], SPACING[@spacing],
            @caps ? 'allcaps' : 'font-bold', @attributes[:class]].compact.join(' ')
-    public_send(:"h#{@level}", **part(:root, class: css, **@attributes.except(:class)), &)
+    content = capture(&)
+    public_send(:"h#{@level}", **part(:root, class: css, aria_label: caps_label(content), **@attributes.except(:class))) do
+      raw(safe(content))
+    end
+  end
+
+  private
+
+  # Chrome passes text-transform capitals to screen readers, which spell short words out ("about U S").
+  def caps_label(content)
+    CGI.unescapeHTML(content) if @caps && content.exclude?('<')
   end
 end

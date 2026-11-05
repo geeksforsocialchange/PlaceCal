@@ -113,6 +113,12 @@ RSpec.describe "Join marketing site", type: :request do
       expect(response.body).not_to include("application/ld+json")
     end
 
+    it "heads the pricing table's columns with the tier name only" do
+      get "http://join.lvh.me/pricing"
+      headers = Nokogiri::HTML(response.body).css("table th[scope=col]").map { |th| th.text.squish }
+      expect(headers).to eq(%w[community organisation institution].map { |tier| I18n.t("join.pricing.tiers.#{tier}.name") })
+    end
+
     it "keeps the work-in-progress notice off the directory" do
       get "http://lvh.me/"
       expect(response.body).not_to include(I18n.t("join.wip.heading"))

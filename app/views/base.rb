@@ -51,7 +51,7 @@ class Views::Base < Phlex::HTML
 
   # For a turbo frame that reloads its own filters; results_status goes after the frame, since themes style it by its preceding sibling.
   def results_frame_attributes(status_id, data: {})
-    { tabindex: '-1', class: 'focus:outline-none',
+    { class: 'focus:outline-none',
       data: data.merge(controller: 'results-frame', results_frame_status_value: status_id,
                        action: 'focusin->results-frame#remember turbo:frame-load->results-frame#loaded') }
   end

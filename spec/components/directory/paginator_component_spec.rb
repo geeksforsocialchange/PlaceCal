@@ -19,8 +19,15 @@ RSpec.describe Components::Directory::Paginator, type: :component do
   it "has no previous link on the first page" do
     render_page(1)
 
-    expect(page).not_to have_link("←")
-    expect(page).to have_link("→")
+    expect(page).not_to have_link(I18n.t("directory.aria.previous_page"))
+    expect(page).to have_link(I18n.t("directory.aria.next_page"))
+  end
+
+  it "names the arrows and hides them from screen readers" do
+    render_page(5)
+
+    expect(page).to have_css("a span[aria-hidden='true']", text: "←")
+    expect(page).to have_css("a span.sr-only", text: I18n.t("directory.aria.previous_page"))
   end
 
   it "renders nothing for a single page" do

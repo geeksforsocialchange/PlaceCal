@@ -269,6 +269,8 @@ en:
       sort_order: "Sort order"
       filter_by_letter: "Filter by letter"
       pagination: "Pagination"
+      previous_page: "Previous page"
+      next_page: "Next page"
     # Shared filter chrome, used by both the partner filter and the events
     # filter form (app/components/directory/partner_filter.rb,
     # neighbourhood_cascade.rb and app/views/directory/events/index.rb).

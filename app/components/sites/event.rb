@@ -137,7 +137,7 @@ class Components::Sites::Event < Components::Base
       prefix = t('events.card.organiser_prefix')
       span(**part(:organiser_prefix)) { prefix } if prefix.present?
       # The card truncates to keep its row; the page has room for the whole name.
-      link_to(page? ? organiser.name : organiser.name.truncate(25), partner_path(organiser), data: { turbo_frame: '_top' })
+      a(href: partner_path(organiser), data: { turbo_frame: '_top' }) { page? ? plain(organiser.name) : truncated(organiser.name, 25) }
     end
   end
 
@@ -146,9 +146,9 @@ class Components::Sites::Event < Components::Base
       render_icon(:event_place)
       whitespace
       if partner_at_location
-        link_to(partner_at_location.name.truncate(25), partner_path(partner_at_location), data: { turbo_frame: '_top' })
+        a(href: partner_path(partner_at_location), data: { turbo_frame: '_top' }) { truncated(partner_at_location.name, 25) }
       elsif first_address_line
-        plain first_address_line.truncate(25)
+        truncated(first_address_line, 25)
       end
     end
   end

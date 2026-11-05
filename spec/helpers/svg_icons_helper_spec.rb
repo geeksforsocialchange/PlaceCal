@@ -7,6 +7,10 @@ RSpec.describe SvgIconsHelper, type: :helper do
     expect(helper.icon(:triangle_up)).to include('d="M0,18 l12,-12,12,12 Z"')
   end
 
+  it "hides the icon from screen readers" do
+    expect(helper.icon(:triangle_up)).to include('aria-hidden="true"')
+  end
+
   it "renders a custom size" do
     expect(helper.icon(:triangle_up, size: "6")).to include('class="size-6 shrink-0"')
   end
