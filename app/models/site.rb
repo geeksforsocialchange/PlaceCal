@@ -109,9 +109,6 @@ class Site < ApplicationRecord
                                   }, source: :neighbourhood, through: :sites_neighbourhood
 
   has_many :sites_neighbourhoods, dependent: :destroy
-  has_many :secondary_neighbourhoods, lambda {
-                                        where(sites_neighbourhoods: { relation_type: 'Secondary' })
-                                      }, source: :neighbourhood, through: :sites_neighbourhoods
 
   has_many :neighbourhoods, through: :sites_neighbourhoods
 
