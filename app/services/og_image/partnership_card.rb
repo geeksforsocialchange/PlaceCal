@@ -14,11 +14,6 @@ module OgImage
 
     attr_reader :site
 
-    # PlaceCal-native card: the bare logo rather than a "Powered by" lockup.
-    def hero_lockup
-      svg_asset('logo-header.svg', height: 32, opacity: 0.85)
-    end
-
     def label
       t('labels.partnership')
     end

@@ -4,7 +4,7 @@ require 'vips'
 
 module OgImage
   # Bump to invalidate cached cards when the design changes.
-  VERSION = 3
+  VERSION = 4
 
   # Renders 1200x630 Open Graph share card PNGs with libvips.
   #
@@ -122,21 +122,9 @@ module OgImage
       nil
     end
 
-    # Branding pinned to the bottom of the hero panel. Defaults to the
-    # "Powered by PlaceCal" lockup; PlaceCal-native cards use the bare logo.
+    # Branding pinned to the bottom of the hero panel.
     def hero_lockup
-      powered_by_lockup(logo_height: 32, opacity: 0.85)
-    end
-
-    # "POWERED BY" + logo as one transparent group, centre-aligned.
-    def powered_by_lockup(logo_height:, opacity:)
-      logo = svg_asset('logo-header.svg', height: logo_height)
-      label_img = text(t('powered_by'), size: 19, face: 'Rawline ExtraBold',
-                                        colour: ICON_BROWN, letter_spacing: 2)
-      group = Vips::Image.black(label_img.width + 12 + logo.width, logo.height, bands: 4)
-                         .copy(interpretation: :srgb)
-      group = composite(group, label_img, 0, (logo.height - label_img.height) / 2)
-      apply_opacity(composite(group, logo, label_img.width + 12, 0), opacity)
+      svg_asset('logo-header.svg', height: 32, opacity: 0.85)
     end
 
     # linear-gradient(105deg, rgba(43,36,31,.34) 0%, .10 42%, transparent 64%)
@@ -201,11 +189,6 @@ module OgImage
     def compose_watermark(canvas)
       logo = svg_asset('logo-header.svg', height: 38, opacity: 0.82)
       composite(canvas, logo, WIDTH - 80 - logo.width, HEIGHT - 62 - logo.height)
-    end
-
-    def powered_by_watermark(canvas)
-      lockup = powered_by_lockup(logo_height: 34, opacity: 0.82)
-      composite(canvas, lockup, WIDTH - 80 - lockup.width, HEIGHT - 60 - lockup.height)
     end
 
     def bare_domain(url)
