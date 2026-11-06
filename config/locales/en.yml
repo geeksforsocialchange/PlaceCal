@@ -108,6 +108,7 @@ en:
       or_email: "Or send an email to"
       email: "Email"
     hero_section:
+      default_title: "PlaceCal is a community events calendar where you can find out everything that's happening, all in one place."
       image_credit: "Image credit: %{credit}"
     details:
       open: "Open to read more"
