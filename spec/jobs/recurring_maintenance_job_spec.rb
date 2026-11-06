@@ -9,6 +9,20 @@ RSpec.describe RecurringMaintenanceJob, type: :job do
     allow(setter).to receive(:perform_later)
   end
 
+  it "only tells search engines about changes from production" do
+    allow(IndexNowSubmission).to receive(:new).and_call_original
+
+    described_class.perform_now
+    expect(IndexNowSubmission).not_to have_received(:new)
+
+    allow(Rails.env).to receive(:production?).and_return(true)
+    submission = instance_double(IndexNowSubmission, call: nil)
+    allow(IndexNowSubmission).to receive(:new).and_return(submission)
+
+    described_class.perform_now
+    expect(submission).to have_received(:call)
+  end
+
   it "prunes versions older than a year" do
     old = PaperTrail::Version.create!(item_type: "Event", item_id: 1, event: "update", created_at: 2.years.ago)
     recent = PaperTrail::Version.create!(item_type: "Event", item_id: 2, event: "update", created_at: 1.day.ago)

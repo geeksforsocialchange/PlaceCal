@@ -209,3 +209,8 @@ User-agent: YiyanBot
 User-agent: YouBot
 User-agent: ZanistaBot
 Disallow: /
+
+# Opts out of AI training without blocking search or grounding.
+# https://datatracker.ietf.org/doc/draft-kelley-aipref-training-preference-signal/
+User-agent: __usage_ai-training
+Disallow: /

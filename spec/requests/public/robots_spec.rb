@@ -63,4 +63,18 @@ RSpec.describe "Public Robots", type: :request do
       end
     end
   end
+
+  it "serves the IndexNow key on every host" do
+    create(:site, slug: "test-site")
+
+    ["http://lvh.me", "http://test-site.lvh.me"].each do |host|
+      get "#{host}/indexnow-key.txt"
+      expect(response.body).to eq(IndexNowSubmission::KEY)
+    end
+  end
+
+  it "keeps the sign-in page out of search results" do
+    get "http://lvh.me/users/sign_in"
+    expect(response.body).to include('<meta name="robots" content="noindex, noarchive">')
+  end
 end

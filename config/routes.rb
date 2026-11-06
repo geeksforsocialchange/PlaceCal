@@ -84,6 +84,7 @@ Rails.application.routes.draw do
   # returns a disallow-all), so it must be matched before the admin redirect
   # below. Other technical routes (sitemaps, graphql) are fine to redirect.
   get '/robots.txt', to: 'pages#robots'
+  get IndexNowSubmission::KEY_PATH, to: 'pages#index_now_key'
 
   # The admin subdomain has no Site row and is not the nationwide directory.
   # Public routes carry no subdomain constraint, so any path that isn't an

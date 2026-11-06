@@ -6,6 +6,7 @@ class EventsController < ApplicationController
   include OffsiteRedirect
   include Pagy::Offset::Method
 
+  before_action :noindex_feeds, only: %i[index show]
   before_action :set_event, only: %i[show]
   before_action :set_day, only: :index
   before_action :set_primary_neighbourhood, only: :index

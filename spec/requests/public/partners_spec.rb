@@ -101,13 +101,28 @@ RSpec.describe "Public Partners", type: :request do
           %("@id":"https://transdimension.uk/partners/#{partner.slug}")
         )
       end
+    end
 
-      it "consolidates the numeric URL onto the slug" do
-        get "/partners/#{partner.id}", headers: { "Host" => "transdimension.uk" }
-        expect(response.body).to include(
-          %(<link rel="canonical" href="https://transdimension.uk/partners/#{partner.slug}">)
-        )
-      end
+    it "301-redirects the numeric URL to the slug, keeping its query and format" do
+      get "http://#{site.slug}.lvh.me/partners/#{partner.id}.ics?period=week"
+      expect(response).to have_http_status(:moved_permanently)
+      expect(response).to redirect_to("http://#{site.slug}.lvh.me/partners/#{partner.slug}.ics?period=week")
+    end
+
+    it "keeps feeds out of search results, but not the page" do
+      get partner_url(partner, host: "#{site.slug}.lvh.me", format: :csv)
+      expect(response.headers["X-Robots-Tag"]).to eq("noindex")
+
+      get partner_url(partner, host: "#{site.slug}.lvh.me")
+      expect(response.headers["X-Robots-Tag"]).to be_nil
+    end
+
+    it "fills the description out from the partner's description" do
+      partner.update!(summary: "A short summary", description: "A longer description of the group.")
+      get partner_url(partner, host: "#{site.slug}.lvh.me")
+      expect(response.body).to include(
+        %(<meta name="description" content="A short summary. A longer description of the group.">)
+      )
     end
 
     it "shows partner summary" do

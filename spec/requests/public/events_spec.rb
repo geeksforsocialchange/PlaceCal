@@ -141,6 +141,18 @@ RSpec.describe "Public Events", type: :request do
       end
     end
 
+    it "keeps feeds out of search results" do
+      get event_url(event, host: "#{site.slug}.lvh.me", format: :ics)
+      expect(response.headers["X-Robots-Tag"]).to eq("noindex")
+    end
+
+    it "leads a very short description with the date" do
+      event.update!(description: "Bring snacks.")
+      get event_url(event, host: "#{site.slug}.lvh.me")
+      description = Nokogiri::HTML(response.body).at_css("meta[name='description']")["content"]
+      expect(description).to start_with("Test Event on ").and end_with("Bring snacks.")
+    end
+
     it "does not noindex upcoming events" do
       get event_url(event, host: "#{site.slug}.lvh.me")
       expect(response.body).to include(%(<meta name="robots" content="noarchive">))

@@ -18,7 +18,7 @@ en:
   # ===========================================================================
 
   meta:
-    description: "%{site} is a community events calendar where you can find out everything that's happening, all in one place."
+    description: "%{site} is a community events calendar where you can find out everything that's happening near you, from local groups and venues, all in one place."
 
   site:
     # <title> for the nationwide directory, which has no Site record to name
@@ -599,7 +599,7 @@ en:
     index:
       page_title: "Partners"
       title: "Our Partners"
-      description: "The community groups, venues and services in %{site}, with their opening times, contact details and events."
+      description: "Browse the community groups, venues and services in %{site}, with their opening times, contact details, accessibility information and upcoming events."
       # Read out by screen readers when a filter reloads the list.
       results_summary:
         zero: "No partners match"
@@ -627,7 +627,7 @@ en:
       go_back: "Back to news"
     index:
       page_title: "News from your area"
-      description: "News and updates from community groups and services in %{site}."
+      description: "News and updates from community groups and services in %{site}, including what's new, what's changing and what's coming up near you."
       read_more: "Find out more"
       # Screen-reader-only end of the read_more link, so each card's link names its article.
       read_more_about: "about %{title}"
@@ -678,7 +678,7 @@ en:
         one: "1 event"
         other: "%{count} events"
       page_title: "Events"
-      description: "What's on in %{site}: upcoming events and activities from local groups, venues and services."
+      description: "What's on in %{site}: upcoming events and activities from local groups, venues and services, with dates, times, addresses and contact details."
       title: "Events & activities"
       standfirst: ""
       # Blank by design: the event list opens with an h2 per day, so there is

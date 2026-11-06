@@ -17,6 +17,7 @@ class RecurringMaintenanceJob < ApplicationJob
         Site.refresh_all_counts!
         Neighbourhood.refresh_partners_count!
         Address.delete_orphaned!
+        IndexNowSubmission.new(since: INTERVAL.ago).call if Rails.env.production?
       end
     end
   end

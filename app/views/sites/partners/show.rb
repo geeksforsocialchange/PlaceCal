@@ -31,6 +31,7 @@ class Views::Sites::Partners::Show < Views::Base
   include Phlex::Rails::Helpers::OptionsForSelect
 
   register_value_helper :partner_service_area_text
+  register_value_helper :html_to_plaintext
 
   prop :partner, Partner, reader: :private
   prop :site, _Nilable(::Site), reader: :private
@@ -91,8 +92,14 @@ class Views::Sites::Partners::Show < Views::Base
     content_for(:canonical) { partner.permalink(base_url: permalink_base_url) }
     content_for(:image) { partner_og_image_url(partner) }
     content_for(:image_alt) { t('og_image.alt.partner', name: partner.name, site: site&.name || 'PlaceCal') }
-    content_for(:description) { partner.summary } if partner.summary
+    content_for(:description) { meta_description } if meta_description.present?
     content_for(:json_ld) { safe(partner.to_json_ld(base_url: permalink_base_url).to_json) }
+  end
+
+  def meta_description
+    summary = partner.summary.to_s.squish
+    summary += '.' if summary.present? && !summary.end_with?('.', '!', '?')
+    [summary, html_to_plaintext(partner.description_html).to_s.squish].compact_blank.join(' ')
   end
 
   def permalink_base_url

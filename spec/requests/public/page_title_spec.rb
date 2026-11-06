@@ -40,4 +40,24 @@ RSpec.describe "Public page titles", type: :request do
     expect(og_title).to start_with("Children's Storytime")
     expect(og_title).not_to include("&#39;")
   end
+
+  context "with a title too long for search results" do
+    let(:long_summary) { "HIV/STI testing and free condoms at the local library on the high street" }
+
+    before do
+      event.update!(summary: long_summary)
+      get event_url(event, host: "#{site.slug}.lvh.me")
+    end
+
+    it "keeps the page's own words and gives up the site name" do
+      title = CGI.unescapeHTML(title_tag.gsub(%r{</?title>}, ""))
+      expect(title.length).to be <= 70
+      expect(title).to start_with("HIV/STI testing")
+      expect(title).not_to include(site.name)
+    end
+
+    it "keeps the whole title for link previews" do
+      expect(response.body).to include(%(<meta property="og:title" content="#{long_summary}))
+    end
+  end
 end

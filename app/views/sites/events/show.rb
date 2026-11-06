@@ -3,6 +3,8 @@
 class Views::Sites::Events::Show < Views::Base
   register_value_helper :html_to_plaintext
 
+  MIN_DESCRIPTION_LENGTH = 100
+
   theme_scope :event_details,
               parts: {
                 root: 'Everything under the event\'s details row on its page.',
@@ -32,7 +34,7 @@ class Views::Sites::Events::Show < Views::Base
     content_for(:robots) { 'noindex, noarchive' } if event.past?
     content_for(:image) { event_og_image_url(event) }
     content_for(:image_alt) { t('og_image.alt.event', name: event.summary, site: site&.name || 'PlaceCal') }
-    content_for(:description) { html_to_plaintext(event.description_html).presence || fallback_description }
+    content_for(:description) { meta_description }
     content_for(:json_ld) { safe(event.to_json_ld(base_url: permalink_base_url).to_json) }
 
     if site.nil?
@@ -57,6 +59,14 @@ class Views::Sites::Events::Show < Views::Base
 
   def permalink_base_url
     site&.permalink_base_url || ::Site::DIRECTORY_URL
+  end
+
+  # A very short description says less than the date and place, so those lead.
+  def meta_description
+    description = html_to_plaintext(event.description_html).to_s.squish
+    return description if description.length >= MIN_DESCRIPTION_LENGTH
+
+    [fallback_description, description].compact_blank.join(' ')
   end
 
   def fallback_description

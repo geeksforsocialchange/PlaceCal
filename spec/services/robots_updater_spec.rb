@@ -61,6 +61,12 @@ RSpec.describe RobotsUpdater do
       expect(content).to include("Disallow: /")
     end
 
+    it "opts out of AI training in both templates" do
+      [default_file, strict_file].each do |file|
+        expect(file.read).to include("User-agent: __usage_ai-training\nDisallow: /\n")
+      end
+    end
+
     it "includes standard robots.txt header" do
       [default_file, strict_file].each do |file|
         content = file.read
