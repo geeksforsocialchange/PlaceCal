@@ -163,13 +163,12 @@ RSpec.describe "Public Sitemaps", type: :request do
     end
 
     describe "GET /sitemap.xml" do
-      it "lists the site's own sections under the site's URL" do
+      it "lists only its pages, as its partners and events are canonical on the directory" do
         get "/sitemap.xml", headers: { "Host" => host }
         expect(response).to be_successful
         expect(response.content_type).to include("xml")
-        %w[partners events pages].each do |section|
-          expect(response.body).to include("https://mossley.placecal.org/sitemap/#{section}.xml")
-        end
+        expect(response.body).to include("https://mossley.placecal.org/sitemap/pages.xml")
+        expect(response.body).not_to include("sitemap/partners.xml", "sitemap/events.xml")
       end
 
       it "does not advertise the directory or the partnerships section" do
@@ -187,10 +186,49 @@ RSpec.describe "Public Sitemaps", type: :request do
     end
 
     describe "GET /sitemap/partners.xml" do
+      it "is empty, as the directory's sitemap lists them" do
+        get "/sitemap/partners.xml", headers: { "Host" => host }
+        expect(response).to be_successful
+        expect(response.body).not_to include("<url>")
+      end
+    end
+
+    describe "GET /sitemap/events.xml" do
+      it "is empty, as the directory's sitemap lists them" do
+        get "/sitemap/events.xml", headers: { "Host" => host }
+        expect(response).to be_successful
+        expect(response.body).not_to include("<url>")
+      end
+    end
+
+    context "with a domain this deploy doesn't serve" do
+      before { local_site.update!(domain: "mossley.example.org") }
+
+      it "treats the site as being on its subdomain" do
+        get "/sitemap/partners.xml", headers: { "Host" => host }
+        expect(response.body).not_to include("<url>")
+      end
+    end
+
+    context "when served on its own domain" do
+      let(:host) { "mossley.example.org" }
+
+      before do
+        serve_hosts("lvh.me", "*.lvh.me", host)
+        local_site.update!(domain: host)
+      end
+
+      it "lists its partners and events sections too" do
+        get "/sitemap.xml", headers: { "Host" => host }
+        %w[partners events pages].each do |section|
+          expect(response.body).to include("https://mossley.example.org/sitemap/#{section}.xml")
+        end
+      end
+
       it "includes the site's partners with a lastmod" do
         get "/sitemap/partners.xml", headers: { "Host" => host }
         expect(response).to be_successful
-        expect(response.body).to include("https://mossley.placecal.org/partners/site-partner")
+        expect(response.body).to include("https://mossley.example.org/partners/site-partner")
         expect(response.body).to match(%r{<lastmod>\d{4}-\d{2}-\d{2}</lastmod>})
       end
 
@@ -198,13 +236,11 @@ RSpec.describe "Public Sitemaps", type: :request do
         get "/sitemap/partners.xml", headers: { "Host" => host }
         expect(response.body).not_to include("other-site-partner")
       end
-    end
 
-    describe "GET /sitemap/events.xml" do
       it "includes the site's upcoming events" do
         get "/sitemap/events.xml", headers: { "Host" => host }
         expect(response).to be_successful
-        expect(response.body).to include("https://mossley.placecal.org/events/#{site_event.id}")
+        expect(response.body).to include("https://mossley.example.org/events/#{site_event.id}")
       end
 
       it "excludes events belonging to another site" do

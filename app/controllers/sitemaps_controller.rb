@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 # Sitemaps for the nationwide directory (everything) and for each local site
-# (its own content only). A site's URLs use Site#canonical_url, not the request
-# host, so an alias hostname still advertises the canonical URLs.
+# (its own pages, plus its partners and events if it's on its own domain). A
+# site's URLs use Site#canonical_url, not the request host, so an alias hostname
+# still advertises the canonical URLs.
 class SitemapsController < ApplicationController
   CACHE_TTL = 1.day
   MAX_URLS_PER_SITEMAP = 50_000
@@ -58,7 +59,14 @@ class SitemapsController < ApplicationController
   # Partnerships are a directory-only concept (the index of every local site),
   # so a site's sitemap index omits that section.
   def index_sections
-    current_site ? %w[partners events pages] : %w[partners events partnerships pages]
+    return %w[partners events partnerships pages] unless current_site
+
+    listings_canonical_on_directory? ? %w[pages] : %w[partners events pages]
+  end
+
+  # A subdomain site's partner and event pages name the directory as canonical, and the directory's sitemap lists them.
+  def listings_canonical_on_directory?
+    current_site.present? && !current_site.served_domain?
   end
 
   def build_index
@@ -76,6 +84,8 @@ class SitemapsController < ApplicationController
   end
 
   def build_partners
+    return wrap_urlset([]) if listings_canonical_on_directory?
+
     urls = partners_scope.pluck(:slug, :updated_at).uniq.map do |slug, updated_at|
       url_entry("#{base_url}/partners/#{slug}", updated_at)
     end
@@ -87,6 +97,8 @@ class SitemapsController < ApplicationController
   end
 
   def build_events
+    return wrap_urlset([]) if listings_canonical_on_directory?
+
     # Only events that aren't over (dtend-aware, matching Event#past?) —
     # past event pages are noindexed, and a sitemap listing noindexed URLs
     # draws "submitted URL marked noindex" warnings in Search Console.
