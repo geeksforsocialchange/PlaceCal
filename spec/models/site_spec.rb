@@ -232,6 +232,12 @@ RSpec.describe Site, type: :model do
       expect(external.canonical_url).to eq("https://fruitsaladevents.placecal.org")
     end
 
+    it "keeps partner and event pages on a served domain, else the directory" do
+      expect(plain.permalink_base_url).to eq(Site::DIRECTORY_URL)
+      expect(served.permalink_base_url).to eq("https://transdimension.uk")
+      expect(external.permalink_base_url).to eq(Site::DIRECTORY_URL)
+    end
+
     it "sends people to any domain, served or external" do
       expect(plain.public_url).to eq("https://hulme.placecal.org")
       expect(served.public_url).to eq("https://transdimension.uk")

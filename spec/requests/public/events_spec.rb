@@ -118,6 +118,29 @@ RSpec.describe "Public Events", type: :request do
       expect(response.body).to include(partner.name)
     end
 
+    it "canonicalises to the directory apex, not the site subdomain" do
+      get event_url(event, host: "#{site.slug}.lvh.me")
+      expect(response.body).to include(
+        %(<link rel="canonical" href="https://placecal.org/events/#{event.id}">),
+        %("@id":"https://placecal.org/events/#{event.id}")
+      )
+    end
+
+    context "when the site is served on its own domain" do
+      let(:site) { create(:site, slug: "trans-dimension", domain: "transdimension.uk") }
+
+      before { serve_hosts("transdimension.uk") }
+
+      it "canonicalises to the domain, with a JSON-LD @id to match" do
+        get event_url(event, host: "transdimension.uk")
+        expect(response.body).to include(
+          %(<link rel="canonical" href="https://transdimension.uk/events/#{event.id}">),
+          %(<meta property="og:url" content="https://transdimension.uk/events/#{event.id}">),
+          %("@id":"https://transdimension.uk/events/#{event.id}")
+        )
+      end
+    end
+
     it "does not noindex upcoming events" do
       get event_url(event, host: "#{site.slug}.lvh.me")
       expect(response.body).to include(%(<meta name="robots" content="noarchive">))

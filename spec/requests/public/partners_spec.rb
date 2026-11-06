@@ -88,6 +88,28 @@ RSpec.describe "Public Partners", type: :request do
       )
     end
 
+    context "when the site is served on its own domain" do
+      let(:site) { create(:site, slug: "trans-dimension", domain: "transdimension.uk") }
+
+      before { serve_hosts("transdimension.uk") }
+
+      it "canonicalises to the domain, with a JSON-LD @id to match" do
+        get partner_url(partner, host: "transdimension.uk")
+        expect(response.body).to include(
+          %(<link rel="canonical" href="https://transdimension.uk/partners/#{partner.slug}">),
+          %(<meta property="og:url" content="https://transdimension.uk/partners/#{partner.slug}">),
+          %("@id":"https://transdimension.uk/partners/#{partner.slug}")
+        )
+      end
+
+      it "consolidates the numeric URL onto the slug" do
+        get "/partners/#{partner.id}", headers: { "Host" => "transdimension.uk" }
+        expect(response.body).to include(
+          %(<link rel="canonical" href="https://transdimension.uk/partners/#{partner.slug}">)
+        )
+      end
+    end
+
     it "shows partner summary" do
       get partner_url(partner, host: "#{site.slug}.lvh.me")
       expect(response.body).to include(partner.summary)

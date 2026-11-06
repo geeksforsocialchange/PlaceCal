@@ -26,15 +26,14 @@ class Views::Sites::Events::Show < Views::Base
 
   def view_template
     content_for(:title) { event.og_title }
-    content_for(:canonical) { event.permalink }
+    content_for(:canonical) { event.permalink(base_url: permalink_base_url) }
     # Past events have no search value and accumulate forever — noindex them
     # so they stop eating crawl budget and diluting the indexed site.
     content_for(:robots) { 'noindex, noarchive' } if event.past?
     content_for(:image) { event_og_image_url(event) }
     content_for(:image_alt) { t('og_image.alt.event', name: event.summary, site: site&.name || 'PlaceCal') }
     content_for(:description) { html_to_plaintext(event.description_html).presence || fallback_description }
-    # Directory apex, matching the canonical tag — see partners/show.rb.
-    content_for(:json_ld) { safe(event.to_json_ld(base_url: ::Site::DIRECTORY_URL).to_json) }
+    content_for(:json_ld) { safe(event.to_json_ld(base_url: permalink_base_url).to_json) }
 
     if site.nil?
       render_directory_layout
@@ -55,6 +54,10 @@ class Views::Sites::Events::Show < Views::Base
   end
 
   private
+
+  def permalink_base_url
+    site&.permalink_base_url || ::Site::DIRECTORY_URL
+  end
 
   def fallback_description
     organiser = event.organiser&.name

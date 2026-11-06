@@ -88,14 +88,15 @@ class Views::Sites::Partners::Show < Views::Base
 
   def set_content_for_tags
     content_for(:title) { title_with_place }
-    content_for(:canonical) { partner.permalink }
+    content_for(:canonical) { partner.permalink(base_url: permalink_base_url) }
     content_for(:image) { partner_og_image_url(partner) }
     content_for(:image_alt) { t('og_image.alt.partner', name: partner.name, site: site&.name || 'PlaceCal') }
     content_for(:description) { partner.summary } if partner.summary
-    # Built from the directory apex, not request.base_url, so the JSON-LD @id
-    # names the same URL as the canonical tag above — the structured data must
-    # reinforce the canonical entity, not contradict it per-subdomain.
-    content_for(:json_ld) { safe(partner.to_json_ld(base_url: ::Site::DIRECTORY_URL).to_json) }
+    content_for(:json_ld) { safe(partner.to_json_ld(base_url: permalink_base_url).to_json) }
+  end
+
+  def permalink_base_url
+    site&.permalink_base_url || ::Site::DIRECTORY_URL
   end
 
   # "Partner Name, Place" — the locality makes the <title> match how people

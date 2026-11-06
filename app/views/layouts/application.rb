@@ -128,10 +128,7 @@ class Views::Layouts::Application < Phlex::HTML
     meta(name: 'twitter:card', content: 'summary_large_image')
     meta(name: 'twitter:site', content: '@PlaceCal')
     meta(name: 'twitter:creator', content: '@gfscstudio')
-    # Pages served on multiple site subdomains (partners, events) set
-    # :canonical to their directory-apex permalink so Google consolidates the
-    # duplicates onto placecal.org instead of splitting authority per subdomain.
-    # og:url follows it — all URL-identity signals should name the same page.
+    # Partner and event pages show on several hosts, so they name their own canonical.
     canonical_href = content_for?(:canonical) ? content_for(:canonical) : request.original_url
     meta(property: 'og:url', content: canonical_href)
     link(rel: 'canonical', href: canonical_href)

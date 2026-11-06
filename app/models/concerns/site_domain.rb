@@ -51,6 +51,13 @@ module SiteDomain
     served_domain? ? "https://#{domain}" : subdomain_url
   end
 
+  # Where the site's partner and event pages are canonical: its own domain, else the directory.
+  #
+  # @return [String]
+  def permalink_base_url
+    served_domain? ? canonical_url : self.class::DIRECTORY_URL
+  end
+
   # Where people should be sent: the site's domain, served or external.
   #
   # @return [String] no trailing slash
