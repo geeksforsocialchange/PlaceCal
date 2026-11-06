@@ -48,6 +48,12 @@ RSpec.describe CalendarImporter::Events::WixEvent do
       expect(wix_event.description).to eq("Join us for a community gathering!")
     end
 
+    it "prefers the full description from the event's own page" do
+      event = described_class.new(event_data.merge("full_description" => "<p>The full text</p>"))
+
+      expect(event.description).to eq("<p>The full text</p>")
+    end
+
     it "returns empty string when no description" do
       data = event_data.except("description")
       event = described_class.new(data)

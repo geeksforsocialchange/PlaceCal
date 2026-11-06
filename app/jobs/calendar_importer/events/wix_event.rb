@@ -16,7 +16,7 @@ module CalendarImporter::Events
     end
 
     def description
-      @event['description'] || ''
+      @event['full_description'].presence || @event['description'] || ''
     end
 
     def publisher_url

@@ -122,12 +122,60 @@ RSpec.describe CalendarImporter::Parsers::Wix do
           importer_mode: "wix"
         )
 
+        allow(CalendarImporter::Parsers::Base).to receive(:read_http_source).and_call_original
+        allow(CalendarImporter::Parsers::Base).to receive(:read_http_source)
+          .with(a_string_including("/event-details/")).and_return("<html></html>")
+
         parser = described_class.new(calendar)
         data = parser.download_calendar
 
         expect(data).to be_an(Array)
         expect(data).not_to be_empty
         expect(data.first).to include("id", "title", "scheduling")
+      end
+    end
+
+    context "with a listing and an event page" do
+      let(:parser) { described_class.new(build(:calendar, source: "https://www.example.com/event-list")) }
+      let(:listed_event) do
+        { "id" => "1", "title" => "Gig", "slug" => "gig", "description" => "Teaser",
+          "scheduling" => { "config" => { "startDate" => "2030-01-17T19:00:00.000Z" } } }
+      end
+      let(:long_description) do
+        { "nodes" => [{ "type" => "PARAGRAPH", "nodes" => [{ "type" => "TEXT", "textData" => { "text" => "The full text" } }] }] }
+      end
+
+      def json_script(data)
+        %(<script type="application/json">#{data.to_json}</script>)
+      end
+
+      before do
+        allow(CalendarImporter::Parsers::Base).to receive(:read_http_source)
+          .with("https://www.example.com/event-list").and_return(json_script({ "events" => [listed_event] }))
+      end
+
+      it "reads the full description from the event's own page" do
+        allow(CalendarImporter::Parsers::Base).to receive(:read_http_source)
+          .with("https://www.example.com/event-details/gig")
+          .and_return(json_script({ "event" => { "slug" => "gig", "longDescription" => long_description } }))
+
+        expect(parser.download_calendar.first["full_description"]).to eq("<p>The full text</p>")
+      end
+
+      it "ignores the description of a different event on the page" do
+        allow(CalendarImporter::Parsers::Base).to receive(:read_http_source)
+          .with("https://www.example.com/event-details/gig")
+          .and_return(json_script({ "event" => { "slug" => "other", "longDescription" => long_description } }))
+
+        expect(parser.download_calendar.first).not_to have_key("full_description")
+      end
+
+      it "keeps the teaser when the event page can't be read" do
+        allow(CalendarImporter::Parsers::Base).to receive(:read_http_source)
+          .with("https://www.example.com/event-details/gig")
+          .and_raise(CalendarImporter::Exceptions::InaccessibleFeed, "Not found")
+
+        expect(parser.download_calendar.first).to eq(listed_event)
       end
     end
   end
