@@ -7,6 +7,8 @@ module OgImage
   # panel on top (see BaseCard#render_with_hero); otherwise the type-only
   # layout is used.
   class SiteCard < BaseCard
+    include SiteHero
+
     def initialize(site)
       super()
       @site = site
@@ -15,11 +17,6 @@ module OgImage
     private
 
     attr_reader :site
-
-    def hero_path
-      path = site.hero_image&.opengraph&.path
-      path if path.present? && File.exist?(path)
-    end
 
     def label
       t('labels.community_site')
@@ -46,12 +43,11 @@ module OgImage
     end
 
     def domain
-      site.canonical_url.sub(%r{\Ahttps?://}, '')
+      bare_domain(site.canonical_url)
     end
 
     def compose_watermark(canvas)
-      lockup = powered_by_lockup(logo_height: 34, opacity: 0.82)
-      composite(canvas, lockup, WIDTH - 80 - lockup.width, HEIGHT - 60 - lockup.height)
+      powered_by_watermark(canvas)
     end
   end
 end

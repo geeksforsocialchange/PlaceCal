@@ -13,8 +13,8 @@ module OgImage
   # icon + text detail rows and the PlaceCal logo as a bottom-right
   # watermark. Subclasses supply content via #label, #title, #rows etc.
   #
-  # Site-backed cards (Site, Partnership) also share an optional hero-image
-  # background layout here, opted into by overriding #hero_path.
+  # Site-backed cards also share an optional hero-image background layout
+  # here, opted into through SiteHero.
   # rubocop:disable-next Metrics/ClassLength -- cohesive drawing helpers + hero layout
   class BaseCard
     WIDTH = 1200
@@ -201,6 +201,15 @@ module OgImage
     def compose_watermark(canvas)
       logo = svg_asset('logo-header.svg', height: 38, opacity: 0.82)
       composite(canvas, logo, WIDTH - 80 - logo.width, HEIGHT - 62 - logo.height)
+    end
+
+    def powered_by_watermark(canvas)
+      lockup = powered_by_lockup(logo_height: 34, opacity: 0.82)
+      composite(canvas, lockup, WIDTH - 80 - lockup.width, HEIGHT - 60 - lockup.height)
+    end
+
+    def bare_domain(url)
+      url.sub(%r{\Ahttps?://}, '').chomp('/')
     end
 
     # ==== Content supplied by subclasses ====
