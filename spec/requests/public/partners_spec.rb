@@ -109,6 +109,16 @@ RSpec.describe "Public Partners", type: :request do
       expect(response).to redirect_to("http://#{site.slug}.lvh.me/partners/#{partner.slug}.ics?period=week")
     end
 
+    it "keeps the date when redirecting a numeric URL" do
+      get "http://#{site.slug}.lvh.me/partners/#{partner.id}/events/2026/11/6"
+      expect(response).to redirect_to("http://#{site.slug}.lvh.me/partners/#{partner.slug}/events/2026/11/6")
+    end
+
+    it "treats the query as data when redirecting a numeric URL" do
+      get "http://#{site.slug}.lvh.me/partners/#{partner.id}?host=evil.example&only_path=false"
+      expect(URI(response.location).host).to eq("#{site.slug}.lvh.me")
+    end
+
     it "keeps feeds out of search results, but not the page" do
       get partner_url(partner, host: "#{site.slug}.lvh.me", format: :csv)
       expect(response.headers["X-Robots-Tag"]).to eq("noindex")

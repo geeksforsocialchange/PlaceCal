@@ -84,7 +84,8 @@ class PartnersController < ApplicationController
   def redirect_id_to_slug
     return if params[:id] == @partner.to_param
 
-    redirect_to request.fullpath.sub("/#{params[:id]}", "/#{@partner.to_param}"), status: :moved_permanently
+    redirect_to url_for(request.path_parameters.merge(id: @partner.to_param, params: request.query_parameters, only_path: true)),
+                status: :moved_permanently
   end
 
   # Splits the partner show page's three event-listing branches out of #show
