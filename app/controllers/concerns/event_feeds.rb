@@ -7,6 +7,11 @@ module EventFeeds
 
   private
 
+  # A feed is a download, not a page to list in search results.
+  def noindex_feeds
+    response.headers['X-Robots-Tag'] = 'noindex' unless request.format.html?
+  end
+
   # Create a calendar from array of events
   def create_calendar(events, title = nil)
     cal = Icalendar::Calendar.new

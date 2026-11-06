@@ -88,6 +88,60 @@ RSpec.describe "Public Partners", type: :request do
       )
     end
 
+    context "when the site is served on its own domain" do
+      let(:site) { create(:site, slug: "trans-dimension", domain: "transdimension.uk") }
+
+      before { serve_hosts("transdimension.uk") }
+
+      it "canonicalises to the domain, with a JSON-LD @id and permalink to match" do
+        get partner_url(partner, host: "transdimension.uk")
+        expect(response.body).to include(
+          %(href="https://transdimension.uk/partners/#{partner.slug}" class=),
+          %(<link rel="canonical" href="https://transdimension.uk/partners/#{partner.slug}">),
+          %(<meta property="og:url" content="https://transdimension.uk/partners/#{partner.slug}">),
+          %("@id":"https://transdimension.uk/partners/#{partner.slug}")
+        )
+      end
+    end
+
+    it "301-redirects the numeric URL to the slug, keeping its query and format" do
+      get "http://#{site.slug}.lvh.me/partners/#{partner.id}.ics?period=week"
+      expect(response).to have_http_status(:moved_permanently)
+      expect(response).to redirect_to("http://#{site.slug}.lvh.me/partners/#{partner.slug}.ics?period=week")
+    end
+
+    it "keeps the date when redirecting a numeric URL" do
+      get "http://#{site.slug}.lvh.me/partners/#{partner.id}/events/2026/11/6"
+      expect(response).to redirect_to("http://#{site.slug}.lvh.me/partners/#{partner.slug}/events/2026/11/6")
+    end
+
+    it "treats the query as data when redirecting a numeric URL" do
+      get "http://#{site.slug}.lvh.me/partners/#{partner.id}?host=evil.example&only_path=false"
+      expect(URI(response.location).host).to eq("#{site.slug}.lvh.me")
+    end
+
+    it "links the permalink to the slug URL" do
+      get partner_url(partner, host: "#{site.slug}.lvh.me")
+      link = Nokogiri::HTML(response.body).at_css("[data-part='permalink'] a")
+      expect(link["href"]).to eq("https://placecal.org/partners/#{partner.slug}")
+    end
+
+    it "keeps feeds out of search results, but not the page" do
+      get partner_url(partner, host: "#{site.slug}.lvh.me", format: :csv)
+      expect(response.headers["X-Robots-Tag"]).to eq("noindex")
+
+      get partner_url(partner, host: "#{site.slug}.lvh.me")
+      expect(response.headers["X-Robots-Tag"]).to be_nil
+    end
+
+    it "fills the description out from the partner's description" do
+      partner.update!(summary: "A short summary", description: "A longer description of the group.")
+      get partner_url(partner, host: "#{site.slug}.lvh.me")
+      expect(response.body).to include(
+        %(<meta name="description" content="A short summary. A longer description of the group.">)
+      )
+    end
+
     it "shows partner summary" do
       get partner_url(partner, host: "#{site.slug}.lvh.me")
       expect(response.body).to include(partner.summary)

@@ -118,10 +118,59 @@ RSpec.describe "Public Events", type: :request do
       expect(response.body).to include(partner.name)
     end
 
+    it "canonicalises to the directory apex, not the site subdomain" do
+      get event_url(event, host: "#{site.slug}.lvh.me")
+      expect(response.body).to include(
+        %(<link rel="canonical" href="https://placecal.org/events/#{event.id}">),
+        %("@id":"https://placecal.org/events/#{event.id}")
+      )
+    end
+
+    context "when the site is served on its own domain" do
+      let(:site) { create(:site, slug: "trans-dimension", domain: "transdimension.uk") }
+
+      before { serve_hosts("transdimension.uk") }
+
+      it "canonicalises to the domain, with a JSON-LD @id to match" do
+        get event_url(event, host: "transdimension.uk")
+        expect(response.body).to include(
+          %(<link rel="canonical" href="https://transdimension.uk/events/#{event.id}">),
+          %(<meta property="og:url" content="https://transdimension.uk/events/#{event.id}">),
+          %("@id":"https://transdimension.uk/events/#{event.id}"),
+          %("@id":"https://transdimension.uk/partners/#{partner.slug}")
+        )
+      end
+
+      it "links the permalink to the domain" do
+        get event_url(event, host: "transdimension.uk")
+        link = Nokogiri::HTML(response.body).at_css("[data-part='permalink'] a")
+        expect(link["href"]).to eq("https://transdimension.uk/events/#{event.id}")
+      end
+
+      it "names an organiser from outside the site on the directory" do
+        outsider = create(:partner, address: create(:address, neighbourhood: create(:oldtown_ward)))
+        event.update!(organiser: outsider)
+
+        get event_url(event, host: "transdimension.uk")
+        expect(response.body).to include(%("@id":"https://placecal.org/partners/#{outsider.slug}"))
+      end
+    end
+
+    it "keeps feeds out of search results" do
+      get event_url(event, host: "#{site.slug}.lvh.me", format: :ics)
+      expect(response.headers["X-Robots-Tag"]).to eq("noindex")
+    end
+
+    it "leads a very short description with the date" do
+      event.update!(description: "Bring snacks.")
+      get event_url(event, host: "#{site.slug}.lvh.me")
+      description = Nokogiri::HTML(response.body).at_css("meta[name='description']")["content"]
+      expect(description).to start_with("Test Event on ").and end_with("Bring snacks.")
+    end
+
     it "does not noindex upcoming events" do
       get event_url(event, host: "#{site.slug}.lvh.me")
-      expect(response.body).to include(%(<meta name="robots" content="noarchive">))
-      expect(response.body).not_to include("noindex")
+      expect(response.body).not_to include('<meta name="robots"')
     end
 
     it "noindexes past events" do
@@ -132,7 +181,7 @@ RSpec.describe "Public Events", type: :request do
                           address:)
       get event_url(past_event, host: "#{site.slug}.lvh.me")
       expect(response).to be_successful
-      expect(response.body).to include(%(<meta name="robots" content="noindex, noarchive">))
+      expect(response.body).to include(%(<meta name="robots" content="noindex">))
     end
 
     # Page actions row (Components::Sites::PageActions, #3368): organiser's other

@@ -3,6 +3,8 @@
 class Views::Sites::Events::Show < Views::Base
   register_value_helper :html_to_plaintext
 
+  MIN_DESCRIPTION_LENGTH = 100
+
   theme_scope :event_details,
               parts: {
                 root: 'Everything under the event\'s details row on its page.',
@@ -26,15 +28,14 @@ class Views::Sites::Events::Show < Views::Base
 
   def view_template
     content_for(:title) { event.og_title }
-    content_for(:canonical) { event.permalink }
+    content_for(:canonical) { permalink }
     # Past events have no search value and accumulate forever — noindex them
     # so they stop eating crawl budget and diluting the indexed site.
-    content_for(:robots) { 'noindex, noarchive' } if event.past?
+    content_for(:robots) { 'noindex' } if event.past?
     content_for(:image) { event_og_image_url(event) }
     content_for(:image_alt) { t('og_image.alt.event', name: event.summary, site: site&.name || 'PlaceCal') }
-    content_for(:description) { html_to_plaintext(event.description_html).presence || fallback_description }
-    # Directory apex, matching the canonical tag — see partners/show.rb.
-    content_for(:json_ld) { safe(event.to_json_ld(base_url: ::Site::DIRECTORY_URL).to_json) }
+    content_for(:description) { meta_description }
+    content_for(:json_ld) { safe(event.to_json_ld(base_url: ::Site.permalink_base_url_for(site), organiser_base_url:).to_json) }
 
     if site.nil?
       render_directory_layout
@@ -55,6 +56,24 @@ class Views::Sites::Events::Show < Views::Base
   end
 
   private
+
+  def permalink
+    event.permalink(base_url: ::Site.permalink_base_url_for(site))
+  end
+
+  # An organiser from outside the site has its page on the directory, even if the event shows here.
+  def organiser_base_url
+    on_site = event.organiser && site&.served_domain? && PartnersQuery.new(site:).include?(event.organiser)
+    on_site ? site.canonical_url : ::Site::DIRECTORY_URL
+  end
+
+  # A very short description says less than the date and place, so those lead.
+  def meta_description
+    description = html_to_plaintext(event.description_html).to_s.squish
+    return description if description.length >= MIN_DESCRIPTION_LENGTH
+
+    [fallback_description, description].compact_blank.join(' ')
+  end
 
   def fallback_description
     organiser = event.organiser&.name
@@ -368,7 +387,7 @@ class Views::Sites::Events::Show < Views::Base
   end
 
   def render_event_meta
-    Sites::Meta("/events/#{event.id}") do |component|
+    Sites::Meta(permalink) do |component|
       component.with_link do
         contact = event.calendar&.contact_information
         if contact

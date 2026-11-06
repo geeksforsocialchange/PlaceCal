@@ -13,4 +13,9 @@ RSpec.describe Components::Sites::HeroSection, type: :phlex do
     expect(page).to have_css("img[alt='A park']")
     expect(page).to have_text("Image credit: Sam")
   end
+
+  it "falls back to its own heading, not the search description" do
+    render_inline(described_class.new)
+    expect(page).to have_css("h1", text: "PlaceCal is a community events calendar where you can find out everything that's happening, all in one place.")
+  end
 end

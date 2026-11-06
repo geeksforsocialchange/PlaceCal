@@ -7,7 +7,7 @@ class Components::Sites::HeroSection < Components::Base
   prop :alttext, _Nilable(String), default: nil
 
   def after_initialize
-    @title = @title.presence || I18n.t('meta.description', site: 'PlaceCal')
+    @title = @title.presence || I18n.t('components.hero_section.default_title')
   end
 
   def view_template

@@ -65,6 +65,13 @@ class RobotsUpdater
     /\bsharing\b/i
   ].freeze
 
+  TRAINING_OPT_OUT = [
+    '# Opts out of AI training without blocking search or grounding.',
+    '# https://datatracker.ietf.org/doc/draft-kelley-aipref-training-preference-signal/',
+    'User-agent: __usage_ai-training',
+    'Disallow: /'
+  ].freeze
+
   ROBOTS_DIR = Rails.root.join('config/robots')
 
   def self.call(output: $stdout)
@@ -128,6 +135,8 @@ class RobotsUpdater
     blocked.each { |name| lines << "User-agent: #{name}" }
 
     lines << 'Disallow: /'
+    lines << ''
+    lines.concat(TRAINING_OPT_OUT)
     lines << ''
 
     lines.join("\n")

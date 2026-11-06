@@ -8,6 +8,8 @@ class RecurringMaintenanceJob < ApplicationJob
   include SelfRescheduling
 
   INTERVAL = 1.day
+  # Runs drift and can fail, and sending a URL twice does no harm.
+  SUBMISSION_WINDOW = 2.days
 
   def perform
     run do
@@ -17,6 +19,7 @@ class RecurringMaintenanceJob < ApplicationJob
         Site.refresh_all_counts!
         Neighbourhood.refresh_partners_count!
         Address.delete_orphaned!
+        IndexNowSubmission.new(since: SUBMISSION_WINDOW.ago).call if Rails.env.production?
       end
     end
   end

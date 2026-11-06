@@ -5,6 +5,7 @@ class PartnersController < ApplicationController
   include OffsiteRedirect
   include Pagy::Offset::Method
 
+  before_action :noindex_feeds, only: %i[index show]
   before_action :set_partner, only: [:show]
   before_action :set_day, only: [:show]
   before_action :set_primary_neighbourhood, only: [:index]
@@ -33,6 +34,9 @@ class PartnersController < ApplicationController
     return redirect_to root_path if @partner.hidden
 
     redirect_offsite_to_permalink(PartnersQuery.new(site: current_site), @partner)
+    return if performed?
+
+    redirect_id_to_slug
     return if performed?
 
     @days = clamp_days(params[:days])
@@ -75,6 +79,14 @@ class PartnersController < ApplicationController
   end
 
   private
+
+  # Old links use the numeric id, which still finds the partner.
+  def redirect_id_to_slug
+    return if params[:id] == @partner.to_param
+
+    redirect_to url_for(request.path_parameters.merge(id: @partner.to_param, params: request.query_parameters, only_path: true)),
+                status: :moved_permanently
+  end
 
   # Splits the partner show page's three event-listing branches out of #show
   # to keep that action's complexity in check: no events, a handful of events

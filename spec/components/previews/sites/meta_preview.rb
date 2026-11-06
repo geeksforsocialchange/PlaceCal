@@ -3,7 +3,7 @@
 class Sites::MetaPreview < Lookbook::Preview
   # @label With permalink
   def with_permalink
-    render Components::Sites::Meta.new("/events/123")
+    render Components::Sites::Meta.new("https://placecal.org/events/123")
   end
 
   # @label Without permalink

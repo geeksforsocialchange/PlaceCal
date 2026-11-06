@@ -5,7 +5,7 @@ class Components::Sites::Meta < Components::Base
               parts: {
                 root: 'The band below a page\'s content: the links a page passes in, then the permalink.',
                 content: 'The width-limited column inside the band that holds the links and the permalink.',
-                permalink: 'The link to this page on placecal.org. Only when the page passes a permalink.'
+                permalink: 'The link to this page\'s canonical URL. Only when the page passes a permalink.'
               },
               tokens: %i[--text-sm --leading-normal --color-rules --color-foreground --color-primary]
 
@@ -31,7 +31,7 @@ class Components::Sites::Meta < Components::Base
         raw(view_context.capture(&@link_content)) if @link_content
         if @permalink
           div(**part(:permalink, class: 'ms-auto')) do
-            a(href: "https://placecal.org#{@permalink}", class: LINK) { t('components.meta.permalink') }
+            a(href: @permalink, class: LINK) { t('components.meta.permalink') }
           end
         end
       end

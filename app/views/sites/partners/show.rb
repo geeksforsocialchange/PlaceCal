@@ -31,6 +31,7 @@ class Views::Sites::Partners::Show < Views::Base
   include Phlex::Rails::Helpers::OptionsForSelect
 
   register_value_helper :partner_service_area_text
+  register_value_helper :html_to_plaintext
 
   prop :partner, Partner, reader: :private
   prop :site, _Nilable(::Site), reader: :private
@@ -77,7 +78,7 @@ class Views::Sites::Partners::Show < Views::Base
     set_content_for_tags
     render_local_layout
     if site.core_theme?
-      Sites::Meta("/partners/#{partner.id}") { |meta| meta.with_link { Sites::PageActions(links: page_action_links, in_meta_band: true) } }
+      Sites::Meta(permalink) { |meta| meta.with_link { Sites::PageActions(links: page_action_links, in_meta_band: true) } }
     else
       render_meta_section
       render_page_actions
@@ -88,14 +89,22 @@ class Views::Sites::Partners::Show < Views::Base
 
   def set_content_for_tags
     content_for(:title) { title_with_place }
-    content_for(:canonical) { partner.permalink }
+    content_for(:canonical) { permalink }
     content_for(:image) { partner_og_image_url(partner) }
     content_for(:image_alt) { t('og_image.alt.partner', name: partner.name, site: site&.name || 'PlaceCal') }
-    content_for(:description) { partner.summary } if partner.summary
-    # Built from the directory apex, not request.base_url, so the JSON-LD @id
-    # names the same URL as the canonical tag above — the structured data must
-    # reinforce the canonical entity, not contradict it per-subdomain.
-    content_for(:json_ld) { safe(partner.to_json_ld(base_url: ::Site::DIRECTORY_URL).to_json) }
+    description = meta_description
+    content_for(:description) { description } if description.present?
+    content_for(:json_ld) { safe(partner.to_json_ld(base_url: ::Site.permalink_base_url_for(site)).to_json) }
+  end
+
+  def meta_description
+    summary = partner.summary.to_s.squish
+    summary += '.' if summary.present? && !summary.end_with?('.', '!', '?')
+    [summary, html_to_plaintext(partner.description_html).to_s.squish].compact_blank.join(' ')
+  end
+
+  def permalink
+    partner.permalink(base_url: ::Site.permalink_base_url_for(site))
   end
 
   # "Partner Name, Place" — the locality makes the <title> match how people
@@ -412,6 +421,6 @@ class Views::Sites::Partners::Show < Views::Base
 
   # Meta carries the permalink alone; the feed and export are page actions.
   def render_meta_section
-    Sites::Meta("/partners/#{partner.id}")
+    Sites::Meta(permalink)
   end
 end

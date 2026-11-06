@@ -81,13 +81,13 @@ RSpec.describe "Join marketing site", type: :request do
 
       it "asks search engines not to index #{path} while the copy is unagreed" do
         get "http://join.lvh.me#{path}"
-        expect(response.body).to include('<meta name="robots" content="noindex, noarchive">')
+        expect(response.body).to include('<meta name="robots" content="noindex">')
       end
     end
 
     it "leaves the directory indexable" do
       get "http://lvh.me/"
-      expect(response.body).to include('<meta name="robots" content="noarchive">')
+      expect(response.body).not_to include('<meta name="robots"')
     end
 
     it "has exactly one h1 on the homepage" do

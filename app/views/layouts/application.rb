@@ -3,6 +3,10 @@
 class Views::Layouts::Application < Phlex::HTML
   # Search engines show about this many characters of a description.
   DESCRIPTION_LENGTH = 160
+  # Our limit for a title, as search engines cut long ones off.
+  TITLE_LENGTH = 70
+  # Dropped from canonicals. Any other param may be a filter, so it stays.
+  TRACKING_PARAMS = /\A(utm_\w+|fbclid|gclid|msclkid|mc_cid|mc_eid|trk)\z/
 
   include Phlex::Rails::Layout
   include Phlex::Rails::Helpers::Routes
@@ -109,7 +113,7 @@ class Views::Layouts::Application < Phlex::HTML
     title_text = compute_title
     description_text = compute_description
 
-    title { title_text }
+    title { fit_title(title_text) }
     meta(property: 'og:title', content: title_text)
     meta(property: 'og:site_name', content: site&.name || 'PlaceCal')
 
@@ -128,17 +132,14 @@ class Views::Layouts::Application < Phlex::HTML
     meta(name: 'twitter:card', content: 'summary_large_image')
     meta(name: 'twitter:site', content: '@PlaceCal')
     meta(name: 'twitter:creator', content: '@gfscstudio')
-    # Pages served on multiple site subdomains (partners, events) set
-    # :canonical to their directory-apex permalink so Google consolidates the
-    # duplicates onto placecal.org instead of splitting authority per subdomain.
-    # og:url follows it — all URL-identity signals should name the same page.
-    canonical_href = content_for?(:canonical) ? content_for(:canonical) : request.original_url
+    # Partner and event pages show on several hosts, so they name their own canonical.
+    canonical_href = content_for?(:canonical) ? content_for(:canonical) : default_canonical
     meta(property: 'og:url', content: canonical_href)
     link(rel: 'canonical', href: canonical_href)
     # Views can tighten robots via content_for (e.g. past events set noindex
     # so thousands of stale event pages don't dilute the site in the index).
     robots_content = content_for?(:robots) ? content_for(:robots) : default_robots
-    meta(name: 'robots', content: robots_content)
+    meta(name: 'robots', content: robots_content) if robots_content
 
     unless join_site?
       json_ld = site ? site.to_json_ld : Site.directory_json_ld(request.base_url)
@@ -219,6 +220,13 @@ class Views::Layouts::Application < Phlex::HTML
     site&.name || t('site.title_default')
   end
 
+  # Gives up the site name first, so a long title keeps its own words.
+  def fit_title(text)
+    return text.squish if text.squish.length <= TITLE_LENGTH
+
+    (captured_title || text).squish.truncate(TITLE_LENGTH, separator: ' ')
+  end
+
   # `content_for(:title)` comes back as an already-escaped SafeBuffer, because
   # the block was captured through Phlex. Interpolating it into a plain String
   # drops the safe flag and the <title> element then escapes it a second time,
@@ -240,6 +248,13 @@ class Views::Layouts::Application < Phlex::HTML
   def compute_description
     text = content_for?(:description) ? CGI.unescapeHTML(content_for(:description).to_s) : default_description
     text.squish.truncate(DESCRIPTION_LENGTH, separator: ' ')
+  end
+
+  def default_canonical
+    path = request.path == '/' ? '/' : request.path.chomp('/')
+    query = request.query_parameters.reject { |key, _| key.match?(TRACKING_PARAMS) }
+    query = query.except('region') unless view_context.current_region
+    query.empty? ? "#{request.base_url}#{path}" : "#{request.base_url}#{path}?#{query.to_query}"
   end
 
   def default_description
@@ -285,9 +300,9 @@ class Views::Layouts::Application < Phlex::HTML
     view_context.instance_variable_get(:@navigation)
   end
 
-  # Temporary: the join site stays out of search results until its copy is agreed.
+  # Temporary for the join site, until its copy is agreed.
   def default_robots
-    join_site? ? 'noindex, noarchive' : 'noarchive'
+    'noindex' if join_site? || devise_page?
   end
 
   # The join marketing site shares this layout (and its nil-site page chrome)

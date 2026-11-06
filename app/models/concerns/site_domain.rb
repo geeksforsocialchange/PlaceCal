@@ -18,6 +18,14 @@ module SiteDomain
       self::DIRECTORY_URL.sub('://', "://#{slug}.")
     end
 
+    # Where partner and event pages are canonical: a site's own domain, else the directory.
+    #
+    # @param site [Site, nil]
+    # @return [String]
+    def permalink_base_url_for(site)
+      site&.served_domain? ? site.canonical_url : self::DIRECTORY_URL
+    end
+
     # @param host [String]
     # @return [Site, nil] the site whose domain is host, when this deploy serves it
     def served_at(host)

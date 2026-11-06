@@ -3,7 +3,7 @@
 module EventJsonLd
   extend ActiveSupport::Concern
 
-  def to_json_ld(base_url:)
+  def to_json_ld(base_url:, organiser_base_url: base_url)
     event_url = "#{base_url}/events/#{id}"
     data = {
       '@context' => 'https://schema.org',
@@ -21,7 +21,7 @@ module EventJsonLd
 
     build_json_ld_location(data)
     build_json_ld_image(data)
-    build_json_ld_organizer(data, base_url)
+    build_json_ld_organizer(data, organiser_base_url)
     build_json_ld_offers(data)
     build_json_ld_event_series(data, event_url)
 

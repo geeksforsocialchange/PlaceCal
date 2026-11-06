@@ -66,6 +66,11 @@ RSpec.describe "Public page meta tags", type: :request do
     end
   end
 
+  it "leaves room for a long site name in the shared descriptions" do
+    keys = %w[meta.description partners.index.description news.index.description events.index.description]
+    expect(keys.map { |key| I18n.t(key, site: "x" * 35).length }).to all(be <= 160)
+  end
+
   describe "the directory, with no site" do
     it_behaves_like "a page with its own meta tags", MetaTagPages::DIRECTORY, image: -> { directory_card }
 
