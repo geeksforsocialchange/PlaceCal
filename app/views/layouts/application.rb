@@ -155,15 +155,15 @@ class Views::Layouts::Application < Phlex::HTML
   def render_og_image
     return if request.subdomain == 'admin' || devise_page?
 
-    if content_for?(:image)
-      meta(property: 'og:image', content: image_url(content_for(:image)))
-      meta(property: 'og:image:alt', content: content_for(:image_alt)) if content_for?(:image_alt)
-    elsif site && (theme_og = theme.og_image_for_render)
-      # A theme may ship its own static share image (#3368 D1)
+    if site && (theme_og = theme.og_image_for_render)
+      # A theme's own static share image (#3368 D1) replaces every generated card
       meta(property: 'og:image', content: image_url(theme_og[:path]))
       meta(property: 'og:image:alt', content: t('og_image.alt.site', name: site.name))
       meta(property: 'og:image:width', content: theme_og[:width].to_s) if theme_og[:width]
       meta(property: 'og:image:height', content: theme_og[:height].to_s) if theme_og[:height]
+    elsif content_for?(:image)
+      meta(property: 'og:image', content: image_url(content_for(:image)))
+      meta(property: 'og:image:alt', content: content_for(:image_alt)) if content_for?(:image_alt)
     elsif content_for?(:og_page)
       render_page_og_image(content_for(:og_page).to_s)
     elsif site
