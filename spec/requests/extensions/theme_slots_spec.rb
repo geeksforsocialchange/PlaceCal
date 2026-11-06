@@ -84,6 +84,18 @@ RSpec.describe "Theme slots", type: :request do
     expect(head).to match(/<meta property="og:image:alt" content="#{Regexp.escape(themed_site.name)}[^"]*">/)
   end
 
+  it "uses a theme's share image on partner and event pages, and generated cards otherwise" do
+    theme_image = %r{<meta property="og:image" content="[^"]*/assets/example_theme/}
+
+    ["/events/#{event.id}", "/partners/#{event.organiser.slug}"].each do |path|
+      get "http://themed.lvh.me#{path}"
+      expect(head_html).to match(theme_image)
+
+      get "http://plain.lvh.me#{path}"
+      expect(head_html).to include("#{path}/opengraph.png")
+    end
+  end
+
   it "builds the web manifest from the theme's icons and colours" do
     get "http://themed.lvh.me/manifest.webmanifest"
 

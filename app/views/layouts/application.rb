@@ -155,39 +155,41 @@ class Views::Layouts::Application < Phlex::HTML
   def render_og_image
     return if request.subdomain == 'admin' || devise_page?
 
-    if content_for?(:image)
-      meta(property: 'og:image', content: image_url(content_for(:image)))
-      meta(property: 'og:image:alt', content: content_for(:image_alt)) if content_for?(:image_alt)
-    elsif site && (theme_og = theme.og_image_for_render)
-      # A theme may ship its own static share image (#3368 D1)
+    if site && (theme_og = theme.og_image_for_render)
+      # A theme's own static share image (#3368 D1) replaces every generated card
       meta(property: 'og:image', content: image_url(theme_og[:path]))
       meta(property: 'og:image:alt', content: t('og_image.alt.site', name: site.name))
       meta(property: 'og:image:width', content: theme_og[:width].to_s) if theme_og[:width]
       meta(property: 'og:image:height', content: theme_og[:height].to_s) if theme_og[:height]
+    elsif content_for?(:image)
+      meta(property: 'og:image', content: image_url(content_for(:image)))
+      meta(property: 'og:image:alt', content: content_for(:image_alt)) if content_for?(:image_alt)
     elsif content_for?(:og_page)
       render_page_og_image(content_for(:og_page).to_s)
     elsif site
       # Generated share card for site homepages and other site pages (#2077)
-      meta(property: 'og:image', content: og_image_url)
-      meta(property: 'og:image:alt', content: t('og_image.alt.site', name: site.name))
-      meta(property: 'og:image:width', content: '1200')
-      meta(property: 'og:image:height', content: '630')
+      render_generated_og_image(og_image_url, t('og_image.alt.site', name: site.name))
     else
       # The directory's generated card; the join site points at it on the apex, which serves it
-      meta(property: 'og:image', content: "#{::Site::DIRECTORY_URL.chomp('/')}#{og_image_path}")
-      meta(property: 'og:image:alt', content: t('og_image.alt.directory'))
-      meta(property: 'og:image:width', content: '1200')
-      meta(property: 'og:image:height', content: '630')
+      render_generated_og_image(directory_url_for(og_image_path), t('og_image.alt.directory'))
     end
   end
 
   # A listing or static page's own card. The directory's are served on the apex, like its main card.
   def render_page_og_image(page)
-    url = site ? page_og_image_url(page:) : "#{::Site::DIRECTORY_URL.chomp('/')}#{page_og_image_path(page:)}"
+    url = site ? page_og_image_url(page:) : directory_url_for(page_og_image_path(page:))
+    render_generated_og_image(url, t('og_image.alt.page', page: captured_title, site: site&.name || 'PlaceCal'))
+  end
+
+  def render_generated_og_image(url, alt)
     meta(property: 'og:image', content: url)
-    meta(property: 'og:image:alt', content: t('og_image.alt.page', page: captured_title, site: site&.name || 'PlaceCal'))
-    meta(property: 'og:image:width', content: '1200')
-    meta(property: 'og:image:height', content: '630')
+    meta(property: 'og:image:alt', content: alt)
+    meta(property: 'og:image:width', content: OgImage::BaseCard::WIDTH.to_s)
+    meta(property: 'og:image:height', content: OgImage::BaseCard::HEIGHT.to_s)
+  end
+
+  def directory_url_for(path)
+    "#{::Site::DIRECTORY_URL.chomp('/')}#{path}"
   end
 
   # A theme may supply its own favicons, touch icon and Safari mask icon

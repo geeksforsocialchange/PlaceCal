@@ -797,14 +797,13 @@ en:
     events_this_month:
       one: "1 event this month"
       other: "%{count} events this month"
-    powered_by: "Powered by"
     generic:
       statement: "Events and activities by and for your community"
     alt:
       event: "Details for the event %{name} on %{site}"
       partner: "Details for the partner %{name} on %{site}"
       partnership: "Details for the partnership %{name} on PlaceCal"
-      site: "%{name}, powered by PlaceCal"
+      site: "%{name} on PlaceCal"
       page: "%{page} on %{site}"
       directory: "PlaceCal: events and activities by and for your community"
 

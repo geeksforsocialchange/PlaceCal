@@ -3,6 +3,8 @@
 module OgImage
   # A partnership is a curated PlaceCal site, shown in the directory.
   class PartnershipCard < BaseCard
+    include SiteHero
+
     def initialize(site)
       super()
       @site = site
@@ -11,16 +13,6 @@ module OgImage
     private
 
     attr_reader :site
-
-    def hero_path
-      path = site.hero_image&.opengraph&.path
-      path if path.present? && File.exist?(path)
-    end
-
-    # PlaceCal-native card: the bare logo rather than a "Powered by" lockup.
-    def hero_lockup
-      svg_asset('logo-header.svg', height: 32, opacity: 0.85)
-    end
 
     def label
       t('labels.partnership')

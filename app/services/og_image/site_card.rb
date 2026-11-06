@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
 module OgImage
-  # Subdomain site homepage card: the site's own identity with a
-  # "Powered by PlaceCal" lockup to keep both identities. When the site
-  # has a hero image it fills the background with the identity in a cream
-  # panel on top (see BaseCard#render_with_hero); otherwise the type-only
+  # Site homepage card: the site's own identity with the PlaceCal logo. When
+  # the site has a hero image it fills the background with the identity in a
+  # cream panel on top (see BaseCard#render_with_hero); otherwise the type-only
   # layout is used.
   class SiteCard < BaseCard
+    include SiteHero
+
     def initialize(site)
       super()
       @site = site
@@ -15,11 +16,6 @@ module OgImage
     private
 
     attr_reader :site
-
-    def hero_path
-      path = site.hero_image&.opengraph&.path
-      path if path.present? && File.exist?(path)
-    end
 
     def label
       t('labels.community_site')
@@ -46,12 +42,7 @@ module OgImage
     end
 
     def domain
-      site.canonical_url.sub(%r{\Ahttps?://}, '')
-    end
-
-    def compose_watermark(canvas)
-      lockup = powered_by_lockup(logo_height: 34, opacity: 0.82)
-      composite(canvas, lockup, WIDTH - 80 - lockup.width, HEIGHT - 60 - lockup.height)
+      bare_domain(site.canonical_url)
     end
   end
 end
