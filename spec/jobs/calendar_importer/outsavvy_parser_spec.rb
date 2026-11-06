@@ -89,5 +89,38 @@ RSpec.describe CalendarImporter::Parsers::Outsavvy do
         expect(consumer.events[18].not_cancelled?).to be(false)
       end
     end
+
+    context "with an event page" do
+      let(:calendar) { build(:calendar, strategy: :event, source: "https://www.outsavvy.com/organiser/test") }
+      let(:parser) { described_class.new(calendar, url: calendar.source) }
+      let(:ld_json) do
+        { "@context": "http://schema.org", "@type": "MusicEvent", name: "Gig", startDate: 1.year.from_now.iso8601,
+          url: "https://www.outsavvy.com/event/1/gig", description: "HeadlinerParagraph one" }.to_json
+      end
+
+      def imported_description(body)
+        allow(parser).to receive(:extract_event_urls).and_return(["https://www.outsavvy.com/event/1/gig"])
+        allow(CalendarImporter::Parsers::Base).to receive(:read_http_source).and_return(
+          %(<html><head><script type="application/ld+json">#{ld_json}</script></head><body>#{body}</body></html>)
+        )
+
+        parser.import_events_from(parser.download_calendar).first.attributes[:description]
+      end
+
+      it "reads the description from the page, keeping its paragraphs" do
+        description = imported_description(<<~HTML)
+          <div class="event-description"><h3>Track your loved events</h3></div>
+          <div id="description"><div class="event-description">
+            <span><p><strong>Headliner</strong></p><p>&nbsp;</p><p>Paragraph one</p><ul><li>Step-free</li></ul></span>
+          </div></div>
+        HTML
+
+        expect(description).to eq("**Headliner**\n\nParagraph one\n\n* Step-free")
+      end
+
+      it "falls back to the ld+json description when the page has none" do
+        expect(imported_description("<div class=\"event-description\">Promo</div>")).to eq("HeadlinerParagraph one")
+      end
+    end
   end
 end

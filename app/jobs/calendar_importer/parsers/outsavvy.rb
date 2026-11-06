@@ -31,7 +31,8 @@ module CalendarImporter::Parsers
 
     def download_calendar
       extract_event_urls(@url).flat_map do |event_url|
-        Base.parse_ld_json(event_url)
+        doc = Nokogiri::HTML(Base.read_http_source(event_url))
+        with_page_description(Base.parse_ld_json_document(doc), doc)
       end
     end
 
@@ -40,6 +41,17 @@ module CalendarImporter::Parsers
       consumer.consume data
       consumer.validate_events
       consumer.events
+    end
+
+    private
+
+    # The ld+json description has its tags stripped, which runs every paragraph together.
+    def with_page_description(nodes, doc)
+      description = doc.at_css('#description .event-description')
+      return nodes if description.nil? || description.text.blank?
+
+      description.css('p').select { |paragraph| paragraph.text.blank? }.each(&:remove)
+      nodes.each { |node| node['description'] = description.inner_html if node.key?('start_date') }
     end
   end
 end
