@@ -28,7 +28,7 @@ When working on this project:
 
 ## Pull requests
 
-Every PR gets exactly one Release Drafter category label, or it lands uncategorised in the release notes: `enhancement`, `fix`, `security`, `maintenance`, `dependencies` or `docs` (see `.github/release-drafter.yml`). `dependencies` is for PRs that only update a dependency or pin (Renovate and the extension pin PRs label themselves); code tidying, refactors and tooling are `maintenance`. The autolabeler only matches title prefixes like `fix`, `feat` and `chore`, so add the label yourself with `gh pr create --label <label>` or `gh pr edit <number> --add-label <label>`. `enhancement` makes the next release a minor version; the others are patches.
+Every PR gets exactly one Release Drafter category label, or it lands uncategorised in the release notes: `enhancement`, `fix`, `security`, `maintenance`, `dependencies` or `docs` (see `.github/release-drafter.yml`). `dependencies` is for PRs that only update a dependency or pin (Renovate and the extension pin PRs label themselves); code tidying, refactors and tooling are `maintenance`. The autolabeler adds a label from the PR's title and branch prefixes (see `autolabeler:` in that file) on top of any label already there, so name the branch to match the category: `feat/`, `fix/`, `docs/`, `chore/` or `refactor/`. Most descriptive titles match nothing, so add the label yourself with `gh pr create --label <label>` or `gh pr edit <number> --add-label <label>`, then check the PR has one label once the autolabeler has run. `enhancement` makes the next release a minor version; the others are patches.
 
 ## Releases
 
