@@ -173,11 +173,6 @@ class Views::Sites::Events::Show < Views::Base
         div do
           div(class: 'font-extra-bold') { event.partner_at_location.name } if event.partner_at_location
           Shared::Address(address: event.address, raw_location: event.raw_location_from_source)
-          if event.neighbourhood
-            div(class: 'text-tertiary text-sm mt-1') do
-              plain t('directory.events.show.ward', name: event.neighbourhood.shortname)
-            end
-          end
         end
       end
     end
