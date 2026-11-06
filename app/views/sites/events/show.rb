@@ -31,7 +31,7 @@ class Views::Sites::Events::Show < Views::Base
     content_for(:canonical) { event.permalink(base_url: permalink_base_url) }
     # Past events have no search value and accumulate forever — noindex them
     # so they stop eating crawl budget and diluting the indexed site.
-    content_for(:robots) { 'noindex, noarchive' } if event.past?
+    content_for(:robots) { 'noindex' } if event.past?
     content_for(:image) { event_og_image_url(event) }
     content_for(:image_alt) { t('og_image.alt.event', name: event.summary, site: site&.name || 'PlaceCal') }
     content_for(:description) { meta_description }

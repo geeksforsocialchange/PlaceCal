@@ -139,7 +139,7 @@ class Views::Layouts::Application < Phlex::HTML
     # Views can tighten robots via content_for (e.g. past events set noindex
     # so thousands of stale event pages don't dilute the site in the index).
     robots_content = content_for?(:robots) ? content_for(:robots) : default_robots
-    meta(name: 'robots', content: robots_content)
+    meta(name: 'robots', content: robots_content) if robots_content
 
     unless join_site?
       json_ld = site ? site.to_json_ld : Site.directory_json_ld(request.base_url)
@@ -302,7 +302,7 @@ class Views::Layouts::Application < Phlex::HTML
 
   # Temporary for the join site, until its copy is agreed.
   def default_robots
-    join_site? || devise_page? ? 'noindex, noarchive' : 'noarchive'
+    'noindex' if join_site? || devise_page?
   end
 
   # The join marketing site shares this layout (and its nil-site page chrome)

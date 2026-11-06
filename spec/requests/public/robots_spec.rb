@@ -75,6 +75,6 @@ RSpec.describe "Public Robots", type: :request do
 
   it "keeps the sign-in page out of search results" do
     get "http://lvh.me/users/sign_in"
-    expect(response.body).to include('<meta name="robots" content="noindex, noarchive">')
+    expect(response.body).to include('<meta name="robots" content="noindex">')
   end
 end

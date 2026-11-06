@@ -155,8 +155,7 @@ RSpec.describe "Public Events", type: :request do
 
     it "does not noindex upcoming events" do
       get event_url(event, host: "#{site.slug}.lvh.me")
-      expect(response.body).to include(%(<meta name="robots" content="noarchive">))
-      expect(response.body).not_to include("noindex")
+      expect(response.body).not_to include('<meta name="robots"')
     end
 
     it "noindexes past events" do
@@ -167,7 +166,7 @@ RSpec.describe "Public Events", type: :request do
                           address:)
       get event_url(past_event, host: "#{site.slug}.lvh.me")
       expect(response).to be_successful
-      expect(response.body).to include(%(<meta name="robots" content="noindex, noarchive">))
+      expect(response.body).to include(%(<meta name="robots" content="noindex">))
     end
 
     # Page actions row (Components::Sites::PageActions, #3368): organiser's other
