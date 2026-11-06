@@ -35,7 +35,7 @@ class Views::Sites::Events::Show < Views::Base
     content_for(:image) { event_og_image_url(event) }
     content_for(:image_alt) { t('og_image.alt.event', name: event.summary, site: site&.name || 'PlaceCal') }
     content_for(:description) { meta_description }
-    content_for(:json_ld) { safe(event.to_json_ld(base_url: ::Site.permalink_base_url_for(site)).to_json) }
+    content_for(:json_ld) { safe(event.to_json_ld(base_url: ::Site.permalink_base_url_for(site), organiser_base_url:).to_json) }
 
     if site.nil?
       render_directory_layout
@@ -59,6 +59,12 @@ class Views::Sites::Events::Show < Views::Base
 
   def permalink
     event.permalink(base_url: ::Site.permalink_base_url_for(site))
+  end
+
+  # An organiser from outside the site has its page on the directory, even if the event shows here.
+  def organiser_base_url
+    on_site = event.organiser && site&.served_domain? && PartnersQuery.new(site:).include?(event.organiser)
+    on_site ? site.canonical_url : ::Site::DIRECTORY_URL
   end
 
   # A very short description says less than the date and place, so those lead.

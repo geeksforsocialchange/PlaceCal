@@ -136,8 +136,23 @@ RSpec.describe "Public Events", type: :request do
         expect(response.body).to include(
           %(<link rel="canonical" href="https://transdimension.uk/events/#{event.id}">),
           %(<meta property="og:url" content="https://transdimension.uk/events/#{event.id}">),
-          %("@id":"https://transdimension.uk/events/#{event.id}")
+          %("@id":"https://transdimension.uk/events/#{event.id}"),
+          %("@id":"https://transdimension.uk/partners/#{partner.slug}")
         )
+      end
+
+      it "links the permalink to the domain" do
+        get event_url(event, host: "transdimension.uk")
+        link = Nokogiri::HTML(response.body).at_css("[data-part='permalink'] a")
+        expect(link["href"]).to eq("https://transdimension.uk/events/#{event.id}")
+      end
+
+      it "names an organiser from outside the site on the directory" do
+        outsider = create(:partner, address: create(:address, neighbourhood: create(:oldtown_ward)))
+        event.update!(organiser: outsider)
+
+        get event_url(event, host: "transdimension.uk")
+        expect(response.body).to include(%("@id":"https://placecal.org/partners/#{outsider.slug}"))
       end
     end
 

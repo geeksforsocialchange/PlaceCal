@@ -5,7 +5,7 @@ class Views::Layouts::Application < Phlex::HTML
   DESCRIPTION_LENGTH = 160
   # Our limit for a title, as search engines cut long ones off.
   TITLE_LENGTH = 70
-  # Listed rather than allowing known filters, so a new filter can't silently lose its canonical.
+  # Dropped from canonicals. Any other param may be a filter, so it stays.
   TRACKING_PARAMS = /\A(utm_\w+|fbclid|gclid|msclkid|mc_cid|mc_eid|trk)\z/
 
   include Phlex::Rails::Layout

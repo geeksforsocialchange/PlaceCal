@@ -2,6 +2,8 @@
 
 # Tells search engines which partner and event pages changed, so they don't wait for a recrawl.
 class IndexNowSubmission
+  class Failed < StandardError; end
+
   ENDPOINT = 'https://api.indexnow.org/indexnow'
   # Not a secret: IndexNow proves a host's ownership by that host serving this value.
   KEY = '318c9cc3c1677c7ff1bed469c5ff182e'
@@ -31,9 +33,15 @@ class IndexNowSubmission
     return if urls.empty?
 
     response = post(base_url, urls)
-    Rails.logger.warn("IndexNow refused #{base_url}: #{response.code}") unless response.success?
+    report("IndexNow refused #{base_url}: #{response.code}") unless response.success?
   rescue StandardError => e
-    Rails.logger.warn("IndexNow failed for #{base_url}: #{e.message}")
+    report("IndexNow failed for #{base_url}: #{e.message}")
+  end
+
+  # The maintenance job carries on either way, so a failure needs reporting to be seen.
+  def report(message)
+    Rails.logger.warn(message)
+    Appsignal.send_error(Failed.new(message))
   end
 
   def partner_urls(base_url, partners)

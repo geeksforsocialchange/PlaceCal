@@ -21,6 +21,7 @@ RSpec.describe RecurringMaintenanceJob, type: :job do
 
     described_class.perform_now
     expect(submission).to have_received(:call)
+    expect(IndexNowSubmission).to have_received(:new).with(since: be_within(1.minute).of(2.days.ago))
   end
 
   it "prunes versions older than a year" do

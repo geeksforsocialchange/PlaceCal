@@ -72,11 +72,20 @@ RSpec.describe IndexNowSubmission do
     expect(body_for("placecal.org")["urlList"]).not_to include("https://placecal.org/events/#{past.id}")
   end
 
-  it "logs a failure rather than raising" do
+  it "reports a failure rather than raising" do
     stub_request(:post, described_class::ENDPOINT.to_s).to_timeout
-    allow(Rails.logger).to receive(:warn)
+    allow(Appsignal).to receive(:send_error)
 
     expect { submission.call }.not_to raise_error
-    expect(Rails.logger).to have_received(:warn).with(/IndexNow failed/)
+    expect(Appsignal).to have_received(:send_error).with(an_instance_of(described_class::Failed))
+  end
+
+  it "reports a refused submission" do
+    stub_request(:post, described_class::ENDPOINT.to_s).to_return(status: 403)
+    allow(Appsignal).to receive(:send_error)
+
+    submission.call
+
+    expect(Appsignal).to have_received(:send_error).with(have_attributes(message: /refused.*403/))
   end
 end
