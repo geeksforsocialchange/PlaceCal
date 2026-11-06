@@ -9,6 +9,7 @@ class IndexNowSubmission
   KEY = '318c9cc3c1677c7ff1bed469c5ff182e'
   KEY_PATH = '/indexnow-key.txt'
   MAX_URLS = 10_000
+  REASON_LENGTH = 500
   TIMEOUT = 15 # seconds
 
   # @param since [Time] submit pages changed after this
@@ -33,7 +34,7 @@ class IndexNowSubmission
     return if urls.empty?
 
     response = post(base_url, urls)
-    report("IndexNow refused #{base_url}: #{response.code}") unless response.success?
+    report("IndexNow refused #{base_url}: #{response.code} #{response.body.to_s.truncate(REASON_LENGTH)}".strip) unless response.success?
   rescue StandardError => e
     report("IndexNow failed for #{base_url}: #{e.message}")
   end

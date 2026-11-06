@@ -86,6 +86,24 @@ RSpec.describe IndexNowSubmission do
 
     submission.call
 
-    expect(Appsignal).to have_received(:send_error).with(have_attributes(message: /refused.*403/))
+    expect(Appsignal).to have_received(:send_error).with(have_attributes(message: "IndexNow refused https://placecal.org: 403"))
+  end
+
+  it "reports why a submission was refused" do
+    stub_request(:post, described_class::ENDPOINT.to_s).to_return(status: 403, body: '{"errorCode":"UserForbiddedToAccessSite"}')
+    allow(Appsignal).to receive(:send_error)
+
+    submission.call
+
+    expect(Appsignal).to have_received(:send_error).with(have_attributes(message: /403 .*UserForbiddedToAccessSite/))
+  end
+
+  it "keeps a long refusal short" do
+    stub_request(:post, described_class::ENDPOINT.to_s).to_return(status: 500, body: "x" * 5000)
+    allow(Appsignal).to receive(:send_error)
+
+    submission.call
+
+    expect(Appsignal).to have_received(:send_error).with(have_attributes(message: satisfy { |message| message.length < 600 }))
   end
 end
