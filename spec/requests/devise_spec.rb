@@ -31,6 +31,33 @@ RSpec.describe "Devise Pages", type: :request do
     end
   end
 
+  describe "POST /users/password (request a reset)" do
+    it "gives the same notice whether or not the account exists" do
+      post user_password_url(host: "lvh.me"), params: { user: { email: "nobody@example.com" } }
+
+      expect(response).to redirect_to(new_user_password_path)
+      expect(flash[:success]).to eq(
+        "If a PlaceCal account is associated with the submitted email address, password reset instructions have been sent."
+      )
+    end
+  end
+
+  describe "a form posted with an expired CSRF token" do
+    around do |example|
+      ActionController::Base.allow_forgery_protection = true
+      example.run
+    ensure
+      ActionController::Base.allow_forgery_protection = false
+    end
+
+    it "sends the user back to sign in with a message" do
+      post user_session_url(host: "lvh.me"), params: { user: { email: "a@example.com", password: "password" } }
+
+      expect(response).to redirect_to(new_user_session_path)
+      expect(flash[:danger]).to eq("Your session has expired. Please sign in again.")
+    end
+  end
+
   describe "GET /users/password/edit (reset password)" do
     it "renders with a reset token param" do
       get edit_user_password_url(host: "lvh.me", reset_password_token: "invalid")
