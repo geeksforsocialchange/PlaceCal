@@ -68,7 +68,7 @@ class ApplicationController < ActionController::Base
   end
 
   def session_expired
-    flash[:danger] = 'Your session has expired. Please sign in again.'
+    flash[:danger] = t('devise.failure.session_expired')
     redirect_to new_user_session_path
   end
 
