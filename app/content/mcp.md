@@ -3,6 +3,7 @@
 - **ChatGPT:** in Settings, open Connectors, turn on Developer mode under Advanced, then create a connector with this address and no authentication.
 - **Claude:** in Settings, open Connectors, choose Add custom connector and paste this address.
 - **Gemini:** on the Gemini website, open Settings, then Connected apps, and choose Add a custom app with this address.
+- **Microsoft Copilot:** in Copilot Studio, open your agent's Tools page, choose Add a tool, then New tool, then Model Context Protocol, and enter this address with no authentication.
 
 Other assistants and tools that support remote MCP servers can use the same address. Custom connectors aren't available on every plan yet.
 
