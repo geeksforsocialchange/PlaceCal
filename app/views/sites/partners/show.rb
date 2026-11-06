@@ -78,7 +78,7 @@ class Views::Sites::Partners::Show < Views::Base
     set_content_for_tags
     render_local_layout
     if site.core_theme?
-      Sites::Meta("/partners/#{partner.id}") { |meta| meta.with_link { Sites::PageActions(links: page_action_links, in_meta_band: true) } }
+      Sites::Meta(permalink) { |meta| meta.with_link { Sites::PageActions(links: page_action_links, in_meta_band: true) } }
     else
       render_meta_section
       render_page_actions
@@ -89,11 +89,12 @@ class Views::Sites::Partners::Show < Views::Base
 
   def set_content_for_tags
     content_for(:title) { title_with_place }
-    content_for(:canonical) { partner.permalink(base_url: permalink_base_url) }
+    content_for(:canonical) { permalink }
     content_for(:image) { partner_og_image_url(partner) }
     content_for(:image_alt) { t('og_image.alt.partner', name: partner.name, site: site&.name || 'PlaceCal') }
-    content_for(:description) { meta_description } if meta_description.present?
-    content_for(:json_ld) { safe(partner.to_json_ld(base_url: permalink_base_url).to_json) }
+    description = meta_description
+    content_for(:description) { description } if description.present?
+    content_for(:json_ld) { safe(partner.to_json_ld(base_url: ::Site.permalink_base_url_for(site)).to_json) }
   end
 
   def meta_description
@@ -102,8 +103,8 @@ class Views::Sites::Partners::Show < Views::Base
     [summary, html_to_plaintext(partner.description_html).to_s.squish].compact_blank.join(' ')
   end
 
-  def permalink_base_url
-    site&.permalink_base_url || ::Site::DIRECTORY_URL
+  def permalink
+    partner.permalink(base_url: ::Site.permalink_base_url_for(site))
   end
 
   # "Partner Name, Place" — the locality makes the <title> match how people
@@ -420,6 +421,6 @@ class Views::Sites::Partners::Show < Views::Base
 
   # Meta carries the permalink alone; the feed and export are page actions.
   def render_meta_section
-    Sites::Meta("/partners/#{partner.id}")
+    Sites::Meta(permalink)
   end
 end

@@ -49,6 +49,15 @@ RSpec.describe IndexNowSubmission do
     expect(bodies.pluck("host")).to eq(["placecal.org"])
   end
 
+  it "leaves out events from hidden organisers" do
+    hidden = create(:partner, address:, hidden: true, hidden_reason: "Moderated", hidden_blame_id: create(:user).id)
+    event = create(:event, organiser: hidden, address:, dtstart: 1.day.from_now)
+
+    submission.call
+
+    expect(body_for("placecal.org")["urlList"]).not_to include("https://placecal.org/events/#{event.id}")
+  end
+
   it "leaves out unchanged pages" do
     described_class.new(since: 1.hour.from_now).call
 

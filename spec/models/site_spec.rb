@@ -233,9 +233,10 @@ RSpec.describe Site, type: :model do
     end
 
     it "keeps partner and event pages on a served domain, else the directory" do
-      expect(plain.permalink_base_url).to eq(Site::DIRECTORY_URL)
-      expect(served.permalink_base_url).to eq("https://transdimension.uk")
-      expect(external.permalink_base_url).to eq(Site::DIRECTORY_URL)
+      expect(described_class.permalink_base_url_for(plain)).to eq(Site::DIRECTORY_URL)
+      expect(described_class.permalink_base_url_for(served)).to eq("https://transdimension.uk")
+      expect(described_class.permalink_base_url_for(external)).to eq(Site::DIRECTORY_URL)
+      expect(described_class.permalink_base_url_for(nil)).to eq(Site::DIRECTORY_URL)
     end
 
     it "sends people to any domain, served or external" do

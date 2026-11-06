@@ -28,14 +28,14 @@ class Views::Sites::Events::Show < Views::Base
 
   def view_template
     content_for(:title) { event.og_title }
-    content_for(:canonical) { event.permalink(base_url: permalink_base_url) }
+    content_for(:canonical) { permalink }
     # Past events have no search value and accumulate forever — noindex them
     # so they stop eating crawl budget and diluting the indexed site.
     content_for(:robots) { 'noindex' } if event.past?
     content_for(:image) { event_og_image_url(event) }
     content_for(:image_alt) { t('og_image.alt.event', name: event.summary, site: site&.name || 'PlaceCal') }
     content_for(:description) { meta_description }
-    content_for(:json_ld) { safe(event.to_json_ld(base_url: permalink_base_url).to_json) }
+    content_for(:json_ld) { safe(event.to_json_ld(base_url: ::Site.permalink_base_url_for(site)).to_json) }
 
     if site.nil?
       render_directory_layout
@@ -57,8 +57,8 @@ class Views::Sites::Events::Show < Views::Base
 
   private
 
-  def permalink_base_url
-    site&.permalink_base_url || ::Site::DIRECTORY_URL
+  def permalink
+    event.permalink(base_url: ::Site.permalink_base_url_for(site))
   end
 
   # A very short description says less than the date and place, so those lead.
@@ -381,7 +381,7 @@ class Views::Sites::Events::Show < Views::Base
   end
 
   def render_event_meta
-    Sites::Meta("/events/#{event.id}") do |component|
+    Sites::Meta(permalink) do |component|
       component.with_link do
         contact = event.calendar&.contact_information
         if contact

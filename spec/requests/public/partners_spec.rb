@@ -93,9 +93,10 @@ RSpec.describe "Public Partners", type: :request do
 
       before { serve_hosts("transdimension.uk") }
 
-      it "canonicalises to the domain, with a JSON-LD @id to match" do
+      it "canonicalises to the domain, with a JSON-LD @id and permalink to match" do
         get partner_url(partner, host: "transdimension.uk")
         expect(response.body).to include(
+          %(href="https://transdimension.uk/partners/#{partner.slug}" class=),
           %(<link rel="canonical" href="https://transdimension.uk/partners/#{partner.slug}">),
           %(<meta property="og:url" content="https://transdimension.uk/partners/#{partner.slug}">),
           %("@id":"https://transdimension.uk/partners/#{partner.slug}")
@@ -117,6 +118,12 @@ RSpec.describe "Public Partners", type: :request do
     it "treats the query as data when redirecting a numeric URL" do
       get "http://#{site.slug}.lvh.me/partners/#{partner.id}?host=evil.example&only_path=false"
       expect(URI(response.location).host).to eq("#{site.slug}.lvh.me")
+    end
+
+    it "links the permalink to the slug URL" do
+      get partner_url(partner, host: "#{site.slug}.lvh.me")
+      link = Nokogiri::HTML(response.body).at_css("[data-part='permalink'] a")
+      expect(link["href"]).to eq("https://placecal.org/partners/#{partner.slug}")
     end
 
     it "keeps feeds out of search results, but not the page" do

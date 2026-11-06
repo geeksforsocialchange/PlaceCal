@@ -23,9 +23,9 @@ RSpec.describe "Default canonical URLs", type: :request do
     expect(canonical).to eq("#{base}/")
   end
 
-  it "keeps params that do" do
-    get "#{base}/events?period=week&fbclid=abc"
-    expect(canonical).to eq("#{base}/events?period=week")
+  it "keeps params that do, including ones it hasn't met" do
+    get "#{base}/events?period=week&audience=families&fbclid=abc"
+    expect(canonical).to eq("#{base}/events?audience=families&period=week")
   end
 
   it "keeps a region the site has, and drops one it doesn't" do

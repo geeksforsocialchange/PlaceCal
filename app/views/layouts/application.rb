@@ -3,10 +3,10 @@
 class Views::Layouts::Application < Phlex::HTML
   # Search engines show about this many characters of a description.
   DESCRIPTION_LENGTH = 160
-  # And of a title, past which Bing flags it as too long.
+  # Our limit for a title, as search engines cut long ones off.
   TITLE_LENGTH = 70
-  # Query params that change what a page shows. Anything else, like tracking, is the same page.
-  CANONICAL_PARAMS = %w[category days letter neighbourhood offset page partnership period q region repeating simple sort].freeze
+  # Listed rather than allowing known filters, so a new filter can't silently lose its canonical.
+  TRACKING_PARAMS = /\A(utm_\w+|fbclid|gclid|msclkid|mc_cid|mc_eid|trk)\z/
 
   include Phlex::Rails::Layout
   include Phlex::Rails::Helpers::Routes
@@ -252,7 +252,7 @@ class Views::Layouts::Application < Phlex::HTML
 
   def default_canonical
     path = request.path == '/' ? '/' : request.path.chomp('/')
-    query = request.query_parameters.slice(*CANONICAL_PARAMS)
+    query = request.query_parameters.reject { |key, _| key.match?(TRACKING_PARAMS) }
     query = query.except('region') unless view_context.current_region
     query.empty? ? "#{request.base_url}#{path}" : "#{request.base_url}#{path}?#{query.to_query}"
   end
