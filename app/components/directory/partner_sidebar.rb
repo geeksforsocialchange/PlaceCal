@@ -39,8 +39,7 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
         plain t('directory.sidebar.partnerships_description', name: @partner.name)
       end
       Array(@containing_sites).each do |site_record|
-        # canonical_url, not public_url: an external domain doesn't have PlaceCal's partner pages
-        a(href: "#{site_record.canonical_url}/partners/#{@partner.slug}",
+        a(href: site_record.partner_page_url(@partner),
           class: 'flex items-center justify-between py-2 no-underline text-foreground hover:bg-background/50 transition-colors rounded-sm px-1') do
           div do
             div(class: 'font-extra-bold text-sm') { site_record.name }

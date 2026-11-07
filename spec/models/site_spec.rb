@@ -246,6 +246,14 @@ RSpec.describe Site, type: :model do
       expect(external.public_url).to eq("https://fruitsaladevents.co.uk")
     end
 
+    it "links to a partner by slug where PlaceCal serves the site, and by ID on an external website" do
+      partner = build_stubbed(:partner, slug: "t4tunes")
+
+      expect(plain.partner_page_url(partner)).to eq("https://hulme.placecal.org/partners/t4tunes")
+      expect(served.partner_page_url(partner)).to eq("https://transdimension.uk/partners/t4tunes")
+      expect(external.partner_page_url(partner)).to eq("https://fruitsaladevents.co.uk/partners/#{partner.id}")
+    end
+
     it "displays the public URL without its scheme" do
       expect(plain.display_url).to eq("hulme.placecal.org")
       expect(external.display_url).to eq("fruitsaladevents.co.uk")

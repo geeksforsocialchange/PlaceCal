@@ -66,6 +66,21 @@ module SiteDomain
     domain.present? ? "https://#{domain}" : canonical_url
   end
 
+  # @return [Boolean] whether the domain is the site's own website, not one PlaceCal serves
+  def external_domain?
+    domain.present? && !served_domain?
+  end
+
+  # External websites have no PlaceCal slugs, so they address partners by ID.
+  #
+  # @param partner [Partner]
+  # @return [String]
+  def partner_page_url(partner)
+    return "#{public_url}/partners/#{partner.id}" if external_domain?
+
+    "#{canonical_url}/partners/#{partner.slug}"
+  end
+
   # @return [String] the site's slug subdomain on this environment's apex
   def subdomain_url
     self.class.subdomain_url_for(slug)

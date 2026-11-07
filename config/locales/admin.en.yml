@@ -594,7 +594,7 @@ en:
         alt_text_hint: "How should a screen reader describe this image?"
         contact_email_hint: 'Where "get in touch" enquiries from this site are sent, and shown publicly as an email link on the Get in touch page. Setting this also adds the Get in touch link to the site navigation. Leave blank to send to PlaceCal support.'
         domain_external: "External website: %{domain}. Links from the PlaceCal directory go there, and PlaceCal keeps serving this site at %{subdomain}."
-        domain_hint: "Leave blank to use %{subdomain}. Set it for a custom domain, or for the site's own external website. PlaceCal serves a domain only once it is in the production host list and its DNS points at PlaceCal."
+        domain_hint: "Leave blank to use %{subdomain}. Set it for a custom domain, or for the site's own external website. PlaceCal serves a domain only once it is in the production host list and its DNS points at PlaceCal. PlaceCal links to partners on an external website by ID, such as /partners/123, so that address needs a page or a redirect to one."
         domain_placeholder: "example.org"
         domain_served: "Served by PlaceCal at %{domain}."
         hero_handbook_link: "See handbook for guidance"
