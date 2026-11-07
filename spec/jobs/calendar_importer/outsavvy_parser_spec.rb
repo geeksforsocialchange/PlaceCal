@@ -98,13 +98,17 @@ RSpec.describe CalendarImporter::Parsers::Outsavvy do
           url: "https://www.outsavvy.com/event/1/gig", description: "HeadlinerParagraph one" }.to_json
       end
 
-      def imported_description(body)
+      def imported_descriptions(body)
         allow(parser).to receive(:extract_event_urls).and_return(["https://www.outsavvy.com/event/1/gig"])
         allow(CalendarImporter::Parsers::Base).to receive(:read_http_source).and_return(
           %(<html><head><script type="application/ld+json">#{ld_json}</script></head><body>#{body}</body></html>)
         )
 
-        parser.import_events_from(parser.download_calendar).first.attributes[:description]
+        parser.import_events_from(parser.download_calendar).map { |event| event.attributes[:description] }
+      end
+
+      def imported_description(body)
+        imported_descriptions(body).first
       end
 
       it "reads the description from the page, keeping its paragraphs" do
@@ -120,6 +124,24 @@ RSpec.describe CalendarImporter::Parsers::Outsavvy do
 
       it "falls back to the ld+json description when the page has none" do
         expect(imported_description("<div class=\"event-description\">Promo</div>")).to eq("HeadlinerParagraph one")
+      end
+
+      context "with several dates" do
+        let(:ld_json) do
+          dates = [1.year.from_now, 2.years.from_now].map do |date|
+            { "@type": "SocialEvent", name: "Gig", startDate: date.iso8601,
+              url: "https://www.outsavvy.com/event/1/gig", description: "HeadlinerParagraph one" }
+          end
+          { "@context": "http://schema.org", "@graph": dates }.to_json
+        end
+
+        it "reads the description from the page for every date" do
+          descriptions = imported_descriptions(<<~HTML)
+            <div id="description"><div class="event-description"><p>Headliner</p><p>Paragraph one</p></div></div>
+          HTML
+
+          expect(descriptions).to eq(["Headliner\n\nParagraph one"] * 2)
+        end
       end
     end
   end
