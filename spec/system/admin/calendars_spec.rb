@@ -8,6 +8,86 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
   let!(:partner) { create(:riverside_community_hub) }
   let!(:partner_two) { create(:oldtown_library) }
 
+  describe "Google Calendar links in the source field" do
+    let(:calendar_id) { "abc123@group.calendar.google.com" }
+    let(:feed_url) { "https://calendar.google.com/calendar/ical/abc123%40group.calendar.google.com/public/basic.ics" }
+    let(:notice) { "We changed this to your calendar's feed address" }
+
+    def await_source_controller
+      page.document.synchronize do
+        connected = page.evaluate_script(%(Stimulus.controllers.some((c) => c.identifier === "google-calendar-source")))
+        raise Capybara::ElementNotFound, "google-calendar-source not connected" unless connected
+      end
+    end
+
+    def paste_source(url)
+      await_source_controller
+      page.execute_script(<<~JS, url)
+        const input = document.querySelector("#calendar_source");
+        input.value = arguments[0];
+        input.dispatchEvent(new InputEvent("input", { bubbles: true, inputType: "insertFromPaste" }));
+      JS
+    end
+
+    shared_examples "a form that rewrites Google links" do
+      it "rewrites a pasted embed link and says so", :aggregate_failures do
+        paste_source("https://calendar.google.com/calendar/embed?src=#{calendar_id}&ctz=Europe%2FLondon")
+
+        expect(page).to have_field("calendar_source", with: feed_url)
+        expect(page).to have_content(notice)
+
+        find("label", text: "Source URL", match: :first).click
+        expect(page).to have_content(notice)
+      end
+
+      it "rewrites a pasted share link", :aggregate_failures do
+        cid = Base64.strict_encode64(calendar_id).delete("=")
+        paste_source("https://calendar.google.com/calendar/u/0?cid=#{cid}")
+
+        expect(page).to have_field("calendar_source", with: feed_url)
+        expect(page).to have_content(notice)
+      end
+
+      it "rewrites a typed link when the field loses focus" do
+        fill_in "calendar_source", with: "https://calendar.google.com/calendar/embed?src=#{calendar_id}"
+        find("label", text: "Source URL", match: :first).click
+
+        expect(page).to have_field("calendar_source", with: feed_url)
+      end
+
+      it "leaves other links alone and hides the note", :aggregate_failures do
+        paste_source("https://calendar.google.com/calendar/embed?src=#{calendar_id}")
+        expect(page).to have_content(notice)
+
+        paste_source("https://calendar.google.com/calendar/u/1/r/day/2024/8/23")
+
+        expect(page).to have_field("calendar_source", with: "https://calendar.google.com/calendar/u/1/r/day/2024/8/23")
+        expect(page).to have_no_content(notice)
+      end
+    end
+
+    context "when editing a calendar" do
+      let!(:calendar) { create(:calendar, organiser: partner, name: "Test Calendar") }
+
+      before do
+        click_link "Calendars"
+        await_datatables
+        click_link "Test Calendar"
+      end
+
+      it_behaves_like "a form that rewrites Google links"
+    end
+
+    context "when adding a calendar" do
+      before do
+        click_link "Calendars"
+        click_link "Add Calendar"
+      end
+
+      it_behaves_like "a form that rewrites Google links"
+    end
+  end
+
   describe "tom-select inputs on calendar edit form" do
     let!(:calendar) { create(:calendar, organiser: partner, name: "Test Calendar") }
 

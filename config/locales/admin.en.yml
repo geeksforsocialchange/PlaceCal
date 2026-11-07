@@ -320,6 +320,7 @@ en:
           title: "Connect Your Calendar"
           description: "Paste the URL of your calendar feed. We'll automatically detect the format."
           test_button: "Test"
+          google_rewritten: "We changed this to your calendar's feed address, which is the one PlaceCal can read."
           success: "This URL is valid and ready to import!"
           error: "Unable to validate this URL"
           detected_format: "Detected format:"
