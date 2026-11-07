@@ -658,6 +658,43 @@ RSpec.describe "Public Events", type: :request do
       create(:future_event, organiser: north_partner, summary: "Northern Social")
     end
 
+    context "with the iCal feed" do
+      let(:host) { "regions.lvh.me" }
+
+      before do
+        region_site.tags << south_tag
+        south_partner.tags << south_tag
+        create(:future_event, organiser: south_partner, summary: "Southern Social")
+      end
+
+      it "only has the selected region's events" do
+        get events_url(host:, format: :ics, region: north_tag.slug)
+
+        expect(response.body).to include("Northern Social")
+        expect(response.body).not_to include("Southern Social")
+      end
+
+      it "has every region's events when none is selected" do
+        get events_url(host:, format: :ics)
+
+        expect(response.body).to include("Northern Social", "Southern Social")
+      end
+
+      it "does not reuse one region's feed for another" do
+        get events_url(host:, format: :ics, region: north_tag.slug)
+        get events_url(host:, format: :ics, region: south_tag.slug), headers: { "If-None-Match" => response.headers["ETag"] }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Southern Social")
+      end
+
+      it "subscribes to the region on screen" do
+        get events_url(host:, region: north_tag.slug)
+
+        expect(response.body).to match(%r{href="webcal://#{host}[^"]*/events\.ics\?region=#{north_tag.slug}"})
+      end
+    end
+
     context "when the site has one partnership tag" do
       it "does not show the region control" do
         get events_url(host: "regions.lvh.me")

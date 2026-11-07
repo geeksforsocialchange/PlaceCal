@@ -175,7 +175,7 @@ class EventsController < ApplicationController
 
   def render_ical
     track_ical_download
-    events = EventsQuery.new(site: @site).for_ical
+    events = EventsQuery.new(site: @site).for_ical(tag_id: current_region&.id)
     key = ical_feed_key(events)
     return unless stale?(etag: key)
 
@@ -188,7 +188,7 @@ class EventsController < ApplicationController
     plain = events.unscope(:includes, :preload)
     count, latest = plain.pick(Arel.sql('count(*)'), Arel.sql('max(events.updated_at)'))
     partners = Partner.where(id: plain.select(:organiser_id)).or(Partner.where(id: plain.select(:place_id)))
-    ['ical_feed', @site&.cache_key_with_version, Date.current, count, latest&.iso8601(6), partners.maximum(:updated_at)&.iso8601(6)]
+    ['ical_feed', @site&.cache_key_with_version, current_region&.id, Date.current, count, latest&.iso8601(6), partners.maximum(:updated_at)&.iso8601(6)]
   end
 
   # The same builder as the partner page's CSV export (app/services/events_csv.rb),
