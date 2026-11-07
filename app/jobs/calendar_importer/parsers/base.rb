@@ -249,11 +249,12 @@ module CalendarImporter::Parsers
     end
 
     def self.parse_ld_json(url)
+      parse_ld_json_document(Nokogiri::HTML(read_http_source(url)))
+    end
+
+    def self.parse_ld_json_document(doc)
       register_schema_org_context!
 
-      response_body = read_http_source(url)
-
-      doc = Nokogiri::HTML(response_body)
       data_nodes = doc.xpath('//script[@type="application/ld+json"]')
 
       data_nodes.reduce([]) do |out, node|
