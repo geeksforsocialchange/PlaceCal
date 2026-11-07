@@ -44,6 +44,37 @@ RSpec.describe CalendarImporter::Parsers::ResidentAdvisor do
   end
 
   describe "#download_calendar" do
+    def stub_ra_api(status:, body:)
+      stub_request(:post, described_class::RA_ENDPOINT)
+        .to_return(status:, body: body.to_json, headers: { "Content-Type": "application/json" })
+    end
+
+    it "reports a promoter that no longer exists" do
+      VCR.turned_off do
+        stub_ra_api(status: 200, body: { data: { promoter: nil } })
+
+        expect { described_class.new(promoter_calendar).download_calendar }
+          .to raise_error(CalendarImporter::Exceptions::InaccessibleFeed, /not found/)
+      end
+    end
+
+    it "reports a blocked API request" do
+      VCR.turned_off do
+        stub_ra_api(status: 403, body: {})
+
+        expect { described_class.new(promoter_calendar).download_calendar }
+          .to raise_error(CalendarImporter::Exceptions::InaccessibleFeed, /403/)
+      end
+    end
+
+    it "treats a promoter with no events as empty" do
+      VCR.turned_off do
+        stub_ra_api(status: 200, body: { data: { promoter: { id: "1", events: [] } } })
+
+        expect(described_class.new(promoter_calendar).download_calendar).to eq([])
+      end
+    end
+
     it "promoter links download events" do
       VCR.use_cassette(:ra_promoter) do
         parser = described_class.new(promoter_calendar)

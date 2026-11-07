@@ -12,6 +12,11 @@ module CalendarImporter::Parsers
       RA_REGEX
     end
 
+    # ra.co blocks automated page requests, but its GraphQL API stays open.
+    def self.skips_source_check?
+      true
+    end
+
     def download_calendar
       ra_entity = ra_entity(@url)
       return unless ra_entity
@@ -59,8 +64,7 @@ module CalendarImporter::Parsers
         }
       GRAPHQL
 
-      response = query_graphql_endpoint(query)
-      response.dig('data', 'promoter', 'events') || []
+      events_from(query_graphql_endpoint(query), 'promoter')
     end
 
     def get_club_events(id)
@@ -82,8 +86,17 @@ module CalendarImporter::Parsers
         }
       GRAPHQL
 
-      response = query_graphql_endpoint(query)
-      response.dig('data', 'venue', 'events') || []
+      events_from(query_graphql_endpoint(query), 'venue')
+    end
+
+    # A missing entity must fail loudly: nothing else notices a deleted promoter or venue.
+    def events_from(response, entity)
+      raise InaccessibleFeed, I18n.t('admin.calendars.wizard.source.unreadable', code: response.code) unless response.success?
+
+      record = response.dig('data', entity)
+      raise InaccessibleFeed, I18n.t('admin.calendars.wizard.source.not_found') if record.nil?
+
+      record['events'] || []
     end
 
     # Send a POST request to the GraphQL endpoint

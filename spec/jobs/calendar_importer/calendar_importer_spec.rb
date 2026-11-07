@@ -332,6 +332,13 @@ RSpec.describe CalendarImporter::CalendarImporter do
       expect(importer.parser).to eq(CalendarImporter::Parsers::Ticketsource)
     end
 
+    it "skips HTTP reachability check for Resident Advisor URLs" do
+      calendar = build(:calendar, source: "https://ra.co/promoters/73787")
+
+      importer = described_class.new(calendar)
+      expect(importer.parser).to eq(CalendarImporter::Parsers::ResidentAdvisor)
+    end
+
     it "still performs HTTP reachability check for other URLs" do
       VCR.use_cassette(:example_dot_com_bad_response, allow_playback_repeats: true) do
         calendar = build(:calendar, source: "https://example.com/")

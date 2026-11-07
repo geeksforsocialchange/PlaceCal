@@ -29,6 +29,11 @@ module CalendarImporter::Parsers
     def self.requires_api_token?
       false
     end
+
+    # Parsers that read an API skip the check that the source page is reachable.
+    def self.skips_source_check?
+      requires_api_token?
+    end
     Output = Struct.new(:events, :checksum_changed, :checksum, :notices)
 
     CONTEXT = {
