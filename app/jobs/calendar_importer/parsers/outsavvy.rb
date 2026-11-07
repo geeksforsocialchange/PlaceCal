@@ -51,7 +51,13 @@ module CalendarImporter::Parsers
       return nodes if description.nil? || description.text.blank?
 
       description.css('p').select { |paragraph| paragraph.text.blank? }.each(&:remove)
-      nodes.each { |node| node['description'] = description.inner_html if node.key?('start_date') }
+      event_nodes(nodes).each { |node| node['description'] = description.inner_html }
+      nodes
+    end
+
+    # Events with several dates list them under @graph rather than at the top level.
+    def event_nodes(nodes)
+      nodes.flat_map { |node| [node, *Array.wrap(node['@graph'])] }.select { |node| node.key?('start_date') }
     end
   end
 end
