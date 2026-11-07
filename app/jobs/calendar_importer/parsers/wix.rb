@@ -81,7 +81,7 @@ module CalendarImporter
 
       def download_calendar
         response_body = Base.read_http_source(@url)
-        extract_wix_events(response_body)
+        extract_wix_events(response_body).map { |event| with_full_description(event) }
       end
 
       def import_events_from(data)
@@ -99,6 +99,50 @@ module CalendarImporter
       def extract_base_url
         uri = URI.parse(@url)
         "#{uri.scheme}://#{uri.host}"
+      end
+
+      # The listing only has a short teaser, and the event page's rendered text is cut off.
+      def with_full_description(event)
+        return event if event['slug'].blank?
+
+        page = Base.read_http_source("#{extract_base_url}/event-details/#{event['slug']}")
+        document = long_description_in(page, event['slug'])
+        return event if document.nil?
+
+        event.merge('full_description' => WixRichContent.to_html(document))
+      rescue InaccessibleFeed => e
+        Rails.logger.warn("Wix event page unreadable for #{event['slug']}: #{e.message}")
+        event
+      end
+
+      def long_description_in(html, slug)
+        Nokogiri::HTML(html).xpath('//script[@type="application/json"]').each do |script|
+          document = find_long_description(parse_json_safely(script.inner_html), slug)
+          return document if document
+        end
+
+        nil
+      end
+
+      def find_long_description(json, slug, depth = 0)
+        return nil if depth > 15
+
+        case json
+        when Hash
+          return json['longDescription'] if json['slug'] == slug && json['longDescription'].is_a?(Hash)
+
+          json.each_value do |value|
+            result = find_long_description(value, slug, depth + 1)
+            return result if result
+          end
+        when Array
+          json.each do |item|
+            result = find_long_description(item, slug, depth + 1)
+            return result if result
+          end
+        end
+
+        nil
       end
 
       # Extracts Wix event data from page HTML.
