@@ -118,6 +118,14 @@ RSpec.describe "Public Events", type: :request do
       expect(response.body).to include(partner.name)
     end
 
+    it "names the neighbourhood once, in the sidebar, not again under the address" do
+      get event_url(event, host: "lvh.me")
+
+      where_section = Nokogiri::HTML(response.body).at_xpath('//h2[contains(., "Where")]/..')
+      expect(where_section.text).not_to include(ward.shortname)
+      expect(response.body).to include(ward.shortname)
+    end
+
     it "canonicalises to the directory apex, not the site subdomain" do
       get event_url(event, host: "#{site.slug}.lvh.me")
       expect(response.body).to include(
