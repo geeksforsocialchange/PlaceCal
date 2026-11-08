@@ -148,7 +148,7 @@ RSpec.describe "Directory Partners", type: :request do
       expect(response.body).to include(%(href="https://#{site.slug}.placecal.org/partners/#{partner.slug}"))
     end
 
-    it "links partnerships in the sidebar to the partner's page where PlaceCal serves the site" do
+    it "links partnerships in the sidebar to the partner's page on the site's own domain" do
       serve_hosts("placecal.org", "*.placecal.org", "transdimension.uk")
       served = create(:site, is_published: true, domain: "transdimension.uk")
       external = create(:site, is_published: true, domain: "fruitsaladevents.co.uk")
@@ -157,7 +157,7 @@ RSpec.describe "Directory Partners", type: :request do
       get partner_url(partner, host: "lvh.me")
 
       expect(response.body).to include(%(href="https://transdimension.uk/partners/#{partner.slug}"))
-      expect(response.body).to include(%(href="#{external.subdomain_url}/partners/#{partner.slug}"))
+      expect(response.body).to include(%(href="https://fruitsaladevents.co.uk/partners/#{partner.id}"))
     end
 
     it "lists a tag-only partnership site the partner belongs to" do
