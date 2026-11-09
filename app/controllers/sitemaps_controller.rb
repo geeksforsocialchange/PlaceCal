@@ -146,8 +146,9 @@ class SitemapsController < ApplicationController
     @theme_page_slugs ||= Current.theme.pages.keys
   end
 
+  # The directory redirects /news to its homepage, so it has no news to list.
   def articles_scope
-    current_site ? Article.for_site(current_site).published : Article.published
+    current_site ? Article.for_site(current_site).published : Article.none
   end
 
   def build_pages

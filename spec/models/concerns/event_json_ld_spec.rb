@@ -109,6 +109,20 @@ RSpec.describe EventJsonLd do
         expect(organizer["@type"]).to eq("Organization")
         expect(organizer["name"]).to eq(event.organiser.name)
       end
+
+      it "uses the partner's own website as the url" do
+        event.organiser.update!(url: "https://example.org/")
+
+        expect(event.to_json_ld(base_url:)["organizer"]["url"]).to eq("https://example.org/")
+      end
+
+      [nil, ""].each do |url|
+        it "falls back to the partner's page when the website is #{url.inspect}" do
+          event.organiser.update_column(:url, url) # rubocop:disable Rails/SkipsModelValidations
+
+          expect(event.to_json_ld(base_url:)["organizer"]["url"]).to eq("#{base_url}/partners/#{event.organiser.to_param}")
+        end
+      end
     end
 
     context "eventAttendanceMode" do
