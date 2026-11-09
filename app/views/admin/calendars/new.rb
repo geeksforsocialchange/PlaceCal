@@ -84,14 +84,17 @@ class Views::Admin::Calendars::New < Views::Admin::Base
 
   def render_source_url_field(form)
     Field(for: form.field_id(:source), label: attr_label(:calendar, :source), required: true, prominent: true,
-          hint: t('admin.calendars.handbook_hint_html').html_safe, class: 'bg-base-200/50 rounded-xl p-6') do |f|
+          hint: t('admin.calendars.handbook_hint_html').html_safe, class: 'bg-base-200/50 rounded-xl p-6',
+          data: { controller: 'google-calendar-source' }) do |f|
       div(class: 'flex gap-2') do
         raw form.input_field(:source, **f.aria,
                              class: 'input input-bordered input-lg flex-1 font-mono text-sm',
                              placeholder: t('admin.calendars.fields.source_placeholder'),
                              autocomplete: 'off',
                              'data-calendar-wizard-target': 'sourceInput',
-                             'data-action': 'input->calendar-wizard#sourceChanged')
+                             'data-google-calendar-source-target': 'input',
+                             'data-action': 'input->calendar-wizard#sourceChanged ' \
+                                            'input->google-calendar-source#rewrite change->google-calendar-source#rewrite')
         button(type: 'button',
                class: 'btn btn-lg bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange gap-2',
                data: { 'calendar-wizard-target': 'testButton', action: 'click->calendar-wizard#testSource' }) do
@@ -102,7 +105,16 @@ class Views::Admin::Calendars::New < Views::Admin::Base
           span(data: { 'calendar-wizard-target': 'testButtonText' }) { t('admin.calendars.wizard.source.test_button') }
         end
       end
-      f.after { render_source_feedback }
+      f.after do
+        render_google_rewrite_notice
+        render_source_feedback
+      end
+    end
+  end
+
+  def render_google_rewrite_notice
+    p(class: 'text-sm text-success mt-2 hidden', role: 'status', data: { 'google-calendar-source-target': 'notice' }) do
+      t('admin.calendars.wizard.source.google_rewritten')
     end
   end
 
