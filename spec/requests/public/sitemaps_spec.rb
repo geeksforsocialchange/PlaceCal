@@ -115,6 +115,14 @@ RSpec.describe "Public Sitemaps", type: :request do
     end
 
     describe "GET /sitemap/pages.xml" do
+      it "leaves out news, which the directory doesn't serve" do
+        create(:article, slug: "directory-news", is_draft: false)
+
+        get "/sitemap/pages.xml", headers: { "Host" => host }
+
+        expect(response.body).not_to include("/news/")
+      end
+
       it "includes static pages" do
         get "/sitemap/pages.xml", headers: { "Host" => host }
         expect(response).to be_successful
