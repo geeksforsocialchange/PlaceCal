@@ -57,14 +57,14 @@ When the default place has no address (a partner with only a service area), the 
 
 ## Parsers
 
-| Parser       | Source                | API Key? | Notes                                  |
-| ------------ | --------------------- | -------- | -------------------------------------- |
-| ICS          | `.ics` feeds          | No       | Google Calendar, Outlook, generic iCal |
-| Eventbrite   | `eventbrite.co.uk/o/` | No       | Scrapes organiser pages                |
-| TicketSource | `ticketsource.co.uk`  | Yes      | Uses REST API with Basic Auth          |
-| TicketTailor | `tickettailor.com`    | Yes      | Uses REST API                          |
-| Outsavvy     | `outsavvy.com`        | No       | Scrapes event pages                    |
-| LdJson       | Any URL with JSON-LD  | No       | Downloads page, parses LD+JSON schema  |
+| Parser       | Source                                   | API Key? | Notes                                  |
+| ------------ | ---------------------------------------- | -------- | -------------------------------------- |
+| ICS          | `.ics` feeds                             | No       | Google Calendar, Outlook, generic iCal |
+| Eventbrite   | `eventbrite.co.uk/o/`                    | No       | Scrapes organiser pages                |
+| TicketSource | `ticketsource.co.uk`, `ticketsource.com` | Yes      | Uses REST API with Basic Auth          |
+| TicketTailor | `tickettailor.com`                       | Yes      | Uses REST API                          |
+| Outsavvy     | `outsavvy.com`                           | No       | Scrapes event pages                    |
+| LdJson       | Any URL with JSON-LD                     | No       | Downloads page, parses LD+JSON schema  |
 
 ### Parser Detection
 
