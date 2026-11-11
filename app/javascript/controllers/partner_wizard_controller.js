@@ -348,8 +348,8 @@ export default class extends Controller {
 
 		if (this.hasPublicEmailTarget && this.hasAdminEmailTarget) {
 			this.adminEmailTarget.value = this.publicEmailTarget.value;
-			// Trigger email validation
-			this.checkAdminEmail();
+			// Not checkAdminEmail: its autofill guard would skip this unfocused field
+			this.performAdminEmailCheck();
 		}
 
 		if (this.hasPublicPhoneTarget && this.hasAdminPhoneTarget) {

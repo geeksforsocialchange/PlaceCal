@@ -230,6 +230,34 @@ RSpec.describe "Admin Partners", :slow, type: :system do
     end
   end
 
+  describe "new partner wizard admin invite" do
+    it "re-checks the copied contact email after going back to change it", :aggregate_failures do
+      click_link "Partners"
+      await_datatables
+      click_link "Add Partner"
+
+      fill_in "partner_name", with: "Invite Email Test Partner"
+      expect(page).to have_content("This name is available!")
+      click_button "Continue"
+      fill_in "partner_address_attributes_street_address", with: "1 Test Street"
+      fill_in "partner_address_attributes_postcode", with: "ZZMB 1RS"
+      click_button "Continue"
+      click_button "Continue"
+
+      fill_in "partner_public_email", with: "wrong@example.com"
+      click_button "Continue"
+      expect(page).to have_field("partner_invited_admin_email", with: "wrong@example.com")
+      expect(page).to have_content("This email address is available.")
+
+      click_button "Back"
+      fill_in "partner_public_email", with: "right@example.com"
+      click_button "Continue"
+      expect(page).to have_field("partner_invited_admin_email", with: "right@example.com")
+      expect(page).to have_content("This email address is available.")
+      expect(page).to have_button("Continue", disabled: false)
+    end
+  end
+
   describe "new partner wizard recovery" do
     # Regression test for issue #3356: after a failed save the wizard re-renders
     # with fields pre-filled, but validation state used to only update on input
