@@ -13,7 +13,7 @@ RSpec.describe CalendarImporter::Parsers::Ticketsource do
     end
 
     it "has the correct DOMAINS" do
-      expect(described_class::DOMAINS).to eq(%w[www.ticketsource.co.uk ticketsource.co.uk])
+      expect(described_class::DOMAINS).to eq(%w[www.ticketsource.co.uk ticketsource.co.uk www.ticketsource.com ticketsource.com])
     end
   end
 
@@ -25,23 +25,38 @@ RSpec.describe CalendarImporter::Parsers::Ticketsource do
 
   describe ".allowlist_pattern" do
     it "matches www.ticketsource.co.uk venue pages" do
-      expect(described_class.allowlist_pattern).to match("https://www.ticketsource.co.uk/fairfield-house")
+      url = "https://www.ticketsource.co.uk/fairfield-house"
+      expect(url).to match(described_class.allowlist_pattern)
     end
 
     it "matches ticketsource.co.uk venue pages without www" do
-      expect(described_class.allowlist_pattern).to match("https://ticketsource.co.uk/some-venue")
+      url = "https://ticketsource.co.uk/some-venue"
+      expect(url).to match(described_class.allowlist_pattern)
+    end
+
+    it "matches www.ticketsource.com venue pages" do
+      url = "https://www.ticketsource.com/mcr-balfolk"
+      expect(url).to match(described_class.allowlist_pattern)
+    end
+
+    it "matches ticketsource.com venue pages without www" do
+      url = "https://ticketsource.com/mcr-balfolk/"
+      expect(url).to match(described_class.allowlist_pattern)
     end
 
     it "matches venue pages with trailing slash" do
-      expect(described_class.allowlist_pattern).to match("https://www.ticketsource.co.uk/fairfield-house/")
+      url = "https://www.ticketsource.co.uk/fairfield-house/"
+      expect(url).to match(described_class.allowlist_pattern)
     end
 
     it "does not match event subpages" do
-      expect(described_class.allowlist_pattern).not_to match("https://www.ticketsource.co.uk/fairfield-house/event/e-xxxxx")
+      url = "https://www.ticketsource.co.uk/fairfield-house/event/e-xxxxx"
+      expect(url).not_to match(described_class.allowlist_pattern)
     end
 
     it "does not match non-ticketsource URLs" do
-      expect(described_class.allowlist_pattern).not_to match("https://www.example.com/fairfield-house")
+      url = "https://www.example.com/fairfield-house"
+      expect(url).not_to match(described_class.allowlist_pattern)
     end
   end
 
@@ -263,6 +278,20 @@ RSpec.describe CalendarImporter::Parsers::Ticketsource do
       expect(event.summary).to eq("Test Show")
       expect(event.description).to eq("A great show")
       expect(event.location).to eq("Fairfield House, 10 High Street, Bath, BA1 5AH")
+    end
+
+    it "links each event under the venue page" do
+      event = parser.import_events_from([sample_event_data]).first
+      expect(event.publisher_url).to eq("https://www.ticketsource.co.uk/fairfield-house/test-show")
+    end
+
+    context "when the source has a trailing slash" do
+      let(:url) { "https://www.ticketsource.com/mcr-balfolk/" }
+
+      it "does not double the slash in event links" do
+        event = parser.import_events_from([sample_event_data]).first
+        expect(event.publisher_url).to eq("https://www.ticketsource.com/mcr-balfolk/test-show")
+      end
     end
 
     it "parses start and end times correctly" do

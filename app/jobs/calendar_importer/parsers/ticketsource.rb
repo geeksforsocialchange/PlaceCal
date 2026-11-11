@@ -9,16 +9,14 @@ module CalendarImporter
     class Ticketsource < ApiBase
       NAME = 'TicketSource'
       KEY = 'ticketsource'
-      DOMAINS = %w[www.ticketsource.co.uk ticketsource.co.uk].freeze
+      DOMAINS = %w[www.ticketsource.co.uk ticketsource.co.uk www.ticketsource.com ticketsource.com].freeze
 
       API_BASE_URL = 'https://api.ticketsource.io'
       USER_AGENT = 'ticketsource-placecal'
 
-      # Match TicketSource venue pages like:
-      # https://www.ticketsource.co.uk/fairfield-house
-      # https://ticketsource.co.uk/some-venue
+      # Venue pages like https://www.ticketsource.co.uk/fairfield-house or https://www.ticketsource.com/mcr-balfolk
       def self.allowlist_pattern
-        %r{^https://(www\.)?ticketsource\.co\.uk/[^/]+/?$}i
+        %r{^https://(www\.)?ticketsource\.(co\.uk|com)/[^/]+/?$}i
       end
 
       def user_agent
@@ -103,7 +101,7 @@ module CalendarImporter
 
       def build_publisher_url(event_data)
         ref = event_data.dig('attributes', 'reference')
-        ref.present? ? "#{@url}/#{ref}" : @url
+        ref.present? ? "#{@url.chomp('/')}/#{ref}" : @url
       end
     end
   end
