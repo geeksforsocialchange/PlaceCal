@@ -80,6 +80,12 @@ RSpec.describe "Admin::Calendars", type: :request do
         expect(response.body).to include(partner2.name)
       end
 
+      it "lists the supported calendar sources" do
+        get new_admin_calendar_url(host: admin_host)
+        expect(response.body).to include("<strong>TicketSource</strong>")
+        expect(response.body).to include("ticketsource.com")
+      end
+
       it "preselects partner when partner_id provided" do
         user.partners << partner1
         get new_admin_calendar_url(host: admin_host, params: { partner_id: partner1.id })
@@ -135,6 +141,11 @@ RSpec.describe "Admin::Calendars", type: :request do
     it "shows the edit form" do
       get edit_admin_calendar_url(calendar, host: admin_host)
       expect(response).to be_successful
+    end
+
+    it "lists the supported calendar sources" do
+      get edit_admin_calendar_url(calendar, host: admin_host)
+      expect(response.body).to include("<strong>Eventbrite</strong>")
     end
 
     it "shows current importer selection" do
@@ -211,6 +222,18 @@ RSpec.describe "Admin::Calendars", type: :request do
       expect(json["warning_message"]).to include("API key")
       expect(json["importer_key"]).to eq("tickettailor")
       expect(json["importer_name"]).to eq("Ticket Tailor")
+    end
+
+    it "recognises a ticketsource.com venue page without fetching it" do
+      post test_source_admin_calendars_url(host: admin_host),
+           params: { source: "https://www.ticketsource.com/mcr-balfolk/" },
+           as: :json
+
+      json = response.parsed_body
+      expect(json["valid"]).to be true
+      expect(json["importer_key"]).to eq("ticketsource")
+      expect(json["warning_message"]).to include("API key")
+      expect(a_request(:any, /ticketsource\.com/)).not_to have_been_made
     end
 
     it "returns error for invalid URLs" do

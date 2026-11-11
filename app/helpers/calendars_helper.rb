@@ -65,14 +65,10 @@ module CalendarsHelper
   end
 
   def calendar_import_sources
-    parsers = CalendarImporter::CalendarImporter::PARSERS
-              .dup
-              .keep_if { |parser| parser::PUBLIC }
-              .sort { |a, b| a::NAME <=> b::NAME }
-
-    parsers.each do |parser|
-      yield parser::NAME, parser::DOMAINS
-    end
+    CalendarImporter::CalendarImporter::PARSERS
+      .select { |parser| parser::PUBLIC }
+      .sort_by { |parser| parser::NAME }
+      .map { |parser| [parser::NAME, parser::DOMAINS] }
   end
 
   def calendar_last_imported(calendar)

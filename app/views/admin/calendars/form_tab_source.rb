@@ -74,7 +74,7 @@ class Views::Admin::Calendars::FormTabSource < Views::Admin::Base
     div do
       FormCard(icon: :info, title: t('admin.calendars.sections.supported_sources')) do
         ul(class: 'text-xs text-base-content/70 space-y-1') do
-          calendar_import_sources do |name, domains|
+          calendar_import_sources.each do |name, domains|
             li(class: 'flex items-start gap-2') do
               span(class: 'text-placecal-orange') { "\u2022" }
               span do
