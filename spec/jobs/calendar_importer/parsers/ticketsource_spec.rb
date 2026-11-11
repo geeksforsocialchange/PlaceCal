@@ -25,31 +25,38 @@ RSpec.describe CalendarImporter::Parsers::Ticketsource do
 
   describe ".allowlist_pattern" do
     it "matches www.ticketsource.co.uk venue pages" do
-      expect(described_class.allowlist_pattern).to match("https://www.ticketsource.co.uk/fairfield-house")
+      url = "https://www.ticketsource.co.uk/fairfield-house"
+      expect(url).to match(described_class.allowlist_pattern)
     end
 
     it "matches ticketsource.co.uk venue pages without www" do
-      expect(described_class.allowlist_pattern).to match("https://ticketsource.co.uk/some-venue")
+      url = "https://ticketsource.co.uk/some-venue"
+      expect(url).to match(described_class.allowlist_pattern)
     end
 
     it "matches www.ticketsource.com venue pages" do
-      expect(described_class.allowlist_pattern).to match("https://www.ticketsource.com/mcr-balfolk")
+      url = "https://www.ticketsource.com/mcr-balfolk"
+      expect(url).to match(described_class.allowlist_pattern)
     end
 
     it "matches ticketsource.com venue pages without www" do
-      expect(described_class.allowlist_pattern).to match("https://ticketsource.com/mcr-balfolk/")
+      url = "https://ticketsource.com/mcr-balfolk/"
+      expect(url).to match(described_class.allowlist_pattern)
     end
 
     it "matches venue pages with trailing slash" do
-      expect(described_class.allowlist_pattern).to match("https://www.ticketsource.co.uk/fairfield-house/")
+      url = "https://www.ticketsource.co.uk/fairfield-house/"
+      expect(url).to match(described_class.allowlist_pattern)
     end
 
     it "does not match event subpages" do
-      expect(described_class.allowlist_pattern).not_to match("https://www.ticketsource.co.uk/fairfield-house/event/e-xxxxx")
+      url = "https://www.ticketsource.co.uk/fairfield-house/event/e-xxxxx"
+      expect(url).not_to match(described_class.allowlist_pattern)
     end
 
     it "does not match non-ticketsource URLs" do
-      expect(described_class.allowlist_pattern).not_to match("https://www.example.com/fairfield-house")
+      url = "https://www.example.com/fairfield-house"
+      expect(url).not_to match(described_class.allowlist_pattern)
     end
   end
 
