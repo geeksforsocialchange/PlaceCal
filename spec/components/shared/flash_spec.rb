@@ -13,4 +13,9 @@ RSpec.describe Components::Shared::Flash, type: :phlex do
     expect(page).to have_css("[role='alert'].bg-primary", text: "Saved")
     expect(page).to have_css("[role='alert'].bg-secondary", text: "Broken")
   end
+
+  it "marks its wrapper so the directory header can drop its rule" do
+    render_inline(described_class.new(flash_messages: { notice: "Saved" }))
+    expect(page).to have_css("[data-flash] [role='alert']", text: "Saved")
+  end
 end

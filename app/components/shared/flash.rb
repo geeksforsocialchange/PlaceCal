@@ -9,7 +9,7 @@ class Components::Shared::Flash < Components::Base
     messages = @flash_messages || flash
     return unless messages.any?
 
-    div(class: 'flex flex-col gap-2 mx-6 my-4') do
+    div(class: 'container-public flex flex-col gap-2 pb-6', data: { flash: true }) do
       messages.each do |key, value|
         div(class: "rounded-card px-4 py-3 text-detail font-bold text-foreground-dark #{STATES[state(key)]}", role: 'alert') { value }
       end
