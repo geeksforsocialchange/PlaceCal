@@ -20,7 +20,8 @@ class Components::Shared::Navigation < Components::Base
   # Each element's classes for the nationwide directory and for a site, appended to its shared base classes.
   CONTEXTS = {
     directory: {
-      header: ['container-public py-6 bg-background border-b border-rules'],
+      # The flash bar below takes over from the rule as the edge between header and page.
+      header: ['container-public py-6 bg-background border-b border-rules [&:has(~main>[data-flash])]:border-b-0'],
       branding: ['w-32 h-10 md:w-42 md:h-12'],
       toggle: ['text-foreground', 'md:me-4', 'lg:hidden'],
       menu: [
