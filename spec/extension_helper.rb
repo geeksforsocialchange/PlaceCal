@@ -151,7 +151,7 @@ module PlaceCal
       end
 
       # System specs, the same way core drives its own (spec/rails_helper.rb
-      # there). Core's spec/support already gives us Capybara, Selenium and the
+      # there). Core's spec/support already gives us Capybara, the Playwright driver and the
       # axe-rspec matcher; what does not come with the support files is the
       # per-example configuration, because that lives in core's RSpec.configure
       # block.
@@ -160,13 +160,12 @@ module PlaceCal
       # transaction would hide the fixtures from it. Delete instead.
       def configure_system_specs!
         RSpec.configure do |config|
-          config.before(:each, type: :system) do
+          config.before(:each, type: :system) do |example|
             self.use_transactional_tests = false
             DatabaseCleaner.strategy = :deletion
             DatabaseCleaner.start
-            driven_by :selenium, using: :headless_chrome, screen_size: [1400, 1400] do |options|
-              ChromeOptions.disable_password_manager(options)
-            end
+            driven_by :playwright_system
+            PlaywrightTrace.start(page, example)
           end
 
           config.after(:each, type: :system) { DatabaseCleaner.clean }

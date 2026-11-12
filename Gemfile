@@ -115,7 +115,7 @@ end
 group :test do
   gem 'axe-core-rspec', '~> 4.8'  # Accessibility testing
   gem 'capybara'                  # Browser simulation
-  gem 'capybara-playwright-driver', require: false # System specs and visual regression screenshots
+  gem 'capybara-playwright-driver', require: false # Every browser test, and visual regression screenshots
   gem 'cucumber-rails', require: false # BDD acceptance tests
   gem 'database_cleaner-active_record' # Clean DB between tests
   gem 'factory_bot_rails'         # Test data factories
@@ -125,7 +125,6 @@ group :test do
   gem 'playwright-ruby-client', '1.64.0', require: false # Keep in step with the playwright npm package
   gem 'pundit-matchers', '~> 4.0' # Policy spec matchers
   gem 'rspec-rails', '~> 8.0'     # Test framework
-  gem 'selenium-webdriver'        # Browser driver for Cucumber and extension system specs
   gem 'shoulda-matchers', '~> 8.0' # Model/controller matchers
   gem 'simplecov', require: false # Code coverage
   gem 'test-prof'                 # Test suite profiling (factory profiler, FactoryDefault)
