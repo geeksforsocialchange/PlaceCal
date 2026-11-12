@@ -8,8 +8,7 @@
 
 require "cucumber/rails"
 require "capybara/cucumber"
-require "selenium-webdriver"
-require_relative "../../spec/support/chrome_options"
+require_relative "../../spec/support/playwright"
 
 # Normal Island geocoder lookup is loaded via config/initializers/geocoder.rb
 # UK postcode extension is loaded via lib/normal_island.rb
@@ -34,20 +33,7 @@ Cucumber::Rails::Database.javascript_strategy = :truncation
 # Disable CSS animations for faster, more reliable tests
 Capybara.disable_animation = true
 
-# Selenium driver configuration - consistent with RSpec system tests
-Capybara.register_driver :selenium_headless do |app|
-  options = Selenium::WebDriver::Chrome::Options.new
-  options.add_argument("--headless=new") unless ENV["HEADLESS"] == "false"
-  options.add_argument("--window-size=1400,1400")
-  options.add_argument("--disable-gpu")
-  options.add_argument("--no-sandbox")
-  options.add_argument("--disable-dev-shm-usage")
-  ChromeOptions.disable_password_manager(options)
-
-  Capybara::Selenium::Driver.new(app, browser: :chrome, options:)
-end
-
-Capybara.javascript_driver = :selenium_headless
+Capybara.javascript_driver = :playwright_system
 
 Capybara.configure do |config|
   config.default_max_wait_time = 5
@@ -80,4 +66,15 @@ end
 
 Before("not @javascript") do
   DatabaseCleaner.strategy = :transaction
+end
+
+# A trace of every JavaScript scenario, kept only when it fails; open with `yarn playwright show-trace <zip>`.
+Before("@javascript") do |scenario|
+  page.driver.start_tracing(screenshots: true, snapshots: true, sources: true, title: scenario.name)
+end
+
+After("@javascript") do |scenario|
+  path = (PlaywrightTrace::DIR.join("#{scenario.location.to_s.parameterize}.zip").to_s if scenario.failed?)
+  page.driver.stop_tracing(path:)
+  warn "[playwright-trace] #{path}" if path
 end

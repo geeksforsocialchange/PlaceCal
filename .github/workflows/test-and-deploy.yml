@@ -129,18 +129,11 @@ jobs:
           cache-version: 3
 
       - name: Install Imagemagick and libvips
-        if: matrix.suite != 'system'
+        if: matrix.suite == 'unit'
         timeout-minutes: 8
         uses: ./.github/actions/install-apt-packages
         with:
           packages: imagemagick libvips42t64
-
-      - name: Install Chrome for browser tests
-        if: startsWith(matrix.suite, 'cucumber')
-        uses: browser-actions/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4 # latest
-        id: setup-chrome
-        with:
-          chrome-version: stable
 
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
@@ -149,13 +142,13 @@ jobs:
       - run: yarn install --frozen-lockfile
 
       - name: Read Playwright version
-        if: matrix.suite == 'system'
+        if: matrix.suite != 'unit'
         id: playwright
         run: echo "version=$(node -p "require('playwright/package.json').version")" >> "$GITHUB_OUTPUT"
 
       # Chromium's system libraries come from the same .deb cache as ImageMagick and libvips.
       - name: Install Imagemagick, libvips and Chromium libraries
-        if: matrix.suite == 'system'
+        if: matrix.suite != 'unit'
         timeout-minutes: 20
         uses: ./.github/actions/install-apt-packages
         with:
@@ -167,13 +160,13 @@ jobs:
             | tr -s ' ' '\n' | grep -E '^[a-z0-9][a-z0-9.+-]+$' || true
 
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        if: matrix.suite == 'system'
+        if: matrix.suite != 'unit'
         with:
           path: ~/.cache/ms-playwright
           key: playwright-chromium-${{ runner.os }}-${{ steps.playwright.outputs.version }}
 
       - name: Install Playwright Chromium
-        if: matrix.suite == 'system'
+        if: matrix.suite != 'unit'
         timeout-minutes: 8
         run: yarn playwright install --only-shell chromium
 
@@ -214,14 +207,10 @@ jobs:
       - name: Run Cucumber features (admin)
         if: matrix.suite == 'cucumber-admin'
         run: bundle exec cucumber --tags "not @wip" features/admin
-        env:
-          BROWSER_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
 
       - name: Run Cucumber features (public)
         if: matrix.suite == 'cucumber-public'
         run: bundle exec cucumber --tags "not @wip" features/public features/authentication.feature
-        env:
-          BROWSER_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
 
       - name: Check database consistency
         if: matrix.suite == 'unit'
@@ -235,11 +224,11 @@ jobs:
           path: tmp/capybara/
           if-no-files-found: ignore
 
-      - if: failure() && matrix.suite == 'system'
+      - if: failure() && matrix.suite != 'unit'
         name: Upload Playwright traces
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: playwright-traces
+          name: playwright-traces-${{ matrix.suite }}
           path: tmp/playwright-traces/
           if-no-files-found: ignore
 
