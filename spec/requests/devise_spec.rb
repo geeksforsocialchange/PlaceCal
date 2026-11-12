@@ -17,6 +17,21 @@ RSpec.describe "Devise Pages", type: :request do
     end
   end
 
+  describe "POST /users/sign_in with a wrong password" do
+    let(:user) { create(:user) }
+
+    def fail_sign_in
+      post user_session_url(host: "lvh.me"), params: { user: { email: user.email, password: "not-the-password" } }
+    end
+
+    it "shows the error once on a second failed attempt" do
+      fail_sign_in
+      fail_sign_in
+
+      expect(response.body.scan("Invalid email or password.").size).to eq(1)
+    end
+  end
+
   describe "GET /users/sign_in from admin subdomain" do
     it "redirects to root domain" do
       get new_user_session_url(host: "admin.lvh.me")

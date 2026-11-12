@@ -40,28 +40,17 @@ module Users
       redirect_to url_for(subdomain: nil)
     end
 
+    # Runs after the response, so only a redirect's flash is still to be shown. Re-keying a rendered page's
+    # flash.now would save it for the next request, doubling the message on a second failed login.
     def patch_flash
-      # notice -> success
-      # alert -> danger
-      if flash.key?(:notice)
-        flash[:success] = flash[:notice]
-        flash.delete :notice
+      return unless response.redirect?
+
+      { notice: :success, alert: :danger }.each do |from, to|
+        next unless flash.key?(from)
+
+        flash[to] = flash[from]
+        flash.delete(from)
       end
-
-      if flash.key?(:alert)
-        flash[:danger] = flash[:alert]
-        flash.delete :alert
-      end
-
-      if flash.now.flash.key?(:notice)
-        flash.now[:success] = flash.now[:notice]
-        flash.now.flash.delete :notice
-      end
-
-      return unless flash.now.flash.key?(:alert)
-
-      flash.now[:danger] = flash.now[:alert]
-      flash.now.flash.delete :alert
     end
 
     # when we logging the user in- take them to the admin site
