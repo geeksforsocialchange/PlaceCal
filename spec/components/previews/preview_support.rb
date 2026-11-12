@@ -51,7 +51,7 @@ module PreviewSupport
       id: 2,
       summary: "Online Craft Workshop",
       description: "Join us for an online craft session via Zoom.",
-      online_address: "https://zoom.us/meeting/123",
+      online_address: OnlinePreviewSupport.address("https://zoom.us/meeting/123"),
       address: nil
     )
   end
@@ -68,7 +68,7 @@ module PreviewSupport
   # Every optional line: duration, repeats, online, organiser, place and neighbourhood.
   def sample_full_event
     hulme = NeighbourhoodMock.new(name: "Hulme", shortname: "Hulme", district: NeighbourhoodMock.new(shortname: "Manchester"))
-    sample_event(id: 7, summary: "Repair Café", rrule: [{ "table" => { "frequency" => "weekly" } }], online_address: "https://example.org/live",
+    sample_event(id: 7, summary: "Repair Café", rrule: [{ "table" => { "frequency" => "weekly" } }], online_address: OnlinePreviewSupport.address("https://example.org/live"),
                  organiser: PartnerMock.new(id: 1, name: "Hulme Community Garden Centre"), neighbourhood: hulme)
   end
 

@@ -5,29 +5,7 @@ module CalendarImporter::Events
     class MissingTypeForURL < StandardError; end
 
     # Domains that indicate a direct online meeting/streaming link
-    ONLINE_MEETING_DOMAINS = %w[
-      meet.jit.si
-      meet.google.com
-      zoom.us
-      teams.microsoft.com
-      teams.live.com
-      webex.com
-      gotomeet.me
-      gotomeeting.com
-      discord.gg
-      discord.com
-      youtube.com
-      youtu.be
-      twitch.tv
-      vimeo.com
-      facebook.com
-      fb.watch
-      instagram.com
-      linkedin.com
-      crowdcast.io
-      streamyard.com
-      hopin.com
-    ].freeze
+    ONLINE_MEETING_DOMAINS = OnlineAddress::DOMAINS
 
     # Calendar custom properties that may contain online meeting URLs
     ONLINE_MEETING_PROPERTIES = %w[

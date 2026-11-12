@@ -127,7 +127,7 @@ class Views::Sites::Events::Show < Views::Base
       hero_chip(:event_date, event.dtstart.strftime('%a %-e %b'))
       render_hero_time
       hero_chip(:event_repeats, event.repeat_frequency) if event.repeat_frequency
-      hero_chip(:event_online, t('directory.event_row.online')) if event.online_address.present?
+      hero_chip(:event_online, event.online_address.service_name || t('directory.event_row.online')) if event.online_address.present?
     end
   end
 
@@ -263,16 +263,10 @@ class Views::Sites::Events::Show < Views::Base
     event_button(event.publisher_url, t('events.show.visit_webpage'))
   end
 
-  # A stream gets a direct join link; any other online address only stands in for a missing webpage link.
   def render_online_link
-    online_address = event.online_address
-    return if online_address.nil?
+    return if event.online_address.nil?
 
-    if online_address.link_type == :stream
-      event_button(online_address.url, t('events.show.join_meeting'))
-    elsif event.publisher_url.blank?
-      event_button(online_address.url, t('events.show.visit_webpage'))
-    end
+    Shared::OnlineEventButton(online_address: event.online_address, has_webpage: event.publisher_url.present?)
   end
 
   def event_button(href, label)

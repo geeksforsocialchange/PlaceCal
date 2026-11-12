@@ -118,6 +118,17 @@ RSpec.describe "Public Events", type: :request do
       expect(response.body).to include(partner.name)
     end
 
+    context "with a meeting link" do
+      before { event.update!(online_address: create(:online_address, url: "https://meet.google.com/abc-defg-hij", link_type: "direct")) }
+
+      it "names the service in the hero and on the join button" do
+        get event_url(event, host: "lvh.me")
+        doc = Nokogiri::HTML(response.body)
+        expect(doc.at_css('[data-scope="page-hero"][data-part="root"]').text).to include("Google Meet")
+        expect(doc.at_xpath('//a[normalize-space()="Join on Google Meet"]')["href"]).to eq("https://meet.google.com/abc-defg-hij")
+      end
+    end
+
     it "names the neighbourhood once, in the sidebar, not again under the address" do
       get event_url(event, host: "lvh.me")
 
