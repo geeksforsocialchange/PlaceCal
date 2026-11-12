@@ -56,7 +56,7 @@ class Views::Admin::Articles::FormTabReferences < Views::Admin::Base
       StackedListSelector(
         field_name: 'article[tag_ids][]',
         items: article.tags,
-        options: disabled_fields.include?(:tag_ids) ? [] : options_for_tags,
+        options: disabled_fields.include?(:tag_ids) ? [] : options_for_partnership_tags,
         icon_name: :partnership,
         icon_color: 'bg-purple-100 text-purple-600',
         empty_text: t('admin.empty.none_assigned', items: Partnership.model_name.human(count: 2).downcase),

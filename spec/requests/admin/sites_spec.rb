@@ -91,6 +91,15 @@ RSpec.describe "Admin::Sites", type: :request do
         expect(template_content).to include("data-cascading-neighbourhood-target=\"district\"")
         expect(template_content).to include("data-cascading-neighbourhood-target=\"ward\"")
       end
+
+      it "offers only partnerships in the partnerships picker" do
+        facility_tag = create(:facility)
+        get edit_admin_site_url(site, host: admin_host)
+
+        options = Nokogiri::HTML(response.body).css("select#site_tag_ids option").map(&:text)
+        expect(options).to include(partnership_tag.name)
+        expect(options).not_to include(category_tag.name, facility_tag.name)
+      end
     end
 
     context "as a site admin" do

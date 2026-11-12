@@ -55,7 +55,7 @@ RSpec.describe "Admin Sites", :slow, type: :system do
       click_site_tab "Partnerships"
       tags_node = tom_select_node("site_tags")
       tom_select partnership.name, xpath: tags_node.path
-      assert_tom_select_multiple [partnership.name_with_type], tags_node
+      assert_tom_select_multiple [partnership.name], tags_node
     end
   end
 

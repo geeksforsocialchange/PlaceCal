@@ -24,6 +24,6 @@ class Views::Admin::Base < Views::Base
   register_value_helper :options_for_partner_partnerships
   register_value_helper :permitted_options_for_partner_tags
   register_value_helper :partner_has_unmappable_postcode?
-  register_value_helper :options_for_tags
+  register_value_helper :options_for_partnership_tags
   register_value_helper :user_has_no_rights?
 end

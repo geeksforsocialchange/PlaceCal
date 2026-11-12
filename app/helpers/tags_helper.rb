@@ -14,12 +14,9 @@ module TagsHelper
     [Tag, Partnership].include?(form.object.class)
   end
 
-  def options_for_tags
-    policy_scope(Tag)
-      .select(:name, :type, :id)
-      .where(type: 'Partnership')
-      .order(:name)
-      .map { |r| [r.name_with_type, r.id] }
+  # For the site and article pickers, which only take partnerships.
+  def options_for_partnership_tags
+    policy_scope(Tag).where(type: 'Partnership').order(:name).pluck(:name, :id)
   end
 
   # Returns partnerships as [name, id] pairs for user assignment
