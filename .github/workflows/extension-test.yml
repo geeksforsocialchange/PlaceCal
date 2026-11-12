@@ -41,7 +41,7 @@ on:
         type: string
         default: main
       chrome:
-        description: "Install headless Chrome, for an extension with system specs"
+        description: "Install Playwright's Chromium, for an extension with system specs"
         required: false
         type: boolean
         default: false
@@ -190,14 +190,12 @@ jobs:
         working-directory: theme
         run: yarn run css-check
 
-      # Only for an extension with system specs, which drive headless Chrome
-      # through Selenium the way core's system suite does.
-      - name: Install Chrome for the system specs
+      # Only for an extension with system specs, which drive Playwright's
+      # Chromium the way core's system suite does.
+      - name: Install Playwright Chromium for the system specs
         if: inputs.chrome
-        id: setup-chrome
-        uses: browser-actions/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4 # latest
-        with:
-          chrome-version: stable
+        working-directory: PlaceCal
+        run: yarn playwright install --with-deps --only-shell chromium
 
       - name: RuboCop
         working-directory: theme
@@ -210,5 +208,3 @@ jobs:
       - name: RSpec
         working-directory: theme
         run: bundle exec rspec
-        env:
-          BROWSER_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}

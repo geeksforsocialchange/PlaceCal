@@ -2,7 +2,6 @@
 
 require "capybara/rails"
 require "capybara/rspec"
-require "selenium-webdriver"
 
 # Disable CSS animations for faster, more reliable tests
 Capybara.disable_animation = true
@@ -38,5 +37,5 @@ RSpec.configure do |config|
     Capybara.reset_sessions!
   end
 
-  config.filter_gems_from_backtrace("capybara", "capybara-playwright-driver", "playwright-ruby-client", "selenium-webdriver")
+  config.filter_gems_from_backtrace("capybara", "capybara-playwright-driver", "playwright-ruby-client")
 end
