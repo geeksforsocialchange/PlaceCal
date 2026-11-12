@@ -30,7 +30,7 @@ class Views::Admin::Users::FormTabRoles < Views::Admin::Base
       StackedListSelector(
         field_name: 'user[tag_ids][]',
         items: user.partnerships.order(:name),
-        options: options_for_user_partnerships,
+        options: options_for_partnerships,
         permitted_ids: nil,
         icon_name: :partnership,
         icon_color: 'bg-amber-100 text-amber-700',

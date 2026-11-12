@@ -19,7 +19,7 @@ class Views::Admin::Sites::FormTabPartnerships < Views::Admin::Base
           if policy(site).permitted_attributes.include?(:tags)
             raw form.input_field(:tag_ids,
                                  as: :select,
-                                 collection: options_for_tags,
+                                 collection: options_for_partnerships,
                                  multiple: true,
                                  class: 'select select-bordered w-full',
                                  aria: { label: t('admin.sites.fields.partnership_tags'), describedby: 'site_tag_ids-hint' },
@@ -27,7 +27,7 @@ class Views::Admin::Sites::FormTabPartnerships < Views::Admin::Base
           else
             raw form.input_field(:tag_ids,
                                  as: :select,
-                                 collection: options_for_tags,
+                                 collection: options_for_partnerships,
                                  multiple: true,
                                  class: 'select select-bordered w-full bg-base-200',
                                  disabled: true,

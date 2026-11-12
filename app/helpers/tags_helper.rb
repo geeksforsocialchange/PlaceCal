@@ -14,24 +14,9 @@ module TagsHelper
     [Tag, Partnership].include?(form.object.class)
   end
 
-  def options_for_tags
-    policy_scope(Tag)
-      .select(:name, :type, :id)
-      .where(type: 'Partnership')
-      .order(:name)
-      .map { |r| [r.name_with_type, r.id] }
-  end
-
-  # Returns partnerships as [name, id] pairs for user assignment
-  # Root users can assign any partnership, others see only their managed partnerships
-  def options_for_user_partnerships
-    if current_user.root?
-      Partnership.order(:name).pluck(:name, :id)
-    else
-      policy_scope(Partnership)
-        .order(:name)
-        .pluck(:name, :id)
-    end
+  # Root users get every partnership; anyone else, the partnerships they manage.
+  def options_for_partnerships
+    policy_scope(Partnership).order(:name).pluck(:name, :id)
   end
 
   # prevent invisible partner ids from being overwritten when updating a tag
