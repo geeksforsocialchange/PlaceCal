@@ -18,6 +18,21 @@ RSpec.describe "Admin::Articles", type: :request do
   end
 
   describe "GET /admin/articles/new" do
+    context "as a root user" do
+      before { sign_in root_user }
+
+      it "offers only partnerships in the partnerships picker" do
+        partnership = create(:partnership)
+        category = create(:category)
+        facility = create(:facility)
+        get new_admin_article_url(host: admin_host)
+
+        options = Nokogiri::HTML(response.body).css(".article_tags select option").map(&:text)
+        expect(options).to include(partnership.name)
+        expect(options).not_to include(category.name, facility.name)
+      end
+    end
+
     context "as a neighbourhood admin" do
       before { sign_in neighbourhood_admin }
 
