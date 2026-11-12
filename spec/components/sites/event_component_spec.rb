@@ -251,13 +251,22 @@ RSpec.describe Components::Sites::Event, type: :component do
   end
 
   context "with online event" do
-    let(:event_online_address) { "https://zoom.us/meeting" }
+    let(:event_online_address) { OnlineAddress.new(url: "https://example.org/live") }
     let(:event_address) { nil }
 
     it "shows online indicator" do
       rendered
       expect(page).to have_css('[data-scope="event"][data-part="detail"][data-variant="online"]', text: "Online")
       expect(page).to have_no_css('[data-scope="event"][data-part="detail"][data-variant="repeats"]')
+    end
+
+    context "on a known meeting service" do
+      let(:event_online_address) { OnlineAddress.new(url: "https://meet.google.com/abc-defg-hij") }
+
+      it "names the service" do
+        rendered
+        expect(page).to have_css('[data-scope="event"][data-part="detail"][data-variant="online"]', text: "Google Meet")
+      end
     end
 
     it "marks the event as online for themes" do

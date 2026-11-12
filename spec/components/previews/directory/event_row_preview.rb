@@ -18,7 +18,14 @@ class Directory::EventRowPreview < Lookbook::Preview
 
   # @label Repeating online event
   def repeating_online
-    render RowGrid.new([PreviewSupport.sample_repeating_event.tap { it.online_address = "https://zoom.us/meeting/123" }])
+    render RowGrid.new([PreviewSupport.sample_repeating_event.tap { it.online_address = OnlinePreviewSupport.address("https://zoom.us/meeting/123") }])
+  end
+
+  # @label Online services
+  # @notes Known meeting and streaming hosts are named; anything else says "Online".
+  def online_services
+    events = OnlinePreviewSupport.events
+    render RowGrid.new(events)
   end
 
   private
@@ -26,7 +33,7 @@ class Directory::EventRowPreview < Lookbook::Preview
   def sample_events
     [
       PreviewSupport.sample_event(summary: "Storytelling Evening"),
-      PreviewSupport.sample_event(id: 2, summary: "Art Exhibition Opening", online_address: "https://example.org/live"),
+      PreviewSupport.sample_event(id: 2, summary: "Art Exhibition Opening", online_address: OnlinePreviewSupport.address("https://example.org/live")),
       PreviewSupport.sample_repeating_event,
       PreviewSupport.sample_event(id: 4, summary: "Film Screening and Discussion"),
       PreviewSupport.sample_event(id: 5, summary: "Children's Storytime"),

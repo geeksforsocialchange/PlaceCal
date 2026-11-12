@@ -666,6 +666,25 @@ en:
       events: "Events"
       partners: "Partners"
 
+  online_address:
+    services:
+      jitsi: "Jitsi"
+      google_meet: "Google Meet"
+      zoom: "Zoom"
+      teams: "Microsoft Teams"
+      webex: "Webex"
+      goto_meeting: "GoTo Meeting"
+      discord: "Discord"
+      youtube: "YouTube"
+      twitch: "Twitch"
+      vimeo: "Vimeo"
+      facebook: "Facebook"
+      instagram: "Instagram"
+      linkedin: "LinkedIn"
+      crowdcast: "Crowdcast"
+      streamyard: "StreamYard"
+      hopin: "Hopin"
+
   # ===========================================================================
   # EVENT EXPORTS (shared by local sites and the directory)
   # ===========================================================================
@@ -726,6 +745,8 @@ en:
       contact_heading: "Contact information"
       visit_webpage: "Visit the webpage for this event"
       join_meeting: "Join this meeting"
+      join_on: "Join on %{service}"
+      watch_on: "Watch on %{service}"
       address_heading: "Event address"
       organiser_heading: "Event organiser"
       venue_heading: "Venue"
