@@ -19,7 +19,7 @@ pin '@hotwired/turbo', to: 'https://cdn.jsdelivr.net/npm/@hotwired/turbo@8.0.23/
 # Maps must use jsdelivr, not esm.sh: esm.sh serves a different build per browser
 # via User-Agent sniffing, and Safari's transitive maplibre-gl fetch hangs forever,
 # so the map's dynamic import() rejects and nothing renders (works fine in Chrome).
-pin 'tom-select', to: 'https://cdn.jsdelivr.net/npm/tom-select@2.6.2/+esm', preload: false
+pin 'tom-select', to: 'https://cdn.jsdelivr.net/npm/tom-select@2.7.0/+esm', preload: false
 pin 'leaflet', to: 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/+esm', preload: false
 
 # MapLibre GL for vector tile rendering with custom styles
