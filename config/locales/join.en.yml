@@ -183,12 +183,12 @@ en:
               body: Eventbrite, Meetup, Ticket Tailor, TicketSource, Ticketsolve, OutSavvy and Resident Advisor.
             - title: Website builders
               icon: desktop
-              brands: [squarespace, wix]
-              body: Event pages on Squarespace and Wix, and any website that publishes its events as schema.org JSON-LD.
+              brands: [wordpress, squarespace, wix]
+              body: Event pages on WordPress, Squarespace and Wix, and any website that publishes its events as schema.org JSON-LD.
             - title: Online events
               icon: video
               brands: [zoom, microsoftteams, googlemeet, jitsi]
-              body: Zoom, Microsoft Teams, Google Meet and Jitsi links are picked up automatically, so online events show as online.
+              body: Online events on sites like Zoom, Microsoft Teams, Google Meet and Jitsi are picked up automatically.
         - key: neighbourhoods
           title: Built for neighbourhoods
           summary: Every PlaceCal is local, curated by the people who know the area.
