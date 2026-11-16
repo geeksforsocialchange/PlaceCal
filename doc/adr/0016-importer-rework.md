@@ -28,7 +28,7 @@ Separately, every event gets its calendar's organiser and a feed can only be add
 2. **Any venue can be a default location.** One search offers partners with "Event Matching" switched on, and venues not on PlaceCal from an external venue search, with manual address entry as the fallback. A venue not on PlaceCal is saved once as a shared record that later calendars reuse, and a root user can turn it into a partner.
 3. **Partners say where they are based:** their own premises, another venue (its address read live, never copied), or a service area.
 4. **Events store their attendance:** in person, online, or both. Each calendar answers "Are events on this calendar online?" with Never, Sometimes or Always, starting on Sometimes. Under Sometimes, only the feed's own flag or a link to a meeting service counts. One detector serves every source.
-5. **Each import run is recorded** with its outcome. Runs that process events also record counts and what happened to each event. A results page shows it and replaces the notices list. The calendar's status updates by polling.
+5. **Each import run is recorded** with its outcome. Runs that process events also record counts and what happened to each event. A results page shows it and replaces the notices list. The calendar's status updates without a reload.
 6. **Each source declares the fields it reads,** and the in-app and handbook tables are generated from that. New fields are then added one at a time: image, cancelled and postponed status, ticket details, then the source's categories and organiser name.
 7. **A calendar can have ordered rules** that skip matching events or give them to another partner. Anyone who can edit the calendar can give events to any partner, and that partner's users are emailed.
 8. **Background jobs move to Solid Queue,** and Mission Control Jobs replaces the hand-built jobs page.
@@ -36,9 +36,7 @@ Separately, every event gets its calendar's organiser and a feed can only be add
 ## Options Not Taken
 
 - **More strategy values:** multiplies a list that is already hard to explain.
-- **Keeping a typed address on the one calendar it was typed for:** every calendar at the same hall would hold its own copy. A typed address is saved as a shared venue instead.
 - **Tighter link-based online detection alone:** gives a partner no way to say their calendar's meeting links are attached automatically, and can't express "both".
-- **Pushed live updates:** need a cable backend that isn't deployed. Polling needs nothing new.
 - **Allowing the same feed on two calendars:** every event is imported twice, once under each organiser.
 - **A hand-maintained source table:** drifts from the code.
 
