@@ -749,6 +749,7 @@ en:
       watch_on: "Watch on %{service}"
       address_heading: "Event address"
       organiser_heading: "Event organiser"
+      venue_heading: "Venue"
       # Prompt and link inviting a reader to report a bad listing
       problem_prompt: "Problem with this listing? "
       problem_link: "Let us know."
@@ -757,6 +758,8 @@ en:
       organiser_events: "More from %{name}"
       # Heading over the organiser's other upcoming events on a site's event page
       more_from: "More from %{name}"
+      # Line under the event name in the page header; the name is a link
+      by_organiser_html: "By %{name}"
       add_to_calendar: "Add to calendar"
       go_back: "All events"
     csv_export:

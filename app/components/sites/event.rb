@@ -30,6 +30,8 @@ class Components::Sites::Event < Components::Base
   prop :back, _Nilable(Array), default: nil
   # Under a day heading that is itself under a section heading, so the title drops a size.
   prop :nested, _Boolean, default: false
+  # Core themes leave the organiser to the details row; extension themes put it under the title
+  prop :organiser_byline, _Boolean, default: true
 
   ICON = 'size-7 mr-1 text-secondary'
 
@@ -42,7 +44,7 @@ class Components::Sites::Event < Components::Base
   private
 
   def render_page_layout
-    Shared::Hero(summary, @site_tagline, section: t('events.show.section'), back: @back)
+    Shared::Hero(summary, @site_tagline, section: t('events.show.section'), back: @back, standfirst: (organiser_line if @organiser_byline))
     a(class: 'p-name u-url', href: event_path(id), hidden: true) { summary }
     div(**part(:content, class: 'container-public')) { render_event_details }
   end
@@ -208,6 +210,12 @@ class Components::Sites::Event < Components::Base
     return false if frequency.blank?
 
     t("events.card.frequency.#{frequency.downcase}", default: frequency.titleize)
+  end
+
+  # "By <organiser>" under the title, the name linked; the hero's standfirst slot is free here.
+  def organiser_line
+    organiser = @event.organiser
+    organiser && t('events.show.by_organiser_html', name: view_context.link_to(organiser.name, partner_path(organiser), class: UI::Link.css(tone: :inherit)))
   end
 
   def neighbourhood_line
