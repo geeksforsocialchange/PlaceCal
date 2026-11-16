@@ -170,6 +170,8 @@ en:
         - key: calendars
           title: Works with the calendars groups already use
           summary: Groups keep using the tools they already have. PlaceCal reads their calendars and keeps every listing up to date.
+          link: handbook
+          link_label: See every supported calendar source
           items:
             - title: Calendar apps
               body: Google Calendar, Outlook and Microsoft 365, Teamup, and any calendar that publishes an iCal feed.

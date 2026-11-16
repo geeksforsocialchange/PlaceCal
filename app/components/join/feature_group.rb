@@ -3,7 +3,10 @@
 # One group of features under its own heading, with a link to the page that backs it up.
 class Components::Join::FeatureGroup < Components::Join::Base
   LINK_PATHS = { 'accessibility' => '/accessibility', 'sustainability' => '/sustainability', 'mcp' => '/mcp', 'directory' => '/' }.freeze
-  SOURCE_CODE_URL = 'https://github.com/geeksforsocialchange/PlaceCal'
+  EXTERNAL_URLS = {
+    'handbook' => 'https://handbook.placecal.org/reference/supported-calendar-sources/',
+    'source_code' => 'https://github.com/geeksforsocialchange/PlaceCal'
+  }.freeze
 
   prop :group, Hash
 
@@ -22,7 +25,7 @@ class Components::Join::FeatureGroup < Components::Join::Base
 
   def render_link
     div(class: 'mt-4') do
-      UI::Button(variant: :outline, href: link_href) do
+      UI::Button(variant: :primary, href: link_href) do
         plain @group[:link_label]
         span(aria_hidden: 'true') { safe(' &rarr;') }
       end
@@ -30,7 +33,7 @@ class Components::Join::FeatureGroup < Components::Join::Base
   end
 
   def link_href
-    return SOURCE_CODE_URL if @group[:link] == 'source_code'
+    return EXTERNAL_URLS[@group[:link]] if EXTERNAL_URLS.key?(@group[:link])
 
     "#{apex_url}#{LINK_PATHS.fetch(@group[:link])}".delete_suffix('/')
   end

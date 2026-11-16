@@ -65,7 +65,8 @@ RSpec.describe "Join marketing site", type: :request do
           "sustainability" => "http://lvh.me/sustainability",
           "mcp" => "http://lvh.me/mcp",
           "directory" => "http://lvh.me",
-          "source_code" => "https://github.com/geeksforsocialchange/PlaceCal"
+          "source_code" => "https://github.com/geeksforsocialchange/PlaceCal",
+          "handbook" => "https://handbook.placecal.org/reference/supported-calendar-sources/"
         }
         I18n.t("join.features.groups").select { |group| group[:link] }.each do |group|
           link = page.at_css("section##{group[:key]} a")
