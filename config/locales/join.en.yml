@@ -216,7 +216,7 @@ en:
               icon: globe
               body: Everything shows up in our national listings so everyone can find you.
         - key: accessibility
-          title: Accessible to everyone
+          title: Accessible for everyone
           summary: Built so everyone in a neighbourhood can use it, whatever device or assistive technology they use.
           link: accessibility
           link_label: Read our accessibility statement
