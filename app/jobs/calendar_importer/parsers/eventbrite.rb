@@ -69,13 +69,9 @@ module CalendarImporter::Parsers
 
       @events
     rescue *TRANSIENT_HTTP_ERRORS => e
-      # Retries exhausted. Eventbrite is having a transient outage; skip this
-      # run rather than crashing the import (which flags the calendar into the
-      # terminal `error` state and floods error tracking). Returning [] leaves
-      # the calendar's existing events untouched — the importer only purges
-      # stale events when it gets a non-empty result (see CalendarImporterTask).
+      # Retries exhausted: skip this run. An empty list would read as a feed with no events and start its removal countdown.
       Rails.logger.warn("Eventbrite import skipped for #{@url}: #{e.class} (#{e.message})")
-      []
+      raise SourceUnavailable, "#{e.class}: #{e.message}"
     rescue EventbriteSDK::ResourceNotFound => e
       # The Eventbrite organiser no longer exists — usually deleted, or renamed
       # (which changes the numeric id baked into the source URL). Flag the

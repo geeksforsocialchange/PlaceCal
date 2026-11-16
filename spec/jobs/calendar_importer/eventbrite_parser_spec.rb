@@ -58,13 +58,11 @@ RSpec.describe CalendarImporter::Parsers::Eventbrite do
       # tests don't actually wait.
       before { allow(CalendarImporter::Parsers::Base).to receive(:sleep) }
 
-      it "retries the organiser listing and degrades to an empty result when it keeps failing" do
+      it "retries the organiser listing and skips the import when it keeps failing" do
         allow(EventbriteSDK::Organizer).to receive(:retrieve)
           .and_raise(EventbriteSDK::InternalServerError.new("internal server error"))
 
-        # An ongoing Eventbrite outage must not crash the import (which would
-        # flag the calendar as errored and wipe nothing) — it returns [].
-        expect(parser.download_calendar).to eq([])
+        expect { parser.download_calendar }.to raise_error(CalendarImporter::Exceptions::SourceUnavailable)
         expect(CalendarImporter::Parsers::Base).to have_received(:sleep).exactly(max_retries).times
         expect(EventbriteSDK::Organizer).to have_received(:retrieve)
           .exactly(max_retries + 1).times
@@ -74,19 +72,18 @@ RSpec.describe CalendarImporter::Parsers::Eventbrite do
         allow(EventbriteSDK::Organizer).to receive(:retrieve)
           .and_raise(RestClient::TooManyRequests)
 
-        expect(parser.download_calendar).to eq([])
+        expect { parser.download_calendar }.to raise_error(CalendarImporter::Exceptions::SourceUnavailable)
         expect(EventbriteSDK::Organizer).to have_received(:retrieve)
           .exactly(max_retries + 1).times
       end
 
       it "treats connection-level failures as transient (AppSignal incident #279)" do
-        # A dropped connection (e.g. ECONNRESET during SSL_connect) never gets
-        # an HTTP status, so it must be retried and degraded like a 5xx rather
-        # than crashing the whole import.
+        # A dropped connection never gets an HTTP status, so it must be retried like a 5xx
+
         allow(EventbriteSDK::Organizer).to receive(:retrieve)
           .and_raise(Errno::ECONNRESET, "Connection reset by peer - SSL_connect")
 
-        expect(parser.download_calendar).to eq([])
+        expect { parser.download_calendar }.to raise_error(CalendarImporter::Exceptions::SourceUnavailable)
         expect(EventbriteSDK::Organizer).to have_received(:retrieve)
           .exactly(max_retries + 1).times
       end

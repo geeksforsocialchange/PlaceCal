@@ -288,6 +288,17 @@ class Calendar < ApplicationRecord
     end
   end
 
+  # Flag that the source kept failing and this import was skipped; keeps the last successful import's time.
+  # @param notices [Array<String>] why the import was skipped
+  # @return [void]
+  def flag_skipped_import_job!(notices)
+    without_timestamps do
+      return unless calendar_state.in_worker?
+
+      update!(calendar_state: :idle, notices:)
+    end
+  end
+
   # Record whether the latest read of the feed found any events.
   # @param empty [Boolean] whether the feed parsed to no events
   # @return [void]
