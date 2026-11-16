@@ -15,9 +15,6 @@ class CalendarImporter::LocationResolver
     'online_only' => :no_location_strategy
   }.freeze
 
-  # Words dropped from location text before it is read as an address
-  COUNTRY_NAMES = ['United Kingdom', 'UK'].freeze
-
   # @param calendar [Calendar] the calendar being imported, whose strategy and default venue apply
   # @param event_data [CalendarImporter::Events::Base] the event as read from the feed
   def initialize(calendar, event_data)
@@ -94,17 +91,17 @@ class CalendarImporter::LocationResolver
     Address.build_from_components(event_location_components, event_data.postcode)
   end
 
-  # The location text split on ", " with the country and postcode removed, e.g.
-  # "Duke Hall, 1 Duke Street, UK, M1 2AB" with postcode "M1 2AB" gives ["Duke Hall", "1 Duke Street"].
+  # The location text split on ", " with the postcode removed, e.g.
+  # "Age UK Hall, 1 Duke Street, Manchester M1 2AB" with postcode "M1 2AB" gives ["Age UK Hall", "1 Duke Street", "Manchester"].
   # @return [Array<String>]
   def event_location_components
     @event_location_components ||= begin
-      words = COUNTRY_NAMES + [event_data.postcode.to_s.strip].compact_blank
-      pattern = /\b(?:#{words.map { |word| Regexp.escape(word) }.join('|')})\b/i
+      postcode = event_data.postcode.to_s.strip
+      postcode_pattern = /\b#{Regexp.escape(postcode)}\b/i if postcode.present?
 
       event_data.location.to_s
                 .split(', ')
-                .map { |component| component.gsub(pattern, '').strip }
+                .map { |component| postcode_pattern ? component.gsub(postcode_pattern, '').strip : component.strip }
                 .compact_blank
     end
   end

@@ -180,12 +180,12 @@ RSpec.describe CalendarImporter::LocationResolver do
   end
 
   describe "reading the location text" do
-    it "drops the country and postcode only as whole words" do
-      event_data.location = "Ukrainian Centre, 12 Duke Street, United Kingdom, UK, M15 5DD"
+    it "drops the postcode as a whole word and leaves the rest of the text alone" do
+      event_data.location = "Ukrainian Centre, Age UK Hall, 12 Duke Street, Manchester M15 5DD"
       event_data.postcode = "M15 5DD"
       resolver = described_class.new(build(:calendar, strategy: "event"), event_data)
 
-      expect(resolver.send(:event_location_components)).to eq(["Ukrainian Centre", "12 Duke Street"])
+      expect(resolver.send(:event_location_components)).to eq(["Ukrainian Centre", "Age UK Hall", "12 Duke Street", "Manchester"])
     end
   end
 
