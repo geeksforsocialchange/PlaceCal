@@ -16,9 +16,8 @@ class JoinMailer < ApplicationMailer
                   t('join_mailer.join_us.subject')
                 end
 
-      mail_headers = { to: site&.join_recipient || ContactRequest::DEFAULT_RECIPIENT, subject:,
-                       reply_to: enquirer_address(contact_request) }.compact
-      mail(mail_headers) do |format|
+      to = site&.join_recipient || ContactRequest::DEFAULT_RECIPIENT
+      mail(to:, subject:, reply_to: enquirer_address(contact_request)) do |format|
         format.html { render Views::Mailers::Join::JoinUs.new(contact_request:) }
       end
     end
