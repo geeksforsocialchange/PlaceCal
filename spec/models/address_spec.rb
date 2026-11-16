@@ -98,6 +98,7 @@ RSpec.describe Address, type: :model do
         address.valid?
         expect(address).not_to be_valid
         expect(address.errors[:postcode]).to include("was not found")
+        expect(address.unreadable_reason).to eq(:postcode_not_found)
       end
     end
 
@@ -123,6 +124,7 @@ RSpec.describe Address, type: :model do
         address.valid?
         expect(address).not_to be_valid
         expect(address.errors[:postcode]).to include("has been found but could not be mapped to a neighbourhood at this time")
+        expect(address.unreadable_reason).to eq(:outside_neighbourhoods)
       end
     end
 

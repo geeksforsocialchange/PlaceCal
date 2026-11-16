@@ -1034,6 +1034,11 @@ en:
           one: "%{count} error prohibited this %{model} from being saved"
           other: "%{count} errors prohibited this %{model} from being saved"
       models:
+        address:
+          attributes:
+            postcode:
+              not_found: "was not found"
+              unmapped: "has been found but could not be mapped to a neighbourhood at this time"
         partner:
           attributes:
             base:

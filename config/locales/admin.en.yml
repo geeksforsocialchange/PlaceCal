@@ -395,6 +395,20 @@ en:
         past: "Recent Past Events"
       importer:
         calendar_occurrence_limit: "This calendar has more than %{count} upcoming event dates, so the import stopped there. Events after that point were not updated."
+        unreadable_address:
+          example: '"%{summary}" (%{location})'
+          no_street:
+            one: "PlaceCal couldn't read an address for %{examples}: its location has no street line."
+            other: "PlaceCal couldn't read an address for %{count} events because their locations have no street line, for example %{examples}."
+          no_postcode:
+            one: "PlaceCal couldn't read an address for %{examples}: its location has no postcode."
+            other: "PlaceCal couldn't read an address for %{count} events because their locations have no postcode, for example %{examples}."
+          postcode_not_found:
+            one: "PlaceCal couldn't read an address for %{examples}: its postcode wasn't found."
+            other: "PlaceCal couldn't read an address for %{count} events because their postcodes weren't found, for example %{examples}."
+          outside_neighbourhoods:
+            one: "PlaceCal couldn't read an address for %{examples}: its postcode is outside the neighbourhoods PlaceCal covers."
+            other: "PlaceCal couldn't read an address for %{count} events because their postcodes are outside the neighbourhoods PlaceCal covers, for example %{examples}."
         room_number_without_venue: "This calendar reads room numbers from its events but has no default location to put the rooms in. Choose a default location."
         feed_empty:
           one: "The feed has had no events since %{since}. Its upcoming event stays listed until %{removal}, and is removed then if the feed is still empty."
