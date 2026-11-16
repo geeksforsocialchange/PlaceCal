@@ -31,7 +31,6 @@ Separately, every event gets its calendar's organiser and a feed can only be add
 5. **Each import run is recorded** with its outcome. Runs that process events also record counts and what happened to each event. A results page shows it and replaces the notices list. The calendar's status updates without a reload.
 6. **Each source declares the fields it reads,** and the in-app and handbook tables are generated from that. New fields are then added one at a time: image, cancelled and postponed status, ticket details, then the source's categories and organiser name.
 7. **A calendar can have ordered rules** that skip matching events or give them to another partner. Anyone who can edit the calendar can give events to any partner, and that partner's users are emailed.
-8. **Background jobs move to Solid Queue,** and Mission Control Jobs replaces the hand-built jobs page.
 
 ## Options Not Taken
 
@@ -51,7 +50,7 @@ Separately, every event gets its calendar's organiser and a feed can only be add
 ## Order of Work
 
 1. Tidy and fix
-2. Import runs, results page and live status, with the move to Solid Queue
+2. Import runs, results page and live status
 3. Declared field maps, then new fields
 4. Online events
 5. Location
