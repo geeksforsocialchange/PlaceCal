@@ -13,6 +13,9 @@ export default class extends Controller {
 		"success",
 		"error",
 		"errorMessage",
+		"warning",
+		"warningHeading",
+		"warningMessage",
 		"detectedFormat",
 		"detectedFormatName",
 		"testButton",
@@ -32,6 +35,7 @@ export default class extends Controller {
 		valid: { type: Boolean, default: false },
 		detectedFormat: { type: String, default: "" },
 		apiTokenParsers: { type: Array, default: [] },
+		labels: { type: Object, default: {} },
 	};
 
 	connect() {
@@ -56,6 +60,17 @@ export default class extends Controller {
 
 	// Called when the user picks a calendar type
 	importerModeChanged() {
+		if (
+			this.needsManualSelection &&
+			this.importerModeSelectTarget.value !== "auto"
+		) {
+			this.needsManualSelection = false;
+			this.validValue = true;
+			this.hideWarning();
+			this.successTarget.classList.remove("hidden");
+			this.showInputSuccess();
+			this.setTestButtonSuccess();
+		}
 		this.updateApiTokenVisibility();
 	}
 
@@ -77,6 +92,7 @@ export default class extends Controller {
 	// Called when source input changes
 	sourceChanged() {
 		this.validValue = false;
+		this.needsManualSelection = false;
 		this.hideFeedback();
 		this.clearInputStyling();
 		this.resetTestButton();
@@ -119,9 +135,18 @@ export default class extends Controller {
 
 			this.feedbackTarget.classList.remove("hidden");
 
+			this.needsManualSelection = false;
+
 			if (data.valid) {
 				this.validValue = true;
-				this.successTarget.classList.remove("hidden");
+				if (data.warning) {
+					this.showWarning(
+						this.labelsValue.apiKeyHeading,
+						data.warning_message,
+					);
+				} else {
+					this.successTarget.classList.remove("hidden");
+				}
 				this.showInputSuccess();
 				this.setTestButtonSuccess();
 
@@ -151,11 +176,28 @@ export default class extends Controller {
 						importerName: data.importer_name,
 					},
 				});
+			} else if (data.needs_manual_selection) {
+				this.needsManualSelection = true;
+				// A saved calendar may already have its type picked by hand; keep it
+				if (this.importerModeSelectTarget.value !== "auto") {
+					this.importerModeChanged();
+				} else {
+					this.validValue = false;
+					this.showWarning(
+						this.labelsValue.undetectedHeading,
+						this.labelsValue.undetected,
+					);
+					this.setTestButtonError();
+				}
+
+				this.dispatch("validated", {
+					detail: { valid: this.validValue, needsManualSelection: true },
+				});
 			} else {
 				this.validValue = false;
 				this.errorTarget.classList.remove("hidden");
 				this.errorMessageTarget.textContent =
-					data.error || "Unable to validate this URL";
+					data.error || this.labelsValue.fallbackError;
 				this.showInputError();
 				this.setTestButtonError();
 
@@ -168,8 +210,7 @@ export default class extends Controller {
 			this.validValue = false;
 			this.feedbackTarget.classList.remove("hidden");
 			this.errorTarget.classList.remove("hidden");
-			this.errorMessageTarget.textContent =
-				"Connection error. Please try again.";
+			this.errorMessageTarget.textContent = this.labelsValue.connectionError;
 			this.showInputError();
 			this.setTestButtonError();
 
@@ -186,10 +227,22 @@ export default class extends Controller {
 		if (this.hasFeedbackTarget) this.feedbackTarget.classList.add("hidden");
 		if (this.hasSuccessTarget) this.successTarget.classList.add("hidden");
 		if (this.hasErrorTarget) this.errorTarget.classList.add("hidden");
+		this.hideWarning();
 		if (this.hasDetectedFormatTarget)
 			this.detectedFormatTarget.classList.add("hidden");
 		if (this.hasImporterModeSectionTarget)
 			this.importerModeSectionTarget.classList.add("hidden");
+	}
+
+	showWarning(heading, message) {
+		if (!this.hasWarningTarget) return;
+		this.warningHeadingTarget.textContent = heading;
+		this.warningMessageTarget.textContent = message;
+		this.warningTarget.classList.remove("hidden");
+	}
+
+	hideWarning() {
+		if (this.hasWarningTarget) this.warningTarget.classList.add("hidden");
 	}
 
 	resetTestButton() {
@@ -220,7 +273,7 @@ export default class extends Controller {
 		if (this.hasTestIconErrorTarget)
 			this.testIconErrorTarget.classList.add("hidden");
 		if (this.hasTestButtonTextTarget)
-			this.testButtonTextTarget.textContent = "Test";
+			this.testButtonTextTarget.textContent = this.labelsValue.test;
 	}
 
 	setTestButtonSuccess() {
@@ -251,7 +304,7 @@ export default class extends Controller {
 		if (this.hasTestIconErrorTarget)
 			this.testIconErrorTarget.classList.add("hidden");
 		if (this.hasTestButtonTextTarget)
-			this.testButtonTextTarget.textContent = "OK!";
+			this.testButtonTextTarget.textContent = this.labelsValue.ok;
 	}
 
 	setTestButtonError() {
@@ -282,7 +335,7 @@ export default class extends Controller {
 		if (this.hasTestIconErrorTarget)
 			this.testIconErrorTarget.classList.remove("hidden");
 		if (this.hasTestButtonTextTarget)
-			this.testButtonTextTarget.textContent = "Error";
+			this.testButtonTextTarget.textContent = this.labelsValue.error;
 	}
 
 	clearInputStyling() {

@@ -11,7 +11,6 @@ class Components::Admin::SaveBar < Components::Admin::Base
   prop :wizard_controller, _Nilable(String), default: nil
   prop :submit_label, _Nilable(String), default: nil
   prop :submit_icon, Symbol, default: :check
-  prop :continue_text_target, _Boolean, default: false
 
   def after_initialize
     @button_blocks = []
@@ -74,8 +73,7 @@ class Components::Admin::SaveBar < Components::Admin::Base
           class: 'btn bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange gap-2',
           data: wizard_target('continueButton').merge(wizard_action('click', 'nextStep'))
         ) do
-          continue_data = @continue_text_target ? wizard_target('continueButtonText') : {}
-          span(data: continue_data) { t('admin.actions.continue') }
+          span { t('admin.actions.continue') }
           icon(:chevron_right, size: '5')
         end
 

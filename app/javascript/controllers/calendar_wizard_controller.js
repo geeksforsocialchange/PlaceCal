@@ -29,6 +29,9 @@ export default class extends Controller {
 		"sourceSuccess",
 		"sourceError",
 		"sourceErrorMessage",
+		"sourceWarning",
+		"sourceWarningHeading",
+		"sourceWarningMessage",
 		"detectedFormat",
 		"detectedFormatName",
 		"apiTokenSection",
@@ -42,7 +45,6 @@ export default class extends Controller {
 		"partnerSelect",
 		"nameInput",
 		"placeSelect",
-		"continueButtonText",
 	];
 
 	static values = {
@@ -51,12 +53,17 @@ export default class extends Controller {
 		sourceValid: { type: Boolean, default: false },
 		detectedFormat: { type: String, default: "" },
 		apiTokenParsers: { type: Array, default: [] },
+		labels: { type: Object, default: {} },
 	};
 
 	connect() {
 		this.testSourceDebounced = debounce(this.performSourceTest.bind(this), 600);
 		updateWizardUI(this);
 		this.updateContinueButton();
+		if (this.sourceValidValue) {
+			showInputSuccess(this.sourceInputTarget);
+			this.setTestButtonSuccess();
+		}
 
 		// Wait for tom-select to initialize on partner dropdown
 		setTimeout(() => {
@@ -159,15 +166,6 @@ export default class extends Controller {
 				this.isCurrentStepValid(),
 			);
 		}
-
-		// Update button text based on step and validation state
-		if (this.hasContinueButtonTextTarget) {
-			if (this.currentStepValue === 1 && this.sourceValidValue) {
-				this.continueButtonTextTarget.textContent = "Save & Continue";
-			} else {
-				this.continueButtonTextTarget.textContent = "Continue";
-			}
-		}
 	}
 
 	// Source URL testing
@@ -203,7 +201,7 @@ export default class extends Controller {
 		this.testIconNeutralTarget.classList.remove("hidden");
 		this.testIconSuccessTarget.classList.add("hidden");
 		this.testIconErrorTarget.classList.add("hidden");
-		this.testButtonTextTarget.textContent = "Test";
+		this.testButtonTextTarget.textContent = this.labelsValue.test;
 	}
 
 	setTestButtonSuccess() {
@@ -229,7 +227,7 @@ export default class extends Controller {
 		this.testIconNeutralTarget.classList.add("hidden");
 		this.testIconSuccessTarget.classList.remove("hidden");
 		this.testIconErrorTarget.classList.add("hidden");
-		this.testButtonTextTarget.textContent = "OK!";
+		this.testButtonTextTarget.textContent = this.labelsValue.ok;
 	}
 
 	setTestButtonError() {
@@ -255,7 +253,7 @@ export default class extends Controller {
 		this.testIconNeutralTarget.classList.add("hidden");
 		this.testIconSuccessTarget.classList.add("hidden");
 		this.testIconErrorTarget.classList.remove("hidden");
-		this.testButtonTextTarget.textContent = "Error";
+		this.testButtonTextTarget.textContent = this.labelsValue.error;
 	}
 
 	testSource() {
@@ -300,12 +298,10 @@ export default class extends Controller {
 				this.setTestButtonSuccess();
 
 				if (data.warning) {
-					// Show warning state (valid but with informational note)
-					this.sourceSuccessTarget.classList.add("hidden");
-					this.sourceErrorTarget.classList.remove("hidden");
-					this.sourceErrorTarget.classList.remove("alert-error");
-					this.sourceErrorTarget.classList.add("alert-warning");
-					this.sourceErrorMessageTarget.textContent = data.warning_message;
+					this.showWarning(
+						this.labelsValue.apiKeyHeading,
+						data.warning_message,
+					);
 				} else {
 					this.sourceSuccessTarget.classList.remove("hidden");
 				}
@@ -329,9 +325,10 @@ export default class extends Controller {
 				// URL is reachable but format couldn't be auto-detected
 				// Allow user to manually select the format
 				this.sourceValidValue = false;
-				this.sourceErrorTarget.classList.remove("hidden");
-				this.sourceErrorMessageTarget.textContent =
-					"Could not auto-detect format. Please select the calendar type below.";
+				this.showWarning(
+					this.labelsValue.undetectedHeading,
+					this.labelsValue.undetected,
+				);
 				this.setTestButtonError();
 
 				// Show the importer mode section so user can manually select
@@ -345,7 +342,7 @@ export default class extends Controller {
 				this.sourceValidValue = false;
 				this.sourceErrorTarget.classList.remove("hidden");
 				this.sourceErrorMessageTarget.textContent =
-					data.error || "Unable to validate this URL";
+					data.error || this.labelsValue.fallbackError;
 				showInputError(this.sourceInputTarget);
 				this.setTestButtonError();
 			}
@@ -355,7 +352,7 @@ export default class extends Controller {
 			this.sourceFeedbackTarget.classList.remove("hidden");
 			this.sourceErrorTarget.classList.remove("hidden");
 			this.sourceErrorMessageTarget.textContent =
-				"Connection error. Please try again.";
+				this.labelsValue.connectionError;
 			showInputError(this.sourceInputTarget);
 			this.setTestButtonError();
 		} finally {
@@ -383,13 +380,17 @@ export default class extends Controller {
 		this.updateContinueButton();
 	}
 
+	showWarning(heading, message) {
+		this.sourceWarningHeadingTarget.textContent = heading;
+		this.sourceWarningMessageTarget.textContent = message;
+		this.sourceWarningTarget.classList.remove("hidden");
+	}
+
 	hideFeedback() {
 		this.sourceFeedbackTarget.classList.add("hidden");
 		this.sourceSuccessTarget.classList.add("hidden");
 		this.sourceErrorTarget.classList.add("hidden");
-		// Reset warning styling back to error for next use
-		this.sourceErrorTarget.classList.remove("alert-warning");
-		this.sourceErrorTarget.classList.add("alert-error");
+		this.sourceWarningTarget.classList.add("hidden");
 		this.detectedFormatTarget.classList.add("hidden");
 		if (this.hasImporterModeSectionTarget) {
 			this.importerModeSectionTarget.classList.add("hidden");
@@ -412,6 +413,7 @@ export default class extends Controller {
 			this.sourceValidValue = true;
 			// Update UI to show success state
 			this.sourceErrorTarget.classList.add("hidden");
+			this.sourceWarningTarget.classList.add("hidden");
 			this.sourceSuccessTarget.classList.remove("hidden");
 			clearInputError(this.sourceInputTarget);
 			showInputSuccess(this.sourceInputTarget);
@@ -468,7 +470,8 @@ export default class extends Controller {
 
 		// Auto-fill name when partner is selected and name is empty
 		if (partnerName && !nameValue) {
-			const calendarType = this.detectedFormatValue || "Calendar";
+			const calendarType =
+				this.detectedFormatValue || this.labelsValue.defaultName;
 			const suggestedName = `${partnerName} | ${calendarType}`;
 			this.nameInputTarget.value = suggestedName;
 			clearInputError(this.nameInputTarget);

@@ -9,6 +9,7 @@ class Views::Admin::Base < Views::Base
   register_output_helper :filtered_form_for
   register_output_helper :level_badge
   register_value_helper :options_for_importer
+  register_value_helper :source_test_labels
   register_value_helper :image_uploader_hint
   register_value_helper :options_for_organiser
   register_value_helper :options_for_location
