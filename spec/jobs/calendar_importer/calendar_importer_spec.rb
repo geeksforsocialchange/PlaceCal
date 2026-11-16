@@ -3,6 +3,18 @@
 require "rails_helper"
 
 RSpec.describe CalendarImporter::CalendarImporter do
+  describe "PARSERS" do
+    let(:keys) { described_class::PARSERS.map { |parser| parser::KEY } }
+
+    it "gives every parser a key" do
+      expect(described_class::PARSERS.select { |parser| parser::KEY.blank? }).to be_empty
+    end
+
+    it "gives every parser a different key" do
+      expect(keys.tally.select { |_key, count| count > 1 }.keys).to be_empty
+    end
+  end
+
   describe "#parser" do
     context "with webcal calendars" do
       let(:url) { "webcal://p24-calendars.icloud.com/published/2/WvhkIr4F3oBQrToPU-lkO6WwDTpzNTpENs-Qtbo48FhhrAfDp3gkIal2XPd5eUVO0LLERrehetRzj43c6zvbotf9_DNI6heKXBejvAkz8JQ" }
@@ -294,6 +306,17 @@ RSpec.describe CalendarImporter::CalendarImporter do
         expect do
           described_class.new(calendar).parser
         end.to raise_error(CalendarImporter::Exceptions::UnsupportedFeed)
+      end
+    end
+  end
+
+  describe "manual selection" do
+    it "picks the Manchester University parser when its key is the importer mode" do
+      VCR.use_cassette("Martin_Harris_Centre", allow_playback_repeats: true) do
+        calendar = create(:calendar, source: "http://events.manchester.ac.uk/f3vf/calendar/tag:martin_harris_centre/view:list/p:q_details/calml.xml",
+                                     importer_mode: "manchester-uni")
+
+        expect(described_class.new(calendar).parser).to eq(CalendarImporter::Parsers::ManchesterUni)
       end
     end
   end
