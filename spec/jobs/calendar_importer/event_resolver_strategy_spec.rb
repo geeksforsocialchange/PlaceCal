@@ -179,6 +179,26 @@ RSpec.describe CalendarImporter::LocationResolver do
     end
   end
 
+  describe "reading the location text" do
+    it "drops the country and postcode only as whole words" do
+      event_data.location = "Ukrainian Centre, 12 Duke Street, United Kingdom, UK, M15 5DD"
+      event_data.postcode = "M15 5DD"
+      resolver = described_class.new(build(:calendar, strategy: "event"), event_data)
+
+      expect(resolver.send(:event_location_components)).to eq(["Ukrainian Centre", "12 Duke Street"])
+    end
+  end
+
+  describe "room_number strategy" do
+    it "explains that a default location is needed when the calendar has none" do
+      calendar = build(:calendar, strategy: "room_number", place: nil)
+      calendar.place = nil
+
+      expect { described_class.new(calendar, event_data).resolve }
+        .to raise_error(described_class::Problem, /no default location/)
+    end
+  end
+
   describe "place strategy" do
     it "resolves place and address from calendar" do
       event_data.location = address_partner.name

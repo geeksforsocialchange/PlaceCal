@@ -32,10 +32,11 @@ class EventsQuery
     return {} if partner_ids.blank?
 
     future = Event.future(Time.current)
-    future.where(place_id: partner_ids)
-          .or(future.where(organiser_id: partner_ids))
-          .group(:place_id)
-          .count
+    hosted = future.where(place_id: partner_ids).group(:place_id).count
+    organised_elsewhere = future.where(organiser_id: partner_ids)
+                                .where('events.place_id IS NULL OR events.place_id <> events.organiser_id')
+                                .group(:organiser_id).count
+    hosted.merge(organised_elsewhere) { |_id, at_place, elsewhere| at_place + elsewhere }
   end
 
   def initialize(site:, day: Time.zone.today)
