@@ -175,11 +175,19 @@ en:
           items:
             - title: Calendar apps
               icon: calendar
-              brands: [googlecalendar, microsoftoutlook]
+              brands: [googlecalendar, microsoftoutlook, teamup]
               body: Google Calendar, Outlook and Microsoft 365, Teamup, and any calendar that publishes an iCal feed.
             - title: Ticketing and event sites
               icon: ticket
-              brands: [eventbrite, meetup]
+              brands:
+                [
+                  eventbrite,
+                  meetup,
+                  tickettailor,
+                  ticketsource,
+                  ticketsolve,
+                  outsavvy,
+                ]
               body: Eventbrite, Meetup, Ticket Tailor, TicketSource, Ticketsolve, OutSavvy and Resident Advisor.
             - title: Website builders
               icon: desktop
@@ -245,7 +253,7 @@ en:
           items:
             - title: Ask an AI assistant
               icon: chat
-              brands: [openai, claude, googlegemini]
+              brands: [openai, claude, googlegemini, microsoftcopilot]
               body: Connect PlaceCal's free MCP server to ChatGPT, Claude, Gemini or Copilot and ask what's on nearby.
             - title: Found by search engines
               icon: search

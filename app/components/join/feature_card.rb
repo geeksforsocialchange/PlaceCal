@@ -24,7 +24,16 @@ class Components::Join::FeatureCard < Components::Join::Base
 
   def render_brands
     div(class: 'mt-auto pt-4 text-tertiary') do
-      UI::Cluster(gap: :sm_md) { @brands.each { |brand| icon(:"brand_#{brand}", size: '5') } }
+      UI::Cluster(gap: :sm_md) { @brands.each { |brand| render_brand(brand) } }
+    end
+  end
+
+  # Brands with no vector logo anywhere free use a one-colour PNG in app/assets/images/brands.
+  def render_brand(brand)
+    if SvgIconsHelper::ICONS.key?(:"brand_#{brand}")
+      icon(:"brand_#{brand}", size: '5')
+    else
+      image_tag("brands/#{brand}.png", alt: '', class: 'size-5')
     end
   end
 end
