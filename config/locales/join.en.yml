@@ -201,9 +201,9 @@ en:
             - title: Maps and neighbourhoods
               icon: map
               body: Every partner on a map, and events and partners filtered by neighbourhood.
-            - title: Shared between sites
+            - title: One partner, multiple sites
               icon: link
-              body: One partner can appear on several local PlaceCals without duplicating data.
+              body: Partners just need to list once and their info can be reused by everyone.
             - title: Part of a nationwide directory
               icon: globe
               body: Listings also appear on placecal.org, so people can find what's on wherever they are.
