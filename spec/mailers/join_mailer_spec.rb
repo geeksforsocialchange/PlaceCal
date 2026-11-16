@@ -19,6 +19,22 @@ RSpec.describe JoinMailer, type: :mailer do
       expect(mail.subject).to eq(I18n.t("join_mailer.join_us.subject"))
     end
 
+    it "sets reply-to to the enquirer, so a reply reaches them" do
+      mail = join_us
+
+      expect(mail.reply_to).to eq(["test@example.com"])
+      expect(mail[:reply_to].value).to include("Test User")
+      expect(mail.from).to eq(["no-reply@placecal.org"])
+    end
+
+    it "leaves reply-to off when the email is not a plain address" do
+      attributes = join_attrs.merge("email" => "nobody\r\nBcc: sneaky@example.com")
+      mail = described_class.join_us(attributes:)
+
+      expect(mail.reply_to).to be_nil
+      expect(mail.bcc).to be_nil
+    end
+
     it "sends to the site's contact_email and names the site in the subject" do
       site = create(:site, name: "Millbrook", contact_email: "hello@example.org")
       mail = join_us(site:)
