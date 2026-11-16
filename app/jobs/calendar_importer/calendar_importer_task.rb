@@ -43,6 +43,8 @@ class CalendarImporter::CalendarImporterTask
 
     calendar.flag_complete_import_job! notices, parser::KEY
     calendar.flag_checksum_change!(calendar_source.checksum) if calendar_source.checksum_changed
+  rescue CalendarImporter::Exceptions::SourceUnavailable
+    calendar.flag_complete_import_job! [I18n.t('admin.calendars.importer.source_unavailable', source: parser::NAME)], parser::KEY
   end
 
   private
