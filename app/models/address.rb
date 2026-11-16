@@ -74,7 +74,7 @@ class Address < ApplicationRecord
 
   # Like build_from_components, but says why no address could be built.
   # @return [Array(Address, nil)] the saved address
-  # @return [Array(nil, Symbol)] nil and one of :no_street, :no_postcode, :postcode_not_found, :outside_neighbourhoods
+  # @return [Array(nil, Symbol)] nil and one of :no_street, :no_postcode, :postcode_not_found, :lookup_unavailable, :outside_neighbourhoods
   def self.build_from_components_with_reason(components, postcode)
     return [nil, :no_street] if components.blank?
     return [nil, :no_postcode] if postcode.blank?
@@ -101,6 +101,7 @@ class Address < ApplicationRecord
 
     case errors.details[:postcode].first&.dig(:error)
     when :not_found then :postcode_not_found
+    when :lookup_unavailable then :lookup_unavailable
     when :unmapped then :outside_neighbourhoods
     else :no_postcode
     end
@@ -192,7 +193,7 @@ class Address < ApplicationRecord
   # details. We currently require the geocoding result to contain the key
   # 'admin_ward' from postcodes.io
   def geocode_with_ward
-    res = Geocoder.search(postcode).first&.data
+    res = PostcodeLookup.call(postcode)
     if res.nil?
       errors.add :postcode, :not_found
       return
@@ -215,5 +216,7 @@ class Address < ApplicationRecord
     # Existing addresses are backfilled via the addresses:backfill_city rake
     # task (see #3123).
     self.city = res['admin_district'] if city.blank?
+  rescue PostcodeLookup::Unavailable
+    errors.add :postcode, :lookup_unavailable
   end
 end

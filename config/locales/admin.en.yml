@@ -404,8 +404,11 @@ en:
             one: "Couldn't read an address for %{examples}: its location has no postcode."
             other: "Couldn't read an address for %{count} events because their locations have no postcode, for example %{examples}."
           postcode_not_found:
-            one: "Couldn't read an address for %{examples}: its postcode wasn't found, or the location service isn't responding."
-            other: "Couldn't read an address for %{count} events because their postcodes weren't found, or the location service isn't responding, for example %{examples}."
+            one: "Couldn't read an address for %{examples}: its postcode wasn't found."
+            other: "Couldn't read an address for %{count} events because their postcodes weren't found, for example %{examples}."
+          lookup_unavailable:
+            one: "Couldn't read an address for %{examples}: the location service isn't responding."
+            other: "Couldn't read an address for %{count} events because the location service isn't responding, for example %{examples}."
           outside_neighbourhoods:
             one: "Couldn't read an address for %{examples}: its postcode is outside the neighbourhoods PlaceCal covers."
             other: "Couldn't read an address for %{count} events because their postcodes are outside the neighbourhoods PlaceCal covers, for example %{examples}."

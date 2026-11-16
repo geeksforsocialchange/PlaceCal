@@ -1039,6 +1039,7 @@ en:
             postcode:
               not_found: "was not found"
               unmapped: "has been found but could not be mapped to a neighbourhood at this time"
+              lookup_unavailable: "couldn't be checked because the postcode lookup service isn't responding. Please try again later"
         partner:
           attributes:
             base:

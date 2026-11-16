@@ -22,7 +22,7 @@ namespace :addresses do
     skipped = 0
 
     stale.find_each do |address|
-      res = Geocoder.search(address.postcode).first&.data
+      res = PostcodeLookup.call(address.postcode)
       if res.nil?
         puts "  SKIP #{address.id} (#{address.postcode}) - postcode not found"
         skipped += 1
@@ -63,7 +63,7 @@ namespace :addresses do
     blank = 0
 
     scope.find_each do |address|
-      res = Geocoder.search(address.postcode).first&.data
+      res = PostcodeLookup.call(address.postcode)
       district = res && res['admin_district']
 
       if res.nil?

@@ -207,6 +207,19 @@ RSpec.describe Address, type: :model do
     end
   end
 
+  describe "when the postcode lookup service isn't responding" do
+    before { allow(Geocoder).to receive(:search).and_raise(Geocoder::LookupTimeout) }
+
+    it "says the postcode couldn't be checked, not that it wasn't found", :aggregate_failures do
+      address = described_class.new(street_address: "1 High Street", postcode: "ZZ11 1ZZ", country_code: "GB")
+
+      expect(address).not_to be_valid
+      expect(address.errors.details[:postcode].first[:error]).to eq(:lookup_unavailable)
+      expect(address.errors[:postcode].first).to include("isn't responding")
+      expect(address.unreadable_reason).to eq(:lookup_unavailable)
+    end
+  end
+
   describe ".build_from_components" do
     before do
       create(:riverside_ward) # Ensure neighbourhood exists for geocoding

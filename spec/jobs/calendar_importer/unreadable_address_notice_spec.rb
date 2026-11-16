@@ -45,7 +45,7 @@ RSpec.describe CalendarImporter::CalendarImporterTask, "with event locations tha
 
     expect(calendar.notices).to contain_exactly(
       'Couldn\'t read an address for 2 events because their locations have no postcode, for example "Choir" (Church Hall, 1 High Street) and "Quiz" (The Pub, 2 Low Road).',
-      'Couldn\'t read an address for "Swim" (Baths, 3 Pool Lane, ZZ99 9ZZ): its postcode wasn\'t found, or the location service isn\'t responding.',
+      'Couldn\'t read an address for "Swim" (Baths, 3 Pool Lane, ZZ99 9ZZ): its postcode wasn\'t found.',
       'Couldn\'t read an address for "Walk" (Park Gates, 4 Green Way, M15 5DD): its postcode is outside the neighbourhoods PlaceCal covers.'
     )
     expect(calendar.events.pluck(:summary)).to contain_exactly("Choir", "Quiz", "Swim", "Walk", "Online talk")
@@ -79,7 +79,15 @@ RSpec.describe CalendarImporter::CalendarImporterTask, "with event locations tha
     serve(vevent("a", "Swim", "Baths, 3 Pool Lane, ZZ99 9ZZ"), vevent("b", "Walk", "Park Gates, 4 Green Way, M15 5DD"))
     import(strategy: "event_override")
 
-    expect(calendar.notices).to contain_exactly(include("wasn't found, or the location service isn't responding"), include("outside the neighbourhoods PlaceCal covers"))
+    expect(calendar.notices).to contain_exactly(include("its postcode wasn't found"), include("outside the neighbourhoods PlaceCal covers"))
+  end
+
+  it "says the location service isn't responding when the lookup times out" do
+    allow(Geocoder).to receive(:search).with("ZZ88 8ZZ").and_raise(Geocoder::LookupTimeout)
+    serve(vevent("a", "Swim", "Baths, 3 Pool Lane, ZZ88 8ZZ"))
+    import
+
+    expect(calendar.notices.sole).to eq('Couldn\'t read an address for "Swim" (Baths, 3 Pool Lane, ZZ88 8ZZ): the location service isn\'t responding.')
   end
 
   it "adds no notice for an online event whose location is its meeting link" do
