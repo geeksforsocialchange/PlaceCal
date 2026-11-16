@@ -225,6 +225,13 @@ RSpec.describe Address, type: :model do
       expect(described_class.build_from_components(nil, "ZZMB 1RS")).to be_nil
       expect(described_class.build_from_components([], "ZZMB 1RS")).to be_nil
     end
+
+    it "says why no address could be built", :aggregate_failures do
+      expect(described_class.build_from_components_with_reason([], "ZZMB 1RS")).to eq([nil, :no_street])
+      expect(described_class.build_from_components_with_reason(["1 High Street"], "")).to eq([nil, :no_postcode])
+      expect(described_class.build_from_components_with_reason(["1 High Street"], "ZZMB 1RS").first).to be_persisted
+      expect(described_class.build_from_components_with_reason(["1 High Street"], "ZZMB 1RS").last).to be_nil
+    end
   end
 
   describe ".find_by_street_or_postcode scope" do
