@@ -9,6 +9,7 @@
 #  calendar_state       :string           default("idle")
 #  checksum_updated_at  :datetime
 #  critical_error       :text
+#  feed_empty_since     :datetime
 #  import_started_at    :datetime
 #  importer_mode        :string           default("auto")
 #  importer_used        :string
@@ -287,13 +288,23 @@ class Calendar < ApplicationRecord
     end
   end
 
+  # Record whether the latest read of the feed found any events.
+  # @param empty [Boolean] whether the feed parsed to no events
+  # @return [void]
+  def flag_feed_empty!(empty)
+    since = empty ? (feed_empty_since || Time.current) : nil
+    return if since == feed_empty_since
+
+    without_timestamps { update!(feed_empty_since: since) }
+  end
+
   # Record that the source payload checksum has changed.
   # @param checksum [String] checksum of the retrieved source payload
   # @return [void]
   def flag_checksum_change!(checksum)
     without_timestamps do
       # The feed was edited during this import, so keep its checksum cleared for the next scan
-      return if self.class.where(id:).pick(*FEED_ATTRIBUTES) != FEED_ATTRIBUTES.map { |a| self[a] }
+      return if feed_edited_since_loaded?
 
       update!(
         last_checksum: checksum,
@@ -351,6 +362,11 @@ class Calendar < ApplicationRecord
     end
   end
 
+  # @return [Boolean] whether the stored source, type or API key differ from this copy's
+  def feed_edited_since_loaded?
+    self.class.where(id:).pick(*FEED_ATTRIBUTES) != FEED_ATTRIBUTES.map { |a| self[a] }
+  end
+
   # @return [Boolean] whether unsaved changes alter what an import fetches
   def feed_changed?
     FEED_ATTRIBUTES.any? do |attr|
@@ -404,5 +420,6 @@ class Calendar < ApplicationRecord
     self.notices = nil
     self.last_import_at = nil
     self.last_checksum = nil
+    self.feed_empty_since = nil
   end
 end
