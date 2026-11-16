@@ -45,6 +45,48 @@ RSpec.describe "Join marketing site", type: :request do
       end
     end
 
+    describe "the features page" do
+      let(:page) do
+        get "http://join.lvh.me/features"
+        Nokogiri::HTML(response.body)
+      end
+
+      it "gives each feature group its own h2 with h3 cards under it" do
+        I18n.t("join.features.groups").each do |group|
+          section = page.at_css("section##{group[:key]}")
+          expect(section.at_css("h2").text).to eq(group[:title])
+          expect(section.css("h3").map(&:text)).to eq(group[:items].pluck(:title))
+        end
+      end
+
+      it "links groups to the pages that back them up, on the apex" do
+        hrefs = {
+          "accessibility" => "http://lvh.me/accessibility",
+          "sustainability" => "http://lvh.me/sustainability",
+          "mcp" => "http://lvh.me/mcp",
+          "directory" => "http://lvh.me",
+          "source_code" => "https://github.com/geeksforsocialchange/PlaceCal"
+        }
+        I18n.t("join.features.groups").select { |group| group[:link] }.each do |group|
+          link = page.at_css("section##{group[:key]} a")
+          expect(link.text).to start_with(group[:link_label])
+          expect(link[:href]).to eq(hrefs.fetch(group[:link]))
+        end
+      end
+
+      it "lists planned features apart from the ones that exist" do
+        planned = page.at_css("section[aria-labelledby='planned-heading']")
+        expect(planned.at_css("h2").text).to eq(I18n.t("join.features.planned.title"))
+        expect(planned.css("h3").map(&:text)).to eq(I18n.t("join.features.planned.items").pluck(:title))
+      end
+    end
+
+    it "shows one card per feature group on the homepage" do
+      get "http://join.lvh.me/"
+      titles = Nokogiri::HTML(response.body).css("h3").map(&:text)
+      expect(titles).to include(*I18n.t("join.features.groups").pluck(:title))
+    end
+
     it "404s an unknown audience" do
       get "http://join.lvh.me/who-its-for/pigeon-fanciers"
       expect(response).to have_http_status(:not_found)
