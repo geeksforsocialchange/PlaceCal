@@ -513,7 +513,17 @@ RSpec.describe "Public Events", type: :request do
       get event_url(event, host: "#{site.slug}.lvh.me")
       expect(response.body).to include("Contact information")
       expect(response.body).to match(%r{<h2[^>]*>Contact information</h2>})
-      expect(Nokogiri::HTML(response.body).at_css('[data-scope="event-details"][data-part="contact-name"] a[href^="/partners/"]')).to be_present
+      expect(Nokogiri::HTML(response.body).at_css('[data-scope="event-details"][data-part="contact"] a[href^="/partners/"]')).to be_nil
+    end
+
+    it "names the venue above the address, with no separate venue section", :aggregate_failures do
+      venue = create(:partner, name: "Harbourside Arts Centre")
+      event.update!(place: venue)
+      get event_url(event, host: "#{site.slug}.lvh.me")
+
+      address_section = Nokogiri::HTML(response.body).at_css('[data-scope="event-details"][data-part="address"]')
+      expect(address_section.at_css('[data-part="venue"] a')&.text).to eq("Harbourside Arts Centre")
+      expect(response.body).not_to match(%r{<h2[^>]*>Venue</h2>})
     end
 
     it "shows event address with consistent heading level" do

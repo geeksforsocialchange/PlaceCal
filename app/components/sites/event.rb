@@ -42,7 +42,7 @@ class Components::Sites::Event < Components::Base
   private
 
   def render_page_layout
-    Shared::Hero(summary, @site_tagline, section: t('events.show.section'), back: @back, standfirst: organiser_line)
+    Shared::Hero(summary, @site_tagline, section: t('events.show.section'), back: @back)
     a(class: 'p-name u-url', href: event_path(id), hidden: true) { summary }
     div(**part(:content, class: 'container-public')) { render_event_details }
   end
@@ -208,12 +208,6 @@ class Components::Sites::Event < Components::Base
     return false if frequency.blank?
 
     t("events.card.frequency.#{frequency.downcase}", default: frequency.titleize)
-  end
-
-  # "By <organiser>" under the title, the name linked; the hero's standfirst slot is free here.
-  def organiser_line
-    organiser = @event.organiser
-    organiser && t('events.show.by_organiser_html', name: view_context.link_to(organiser.name, partner_path(organiser), class: UI::Link.css(tone: :inherit)))
   end
 
   def neighbourhood_line

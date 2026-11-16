@@ -4,18 +4,19 @@ class Views::Sites::Events::Show < Views::Base
   register_value_helper :html_to_plaintext
 
   MIN_DESCRIPTION_LENGTH = 100
+  # The details sit close under their headings, so the first line's own top margin is dropped
+  SECTION_BODY = 'text-sm leading-normal [&>:first-child]:mt-0'
 
   theme_scope :event_details,
               parts: {
                 root: 'Everything under the event\'s details row on its page.',
                 description: 'The event\'s description, as its organiser wrote it (paragraphs, lists, headings).',
                 links: 'The buttons under the description: the event\'s webpage and a join link for streams. Only when the event has them.',
-                info: 'The group of headed sections below: contact, address, organiser and venue.',
-                contact: 'The organiser\'s contact section. Its heading only when the event has an organiser.',
-                contact_name: 'The organiser\'s name, linked, heading the contact details.',
+                info: 'The group of headed sections below: contact, address and organiser.',
+                contact: 'The organiser\'s contact details section. Only when the organiser has contact details.',
                 address: 'The event\'s address section.',
+                venue: 'The venue\'s name, linked, above the address. Only when the event has a visible venue.',
                 organiser: 'The organiser section, linking to their page.',
-                venue: 'The venue section. Only when the venue is a different partner from the organiser.',
                 section_body: 'The text under each section\'s heading.',
                 more: 'The "More from" list of the organiser\'s other events. Only when the organiser has other upcoming events.'
               },
@@ -300,10 +301,9 @@ class Views::Sites::Events::Show < Views::Base
       end
 
       div(**part(:info, class: 'grid gap-4 items-start mt-5.5 lg:grid-cols-3')) do
-        render_contact_info
+        render_contact_info if event.organiser&.contactable?
         render_event_address
-        render_event_organiser
-        render_event_venue if show_venue?
+        render_event_organiser if event.organiser
       end
     end
   end
@@ -313,20 +313,18 @@ class Views::Sites::Events::Show < Views::Base
   # the promotion changes the outline and not the look.
   def render_contact_info
     div(**part(:contact)) do
-      if event.organiser
-        UI::RuledHeading(size: :lg, spacing: :section) { t('events.show.contact_heading') }
-        div(**part(:section_body, class: 'text-sm leading-normal')) do
-          p(**part(:contact_name)) { link_to(event.organiser.name, partner_path(event.organiser)) }
-          Shared::ContactDetails(partner: event.organiser, social_labels: site&.core_theme? ? :handle : :network)
-        end
+      UI::RuledHeading(size: :lg, spacing: :details) { t('events.show.contact_heading') }
+      div(**part(:section_body, class: SECTION_BODY)) do
+        Shared::ContactDetails(partner: event.organiser, social_labels: site&.core_theme? ? :handle : :network)
       end
     end
   end
 
   def render_event_address
     div(**part(:address)) do
-      UI::RuledHeading(size: :lg, spacing: :section) { t('events.show.address_heading') }
-      div(**part(:section_body, class: 'text-sm leading-normal')) do
+      UI::RuledHeading(size: :lg, spacing: :details) { t('events.show.address_heading') }
+      div(**part(:section_body, class: SECTION_BODY)) do
+        p(**part(:venue)) { link_to(venue.name, venue) } if venue
         Shared::Address(address: event.address, raw_location: event.raw_location_from_source)
       end
     end
@@ -334,24 +332,15 @@ class Views::Sites::Events::Show < Views::Base
 
   def render_event_organiser
     div(**part(:organiser)) do
-      UI::RuledHeading(size: :lg, spacing: :section) { t('events.show.organiser_heading') }
-      div(**part(:section_body, class: 'text-sm leading-normal')) do
+      UI::RuledHeading(size: :lg, spacing: :details) { t('events.show.organiser_heading') }
+      div(**part(:section_body, class: SECTION_BODY)) do
         span { link_to event.organiser, event.organiser }
       end
     end
   end
 
-  def show_venue?
-    event.place.present? && !event.place.hidden && event.place != event.organiser
-  end
-
-  def render_event_venue
-    div(**part(:venue)) do
-      UI::RuledHeading(size: :lg, spacing: :section) { t('events.show.venue_heading') }
-      div(**part(:section_body, class: 'text-sm leading-normal')) do
-        span { link_to event.place, event.place }
-      end
-    end
+  def venue
+    event.place unless event.place.nil? || event.place.hidden
   end
 
   def render_site_more_from_organiser

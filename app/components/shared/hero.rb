@@ -10,7 +10,7 @@ class Components::Shared::Hero < Components::Base
                 subtitle: 'The site tagline, in caps. Only when the page passes one.',
                 divider: 'The short decorative rule under the subtitle. Only with a subtitle.',
                 title: 'The page\'s h1. Its bottom margin is in em, so it grows with the font size.',
-                standfirst: 'The lead paragraph under the title, such as "By <organiser>" on an event page, or a theme\'s intro on a listing. Margins in em.',
+                standfirst: 'The lead paragraph under the title, such as a theme\'s intro on a listing. Margins in em.',
                 standfirst_detail: 'A smaller second paragraph after the standfirst, its sibling. Only when the page passes one.'
               },
               tokens: %i[--color-primary --color-foreground-dark --color-foreground --color-background --font-serif --text-3xl --text-sm
