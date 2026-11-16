@@ -19,10 +19,6 @@ module CalendarImporter::Events
       @event['content'] || ''
     end
 
-    def place
-      '' # N/A
-    end
-
     def publisher_url
       "https://ra.co#{@event['contentUrl']}"
     end

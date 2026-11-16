@@ -2,8 +2,6 @@
 
 module CalendarImporter::Events
   class IcsEvent < Base
-    class MissingTypeForURL < StandardError; end
-
     # Domains that indicate a direct online meeting/streaming link
     ONLINE_MEETING_DOMAINS = OnlineAddress::DOMAINS
 
@@ -49,10 +47,6 @@ module CalendarImporter::Events
     end
 
     delegate :rrule, to: :@event
-
-    def last_updated
-      @event.last_modified.to_s
-    end
 
     def recurring_event?
       rrule.present?
