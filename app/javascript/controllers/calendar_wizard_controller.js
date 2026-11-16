@@ -60,6 +60,10 @@ export default class extends Controller {
 		this.testSourceDebounced = debounce(this.performSourceTest.bind(this), 600);
 		updateWizardUI(this);
 		this.updateContinueButton();
+		if (this.sourceValidValue) {
+			showInputSuccess(this.sourceInputTarget);
+			this.setTestButtonSuccess();
+		}
 
 		// Wait for tom-select to initialize on partner dropdown
 		setTimeout(() => {

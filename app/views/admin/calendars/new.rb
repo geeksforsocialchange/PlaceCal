@@ -67,6 +67,11 @@ class Views::Admin::Calendars::New < Views::Admin::Base
     CalendarImporter::CalendarImporter::PARSERS.find { |p| p::KEY == calendar.importer_mode }
   end
 
+  # The model's undetected-format error asks the user to pick a type from this list
+  def show_importer_mode?
+    calendar.errors.any? && calendar.source.present?
+  end
+
   def requires_api_token?
     detected_parser&.requires_api_token? || false
   end
@@ -155,10 +160,10 @@ class Views::Admin::Calendars::New < Views::Admin::Base
         raw icon(:check_circle, size: '5', css_class: 'shrink-0')
         div(class: 'flex-1') do
           p(class: 'font-semibold') { t('admin.calendars.wizard.source.success') }
-          p(class: "text-xs mt-1#{' hidden' unless detected_parser}", data: { 'calendar-wizard-target': 'detectedFormat' }) do
+          p(class: 'text-xs mt-1 hidden', data: { 'calendar-wizard-target': 'detectedFormat' }) do
             plain t('admin.calendars.wizard.source.detected_format')
             whitespace
-            span(class: 'font-medium', data: { 'calendar-wizard-target': 'detectedFormatName' }) { detected_parser&.const_get(:NAME) }
+            span(class: 'font-medium', data: { 'calendar-wizard-target': 'detectedFormatName' })
           end
         end
       end
@@ -187,7 +192,7 @@ class Views::Admin::Calendars::New < Views::Admin::Base
   def render_importer_mode_field(form)
     Field(for: form.field_id(:importer_mode), label: t('admin.calendars.fields.calendar_type'), prominent: true,
           hint: t('admin.calendars.wizard.source.importer_hint'),
-          class: "bg-base-200/50 rounded-xl px-6 pb-6 pt-2 !mt-0#{' hidden' unless source_tested?}",
+          class: "bg-base-200/50 rounded-xl px-6 pb-6 pt-2 !mt-0#{' hidden' unless show_importer_mode?}",
           data: { 'calendar-wizard-target': 'importerModeSection' }) do |f|
       raw form.input_field(:importer_mode, **f.aria,
                            as: :select,

@@ -177,19 +177,21 @@ export default class extends Controller {
 					},
 				});
 			} else if (data.needs_manual_selection) {
-				this.validValue = false;
 				this.needsManualSelection = true;
-				this.showWarning(
-					this.labelsValue.undetectedHeading,
-					this.labelsValue.undetected,
-				);
-				this.setTestButtonError();
-				if (this.hasImporterModeSelectTarget) {
-					this.importerModeSelectTarget.value = "auto";
+				// A saved calendar may already have its type picked by hand; keep it
+				if (this.importerModeSelectTarget.value !== "auto") {
+					this.importerModeChanged();
+				} else {
+					this.validValue = false;
+					this.showWarning(
+						this.labelsValue.undetectedHeading,
+						this.labelsValue.undetected,
+					);
+					this.setTestButtonError();
 				}
 
 				this.dispatch("validated", {
-					detail: { valid: false, needsManualSelection: true },
+					detail: { valid: this.validValue, needsManualSelection: true },
 				});
 			} else {
 				this.validValue = false;

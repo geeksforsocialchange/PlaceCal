@@ -160,6 +160,7 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
         click_button "Back"
         click_button "Back"
         expect(page).to have_content("This URL is valid and ready to import!")
+        expect(page).to have_button("OK!")
         expect(page).to have_button("Continue", exact: true, disabled: false)
       end
     end
@@ -196,6 +197,23 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
         select "Generic iCal / .ics", from: "calendar_importer_mode"
         expect(page).to have_content("This URL is valid and ready to import!")
         expect(page).to have_no_css(".alert-warning")
+      end
+
+      context "with a calendar type picked by hand" do
+        let!(:calendar) do
+          create(:calendar, organiser: partner, name: "Test Calendar")
+            .tap { |c| c.update_column(:importer_mode, "ical") } # rubocop:disable Rails/SkipsModelValidations
+        end
+
+        it "keeps it when the format isn't detected", :aggregate_failures do
+          allow(CalendarImporter::CalendarImporter).to receive(:new)
+            .and_raise(CalendarImporter::Exceptions::UnsupportedFeed)
+          click_button "Test"
+
+          expect(page).to have_content("This URL is valid and ready to import!")
+          expect(page).to have_no_css(".alert-warning")
+          expect(find("#calendar_importer_mode").value).to eq("ical")
+        end
       end
     end
   end

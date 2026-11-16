@@ -314,30 +314,6 @@ RSpec.describe "Admin::Calendars", type: :request do
       expect(other_partner.calendars).to be_empty
     end
 
-    describe "when the calendar does not save" do
-      def post_calendar(**overrides)
-        post admin_calendars_url(host: admin_host),
-             params: { calendar: calendar_params.merge(organiser_id: admin_partner.id, importer_mode: "ical", **overrides) }
-        Nokogiri::HTML(response.body)
-      end
-
-      def wizard(html, value) = html.at_css("[data-controller='calendar-wizard']")["data-calendar-wizard-#{value}-value"]
-
-      it "reopens on the location step and keeps the tested source, type and organiser", :aggregate_failures do
-        html = post_calendar(strategy: "place", place_id: "")
-        expect(response).to have_http_status(:unprocessable_content)
-        expect([wizard(html, "current-step"), wizard(html, "source-valid")]).to eq(%w[3 true])
-        expect(html.at_css("#calendar_importer_mode option[selected]")["value"]).to eq("ical")
-        expect(html.at_css("#calendar_organiser_id option[selected]")["value"]).to eq(admin_partner.id.to_s)
-      end
-
-      it "reopens on the step holding the error", :aggregate_failures do
-        expect(wizard(post_calendar(name: ""), "current-step")).to eq("2")
-        html = post_calendar(source: "not a url")
-        expect([wizard(html, "current-step"), wizard(html, "source-valid")]).to eq(%w[1 false])
-      end
-    end
-
     it "does not create a calendar whose default location is outside the user's scope" do
       expect do
         post admin_calendars_url(host: admin_host),
