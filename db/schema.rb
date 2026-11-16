@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_16_203000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_17_010000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -73,7 +73,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_16_203000) do
     t.datetime "import_started_at"
     t.string "importer_mode", default: "auto"
     t.string "importer_used"
-    t.boolean "is_working", default: true, null: false
     t.string "last_checksum"
     t.datetime "last_import_at", precision: nil
     t.string "name", null: false
@@ -119,7 +118,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_16_203000) do
     t.datetime "dtstart", precision: nil, null: false
     t.text "footer"
     t.boolean "is_active", default: true, null: false
-    t.jsonb "notices"
     t.bigint "online_address_id"
     t.bigint "organiser_id", null: false
     t.bigint "place_id"

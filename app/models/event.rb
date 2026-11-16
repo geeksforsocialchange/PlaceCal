@@ -12,7 +12,6 @@
 #  dtstart                  :datetime         not null
 #  footer                   :text
 #  is_active                :boolean          default(TRUE), not null
-#  notices                  :jsonb
 #  publisher_url            :string
 #  raw_location_from_source :text
 #  rrule                    :jsonb
@@ -59,8 +58,6 @@ class Event < ApplicationRecord
   VERSION_PRUNE_BATCH_SIZE = 5_000
 
   # ==== Attributes ====
-  self.ignored_columns += %w[notices]
-
   # Columns marked (nullable) have no NOT NULL constraint in the DB.
   attribute :are_spaces_available,     :string                      # nullable
   attribute :description,              :text                        # nullable
