@@ -135,9 +135,14 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
         expect(page).to have_no_content("Unable to validate this URL")
       end
 
-      it "names a detected type that isn't in the type list without blanking the list", :aggregate_failures do
-        stub_detection(CalendarImporter::Parsers::ManchesterUni)
+      it "sets the type to auto-detect when the detected type isn't in the type list", :aggregate_failures do
+        stub_detection(CalendarImporter::Parsers::Ics)
         open_wizard
+        test_source(ics_url)
+        expect(page).to have_content("Detected format: Generic iCal")
+        expect(find("#calendar_importer_mode", visible: :all).value).to eq("ical")
+
+        stub_detection(CalendarImporter::Parsers::ManchesterUni)
         test_source(manchester_url)
 
         expect(page).to have_content("Manchester University")
@@ -193,14 +198,6 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
         end
       end
 
-      it "keeps the calendar type when the detected type isn't in the type list" do
-        stub_detection(CalendarImporter::Parsers::ManchesterUni)
-        test_source(manchester_url)
-
-        expect(page).to have_content("This URL is valid and ready to import!")
-        expect(find("#calendar_importer_mode").value).to eq(calendar.importer_mode)
-      end
-
       it "asks for a calendar type when the format isn't detected", :aggregate_failures do
         allow(CalendarImporter::CalendarImporter).to receive(:new)
           .and_raise(CalendarImporter::Exceptions::UnsupportedFeed)
@@ -221,6 +218,15 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
         let!(:calendar) do
           create(:calendar, organiser: partner, name: "Test Calendar")
             .tap { |c| c.update_column(:importer_mode, "ical") } # rubocop:disable Rails/SkipsModelValidations
+        end
+
+        it "sets the type to auto-detect when the detected type isn't in the type list", :aggregate_failures do
+          expect(find("#calendar_importer_mode").value).to eq("ical")
+          stub_detection(CalendarImporter::Parsers::ManchesterUni)
+          test_source(manchester_url)
+
+          expect(page).to have_content("This URL is valid and ready to import!")
+          expect(find("#calendar_importer_mode").value).to eq("auto")
         end
 
         it "keeps it when the format isn't detected", :aggregate_failures do

@@ -30,7 +30,7 @@ class CalendarImporter::CalendarImporter
 
   def parser
     @parser ||=
-      # The form never saves a blank mode, but one set from the console means auto-detect
+      # A blank mode means auto-detect
       if @calendar.importer_mode.blank? || @calendar.importer_mode == 'auto'
         PARSERS.find { |parser| parser.handles_url?(@calendar) }
 
