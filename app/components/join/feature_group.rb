@@ -9,15 +9,19 @@ class Components::Join::FeatureGroup < Components::Join::Base
   }.freeze
 
   prop :group, Hash
+  # Alternate groups sit on a tinted band so each reads as its own section.
+  prop :banded, _Boolean, default: false
 
   def view_template
-    section(id: @group[:key], aria_labelledby: "#{@group[:key]}-heading") do
-      UI::Heading(id: "#{@group[:key]}-heading", spacing: :xs) { @group[:title] }
-      UI::Text(variant: :lede, tone: :muted, measure: :prose, spacing: :lg) { @group[:summary] }
-      UI::Grid(cols: { md: 2, lg: @group[:items].size == 3 ? 3 : 4 }) do
-        @group[:items].each { |item| Join::FeatureCard(title: item[:title], body: item[:body]) }
+    section(id: @group[:key], class: ['py-12', ('bg-home-background-3' if @banded)], aria_labelledby: "#{@group[:key]}-heading") do
+      div(class: 'container-public') do
+        UI::Heading(id: "#{@group[:key]}-heading", spacing: :xs) { @group[:title] }
+        UI::Text(variant: :lede, tone: :muted, measure: :prose, spacing: :lg) { @group[:summary] }
+        UI::Grid(cols: { md: 2, lg: @group[:items].size == 3 ? 3 : 4 }) do
+          @group[:items].each { |item| Join::FeatureCard(title: item[:title], body: item[:body]) }
+        end
+        render_link if @group[:link]
       end
-      render_link if @group[:link]
     end
   end
 

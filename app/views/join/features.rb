@@ -14,20 +14,14 @@ class Views::Join::Features < Views::Join::Base
       subtitle: t('join.features.lede')
     )
 
-    section(class: 'py-10') do
-      div(class: 'container-public') do
-        UI::Stack(gap: :xl) do
-          t('join.features.groups').each { |group| Join::FeatureGroup(group:) }
-        end
-      end
-    end
+    t('join.features.groups').each_with_index { |group, index| Join::FeatureGroup(group:, banded: index.even?) }
     render_planned
   end
 
   private
 
   def render_planned
-    section(class: 'py-10 bg-home-background-3', aria_labelledby: 'planned-heading') do
+    section(class: 'py-12 bg-home-background-3', aria_labelledby: 'planned-heading') do
       div(class: 'container-public') do
         UI::Kicker(tone: :muted, spacing: :xs) { t('join.features.planned.kicker') }
         UI::Heading(id: 'planned-heading', spacing: :xs) { t('join.features.planned.title') }
