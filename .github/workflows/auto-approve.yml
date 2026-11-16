@@ -1,0 +1,31 @@
+name: Auto-approve
+
+# Kim's PRs meet the one-approval rule on main without a second person.
+# Everyone else's still need a human review, and the ci check still gates merging.
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review, synchronize]
+
+permissions:
+  contents: read
+
+jobs:
+  approve:
+    if: >-
+      github.event.pull_request.user.login == 'kimadactyl' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      !github.event.pull_request.draft
+    permissions:
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Approve unless already approved
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          approved=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR/reviews" \
+            --jq '[.[] | select(.user.login == "github-actions[bot]" and .state == "APPROVED")] | length')
+          if [ "$approved" -eq 0 ]; then
+            gh pr review "$PR" --repo "$GITHUB_REPOSITORY" --approve --body "Auto-approved: opened by kimadactyl."
+          fi
