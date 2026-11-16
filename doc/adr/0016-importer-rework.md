@@ -117,14 +117,16 @@ Source and organiser as now; an optional default location; the room number check
 5. **Location** (decisions 1 to 3), with [#1512](https://github.com/geeksforsocialchange/PlaceCal/issues/1512) and [#2254](https://github.com/geeksforsocialchange/PlaceCal/issues/2254). The largest stage, with the most product decisions.
 6. **Rules.**
 
+## Decided Questions
+
+- **Notices wipe:** not patched separately. The import run record in stage 2 replaces the notices list.
+- **New calendars:** the online question starts on "Sometimes".
+- **Other people's venues:** "Event Matching" is the gate for which partners can be picked as a default location.
+- **Rules:** anyone who can edit the calendar may give events to a partner they don't manage, and that partner's users are emailed.
+
 ## Open Questions
 
-These are **open**.
-
-- **Notices wipe:** patch it now, or leave it for stage 2 to replace?
-- **New calendars:** does the online question start on "Sometimes", or have no default so the person must choose?
-- **Other people's venues:** is "Event Matching" the right gate for which partners can be a default location?
-- **Rules:** who may give events to a partner they don't manage?
+- **Rules:** is the email to the receiving partner a notification, or a confirmation the rule waits for?
 
 ## References
 
