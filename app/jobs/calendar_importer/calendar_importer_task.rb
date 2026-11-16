@@ -122,9 +122,7 @@ class CalendarImporter::CalendarImporterTask
     return if parsed_event.private?
     return if parsed_event.no_occurences?
 
-    parsed_event.determine_online_location
-
-    parsed_event.determine_location_for_strategy
+    parsed_event.resolve
     unreadable_addresses[parsed_event.unreadable_address_reason] << parsed_event.data if parsed_event.unreadable_address_reason
 
     active_event_uids << parsed_event.uid

@@ -10,8 +10,7 @@ CalendarImporterJob
     → Parser (ICS, Eventbrite, TicketSource, etc.)
       → CalendarImporter::Events::* (normalised event data)
         → CalendarImporter::EventResolver (coordinator)
-          → CalendarImporter::LocationResolver (place + address)
-          → CalendarImporter::OnlineDetector (online links)
+          → resolve: online link, then CalendarImporter::LocationResolver (place + address), then organiser
           → save_all_occurences (persist to DB)
 ```
 
@@ -49,7 +48,7 @@ When the default place has no address (a partner with only a service area), the 
 
 ## Online Detection
 
-`OnlineDetector` checks event data for online meeting links:
+Each event class's `online_event_id` finds or creates an `OnlineAddress` for the event's online meeting link. `EventResolver#resolve` calls it before resolving the location, so the link is kept even when the location can't be resolved. It looks at:
 
 - Google Meet custom properties (`x_google_conference`)
 - URLs in description matching: Zoom, Google Meet, Jitsi, Microsoft Teams

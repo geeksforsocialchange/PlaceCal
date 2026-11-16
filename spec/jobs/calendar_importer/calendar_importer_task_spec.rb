@@ -183,14 +183,38 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
       parsed_event = instance_double(
         CalendarImporter::EventResolver,
         private?: false,
-        no_occurences?: false,
-        determine_online_location: nil
+        no_occurences?: false
       )
-      allow(parsed_event).to receive(:determine_location_for_strategy)
+      allow(parsed_event).to receive(:resolve)
         .and_raise(CalendarImporter::LocationResolver::Problem, "N/A")
 
       expect { importer_task.send(:process_event, parsed_event) }.not_to raise_error
       expect(importer_task.send(:notices)).to eq(["N/A"])
+    end
+
+    it "removes the upcoming rows of an event whose location can't be resolved", :aggregate_failures do
+      url = "https://calendar.example.org/rooms.ics"
+      start = 2.weeks.from_now.utc.strftime("%Y%m%dT100000Z")
+      vevents = %w[problem@example.com good@example.com].flat_map do |uid|
+        ["BEGIN:VEVENT", "UID:#{uid}", "DTSTAMP:20261101T000000Z", "DTSTART:#{start}", "SUMMARY:#{uid}", "END:VEVENT"]
+      end
+      body = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//PlaceCal//Test//EN", *vevents, "END:VCALENDAR", ""].join("\r\n")
+      stub_request(:get, url).to_return(status: 200, body:, headers: { "Content-Type" => "text/calendar" })
+
+      calendar = create(:calendar, source: url, importer_mode: "ical", strategy: "place")
+      calendar.update!(calendar_state: "in_worker")
+      create(:event, calendar:, uid: "problem@example.com", dtstart: 2.weeks.from_now, dtend: 2.weeks.from_now + 1.hour)
+
+      unplaceable = instance_double(CalendarImporter::LocationResolver)
+      allow(unplaceable).to receive(:resolve).and_raise(CalendarImporter::LocationResolver::Problem, "Can't place it")
+      allow(CalendarImporter::LocationResolver).to receive(:new).and_wrap_original do |original, cal, data|
+        data.uid == "problem@example.com" ? unplaceable : original.call(cal, data)
+      end
+
+      expect { described_class.new(calendar, Time.zone.today, true).run }
+        .to change { calendar.events.upcoming.where(uid: "problem@example.com").count }.from(1).to(0)
+      expect(calendar.events.upcoming.pluck(:uid)).to eq(["good@example.com"])
+      expect(calendar.reload.notices).to eq(["Can't place it"])
     end
   end
 
