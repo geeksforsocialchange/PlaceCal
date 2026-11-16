@@ -6,7 +6,7 @@ class Views::Sites::Events::Show < Views::Base
   MIN_DESCRIPTION_LENGTH = 100
   SECTION_BODY = 'text-sm leading-normal'
   # Core themes sit the details close under their headings, with the venue's name and the address as one block
-  CORE_SECTION_BODY = 'text-sm leading-normal [&>:first-child]:mt-0 [&>[data-part=venue]]:mb-0 [&>[data-part=venue]+*]:mt-0'
+  CORE_SECTION_BODY = 'text-sm leading-normal details-body'
 
   theme_scope :event_details,
               parts: {

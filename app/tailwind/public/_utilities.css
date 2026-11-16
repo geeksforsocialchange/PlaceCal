@@ -242,3 +242,18 @@
 	padding: 0;
 	list-style-type: none;
 }
+
+/* Details close under their heading: the first line keeps no top margin, and a venue line joins the address under it */
+@utility details-body {
+	& > :first-child {
+		margin-top: 0;
+	}
+
+	& > [data-part="venue"] {
+		margin-bottom: 0;
+	}
+
+	& > [data-part="venue"] + * {
+		margin-top: 0;
+	}
+}
