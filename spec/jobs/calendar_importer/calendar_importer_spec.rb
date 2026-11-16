@@ -3,6 +3,18 @@
 require "rails_helper"
 
 RSpec.describe CalendarImporter::CalendarImporter do
+  describe "PARSERS" do
+    let(:keys) { described_class::PARSERS.map { |parser| parser::KEY } }
+
+    it "gives every parser a key" do
+      expect(described_class::PARSERS.select { |parser| parser::KEY.blank? }).to be_empty
+    end
+
+    it "gives every parser a different key" do
+      expect(keys.tally.select { |_key, count| count > 1 }.keys).to be_empty
+    end
+  end
+
   describe "#parser" do
     context "with webcal calendars" do
       let(:url) { "webcal://p24-calendars.icloud.com/published/2/WvhkIr4F3oBQrToPU-lkO6WwDTpzNTpENs-Qtbo48FhhrAfDp3gkIal2XPd5eUVO0LLERrehetRzj43c6zvbotf9_DNI6heKXBejvAkz8JQ" }
@@ -287,6 +299,15 @@ RSpec.describe CalendarImporter::CalendarImporter do
       end
     end
 
+    it "auto-detects when the importer mode is blank" do
+      VCR.use_cassette("heart_of_torbay") do
+        calendar = create(:calendar, name: "Heart of Torbay", source: "https://www.heartoftorbaycic.com/events", importer_mode: "auto")
+        calendar.importer_mode = ""
+
+        expect(described_class.new(calendar).parser::KEY).to eq("ld-json")
+      end
+    end
+
     it "raises error for unhandled calendar sources" do
       VCR.use_cassette("gfsc_studio") do
         calendar = build(:calendar, name: "GFSC Studio", source: "https://gfsc.studio", importer_mode: "auto")
@@ -294,6 +315,17 @@ RSpec.describe CalendarImporter::CalendarImporter do
         expect do
           described_class.new(calendar).parser
         end.to raise_error(CalendarImporter::Exceptions::UnsupportedFeed)
+      end
+    end
+  end
+
+  describe "manual selection" do
+    it "picks the Manchester University parser when its key is the importer mode" do
+      VCR.use_cassette("Martin_Harris_Centre", allow_playback_repeats: true) do
+        calendar = create(:calendar, source: "http://events.manchester.ac.uk/f3vf/calendar/tag:martin_harris_centre/view:list/p:q_details/calml.xml",
+                                     importer_mode: "manchester-uni")
+
+        expect(described_class.new(calendar).parser).to eq(CalendarImporter::Parsers::ManchesterUni)
       end
     end
   end
