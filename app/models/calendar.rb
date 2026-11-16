@@ -246,14 +246,16 @@ class Calendar < ApplicationRecord
   # Push calendar into the import queue.
   # @param force_import [Boolean] bypass redundant-import checks
   # @param from_date [Time] start point for the import window
-  # @return [void]
+  # @return [Boolean] whether it was queued (false while an import is already queued or running)
   def queue_for_import!(force_import, from_date = Time.current)
     without_timestamps do
-      return if busy?
+      lock! # re-read the state so a scan that queued it meanwhile isn't doubled
+      return false if busy?
 
       update! calendar_state: :in_queue, notices: nil, import_started_at: DateTime.current, import_job_id: nil
       job = CalendarImporterJob.perform_later id, from_date, force_import
       update_column :import_job_id, job.provider_job_id if job.try(:provider_job_id) # rubocop:disable Rails/SkipsModelValidations
+      true
     end
   end
 
@@ -290,6 +292,9 @@ class Calendar < ApplicationRecord
   # @return [void]
   def flag_checksum_change!(checksum)
     without_timestamps do
+      # The feed was edited during this import, so keep its checksum cleared for the next scan
+      return if self.class.where(id:).pick(*FEED_ATTRIBUTES) != FEED_ATTRIBUTES.map { |a| self[a] }
+
       update!(
         last_checksum: checksum,
         checksum_updated_at: DateTime.current
@@ -348,7 +353,9 @@ class Calendar < ApplicationRecord
 
   # @return [Boolean] whether unsaved changes alter what an import fetches
   def feed_changed?
-    changed.intersect?(FEED_ATTRIBUTES)
+    FEED_ATTRIBUTES.any? do |attr|
+      attribute_changed?(attr) && attribute_was(attr).to_s.strip.presence != self[attr].to_s.strip.presence
+    end
   end
 
   # is calendar being worked on by our backend?

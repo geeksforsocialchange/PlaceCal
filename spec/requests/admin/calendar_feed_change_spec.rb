@@ -36,9 +36,11 @@ RSpec.describe "Admin calendar update when the feed changes", type: :request do
     expect(response.body).to include(I18n.t("admin.calendars.importer.importing"))
   end
 
-  it "queues an import when the calendar type or API key changes", :aggregate_failures do
+  it "queues an import when the calendar type changes" do
     expect { update_calendar(importer_mode: "ld-json") }.to have_enqueued_job(CalendarImporterJob)
-    calendar.update_columns(calendar_state: "idle") # rubocop:disable Rails/SkipsModelValidations
+  end
+
+  it "queues an import when only the API key changes" do
     expect { update_calendar(api_token: "new-key") }.to have_enqueued_job(CalendarImporterJob)
   end
 
@@ -48,6 +50,13 @@ RSpec.describe "Admin calendar update when the feed changes", type: :request do
     expect(calendar.calendar_state).to eq("error")
     expect(calendar.last_checksum).to eq("abc123")
     expect(flash[:success]).to eq(I18n.t("admin.calendars.flash.updated"))
+  end
+
+  it "treats a stored blank API key and a source with stray spaces as unchanged" do
+    calendar.update_columns(api_token: "") # rubocop:disable Rails/SkipsModelValidations
+
+    expect { update_calendar(name: "Renamed calendar", source: " #{calendar.source} ") }
+      .not_to have_enqueued_job(CalendarImporterJob)
   end
 
   it "leaves a running import alone but clears the checksum so the next scan reads the new source", :aggregate_failures do
