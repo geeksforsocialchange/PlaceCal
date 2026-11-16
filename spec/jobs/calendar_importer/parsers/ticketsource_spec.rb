@@ -113,6 +113,21 @@ RSpec.describe CalendarImporter::Parsers::Ticketsource do
       end
 
       let(:dates_url) { "https://api.ticketsource.io/events/evt_123/dates?page=1&per_page=100" }
+      let(:venues_url) { "https://api.ticketsource.io/events/evt_123/venues" }
+      let(:venues_response) do
+        {
+          "data" => [
+            {
+              "id" => "ven_789",
+              "attributes" => {
+                "name" => "Fairfield House",
+                "capacity" => 120,
+                "address" => { "line_1" => "10 High Street", "line_3" => "Bath", "postcode" => "BA1 5AH", "latitude" => 51.38 }
+              }
+            }
+          ]
+        }.to_json
+      end
 
       def dates_page(*ids, next_link: nil)
         {
@@ -124,6 +139,8 @@ RSpec.describe CalendarImporter::Parsers::Ticketsource do
       before do
         stub_request(:get, dates_url)
           .to_return(status: 200, body: dates_page("date_1"), headers: { "Content-Type" => "application/json" })
+        stub_request(:get, venues_url)
+          .to_return(status: 200, body: venues_response, headers: { "Content-Type" => "application/json" })
       end
 
       it "fetches events from the API with their dates" do
@@ -137,6 +154,32 @@ RSpec.describe CalendarImporter::Parsers::Ticketsource do
         expect(data.length).to eq(1)
         expect(data.first["id"]).to eq("evt_123")
         expect(data.first["dates"].pluck("id")).to eq(["date_1"])
+      end
+
+      it "fetches each event's venue with only the fields the importer reads" do
+        stub_request(:get, "https://api.ticketsource.io/events?page=1&per_page=100")
+          .to_return(status: 200, body: events_response, headers: { "Content-Type" => "application/json" })
+
+        data = described_class.new(calendar).download_calendar
+
+        expect(data.first["venue"]).to eq(
+          "attributes" => {
+            "name" => "Fairfield House",
+            "address" => { "line_1" => "10 High Street", "line_3" => "Bath", "postcode" => "BA1 5AH" }
+          }
+        )
+      end
+
+      it "keeps the event without a venue when the venues request fails" do
+        allow(CalendarImporter::Parsers::Base).to receive(:sleep)
+        stub_request(:get, "https://api.ticketsource.io/events?page=1&per_page=100")
+          .to_return(status: 200, body: events_response, headers: { "Content-Type" => "application/json" })
+        stub_request(:get, venues_url).to_return(status: 500)
+
+        data = described_class.new(calendar).download_calendar
+
+        expect(data.first["dates"].pluck("id")).to eq(["date_1"])
+        expect(data.first["venue"]).to be_nil
       end
 
       it "reads every page of an event's dates" do
@@ -173,6 +216,7 @@ RSpec.describe CalendarImporter::Parsers::Ticketsource do
         described_class.new(calendar).download_calendar
 
         expect(a_request(:get, dates_url)).not_to have_been_made
+        expect(a_request(:get, venues_url)).not_to have_been_made
       end
 
       it "retries a transient 5xx response then succeeds (ApiBase retry path)" do
@@ -233,33 +277,20 @@ RSpec.describe CalendarImporter::Parsers::Ticketsource do
               "cancelled" => false
             }
           }
-        ]
-      }
-    end
-
-    let(:venues_response) do
-      {
-        "data" => [
-          {
-            "id" => "ven_789",
-            "attributes" => {
-              "name" => "Fairfield House",
-              "address" => {
-                "line_1" => "10 High Street",
-                "line_2" => "",
-                "line_3" => "Bath",
-                "line_4" => "",
-                "postcode" => "BA1 5AH"
-              }
+        ],
+        "venue" => {
+          "attributes" => {
+            "name" => "Fairfield House",
+            "address" => {
+              "line_1" => "10 High Street",
+              "line_2" => "",
+              "line_3" => "Bath",
+              "line_4" => "",
+              "postcode" => "BA1 5AH"
             }
           }
-        ]
-      }.to_json
-    end
-
-    before do
-      stub_request(:get, %r{api\.ticketsource\.io/events/evt_123/venues})
-        .to_return(status: 200, body: venues_response, headers: { "Content-Type" => "application/json" })
+        }
+      }
     end
 
     it "converts raw data to TicketsourceEvent objects" do
@@ -316,11 +347,8 @@ RSpec.describe CalendarImporter::Parsers::Ticketsource do
       expect(events).to be_empty
     end
 
-    it "imports the event without a venue when the venues request fails" do
-      allow(CalendarImporter::Parsers::Base).to receive(:sleep)
-      stub_request(:get, %r{api\.ticketsource\.io/events/evt_123/venues}).to_return(status: 500)
-
-      events = parser.import_events_from([sample_event_data])
+    it "imports the event without a location when it has no venue" do
+      events = parser.import_events_from([sample_event_data.merge("venue" => nil)])
 
       expect(events.map(&:uid)).to eq(["evt_123-date_456"])
       expect(events.first.location).to be_nil

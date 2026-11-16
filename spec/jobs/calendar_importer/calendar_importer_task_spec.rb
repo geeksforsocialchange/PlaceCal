@@ -276,6 +276,7 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
                         importer_mode: "ticketsource", api_token: "test_key")
     end
     let(:dates_url) { "https://api.ticketsource.io/events/e1/dates?page=1&per_page=100" }
+    let(:venues_url) { "https://api.ticketsource.io/events/e1/venues" }
 
     def json(body)
       { status: 200, body: body.to_json, headers: { "Content-Type" => "application/json" } }
@@ -286,9 +287,17 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
                                       "end" => "2022-11-#{day}T21:00:00+00:00" } }
     end
 
+    def ts_venue(postcode)
+      { "data" => [{ "id" => "v1", "attributes" => { "name" => "Hall", "address" => { "line_1" => "1 High Street", "postcode" => postcode } } }] }
+    end
+
     def run_import
       calendar.update!(calendar_state: "in_worker")
       described_class.new(calendar, Time.zone.today, false).run
+    end
+
+    def event_postcode
+      calendar.events.sole.address&.postcode
     end
 
     before do
@@ -320,6 +329,40 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
 
       expect(calendar.reload.last_checksum).to eq(checksum)
       expect(calendar.events.pluck(:summary)).to eq(["Edited locally"])
+    end
+
+    it "updates an event's address when only its venue changes" do
+      create(:riverside_ward)
+      create(:oldtown_ward)
+      stub_request(:get, dates_url).to_return(json("data" => [ts_date("d1", 20)]))
+      stub_request(:get, venues_url).to_return(json(ts_venue("ZZMB 1RS")))
+      run_import
+      expect(event_postcode).to eq("ZZMB 1RS")
+
+      stub_request(:get, venues_url).to_return(json(ts_venue("ZZMB 2OT")))
+      run_import
+
+      expect(event_postcode).to eq("ZZMB 2OT")
+    end
+
+    it "fetches the venue again on the next import after a venue request fails" do
+      allow(CalendarImporter::Parsers::Base).to receive(:sleep)
+      create(:riverside_ward)
+      stub_request(:get, dates_url).to_return(json("data" => [ts_date("d1", 20)]))
+      stub_request(:get, venues_url).to_return(json(ts_venue("ZZMB 1RS")))
+      run_import
+      expect(event_postcode).to eq("ZZMB 1RS")
+
+      stub_request(:get, venues_url).to_return(status: 500)
+      run_import
+      expect(event_postcode).to be_nil
+      expect(calendar.reload.last_checksum).to be_nil
+
+      stub_request(:get, venues_url).to_return(json(ts_venue("ZZMB 1RS")))
+      run_import
+
+      expect(event_postcode).to eq("ZZMB 1RS")
+      expect(calendar.reload.last_checksum).to be_present
     end
   end
 end

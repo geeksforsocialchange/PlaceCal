@@ -23,6 +23,13 @@ module CalendarImporter
         USER_AGENT
       end
 
+      # Cleared rather than left unstored, as a retry's feed can match the last stored checksum and be skipped.
+      def calendar_to_events
+        output = super
+        output.checksum = nil if @venue_request_failed
+        output
+      end
+
       def import_events_from(data)
         return [] unless data.is_a?(Array)
 
@@ -31,7 +38,6 @@ module CalendarImporter
 
           event_id = event_data['id']
           attrs = event_data['attributes']
-          venue = fetch_event_venues(event_id).first
 
           (event_data['dates'] || []).filter_map do |date_data|
             date_attrs = date_data['attributes'] || {}
@@ -41,7 +47,7 @@ module CalendarImporter
               'id' => event_id,
               'attributes' => attrs,
               'date' => date_data,
-              'venue' => venue,
+              'venue' => event_data['venue'],
               'publisher_url' => build_publisher_url(event_data)
             }
             Events::TicketsourceEvent.new(merged)
@@ -51,18 +57,27 @@ module CalendarImporter
 
       private
 
-      # Dates are fetched here so they count towards the checksum, and a failed request fails the import.
+      # Dates and venues are fetched here so they count towards the checksum, and a failed dates request fails the import.
       def fetch_all_events
         fetch_all_pages('/events').each do |event_data|
           next unless importable?(event_data)
 
           event_data['dates'] = fetch_all_pages("/events/#{event_data['id']}/dates").map { |date| date_fields(date) }
+          event_data['venue'] = venue_fields(fetch_event_venues(event_data['id']).first)
         end
       end
 
       # Only the fields the importer reads, so changes like ticket counts don't alter the checksum.
       def date_fields(date)
         { 'id' => date['id'], 'attributes' => (date['attributes'] || {}).slice('start', 'end', 'cancelled') }
+      end
+
+      def venue_fields(venue)
+        return unless venue
+
+        attrs = venue['attributes'] || {}
+        address = (attrs['address'] || {}).slice('line_1', 'line_2', 'line_3', 'line_4', 'postcode')
+        { 'attributes' => { 'name' => attrs['name'], 'address' => address } }
       end
 
       def fetch_all_pages(path)
@@ -96,6 +111,7 @@ module CalendarImporter
         response['data'] || []
       rescue StandardError => e
         Rails.logger.warn "#{NAME}: Failed to fetch venues for event #{event_id}: #{e.message}"
+        @venue_request_failed = true
         []
       end
 
