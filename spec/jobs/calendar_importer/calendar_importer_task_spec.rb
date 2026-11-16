@@ -345,24 +345,22 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
       expect(event_postcode).to eq("ZZMB 2OT")
     end
 
-    it "fetches the venue again on the next import after a venue request fails" do
+    it "keeps the event's address when a venue request fails, and reads the venue on the next import" do
       allow(CalendarImporter::Parsers::Base).to receive(:sleep)
       create(:riverside_ward)
+      create(:oldtown_ward)
       stub_request(:get, dates_url).to_return(json("data" => [ts_date("d1", 20)]))
       stub_request(:get, venues_url).to_return(json(ts_venue("ZZMB 1RS")))
       run_import
-      expect(event_postcode).to eq("ZZMB 1RS")
 
       stub_request(:get, venues_url).to_return(status: 500)
-      run_import
-      expect(event_postcode).to be_nil
-      expect(calendar.reload.last_checksum).to be_nil
-
-      stub_request(:get, venues_url).to_return(json(ts_venue("ZZMB 1RS")))
-      run_import
-
+      expect { run_import }.to raise_error(CalendarImporter::Exceptions::InaccessibleFeed)
       expect(event_postcode).to eq("ZZMB 1RS")
-      expect(calendar.reload.last_checksum).to be_present
+
+      stub_request(:get, venues_url).to_return(json(ts_venue("ZZMB 2OT")))
+      run_import
+
+      expect(event_postcode).to eq("ZZMB 2OT")
     end
   end
 end

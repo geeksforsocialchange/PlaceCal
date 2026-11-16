@@ -170,16 +170,16 @@ RSpec.describe CalendarImporter::Parsers::Ticketsource do
         )
       end
 
-      it "keeps the event without a venue when the venues request fails" do
+      it "raises when an event's venues request fails" do
         allow(CalendarImporter::Parsers::Base).to receive(:sleep)
         stub_request(:get, "https://api.ticketsource.io/events?page=1&per_page=100")
           .to_return(status: 200, body: events_response, headers: { "Content-Type" => "application/json" })
         stub_request(:get, venues_url).to_return(status: 500)
 
-        data = described_class.new(calendar).download_calendar
-
-        expect(data.first["dates"].pluck("id")).to eq(["date_1"])
-        expect(data.first["venue"]).to be_nil
+        expect { described_class.new(calendar).download_calendar }.to raise_error(
+          CalendarImporter::Exceptions::InaccessibleFeed,
+          /code=500/
+        )
       end
 
       it "reads every page of an event's dates" do

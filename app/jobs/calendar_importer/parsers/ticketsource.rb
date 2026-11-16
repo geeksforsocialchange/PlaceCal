@@ -23,13 +23,6 @@ module CalendarImporter
         USER_AGENT
       end
 
-      # Cleared rather than left unstored, as a retry's feed can match the last stored checksum and be skipped.
-      def calendar_to_events
-        output = super
-        output.checksum = nil if @venue_request_failed
-        output
-      end
-
       def import_events_from(data)
         return [] unless data.is_a?(Array)
 
@@ -57,7 +50,7 @@ module CalendarImporter
 
       private
 
-      # Dates and venues are fetched here so they count towards the checksum, and a failed dates request fails the import.
+      # Dates and venues are fetched here so they count towards the checksum, and a failed request fails the import.
       def fetch_all_events
         fetch_all_pages('/events').each do |event_data|
           next unless importable?(event_data)
@@ -107,12 +100,7 @@ module CalendarImporter
 
       def fetch_event_venues(event_id)
         url = "#{API_BASE_URL}/events/#{event_id}/venues"
-        response = fetch_page_json(url)
-        response['data'] || []
-      rescue StandardError => e
-        Rails.logger.warn "#{NAME}: Failed to fetch venues for event #{event_id}: #{e.message}"
-        @venue_request_failed = true
-        []
+        fetch_page_json(url)['data'] || []
       end
 
       def build_publisher_url(event_data)
