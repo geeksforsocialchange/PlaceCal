@@ -165,26 +165,153 @@ en:
             body: Visitors see the whole cultural offer, not just the venues that pay for listings.
     features:
       title: Everything PlaceCal does.
-      lede: A thorough list of what PlaceCal can do. See the pricing page for what comes with each plan.
-      list:
-        - title: Hyperlocal by default
-          body: Every partnership runs on its own subdomain with curated partners, events and neighbourhoods.
-        - title: Works with existing tools
-          body: Community groups use Google Calendar, Outlook, Facebook, iCal feeds, whatever they already have. We integrate.
-        - title: Collective ownership
-          body: Not-for-profit, co-operative, and co-owned by the partnerships who use it.
-        - title: Accessibility first
-          body: Built to WCAG 2.2 AA, tested with older adults and people using screen readers.
-        - title: Training included
-          body: We deliver the training programme for institutions and community groups so everyone can publish and update.
-        - title: Open API
-          body: Every event, partner and article on PlaceCal is available through a documented, standards-based GraphQL API. Your own site, app, or AI assistant can pull community events filtered by area, date and category.
-        - title: Map & location tools
-          body: Every partner pinned. Filter by walking distance, neighbourhood or ward.
-        - title: Social prescribing ready
-          body: "Designed with link workers: 30-second search, one-click referral sheet."
-        - title: Multi-site partnerships
-          body: One partner can appear on several local PlaceCals without duplicating data.
+      lede: What PlaceCal does today, and the features we're planning.
+      groups:
+        - key: calendars
+          title: Works with the calendars you already use
+          summary: Groups keep using the tools they already have. PlaceCal reads their calendars and keeps every listing up to date.
+          link: handbook
+          link_label: See every supported calendar source
+          items:
+            - title: Calendar apps
+              icon: calendar
+              brands: [googlecalendar, microsoftoutlook, teamup]
+              body: Google Calendar, Outlook and Microsoft 365, Teamup, and any calendar that publishes an iCal feed.
+            - title: Ticketing and event sites
+              icon: ticket
+              brands:
+                [
+                  eventbrite,
+                  meetup,
+                  tickettailor,
+                  ticketsource,
+                  ticketsolve,
+                  outsavvy,
+                ]
+              body: Eventbrite, Meetup, Ticket Tailor, TicketSource, Ticketsolve, OutSavvy and Resident Advisor.
+            - title: Website builders
+              icon: desktop
+              brands: [wordpress, squarespace, wix]
+              body: Event pages on WordPress, Squarespace and Wix, and any website that publishes its events as schema.org JSON-LD.
+            - title: Online events
+              icon: video
+              brands: [zoom, microsoftteams, googlemeet, jitsi]
+              body: Online events on sites like Zoom, Microsoft Teams, Google Meet and Jitsi are picked up automatically.
+        - key: neighbourhoods
+          title: Built for neighbourhoods
+          summary: Every PlaceCal is local, curated by the people who know the area.
+          link: directory
+          link_label: Browse the nationwide directory
+          items:
+            - title: Your own local site
+              icon: map_pin
+              body: Every partnership runs its own site with curated partners, events and neighbourhoods.
+            - title: Maps and neighbourhoods
+              icon: map
+              body: Every partner on a map, and events and partners filtered by neighbourhood.
+            - title: One partner, multiple sites
+              icon: link
+              body: Partners just need to list once and their info can be reused by everyone.
+            - title: Nationwide directory
+              icon: globe
+              body: Everything shows up in our national listings so everyone can find you.
+        - key: accessibility
+          title: Accessible for everyone
+          summary: Built so everyone in a neighbourhood can use it, whatever device or assistive technology they use.
+          link: accessibility
+          link_label: Read our accessibility statement
+          items:
+            - title: WCAG 2.2 AA
+              icon: check_circle
+              body: Public pages and the admin area meet WCAG 2.2 at level AA, checked automatically on every change and by hand in the browser.
+            - title: Keyboard and screen reader friendly
+              icon: keyboard
+              body: Skip links, visible focus, filters that announce their results, and pages that reflow at 400% zoom.
+            - title: Venue access information
+              icon: accessibility
+              body: Groups can describe step-free access, toilets, transport and quiet spaces, so people know before they go.
+        - key: open_data
+          title: Open data, ready for AI
+          summary: Your listings reach people wherever they look, from search engines to AI assistants.
+          link: mcp
+          link_label: Use PlaceCal with an AI assistant
+          items:
+            - title: Ask an AI assistant
+              icon: chat
+              brands: [openai, claude, googlegemini, microsoftcopilot]
+              body: Connect PlaceCal's free MCP server to ChatGPT, Claude, Gemini or Copilot and ask what's on nearby.
+            - title: Found by search engines
+              icon: search
+              body: Every event and partner page carries schema.org JSON-LD, so search engines can show times and places.
+            - title: Calendar feeds
+              icon: rss
+              body: Every site and every partner has a calendar feed people can subscribe to in their own calendar app.
+            - title: An API for your own apps
+              icon: code
+              body: A GraphQL API shaped around schema.org, included in the Organisation and Institution plans.
+        - key: sustainability
+          title: Light on the planet
+          summary: We measure PlaceCal's carbon footprint and publish how we worked it out.
+          link: sustainability
+          link_label: Our climate impact assessment
+          items:
+            - title: Green hosting
+              icon: leaf
+              body: Our hosting and network providers say they power their operations with 100% renewable electricity.
+            - title: A fraction of the data
+              icon: feather
+              body: On a first visit, finding an event on PlaceCal uses under a quarter of the data Eventbrite does, and under a tenth of Facebook's.
+            - title: Measured and published
+              icon: chart_column
+              body: Our figures, method and measuring script are public, and we update them when things change.
+        - key: community
+          title: Owned by the community
+          summary: PlaceCal is run for the neighbourhoods that use it, not for advertisers.
+          link: source_code
+          link_label: See the code on GitHub
+          items:
+            - title: Collective ownership
+              icon: users
+              body: Not-for-profit, co-operative, and co-owned by the partnerships who use it.
+            - title: Open source
+              icon: git_branch
+              body: PlaceCal's code is free and open under the AGPL licence, so it can't be locked away.
+            - title: No ads, no algorithm
+              icon: eye_off
+              body: Nobody pays to be seen, and no algorithm decides which events people see.
+            - title: Training for organisers
+              icon: book
+              body: We train the people who run your PlaceCal and the groups who publish to it, so everyone can keep listings up to date.
+      planned:
+        kicker: Planned
+        title: Planned features
+        lede: These features are planned and not available yet.
+        link_label: Follow our work on GitHub
+        items:
+          - title: Welsh-language sites
+            icon: languages
+            body: Sites that work fully in Welsh, or in Welsh and English side by side.
+          - title: Monthly impact reports
+            icon: clipboard
+            body: A report each month on your site's partners, events and visits, ready to use in your own reporting.
+          - title: Alerts when listings go quiet
+            icon: bell
+            body: See which calendars have stopped updating, and hear about them before residents notice.
+          - title: Export everything
+            icon: download
+            body: Download all of your site's partners, calendars and events whenever you like, so you're never locked in.
+          - title: Events on your own website
+            icon: app_window
+            body: A snippet that shows your PlaceCal events inside the website you already have.
+          - title: Large-print weekly sheets
+            icon: printer
+            body: A printable, large-print sheet of the week's events for noticeboards.
+          - title: Data protection and security pack
+            icon: shield
+            body: A ready-made DPIA template, data processing agreement and security statement for your IT team.
+          - title: Perfect Lighthouse scores
+            icon: lightning
+            body: 100 for performance, accessibility, best practices and SEO across our public pages.
     # Shared by the audience-page aside and the pricing-page timeline.
     rollout:
       heading: A four-step rollout

@@ -107,8 +107,8 @@ class Views::Join::Home < Views::Join::Base
           center: true
         )
         UI::Grid(cols: { md: 2, lg: 3 }) do
-          t('join.features.list').first(6).each do |feature|
-            Join::FeatureCard(title: feature[:title], body: feature[:body])
+          t('join.features.groups').each do |group|
+            Join::FeatureCard(title: group[:title], body: group[:summary])
           end
         end
         div(class: 'text-center mt-6') do
