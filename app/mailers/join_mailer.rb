@@ -16,9 +16,21 @@ class JoinMailer < ApplicationMailer
                   t('join_mailer.join_us.subject')
                 end
 
-      mail(to: site&.join_recipient || ContactRequest::DEFAULT_RECIPIENT, subject:) do |format|
+      mail_headers = { to: site&.join_recipient || ContactRequest::DEFAULT_RECIPIENT, subject:,
+                       reply_to: enquirer_address(contact_request) }.compact
+      mail(mail_headers) do |format|
         format.html { render Views::Mailers::Join::JoinUs.new(contact_request:) }
       end
     end
+  end
+
+  private
+
+  # Left off unless the email is a plain address: the form only checks it is present.
+  def enquirer_address(contact_request)
+    email = contact_request.email.to_s.strip
+    return unless email.match?(URI::MailTo::EMAIL_REGEXP)
+
+    email_address_with_name(email, contact_request.name.to_s.delete("\r\n"))
   end
 end
