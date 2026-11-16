@@ -19,6 +19,21 @@ module CalendarsHelper
       .prepend(['(Auto detect)', 'auto'])
   end
 
+  def source_test_labels
+    scope = 'admin.calendars.wizard.source'
+    {
+      test: t("#{scope}.test_button"),
+      ok: t("#{scope}.test_ok"),
+      error: t("#{scope}.test_error"),
+      fallbackError: t("#{scope}.error"),
+      connectionError: t("#{scope}.connection_error"),
+      apiKeyHeading: t("#{scope}.api_key_heading"),
+      undetectedHeading: t("#{scope}.undetected_heading"),
+      undetected: t("#{scope}.undetected"),
+      defaultName: t("#{scope}.default_name")
+    }
+  end
+
   def summarize_dates(dates)
     if dates.length > 3
       sorted = dates.sort

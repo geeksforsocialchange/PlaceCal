@@ -108,9 +108,9 @@ module Admin
 
       source = params[:source].to_s.strip
 
-      return render json: { valid: false, error: 'Please enter a URL' } if source.blank?
+      return render json: { valid: false, error: t('admin.calendars.wizard.source.blank') } if source.blank?
 
-      return render json: { valid: false, error: 'Please enter a valid URL' } unless Validation::CALENDAR_URL_REGEX.match?(source)
+      return render json: { valid: false, error: t('admin.calendars.wizard.source.invalid') } unless Validation::CALENDAR_URL_REGEX.match?(source)
 
       # Try to detect the importer
       temp_calendar = Calendar.new(source:, importer_mode: 'auto')
@@ -133,7 +133,7 @@ module Admin
 
           render json: response
         else
-          render json: { valid: false, error: 'Unable to detect calendar format' }
+          render json: { valid: false, error: t('admin.calendars.wizard.source.unsupported') }
         end
       rescue CalendarImporter::Exceptions::InaccessibleFeed => e
         render json: { valid: false, error: e.message }
@@ -143,7 +143,7 @@ module Admin
         render json: { valid: false, needs_manual_selection: true }
       rescue StandardError => e
         Rails.logger.error("Calendar test_source error: #{e.message}")
-        render json: { valid: false, error: 'Unable to validate this URL' }
+        render json: { valid: false, error: t('admin.calendars.wizard.source.error') }
       end
     end
 

@@ -5,6 +5,7 @@ class Components::Admin::Base < Components::Base
 
   register_output_helper :level_badge
   register_value_helper :options_for_importer
+  register_value_helper :source_test_labels
   register_value_helper :image_uploader_hint
 
   private

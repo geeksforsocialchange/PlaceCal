@@ -88,6 +88,118 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
     end
   end
 
+  describe "testing a source" do
+    let(:ics_url) { "https://example.com/events.ics" }
+    let(:ticket_tailor_url) { "https://www.tickettailor.com/events/testorg" }
+
+    def stub_detection(parser)
+      importer = instance_double(CalendarImporter::CalendarImporter, parser:)
+      allow(CalendarImporter::CalendarImporter).to receive(:new).and_return(importer)
+    end
+
+    def open_wizard
+      click_link "Calendars"
+      click_link "Add Calendar"
+      expect(page).to have_css("[data-wizard-connected='true']")
+    end
+
+    def test_source(url)
+      fill_in "calendar_source", with: url
+      click_button "Test"
+    end
+
+    def place_value
+      page.evaluate_script(%(document.querySelector("#calendar_place_id").value))
+    end
+
+    context "when adding a calendar" do
+      it "labels the step 1 button Continue once the source is valid", :aggregate_failures do
+        stub_detection(CalendarImporter::Parsers::Ics)
+        open_wizard
+        test_source(ics_url)
+
+        expect(page).to have_content("This URL is valid and ready to import!")
+        expect(page).to have_button("Continue", exact: true)
+        expect(page).to have_no_content("Save & Continue")
+      end
+
+      it "shows an API key note under a warning heading", :aggregate_failures do
+        open_wizard
+        test_source(ticket_tailor_url)
+
+        within(".alert-warning") do
+          expect(page).to have_content("This calendar needs an API key")
+          expect(page).to have_content("Ticket Tailor uses an API key")
+        end
+        expect(page).to have_no_content("Unable to validate this URL")
+      end
+
+      it "reopens on the step with the error and keeps what was entered", :aggregate_failures do
+        stub_detection(CalendarImporter::Parsers::Ics)
+        open_wizard
+        test_source(ics_url)
+        expect(page).to have_content("This URL is valid and ready to import!")
+        click_button "Continue"
+
+        tom_select partner.name, xpath: find("fieldset", text: "Partner Organiser").find(".ts-wrapper").path
+        fill_in "calendar_name", with: "Riverside sessions"
+        click_button "Continue"
+
+        # Step 3 preselects the organiser as default location; clear it so the save fails
+        expect(page).to have_content("Location Settings")
+        page.document.synchronize { raise Capybara::ExpectationNotMet unless place_value == partner.id.to_s }
+        page.execute_script(%(document.querySelector("#calendar_place_id").tomselect.clear()))
+        click_button "Create Calendar"
+
+        expect(page).to have_content("Place can't be blank with this strategy")
+        expect(page).to have_content("Location Settings")
+        expect(page).to have_no_content("Connect Your Calendar")
+        expect(find("#calendar_importer_mode", visible: :all).value).to eq("ical")
+        expect(find("#calendar_organiser_id", visible: :all).value).to eq(partner.id.to_s)
+
+        click_button "Back"
+        click_button "Back"
+        expect(page).to have_content("This URL is valid and ready to import!")
+        expect(page).to have_button("Continue", exact: true, disabled: false)
+      end
+    end
+
+    context "when editing a calendar" do
+      let!(:calendar) { create(:calendar, organiser: partner, name: "Test Calendar") }
+
+      before do
+        click_link "Calendars"
+        await_datatables
+        click_link "Test Calendar"
+      end
+
+      it "shows an API key note under a warning heading", :aggregate_failures do
+        test_source(ticket_tailor_url)
+
+        within(".alert-warning") do
+          expect(page).to have_content("This calendar needs an API key")
+          expect(page).to have_content("Ticket Tailor uses an API key")
+        end
+      end
+
+      it "asks for a calendar type when the format isn't detected", :aggregate_failures do
+        allow(CalendarImporter::CalendarImporter).to receive(:new)
+          .and_raise(CalendarImporter::Exceptions::UnsupportedFeed)
+        test_source("https://example.com/whats-on")
+
+        within(".alert-warning") do
+          expect(page).to have_content("We couldn't detect the calendar type")
+          expect(page).to have_content("Choose its calendar type below")
+        end
+        expect(page).to have_no_content("Unable to validate this URL")
+
+        select "Generic iCal / .ics", from: "calendar_importer_mode"
+        expect(page).to have_content("This URL is valid and ready to import!")
+        expect(page).to have_no_css(".alert-warning")
+      end
+    end
+  end
+
   describe "tom-select inputs on calendar edit form" do
     let!(:calendar) { create(:calendar, organiser: partner, name: "Test Calendar") }
 
