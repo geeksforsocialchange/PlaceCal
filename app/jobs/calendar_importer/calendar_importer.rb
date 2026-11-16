@@ -30,7 +30,8 @@ class CalendarImporter::CalendarImporter
 
   def parser
     @parser ||=
-      if @calendar.importer_mode == 'auto'
+      # A blank mode used to match the one parser with a blank key; read it as auto-detect
+      if @calendar.importer_mode.blank? || @calendar.importer_mode == 'auto'
         PARSERS.find { |parser| parser.handles_url?(@calendar) }
 
       else

@@ -299,6 +299,15 @@ RSpec.describe CalendarImporter::CalendarImporter do
       end
     end
 
+    it "auto-detects when the importer mode is blank" do
+      VCR.use_cassette("heart_of_torbay") do
+        calendar = create(:calendar, name: "Heart of Torbay", source: "https://www.heartoftorbaycic.com/events", importer_mode: "auto")
+        calendar.importer_mode = ""
+
+        expect(described_class.new(calendar).parser::KEY).to eq("ld-json")
+      end
+    end
+
     it "raises error for unhandled calendar sources" do
       VCR.use_cassette("gfsc_studio") do
         calendar = build(:calendar, name: "GFSC Studio", source: "https://gfsc.studio", importer_mode: "auto")
