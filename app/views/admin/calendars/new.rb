@@ -4,6 +4,12 @@ class Views::Admin::Calendars::New < Views::Admin::Base
   prop :calendar, Calendar, reader: :private
   prop :partner, _Nilable(Partner), reader: :private
 
+  STEP_FIELDS = {
+    1 => %i[source importer_mode api_token],
+    2 => %i[organiser organiser_id name],
+    3 => %i[place place_id strategy]
+  }.freeze
+
   def view_template
     content_for(:title) { 'New Calendar' }
 
@@ -14,10 +20,12 @@ class Views::Admin::Calendars::New < Views::Admin::Base
 
     div(data: {
           controller: 'calendar-wizard',
-          'calendar-wizard-current-step-value': '1',
+          'calendar-wizard-current-step-value': initial_step.to_s,
           'calendar-wizard-total-steps-value': '3',
           'calendar-wizard-test-url-value': test_source_admin_calendars_path,
-          'calendar-wizard-api-token-parsers-value': api_token_parsers
+          'calendar-wizard-api-token-parsers-value': api_token_parsers,
+          'calendar-wizard-source-valid-value': source_tested?.to_s,
+          'calendar-wizard-labels-value': source_test_labels.to_json
         }) do
       div(class: 'max-w-4xl mx-auto') do
         render_header
@@ -35,14 +43,42 @@ class Views::Admin::Calendars::New < Views::Admin::Base
         SaveBar(
           wizard: true,
           wizard_controller: 'calendar-wizard',
-          submit_label: t('admin.calendars.wizard.create_button'),
-          continue_text_target: true
+          submit_label: t('admin.calendars.wizard.create_button')
         )
       end
     end
   end
 
   private
+
+  # A failed create reopens on the step holding the first field with an error
+  def initial_step
+    @initial_step ||= STEP_FIELDS.find { |_, fields| fields.any? { |f| calendar.errors[f].any? } }&.first || 1
+  end
+
+  # The source passed the model's reachability check, so it doesn't need testing again
+  def source_tested?
+    calendar.errors.any? && calendar.source.present? && calendar.errors[:source].none?
+  end
+
+  def detected_parser
+    return unless source_tested?
+
+    CalendarImporter::CalendarImporter::PARSERS.find { |p| p::KEY == calendar.importer_mode }
+  end
+
+  # The model's undetected-format error asks the user to pick a type from this list
+  def show_importer_mode?
+    calendar.errors.any? && calendar.source.present?
+  end
+
+  def requires_api_token?
+    detected_parser&.requires_api_token? || false
+  end
+
+  def step_class(step)
+    "card bg-base-100 shadow-lg border border-base-300#{' hidden' unless step == initial_step}"
+  end
 
   def render_header
     div(class: 'text-center mb-8') do
@@ -54,11 +90,11 @@ class Views::Admin::Calendars::New < Views::Admin::Base
   def render_steps_indicator
     ul(class: 'steps steps-horizontal w-full mb-8') do
       [
-        ['source', 1, true],
-        ['organiser', 2, false],
-        ['location', 3, false]
-      ].each do |step_key, step_num, primary|
-        li(class: "step#{' step-primary' if primary}",
+        ['source', 1],
+        ['organiser', 2],
+        ['location', 3]
+      ].each do |step_key, step_num|
+        li(class: "step#{' step-primary' if step_num <= initial_step}",
            data: { 'calendar-wizard-target': 'stepIndicator', step: step_num.to_s }) do
           span(class: 'step-content') { t("admin.calendars.wizard.steps.#{step_key}") }
         end
@@ -67,8 +103,7 @@ class Views::Admin::Calendars::New < Views::Admin::Base
   end
 
   def render_step_source(form)
-    div(class: 'card bg-base-100 shadow-lg border border-base-300',
-        data: { 'calendar-wizard-target': 'step', step: '1' }) do
+    div(class: step_class(1), data: { 'calendar-wizard-target': 'step', step: '1' }) do
       div(class: 'card-body') do
         render_step_header(:link, t('admin.calendars.wizard.source.title'),
                            t('admin.calendars.wizard.source.description'))
@@ -119,8 +154,9 @@ class Views::Admin::Calendars::New < Views::Admin::Base
   end
 
   def render_source_feedback
-    div(class: 'mt-2 hidden', data: { 'calendar-wizard-target': 'sourceFeedback' }) do
-      div(class: 'alert alert-success text-sm hidden', data: { 'calendar-wizard-target': 'sourceSuccess' }) do
+    div(class: "mt-2#{' hidden' unless source_tested?}", data: { 'calendar-wizard-target': 'sourceFeedback' }) do
+      div(class: "alert alert-success text-sm#{' hidden' unless source_tested? && !requires_api_token?}",
+          data: { 'calendar-wizard-target': 'sourceSuccess' }) do
         raw icon(:check_circle, size: '5', css_class: 'shrink-0')
         div(class: 'flex-1') do
           p(class: 'font-semibold') { t('admin.calendars.wizard.source.success') }
@@ -128,6 +164,18 @@ class Views::Admin::Calendars::New < Views::Admin::Base
             plain t('admin.calendars.wizard.source.detected_format')
             whitespace
             span(class: 'font-medium', data: { 'calendar-wizard-target': 'detectedFormatName' })
+          end
+        end
+      end
+      div(class: "alert alert-warning text-sm#{' hidden' unless requires_api_token?}",
+          data: { 'calendar-wizard-target': 'sourceWarning' }) do
+        raw icon(:warning, size: '5', css_class: 'shrink-0')
+        div do
+          p(class: 'font-semibold', data: { 'calendar-wizard-target': 'sourceWarningHeading' }) do
+            t('admin.calendars.wizard.source.api_key_heading')
+          end
+          p(class: 'text-xs mt-1', data: { 'calendar-wizard-target': 'sourceWarningMessage' }) do
+            t('admin.calendars.wizard.source.api_importer_warning', name: detected_parser.const_get(:NAME)) if requires_api_token?
           end
         end
       end
@@ -144,11 +192,12 @@ class Views::Admin::Calendars::New < Views::Admin::Base
   def render_importer_mode_field(form)
     Field(for: form.field_id(:importer_mode), label: t('admin.calendars.fields.calendar_type'), prominent: true,
           hint: t('admin.calendars.wizard.source.importer_hint'),
-          class: 'bg-base-200/50 rounded-xl px-6 pb-6 pt-2 hidden !mt-0', data: { 'calendar-wizard-target': 'importerModeSection' }) do |f|
+          class: "bg-base-200/50 rounded-xl px-6 pb-6 pt-2 !mt-0#{' hidden' unless show_importer_mode?}",
+          data: { 'calendar-wizard-target': 'importerModeSection' }) do |f|
       raw form.input_field(:importer_mode, **f.aria,
                            as: :select,
                            collection: options_for_importer,
-                           selected: 'auto',
+                           selected: calendar.importer_mode.presence || 'auto',
                            class: 'select select-bordered w-full',
                            data: { 'calendar-wizard-target': 'importerModeSelect', action: 'change->calendar-wizard#importerModeChanged' })
     end
@@ -157,12 +206,14 @@ class Views::Admin::Calendars::New < Views::Admin::Base
   def render_api_token_field(form)
     Field(for: form.field_id(:api_token), label: t('admin.calendars.fields.api_token'), required: true, prominent: true,
           hint: t('admin.calendars.fields.api_token_hint'),
-          class: 'bg-base-200/50 rounded-xl px-6 pb-6 pt-2 hidden !mt-0', data: { 'calendar-wizard-target': 'apiTokenSection' }) do |f|
+          class: "bg-base-200/50 rounded-xl px-6 pb-6 pt-2 !mt-0#{' hidden' unless requires_api_token?}",
+          data: { 'calendar-wizard-target': 'apiTokenSection' }) do |f|
       raw form.input_field(:api_token, **f.aria,
                            type: :password,
                            class: 'input input-bordered w-full font-mono text-sm',
                            placeholder: t('admin.calendars.fields.api_token_placeholder'),
                            autocomplete: 'off',
+                           value: calendar.api_token,
                            'data-calendar-wizard-target': 'apiTokenInput',
                            'data-action': 'input->calendar-wizard#apiTokenChanged')
     end
@@ -192,8 +243,7 @@ class Views::Admin::Calendars::New < Views::Admin::Base
   end
 
   def render_step_organiser(form)
-    div(class: 'card bg-base-100 shadow-lg border border-base-300 hidden',
-        data: { 'calendar-wizard-target': 'step', step: '2' }) do
+    div(class: step_class(2), data: { 'calendar-wizard-target': 'step', step: '2' }) do
       div(class: 'card-body') do
         render_step_header(:partner, t('admin.calendars.wizard.organiser.title'),
                            t('admin.calendars.wizard.organiser.description'))
@@ -204,7 +254,7 @@ class Views::Admin::Calendars::New < Views::Admin::Base
                                  as: :select,
                                  collection: options_for_organiser,
                                  include_blank: t('admin.placeholders.select_model', model: Partner.model_name.human.downcase),
-                                 selected: partner&.id.to_s,
+                                 selected: (calendar.organiser_id || partner&.id).to_s,
                                  class: 'select select-bordered w-full',
                                  data: { controller: 'tom-select', 'calendar-wizard-target': 'partnerSelect',
                                          action: 'change->calendar-wizard#partnerChanged' })
@@ -223,8 +273,7 @@ class Views::Admin::Calendars::New < Views::Admin::Base
   end
 
   def render_step_location(form)
-    div(class: 'card bg-base-100 shadow-lg border border-base-300 hidden',
-        data: { 'calendar-wizard-target': 'step', step: '3' }) do
+    div(class: step_class(3), data: { 'calendar-wizard-target': 'step', step: '3' }) do
       div(class: 'card-body') do
         render_step_header(:map_pin, t('admin.calendars.wizard.location.title'),
                            t('admin.calendars.wizard.location.description'))

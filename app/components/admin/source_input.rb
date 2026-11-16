@@ -8,7 +8,8 @@ class Components::Admin::SourceInput < Components::Admin::Base
   def view_template
     div(data_controller: 'source-validator',
         data_source_validator_test_url_value: @test_url,
-        data_source_validator_api_token_parsers_value: api_token_modes.to_json) do
+        data_source_validator_api_token_parsers_value: api_token_modes.to_json,
+        data_source_validator_labels_value: source_test_labels.to_json) do
       render_source_field
       if @show_importer
         render_importer_field
@@ -68,7 +69,6 @@ class Components::Admin::SourceInput < Components::Admin::Base
 
   def render_feedback
     div(class: 'mt-3 hidden', data_source_validator_target: 'feedback') do
-      # Success
       div(class: 'alert alert-success text-sm hidden', data_source_validator_target: 'success') do
         icon(:check_circle, size: '5', css_class: 'shrink-0')
         div(class: 'flex-1') do
@@ -81,7 +81,14 @@ class Components::Admin::SourceInput < Components::Admin::Base
         end
       end
 
-      # Error
+      div(class: 'alert alert-warning text-sm hidden', data_source_validator_target: 'warning') do
+        icon(:warning, size: '5', css_class: 'shrink-0')
+        div do
+          p(class: 'font-semibold', data_source_validator_target: 'warningHeading')
+          p(class: 'text-xs mt-1', data_source_validator_target: 'warningMessage')
+        end
+      end
+
       div(class: 'alert alert-error text-sm hidden', data_source_validator_target: 'error') do
         icon(:x_circle, size: '5', css_class: 'shrink-0')
         div do
