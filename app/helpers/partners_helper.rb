@@ -87,6 +87,6 @@ module PartnersHelper
     problems = partner.errors['address.postcode']
     return if problems.empty?
 
-    problems.include? 'has been found but could not be mapped to a neighbourhood at this time'
+    problems.include? I18n.t('activerecord.errors.models.address.attributes.postcode.unmapped')
   end
 end

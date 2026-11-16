@@ -64,13 +64,13 @@ class EventSearch
     [neighbourhood]
   end
 
-  # Wards rarely move; misses aren't kept, as Geocoder reports an outage the same way
+  # Wards rarely move; misses aren't kept, so a postcode tried during an outage is looked up again
   def cached_postcode_neighbourhood_id(postcode)
     key = "event_search/postcode/#{postcode}"
     cached = Rails.cache.read(key)
     return cached if cached
 
-    result = Geocoder.search(postcode).first&.data
+    result = PostcodeLookup.call_or_nil(postcode)
     id = result && Neighbourhood.find_from_postcodesio_response(result)&.id
     Rails.cache.write(key, id, expires_in: 30.days) if id
     id

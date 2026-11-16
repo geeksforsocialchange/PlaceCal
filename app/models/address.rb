@@ -69,15 +69,18 @@ class Address < ApplicationRecord
   # @param postcode [String]
   # @return [Address, nil] persisted address, or nil if save fails
   def self.build_from_components(components, postcode)
-    return if components.blank?
+    build_from_components_with_reason(components, postcode).first
+  end
 
-    address = Address.new(
-      street_address: components[0],
-      street_address2: components[1],
-      street_address3: components[2],
-      postcode:
-    )
-    address.save ? address : nil
+  # Like build_from_components, but says why no address could be built.
+  # @return [Array(Address, nil)] the saved address
+  # @return [Array(nil, Symbol)] nil and one of :no_street, :no_postcode, :postcode_not_found, :lookup_unavailable, :outside_neighbourhoods
+  def self.build_from_components_with_reason(components, postcode)
+    return [nil, :no_street] if components.blank?
+    return [nil, :no_postcode] if postcode.blank?
+
+    address = Address.new(street_address: components[0], street_address2: components[1], street_address3: components[2], postcode:)
+    address.save ? [address, nil] : [nil, address.unreadable_reason]
   end
 
   # Delete addresses not referenced by any partner or event.
@@ -90,6 +93,18 @@ class Address < ApplicationRecord
     count = orphaned.count
     orphaned.in_batches(of: 1000).delete_all if count.positive?
     count
+  end
+
+  # @return [Symbol] why this unsaved address failed validation, in build_from_components_with_reason's terms
+  def unreadable_reason
+    return :no_street if errors.details[:street_address].any?
+
+    case errors.details[:postcode].first&.dig(:error)
+    when :not_found then :postcode_not_found
+    when :lookup_unavailable then :lookup_unavailable
+    when :unmapped then :outside_neighbourhoods
+    else :no_postcode
+    end
   end
 
   # ==== Instance methods ====
@@ -178,16 +193,16 @@ class Address < ApplicationRecord
   # details. We currently require the geocoding result to contain the key
   # 'admin_ward' from postcodes.io
   def geocode_with_ward
-    res = Geocoder.search(postcode).first&.data
+    res = PostcodeLookup.call(postcode)
     if res.nil?
-      errors.add :postcode, 'was not found'
+      errors.add :postcode, :not_found
       return
     end
 
     # There shouldn't be any wards that are outside our system, if there are we just fail.
     neighbourhood = Neighbourhood.find_from_postcodesio_response(res)
     if neighbourhood.nil?
-      errors.add :postcode, 'has been found but could not be mapped to a neighbourhood at this time'
+      errors.add :postcode, :unmapped
       return
     end
 
@@ -201,5 +216,7 @@ class Address < ApplicationRecord
     # Existing addresses are backfilled via the addresses:backfill_city rake
     # task (see #3123).
     self.city = res['admin_district'] if city.blank?
+  rescue PostcodeLookup::Unavailable
+    errors.add :postcode, :lookup_unavailable
   end
 end

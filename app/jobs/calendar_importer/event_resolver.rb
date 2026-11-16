@@ -7,7 +7,7 @@ class CalendarImporter::EventResolver
   # Twice-daily for a year fits; a minutely or hourly rule does not
   MAX_OCCURENCES = 1000
 
-  attr_reader :data, :uid, :notices, :calendar
+  attr_reader :data, :uid, :notices, :calendar, :unreadable_address_reason
 
   delegate :private?, to: :data
 
@@ -39,7 +39,9 @@ class CalendarImporter::EventResolver
   end
 
   def determine_location_for_strategy
-    place, address = CalendarImporter::LocationResolver.new(calendar, data).resolve
+    resolver = CalendarImporter::LocationResolver.new(calendar, data)
+    place, address = resolver.resolve
+    @unreadable_address_reason = resolver.unreadable_address_reason
 
     data.place_id = place.id if place
     data.address_id = address&.id

@@ -39,6 +39,8 @@ class CalendarImporter::CalendarImporterTask
 
     handle_empty_feed if calendar.feed_empty_since && !feed_edited
 
+    add_unreadable_address_notices
+
     calendar.flag_complete_import_job! notices, parser::KEY
     calendar.flag_checksum_change!(calendar_source.checksum) if calendar_source.checksum_changed
   end
@@ -88,6 +90,21 @@ class CalendarImporter::CalendarImporterTask
     end
   end
 
+  # @return [Hash{Symbol => Array<CalendarImporter::Events::Base>}] events whose location couldn't be read, by reason
+  def unreadable_addresses
+    @unreadable_addresses ||= Hash.new { |hash, reason| hash[reason] = [] }
+  end
+
+  # One notice per reason, so a feed with no postcodes doesn't give a notice for every event
+  def add_unreadable_address_notices
+    unreadable_addresses.each do |reason, events|
+      examples = events.uniq(&:location).first(3).map do |event|
+        I18n.t('admin.calendars.importer.unreadable_address.example', summary: event.summary, location: event.location)
+      end
+      notices << I18n.t("admin.calendars.importer.unreadable_address.#{reason}", count: events.size, examples: examples.to_sentence)
+    end
+  end
+
   # Send the event data to be imported
   def event_data_from_parser
     return [] if !force_import && !calendar_source.checksum_changed
@@ -106,6 +123,7 @@ class CalendarImporter::CalendarImporterTask
     parsed_event.determine_online_location
 
     parsed_event.determine_location_for_strategy
+    unreadable_addresses[parsed_event.unreadable_address_reason] << parsed_event.data if parsed_event.unreadable_address_reason
 
     active_event_uids << parsed_event.uid
 

@@ -99,4 +99,18 @@ RSpec.describe PartnersHelper, type: :helper do
       end
     end
   end
+
+  describe "#partner_has_unmappable_postcode?" do
+    it "is true when the partner's address postcode can't be mapped to a neighbourhood" do
+      partner.errors.add(:"address.postcode", I18n.t("activerecord.errors.models.address.attributes.postcode.unmapped"))
+
+      expect(helper.partner_has_unmappable_postcode?(partner)).to be(true)
+    end
+
+    it "is falsey for other postcode problems" do
+      partner.errors.add(:"address.postcode", I18n.t("activerecord.errors.models.address.attributes.postcode.not_found"))
+
+      expect(helper).not_to be_partner_has_unmappable_postcode(partner)
+    end
+  end
 end

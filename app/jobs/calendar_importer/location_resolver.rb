@@ -15,6 +15,9 @@ class CalendarImporter::LocationResolver
     'online_only' => :no_location_strategy
   }.freeze
 
+  # @return [Symbol, nil] why the event's location text couldn't be read as an address (see Address.build_from_components_with_reason)
+  attr_reader :unreadable_address_reason
+
   # @param calendar [Calendar] the calendar being imported, whose strategy and default venue apply
   # @param event_data [CalendarImporter::Events::Base] the event as read from the feed
   def initialize(calendar, event_data)
@@ -88,7 +91,10 @@ class CalendarImporter::LocationResolver
   def event_address
     return unless event_data.location?
 
-    Address.build_from_components(event_location_components, event_data.postcode)
+    address, reason = Address.build_from_components_with_reason(event_location_components, event_data.postcode)
+    # A location that is only a link is an online event's meeting address, not an unreadable street address
+    @unreadable_address_reason = reason unless event_data.location.to_s.strip.match?(%r{\Ahttps?://\S+\z}i)
+    address
   end
 
   # The location text split on ", " with the postcode removed, e.g.

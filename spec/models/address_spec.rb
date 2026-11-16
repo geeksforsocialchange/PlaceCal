@@ -98,6 +98,7 @@ RSpec.describe Address, type: :model do
         address.valid?
         expect(address).not_to be_valid
         expect(address.errors[:postcode]).to include("was not found")
+        expect(address.unreadable_reason).to eq(:postcode_not_found)
       end
     end
 
@@ -123,6 +124,7 @@ RSpec.describe Address, type: :model do
         address.valid?
         expect(address).not_to be_valid
         expect(address.errors[:postcode]).to include("has been found but could not be mapped to a neighbourhood at this time")
+        expect(address.unreadable_reason).to eq(:outside_neighbourhoods)
       end
     end
 
@@ -205,6 +207,19 @@ RSpec.describe Address, type: :model do
     end
   end
 
+  describe "when the postcode lookup service isn't responding" do
+    before { allow(Geocoder).to receive(:search).and_raise(Geocoder::LookupTimeout) }
+
+    it "says the postcode couldn't be checked, not that it wasn't found", :aggregate_failures do
+      address = described_class.new(street_address: "1 High Street", postcode: "ZZ11 1ZZ", country_code: "GB")
+
+      expect(address).not_to be_valid
+      expect(address.errors.details[:postcode].first[:error]).to eq(:lookup_unavailable)
+      expect(address.errors[:postcode].first).to include("isn't responding")
+      expect(address.unreadable_reason).to eq(:lookup_unavailable)
+    end
+  end
+
   describe ".build_from_components" do
     before do
       create(:riverside_ward) # Ensure neighbourhood exists for geocoding
@@ -222,6 +237,13 @@ RSpec.describe Address, type: :model do
     it "returns nil for blank components" do
       expect(described_class.build_from_components(nil, "ZZMB 1RS")).to be_nil
       expect(described_class.build_from_components([], "ZZMB 1RS")).to be_nil
+    end
+
+    it "says why no address could be built", :aggregate_failures do
+      expect(described_class.build_from_components_with_reason([], "ZZMB 1RS")).to eq([nil, :no_street])
+      expect(described_class.build_from_components_with_reason(["1 High Street"], "")).to eq([nil, :no_postcode])
+      expect(described_class.build_from_components_with_reason(["1 High Street"], "ZZMB 1RS").first).to be_persisted
+      expect(described_class.build_from_components_with_reason(["1 High Street"], "ZZMB 1RS").last).to be_nil
     end
   end
 

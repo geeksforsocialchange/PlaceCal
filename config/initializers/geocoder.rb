@@ -12,3 +12,8 @@ if Rails.env.local?
 else
   Geocoder.configure(lookup: :postcodes_io, timeout: 5)
 end
+
+# Raise outages instead of returning no result, so they aren't mistaken for unknown postcodes (see PostcodeLookup)
+Rails.application.config.after_initialize do
+  Geocoder.configure(always_raise: PostcodeLookup::OUTAGE_ERRORS)
+end
