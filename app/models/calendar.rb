@@ -9,6 +9,7 @@
 #  calendar_state       :string           default("idle")
 #  checksum_updated_at  :datetime
 #  critical_error       :text
+#  feed_empty_since     :datetime
 #  import_started_at    :datetime
 #  importer_mode        :string           default("auto")
 #  importer_used        :string
@@ -280,6 +281,16 @@ class Calendar < ApplicationRecord
     end
   end
 
+  # Record whether the latest read of the feed found any events.
+  # @param empty [Boolean] whether the feed parsed to no events
+  # @return [void]
+  def flag_feed_empty!(empty)
+    since = empty ? (feed_empty_since || Time.current) : nil
+    return if since == feed_empty_since
+
+    without_timestamps { update!(feed_empty_since: since) }
+  end
+
   # Record that the source payload checksum has changed.
   # @param checksum [String] checksum of the retrieved source payload
   # @return [void]
@@ -386,5 +397,6 @@ class Calendar < ApplicationRecord
     self.critical_error = nil
     self.notices = nil
     self.last_import_at = nil
+    self.feed_empty_since = nil
   end
 end

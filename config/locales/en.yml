@@ -792,6 +792,8 @@ en:
       timeline_month_year: "%b %Y"
       timeline_week_start: "%-d"
       timeline_day_month: "%-d %b"
+      # Full dates in admin notices, e.g. "9 November 2026"
+      day_month_year: "%-d %B %Y"
 
   time:
     formats:

@@ -9,6 +9,7 @@
 #  calendar_state       :string           default("idle")
 #  checksum_updated_at  :datetime
 #  critical_error       :text
+#  feed_empty_since     :datetime
 #  import_started_at    :datetime
 #  importer_mode        :string           default("auto")
 #  importer_used        :string

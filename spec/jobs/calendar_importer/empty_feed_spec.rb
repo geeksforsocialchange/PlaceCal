@@ -1,0 +1,94 @@
+# frozen_string_literal: true
+
+require "rails_helper"
+
+RSpec.describe CalendarImporter::CalendarImporterTask, "with an empty feed" do
+  let(:url) { "https://calendar.example.org/feed.ics" }
+  let(:empty_feed) { "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//PlaceCal//Test//EN\r\nEND:VCALENDAR\r\n" }
+  let(:full_feed) do
+    <<~ICS.gsub("\n", "\r\n")
+      BEGIN:VCALENDAR
+      VERSION:2.0
+      PRODID:-//PlaceCal//Test//EN
+      BEGIN:VEVENT
+      UID:still-on@example.org
+      DTSTAMP:20261101T000000Z
+      DTSTART:#{2.weeks.from_now.utc.strftime('%Y%m%dT100000Z')}
+      DTEND:#{2.weeks.from_now.utc.strftime('%Y%m%dT120000Z')}
+      SUMMARY:Still on
+      END:VEVENT
+      END:VCALENDAR
+    ICS
+  end
+  let!(:calendar) { create(:calendar, source: url, importer_mode: "ical", strategy: "no_location") }
+  let!(:upcoming_event) do
+    create(:event, calendar:, organiser: calendar.organiser, dtstart: 1.month.from_now, dtend: 1.month.from_now + 2.hours)
+  end
+  let!(:past_event) { create(:past_event, calendar:, organiser: calendar.organiser) }
+
+  def serve(body)
+    stub_request(:get, url).to_return(status: 200, body:, headers: { "Content-Type" => "text/calendar" })
+  end
+
+  def import(force: false)
+    calendar.update!(calendar_state: "in_worker")
+    described_class.new(calendar, Time.zone.today, force).run
+    calendar.reload
+  end
+
+  it "keeps the events and says so when a changed feed parses to no events", :aggregate_failures do
+    serve(empty_feed)
+    import
+
+    expect(Event.exists?(upcoming_event.id)).to be(true)
+    expect(calendar.feed_empty_since).to be_within(1.minute).of(Time.current)
+    expect(calendar.notices.join).to include("no events since 8 November 2022", "upcoming event stays listed until 15 November 2022")
+  end
+
+  it "keeps the events and the notice on later imports of the same empty feed", :aggregate_failures do
+    serve(empty_feed)
+    import
+    Timecop.freeze(3.days.from_now)
+    import
+
+    expect(Event.exists?(upcoming_event.id)).to be(true)
+    expect(calendar.notices.join).to include("no events since")
+  end
+
+  it "removes upcoming events, but not past ones, once the feed has stayed empty for 7 days", :aggregate_failures do
+    serve(empty_feed)
+    import
+    Timecop.freeze(7.days.from_now + 1.hour)
+    import
+
+    expect(Event.exists?(upcoming_event.id)).to be(false)
+    expect(Event.exists?(past_event.id)).to be(true)
+    expect(calendar.notices.join).to include("upcoming events have been removed")
+  end
+
+  it "forgets the empty spell when the feed has events again", :aggregate_failures do
+    serve(empty_feed)
+    import
+    serve(full_feed)
+    import
+    Timecop.freeze(8.days.from_now)
+    import
+
+    expect(calendar.feed_empty_since).to be_nil
+    expect(calendar.events.upcoming.pluck(:summary)).to include("Still on")
+  end
+
+  it "leaves events alone when the feed can't be fetched" do
+    stub_request(:get, url).to_return(status: 500)
+
+    expect { import }.to raise_error(StandardError)
+    expect(Event.exists?(upcoming_event.id)).to be(true)
+  end
+
+  it "deletes nothing on an import of an unchanged feed with events", :aggregate_failures do
+    serve(full_feed)
+    import(force: true)
+    expect { import }.not_to(change { calendar.events.count })
+    expect(calendar.feed_empty_since).to be_nil
+  end
+end

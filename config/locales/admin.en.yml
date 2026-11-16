@@ -392,6 +392,10 @@ en:
         past: "Recent Past Events"
       importer:
         calendar_occurrence_limit: "This calendar has more than %{count} upcoming event dates, so the import stopped there. Events after that point were not updated."
+        feed_empty:
+          one: "The feed has had no events since %{since}. Its upcoming event stays listed until %{removal}, and is removed then if the feed is still empty."
+          other: "The feed has had no events since %{since}. Its %{count} upcoming events stay listed until %{removal}, and are removed then if the feed is still empty."
+        feed_empty_removed: "The feed has had no events since %{since}, so its upcoming events have been removed."
         importing: "Importing..."
         last_import: "Last import:"
         notices: "Import notices"
