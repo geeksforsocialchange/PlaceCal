@@ -412,6 +412,7 @@ en:
           outside_neighbourhoods:
             one: "Couldn't read an address for %{examples}: its postcode is outside the neighbourhoods PlaceCal covers."
             other: "Couldn't read an address for %{count} events because their postcodes are outside the neighbourhoods PlaceCal covers, for example %{examples}."
+        source_unavailable: "%{source} didn't respond, so this import was skipped and the calendar's events were left as they were."
         room_number_without_venue: "This calendar reads room numbers from its events but has no default location to put the rooms in. Choose a default location."
         feed_empty:
           one: "The feed has had no events since %{since}. Its upcoming event stays listed until %{removal}, and is removed then if the feed is still empty."

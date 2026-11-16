@@ -12,5 +12,8 @@ module CalendarImporter
 
     # The response was not valid XML, JSON, ICAL, etc.
     class InvalidResponse < StandardError; end
+
+    # The source kept failing after retries, so the import is skipped and the calendar's events are left as they were.
+    class SourceUnavailable < StandardError; end
   end
 end
