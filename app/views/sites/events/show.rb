@@ -4,6 +4,9 @@ class Views::Sites::Events::Show < Views::Base
   register_value_helper :html_to_plaintext
 
   MIN_DESCRIPTION_LENGTH = 100
+  SECTION_BODY = 'text-sm leading-normal'
+  # Core themes sit the details close under their headings, with the venue's name and the address as one block
+  CORE_SECTION_BODY = 'text-sm leading-normal details-body'
 
   theme_scope :event_details,
               parts: {
@@ -12,10 +15,10 @@ class Views::Sites::Events::Show < Views::Base
                 links: 'The buttons under the description: the event\'s webpage and a join link for streams. Only when the event has them.',
                 info: 'The group of headed sections below: contact, address, organiser and venue.',
                 contact: 'The organiser\'s contact section. Its heading only when the event has an organiser.',
-                contact_name: 'The organiser\'s name, linked, heading the contact details.',
+                contact_name: 'The organiser\'s name, linked, heading the contact details. Not on core themes.',
                 address: 'The event\'s address section.',
                 organiser: 'The organiser section, linking to their page.',
-                venue: 'The venue section. Only when the venue is a different partner from the organiser.',
+                venue: 'The venue section, when the venue is a different partner from the organiser. On core themes, the venue\'s name above the address instead.',
                 section_body: 'The text under each section\'s heading.',
                 more: 'The "More from" list of the organiser\'s other events. Only when the organiser has other upcoming events.'
               },
@@ -44,7 +47,8 @@ class Views::Sites::Events::Show < Views::Base
         display_context: :page,
         event:,
         site_tagline: site.tagline,
-        back: [t('events.show.back'), events_path]
+        back: [t('events.show.back'), events_path],
+        organiser_byline: !site.core_theme?
       )
       render_event_details
       div(class: 'border-t-10 border-tertiary-light', aria_hidden: 'true') if site.core_theme? && map.present?
@@ -300,10 +304,10 @@ class Views::Sites::Events::Show < Views::Base
       end
 
       div(**part(:info, class: 'grid gap-4 items-start mt-5.5 lg:grid-cols-3')) do
-        render_contact_info
+        render_contact_info if core_theme? ? event.organiser&.contactable? : true
         render_event_address
-        render_event_organiser
-        render_event_venue if show_venue?
+        render_event_organiser if event.organiser
+        render_event_venue if !core_theme? && show_venue?
       end
     end
   end
@@ -314,10 +318,10 @@ class Views::Sites::Events::Show < Views::Base
   def render_contact_info
     div(**part(:contact)) do
       if event.organiser
-        UI::RuledHeading(size: :lg, spacing: :section) { t('events.show.contact_heading') }
-        div(**part(:section_body, class: 'text-sm leading-normal')) do
-          p(**part(:contact_name)) { link_to(event.organiser.name, partner_path(event.organiser)) }
-          Shared::ContactDetails(partner: event.organiser, social_labels: site&.core_theme? ? :handle : :network)
+        details_heading { t('events.show.contact_heading') }
+        div(**part(:section_body, class: section_body)) do
+          p(**part(:contact_name)) { link_to(event.organiser.name, partner_path(event.organiser)) } unless core_theme?
+          Shared::ContactDetails(partner: event.organiser, social_labels: core_theme? ? :handle : :network)
         end
       end
     end
@@ -325,8 +329,9 @@ class Views::Sites::Events::Show < Views::Base
 
   def render_event_address
     div(**part(:address)) do
-      UI::RuledHeading(size: :lg, spacing: :section) { t('events.show.address_heading') }
-      div(**part(:section_body, class: 'text-sm leading-normal')) do
+      details_heading { t('events.show.address_heading') }
+      div(**part(:section_body, class: section_body)) do
+        p(**part(:venue)) { link_to(venue.name, venue) } if core_theme? && venue
         Shared::Address(address: event.address, raw_location: event.raw_location_from_source)
       end
     end
@@ -334,8 +339,8 @@ class Views::Sites::Events::Show < Views::Base
 
   def render_event_organiser
     div(**part(:organiser)) do
-      UI::RuledHeading(size: :lg, spacing: :section) { t('events.show.organiser_heading') }
-      div(**part(:section_body, class: 'text-sm leading-normal')) do
+      details_heading { t('events.show.organiser_heading') }
+      div(**part(:section_body, class: section_body)) do
         span { link_to event.organiser, event.organiser }
       end
     end
@@ -347,11 +352,29 @@ class Views::Sites::Events::Show < Views::Base
 
   def render_event_venue
     div(**part(:venue)) do
-      UI::RuledHeading(size: :lg, spacing: :section) { t('events.show.venue_heading') }
-      div(**part(:section_body, class: 'text-sm leading-normal')) do
+      details_heading { t('events.show.venue_heading') }
+      div(**part(:section_body, class: section_body)) do
         span { link_to event.place, event.place }
       end
     end
+  end
+
+  # The same partner the details row names as the event's location
+  def venue
+    event.partner_at_location
+  end
+
+  # Extension themes such as Trans Dimension keep the byline, the contact name and the Venue section, which their designs are built around
+  def core_theme?
+    site&.core_theme?
+  end
+
+  def details_heading(&)
+    UI::RuledHeading(size: :lg, spacing: core_theme? ? :details : :section, &)
+  end
+
+  def section_body
+    core_theme? ? CORE_SECTION_BODY : SECTION_BODY
   end
 
   def render_site_more_from_organiser

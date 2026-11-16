@@ -270,7 +270,8 @@ RSpec.describe "Public Events", type: :request do
       get event_url(full_event, host: "#{site.slug}.lvh.me")
 
       html = Nokogiri::HTML(response.body)
-      expect(html.css('[data-scope="event-details"]').map { it["data-part"] }.uniq).to match_array(PlaceCal::Theming.contract["event-details"][:parts])
+      # contact-name is for extension themes only; spec/requests/public/event_details_spec.rb covers it
+      expect(html.css('[data-scope="event-details"]').map { it["data-part"] }.uniq).to match_array(PlaceCal::Theming.contract["event-details"][:parts] - %w[contact-name])
       expect(ThemingTokens.read_by(html, "event-details") - PlaceCal::Theming.contract["event-details"][:tokens]).to be_empty
     end
 
@@ -513,7 +514,7 @@ RSpec.describe "Public Events", type: :request do
       get event_url(event, host: "#{site.slug}.lvh.me")
       expect(response.body).to include("Contact information")
       expect(response.body).to match(%r{<h2[^>]*>Contact information</h2>})
-      expect(Nokogiri::HTML(response.body).at_css('[data-scope="event-details"][data-part="contact-name"] a[href^="/partners/"]')).to be_present
+      expect(Nokogiri::HTML(response.body).at_css('[data-scope="event-details"][data-part="contact"] a[href^="/partners/"]')).to be_nil
     end
 
     it "shows event address with consistent heading level" do
