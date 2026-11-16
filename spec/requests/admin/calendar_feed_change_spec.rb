@@ -37,7 +37,7 @@ RSpec.describe "Admin calendar update when the feed changes", type: :request do
   end
 
   it "queues an import when the calendar type or API key changes", :aggregate_failures do
-    expect { update_calendar(importer_mode: "ldjson") }.to have_enqueued_job(CalendarImporterJob)
+    expect { update_calendar(importer_mode: "ld-json") }.to have_enqueued_job(CalendarImporterJob)
     calendar.update_columns(calendar_state: "idle") # rubocop:disable Rails/SkipsModelValidations
     expect { update_calendar(api_token: "new-key") }.to have_enqueued_job(CalendarImporterJob)
   end
