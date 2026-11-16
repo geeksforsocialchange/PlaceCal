@@ -34,7 +34,7 @@ class Views::Join::Features < Views::Join::Base
           end
         end
         div(class: 'mt-4') do
-          UI::Link(href: ISSUES_URL, variant: :action) do
+          UI::Button(variant: :outline, href: ISSUES_URL) do
             plain t('join.features.planned.link_label')
             span(aria_hidden: 'true') { safe(' &rarr;') }
           end

@@ -176,7 +176,7 @@ en:
             - title: Ticketing and event sites
               body: Eventbrite, Meetup, Ticket Tailor, TicketSource, Ticketsolve, OutSavvy and Resident Advisor.
             - title: Websites
-              body: Event pages on Squarespace and Wix, and any website that marks up its events with standard schema.org data.
+              body: Event pages on Squarespace and Wix, and any website that publishes its events as schema.org JSON-LD.
             - title: Online events, spotted
               body: Zoom, Microsoft Teams, Google Meet and Jitsi links are picked up automatically, so online events show as online.
         - key: neighbourhoods
@@ -226,7 +226,7 @@ en:
             - title: Ask an AI assistant
               body: Connect PlaceCal's free MCP server to ChatGPT, Claude, Gemini or Copilot and ask what's on nearby.
             - title: Found by search engines
-              body: Every event page carries standard schema.org event data, so search engines can show times and places.
+              body: Every event and partner page carries schema.org JSON-LD, so search engines can show times and places.
             - title: Calendar feeds
               body: Every site and every partner has a calendar feed people can subscribe to in their own calendar app.
             - title: An API for your own apps

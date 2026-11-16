@@ -22,7 +22,7 @@ class Components::Join::FeatureGroup < Components::Join::Base
 
   def render_link
     div(class: 'mt-4') do
-      UI::Link(href: link_href, variant: :action) do
+      UI::Button(variant: :outline, href: link_href) do
         plain @group[:link_label]
         span(aria_hidden: 'true') { safe(' &rarr;') }
       end
