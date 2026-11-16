@@ -16,9 +16,9 @@ class Components::Join::FeatureGroup < Components::Join::Base
     section(id: @group[:key], class: ['py-12', ('bg-home-background-3' if @banded)], aria_labelledby: "#{@group[:key]}-heading") do
       div(class: 'container-public') do
         UI::Heading(id: "#{@group[:key]}-heading", spacing: :xs) { @group[:title] }
-        UI::Text(variant: :lede, tone: :muted, measure: :prose, spacing: :lg) { @group[:summary] }
+        UI::Text(variant: :lede, tone: :muted, measure: :prose, spacing: :lg, pretty: true) { @group[:summary] }
         UI::Grid(cols: { md: 2, lg: @group[:items].size == 3 ? 3 : 4 }) do
-          @group[:items].each { |item| Join::FeatureCard(title: item[:title], body: item[:body]) }
+          @group[:items].each { |item| Join::FeatureCard(title: item[:title], body: item[:body], icon: item[:icon]&.to_sym) }
         end
         render_link if @group[:link]
       end
@@ -29,7 +29,7 @@ class Components::Join::FeatureGroup < Components::Join::Base
 
   def render_link
     div(class: 'mt-4') do
-      UI::Button(variant: :primary, href: link_href) do
+      UI::Button(variant: :dark, href: link_href) do
         plain @group[:link_label]
         span(aria_hidden: 'true') { safe(' &rarr;') }
       end

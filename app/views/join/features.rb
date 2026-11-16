@@ -25,14 +25,14 @@ class Views::Join::Features < Views::Join::Base
       div(class: 'container-public') do
         UI::Kicker(tone: :muted, spacing: :xs) { t('join.features.planned.kicker') }
         UI::Heading(id: 'planned-heading', spacing: :xs) { t('join.features.planned.title') }
-        UI::Text(variant: :lede, tone: :muted, measure: :prose, spacing: :lg) { t('join.features.planned.lede') }
+        UI::Text(variant: :lede, tone: :muted, measure: :prose, spacing: :lg, pretty: true) { t('join.features.planned.lede') }
         UI::Grid(cols: { md: 2, lg: 4 }) do
           t('join.features.planned.items').each do |item|
-            Join::FeatureCard(title: item[:title], body: item[:body])
+            Join::FeatureCard(title: item[:title], body: item[:body], icon: item[:icon]&.to_sym)
           end
         end
         div(class: 'mt-4') do
-          UI::Button(variant: :primary, href: ISSUES_URL) do
+          UI::Button(variant: :dark, href: ISSUES_URL) do
             plain t('join.features.planned.link_label')
             span(aria_hidden: 'true') { safe(' &rarr;') }
           end

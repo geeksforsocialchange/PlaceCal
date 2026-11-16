@@ -13,10 +13,12 @@ class Components::UI::Text < Components::Base
   prop :measure, _Union(*MEASURES.keys), default: :none
   prop :spacing, _Union(*UI::Heading::SPACING.keys), default: :inherit
   prop :as, _Union(*TAGS), default: :p
+  # Avoids a single word left alone on the last line.
+  prop :pretty, _Boolean, default: false
   prop :attributes, Hash, :**
 
   def view_template(&)
-    css = [VARIANTS[@variant], TONES[@tone], MEASURES[@measure], UI::Heading::SPACING[@spacing], @attributes[:class]].compact.join(' ')
+    css = [VARIANTS[@variant], TONES[@tone], MEASURES[@measure], UI::Heading::SPACING[@spacing], ('text-pretty' if @pretty), @attributes[:class]].compact.join(' ')
     public_send(@as, class: css, **@attributes.except(:class), &)
   end
 end
