@@ -45,14 +45,28 @@ RSpec.describe CalendarImporter::CalendarImporterTask, "with an empty feed" do
     expect(calendar.notices.join).to include("no events since 8 November 2022", "upcoming event stays listed until 15 November 2022")
   end
 
-  it "keeps the events and the notice on later imports of the same empty feed", :aggregate_failures do
+  it "keeps the events, the first date and the notice on later imports of the same empty feed", :aggregate_failures do
     serve(empty_feed)
     import
+    first_date = calendar.feed_empty_since
     Timecop.freeze(3.days.from_now)
     import
+    import(force: true)
 
     expect(Event.exists?(upcoming_event.id)).to be(true)
-    expect(calendar.notices.join).to include("no events since")
+    expect(calendar.feed_empty_since).to eq(first_date)
+    expect(calendar.notices.join).to include("no events since 8 November 2022")
+  end
+
+  it "keeps the first date when the feed changes but is still empty" do
+    serve(empty_feed)
+    import
+    first_date = calendar.feed_empty_since
+    Timecop.freeze(2.days.from_now)
+    serve(empty_feed.sub("PRODID:-//PlaceCal//Test//EN", "PRODID:-//PlaceCal//Other//EN"))
+    import
+
+    expect(calendar.feed_empty_since).to eq(first_date)
   end
 
   it "removes upcoming events, but not past ones, once the feed has stayed empty for 7 days", :aggregate_failures do
@@ -64,6 +78,33 @@ RSpec.describe CalendarImporter::CalendarImporterTask, "with an empty feed" do
     expect(Event.exists?(upcoming_event.id)).to be(false)
     expect(Event.exists?(past_event.id)).to be(true)
     expect(calendar.notices.join).to include("upcoming events have been removed")
+
+    import
+    expect(calendar.notices).to eq(["The feed has had no events since 8 November 2022."])
+  end
+
+  it "says the feed is empty, without claiming a removal, when nothing is upcoming", :aggregate_failures do
+    upcoming_event.destroy!
+    serve(empty_feed)
+    import
+    expect(calendar.notices).to eq(["The feed has had no events since 8 November 2022."])
+
+    Timecop.freeze(8.days.from_now)
+    import
+    expect(calendar.notices).to eq(["The feed has had no events since 8 November 2022."])
+  end
+
+  it "doesn't act on an empty feed whose calendar was edited during the import", :aggregate_failures do
+    serve(empty_feed)
+    import
+    Timecop.freeze(8.days.from_now)
+    running_import = Calendar.find(calendar.id).tap { |c| c.update!(calendar_state: "in_worker") }
+    calendar.update!(source: "https://calendar.example.org/new-feed.ics")
+
+    described_class.new(running_import, Time.zone.today, false).run
+
+    expect(Event.exists?(upcoming_event.id)).to be(true)
+    expect(calendar.reload.feed_empty_since).to be_nil
   end
 
   it "forgets the empty spell when the feed has events again", :aggregate_failures do
@@ -78,11 +119,13 @@ RSpec.describe CalendarImporter::CalendarImporterTask, "with an empty feed" do
     expect(calendar.events.upcoming.pluck(:summary)).to include("Still on")
   end
 
-  it "leaves events alone when the feed can't be fetched" do
+  it "leaves events alone when the feed can't be fetched", :aggregate_failures do
+    allow(CalendarImporter::Parsers::Base).to receive(:sleep)
     stub_request(:get, url).to_return(status: 500)
 
-    expect { import }.to raise_error(StandardError)
+    expect { import }.to raise_error(CalendarImporter::Exceptions::InaccessibleFeed)
     expect(Event.exists?(upcoming_event.id)).to be(true)
+    expect(calendar.reload.feed_empty_since).to be_nil
   end
 
   it "deletes nothing on an import of an unchanged feed with events", :aggregate_failures do

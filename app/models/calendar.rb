@@ -304,7 +304,7 @@ class Calendar < ApplicationRecord
   def flag_checksum_change!(checksum)
     without_timestamps do
       # The feed was edited during this import, so keep its checksum cleared for the next scan
-      return if self.class.where(id:).pick(*FEED_ATTRIBUTES) != FEED_ATTRIBUTES.map { |a| self[a] }
+      return if feed_edited_since_loaded?
 
       update!(
         last_checksum: checksum,
@@ -360,6 +360,11 @@ class Calendar < ApplicationRecord
     else
       'info'
     end
+  end
+
+  # @return [Boolean] whether the stored source, type or API key differ from this copy's
+  def feed_edited_since_loaded?
+    self.class.where(id:).pick(*FEED_ATTRIBUTES) != FEED_ATTRIBUTES.map { |a| self[a] }
   end
 
   # @return [Boolean] whether unsaved changes alter what an import fetches

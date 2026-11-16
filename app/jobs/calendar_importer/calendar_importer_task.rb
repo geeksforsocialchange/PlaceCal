@@ -17,7 +17,9 @@ class CalendarImporter::CalendarImporterTask
 
   def run
     parsed_events = event_data_from_parser
-    calendar.flag_feed_empty!(calendar_source.events.empty?) if source_read?
+    # An edit during this import cleared the empty-feed record; this run's feed is no longer the calendar's
+    feed_edited = calendar.feed_edited_since_loaded?
+    calendar.flag_feed_empty!(calendar_source.events.empty?) if source_read? && !feed_edited
 
     if parsed_events.present?
       # this can be useful if you want to force import on your local machine
@@ -35,7 +37,7 @@ class CalendarImporter::CalendarImporterTask
       purge_stale_events_from_calendar unless @occurence_limit_reached
     end
 
-    handle_empty_feed if calendar.feed_empty_since
+    handle_empty_feed if calendar.feed_empty_since && !feed_edited
 
     calendar.flag_complete_import_job! notices, parser::KEY
     calendar.flag_checksum_change!(calendar_source.checksum) if calendar_source.checksum_changed
@@ -75,12 +77,14 @@ class CalendarImporter::CalendarImporterTask
     upcoming = calendar.events.upcoming
     dates = { since: I18n.l(since.to_date, format: :day_month_year) }
 
-    if since <= EMPTY_FEED_GRACE.ago
+    if since <= EMPTY_FEED_GRACE.ago && upcoming.exists?
       upcoming.destroy_all
       notices << I18n.t('admin.calendars.importer.feed_empty_removed', **dates)
     elsif upcoming.exists?
       removal = I18n.l((since + EMPTY_FEED_GRACE).to_date, format: :day_month_year)
       notices << I18n.t('admin.calendars.importer.feed_empty', count: upcoming.count, removal:, **dates)
+    else
+      notices << I18n.t('admin.calendars.importer.feed_empty_no_events', **dates)
     end
   end
 

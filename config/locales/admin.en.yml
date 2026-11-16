@@ -399,6 +399,7 @@ en:
           one: "The feed has had no events since %{since}. Its upcoming event stays listed until %{removal}, and is removed then if the feed is still empty."
           other: "The feed has had no events since %{since}. Its %{count} upcoming events stay listed until %{removal}, and are removed then if the feed is still empty."
         feed_empty_removed: "The feed has had no events since %{since}, so its upcoming events have been removed."
+        feed_empty_no_events: "The feed has had no events since %{since}."
         importing: "Importing..."
         last_import: "Last import:"
         notices: "Import notices"
