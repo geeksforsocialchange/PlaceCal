@@ -175,7 +175,7 @@ en:
           items:
             - title: Calendar apps
               icon: calendar
-              brands: [googlecalendar]
+              brands: [googlecalendar, microsoftoutlook]
               body: Google Calendar, Outlook and Microsoft 365, Teamup, and any calendar that publishes an iCal feed.
             - title: Ticketing and event sites
               icon: ticket
@@ -187,7 +187,7 @@ en:
               body: Event pages on Squarespace and Wix, and any website that publishes its events as schema.org JSON-LD.
             - title: Online events
               icon: video
-              brands: [zoom, googlemeet, jitsi]
+              brands: [zoom, microsoftteams, googlemeet, jitsi]
               body: Zoom, Microsoft Teams, Google Meet and Jitsi links are picked up automatically, so online events show as online.
         - key: neighbourhoods
           title: Built for neighbourhoods
@@ -226,7 +226,7 @@ en:
           title: Light on the planet
           summary: We measure PlaceCal's carbon footprint and publish how we worked it out.
           link: sustainability
-          link_label: See how we measure it
+          link_label: Our climate impact assessment
           items:
             - title: Green hosting
               icon: leaf
