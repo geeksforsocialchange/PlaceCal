@@ -42,14 +42,14 @@ RSpec.describe CalendarImporter::CalendarImporterTask, "with an empty feed" do
 
     expect(Event.exists?(upcoming_event.id)).to be(true)
     expect(calendar.feed_empty_since).to be_within(1.minute).of(Time.current)
-    expect(calendar.notices.join).to include("no events since 8 November 2022", "upcoming event stays listed until 15 November 2022")
+    expect(calendar.notices.join).to include("no events since 8 November 2022", "upcoming event stays listed until 10 November 2022")
   end
 
   it "keeps the events, the first date and the notice on later imports of the same empty feed", :aggregate_failures do
     serve(empty_feed)
     import
     first_date = calendar.feed_empty_since
-    Timecop.freeze(3.days.from_now)
+    Timecop.freeze(47.hours.from_now)
     import
     import(force: true)
 
@@ -62,17 +62,17 @@ RSpec.describe CalendarImporter::CalendarImporterTask, "with an empty feed" do
     serve(empty_feed)
     import
     first_date = calendar.feed_empty_since
-    Timecop.freeze(2.days.from_now)
+    Timecop.freeze(1.day.from_now)
     serve(empty_feed.sub("PRODID:-//PlaceCal//Test//EN", "PRODID:-//PlaceCal//Other//EN"))
     import
 
     expect(calendar.feed_empty_since).to eq(first_date)
   end
 
-  it "removes upcoming events, but not past ones, once the feed has stayed empty for 7 days", :aggregate_failures do
+  it "removes upcoming events, but not past ones, once the feed has stayed empty for 48 hours", :aggregate_failures do
     serve(empty_feed)
     import
-    Timecop.freeze(7.days.from_now + 1.hour)
+    Timecop.freeze(48.hours.from_now + 1.minute)
     import
 
     expect(Event.exists?(upcoming_event.id)).to be(false)

@@ -3,7 +3,7 @@
 class CalendarImporter::CalendarImporterTask
   MAX_OCCURENCES = 20_000
   # How long a feed stays empty before its upcoming events are removed
-  EMPTY_FEED_GRACE = 7.days
+  EMPTY_FEED_GRACE = 48.hours
 
   attr_reader :calendar,
               :from_date,
