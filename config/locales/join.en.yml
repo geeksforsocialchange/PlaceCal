@@ -165,7 +165,7 @@ en:
             body: Visitors see the whole cultural offer, not just the venues that pay for listings.
     features:
       title: Everything PlaceCal does.
-      lede: What PlaceCal does today, and the features we're planning. See the pricing page for what comes with each plan.
+      lede: What PlaceCal does today, and the features we're planning.
       groups:
         - key: calendars
           title: Works with the calendars groups already use
