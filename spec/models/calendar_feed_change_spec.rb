@@ -14,6 +14,13 @@ RSpec.describe Calendar, "when its feed changes around an import" do
     expect(calendar.reload.last_checksum).to be_nil
   end
 
+  it "forgets when the old feed went empty once the feed is edited" do
+    calendar.update_columns(feed_empty_since: 3.days.ago) # rubocop:disable Rails/SkipsModelValidations
+    calendar.update!(source: "https://example.com/new-feed.ics")
+
+    expect(calendar.reload.feed_empty_since).to be_nil
+  end
+
   it "records the checksum when the feed was not edited" do
     calendar.flag_checksum_change!("new-checksum")
 
