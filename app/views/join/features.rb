@@ -7,11 +7,16 @@ class Views::Join::Features < Views::Join::Base
     content_for(:title) { t('join.features.title') }
     content_for(:description) { t('join.features.lede') }
 
+    Directory::PageHero(
+      breadcrumb_label: t('join.nav.features'),
+      root_label: t('join.breadcrumbs.root'),
+      kicker: t('join.nav.features'),
+      title: t('join.features.title'),
+      subtitle: t('join.features.lede')
+    )
+
     section(class: 'py-10') do
       div(class: 'container-public') do
-        breadcrumb([t('join.nav.features')])
-        h1(class: 'join-headline m-0 mb-2') { t('join.features.title') }
-        UI::Text(measure: :prose, spacing: :xl) { t('join.features.lede') }
         UI::Stack(gap: :xl) do
           t('join.features.groups').each { |group| Join::FeatureGroup(group:) }
         end
