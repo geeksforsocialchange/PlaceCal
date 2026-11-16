@@ -112,16 +112,51 @@ RSpec.describe CalendarImporter::LocationResolver do
       expect(address_result.street_address).to eq(event_data.location)
     end
 
-    it "falls back to calendar place when no matching partner found" do
-      event_data.location = "Unknown Venue"
+    it "gives an event at its own address no place when no partner matches", :aggregate_failures do
+      neighbourhood
+      event_data.location = "Unknown Venue, 9 Gamma Road"
       event_data.postcode = "M15 5DD"
 
       calendar = create_calendar_with(strategy: "event_override", place: other_address_partner)
+      place, address_result = described_class.new(calendar, event_data).resolve
 
-      resolver = described_class.new(calendar, event_data)
-      place, _address_result = resolver.resolve
+      expect(place).to be_nil
+      expect(address_result.street_address).to eq("Unknown Venue")
+      expect(address_result.postcode).to eq("M15 5DD")
+    end
 
-      expect(place).to eq(other_address_partner)
+    it "keeps the default venue for an event at the venue's own address", :aggregate_failures do
+      event_data.location = "123 Alpha"
+      event_data.postcode = "m155dd"
+
+      calendar = create_calendar_with(strategy: "event_override", place: address_partner)
+      expect(Address.build_from_components(["123 Alpha"], "m155dd")).to be_present
+      place, address_result = described_class.new(calendar, event_data).resolve
+
+      expect(place).to eq(address_partner)
+      expect(address_result).to eq(address_partner.address)
+    end
+
+    it "doesn't treat another building in the venue's postcode as the venue", :aggregate_failures do
+      event_data.location = "125 Alpha"
+      event_data.postcode = "M15 5DD"
+
+      calendar = create_calendar_with(strategy: "event_override", place: address_partner)
+      place, address_result = described_class.new(calendar, event_data).resolve
+
+      expect(place).to be_nil
+      expect(address_result.street_address).to eq("125 Alpha")
+    end
+
+    it "falls back to the default venue when the address can't be built", :aggregate_failures do
+      event_data.location = "Somewhere nice"
+      event_data.postcode = ""
+
+      calendar = create_calendar_with(strategy: "event_override", place: address_partner)
+      place, address_result = described_class.new(calendar, event_data).resolve
+
+      expect(place).to eq(address_partner)
+      expect(address_result).to eq(address_partner.address)
     end
 
     it "falls back to place when no data location" do
@@ -141,6 +176,26 @@ RSpec.describe CalendarImporter::LocationResolver do
       place, address_result = resolver.resolve
       expect(place).to be_nil
       expect(address_result).to be_nil
+    end
+  end
+
+  describe "reading the location text" do
+    it "drops the postcode as a whole word and leaves the rest of the text alone" do
+      event_data.location = "Ukrainian Centre, Age UK Hall, 12 Duke Street, Manchester M15 5DD"
+      event_data.postcode = "M15 5DD"
+      resolver = described_class.new(build(:calendar, strategy: "event"), event_data)
+
+      expect(resolver.send(:event_location_components)).to eq(["Ukrainian Centre", "Age UK Hall", "12 Duke Street", "Manchester"])
+    end
+  end
+
+  describe "room_number strategy" do
+    it "explains that a default location is needed when the calendar has none" do
+      calendar = build(:calendar, strategy: "room_number", place: nil)
+      calendar.place = nil
+
+      expect { described_class.new(calendar, event_data).resolve }
+        .to raise_error(described_class::Problem, /no default location/)
     end
   end
 

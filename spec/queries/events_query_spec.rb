@@ -772,6 +772,16 @@ RSpec.describe EventsQuery do
 
       expect(described_class.upcoming_counts_by_partner([partner.id])).to eq({})
     end
+
+    it "counts events a partner organises with no place or elsewhere, and its own events once" do
+      organiser = create(:partner)
+      venue = create(:partner)
+      create(:future_event, organiser:, place: nil)
+      create(:future_event, organiser:, place: venue)
+      create(:future_event, organiser:, place: organiser)
+
+      expect(described_class.upcoming_counts_by_partner([organiser.id, venue.id])).to eq(organiser.id => 3, venue.id => 1)
+    end
   end
 
   describe "#call with tag_id (region filter)" do
