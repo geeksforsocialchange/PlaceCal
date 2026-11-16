@@ -68,6 +68,9 @@ class Calendar < ApplicationRecord
     )
   SQL
 
+  # Attributes that change what an import fetches
+  FEED_ATTRIBUTES = %w[source importer_mode api_token].freeze
+
   # ==== Enums / Enumerize ====
   # Defines the strategy this Calendar uses to assign events to locations.
   # @attr [Enumerable<Symbol>] :strategy
@@ -110,6 +113,8 @@ class Calendar < ApplicationRecord
   alias_attribute :to_s, :name
 
   auto_strip_attributes :name, :source, :public_contact_name, :public_contact_email, :public_contact_phone
+  # Normalised on assignment, so the form's blank field doesn't count as a feed change
+  normalizes :api_token, with: ->(token) { token.strip.presence }
 
   # ==== Associations ====
   belongs_to :organiser, class_name: 'Partner', optional: true
@@ -152,7 +157,7 @@ class Calendar < ApplicationRecord
   }
 
   # ==== Callbacks ====
-  before_save :clear_status_on_source_change
+  before_save :clear_status_on_feed_change
   before_save :update_notice_count
 
   after_create :automatically_queue_calendar
@@ -241,14 +246,16 @@ class Calendar < ApplicationRecord
   # Push calendar into the import queue.
   # @param force_import [Boolean] bypass redundant-import checks
   # @param from_date [Time] start point for the import window
-  # @return [void]
+  # @return [Boolean] whether it was queued (false while an import is already queued or running)
   def queue_for_import!(force_import, from_date = Time.current)
     without_timestamps do
-      return if busy?
+      lock! # re-read the state so a scan that queued it meanwhile isn't doubled
+      return false if busy?
 
       update! calendar_state: :in_queue, notices: nil, import_started_at: DateTime.current, import_job_id: nil
       job = CalendarImporterJob.perform_later id, from_date, force_import
       update_column :import_job_id, job.provider_job_id if job.try(:provider_job_id) # rubocop:disable Rails/SkipsModelValidations
+      true
     end
   end
 
@@ -285,6 +292,9 @@ class Calendar < ApplicationRecord
   # @return [void]
   def flag_checksum_change!(checksum)
     without_timestamps do
+      # The feed was edited during this import, so keep its checksum cleared for the next scan
+      return if self.class.where(id:).pick(*FEED_ATTRIBUTES) != FEED_ATTRIBUTES.map { |a| self[a] }
+
       update!(
         last_checksum: checksum,
         checksum_updated_at: DateTime.current
@@ -341,6 +351,13 @@ class Calendar < ApplicationRecord
     end
   end
 
+  # @return [Boolean] whether unsaved changes alter what an import fetches
+  def feed_changed?
+    FEED_ATTRIBUTES.any? do |attr|
+      attribute_changed?(attr) && attribute_was(attr).to_s.strip.presence != self[attr].to_s.strip.presence
+    end
+  end
+
   # is calendar being worked on by our backend?
   def busy?
     calendar_state.in_queue? || calendar_state.in_worker?
@@ -380,11 +397,12 @@ class Calendar < ApplicationRecord
     errors.add :source, 'Unable to autodetect calendar format, please pick an option from the list below'
   end
 
-  def clear_status_on_source_change
-    return unless source_changed?
+  def clear_status_on_feed_change
+    return unless persisted? && feed_changed?
 
     self.critical_error = nil
     self.notices = nil
     self.last_import_at = nil
+    self.last_checksum = nil
   end
 end
