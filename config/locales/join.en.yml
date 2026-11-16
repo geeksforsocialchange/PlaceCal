@@ -179,7 +179,7 @@ en:
               body: Eventbrite, Meetup, Ticket Tailor, TicketSource, Ticketsolve, OutSavvy and Resident Advisor.
             - title: Websites
               body: Event pages on Squarespace and Wix, and any website that publishes its events as schema.org JSON-LD.
-            - title: Online events, spotted
+            - title: Online events
               body: Zoom, Microsoft Teams, Google Meet and Jitsi links are picked up automatically, so online events show as online.
         - key: neighbourhoods
           title: Built for neighbourhoods

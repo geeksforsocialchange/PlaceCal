@@ -10,7 +10,6 @@ class Views::Join::Features < Views::Join::Base
     Directory::PageHero(
       breadcrumb_label: t('join.nav.features'),
       root_label: t('join.breadcrumbs.root'),
-      kicker: t('join.nav.features'),
       title: t('join.features.title'),
       subtitle: t('join.features.lede')
     )
