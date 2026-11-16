@@ -372,9 +372,11 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
       stub_request(:get, venues_url).to_return(json(ts_venue("ZZMB 1RS")))
       run_import
 
+      checksum = calendar.reload.last_checksum
       stub_request(:get, venues_url).to_return(status: 500)
       expect { run_import }.to raise_error(CalendarImporter::Exceptions::InaccessibleFeed)
       expect(event_postcode).to eq("ZZMB 1RS")
+      expect(calendar.reload.last_checksum).to eq(checksum)
 
       stub_request(:get, venues_url).to_return(json(ts_venue("ZZMB 2OT")))
       run_import

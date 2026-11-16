@@ -10,6 +10,9 @@ module CalendarImporter
     # Mainly for direct HTTP based source types.
     class InaccessibleFeed < StandardError; end
 
+    # An API answered 404 for one record, which some callers read as "there isn't one".
+    class ApiNotFound < InaccessibleFeed; end
+
     # The response was not valid XML, JSON, ICAL, etc.
     class InvalidResponse < StandardError; end
 

@@ -101,6 +101,8 @@ module CalendarImporter
       def fetch_event_venues(event_id)
         url = "#{API_BASE_URL}/events/#{event_id}/venues"
         fetch_page_json(url)['data'] || []
+      rescue ApiNotFound
+        []
       end
 
       def build_publisher_url(event_data)

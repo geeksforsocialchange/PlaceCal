@@ -182,6 +182,16 @@ RSpec.describe CalendarImporter::Parsers::Ticketsource do
         )
       end
 
+      it "reads an event whose venues request answers 404 as having no venue" do
+        stub_request(:get, "https://api.ticketsource.io/events?page=1&per_page=100")
+          .to_return(status: 200, body: events_response, headers: { "Content-Type" => "application/json" })
+        stub_request(:get, venues_url).to_return(status: 404)
+
+        data = described_class.new(calendar).download_calendar
+
+        expect(data.first["venue"]).to be_nil
+      end
+
       it "reads every page of an event's dates" do
         stub_request(:get, "https://api.ticketsource.io/events?page=1&per_page=100")
           .to_return(status: 200, body: events_response, headers: { "Content-Type" => "application/json" })
@@ -207,7 +217,7 @@ RSpec.describe CalendarImporter::Parsers::Ticketsource do
         )
       end
 
-      it "does not fetch dates for archived events" do
+      it "does not fetch dates or venues for archived events" do
         archived = JSON.parse(events_response)
         archived["data"].first["attributes"]["archived"] = true
         stub_request(:get, "https://api.ticketsource.io/events?page=1&per_page=100")
