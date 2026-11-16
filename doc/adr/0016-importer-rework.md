@@ -35,7 +35,7 @@ Separately, every event gets its calendar's organiser and a feed can only be add
 ## Options Not Taken
 
 - **More strategy values:** multiplies a list that is already hard to explain.
-- **A typed address per calendar:** repeats the drift on every calendar using the same hall.
+- **Keeping a typed address on the one calendar it was typed for:** every calendar at the same hall would hold its own copy. A typed address is saved as a shared venue instead.
 - **Tighter link-based online detection alone:** can't tell an auto-attached meeting link from a real one, or express "both".
 - **Pushed live updates:** need a cable backend that isn't deployed. Polling needs nothing new.
 - **The same feed on two calendars:** fetches twice and hides from the venue where its events went.
