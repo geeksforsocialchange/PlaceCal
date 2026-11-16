@@ -8,6 +8,7 @@ module CalendarImporter::Parsers
   class ManchesterUni < Xml
     PUBLIC = false
     NAME = 'Manchester University'
+    KEY = 'manchester-uni'
     DOMAINS = %w[events.manchester.ac.uk].freeze
 
     def self.allowlist_pattern
