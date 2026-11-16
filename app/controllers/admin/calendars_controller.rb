@@ -70,9 +70,11 @@ module Admin
       authorize @calendar
       @calendar.assign_attributes(calendar_params)
       authorize @calendar
+      import_new_feed = @calendar.feed_changed? && !@calendar.busy?
 
       if @calendar.save
-        flash[:success] = 'Calendar successfully updated'
+        @calendar.queue_for_import!(true) if import_new_feed
+        flash[:success] = t(import_new_feed ? 'admin.calendars.flash.updated_and_queued' : 'admin.calendars.flash.updated')
         redirect_to edit_admin_calendar_path(@calendar)
       else
         flash.now[:danger] = 'Calendar did not save'

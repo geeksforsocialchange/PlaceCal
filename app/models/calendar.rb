@@ -68,6 +68,9 @@ class Calendar < ApplicationRecord
     )
   SQL
 
+  # Attributes that change what an import fetches
+  FEED_ATTRIBUTES = %w[source importer_mode api_token].freeze
+
   # ==== Enums / Enumerize ====
   # Defines the strategy this Calendar uses to assign events to locations.
   # @attr [Enumerable<Symbol>] :strategy
@@ -110,6 +113,8 @@ class Calendar < ApplicationRecord
   alias_attribute :to_s, :name
 
   auto_strip_attributes :name, :source, :public_contact_name, :public_contact_email, :public_contact_phone
+  # Normalised on assignment, so the form's blank field doesn't count as a feed change
+  normalizes :api_token, with: ->(token) { token.strip.presence }
 
   # ==== Associations ====
   belongs_to :organiser, class_name: 'Partner', optional: true
@@ -152,7 +157,7 @@ class Calendar < ApplicationRecord
   }
 
   # ==== Callbacks ====
-  before_save :clear_status_on_source_change
+  before_save :clear_status_on_feed_change
   before_save :update_notice_count
 
   after_create :automatically_queue_calendar
@@ -341,6 +346,11 @@ class Calendar < ApplicationRecord
     end
   end
 
+  # @return [Boolean] whether unsaved changes alter what an import fetches
+  def feed_changed?
+    changed.intersect?(FEED_ATTRIBUTES)
+  end
+
   # is calendar being worked on by our backend?
   def busy?
     calendar_state.in_queue? || calendar_state.in_worker?
@@ -380,11 +390,12 @@ class Calendar < ApplicationRecord
     errors.add :source, 'Unable to autodetect calendar format, please pick an option from the list below'
   end
 
-  def clear_status_on_source_change
-    return unless source_changed?
+  def clear_status_on_feed_change
+    return unless persisted? && feed_changed?
 
     self.critical_error = nil
     self.notices = nil
     self.last_import_at = nil
+    self.last_checksum = nil
   end
 end
