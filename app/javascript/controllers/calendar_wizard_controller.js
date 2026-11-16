@@ -313,7 +313,9 @@ export default class extends Controller {
 
 				// Auto-select the detected importer mode and store format name
 				if (data.importer_key && data.importer_key !== "auto") {
-					this.importerModeSelectTarget.value = data.importer_key;
+					if (this.hasImporterOption(data.importer_key)) {
+						this.importerModeSelectTarget.value = data.importer_key;
+					}
 					this.detectedFormatTarget.classList.remove("hidden");
 					this.detectedFormatNameTarget.textContent = data.importer_name;
 					this.detectedFormatValue = data.importer_name;
@@ -363,6 +365,13 @@ export default class extends Controller {
 	}
 
 	// Show or hide the API token field based on the selected importer
+	// Parsers left out of the type list are still detected; selecting one would blank the select
+	hasImporterOption(key) {
+		return Array.from(this.importerModeSelectTarget.options).some(
+			(option) => option.value === key,
+		);
+	}
+
 	updateApiTokenVisibility() {
 		if (!this.hasApiTokenSectionTarget) return;
 		if (this.requiresApiToken) {

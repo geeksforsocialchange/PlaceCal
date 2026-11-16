@@ -91,6 +91,7 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
   describe "testing a source" do
     let(:ics_url) { "https://example.com/events.ics" }
     let(:ticket_tailor_url) { "https://www.tickettailor.com/events/testorg" }
+    let(:manchester_url) { "https://events.manchester.ac.uk/f3vf/calendar/tag:martin_harris_centre/view:list/p:q_details/calml.xml" }
 
     def stub_detection(parser)
       importer = instance_double(CalendarImporter::CalendarImporter, parser:)
@@ -132,6 +133,15 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
           expect(page).to have_content("Ticket Tailor uses an API key")
         end
         expect(page).to have_no_content("Unable to validate this URL")
+      end
+
+      it "names a detected type that isn't in the type list without blanking the list", :aggregate_failures do
+        stub_detection(CalendarImporter::Parsers::ManchesterUni)
+        open_wizard
+        test_source(manchester_url)
+
+        expect(page).to have_content("Manchester University")
+        expect(find("#calendar_importer_mode", visible: :all).value).to eq("auto")
       end
 
       it "reopens on the step with the error and keeps what was entered", :aggregate_failures do
@@ -181,6 +191,14 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
           expect(page).to have_content("This calendar needs an API key")
           expect(page).to have_content("Ticket Tailor uses an API key")
         end
+      end
+
+      it "keeps the calendar type when the detected type isn't in the type list" do
+        stub_detection(CalendarImporter::Parsers::ManchesterUni)
+        test_source(manchester_url)
+
+        expect(page).to have_content("This URL is valid and ready to import!")
+        expect(find("#calendar_importer_mode").value).to eq(calendar.importer_mode)
       end
 
       it "asks for a calendar type when the format isn't detected", :aggregate_failures do
