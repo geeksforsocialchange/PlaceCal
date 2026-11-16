@@ -230,21 +230,6 @@ en:
             - title: Venue access information
               icon: accessibility
               body: Groups can describe step-free access, toilets, transport and quiet spaces, so people know before they go.
-        - key: sustainability
-          title: Light on the planet
-          summary: We measure PlaceCal's carbon footprint and publish how we worked it out.
-          link: sustainability
-          link_label: Our climate impact assessment
-          items:
-            - title: Green hosting
-              icon: leaf
-              body: Our hosting and network providers say they power their operations with 100% renewable electricity.
-            - title: A fraction of the data
-              icon: feather
-              body: On a first visit, finding an event on PlaceCal uses under a quarter of the data Eventbrite does, and under a tenth of Facebook's.
-            - title: Measured and published
-              icon: chart_column
-              body: Our figures, method and measuring script are public, and we update them when things change.
         - key: open_data
           title: Open data, ready for AI
           summary: Your listings reach people wherever they look, from search engines to AI assistants.
@@ -264,6 +249,21 @@ en:
             - title: An API for your own apps
               icon: code
               body: A GraphQL API shaped around schema.org, included in the Organisation and Institution plans.
+        - key: sustainability
+          title: Light on the planet
+          summary: We measure PlaceCal's carbon footprint and publish how we worked it out.
+          link: sustainability
+          link_label: Our climate impact assessment
+          items:
+            - title: Green hosting
+              icon: leaf
+              body: Our hosting and network providers say they power their operations with 100% renewable electricity.
+            - title: A fraction of the data
+              icon: feather
+              body: On a first visit, finding an event on PlaceCal uses under a quarter of the data Eventbrite does, and under a tenth of Facebook's.
+            - title: Measured and published
+              icon: chart_column
+              body: Our figures, method and measuring script are public, and we update them when things change.
         - key: community
           title: Owned by the community
           summary: PlaceCal is run for the neighbourhoods that use it, not for advertisers.
