@@ -307,6 +307,9 @@ en:
     # Calendars
     # -------------------------------------------------------------------------
     calendars:
+      flash:
+        updated: "Calendar successfully updated"
+        updated_and_queued: "Calendar updated. Its events are being imported again with the new settings."
       handbook_hint_html: 'See the <a href="https://handbook.placecal.org/reference/supported-calendar-sources" class="link underline hover:no-underline text-placecal-orange-dark" target="_blank">handbook</a> for setup instructions'
       wizard:
         title: "Create a New Calendar"
