@@ -38,6 +38,13 @@ RSpec.describe CalendarImporter::Events::SquarespaceEvent do
       expect(described_class.new(data).location).to eq("Millbrook, ZZMB 2OT")
     end
 
+    it "decodes HTML entities and drops a title that repeats the street line" do
+      data = feed["upcoming"].first
+      data["location"].merge!("addressTitle" => "St Mary&#39;s Church", "addressLine1" => "St Mary&#39;s church")
+
+      expect(described_class.new(data).location).to eq("St Mary's Church, Millbrook, ZZMB 2OT")
+    end
+
     it "returns nil when the event has no location object" do
       data = feed["upcoming"].first.except("location")
 
