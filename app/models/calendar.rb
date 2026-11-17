@@ -46,6 +46,7 @@ class Calendar < ApplicationRecord
   # ==== Includes / Extends ====
   include ActionView::Helpers::DateHelper
   include Validation
+  include Calendar::ImportState
   extend Enumerize
 
   # ==== Constants ====
@@ -92,6 +93,8 @@ class Calendar < ApplicationRecord
   # calendar_state -- managed by enumerize, attribute declaration skipped
 
   # ==== Attributes ====
+  self.ignored_columns += %w[is_working]
+
   # Columns marked (nullable) have no NOT NULL constraint in the DB.
   attribute :api_token,            :string                       # nullable
   attribute :checksum_updated_at,  :datetime                     # nullable
@@ -100,7 +103,6 @@ class Calendar < ApplicationRecord
   attribute :import_started_at,    :datetime                     # nullable — when the current import attempt was queued/started
   attribute :importer_mode,        :string, default: 'auto'      # nullable
   attribute :importer_used,        :string                       # nullable
-  attribute :is_working,           :boolean, default: true       # NOT NULL
   attribute :last_checksum,        :string                       # nullable
   attribute :last_import_at,       :datetime                     # nullable
   attribute :name,                 :string                       # NOT NULL
@@ -240,139 +242,6 @@ class Calendar < ApplicationRecord
     queue_for_import! false, Time.current
   end
 
-  #
-  # calendar state mutators
-  #
-
-  # Push calendar into the import queue.
-  # @param force_import [Boolean] bypass redundant-import checks
-  # @param from_date [Time] start point for the import window
-  # @return [Boolean] whether it was queued (false while an import is already queued or running)
-  def queue_for_import!(force_import, from_date = Time.current)
-    without_timestamps do
-      lock! # re-read the state so a scan that queued it meanwhile isn't doubled
-      return false if busy?
-
-      update! calendar_state: :in_queue, notices: nil, import_started_at: DateTime.current, import_job_id: nil
-      job = CalendarImporterJob.perform_later id, from_date, force_import
-      update_column :import_job_id, job.provider_job_id if job.try(:provider_job_id) # rubocop:disable Rails/SkipsModelValidations
-      true
-    end
-  end
-
-  # Flag that importing has started.
-  # @return [void]
-  def flag_start_import_job!
-    without_timestamps do
-      return unless calendar_state.in_queue?
-
-      update! calendar_state: :in_worker, notices: nil, import_started_at: DateTime.current
-    end
-  end
-
-  # Flag that importing completed successfully; stores notices and timestamp.
-  # @param notices [Array<String>] messages generated during import
-  # @param importer_used [String] name of the importer that ran
-  # @return [void]
-  def flag_complete_import_job!(notices, importer_used)
-    without_timestamps do
-      return unless calendar_state.in_worker?
-
-      update!(
-        calendar_state: :idle,
-        notices:,
-        last_import_at: DateTime.current,
-        critical_error: nil,
-        importer_used:
-      )
-    end
-  end
-
-  # Flag that the source kept failing and this import was skipped; keeps the last successful import's time.
-  # @param notices [Array<String>] why the import was skipped
-  # @return [void]
-  def flag_skipped_import_job!(notices)
-    without_timestamps do
-      return unless calendar_state.in_worker?
-
-      update!(calendar_state: :idle, notices:)
-    end
-  end
-
-  # Record whether the latest read of the feed found any events.
-  # @param empty [Boolean] whether the feed parsed to no events
-  # @return [void]
-  def flag_feed_empty!(empty)
-    since = empty ? (feed_empty_since || Time.current) : nil
-    return if since == feed_empty_since
-
-    without_timestamps { update!(feed_empty_since: since) }
-  end
-
-  # Record that the source payload checksum has changed.
-  # @param checksum [String] checksum of the retrieved source payload
-  # @return [void]
-  def flag_checksum_change!(checksum)
-    without_timestamps do
-      # The feed was edited during this import, so keep its checksum cleared for the next scan
-      return if feed_edited_since_loaded?
-
-      update!(
-        last_checksum: checksum,
-        checksum_updated_at: DateTime.current
-      )
-    end
-  end
-
-  # Mark calendar as having an unreachable/invalid source.
-  # @param problem [String] description of the source issue
-  # @return [void]
-  def flag_bad_source!(problem)
-    without_timestamps do
-      return unless calendar_state.in_worker?
-
-      # we need the state to be valid so we discard everything
-      # before saving error
-      reload
-
-      self.calendar_state = :bad_source
-      self.critical_error = problem
-      save!
-    end
-  end
-
-  # Flag that an import error occurred; the hourly scan requeues it so it retries once the fault clears.
-  # NOTE: reloads the model, clobbering any in-memory state.
-  # @param problem [String] description of the import failure
-  # @return [void]
-  def flag_error_import_job!(problem)
-    without_timestamps do
-      return unless calendar_state.in_worker?
-
-      # we need the state to be valid so we discard everything
-      # before saving error
-      reload
-
-      self.calendar_state = :error
-      self.critical_error = problem
-      save validate: false
-    end
-  end
-
-  # @return [String] Bootstrap colour name for the current state badge
-  def state_colour
-    case calendar_state
-    when 'in_queue'
-      'primary'
-    when 'in_worker'
-      'success'
-    when 'error'
-      'danger'
-    else
-      'info'
-    end
-  end
-
   # @return [Boolean] whether the stored source, type or API key differ from this copy's
   def feed_edited_since_loaded?
     self.class.where(id:).pick(*FEED_ATTRIBUTES) != FEED_ATTRIBUTES.map { |a| self[a] }
@@ -399,25 +268,12 @@ class Calendar < ApplicationRecord
 
   # ==== Private methods ====
 
-  # Wraps a block in a transaction with timestamps disabled, so that
-  # state-machine transitions don't clobber updated_at.
-  def without_timestamps
-    transaction do
-      Calendar.record_timestamps = false
-      yield
-    ensure
-      Calendar.record_timestamps = true
-    end
-  end
-
   # called for validation
   def check_source_reachable
     return unless source_changed?
     return if errors[:source].any?
 
-    # The calendar importer will raise an exception if the source
-    #   URL has a problem
-    CalendarImporter::CalendarImporter.new(self)
+    CalendarImporter::CalendarImporter.new(self).check_source!
   rescue CalendarImporter::Exceptions::InaccessibleFeed => e
     errors.add :source, "The source URL returned an invalid code (#{e})"
   rescue CalendarImporter::Exceptions::UnsupportedFeed

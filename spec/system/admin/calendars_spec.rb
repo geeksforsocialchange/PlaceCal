@@ -94,7 +94,13 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
     let(:manchester_url) { "https://events.manchester.ac.uk/f3vf/calendar/tag:martin_harris_centre/view:list/p:q_details/calml.xml" }
 
     def stub_detection(parser)
-      importer = instance_double(CalendarImporter::CalendarImporter, parser:)
+      importer = instance_double(CalendarImporter::CalendarImporter, parser:, check_source!: nil)
+      allow(CalendarImporter::CalendarImporter).to receive(:new).and_return(importer)
+    end
+
+    def stub_undetected_format
+      importer = instance_double(CalendarImporter::CalendarImporter)
+      allow(importer).to receive(:check_source!).and_raise(CalendarImporter::Exceptions::UnsupportedFeed)
       allow(CalendarImporter::CalendarImporter).to receive(:new).and_return(importer)
     end
 
@@ -199,8 +205,7 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
       end
 
       it "asks for a calendar type when the format isn't detected", :aggregate_failures do
-        allow(CalendarImporter::CalendarImporter).to receive(:new)
-          .and_raise(CalendarImporter::Exceptions::UnsupportedFeed)
+        stub_undetected_format
         test_source("https://example.com/whats-on")
 
         within(".alert-warning") do
@@ -230,8 +235,7 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
         end
 
         it "keeps it when the format isn't detected", :aggregate_failures do
-          allow(CalendarImporter::CalendarImporter).to receive(:new)
-            .and_raise(CalendarImporter::Exceptions::UnsupportedFeed)
+          stub_undetected_format
           click_button "Test"
 
           expect(page).to have_content("This URL is valid and ready to import!")
@@ -303,6 +307,38 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
       click_tab("location")
       place_select = find("#calendar_place_id", visible: :all)
       expect(place_select.value).to eq(partner_two.id.to_s)
+    end
+  end
+
+  describe "the import status strip" do
+    let!(:calendar) { create(:calendar, organiser: partner, name: "Test Calendar") }
+    let(:frame) { "turbo-frame#import_status_calendar_#{calendar.id}" }
+    let(:announcer) { '[role="status"][data-import-status-target="announcer"]' }
+
+    before do
+      stub_const("Views::Admin::Calendars::ImporterOverview::POLL_INTERVAL", 0.2.seconds)
+      calendar.update_columns(calendar_state: "in_queue") # rubocop:disable Rails/SkipsModelValidations
+      visit admin_url("/calendars/#{calendar.id}/edit")
+    end
+
+    it "updates when the import finishes and leaves the form alone", :aggregate_failures do
+      fill_in "calendar_name", with: "Unsaved name"
+      expect(page).to have_css(frame, text: I18n.t("admin.calendars.importer.importing"))
+      expect(page).to have_css(announcer, exact_text: "", visible: :all)
+
+      calendar.update_columns(calendar_state: "idle", last_import_at: Time.current) # rubocop:disable Rails/SkipsModelValidations
+
+      expect(page).to have_css(frame, text: I18n.t("admin.calendars.importer.success"))
+      expect(page).to have_css(announcer, exact_text: I18n.t("admin.calendars.importer.import_finished"), visible: :all)
+      expect(page).to have_no_css("#{frame} [data-poll]")
+      expect(page).to have_field("calendar_name", with: "Unsaved name")
+    end
+
+    it "reimports from the strip as a full page load" do
+      calendar.update_columns(calendar_state: "idle", last_import_at: Time.current) # rubocop:disable Rails/SkipsModelValidations
+      within(frame) { click_button I18n.t("admin.calendars.importer.reimport") }
+
+      assert_has_flash(:success, I18n.t("admin.calendars.flash.queued"))
     end
   end
 end
