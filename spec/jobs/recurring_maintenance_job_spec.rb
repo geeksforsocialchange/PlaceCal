@@ -3,12 +3,6 @@
 require "rails_helper"
 
 RSpec.describe RecurringMaintenanceJob, type: :job do
-  before do
-    setter = double("setter")
-    allow(described_class).to receive(:set).and_return(setter)
-    allow(setter).to receive(:perform_later)
-  end
-
   it "only tells search engines about changes from production" do
     allow(IndexNowSubmission).to receive(:new).and_call_original
 

@@ -201,7 +201,7 @@ class Views::Layouts::Admin::Application < Phlex::HTML
       admin_nav_link(human_model_name(Tag, count: 2), admin_tags_path, :tag, root_only: true) if policy(Tag).index?
       admin_nav_link(human_model_name(Article, count: 2), admin_articles_path, :article) if policy(Article).index?
       admin_nav_link(human_model_name(Supporter, count: 2), admin_supporters_path, :credit_card, root_only: true) if policy(Supporter).index?
-      admin_nav_link(t('admin.leftbar.import_status'), admin_jobs_path, :cog, root_only: true) if current_user.root?
+      admin_nav_link(t('admin.leftbar.jobs'), admin_jobs_path, :cog, root_only: true) if current_user.root?
     end
   end
 

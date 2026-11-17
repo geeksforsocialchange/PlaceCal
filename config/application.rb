@@ -26,10 +26,13 @@ module PlaceCal
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.1
 
-    config.active_job.queue_adapter = :delayed_job
+    config.active_job.queue_adapter = :solid_queue
+    config.mission_control.jobs.adapters = [:solid_queue]
+    config.mission_control.jobs.base_controller_class = 'Admin::JobDashboardController'
+    config.mission_control.jobs.http_basic_auth_enabled = false
 
-    # Partial matches, filtered from logs, AppSignal and #inspect. Set here because delayed_job loads
-    # ActiveRecord during Bundler.require, which copies this list into filter_attributes before initializers run.
+    # Partial matches, filtered from logs, AppSignal and #inspect. Set here, not in an initializer, so the list
+    # is in place before anything loads ActiveRecord, which copies it into filter_attributes.
     config.filter_parameters += %i[passw email secret token _key crypt salt certificate otp ssn cvv cvc]
 
     config.time_zone = 'Europe/London'

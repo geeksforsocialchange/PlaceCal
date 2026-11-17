@@ -190,7 +190,7 @@ en:
       discord: "Discord"
       get_support: "Get support"
       handbook: "Handbook"
-      import_status: "Import status"
+      jobs: "Background jobs"
       in_development: "In development"
       label: "Main navigation"
       quick_actions: "Quick actions"
@@ -444,21 +444,6 @@ en:
         source_categories: "Source categories"
         source_organiser: "Source organiser"
         upcoming_tab: "Upcoming (%{count})"
-
-    # -------------------------------------------------------------------------
-    # Jobs / Import Status
-    # -------------------------------------------------------------------------
-    jobs:
-      title: "Calendar Importer Status"
-      description: "Overview of all calendar import jobs and their current state."
-      stats:
-        jobs: "Jobs"
-      sections:
-        busy_calendars: "Busy Calendars"
-        error_calendars: "Error Calendars"
-      empty:
-        title: "All Clear"
-        description: "No calendars with errors or currently importing."
 
     # -------------------------------------------------------------------------
     # Neighbourhoods

@@ -2,8 +2,8 @@
 
 require "rails_helper"
 
-RSpec.describe "Admin::Jobs", type: :request do
-  describe "GET /admin/jobs" do
+RSpec.describe "Admin job dashboard (Mission Control Jobs)", type: :request do
+  describe "GET /jobs" do
     context "as an unauthenticated user" do
       it "redirects to login" do
         get admin_jobs_url(host: admin_host)
@@ -27,9 +27,12 @@ RSpec.describe "Admin::Jobs", type: :request do
 
       before { sign_in user }
 
-      it "shows the jobs page" do
+      it "shows Mission Control's job dashboard" do
         get admin_jobs_url(host: admin_host)
+        follow_redirect! while response.redirect?
+
         expect(response).to be_successful
+        expect(response.body).to include("Queues")
       end
     end
   end

@@ -64,7 +64,8 @@ class Calendar < ApplicationRecord
   STUCK_IMPORT_CONDITION = <<~SQL.squish
     calendar_state IN ('in_queue', 'in_worker') AND (
       (import_job_id IS NOT NULL AND import_started_at < :grace_cutoff AND NOT EXISTS (
-        SELECT 1 FROM delayed_jobs WHERE delayed_jobs.id = calendars.import_job_id AND delayed_jobs.failed_at IS NULL
+        SELECT 1 FROM solid_queue_jobs WHERE solid_queue_jobs.id = calendars.import_job_id AND solid_queue_jobs.finished_at IS NULL
+          AND NOT EXISTS (SELECT 1 FROM solid_queue_failed_executions WHERE solid_queue_failed_executions.job_id = solid_queue_jobs.id)
       ))
       OR (import_job_id IS NULL AND (import_started_at IS NULL OR import_started_at < :threshold_cutoff))
     )
@@ -99,7 +100,7 @@ class Calendar < ApplicationRecord
   attribute :api_token,            :string                       # nullable
   attribute :checksum_updated_at,  :datetime                     # nullable
   attribute :critical_error,       :text                         # nullable
-  attribute :import_job_id,        :integer, limit: 8            # nullable, delayed_jobs row driving the current attempt
+  attribute :import_job_id,        :integer, limit: 8            # nullable, Solid Queue job driving the current attempt
   attribute :import_started_at,    :datetime                     # nullable — when the current import attempt was queued/started
   attribute :importer_mode,        :string, default: 'auto'      # nullable
   attribute :importer_used,        :string                       # nullable
