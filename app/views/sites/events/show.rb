@@ -172,7 +172,7 @@ class Views::Sites::Events::Show < Views::Base
   def render_where_section
     div(class: 'py-4') do
       section_heading(t('directory.events.show.where'))
-      div(class: 'grid grid-cols-main-auto gap-4 items-start') do
+      div(class: 'grid gap-4 items-start md:grid-cols-main-auto') do
         Shared::Map(points: map, compact: true) if map
         div do
           div(class: 'font-extra-bold') { event.partner_at_location.name } if event.partner_at_location
