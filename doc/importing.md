@@ -43,10 +43,8 @@ RecurringCalendarScanJob (hourly)
 [Event#resolved_address](../app/models/event.rb) uses the first of:
 
 1. The event's own address.
-2. The address of `partner_at_location`: the place unless it is hidden, or else a visible partner whose name and postcode match the event's address.
-3. The organiser's address, only when there is no such partner.
-
-A place that is not hidden but has no address gives no address, not the organiser's.
+2. The place's address, when the place is not hidden. A place with no address gives no address, not the organiser's.
+3. The organiser's address, when there is no place or the place is hidden.
 
 ## Location Strategies
 
@@ -66,7 +64,7 @@ Location text becomes an address only with a street line and a full UK postcode 
 
 Each event class's `online_event_id` decides whether an event is online, for every strategy.
 
-- **iCal** ([ics_event.rb](../app/jobs/calendar_importer/events/ics_event.rb), also used by Meetup) checks, in order: the custom properties in `ONLINE_MEETING_PROPERTIES` (Google, Microsoft Teams and Zoom meeting links), a location that is an http(s) URL, then the first description link on a domain in `OnlineAddress::SERVICES` ([online_address.rb](../app/models/online_address.rb)). Links on those domains are `direct`; others are `indirect`.
+- **iCal** ([ics_event.rb](../app/jobs/calendar_importer/events/ics_event.rb), also used by Meetup) checks, in order: the custom properties in `ONLINE_MEETING_PROPERTIES` (Google, Microsoft Teams and Zoom meeting links), a location that is an http(s) URL, then a description link on a domain in `OnlineAddress::SERVICES`, taking the domains in that list's order ([online_address.rb](../app/models/online_address.rb)). Links on those domains are `direct`; others are `indirect`.
 - **Eventbrite** ([eventbrite_event.rb](../app/jobs/calendar_importer/events/eventbrite_event.rb)) uses the `online_event` flag and links to the Eventbrite page as `indirect`.
 
 Other sources are never marked online.
