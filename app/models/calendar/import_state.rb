@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
-# The import job's state changes, each guarded by the state it moves from.
-# None of them move updated_at, which records edits to the calendar's settings.
+# Import state changes. None of them move updated_at, which records edits to the calendar's settings.
 module Calendar::ImportState
-  extend ActiveSupport::Concern
-
   # Push calendar into the import queue.
   # @param force_import [Boolean] bypass redundant-import checks
   # @param from_date [Time] start point for the import window
