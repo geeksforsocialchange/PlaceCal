@@ -281,4 +281,36 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
       expect(place_select.value).to eq(partner_two.id.to_s)
     end
   end
+
+  describe "the import status strip" do
+    let!(:calendar) { create(:calendar, organiser: partner, name: "Test Calendar") }
+    let(:frame) { "turbo-frame#import_status_calendar_#{calendar.id}" }
+    let(:announcer) { '[role="status"][data-import-status-target="announcer"]' }
+
+    before do
+      stub_const("Views::Admin::Calendars::ImporterOverview::POLL_INTERVAL", 0.2.seconds)
+      calendar.update_columns(calendar_state: "in_queue") # rubocop:disable Rails/SkipsModelValidations
+      visit admin_url("/calendars/#{calendar.id}/edit")
+    end
+
+    it "updates when the import finishes and leaves the form alone", :aggregate_failures do
+      fill_in "calendar_name", with: "Unsaved name"
+      expect(page).to have_css(frame, text: I18n.t("admin.calendars.importer.importing"))
+      expect(page).to have_css(announcer, exact_text: "", visible: :all)
+
+      calendar.update_columns(calendar_state: "idle", last_import_at: Time.current) # rubocop:disable Rails/SkipsModelValidations
+
+      expect(page).to have_css(frame, text: I18n.t("admin.calendars.importer.success"))
+      expect(page).to have_css(announcer, exact_text: I18n.t("admin.calendars.importer.import_finished"), visible: :all)
+      expect(page).to have_no_css("#{frame} [data-poll]")
+      expect(page).to have_field("calendar_name", with: "Unsaved name")
+    end
+
+    it "reimports from the strip as a full page load" do
+      calendar.update_columns(calendar_state: "idle", last_import_at: Time.current) # rubocop:disable Rails/SkipsModelValidations
+      within(frame) { click_button I18n.t("admin.calendars.importer.reimport") }
+
+      assert_has_flash(:success, I18n.t("admin.calendars.flash.queued"))
+    end
+  end
 end

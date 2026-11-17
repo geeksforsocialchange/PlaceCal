@@ -308,6 +308,9 @@ en:
     # -------------------------------------------------------------------------
     calendars:
       flash:
+        created: "Calendar created. Its events are being imported, and the status above the form shows when the import finishes."
+        not_saved: "Calendar did not save"
+        queued: "Calendar added to the import queue"
         updated: "Calendar successfully updated"
         updated_and_queued: "Calendar updated. Its events are being imported again with the new settings."
       handbook_hint_html: 'See the <a href="https://handbook.placecal.org/reference/supported-calendar-sources" class="link underline hover:no-underline text-placecal-orange-dark" target="_blank">handbook</a> for setup instructions'
@@ -420,6 +423,8 @@ en:
         feed_empty_removed: "The feed has had no events since %{since}, so its upcoming events have been removed."
         feed_empty_no_events: "The feed has had no events since %{since}."
         importing: "Importing..."
+        import_failed: "Import failed"
+        import_finished: "Import finished"
         last_import: "Last import:"
         notices: "Import notices"
         occurrence_limit: '"%{summary}" repeats more than %{count} times, so only its first %{count} dates were imported.'

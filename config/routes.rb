@@ -44,6 +44,7 @@ Rails.application.routes.draw do
       end
       member do
         post :import
+        get :import_status
       end
     end
     resources :neighbourhoods do
