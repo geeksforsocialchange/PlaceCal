@@ -112,6 +112,16 @@ RSpec.describe "GraphQL Events", type: :request do
       expect(event_data["address"]["postalCode"]).to eq(address.postcode)
     end
 
+    it "gives the image as a full URL, or null without one" do
+      image_query = "query($id: ID!) { event(id: $id) { image } }"
+      expect(execute_query(image_query, variables: { id: event.id })["data"]["event"]["image"]).to be_nil
+
+      event.update!(image: Rack::Test::UploadedFile.new(file_fixture("good-cat-picture.jpg"), "image/jpeg"))
+      image = execute_query(image_query, variables: { id: event.id })["data"]["event"]["image"]
+
+      expect(image).to start_with("http").and(end_with(event.image.url))
+    end
+
     it "includes organizer (partner) information" do
       result = execute_query(query, variables: { id: event.id })
 

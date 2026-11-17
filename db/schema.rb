@@ -118,6 +118,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_17_140000) do
     t.datetime "dtend", precision: nil
     t.datetime "dtstart", precision: nil, null: false
     t.text "footer"
+    t.string "image"
+    t.string "image_source_url"
     t.boolean "is_active", default: true, null: false
     t.jsonb "notices"
     t.bigint "online_address_id"

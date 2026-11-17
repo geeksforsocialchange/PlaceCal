@@ -56,6 +56,18 @@ module CalendarImporter::Events
       Array(organizer.ical_params['cn']).first if organizer
     end
 
+    # Google Calendar attaches Drive's viewer page; this form gives the file itself when it's shared publicly
+    DRIVE_FILE = %r{\Ahttps://drive\.google\.com/(?:open\?id=|file/d/)([\w-]+)}
+
+    # RFC 7986's IMAGE, or the first attachment that is an image, as WordPress's The Events Calendar and Google Calendar send
+    def image_url
+      image = Array(@event.image).first || @event.attach.find { |attachment| image_attachment?(attachment) }
+      return unless image.is_a?(Icalendar::Values::Uri) || image.is_a?(Icalendar::Values::Text)
+
+      drive_id = image.to_s[DRIVE_FILE, 1]
+      drive_id ? "https://drive.google.com/uc?export=download&id=#{drive_id}" : image.to_s
+    end
+
     def recurring_event?
       rrule.present?
     end
@@ -151,6 +163,12 @@ module CalendarImporter::Events
       # Matches URLs like: https://www.example.com/path or example.com/path
       escaped = Regexp.escape(domain)
       %r{(https?://)?([\w-]+\.)?#{escaped}/[^\s<"]+}
+    end
+
+    def image_attachment?(attachment)
+      params = attachment.ical_params
+      Array(params['fmttype']).first.to_s.start_with?('image/') ||
+        [Array(params['filename']).first, attachment.to_s].any? { |name| name.to_s.match?(/\.(jpe?g|png|gif|webp)(\?|\z)/i) }
     end
   end
 end

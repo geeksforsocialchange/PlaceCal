@@ -18,6 +18,7 @@ class RecurringMaintenanceJob < ApplicationJob
         Site.refresh_all_counts!
         Neighbourhood.refresh_partners_count!
         Address.delete_orphaned!
+        CarrierWave.clean_cached_files!
         IndexNowSubmission.new(since: SUBMISSION_WINDOW.ago).call if Rails.env.production?
       end
     end

@@ -13,6 +13,9 @@ class Views::Sites::Events::Show < Views::Base
                 root: 'Everything under the event\'s details row on its page.',
                 description: 'The event\'s description, as its organiser wrote it (paragraphs, lists, headings).',
                 links: 'The buttons under the description: the event\'s webpage and a join link for streams. Only when the event has them.',
+                columns: 'The description and links beside the event\'s image, like the partner page. Only when the event has an image.',
+                aside: 'The column beside the description, holding the event\'s image. Only when the event has an image.',
+                image: 'The box holding the event\'s image, the same as a partner page\'s. Only when the event has one.',
                 info: 'The group of headed sections below: contact, address, organiser and venue.',
                 contact: 'The organiser\'s contact section. Its heading only when the event has an organiser.',
                 contact_name: 'The organiser\'s name, linked, heading the contact details. Not on core themes.',
@@ -22,7 +25,7 @@ class Views::Sites::Events::Show < Views::Base
                 section_body: 'The text under each section\'s heading.',
                 more: 'The "More from" list of the organiser\'s other events. Only when the organiser has other upcoming events.'
               },
-              tokens: %i[--text-sm --leading-normal --color-foreground --color-primary]
+              tokens: %i[--text-sm --leading-normal --color-foreground --color-primary --color-rules --radius-card]
 
   prop :event, ::Event, reader: :private
   prop :site, _Nilable(::Site), reader: :private
@@ -109,6 +112,7 @@ class Views::Sites::Events::Show < Views::Base
           render_more_from_organiser if Array(more_from_organiser).any?
         end
         aside(class: 'flex flex-col gap-4 max-lg:mt-8') do
+          Shared::SidebarImage(src: event.image.url, alt: event.summary, layout: :directory) if event.image.present?
           render_information_card
           render_organiser_contact_card if event.organiser
           render_share_card
@@ -298,10 +302,13 @@ class Views::Sites::Events::Show < Views::Base
 
   def render_event_details
     div(**part(:root, class: 'container-narrowish mb-12 e-content')) do
-      div(**part(:description, class: 'markdown-content')) { raw safe(OrganiserHtml.call(event.description_html, under: 1)) }
-      div(**part(:links, class: 'flex flex-col items-start gap-2 mt-10 empty:hidden')) do
-        render_event_link
-        render_online_link
+      if event.image.present?
+        div(**part(:columns, class: 'grid grid-areas-partner-details')) do
+          div(class: 'grid-area-main') { render_description_and_links }
+          aside(**part(:aside, class: 'grid-area-right max-lg:mt-8')) { Shared::SidebarImage(src: event.image.url, alt: event.summary, **part(:image)) }
+        end
+      else
+        render_description_and_links
       end
 
       div(**part(:info, class: 'grid gap-4 items-start mt-5.5 lg:grid-cols-3')) do
@@ -310,6 +317,14 @@ class Views::Sites::Events::Show < Views::Base
         render_event_organiser if event.organiser
         render_event_venue if !core_theme? && show_venue?
       end
+    end
+  end
+
+  def render_description_and_links
+    div(**part(:description, class: 'markdown-content')) { raw safe(OrganiserHtml.call(event.description_html, under: 1)) }
+    div(**part(:links, class: 'flex flex-col items-start gap-2 mt-10 empty:hidden')) do
+      render_event_link
+      render_online_link
     end
   end
 

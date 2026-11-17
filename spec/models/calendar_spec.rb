@@ -13,6 +13,7 @@
 #  import_started_at    :datetime
 #  importer_mode        :string           default("auto")
 #  importer_used        :string
+#  is_working           :boolean          default(TRUE), not null
 #  last_checksum        :string
 #  last_import_at       :datetime
 #  name                 :string           not null

@@ -218,14 +218,12 @@ class Views::Sites::Partners::Show < Views::Base
   def render_partner_image
     return unless partner.image?
 
-    div(**part(:image, class: 'text-center my-6 print:hidden')) do
-      img(
-        src: partner.image.standard.url,
-        srcset: "#{partner.image.standard.url} 1x, #{partner.image.retina.url} 2x",
-        alt: t('partners.show.image_alt', name: partner.name),
-        class: 'max-w-full'
-      )
-    end
+    Shared::SidebarImage(
+      src: partner.image.standard.url,
+      srcset: "#{partner.image.standard.url} 1x, #{partner.image.retina.url} 2x",
+      alt: t('partners.show.image_alt', name: partner.name),
+      **part(:image, class: 'my-6')
+    )
   end
 
   def render_opening_times

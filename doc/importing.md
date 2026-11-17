@@ -41,6 +41,8 @@ RecurringCalendarScanJob (hourly)
 
 Each event keeps, as plain text, the categories and organiser name its source gives: iCal `CATEGORIES` and the `CN` of `ORGANIZER`, JSON-LD `keywords` and the `organizer` name, and Squarespace `categories` and `tags`, in `source_categories` and `source_organiser`. They don't create or link PlaceCal categories or partners. Other sources give neither.
 
+An event stores one image, downloaded from its source into `event.image` (`EventImageUploader`) when the source's URL for it, kept in `image_source_url`, changes. Eventbrite (`logo.original.url`), Ticket Tailor (`images.header`), Squarespace (`assetUrl`), JSON-LD (`image`) and iCal (`IMAGE`, or the first `ATTACH` that is an image; Google Drive links are fetched in their download form, which works when the file is shared publicly) give one. A download that fails leaves the event without an image and is retried on the next import that reads it. A file that isn't a JPEG, PNG, GIF or WebP image leaves it without one until the source's URL changes.
+
 ### Address Resolution Order
 
 [Event#resolved_address](../app/models/event.rb) uses the first of:

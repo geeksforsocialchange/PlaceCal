@@ -10,7 +10,7 @@
 #  body_html     :string
 #  image_credit  :string
 #  is_draft      :boolean          default(TRUE), not null
-#  published_at  :datetime
+#  published_at  :date
 #  pull_quote    :text
 #  slug          :string
 #  title         :text             not null
@@ -20,9 +20,8 @@
 #
 # Indexes
 #
-#  index_articles_on_author_id     (author_id)
-#  index_articles_on_published_at  (published_at)
-#  index_articles_on_slug          (slug) UNIQUE
+#  index_articles_on_author_id  (author_id)
+#  index_articles_on_slug       (slug) UNIQUE
 #
 # Foreign Keys
 #

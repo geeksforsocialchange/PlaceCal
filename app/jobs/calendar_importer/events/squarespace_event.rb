@@ -18,6 +18,10 @@ module CalendarImporter::Events
       "#{@event['url']}/#{@event['urlId']}"
     end
 
+    def image_url
+      @event['assetUrl']
+    end
+
     def source_categories
       Array(@event['categories']) + Array(@event['tags'])
     end
