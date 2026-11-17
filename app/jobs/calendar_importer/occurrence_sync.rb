@@ -60,6 +60,7 @@ class CalendarImporter::OccurrenceSync
     duplicates = @calendar_events.where(event_time).where.not(id: event.id).to_a
     return if duplicates.empty?
 
+    duplicates.each(&:remove_image!)
     Event.where(id: duplicates.map(&:id)).delete_all
     @result.removed.concat(duplicates)
   end

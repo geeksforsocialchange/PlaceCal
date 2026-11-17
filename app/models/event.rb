@@ -11,6 +11,8 @@
 #  dtend                    :datetime
 #  dtstart                  :datetime         not null
 #  footer                   :text
+#  image                    :string
+#  image_source_url         :string
 #  is_active                :boolean          default(TRUE), not null
 #  notices                  :jsonb
 #  publisher_url            :string
@@ -53,6 +55,7 @@ class Event < ApplicationRecord
   has_paper_trail ignore: %i[rrule]
 
   include HtmlRenderCache
+  include EventImage
   include EventJsonLd
   include Permalinkable
 
@@ -70,6 +73,7 @@ class Event < ApplicationRecord
   attribute :dtend,                    :datetime                    # nullable
   attribute :dtstart,                  :datetime                    # NOT NULL
   attribute :footer,                   :text                        # nullable
+  attribute :image_source_url,         :string                      # nullable, the source's URL for the stored image
   attribute :is_active,                :boolean, default: true      # NOT NULL
   attribute :publisher_url,            :string                      # nullable
   attribute :raw_location_from_source, :text                        # nullable

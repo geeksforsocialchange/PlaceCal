@@ -38,6 +38,10 @@ module CalendarImporter::Events
       @event['url']
     end
 
+    def image_url
+      @event.dig('images', 'header')
+    end
+
     private
 
     def parse_datetime(time_hash)
