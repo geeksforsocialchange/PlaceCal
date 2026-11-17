@@ -12,8 +12,7 @@ RecurringCalendarScanJob (hourly)
       → Parser (download, checksum, parse)
         → CalendarImporter::Events::* (one per source event)
       → CalendarImporter::EventResolver (one per event)
-        → OnlineDetector (calls the event's online_event_id)
-        → LocationResolver (place + address)
+        → resolve: online link, then LocationResolver (place + address), then organiser
         → save_all_occurences (persist to DB)
 ```
 
@@ -62,7 +61,7 @@ Location text becomes an address only with a street line and a full UK postcode 
 
 ## Online Detection
 
-Each event class's `online_event_id` decides whether an event is online, for every strategy.
+Each event class's `online_event_id` decides whether an event is online, for every strategy. `EventResolver#resolve` calls it before resolving the location, so its `OnlineAddress` is created even when the location raises a `Problem` and the event isn't saved.
 
 - **iCal** ([ics_event.rb](../app/jobs/calendar_importer/events/ics_event.rb), also used by Meetup) checks, in order: the custom properties in `ONLINE_MEETING_PROPERTIES` (Google, Microsoft Teams and Zoom meeting links), a LOCATION that is a link to a meeting host, then the first meeting link in the description. Meeting hosts are the `:meeting` services in `OnlineAddress::SERVICES` ([online_address.rb](../app/models/online_address.rb)), such as Zoom, Google Meet, Jitsi and Microsoft Teams. These links are stored as `direct`.
 - **Eventbrite** ([eventbrite_event.rb](../app/jobs/calendar_importer/events/eventbrite_event.rb)) uses the `online_event` flag and links to the Eventbrite page as `indirect`.

@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
-# Coordinates event import: resolves location, detects online links, and saves occurrences.
-#
-# Delegates location resolution to LocationResolver and online detection to OnlineDetector.
+# Coordinates event import: resolves the online link, location and organiser, and saves occurrences.
 class CalendarImporter::EventResolver
   # Twice-daily for a year fits; a minutely or hourly rule does not
   MAX_OCCURENCES = 1000
 
-  attr_reader :data, :uid, :notices, :calendar, :unreadable_address_reason
+  attr_reader :data, :uid, :notices, :calendar, :unreadable_address_reason, :resolved_attributes
 
   delegate :private?, to: :data
 
@@ -34,18 +32,22 @@ class CalendarImporter::EventResolver
     end
   end
 
-  def determine_online_location
-    CalendarImporter::OnlineDetector.new(data).detect
-  end
+  # The online address is found or created first, so it is kept even when the location raises a Problem.
+  # @return [Hash] the place_id, address_id, organiser_id and online_address_id for each saved row
+  # @raise [CalendarImporter::LocationResolver::Problem] when the calendar's settings can't place the event
+  def resolve
+    online_address_id = data.online_event_id
 
-  def determine_location_for_strategy
-    resolver = CalendarImporter::LocationResolver.new(calendar, data)
-    place, address = resolver.resolve
-    @unreadable_address_reason = resolver.unreadable_address_reason
+    location_resolver = CalendarImporter::LocationResolver.new(calendar, data)
+    location = location_resolver.resolve
+    @unreadable_address_reason = location_resolver.unreadable_address_reason
 
-    data.place_id = place.id if place
-    data.address_id = address&.id
-    data.organiser_id = calendar.organiser_id
+    @resolved_attributes = {
+      place_id: location.place&.id,
+      address_id: location.address&.id,
+      organiser_id:,
+      online_address_id:
+    }
   end
 
   def save_all_occurences
@@ -64,7 +66,7 @@ class CalendarImporter::EventResolver
 
       event_time[:are_spaces_available] = occurence.status if occurence.respond_to?(:status)
 
-      attributes = data.attributes_for(occurence).merge(event_time)
+      attributes = data.attributes_for(occurence).merge(resolved_attributes).merge(event_time)
       begin
         notices << event.errors.full_messages.join(', ') unless event.update(attributes)
       rescue ActiveRecord::RecordNotUnique
@@ -76,6 +78,10 @@ class CalendarImporter::EventResolver
   end
 
   private
+
+  def organiser_id
+    calendar.organiser_id
+  end
 
   # RDATE gives an event several dates without an RRULE
   def series?

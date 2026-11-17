@@ -15,6 +15,9 @@ class CalendarImporter::LocationResolver
     'online_only' => :no_location_strategy
   }.freeze
 
+  # match is :matched_venue, :event_address, :default_location, :room or :none
+  Result = Data.define(:place, :address, :match)
+
   # A location that is only a link is a meeting or a webpage, not an unreadable street address
   ONLINE_LINK = %r{\Ahttps?://\S+\z}i
 
@@ -41,7 +44,7 @@ class CalendarImporter::LocationResolver
     @event_data = event_data
   end
 
-  # @return [Array(Partner, Address)] the event's place and address; either may be nil
+  # @return [Result] the event's place and address, either of which may be nil, and which case applied
   # @raise [Problem] when the strategy needs a default venue the calendar doesn't have
   def resolve
     strategy_method = STRATEGIES[calendar.strategy]
@@ -55,52 +58,65 @@ class CalendarImporter::LocationResolver
   attr_reader :calendar, :event_data
 
   # The event's own address, with a venue only if a partner is at that address.
-  # @return [Array(Partner, Address)] when the address is a partner's
-  # @return [Array(nil, Address)] when it isn't, or [nil, nil] when the address can't be read
-  # @return [Array(Partner, nil)] the default venue with no address, when the event has no location
+  # @return [Result] :matched_venue, :event_address, or :none when the address can't be read;
+  #   with no location, the default venue with no address (:default_location), or :none without one
   def event_strategy
-    return [calendar.place, nil] unless event_data.location?
+    return default_location(address: nil) unless event_data.location?
 
     address = event_address
-    [Partner.matching_venue_for(address), address]
+    venue = Partner.matching_venue_for(address)
+    return Result.new(place: venue, address:, match: :matched_venue) if venue
+    return Result.new(place: nil, address:, match: :event_address) if address
+
+    none
   end
 
   # The event's own address, with a venue only if a partner or the default venue is at that address.
   # With no usable address, the event is placed at the calendar's default venue.
-  # @return [Array(Partner, Address)] when the address is a partner's or the default venue's, or unusable
-  # @return [Array(nil, Address)] when the event is somewhere with no partner
+  # @return [Result] :matched_venue, :default_location (or :none without one) when unusable or at the default venue,
+  #   or :event_address when the event is somewhere with no partner
   def event_override_strategy
     address = event_address
     return place_strategy unless address
 
     venue = Partner.matching_venue_for(address)
-    return [venue, address] if venue
+    return Result.new(place: venue, address:, match: :matched_venue) if venue
     return place_strategy if address.same_building_as?(calendar.place&.address)
 
-    [nil, address]
+    Result.new(place: nil, address:, match: :event_address)
   end
 
-  # @return [Array(Partner, Address)] the calendar's default venue and its address, each nil if unset
+  # @return [Result] the calendar's default venue and its address (:default_location), or :none without one
   def place_strategy
-    [calendar.place, calendar.place&.address]
+    default_location(address: calendar.place&.address)
   end
 
   # The default venue, with the event's location text added as a room on the venue's address.
-  # @return [Array(Partner, Address)] the venue and a new address for the room, or the venue's own address
+  # @return [Result] the venue and a new address for the room (:room), or the venue's own address (:default_location)
   # @raise [Problem] when the calendar has no default venue
   def room_number_strategy
     place = calendar.place
     raise Problem, I18n.t('admin.calendars.importer.room_number_without_venue') if place.blank?
-    return [place, place.address] unless event_data.location? && place.address && !location_is_link?
+    return default_location(address: place.address) unless event_data.location? && place.address && !location_is_link?
 
     address = place.address.dup.prepend_room_number(event_data.location)
     address.save
-    [place, address]
+    Result.new(place:, address:, match: :room)
   end
 
-  # @return [Array(nil, nil)]
+  # @return [Result] no place or address (:none)
   def no_location_strategy
-    [nil, nil]
+    none
+  end
+
+  def default_location(address:)
+    return none unless calendar.place
+
+    Result.new(place: calendar.place, address:, match: :default_location)
+  end
+
+  def none
+    Result.new(place: nil, address: nil, match: :none)
   end
 
   # @return [Address, nil] the event's location text as a saved address, or nil if missing or invalid
