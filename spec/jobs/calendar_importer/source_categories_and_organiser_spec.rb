@@ -44,14 +44,14 @@ RSpec.describe "Source categories and organiser" do
     it "reads CATEGORIES from a Teamup feed" do
       fields = imported(CalendarImporter::Parsers::Ics, "Teamup_com_calendar", "https://ics.teamup.com/feed/ksq8ayp7mw5mhb193x/5941140.ics")
 
-      expect(fields).to all(eq(source_categories: ["Guild Events"], source_organiser: nil))
+      expect(fields).to be_present.and(all(eq(source_categories: ["Guild Events"], source_organiser: nil)))
     end
 
     it "reads CATEGORIES from a Teamup feed at an unknown address" do
       fields = imported(CalendarImporter::Parsers::Ics, "Uknown Teamup Feed",
                         "https://not-a-real-calendar-provider.com/feed/ksq8ayp7mw5mhb193x/5941140.ics")
 
-      expect(fields).to all(eq(source_categories: ["Fundraising Crew Events"], source_organiser: nil))
+      expect(fields).to be_present.and(all(eq(source_categories: ["Fundraising Crew Events"], source_organiser: nil)))
     end
 
     it "reads CATEGORIES from a generic feed, and stores none for an event without them" do
@@ -77,7 +77,7 @@ RSpec.describe "Source categories and organiser" do
   end
 
   describe "JSON-LD" do
-    it "reads the organizer's name from a DiceFM venue, unescaped" do
+    it "reads the organizer's name from a DiceFM venue" do
       fields = imported(CalendarImporter::Parsers::LdJson, :dice_fm_events, "https://dice.fm/venue/folklore-2or7")
 
       expect(fields.pluck(:source_organiser)).to include("Folklore Hoxton", "Rockfeedback & FORM").and(all(be_present))
@@ -114,6 +114,15 @@ RSpec.describe "Source categories and organiser" do
       )
 
       expect(source_fields(events).pluck(:source_categories)).to eq([%w[music dance], ["Talks", "Arts, crafts"]])
+    end
+
+    it "reads values given as JSON-LD value objects" do
+      events = linked_data_events(
+        { "keywords" => [{ "@value" => "Music", "@language" => "en" }],
+          "organizer" => { "@type" => "Organization", "name" => { "@value" => "Folk Club", "@language" => "en" } } }
+      )
+
+      expect(source_fields(events)).to eq([{ source_categories: ["Music"], source_organiser: "Folk Club" }])
     end
   end
 

@@ -141,7 +141,7 @@ class Views::Admin::Calendars::Show < Views::Admin::Base
 
   def render_source_value(value)
     if value.present?
-      span(title: value) { truncate(value, length: 50) }
+      span(title: (value if value.length > 50)) { truncate(value, length: 50) }
     else
       span(class: 'text-gray-600') { t('admin.calendars.show.not_in_source') }
     end

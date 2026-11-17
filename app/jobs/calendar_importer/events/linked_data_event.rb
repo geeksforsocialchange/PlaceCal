@@ -94,7 +94,9 @@ module CalendarImporter::Events
     private
 
     def named(node)
-      node.is_a?(Hash) ? Array.wrap(node['name']) : [node]
+      return [node] unless node.is_a?(Hash)
+
+      Array.wrap(node.key?('@value') ? node['@value'] : node['name']).map { |name| name.is_a?(Hash) ? name['@value'] : name }
     end
   end
 end
