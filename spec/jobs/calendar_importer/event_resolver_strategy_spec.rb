@@ -87,20 +87,6 @@ RSpec.describe CalendarImporter::LocationResolver do
       expect(result.match).to eq(:matched_venue)
     end
 
-    it "returns nil place when no matching partner found" do
-      event_data.location = "Unknown Venue"
-      event_data.postcode = "M15 5DD"
-
-      calendar = create_calendar_with(strategy: "event", place: other_address_partner)
-
-      resolver = described_class.new(calendar, event_data)
-      result = resolver.resolve
-
-      expect(result.place).to be_nil
-      expect(result.address).to be_nil
-      expect(result.match).to eq(:none)
-    end
-
     it "gives an event at its own address no place when no partner matches", :aggregate_failures do
       neighbourhood
       event_data.location = "Unknown Venue, 9 Gamma Road"
@@ -275,6 +261,14 @@ RSpec.describe CalendarImporter::LocationResolver do
       expect(result.address).to eq(address_partner.address)
       expect(result.match).to eq(:default_location)
     end
+
+    it "uses the default venue with no address when the venue has none", :aggregate_failures do
+      venue = build(:partner, address: nil)
+      calendar = build(:calendar, strategy: "room_number", place: venue)
+      result = described_class.new(calendar, event_data.tap { |e| e.location = "Room 2" }).resolve
+
+      expect(result).to have_attributes(place: venue, address: nil, match: :default_location)
+    end
   end
 
   describe "place strategy" do
@@ -289,6 +283,13 @@ RSpec.describe CalendarImporter::LocationResolver do
       expect(result.place).to eq(other_address_partner)
       expect(result.address).to eq(other_address_partner.address)
       expect(result.match).to eq(:default_location)
+    end
+
+    it "uses the default venue with no address when the venue has none" do
+      venue = build(:partner, address: nil)
+      result = described_class.new(build(:calendar, strategy: "place", place: venue), event_data).resolve
+
+      expect(result).to have_attributes(place: venue, address: nil, match: :default_location)
     end
 
     it "gives no place or address when the calendar has no default venue", :aggregate_failures do
