@@ -55,6 +55,9 @@ module OutboundUrlGuard
 
   def blocked_ip?(ip)
     ip = ip.native if ip.ipv6?
+    # The seed calendars import feeds the local dev server serves
+    return false if Rails.env.development? && ip.loopback?
+
     BLOCKED_RANGES.any? { |range| range.family == ip.family && range.include?(ip) }
   end
 

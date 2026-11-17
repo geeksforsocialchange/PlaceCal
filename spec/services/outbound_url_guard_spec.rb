@@ -46,5 +46,19 @@ RSpec.describe OutboundUrlGuard do
 
       expect { described_class.vet!("https://nowhere.example.com/") }.to raise_error(SocketError)
     end
+
+    context "in development" do
+      before { allow(Rails.env).to receive(:development?).and_return(true) }
+
+      it "lets the local dev server through, so seed calendars can import" do
+        expect(described_class.vet!("http://127.0.0.1:3000/seed-feeds/1.ics")).to eq("127.0.0.1")
+        expect(described_class.vet!("http://[::1]:3000/seed-feeds/1.ics")).to eq("::1")
+      end
+
+      it "still blocks other private addresses" do
+        expect { described_class.vet!("http://10.1.2.3/") }.to raise_error(described_class::BlockedUrl)
+        expect { described_class.vet!("http://169.254.169.254/latest/meta-data/") }.to raise_error(described_class::BlockedUrl)
+      end
+    end
   end
 end
