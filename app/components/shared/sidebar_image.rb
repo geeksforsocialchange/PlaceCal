@@ -3,8 +3,8 @@
 # The image at the top of a partner or event page's side column
 class Components::Shared::SidebarImage < Components::Base
   LOOK = {
-    site: { root: 'text-center my-6 print:hidden', image: 'max-w-full' },
-    directory: { root: 'rounded-card overflow-hidden mt-4', image: 'block w-full' }
+    site: { root: 'text-center print:hidden', image: 'max-w-full rounded-card border-2 border-rules' },
+    directory: { root: 'rounded-card overflow-hidden border-2 border-rules', image: 'block w-full' }
   }.freeze
 
   prop :src, String

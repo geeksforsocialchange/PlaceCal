@@ -222,7 +222,7 @@ class Views::Sites::Partners::Show < Views::Base
       src: partner.image.standard.url,
       srcset: "#{partner.image.standard.url} 1x, #{partner.image.retina.url} 2x",
       alt: t('partners.show.image_alt', name: partner.name),
-      **part(:image)
+      **part(:image, class: 'my-6')
     )
   end
 

@@ -23,7 +23,8 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
       src: @partner.image.standard.url,
       srcset: "#{@partner.image.standard.url} 1x, #{@partner.image.retina.url} 2x",
       alt: @partner.name,
-      layout: :directory
+      layout: :directory,
+      class: 'mt-4'
     )
   end
 
