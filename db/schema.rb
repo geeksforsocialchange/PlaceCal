@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_16_203000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_17_022131) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -68,6 +68,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_16_203000) do
     t.datetime "checksum_updated_at"
     t.datetime "created_at", precision: nil, null: false
     t.text "critical_error"
+    t.datetime "failure_notified_at"
     t.datetime "feed_empty_since"
     t.bigint "import_job_id"
     t.datetime "import_started_at"
