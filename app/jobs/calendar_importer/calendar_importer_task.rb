@@ -134,7 +134,8 @@ class CalendarImporter::CalendarImporterTask
 
     parsed_event.save_all_occurrences
   rescue CalendarImporter::LocationResolver::Problem => e
-    report.add_messages(:location_problem, [e.message], uid: parsed_event.uid, title: parsed_event.data.summary)
+    # No title: reading it can raise for a malformed source event, which is never saved to show one
+    report.add_messages(:location_problem, [e.message], uid: parsed_event.uid)
   end
 
   def within_occurrence_limit?(parsed_event)
