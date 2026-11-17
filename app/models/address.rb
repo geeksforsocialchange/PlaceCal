@@ -95,6 +95,11 @@ class Address < ApplicationRecord
     count
   end
 
+  # @return [Array(String, String)] postcode and first street line without case, spacing or punctuation
+  def self.building_key(postcode, street_address)
+    [postcode, street_address].map { |text| text.to_s.downcase.gsub(/[^a-z0-9]/, '') }
+  end
+
   # @return [Symbol] why this unsaved address failed validation, in build_from_components_with_reason's terms
   def unreadable_reason
     return :no_street if errors.details[:street_address].any?
@@ -122,8 +127,7 @@ class Address < ApplicationRecord
   def same_building_as?(other)
     return false if other.nil? || postcode.blank? || street_address.blank?
 
-    squash = ->(text) { text.to_s.downcase.gsub(/[^a-z0-9]/, '') }
-    squash.call(postcode) == squash.call(other.postcode) && squash.call(street_address) == squash.call(other.street_address)
+    Address.building_key(postcode, street_address) == Address.building_key(other.postcode, other.street_address)
   end
 
   # Shift existing street lines down and insert a room number as line 1.
