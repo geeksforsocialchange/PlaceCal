@@ -3,36 +3,34 @@
 require "rails_helper"
 
 RSpec.describe CalendarImporter::Events::TicketsourceEvent do
-  subject(:event) { described_class.new(sample_event) }
+  subject(:event) do
+    described_class.new(sample_record, sample_date, publisher_url: "https://www.ticketsource.co.uk/fairfield-house/test-show")
+  end
 
-  let(:sample_event) do
+  let(:sample_date) do
+    {
+      "id" => "date_456",
+      "start" => "2026-03-15T19:30:00+00:00",
+      "end" => "2026-03-15T22:00:00+00:00",
+      "cancelled" => false
+    }
+  end
+
+  let(:sample_record) do
     {
       "id" => "evt_123",
-      "attributes" => {
-        "name" => "Test Show",
-        "description" => "A great show"
-      },
-      "date" => {
-        "id" => "date_456",
-        "attributes" => {
-          "start" => "2026-03-15T19:30:00+00:00",
-          "end" => "2026-03-15T22:00:00+00:00",
-          "cancelled" => false
-        }
-      },
+      "name" => "Test Show",
+      "description" => "A great show",
+      "reference" => "test-show",
+      "dates" => [sample_date],
       "venue" => {
-        "attributes" => {
-          "name" => "Fairfield House",
-          "address" => {
-            "line_1" => "10 High Street",
-            "line_2" => "",
-            "line_3" => "Bath",
-            "line_4" => "",
-            "postcode" => "BA1 5AH"
-          }
-        }
-      },
-      "publisher_url" => "https://www.ticketsource.co.uk/fairfield-house/test-show"
+        "name" => "Fairfield House",
+        "line_1" => "10 High Street",
+        "line_2" => "",
+        "line_3" => "Bath",
+        "line_4" => "",
+        "postcode" => "BA1 5AH"
+      }
     }
   end
 
@@ -54,7 +52,7 @@ RSpec.describe CalendarImporter::Events::TicketsourceEvent do
     end
 
     it "returns empty string when description is nil" do
-      sample_event["attributes"]["description"] = nil
+      sample_record["description"] = nil
       expect(event.description).to eq("")
     end
   end
@@ -70,7 +68,7 @@ RSpec.describe CalendarImporter::Events::TicketsourceEvent do
     end
 
     it "returns nil for blank start time" do
-      sample_event["date"]["attributes"]["start"] = nil
+      sample_date["start"] = nil
       expect(event.dtstart).to be_nil
     end
   end
@@ -88,12 +86,12 @@ RSpec.describe CalendarImporter::Events::TicketsourceEvent do
     end
 
     it "returns nil when venue is missing" do
-      sample_event["venue"] = nil
+      sample_record["venue"] = nil
       expect(event.location).to be_nil
     end
 
     it "skips blank address lines" do
-      sample_event["venue"]["attributes"]["address"]["line_1"] = ""
+      sample_record["venue"]["line_1"] = ""
       expect(event.location).to eq("Fairfield House, Bath, BA1 5AH")
     end
   end

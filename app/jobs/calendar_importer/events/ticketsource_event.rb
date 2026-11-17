@@ -2,52 +2,51 @@
 
 module CalendarImporter::Events
   class TicketsourceEvent < Base
+    VENUE_FIELDS = ['name', *CalendarImporter::Parsers::Ticketsource::ADDRESS_FIELDS].freeze
+
+    attr_reader :publisher_url
+
+    def initialize(record, date, publisher_url:)
+      super(record)
+      @date = date
+      @publisher_url = publisher_url
+    end
+
     def uid
-      "#{@event['id']}-#{@event.dig('date', 'id')}"
+      "#{@event['id']}-#{@date['id']}"
     end
 
     def summary
-      @event.dig('attributes', 'name')
+      @event['name']
     end
 
     def description
-      @event.dig('attributes', 'description') || ''
+      @event['description'] || ''
     end
 
     def dtstart
-      value = @event.dig('date', 'attributes', 'start')
-      Time.zone.parse(value) if value.present?
+      parse_time(@date['start'])
     end
 
     def dtend
-      value = @event.dig('date', 'attributes', 'end')
-      Time.zone.parse(value) if value.present?
+      parse_time(@date['end'])
     end
 
     def location
       venue = @event['venue']
-      return nil unless venue.is_a?(Hash)
+      return unless venue
 
-      attrs = venue['attributes'] || venue
-      address = attrs['address'] || {}
-      parts = [
-        attrs['name'],
-        address['line_1'],
-        address['line_2'],
-        address['line_3'],
-        address['line_4'],
-        address['postcode']
-      ].compact_blank
-
-      parts.join(', ').presence
-    end
-
-    def publisher_url
-      @event['publisher_url']
+      venue.values_at(*VENUE_FIELDS).compact_blank.join(', ').presence
     end
 
     def occurrences_between(*)
       [Dates.new(dtstart, dtend)]
+    end
+
+    private
+
+    def parse_time(value)
+      Time.zone.parse(value) if value.present?
     end
   end
 end

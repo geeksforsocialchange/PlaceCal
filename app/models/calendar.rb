@@ -93,6 +93,8 @@ class Calendar < ApplicationRecord
   # calendar_state -- managed by enumerize, attribute declaration skipped
 
   # ==== Attributes ====
+  self.ignored_columns += %w[is_working]
+
   # Columns marked (nullable) have no NOT NULL constraint in the DB.
   attribute :api_token,            :string                       # nullable
   attribute :checksum_updated_at,  :datetime                     # nullable
@@ -101,7 +103,6 @@ class Calendar < ApplicationRecord
   attribute :import_started_at,    :datetime                     # nullable — when the current import attempt was queued/started
   attribute :importer_mode,        :string, default: 'auto'      # nullable
   attribute :importer_used,        :string                       # nullable
-  attribute :is_working,           :boolean, default: true       # NOT NULL
   attribute :last_checksum,        :string                       # nullable
   attribute :last_import_at,       :datetime                     # nullable
   attribute :name,                 :string                       # NOT NULL
@@ -241,20 +242,6 @@ class Calendar < ApplicationRecord
     queue_for_import! false, Time.current
   end
 
-  # @return [String] Bootstrap colour name for the current state badge
-  def state_colour
-    case calendar_state
-    when 'in_queue'
-      'primary'
-    when 'in_worker'
-      'success'
-    when 'error'
-      'danger'
-    else
-      'info'
-    end
-  end
-
   # @return [Boolean] whether the stored source, type or API key differ from this copy's
   def feed_edited_since_loaded?
     self.class.where(id:).pick(*FEED_ATTRIBUTES) != FEED_ATTRIBUTES.map { |a| self[a] }
@@ -286,9 +273,7 @@ class Calendar < ApplicationRecord
     return unless source_changed?
     return if errors[:source].any?
 
-    # The calendar importer will raise an exception if the source
-    #   URL has a problem
-    CalendarImporter::CalendarImporter.new(self)
+    CalendarImporter::CalendarImporter.new(self).check_source!
   rescue CalendarImporter::Exceptions::InaccessibleFeed => e
     errors.add :source, "The source URL returned an invalid code (#{e})"
   rescue CalendarImporter::Exceptions::UnsupportedFeed

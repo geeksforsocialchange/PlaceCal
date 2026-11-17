@@ -123,6 +123,7 @@ module Admin
       temp_calendar = Calendar.new(source:, importer_mode: 'auto')
       begin
         importer = CalendarImporter::CalendarImporter.new(temp_calendar)
+        importer.check_source!
         parser = importer.parser
 
         if parser
@@ -164,10 +165,10 @@ module Admin
     end
 
     def build_importer_options
-      importer_names = CalendarImporter::CalendarImporter::PARSERS.to_h { |p| [p::KEY, p::NAME] }
       [{ value: 'pending', label: I18n.t('admin.calendars.importer.pending') }] +
         Calendar.distinct.pluck(:importer_used).compact.compact_blank.sort.map do |i|
-          { value: i, label: importer_names[i] || i.titleize }
+          parser = CalendarImporter::CalendarImporter.parser_for_key(i)
+          { value: i, label: parser ? parser::NAME : i.titleize }
         end
     end
 
@@ -183,11 +184,8 @@ module Admin
 
     def calendar_params
       params.require(:calendar).permit(
-        :id,
         :name,
         :source,
-        :strategy,
-        :address_id,
         :strategy,
         :organiser_id,
         :place_id,
@@ -195,8 +193,7 @@ module Admin
         :api_token,
         :public_contact_name,
         :public_contact_phone,
-        :public_contact_email,
-        :checksum_updated_at
+        :public_contact_email
       )
     end
   end

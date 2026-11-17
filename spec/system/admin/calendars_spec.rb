@@ -94,7 +94,13 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
     let(:manchester_url) { "https://events.manchester.ac.uk/f3vf/calendar/tag:martin_harris_centre/view:list/p:q_details/calml.xml" }
 
     def stub_detection(parser)
-      importer = instance_double(CalendarImporter::CalendarImporter, parser:)
+      importer = instance_double(CalendarImporter::CalendarImporter, parser:, check_source!: nil)
+      allow(CalendarImporter::CalendarImporter).to receive(:new).and_return(importer)
+    end
+
+    def stub_undetected_format
+      importer = instance_double(CalendarImporter::CalendarImporter)
+      allow(importer).to receive(:check_source!).and_raise(CalendarImporter::Exceptions::UnsupportedFeed)
       allow(CalendarImporter::CalendarImporter).to receive(:new).and_return(importer)
     end
 
@@ -199,8 +205,7 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
       end
 
       it "asks for a calendar type when the format isn't detected", :aggregate_failures do
-        allow(CalendarImporter::CalendarImporter).to receive(:new)
-          .and_raise(CalendarImporter::Exceptions::UnsupportedFeed)
+        stub_undetected_format
         test_source("https://example.com/whats-on")
 
         within(".alert-warning") do
@@ -230,8 +235,7 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
         end
 
         it "keeps it when the format isn't detected", :aggregate_failures do
-          allow(CalendarImporter::CalendarImporter).to receive(:new)
-            .and_raise(CalendarImporter::Exceptions::UnsupportedFeed)
+          stub_undetected_format
           click_button "Test"
 
           expect(page).to have_content("This URL is valid and ready to import!")
