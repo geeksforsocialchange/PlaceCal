@@ -830,26 +830,6 @@ en:
       directory: "PlaceCal: events and activities by and for your community"
 
   # ===========================================================================
-  # ENUMERIZE (Calendar types)
-  # ===========================================================================
-
-  enumerize:
-    calendar:
-      type:
-        google: "Google"
-        outlook: "Outlook"
-        mac_calendar: "Mac Calendar"
-        facebook: "Facebook"
-        other: "Other"
-      strategy:
-        place: "Place (default)"
-        event_override: "Event override"
-        event: "Event"
-        room_number: "Room number"
-        no_location: "No location"
-        online_only: "Online only"
-
-  # ===========================================================================
   # ACTIVERECORD
   # ===========================================================================
 
@@ -973,7 +953,6 @@ en:
         source: "Source URL"
         strategy: "Location Strategy"
         notices: "Import Notices"
-        import_mode: "Import Mode"
         public_contact_name: "Contact Name"
         public_contact_email: "Contact Email"
         public_contact_phone: "Contact Phone"

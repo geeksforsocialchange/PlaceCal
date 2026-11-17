@@ -140,7 +140,7 @@ class CalendarDatatable < Datatable
     return "<span class=\"text-gray-500 text-xs italic\">#{I18n.t('admin.calendars.importer.pending')}</span>".html_safe if importer.nil?
 
     # Get human-readable name from parser
-    parser = CalendarImporter::CalendarImporter::PARSERS.find { |p| p::KEY == importer }
+    parser = CalendarImporter::CalendarImporter.parser_for_key(importer)
     label = parser ? parser::NAME : importer.titleize
 
     <<~HTML.html_safe # rubocop:disable Rails/OutputSafety

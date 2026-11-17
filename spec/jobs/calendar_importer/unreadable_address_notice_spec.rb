@@ -97,6 +97,17 @@ RSpec.describe CalendarImporter::CalendarImporterTask, "with event locations tha
     expect(calendar.notices).to be_empty
   end
 
+  it "imports an in-person event whose location is its ticket link, with that link as its webpage", :aggregate_failures do
+    serve(vevent("a", "Gig", "https://tickets.example.com/gig"))
+    import
+
+    expect(calendar.notices).to be_empty
+    event = calendar.events.sole
+    expect(event.online_address).to be_nil
+    expect(event.publisher_url).to eq("https://tickets.example.com/gig")
+    expect(event.address).to be_nil
+  end
+
   it "adds no notice for readable addresses or events with no location" do
     mapped_ward
     geocodes("M15 5DD", "admin_ward" => mapped_ward.unit_code_value, "admin_district" => "E08000003")

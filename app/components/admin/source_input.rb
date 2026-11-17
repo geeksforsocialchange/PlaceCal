@@ -21,7 +21,7 @@ class Components::Admin::SourceInput < Components::Admin::Base
   private
 
   def api_token_modes
-    CalendarImporter::CalendarImporter::PARSERS.select(&:requires_api_token?).map { |p| p::KEY }
+    CalendarImporter::CalendarImporter.api_token_parsers.map { |p| p::KEY }
   end
 
   def render_source_field
