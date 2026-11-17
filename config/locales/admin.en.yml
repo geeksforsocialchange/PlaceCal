@@ -54,7 +54,6 @@ en:
       partner: "Partner"
       state: "State"
       status: "Status"
-      strategy: "Strategy"
 
     # Action buttons and links
     actions:
@@ -449,16 +448,46 @@ en:
     # Jobs / Import Status
     # -------------------------------------------------------------------------
     jobs:
-      title: "Calendar Importer Status"
-      description: "Overview of all calendar import jobs and their current state."
+      title: "Import status"
       stats:
-        jobs: "Jobs"
+        waiting: "Jobs waiting"
+        running: "Jobs running"
+        failed: "Jobs failed"
+      states:
+        idle: "Idle"
+        in_queue: "Queued"
+        in_worker: "Importing"
+        error: "Error"
+        bad_source: "Bad source"
       sections:
-        busy_calendars: "Busy Calendars"
-        error_calendars: "Error Calendars"
-      empty:
-        title: "All Clear"
-        description: "No calendars with errors or currently importing."
+        failed_jobs: "Failed jobs"
+      state_groups:
+        problem: "Has a problem"
+      columns:
+        error: "Error"
+        last_tried: "Last tried"
+        last_succeeded: "Last succeeded"
+      failed_note:
+        one: "The latest failure, which won't run again unless you retry it."
+        other: "The latest %{count} failures, which won't run again unless you retry them."
+      failed_columns:
+        job: "Job"
+        about: "Calendar"
+        error: "Error"
+        failed_at: "Failed"
+        actions: "Actions"
+      kinds:
+        import: "Calendar import"
+        email: "Email"
+        maintenance: "Daily maintenance"
+        scan: "Hourly calendar scan"
+      actions:
+        reimport: "Re-import"
+        retry: "Retry"
+        dismiss: "Dismiss"
+      flash:
+        retried: "Queued the job to run again."
+        dismissed: "Dismissed the failed job."
 
     # -------------------------------------------------------------------------
     # Neighbourhoods

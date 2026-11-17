@@ -1,0 +1,21 @@
+default: &default
+  dispatchers:
+    - polling_interval: 1
+      batch_size: 500
+  workers:
+    # One thread, so imports run one at a time as they did under delayed_job; raise it once staging's memory is measured
+    - queues: "*"
+      threads: <%= ENV.fetch("JOB_THREADS", 1) %>
+      polling_interval: 1
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+staging:
+  <<: *default
+
+production:
+  <<: *default

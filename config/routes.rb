@@ -75,7 +75,9 @@ Rails.application.routes.draw do
     end
 
     get 'icons', to: 'pages#icons', as: :icons
-    get 'jobs', to: 'jobs#index', as: :jobs
+    resources :jobs, only: %i[index destroy] do
+      member { post :retry }
+    end
     get 'profile', to: 'users#profile', as: :profile
 
     root 'pages#home'

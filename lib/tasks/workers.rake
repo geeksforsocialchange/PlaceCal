@@ -1,35 +1,19 @@
 # frozen_string_literal: true
 
 namespace :workers do
-  desc 'Clear and remove all jobs'
+  desc 'Remove every queued job and reset calendars waiting to import'
   task purge_all: :environment do
-    puts 'Force stopping all workers...'
+    puts 'Removing every Solid Queue job...'
+    SolidQueue::Job.delete_all
 
-    # Force stop of all workers
-    Rake::Task['jobs:clear'].invoke
-
-    puts 'Purging the workers table to remove zombie jobs'
-
-    # Purge the workers table to remove zombie jobs
-    ActiveRecord::Base.connection.execute('truncate delayed_jobs')
-
-    puts 'Reset Calendars that have :in_worker or :in_queue'
-
-    # Reset the :in_worker and :in_queue
-    Calendar.where(calendar_state: %i[in_worker in_queue]).each do |c|
-      c.calendar_state = :idle
-      c.import_job_id = nil
-      c.save!
-    end
+    puts 'Resetting calendars that were queued or importing...'
+    Calendar.where(calendar_state: %i[in_worker in_queue]).update_all(calendar_state: :idle, import_job_id: nil) # rubocop:disable Rails/SkipsModelValidations
   end
 
-  desc 'Show any salient worker errors (You should pipe this into less)'
+  desc 'Show failed jobs and their errors (pipe into less)'
   task inspect_errors: :environment do
-    workers = ActiveRecord::Base.connection
-                                .execute('select * from delayed_jobs')
-                                .to_a
-                                .reject { |w| w[:last_error].nil? }
-
-    workers.each { |w| pp w }
+    SolidQueue::FailedExecution.includes(:job).find_each do |failed|
+      pp class_name: failed.job.class_name, arguments: failed.job.arguments, error: failed.error
+    end
   end
 end

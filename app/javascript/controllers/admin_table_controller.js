@@ -62,6 +62,19 @@ export default class extends Controller {
 				// The selected attribute is already set in the template
 			}
 		});
+		Object.assign(this.filters, this.radioDefaults());
+	}
+
+	// Radio filters rendered with a default button already selected
+	radioDefaults() {
+		const defaults = {};
+		this.radioFilterTargets.forEach((container) => {
+			if (container.dataset.filterDefault) {
+				defaults[container.dataset.filterColumn] =
+					container.dataset.filterDefault;
+			}
+		});
+		return defaults;
 	}
 
 	search(event) {
@@ -151,7 +164,7 @@ export default class extends Controller {
 		container.querySelectorAll("button").forEach((btn) => {
 			btn.classList.remove(
 				"bg-white",
-				"bg-orange-500",
+				"bg-orange-700",
 				"text-gray-900",
 				"text-white",
 				"shadow-sm",
@@ -164,7 +177,7 @@ export default class extends Controller {
 		if (isAllButton) {
 			button.classList.add("bg-white", "text-gray-900", "shadow-sm");
 		} else {
-			button.classList.add("bg-orange-500", "text-white", "shadow-sm");
+			button.classList.add("bg-orange-700", "text-white", "shadow-sm");
 		}
 
 		if (value) {
@@ -356,18 +369,27 @@ export default class extends Controller {
 			container.querySelectorAll("button").forEach((btn) => {
 				btn.classList.remove(
 					"bg-white",
-					"bg-orange-500",
+					"bg-orange-700",
 					"text-gray-900",
 					"text-white",
 					"shadow-sm",
 				);
 				btn.classList.add("text-gray-500", "hover:text-gray-700");
 			});
-			const allBtn = container.querySelector('button[data-filter-value=""]');
-			if (allBtn) {
-				allBtn.classList.remove("text-gray-500", "hover:text-gray-700");
-				allBtn.classList.add("bg-white", "text-gray-900", "shadow-sm");
+			const defaultValue = container.dataset.filterDefault || "";
+			const selected = container.querySelector(
+				`button[data-filter-value="${defaultValue}"]`,
+			);
+			if (selected) {
+				selected.classList.remove("text-gray-500", "hover:text-gray-700");
+				selected.classList.add(
+					...(defaultValue
+						? ["bg-orange-700", "text-white", "shadow-sm"]
+						: ["bg-white", "text-gray-900", "shadow-sm"]),
+				);
 			}
+			if (defaultValue)
+				this.filters[container.dataset.filterColumn] = defaultValue;
 		});
 		this.currentPage = 0;
 		this.loadData();
@@ -394,7 +416,7 @@ export default class extends Controller {
 					container.querySelectorAll("button").forEach((btn) => {
 						btn.classList.remove(
 							"bg-white",
-							"bg-orange-500",
+							"bg-orange-700",
 							"text-gray-900",
 							"text-white",
 							"shadow-sm",
@@ -406,7 +428,7 @@ export default class extends Controller {
 					);
 					if (btn) {
 						btn.classList.remove("text-gray-500", "hover:text-gray-700");
-						btn.classList.add("bg-orange-500", "text-white", "shadow-sm");
+						btn.classList.add("bg-orange-700", "text-white", "shadow-sm");
 					}
 				}
 			});
@@ -436,6 +458,7 @@ export default class extends Controller {
 				defaults[select.dataset.filterColumn] = defaultValue;
 			}
 		});
+		Object.assign(defaults, this.radioDefaults());
 
 		// Check if current filters differ from defaults
 		const currentKeys = Object.keys(this.filters);
@@ -594,7 +617,7 @@ export default class extends Controller {
 			this.tbodyTarget.innerHTML = `
         <tr>
           <td colspan="${this.visibleColumnsCount}" class="px-6 py-12 text-center">
-            <div class="flex flex-col items-center justify-center text-gray-400">
+            <div class="flex flex-col items-center justify-center text-gray-600">
               <svg class="w-12 h-12 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
               </svg>
