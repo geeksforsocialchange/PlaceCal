@@ -65,15 +65,18 @@ export default class extends Controller {
 	}
 
 	// Reloads the current page in place, keeping filters, sort and page. Skipped while the tab is hidden,
-	// a load is under way, or focus is in the table, which a reload would drop
+	// a load is under way, or focus is on a row or page button, which a reload would replace
 	async refresh() {
-		if (
-			document.hidden ||
-			this.loading ||
-			this.element.contains(document.activeElement)
-		)
-			return;
+		if (document.hidden || this.loading || this.focusInRedrawnParts()) return;
 		if (await this.loadData({ silent: true })) this.dispatch("refreshed");
+	}
+
+	focusInRedrawnParts() {
+		const focused = document.activeElement;
+		return (
+			this.tbodyTarget.contains(focused) ||
+			(this.hasPaginationTarget && this.paginationTarget.contains(focused))
+		);
 	}
 
 	applyDefaultFilters() {
