@@ -27,6 +27,9 @@ class Address < ApplicationRecord
   # ==== Includes / Extends ====
   include NeighbourhoodCacheInvalidator
 
+  # Postcode lookup fields naming the town or wider area, which imported location text often repeats
+  PLACE_NAME_FIELDS = %w[admin_district admin_county region country].freeze
+
   # ==== Attributes ====
   attribute :city,            :string
   attribute :country_code,    :string, default: 'UK'
@@ -36,6 +39,9 @@ class Address < ApplicationRecord
   attribute :street_address,  :string
   attribute :street_address2, :string
   attribute :street_address3, :string
+
+  # Set for imported location text, whose later parts often repeat a place name the postcode lookup gives
+  attr_accessor :drop_repeated_place_names
 
   auto_strip_attributes :street_address, :street_address2, :street_address3, :city, :postcode
 
@@ -65,7 +71,7 @@ class Address < ApplicationRecord
   # ==== Class methods ====
 
   # Build and save an address from an array of street components.
-  # @param components [Array<String>] up to 3 street address lines
+  # @param components [Array<String>] up to 3 street address lines; the second and third are dropped if they repeat a place name the postcode lookup gives
   # @param postcode [String]
   # @return [Address, nil] persisted address, or nil if save fails
   def self.build_from_components(components, postcode)
@@ -79,7 +85,8 @@ class Address < ApplicationRecord
     return [nil, :no_street] if components.blank?
     return [nil, :no_postcode] if postcode.blank?
 
-    address = Address.new(street_address: components[0], street_address2: components[1], street_address3: components[2], postcode:)
+    address = Address.new(street_address: components[0], street_address2: components[1], street_address3: components[2], postcode:,
+                          drop_repeated_place_names: true)
     address.save ? [address, nil] : [nil, address.unreadable_reason]
   end
 
@@ -216,7 +223,15 @@ class Address < ApplicationRecord
     # Existing addresses are backfilled via the addresses:backfill_city rake
     # task (see #3123).
     self.city = res['admin_district'] if city.blank?
+    drop_lines_repeating_place_names(res) if drop_repeated_place_names
   rescue PostcodeLookup::Unavailable
     errors.add :postcode, :lookup_unavailable
+  end
+
+  # The first line is left alone so the address always keeps one
+  def drop_lines_repeating_place_names(lookup)
+    squash = ->(text) { text.to_s.squish.downcase }
+    place_names = lookup.values_at(*PLACE_NAME_FIELDS).compact_blank.map(&squash)
+    self.street_address2, self.street_address3 = [street_address2, street_address3].reject { |line| place_names.include?(squash.call(line)) }
   end
 end
