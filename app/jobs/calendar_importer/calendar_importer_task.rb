@@ -58,7 +58,7 @@ class CalendarImporter::CalendarImporterTask
   end
 
   def parser
-    @parser ||= CalendarImporter::CalendarImporter.new(calendar).parser
+    @parser ||= CalendarImporter::CalendarImporter.new(calendar).tap(&:check_source!).parser
   end
 
   # Get a properly formatted event list from the source
@@ -131,7 +131,8 @@ class CalendarImporter::CalendarImporterTask
 
     parsed_event.save_all_occurences
   rescue CalendarImporter::LocationResolver::Problem => e
-    notices << e.message
+    # A problem with the calendar's settings, so every event hits it; say it once
+    notices << e.message unless notices.include?(e.message)
   end
 
   def within_occurence_limit?(parsed_event)

@@ -3,7 +3,7 @@
 # app/controllers/admin/calendars_controller.rb
 module Admin
   class CalendarsController < Admin::ApplicationController
-    before_action :set_calendar, only: %i[show edit update destroy import]
+    before_action :set_calendar, only: %i[show edit update destroy import import_status]
     before_action :preselect_partner, only: %i[new create]
 
     def index
@@ -55,10 +55,10 @@ module Admin
       authorize @calendar
 
       if @calendar.save
+        flash[:success] = t('admin.calendars.flash.created')
         redirect_to edit_admin_calendar_path(@calendar)
-        flash[:success] = 'New calendar created and queued for importing. Please check back in a few minutes.'
       else
-        flash.now[:danger] = 'Calendar did not save'
+        flash.now[:danger] = t('admin.calendars.flash.not_saved')
         render Views::Admin::Calendars::New.new(
           calendar: @calendar,
           partner: @partner
@@ -77,7 +77,7 @@ module Admin
         flash[:success] = t(queued ? 'admin.calendars.flash.updated_and_queued' : 'admin.calendars.flash.updated')
         redirect_to edit_admin_calendar_path(@calendar)
       else
-        flash.now[:danger] = 'Calendar did not save'
+        flash.now[:danger] = t('admin.calendars.flash.not_saved')
         render Views::Admin::Calendars::Edit.new(calendar: @calendar), status: :unprocessable_content
       end
     end
@@ -100,8 +100,13 @@ module Admin
       force_import = true
       @calendar.queue_for_import! force_import
 
-      flash[:success] = 'Calendar added to the import queue'
+      flash[:success] = t('admin.calendars.flash.queued')
       redirect_to edit_admin_calendar_path(@calendar)
+    end
+
+    def import_status
+      authorize @calendar, :show?
+      render Views::Admin::Calendars::ImporterOverview.new(calendar: @calendar), layout: false
     end
 
     # Test a calendar source URL and detect the importer type
@@ -118,6 +123,7 @@ module Admin
       temp_calendar = Calendar.new(source:, importer_mode: 'auto')
       begin
         importer = CalendarImporter::CalendarImporter.new(temp_calendar)
+        importer.check_source!
         parser = importer.parser
 
         if parser
@@ -159,10 +165,10 @@ module Admin
     end
 
     def build_importer_options
-      importer_names = CalendarImporter::CalendarImporter::PARSERS.to_h { |p| [p::KEY, p::NAME] }
       [{ value: 'pending', label: I18n.t('admin.calendars.importer.pending') }] +
         Calendar.distinct.pluck(:importer_used).compact.compact_blank.sort.map do |i|
-          { value: i, label: importer_names[i] || i.titleize }
+          parser = CalendarImporter::CalendarImporter.parser_for_key(i)
+          { value: i, label: parser ? parser::NAME : i.titleize }
         end
     end
 
@@ -178,11 +184,8 @@ module Admin
 
     def calendar_params
       params.require(:calendar).permit(
-        :id,
         :name,
         :source,
-        :strategy,
-        :address_id,
         :strategy,
         :organiser_id,
         :place_id,
@@ -190,8 +193,7 @@ module Admin
         :api_token,
         :public_contact_name,
         :public_contact_phone,
-        :public_contact_email,
-        :checksum_updated_at
+        :public_contact_email
       )
     end
   end
