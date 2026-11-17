@@ -59,9 +59,9 @@ RSpec.describe CalendarImporter::EventResolver do
   describe "location strategies" do
     it "online only strategy does not set place or address" do
       calendar = make_calendar_for_strategy("online_only")
-      notices = []
+      report = CalendarImporter::ImportReport.new
 
-      resolver = described_class.new(ics_event_data, calendar, notices, start_date)
+      resolver = described_class.new(ics_event_data, calendar, report, start_date)
       resolver.resolve
 
       expect(resolver.resolved_attributes).to include(place_id: nil, address_id: nil, organiser_id: calendar.organiser_id)
@@ -69,9 +69,9 @@ RSpec.describe CalendarImporter::EventResolver do
 
     it "no location strategy does not set place or address" do
       calendar = make_calendar_for_strategy("no_location")
-      notices = []
+      report = CalendarImporter::ImportReport.new
 
-      resolver = described_class.new(ics_event_data, calendar, notices, start_date)
+      resolver = described_class.new(ics_event_data, calendar, report, start_date)
       resolver.resolve
 
       expect(resolver.resolved_attributes).to include(place_id: nil, address_id: nil, organiser_id: calendar.organiser_id)
@@ -206,36 +206,37 @@ RSpec.describe CalendarImporter::EventResolver do
   describe "notices" do
     it "are empty when no problems occur" do
       calendar = make_calendar_for_strategy("no_location")
-      notices = []
+      report = CalendarImporter::ImportReport.new
 
-      resolver = described_class.new(ics_event_data, calendar, notices, start_date)
+      resolver = described_class.new(ics_event_data, calendar, report, start_date)
       resolver.resolve
       resolver.save_all_occurrences
 
-      expect(notices).to be_empty
+      expect(report.notices).to be_empty
     end
 
     it "generates notices when Event fails validations" do
       calendar = make_calendar_for_strategy("no_location")
-      notices = []
+      report = CalendarImporter::ImportReport.new
 
       event = ics_event_data.instance_variable_get(:@event)
       event.summary = ""
 
-      resolver = described_class.new(ics_event_data, calendar, notices, start_date)
+      resolver = described_class.new(ics_event_data, calendar, report, start_date)
       resolver.resolve
       resolver.save_all_occurrences
 
-      expect(notices).to eq(["Summary can't be blank"])
+      expect(report.notices).to eq(["Summary can't be blank"])
+      expect(report.entries.sole).to have_attributes(kind: :failed_save, uid: ics_event_data.uid, messages: ["Summary can't be blank"])
     end
 
     it "still imports when missing address" do
       calendar = make_calendar_for_strategy("no_location")
       calendar.strategy = "event"
 
-      notices = []
+      report = CalendarImporter::ImportReport.new
 
-      resolver = described_class.new(ics_event_data, calendar, notices, start_date)
+      resolver = described_class.new(ics_event_data, calendar, report, start_date)
       resolver.resolve
 
       expect(resolver.resolved_attributes[:address_id]).to be_nil

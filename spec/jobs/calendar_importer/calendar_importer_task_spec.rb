@@ -183,13 +183,15 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
       parsed_event = instance_double(
         CalendarImporter::EventResolver,
         private?: false,
-        no_occurrences?: false
+        no_occurrences?: false,
+        uid: "event@example.com",
+        data: instance_double(CalendarImporter::Events::IcsEvent, summary: "Event")
       )
       allow(parsed_event).to receive(:resolve)
         .and_raise(CalendarImporter::LocationResolver::Problem, "N/A")
 
       expect { importer_task.send(:process_event, parsed_event) }.not_to raise_error
-      expect(importer_task.send(:notices)).to eq(["N/A"])
+      expect(importer_task.send(:report).notices).to eq(["N/A"])
     end
 
     it "removes the upcoming rows of an event whose location can't be resolved", :aggregate_failures do
