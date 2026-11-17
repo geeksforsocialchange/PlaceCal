@@ -68,15 +68,45 @@ module SeedCalendarsAndEvents # rubocop:disable Metrics/ModuleLength
   ].freeze
 
   # Stored the way the ICS importer stores Icalendar::Values::Recur; the fortnightly rule still reads as "Weekly".
-  RRULES = %w[FREQ=WEEKLY FREQ=MONTHLY;BYDAY=1SA FREQ=WEEKLY;INTERVAL=2].map do |rule|
-    Icalendar::Values::Recur.new(rule).as_json
-  end.freeze
+  RRULE_TEXTS = %w[FREQ=WEEKLY FREQ=MONTHLY;BYDAY=1SA FREQ=WEEKLY;INTERVAL=2].freeze
+  RRULES = RRULE_TEXTS.map { Icalendar::Values::Recur.new(it).as_json }.freeze
 
   MEETING_URLS = %w[
     https://meet.jit.si/placecal-seed-%d
     https://zoom.us/j/9%09d
     https://meet.google.com/plc-seed-%03d
   ].freeze
+
+  # Each calendar imports its own events from a file the dev server serves, so imports succeed and keep them
+  FEEDS_DIR = Rails.public_path.join('seed-feeds')
+
+  def self.feed_url(partner)
+    "http://lvh.me:#{ENV.fetch('PORT', 3000)}/seed-feeds/#{partner.id}.ics"
+  end
+
+  def self.write_feed(partner, events)
+    ics = Icalendar::Calendar.new
+    events.each { |event| ics.add_event(feed_event(event)) }
+    FileUtils.mkdir_p(FEEDS_DIR)
+    File.write(FEEDS_DIR.join("#{partner.id}.ics"), ics.to_ical)
+  end
+
+  def self.feed_event(event)
+    Icalendar::Event.new.tap do |entry|
+      entry.uid = event.uid
+      entry.summary = event.summary
+      entry.description = event.description
+      entry.dtstart = Icalendar::Values::DateTime.new(event.dtstart.utc, tzid: 'UTC')
+      entry.dtend = Icalendar::Values::DateTime.new(event.dtend.utc, tzid: 'UTC')
+      entry.rrule = RRULE_TEXTS[RRULES.index(event.rrule.first)] if event.rrule.present?
+      entry.location = address_text(event.address) if event.address
+      entry.append_custom_property('X-GOOGLE-CONFERENCE', event.online_address.url) if event.online_address
+    end
+  end
+
+  def self.address_text(address)
+    [address.street_address, address.street_address2, address.street_address3, address.city, address.postcode].compact_blank.join(', ')
+  end
 
   def self.run
     $stdout.puts 'Calendars and Events'
@@ -90,9 +120,9 @@ module SeedCalendarsAndEvents # rubocop:disable Metrics/ModuleLength
       calendar = Calendar.new(
         name: "#{partner.name} Calendar",
         organiser: partner,
-        source: "https://example.com/cal/#{partner.id}",
+        source: feed_url(partner),
         calendar_state: 'idle',
-        strategy: 'no_location'
+        strategy: 'event'
       )
       calendar.extend BypassCalendarRemoteChecks
       calendar.save!
@@ -100,7 +130,7 @@ module SeedCalendarsAndEvents # rubocop:disable Metrics/ModuleLength
       # Each partner gets 3-10 events
       num_events = 3 + (partner_idx % 8)
 
-      num_events.times do |i|
+      events = Array.new(num_events) do |i|
         # Mix of past and future dates, starting from 2 days ago
         day_offset = case i
                      when 0 then -rand(7..30)           # past month
@@ -126,8 +156,9 @@ module SeedCalendarsAndEvents # rubocop:disable Metrics/ModuleLength
           online_address:,
           rrule: (k % 4).zero? ? [RRULES[(k / 4) % RRULES.length]] : nil
         )
-        event_count += 1
       end
+      write_feed(partner, events)
+      event_count += events.size
 
       $stdout.puts "  #{partner.name}: #{num_events} events"
     end

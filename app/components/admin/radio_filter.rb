@@ -36,7 +36,7 @@ class Components::Admin::RadioFilter < Components::Admin::Base
             class: "filter-btn px-2 py-0.5 text-xs font-medium rounded transition-all duration-150 #{@default == opt[:value] ? SELECTED[:option] : UNSELECTED}"
           ) do
             plain opt[:label]
-            span(class: 'ml-1 tabular-nums opacity-70') { opt[:count].to_s } if opt[:count]
+            span(class: 'ml-1 tabular-nums opacity-70', data_live_count: opt[:count_key]) { opt[:count].to_s } if opt[:count]
           end
         end
       end
