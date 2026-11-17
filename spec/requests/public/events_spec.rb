@@ -121,20 +121,25 @@ RSpec.describe "Public Events", type: :request do
     context "with an image" do
       before { event.update!(image: Rack::Test::UploadedFile.new(file_fixture("good-cat-picture.jpg"), "image/jpeg")) }
 
-      it "shows it above the description, named after the event, on the site and directory pages" do
-        ["#{site.slug}.lvh.me", "lvh.me"].each do |host|
-          get event_url(event, host:)
-          img = Nokogiri::HTML(response.body).at_css('[data-scope="event-image"] img')
+      it "shows it beside the description, as a partner page does, named after the event" do
+        get event_url(event, host: "#{site.slug}.lvh.me")
+        img = Nokogiri::HTML(response.body).at_css('[data-scope="event-details"][data-part="aside"] [data-part="image"] img')
 
-          expect(img["src"]).to eq(event.image.url)
-          expect(img["alt"]).to eq("Test Event")
-        end
+        expect(img["src"]).to eq(event.image.url)
+        expect(img["alt"]).to eq("Test Event")
+      end
+
+      it "shows it at the top of the directory page's sidebar" do
+        get event_url(event, host: "lvh.me")
+        first = Nokogiri::HTML(response.body).at_css("aside").element_children.first
+
+        expect(first.at_css("img")["src"]).to eq(event.image.url)
       end
     end
 
     it "shows no image when the event has none" do
       get event_url(event, host: "#{site.slug}.lvh.me")
-      expect(Nokogiri::HTML(response.body).at_css('[data-scope="event-image"]')).to be_nil
+      expect(Nokogiri::HTML(response.body).at_css('[data-scope="event-details"][data-part="image"]')).to be_nil
     end
 
     context "with a meeting link" do

@@ -19,14 +19,12 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
   private
 
   def render_image
-    div(class: 'rounded-card overflow-hidden mt-4') do
-      img(
-        src: @partner.image.standard.url,
-        srcset: "#{@partner.image.standard.url} 1x, #{@partner.image.retina.url} 2x",
-        alt: @partner.name,
-        class: 'block w-full'
-      )
-    end
+    render Shared::SidebarImage.new(
+      src: @partner.image.standard.url,
+      srcset: "#{@partner.image.standard.url} 1x, #{@partner.image.retina.url} 2x",
+      alt: @partner.name,
+      layout: :directory
+    )
   end
 
   def render_partnerships

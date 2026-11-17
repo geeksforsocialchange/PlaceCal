@@ -45,9 +45,45 @@ RSpec.describe "Event images from sources" do
       .to eq("https://example.com/c.jpg")
   end
 
-  it "gives no image for a JSON-LD event without one, or for iCal" do
+  it "gives no image for a JSON-LD event without one" do
     expect(linked_data_event(nil).attributes[:image_source_url]).to be_nil
-    expect(image_urls(CalendarImporter::Parsers::Ics, :generic_ical_feed, "https://www.birchcommunitycentre.co.uk/events.ics").uniq).to eq([nil])
+  end
+
+  describe "iCal" do
+    def ics_image(lines)
+      ics = "BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nUID:1\nDTSTART:20300201T190000Z\nSUMMARY:An event\n#{lines}\nEND:VEVENT\nEND:VCALENDAR\n"
+      vevent = Icalendar::Calendar.parse(ics).first.events.first
+      CalendarImporter::Events::IcsEvent.new(vevent, vevent.dtstart, vevent.dtend).attributes[:image_source_url]
+    end
+
+    it "reads the first attachment that is an image, by its type or file name" do
+      expect(ics_image("ATTACH;FMTTYPE=application/pdf:https://example.com/a.pdf\nATTACH;FMTTYPE=image/jpeg:https://example.com/poster"))
+        .to eq("https://example.com/poster")
+      expect(ics_image("ATTACH:https://example.com/poster.png?v=2")).to eq("https://example.com/poster.png?v=2")
+      expect(ics_image("ATTACH;FILENAME=poster.jpg:https://example.com/files/1")).to eq("https://example.com/files/1")
+    end
+
+    it "reads RFC 7986's IMAGE" do
+      expect(ics_image("IMAGE;VALUE=URI:https://example.com/poster.jpg")).to eq("https://example.com/poster.jpg")
+    end
+
+    it "asks Google Drive for the file rather than its viewer page" do
+      expect(ics_image("ATTACH;FILENAME=poster.jpg;FMTTYPE=image/jpeg:https://drive.google.com/open?id=abc-123_X"))
+        .to eq("https://drive.google.com/uc?export=download&id=abc-123_X")
+      expect(ics_image("ATTACH;FMTTYPE=image/png:https://drive.google.com/file/d/abc123/view?usp=drive_web"))
+        .to eq("https://drive.google.com/uc?export=download&id=abc123")
+    end
+
+    it "reads the images a WordPress feed attaches" do
+      urls = image_urls(CalendarImporter::Parsers::Ics, :generic_ical_feed, "https://www.birchcommunitycentre.co.uk/events.ics")
+
+      expect(urls.compact).to be_present.and(all(start_with("https://www.birchcommunitycentre.co.uk/wp-content/uploads/")))
+    end
+
+    it "gives no image for attachments that aren't images, or an event without any" do
+      expect(ics_image("ATTACH;FILENAME=Minutes;FMTTYPE=application/vnd.google-apps.document:https://docs.google.com/1")).to be_nil
+      expect(ics_image("")).to be_nil
+    end
   end
 
   it "stores each event's image when importing" do

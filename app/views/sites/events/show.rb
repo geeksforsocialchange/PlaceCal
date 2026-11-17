@@ -15,6 +15,7 @@ class Views::Sites::Events::Show < Views::Base
                 links: 'The buttons under the description: the event\'s webpage and a join link for streams. Only when the event has them.',
                 columns: 'The description and links beside the event\'s image, like the partner page. Only when the event has an image.',
                 aside: 'The column beside the description, holding the event\'s image. Only when the event has an image.',
+                image: 'The box holding the event\'s image, the same as a partner page\'s. Only when the event has one.',
                 info: 'The group of headed sections below: contact, address, organiser and venue.',
                 contact: 'The organiser\'s contact section. Its heading only when the event has an organiser.',
                 contact_name: 'The organiser\'s name, linked, heading the contact details. Not on core themes.',
@@ -111,7 +112,7 @@ class Views::Sites::Events::Show < Views::Base
           render_more_from_organiser if Array(more_from_organiser).any?
         end
         aside(class: 'flex flex-col gap-4 max-lg:mt-8') do
-          render_event_image
+          Shared::SidebarImage(src: event.image.url, alt: event.summary, layout: :directory) if event.image.present?
           render_information_card
           render_organiser_contact_card if event.organiser
           render_share_card
@@ -264,12 +265,6 @@ class Views::Sites::Events::Show < Views::Base
 
   # ── Shared bits ──
 
-  def render_event_image
-    return if event.image.blank?
-
-    Sites::EventImage(src: event.image.url, alt: event.summary)
-  end
-
   def render_event_link
     return if event.publisher_url.blank?
 
@@ -309,7 +304,7 @@ class Views::Sites::Events::Show < Views::Base
       if event.image.present?
         div(**part(:columns, class: 'grid grid-areas-partner-details')) do
           div(class: 'grid-area-main') { render_description_and_links }
-          aside(**part(:aside, class: 'grid-area-right max-lg:mt-8')) { render_event_image }
+          aside(**part(:aside, class: 'grid-area-right')) { Shared::SidebarImage(src: event.image.url, alt: event.summary, **part(:image)) }
         end
       else
         render_description_and_links
