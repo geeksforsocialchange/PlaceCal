@@ -90,7 +90,7 @@ RSpec.describe "Reimporting recurring iCal events" do
 
   describe "occurrence limits" do
     it "imports a minutely event up to the limit and says so" do
-      stub_const("CalendarImporter::EventResolver::MAX_OCCURENCES", 25)
+      stub_const("CalendarImporter::EventResolver::MAX_OCCURRENCES_PER_EVENT", 25)
       allow(Calendar).to receive(:import_up_to).and_return(1.day.from_now)
 
       import(feed(vevent(start: "20261029T130000", finish: "20261029T130500", rrule: "FREQ=MINUTELY", summary: "Every minute")))
@@ -106,7 +106,7 @@ RSpec.describe "Reimporting recurring iCal events" do
       second = vevent(uid: "second@example.com", summary: "Second")
       import(feed(first, second))
 
-      stub_const("CalendarImporter::CalendarImporterTask::MAX_OCCURENCES", 6)
+      stub_const("CalendarImporter::CalendarImporterTask::MAX_OCCURRENCES_PER_CALENDAR", 6)
       import(feed(vevent(uid: "first@example.com", summary: "First edited"), vevent(uid: "second@example.com", summary: "Second edited")))
 
       expect(calendar.events.group(:summary).count).to eq("First edited" => 4, "Second" => 4)

@@ -13,7 +13,7 @@ RecurringCalendarScanJob (hourly)
         → CalendarImporter::Events::* (one per source event)
       → CalendarImporter::EventResolver (one per event)
         → resolve: online link, then LocationResolver (place + address), then organiser
-        → save_all_occurences (persist to DB)
+        → save_all_occurrences: OccurrenceSync (persist to DB)
 ```
 
 [RecurringCalendarScanJob](../app/jobs/recurring_calendar_scan_job.rb) resets stuck imports, then queues every calendar that is not already queued or importing. Creating a calendar also queues it. In [CalendarImporterJob](../app/jobs/calendar_importer_job.rb), an unreachable source puts the calendar in `bad_source` and other failures put it in `error`.

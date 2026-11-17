@@ -152,7 +152,7 @@ RSpec.describe CalendarImporterJob do
       ICS
 
       saves = 0
-      allow_any_instance_of(CalendarImporter::EventResolver).to receive(:save_all_occurences)
+      allow_any_instance_of(CalendarImporter::EventResolver).to receive(:save_all_occurrences)
         .and_wrap_original do |original, *args|
           saves += 1
           saves == 1 ? raise("boom") : original.call(*args)
