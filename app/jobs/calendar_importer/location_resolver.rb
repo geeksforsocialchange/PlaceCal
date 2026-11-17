@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Works out an imported event's place (a partner) and address from the calendar's location strategy.
-# See doc/importing.md for what each strategy is for.
+# See doc/importing.md for how each strategy places an event.
 class CalendarImporter::LocationResolver
   # Raised when the calendar's settings can't place the event; the import records the message as a notice
   class Problem < StandardError; end
