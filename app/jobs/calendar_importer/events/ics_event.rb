@@ -46,6 +46,16 @@ module CalendarImporter::Events
 
     delegate :rrule, to: :@event
 
+    # A CATEGORIES line with several values parses to an Icalendar array, one with a single value to a Text
+    def source_categories
+      @event.categories.flat_map { |line| line.respond_to?(:to_a) ? line.to_a : line }.map(&:to_s)
+    end
+
+    def source_organiser
+      organizer = @event.organizer
+      Array(organizer.ical_params['cn']).first if organizer
+    end
+
     def recurring_event?
       rrule.present?
     end

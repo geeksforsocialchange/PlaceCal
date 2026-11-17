@@ -3,6 +3,8 @@
 module CalendarImporter::Events
   class LinkedDataEvent < Base
     EXCLUDED_STATUSES = %w[EventCancelled EventPostponed].freeze
+    # Not in Parsers::Base::CONTEXT, so compacting leaves it under its full IRI
+    KEYWORDS = 'http://schema.org/keywords'
 
     attr_reader :uid, :start_time, :end_time, :summary, :description, :location, :status
 
@@ -75,6 +77,24 @@ module CalendarImporter::Events
 
     def publisher_url
       @event['url']
+    end
+
+    # keywords is one comma-separated string, or a list of strings or DefinedTerms
+    def source_categories
+      keywords = @event[KEYWORDS]
+      return keywords.split(',') if keywords.is_a?(String)
+
+      Array.wrap(keywords).flat_map { |keyword| named(keyword) }
+    end
+
+    def source_organiser
+      Base.clean_list(Array.wrap(@event['organiser']).flat_map { |organiser| named(organiser) }).join(', ').presence
+    end
+
+    private
+
+    def named(node)
+      node.is_a?(Hash) ? Array.wrap(node['name']) : [node]
     end
   end
 end

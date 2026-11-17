@@ -83,7 +83,21 @@ module CalendarImporter::Events
         description: html_sanitize(description),
         raw_location_from_source: location&.strip,
         rrule:,
-        publisher_url: }
+        publisher_url:,
+        source_categories: Base.clean_list(source_categories).presence,
+        source_organiser: Base.clean_list(source_organiser).first }
+    end
+
+    # Strings from the source, kept as text; they never become PlaceCal categories or partners
+    def source_categories
+      []
+    end
+
+    def source_organiser; end
+
+    # Trimmed, unescaped and without blanks; a repeat in another case is dropped, keeping the first spelling
+    def self.clean_list(values)
+      Array(values).map { |value| CGI.unescapeHTML(value.to_s).squish }.compact_blank.uniq(&:downcase)
     end
 
     def attributes_for(occurrence)

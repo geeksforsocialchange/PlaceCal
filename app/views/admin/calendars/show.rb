@@ -113,6 +113,8 @@ class Views::Admin::Calendars::Show < Views::Admin::Base
             th(class: 'w-24') { 'Date' }
             th { 'Event' }
             th { 'Location' }
+            th { t('admin.calendars.show.source_categories') }
+            th { t('admin.calendars.show.source_organiser') }
           end
         end
         tbody do
@@ -132,6 +134,16 @@ class Views::Admin::Calendars::Show < Views::Admin::Base
       end
       td { div(class: 'font-medium') { truncate(event.summary, length: 70) } }
       td(class: 'text-sm text-base-content/70') { render_event_location(event) }
+      td(class: 'text-sm text-base-content/70') { render_source_value(Array(event.source_categories).join(', ')) }
+      td(class: 'text-sm text-base-content/70') { render_source_value(event.source_organiser) }
+    end
+  end
+
+  def render_source_value(value)
+    if value.present?
+      span(title: value) { truncate(value, length: 50) }
+    else
+      span(class: 'text-gray-500') { t('admin.calendars.show.not_in_source') }
     end
   end
 
