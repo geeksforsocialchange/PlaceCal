@@ -183,11 +183,8 @@ module Admin
 
     def calendar_params
       params.require(:calendar).permit(
-        :id,
         :name,
         :source,
-        :strategy,
-        :address_id,
         :strategy,
         :organiser_id,
         :place_id,
@@ -195,8 +192,7 @@ module Admin
         :api_token,
         :public_contact_name,
         :public_contact_phone,
-        :public_contact_email,
-        :checksum_updated_at
+        :public_contact_email
       )
     end
   end
