@@ -28,9 +28,6 @@ module PlaceCal
 
     config.active_job.queue_adapter = :solid_queue
     config.action_mailer.delivery_job = 'MailDeliveryJob'
-    config.mission_control.jobs.adapters = [:solid_queue]
-    config.mission_control.jobs.base_controller_class = 'Admin::JobDashboardController'
-    config.mission_control.jobs.http_basic_auth_enabled = false
 
     # Partial matches, filtered from logs, AppSignal and #inspect. Set here, not in an initializer, so the list
     # is in place before anything loads ActiveRecord, which copies it into filter_attributes.

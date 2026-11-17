@@ -54,7 +54,6 @@ en:
       partner: "Partner"
       state: "State"
       status: "Status"
-      strategy: "Strategy"
 
     # Action buttons and links
     actions:
@@ -450,7 +449,48 @@ en:
     # -------------------------------------------------------------------------
     jobs:
       title: "Background jobs"
-      description: "Imports, emails and scheduled tasks waiting, running or failed, from Mission Control Jobs."
+      description: "Calendar imports and other background work: what's waiting, what's importing now, and what needs attention. Full error details are in AppSignal."
+      stats:
+        waiting: "Jobs waiting"
+        running: "Jobs running"
+        failed: "Jobs failed"
+      states:
+        idle: "Idle"
+        in_queue: "Queued"
+        in_worker: "Importing"
+        error: "Error"
+        bad_source: "Bad source"
+      sections:
+        problem_calendars: "Calendars with problems"
+        busy_calendars: "Queued or importing"
+        failed_jobs: "Failed jobs"
+      columns:
+        problem_calendars: "Problem"
+        busy_calendars: "Started"
+      failed_note:
+        one: "The latest failure, which won't run again unless you retry it."
+        other: "The latest %{count} failures, which won't run again unless you retry them."
+      failed_columns:
+        job: "Job"
+        about: "Calendar"
+        error: "Error"
+        failed_at: "Failed"
+        actions: "Actions"
+      kinds:
+        import: "Calendar import"
+        email: "Email"
+        maintenance: "Daily maintenance"
+        scan: "Hourly calendar scan"
+      actions:
+        reimport: "Re-import"
+        retry: "Retry"
+        dismiss: "Dismiss"
+      flash:
+        retried: "Queued the job to run again."
+        dismissed: "Dismissed the failed job."
+      empty:
+        title: "All clear"
+        description: "No calendars with problems, nothing importing and no failed jobs."
 
     # -------------------------------------------------------------------------
     # Neighbourhoods

@@ -2,12 +2,47 @@
 
 module Admin
   class JobsController < Admin::ApplicationController
+    FAILED_JOBS_SHOWN = 20
+
     skip_after_action :verify_authorized
     skip_after_action :verify_policy_scoped
     before_action { redirect_to admin_root_path unless current_user.root? }
+    before_action :set_failed_job, only: %i[retry destroy]
 
     def index
-      render Views::Admin::Jobs::Index.new(dashboard_path: admin_jobs_dashboard_path)
+      problem_calendars = Calendar.where(calendar_state: %w[error bad_source]).includes(:organiser).order(:name)
+      busy_calendars = Calendar.busy.includes(:organiser).order(:name)
+
+      render Views::Admin::Jobs::Index.new(
+        job_counts:,
+        calendar_counts: Calendar.group(:calendar_state).count,
+        problem_calendars:,
+        busy_calendars:,
+        event_counts: Event.where(calendar_id: problem_calendars.ids + busy_calendars.ids).group(:calendar_id).count,
+        failed_jobs: SolidQueue::FailedExecution.includes(:job).order(created_at: :desc).limit(FAILED_JOBS_SHOWN).to_a
+      )
+    end
+
+    def retry
+      @failed_job.retry
+      redirect_to admin_jobs_path, notice: t('admin.jobs.flash.retried')
+    end
+
+    def destroy
+      @failed_job.discard
+      redirect_to admin_jobs_path, notice: t('admin.jobs.flash.dismissed')
+    end
+
+    private
+
+    def set_failed_job
+      @failed_job = SolidQueue::FailedExecution.find(params[:id])
+    end
+
+    def job_counts
+      { waiting: SolidQueue::ReadyExecution.count + SolidQueue::ScheduledExecution.count,
+        running: SolidQueue::ClaimedExecution.count,
+        failed: SolidQueue::FailedExecution.count }
     end
   end
 end

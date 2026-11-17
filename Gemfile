@@ -55,7 +55,6 @@ gem 'rack-attack'                 # API rate limiting and throttling
 gem 'rack-cors', require: 'rack/cors' # Cross-origin request support
 
 # Background jobs
-gem 'mission_control-jobs'        # Job dashboard in the admin, for root users
 gem 'solid_queue'                 # Background jobs (calendar imports, mail) and recurring tasks
 
 # Utilities

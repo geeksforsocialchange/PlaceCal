@@ -16,7 +16,7 @@ RecurringCalendarScanJob (hourly)
         → save_all_occurrences: OccurrenceSync (persist to DB)
 ```
 
-[RecurringCalendarScanJob](../app/jobs/recurring_calendar_scan_job.rb), run hourly by Solid Queue from [config/recurring.yml](../config/recurring.yml), resets stuck imports, then queues every calendar that is not already queued or importing. Creating a calendar also queues it. In [CalendarImporterJob](../app/jobs/calendar_importer_job.rb), an unreachable source puts the calendar in `bad_source` and other failures put it in `error`; neither is retried, since the next hourly scan queues the calendar again. An import is stopped after 20 minutes. Root users see the queue at `/jobs` on the admin site (Mission Control Jobs).
+[RecurringCalendarScanJob](../app/jobs/recurring_calendar_scan_job.rb), run hourly by Solid Queue from [config/recurring.yml](../config/recurring.yml), resets stuck imports, then queues every calendar that is not already queued or importing. Creating a calendar also queues it. In [CalendarImporterJob](../app/jobs/calendar_importer_job.rb), an unreachable source puts the calendar in `bad_source` and other failures put it in `error`; neither is retried, since the next hourly scan queues the calendar again. An import is stopped after 20 minutes. Root users see calendars with problems and imports in progress at `/jobs` on the admin site; job errors go to AppSignal.
 
 [CalendarImporterTask](../app/jobs/calendar_importer/calendar_importer_task.rb) runs one import:
 

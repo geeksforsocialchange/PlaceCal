@@ -142,7 +142,7 @@ kamal rollback -d production
 
 ## Recurring jobs
 
-Background jobs run on Solid Queue in the `job_worker` container (`bin/jobs --mode async`). Recurring tasks (the hourly calendar import scan and daily maintenance) are scheduled in `config/recurring.yml`. Root users can see the queue, recurring tasks and failed jobs at `/jobs` on the admin site.
+Background jobs run on Solid Queue in the `job_worker` container (`bin/jobs --mode async`). Recurring tasks (the hourly calendar import scan and daily maintenance) are scheduled in `config/recurring.yml`. Job errors go to AppSignal, and its check-ins alert if a recurring task stops running.
 
 ## Syncing data between environments
 
