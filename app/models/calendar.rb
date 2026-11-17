@@ -114,6 +114,7 @@ class Calendar < ApplicationRecord
   belongs_to :organiser, class_name: 'Partner', optional: true
   belongs_to :place, class_name: 'Partner', optional: true
   has_many :events, dependent: :destroy
+  has_many :import_runs, dependent: :delete_all
 
   # ==== Validations ====
   validates :name, :organiser, :source, presence: true
@@ -193,6 +194,7 @@ class Calendar < ApplicationRecord
       # SKIP LOCKED passes over a calendar that queue_for_import! is re-queueing right now
       stuck_imports(threshold).lock('FOR UPDATE SKIP LOCKED').pluck(:id).tap do |found|
         where(id: found).update_all(calendar_state: 'idle', import_job_id: nil) # rubocop:disable Rails/SkipsModelValidations
+        ImportRun.interrupt!(found)
       end
     end
     Rails.logger.warn("[Calendar] Reset #{ids.size} stuck calendar(s) to idle: #{ids.join(', ')}") if ids.any?
