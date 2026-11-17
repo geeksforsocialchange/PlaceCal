@@ -55,6 +55,9 @@ module CalendarImporter::Events
 
           # if we get HTML then remove all the attributes from all of
           # the tags so it doesn't interfere with the kramdown step
+          # Links around images are empty once the images are stripped
+          doc.css('a').each { |link| link.remove if link.text.strip.empty? }
+
           doc.css('*').each do |tag|
             tag.keys.each do |attribute_name|
               next if tag.name == 'a' && attribute_name == 'href'
@@ -69,7 +72,8 @@ module CalendarImporter::Events
           end
 
           body_text = doc.serialize
-          clean_text = ActionController::Base.helpers.sanitize(body_text, tags: ALLOWED_TAGS)
+          # Indented page markup (Squarespace's galleries) would otherwise read as a Markdown code block
+          clean_text = ActionController::Base.helpers.sanitize(body_text, tags: ALLOWED_TAGS).gsub(/^[ \t]+/, '')
         end
 
         Kramdown::Document.new(clean_text, input: input_mode).to_kramdown.strip
