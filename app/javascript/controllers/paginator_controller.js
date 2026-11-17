@@ -27,21 +27,30 @@ export default class extends Controller {
 		// Show all buttons to measure layout
 		this.buttonTargets.forEach((btn) => (btn.style.display = ""));
 
-		// Detect wrapping by comparing the first and last day chip. The
-		// back/forward arrows are absolutely positioned so their offsetTop
-		// is always 0 and can't be used here.
-		const firstButton = this.buttonTargets[0];
-		const lastButton = this.buttonTargets[this.buttonTargets.length - 1];
-		if (lastButton.offsetTop <= firstButton.offsetTop) return; // all fits
+		if (!this.wraps()) return; // all fits
 
-		// Hide non-active buttons from the left until the last chip is
-		// back on the first line. This keeps the active tab visible.
-		for (let i = 0; i < this.buttonTargets.length; i++) {
-			if (lastButton.offsetTop <= firstButton.offsetTop) break;
-			if (!this.buttonTargets[i].classList.contains("active")) {
-				this.buttonTargets[i].style.display = "none";
-			}
+		// Hide tabs from the right, then from the left, never the active one,
+		// so the visible tabs stay a run with no gaps.
+		const active = this.buttonTargets.findIndex((btn) =>
+			btn.classList.contains("active"),
+		);
+		const indexes = [...this.buttonTargets.keys()];
+		const hidingOrder = [
+			...indexes.slice(active + 1).reverse(),
+			...indexes.slice(0, Math.max(active, 0)),
+		];
+		for (const i of hidingOrder) {
+			if (!this.wraps()) break;
+			this.buttonTargets[i].style.display = "none";
 		}
+	}
+
+	// Whether any shown tab has wrapped below the first
+	wraps() {
+		const shown = this.buttonTargets.filter(
+			(btn) => btn.style.display !== "none",
+		);
+		return shown.some((btn) => btn.offsetTop > shown[0].offsetTop);
 	}
 
 	debounce(func, wait) {

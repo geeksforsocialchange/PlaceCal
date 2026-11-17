@@ -98,6 +98,7 @@ en:
       this_month: "This month"
       next_7_days: "Next 7 days"
       week: "%{from}-%{to}"
+      week_across_months: "%{from} - %{to}"
     event_list:
       truncated: "Showing first 50 events. Use the date picker to see more."
       empty: "No events with this selection."
