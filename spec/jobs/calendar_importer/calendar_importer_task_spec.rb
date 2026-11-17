@@ -192,6 +192,7 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
 
       expect { importer_task.send(:process_event, parsed_event) }.not_to raise_error
       expect(importer_task.send(:report).notices).to eq(["N/A"])
+      expect(importer_task.send(:report).entries.sole).to have_attributes(kind: :location_problem, uid: "event@example.com", title: "Event")
     end
 
     it "removes the upcoming rows of an event whose location can't be resolved", :aggregate_failures do
