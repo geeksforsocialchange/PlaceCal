@@ -19,12 +19,22 @@ export default class extends Controller {
 
 		if ("poll" in state.dataset) {
 			this.wasBusy = true;
-			if (Date.now() - this.startedAt < this.limitValue) {
-				this.timer = setTimeout(() => this.reload(), this.intervalValue);
-			}
+			this.schedule();
 		} else if (this.wasBusy) {
 			this.wasBusy = false;
 			this.announcerTarget.textContent = state.dataset.announcement;
+		}
+	}
+
+	// A failed request (a network blip, a deploy) tries again on the next interval.
+	retry() {
+		if (this.wasBusy) this.schedule();
+	}
+
+	schedule() {
+		clearTimeout(this.timer);
+		if (Date.now() - this.startedAt < this.limitValue) {
+			this.timer = setTimeout(() => this.reload(), this.intervalValue);
 		}
 	}
 

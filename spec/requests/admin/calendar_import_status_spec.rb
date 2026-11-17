@@ -25,6 +25,18 @@ RSpec.describe "Admin calendar import status", type: :request do
       expect(html.at_css('[role="status"]')).to be_present
     end
 
+    it "shows the stale warning only when the calendar isn't importing", :aggregate_failures do
+      calendar.update_columns(calendar_state: "idle", checksum_updated_at: 1.year.ago, last_import_at: 1.year.ago) # rubocop:disable Rails/SkipsModelValidations
+      stale = I18n.t("admin.calendars.warnings.stale")
+
+      get import_status_admin_calendar_url(calendar, host: admin_host)
+      expect(response.body).to include(stale)
+
+      calendar.update_columns(calendar_state: "in_queue") # rubocop:disable Rails/SkipsModelValidations
+      get import_status_admin_calendar_url(calendar, host: admin_host)
+      expect(response.body).not_to include(stale)
+    end
+
     %w[in_queue in_worker].each do |busy_state|
       it "keeps polling while the calendar is #{busy_state}", :aggregate_failures do
         set_state(busy_state)

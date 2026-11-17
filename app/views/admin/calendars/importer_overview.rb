@@ -14,7 +14,7 @@ class Views::Admin::Calendars::ImporterOverview < Views::Admin::Base
 
     div(data: {
           controller: 'import-status',
-          action: 'turbo:frame-missing->import-status#missing',
+          action: 'turbo:frame-missing->import-status#missing turbo:fetch-request-error->import-status#retry',
           import_status_url_value: import_status_admin_calendar_path(calendar),
           import_status_interval_value: POLL_INTERVAL.in_milliseconds.to_i,
           import_status_limit_value: POLL_LIMIT.in_milliseconds.to_i
@@ -51,6 +51,8 @@ class Views::Admin::Calendars::ImporterOverview < Views::Admin::Base
   end
 
   def render_stale_warning
+    # Inside the polled frame its role=alert would be announced again on every reload
+    return if calendar.busy?
     return unless calendar.checksum_updated_at.present? && calendar.last_import_at.present?
     return unless calendar.checksum_updated_at < 6.months.ago || calendar.last_import_at < 6.months.ago
 
