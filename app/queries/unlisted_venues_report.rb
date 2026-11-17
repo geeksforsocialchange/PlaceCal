@@ -69,7 +69,7 @@ class UnlistedVenuesReport
   def to_csv
     CSV.generate do |csv|
       csv << HEADERS
-      (rows + [no_postcode]).each { |row| csv << row.values }
+      (rows + [no_postcode]).each { |row| csv << row.values.map { |value| spreadsheet_safe(value) } }
     end
   end
 
@@ -122,6 +122,11 @@ class UnlistedVenuesReport
            .each_with_object(Set.new) do |(name, postcode, street), keys|
       keys << Address.building_key(postcode, street) << Address.building_key(postcode, name)
     end
+  end
+
+  # Location text comes from outside feeds, and a spreadsheet runs a cell starting with = + - @ as a formula
+  def spreadsheet_safe(value)
+    value.is_a?(String) && value.start_with?('=', '+', '-', '@') ? "'#{value}" : value
   end
 
   def text_values(row)

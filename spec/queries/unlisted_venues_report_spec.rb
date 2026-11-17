@@ -116,4 +116,13 @@ RSpec.describe UnlistedVenuesReport do
 
     expect { described_class.new.to_text }.not_to(change(&counts))
   end
+
+  it "keeps CSV cells from being read as spreadsheet formulas", :aggregate_failures do
+    calendar = create(:calendar)
+    create(:event, calendar:, organiser: calendar.organiser, dtstart: 1.week.from_now, raw_location_from_source: '=HYPERLINK("http://x"), ZZMB 2OT')
+
+    csv = described_class.new.to_csv
+    expect(csv).to include("'=HYPERLINK")
+    expect(csv).not_to match(/[,"]=HYPERLINK/)
+  end
 end
