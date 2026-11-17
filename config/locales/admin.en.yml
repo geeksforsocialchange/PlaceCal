@@ -344,7 +344,7 @@ en:
           unreadable: "The source URL could not be read (code=%{code})"
           private_address: "This URL points to a private or internal network address, which cannot be used as a calendar source."
           too_many_redirects: "This URL redirected too many times. Please use the final address of the feed."
-          unreachable: "The source could not be reached (it timed out or refused a secure connection). It may be temporarily down — please check the URL and try again later."
+          unreachable: "The source could not be reached (it timed out or refused a secure connection). It may be temporarily down. Please check the URL and try again later."
         organiser:
           title: "Organiser"
           description: "Which partner organises these events, and what should we call this calendar?"
