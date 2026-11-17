@@ -75,7 +75,8 @@ Rails.application.routes.draw do
     end
 
     get 'icons', to: 'pages#icons', as: :icons
-    mount MissionControl::Jobs::Engine, at: '/jobs', as: :jobs
+    get 'jobs', to: 'jobs#index', as: :jobs
+    mount MissionControl::Jobs::Engine, at: '/jobs/dashboard', as: :jobs_dashboard
     get 'profile', to: 'users#profile', as: :profile
 
     root 'pages#home'

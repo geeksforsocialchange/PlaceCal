@@ -446,6 +446,13 @@ en:
         upcoming_tab: "Upcoming (%{count})"
 
     # -------------------------------------------------------------------------
+    # Background jobs
+    # -------------------------------------------------------------------------
+    jobs:
+      title: "Background jobs"
+      description: "Imports, emails and scheduled tasks waiting, running or failed, from Mission Control Jobs."
+
+    # -------------------------------------------------------------------------
     # Neighbourhoods
     # -------------------------------------------------------------------------
     neighbourhoods:

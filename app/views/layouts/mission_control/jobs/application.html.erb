@@ -1,0 +1,27 @@
+<%# Mission Control's own, padded to sit in the admin's jobs page frame, with a language set %>
+<!DOCTYPE html>
+<html lang="<%= I18n.locale %>">
+<head>
+  <title>Mission control - <%= page_title %></title>
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="turbo-cache-control" content="no-cache">
+  <meta name="turbo-prefetch" content="false">
+
+  <%= stylesheet_link_tag "mission_control/jobs/bulma.min" %>
+  <%= stylesheet_link_tag "mission_control/jobs/application", "mission_control/jobs/forms", "mission_control/jobs/jobs", "data-turbo-track": "reload" %>
+  <%= javascript_importmap_tags "application", importmap: MissionControl::Jobs.importmap  %>
+</head>
+<body>
+
+<main class="px-2 py-3">
+    <%= render "layouts/mission_control/jobs/application_selection" %>
+    <%= render "layouts/mission_control/jobs/flash" %>
+    <%= render "layouts/mission_control/jobs/navigation" %>
+    <%= yield %>
+</main>
+
+</body>
+</html>

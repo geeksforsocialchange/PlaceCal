@@ -1,0 +1,11 @@
+<%# Mission Control's own, without "Back to main app" (it shows inside the admin's jobs page), and only when there's a choice to make %>
+<% if selectable_applications.any? || @application&.servers&.many? %>
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-menu is-active mb-4">
+      <div class="navbar-end">
+        <%= render "layouts/mission_control/jobs/application_selection/servers", application: @application %>
+        <%= render "layouts/mission_control/jobs/application_selection/applications" %>
+      </div>
+    </div>
+  </nav>
+<% end %>
