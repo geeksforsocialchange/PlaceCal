@@ -18,16 +18,24 @@ RSpec.describe AddFailureNotifiedAtToCalendars do
     Calendar.reset_column_information
   end
 
-  def calendar_in(state)
-    create(:calendar).tap { |calendar| calendar.update_columns(calendar_state: state) } # rubocop:disable Rails/SkipsModelValidations
+  def calendar_in(state, critical_error: nil)
+    create(:calendar).tap { |calendar| calendar.update_columns(calendar_state: state, critical_error:) } # rubocop:disable Rails/SkipsModelValidations
   end
 
   it "marks calendars already failing as notified, so deploying emails nobody" do
-    failed = %w[error bad_source].map { |state| calendar_in(state) }
+    failed = %w[error bad_source].map { |state| calendar_in(state, critical_error: "Broken") }
 
     migrate_up
 
     expect(failed.map { |calendar| calendar.reload.failure_notified_at }).to all(be_present)
+  end
+
+  it "marks a failing calendar caught mid-retry by the hourly scan" do
+    retrying = %w[in_queue in_worker idle].map { |state| calendar_in(state, critical_error: "Broken") }
+
+    migrate_up
+
+    expect(retrying.map { |calendar| calendar.reload.failure_notified_at }).to all(be_present)
   end
 
   it "leaves calendars that are not failing unmarked" do

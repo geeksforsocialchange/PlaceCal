@@ -14,7 +14,6 @@ RSpec.describe Calendar::ImportState do
   end
 
   def run_import
-    calendar.update_columns(calendar_state: "idle") # rubocop:disable Rails/SkipsModelValidations
     calendar.queue_for_import!(false)
     calendar.flag_start_import_job!
     yield
