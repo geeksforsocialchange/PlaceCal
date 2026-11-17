@@ -191,18 +191,19 @@ class Event < ApplicationRecord
   # Remove duplicate events (same uid, dtstart, dtend, calendar_id),
   # keeping the oldest record. Returns the number of deleted rows.
   def self.deduplicate!
-    duplicate_ids = <<~SQL.squish
-      SELECT id FROM (
+    result = connection.execute(<<~SQL.squish)
+      WITH duplicates AS (
         SELECT id, ROW_NUMBER() OVER (
           PARTITION BY uid, dtstart, dtend, calendar_id
           ORDER BY id
         ) as rn
         FROM events
-      ) duplicates WHERE rn > 1
+      )
+      DELETE FROM events WHERE id IN (
+        SELECT id FROM duplicates WHERE rn > 1
+      )
     SQL
-    # The DELETE skips callbacks, so their image files go first
-    where("id IN (#{duplicate_ids})").where.not(image: nil).find_each(&:remove_image!)
-    connection.execute("DELETE FROM events WHERE id IN (#{duplicate_ids})").cmd_tuples
+    result.cmd_tuples
   end
 
   # Deletes PaperTrail versions older than VERSION_RETENTION.

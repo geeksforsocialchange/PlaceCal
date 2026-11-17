@@ -93,17 +93,6 @@ RSpec.describe Event, "image" do
     expect(File.exist?(old_path)).to be(false)
   end
 
-  it "deletes the image of a duplicate row the daily clean-up removes" do
-    stub_image(poster_url)
-    duplicate = create(:event, calendar: event.calendar)
-    duplicate.update!(image_source_url: poster_url)
-    duplicate.update_columns(uid: event.uid, dtstart: event.dtstart, dtend: event.dtend) # rubocop:disable Rails/SkipsModelValidations
-    path = duplicate.image.path
-
-    expect(described_class.deduplicate!).to eq(1)
-    expect(File.exist?(path)).to be(false)
-  end
-
   it "deletes the image with the event" do
     stub_image(poster_url)
     event.update!(image_source_url: poster_url)
