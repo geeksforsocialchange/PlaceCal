@@ -5,7 +5,6 @@ class Components::Shared::Hero < Components::Base
               parts: {
                 root: 'The coloured band. Core gives it the primary background and its pattern images (background-image), so a theme with its own background clears them.',
                 content: 'The width-limited column inside the band that holds every other part.',
-                back: 'The back link, an <a>. Only when the page passes one, such as "All events" on an event page.',
                 kicker: 'The section name above the title, such as "Events" on an event page. Only on a single record\'s page. Margins in em.',
                 subtitle: 'The site tagline, in caps. Only when the page passes one.',
                 divider: 'The short decorative rule under the subtitle. Only with a subtitle.',
@@ -26,11 +25,6 @@ class Components::Shared::Hero < Components::Base
   prop :standfirst_detail, _Nilable(String), default: nil
   # Optional section name shown above the hero (e.g. "Events" on an event page).
   prop :section, _Nilable(String), default: nil
-  # Optional [label, path] back link, rendered above everything else in the
-  # hero (before the section name, when both are present) - "All events" on
-  # an event page, say. A generic slot: any page with a hero and an index to
-  # return to can use it.
-  prop :back, _Nilable(Array), default: nil
 
   def after_initialize
     @title_lines = title_lines(@title)
@@ -39,7 +33,6 @@ class Components::Shared::Hero < Components::Base
   def view_template
     div(**part(:root, class: 'hero-pattern bg-primary text-foreground-dark text-center pt-8 pb-4 print:bg-none print:bg-transparent')) do
       div(**part(:content, class: 'container-public')) do
-        render_back if @back
         p(**part(:kicker)) { @section } if @section.present?
         if @subtitle.present?
           # A paragraph, not a heading, so the outline never skips a level before the h1.
@@ -54,11 +47,6 @@ class Components::Shared::Hero < Components::Base
   end
 
   private
-
-  def render_back
-    label, path = @back
-    link_to(label, path, **part(:back, class: "block w-fit mx-auto mb-2 text-sm print:hidden #{UI::Link.css(tone: :inherit)}"))
-  end
 
   # The title is user or feed supplied (partner names, event summaries, article
   # titles), so it is rendered as text and the long-title line break is a real

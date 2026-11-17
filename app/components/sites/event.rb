@@ -13,7 +13,7 @@ class Components::Sites::Event < Components::Base
                 organiser_prefix: 'Optional words before the organiser\'s name, such as "by ", inside the organiser detail. Blank in core; a theme fills it.',
                 icon: 'The svg icon at the start of each detail line.'
               },
-              variants: { root: %i[card page], detail: %i[time duration date repeats online organiser place neighbourhood] },
+              variants: { root: %i[card page], detail: %i[time duration date repeats online organiser place] },
               states: { root: %i[online] },
               tokens: %i[--color-foreground --color-primary --color-secondary --color-rules --text-detail --text-xl --text-md --font-weight-bold]
 
@@ -25,9 +25,6 @@ class Components::Sites::Event < Components::Base
   # When rendered on a partner page, set this to that partner so we don't
   # redundantly show "By X" or "at X" when X is the page we're already on.
   prop :context_partner, _Nilable(::Partner), default: nil
-  # [label, path] back link, threaded through to Hero on the page layout
-  # (Views::Events::Show renders its hero here, not directly).
-  prop :back, _Nilable(Array), default: nil
   # Under a day heading that is itself under a section heading, so the title drops a size.
   prop :nested, _Boolean, default: false
   # Core themes leave the organiser to the details row; extension themes put it under the title
@@ -44,7 +41,7 @@ class Components::Sites::Event < Components::Base
   private
 
   def render_page_layout
-    Shared::Hero(summary, @site_tagline, section: t('events.show.section'), back: @back, standfirst: (organiser_line if @organiser_byline))
+    Shared::Hero(summary, @site_tagline, section: t('events.show.section'), standfirst: (organiser_line if @organiser_byline))
     a(class: 'p-name u-url', href: event_path(id), hidden: true) { summary }
     div(**part(:content, class: 'container-public')) { render_event_details }
   end
@@ -74,7 +71,6 @@ class Components::Sites::Event < Components::Base
       render_detail(:online, :event_online, @event.online_address.service_name || t('events.card.online')) if online?
       render_organiser if show_organiser?
       render_place if show_place?
-      render_detail(:neighbourhood, :neighbourhood, neighbourhood_line) if page? && @event.neighbourhood
     end
   end
 
@@ -216,10 +212,6 @@ class Components::Sites::Event < Components::Base
   def organiser_line
     organiser = @event.organiser
     organiser && t('events.show.by_organiser_html', name: view_context.link_to(organiser.name, partner_path(organiser), class: UI::Link.css(tone: :inherit)))
-  end
-
-  def neighbourhood_line
-    [@event.neighbourhood.shortname, @event.neighbourhood.district&.shortname].compact.join(', ')
   end
 
   def neighbourhood_name
