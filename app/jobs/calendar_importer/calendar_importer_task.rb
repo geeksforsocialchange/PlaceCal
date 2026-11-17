@@ -67,9 +67,10 @@ class CalendarImporter::CalendarImporterTask
   end
 
   # @param location_result [String] an ImportRunEvent::LOCATION_RESULTS value
-  def record_event(parsed_event, location_result, reason: nil, occurrences: 0, title: parsed_event.data.summary)
-    @run_events << { uid: parsed_event.uid, title:, location: parsed_event.data.location.presence,
-                     location_result:, reason:, occurrences: }
+  # @param read_source [Boolean] false keeps the event's title and location out, for a private or unreadable event
+  def record_event(parsed_event, location_result, reason: nil, occurrences: 0, read_source: true)
+    data = parsed_event.data if read_source
+    @run_events << { uid: parsed_event.uid, title: data&.summary, location: data&.location.presence, location_result:, reason:, occurrences: }
   end
 
   def count_saved(result)
@@ -150,7 +151,7 @@ class CalendarImporter::CalendarImporterTask
 
   # Attempt to create each event
   def process_event(parsed_event)
-    return skip_event(parsed_event, 'private', title: nil) if parsed_event.private?
+    return skip_event(parsed_event, 'private', read_source: false) if parsed_event.private?
     return skip_event(parsed_event, 'no_dates') if parsed_event.no_occurrences?
 
     parsed_event.resolve
@@ -165,13 +166,12 @@ class CalendarImporter::CalendarImporterTask
   rescue CalendarImporter::LocationResolver::Problem => e
     # A calendar settings problem hits every event, so say it once; no title, as reading one can raise
     report.add_messages(:location_problem, [e.message], uid: parsed_event.uid) unless report.notices.include?(e.message)
-    skip_event(parsed_event, nil, location_result: 'failed', reason: e.message, title: nil)
+    skip_event(parsed_event, nil, location_result: 'failed', reason: e.message, read_source: false)
   end
 
-  # A private event's title stays out of the record
-  def skip_event(parsed_event, reason_key, location_result: 'skipped', reason: reason_key, title: parsed_event.data.summary)
+  def skip_event(parsed_event, reason_key, location_result: 'skipped', reason: reason_key, read_source: true)
     @counts[:skipped] += 1
-    record_event(parsed_event, location_result, reason:, title:)
+    record_event(parsed_event, location_result, reason:, read_source:)
   end
 
   def within_occurrence_limit?(parsed_event)

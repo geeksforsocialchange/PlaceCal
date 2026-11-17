@@ -20,8 +20,8 @@ RSpec.describe Calendar do
           calendar = create(:calendar, notices: %w[one two three])
           calendar.queue_for_import!(false, Date.new(2000, 1, 1))
           expect(calendar.calendar_state).to be_in_queue
-          # clears notices
-          expect(calendar.notices).to be_nil
+          # keeps the last import's notices until a real import replaces them
+          expect(calendar.notices).to eq(%w[one two three])
         end.to have_enqueued_job.exactly(1)
       end
     end
@@ -43,8 +43,8 @@ RSpec.describe Calendar do
         calendar = create(:calendar, calendar_state: :in_queue, source: source_url, notices: %w[one two three])
         calendar.flag_start_import_job!
         expect(calendar.calendar_state).to be_in_worker
-        # clears notices
-        expect(calendar.notices).to be_nil
+        # keeps the last import's notices until a real import replaces them
+        expect(calendar.notices).to eq(%w[one two three])
       end
     end
   end
