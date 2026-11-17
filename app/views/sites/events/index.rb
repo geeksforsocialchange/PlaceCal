@@ -98,7 +98,8 @@ class Views::Sites::Events::Index < Views::Base
       badge_zoom_level: site.badge_zoom_level&.to_s,
       next_date: next_date&.dtstart,
       site_tagline: site.tagline,
-      truncated:
+      truncated:,
+      rows: site.core_theme?
     )
   end
 

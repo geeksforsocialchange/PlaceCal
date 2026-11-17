@@ -10,10 +10,11 @@ class Components::Sites::Timeline < Components::Base
 
   DEFAULT_STEPS = 7
 
-  LIST = 'relative grid grid-cols-paginator gap-1 md:gap-2 list-none m-0 px-10 pb-2 font-bold'
+  # The side padding is an arrow's width plus the gap, so each arrow sits as far from the tabs as they do from each other
+  LIST = 'relative grid grid-cols-paginator gap-1 md:gap-2 list-none m-0 px-10 md:px-11 pb-2 font-bold'
   # The pill fills its cell; a label wider than the cell overflows rather than widening the column.
   TAB = 'grid grid-cols-1'
-  ARROW = 'absolute top-0 size-9 p-0 bg-primary hover:bg-foreground'
+  ARROW = 'absolute top-0 size-9 p-0 rounded-full overflow-hidden bg-primary hover:bg-foreground'
   ARROW_LINK = 'flex items-center justify-center size-full text-inherit'
   ARROW_ICON = 'size-4 text-background'
   TURBO = { turbo_frame: 'events-browser', turbo_action: 'advance' }.freeze

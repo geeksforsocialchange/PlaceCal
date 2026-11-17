@@ -51,7 +51,7 @@ class Components::Sites::EventRow < Components::Base
     div(**part(:details, class: 'flex flex-wrap gap-x-4 gap-y-1 text-sm')) do
       detail(:time, :event_time) { time_range }
       detail(:place, :event_place) { place_name } if show_place?
-      detail(:organiser, :partner) { UI::Link(href: partner_path(@event.organiser), data: { turbo_frame: '_top' }) { truncated(@event.organiser.name, 25) } } if show_organiser?
+      detail(:organiser, :partner) { UI::Link(href: partner_path(@event.organiser), variant: :thin, data: { turbo_frame: '_top' }) { truncated(@event.organiser.name, 25) } } if show_organiser?
       detail(:repeats, :event_repeats) { plain repeats } if repeats
       detail(:online, :event_online) { plain @event.online_address.service_name || t('events.card.online') } if @event.online_address.present?
     end
@@ -76,7 +76,7 @@ class Components::Sites::EventRow < Components::Base
   def place_name
     partner = @event.partner_at_location
     if partner
-      UI::Link(href: partner_path(partner), data: { turbo_frame: '_top' }) { truncated(partner.name, 30) }
+      UI::Link(href: partner_path(partner), variant: :thin, data: { turbo_frame: '_top' }) { truncated(partner.name, 30) }
     else
       plain truncated(@event.address.street_address.delete('\\'), 30)
     end
