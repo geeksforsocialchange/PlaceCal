@@ -33,7 +33,7 @@ RSpec.describe "Admin background jobs", type: :request do
       expect(response).to be_redirect
     end
 
-    it "shows a root user the queues, without a link out of the frame" do
+    it "shows a root user the queues, light like the admin, without a link out of the frame" do
       sign_in create(:root_user)
       get "#{admin_jobs_url(host: admin_host)}/dashboard"
       follow_redirect! while response.redirect?
@@ -41,6 +41,7 @@ RSpec.describe "Admin background jobs", type: :request do
       expect(response).to be_successful
       expect(response.body).to include("Queues")
       expect(response.body).not_to include("Back to main app")
+      expect(Nokogiri::HTML(response.body).at_css("html")["data-theme"]).to eq("light")
     end
   end
 end

@@ -1,12 +1,13 @@
-<%# Mission Control's own, padded to sit in the admin's jobs page frame, with a language set %>
+<%# Mission Control's own, padded to sit in the admin's jobs page frame, with a language set and light like the admin %>
 <!DOCTYPE html>
-<html lang="<%= I18n.locale %>">
+<html lang="<%= I18n.locale %>" data-theme="light">
 <head>
   <title>Mission control - <%= page_title %></title>
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
   <meta name="turbo-cache-control" content="no-cache">
   <meta name="turbo-prefetch" content="false">
 
