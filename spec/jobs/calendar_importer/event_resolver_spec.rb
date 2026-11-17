@@ -82,7 +82,8 @@ RSpec.describe CalendarImporter::EventResolver do
       resolver = described_class.new(ics_event_data, calendar, [], start_date)
       resolver.resolve
       resolver.save_all_occurences
-      expect(calendar.events.sole.place_id).to eq(calendar.place.id)
+      expect(calendar.events.sole).to have_attributes(place_id: calendar.place.id, address_id: calendar.place.address_id)
+      expect(calendar.events.sole.address_id).to be_present
 
       calendar.strategy = "no_location"
       resolver = described_class.new(ics_event_data, calendar, [], start_date)
@@ -402,9 +403,9 @@ RSpec.describe CalendarImporter::EventResolver do
       notices = []
 
       resolver = described_class.new(ics_event_data, calendar, notices, start_date)
-      _place, address = resolver.resolve
+      resolver.resolve
 
-      expect(address).to be_nil
+      expect(resolver.resolved_attributes[:address_id]).to be_nil
     end
   end
 end

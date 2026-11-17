@@ -48,7 +48,7 @@ When the default place has no address (a partner with only a service area), the 
 
 ## Online Detection
 
-Each event class's `online_event_id` finds or creates an `OnlineAddress` for the event's online meeting link. `EventResolver#resolve` calls it before resolving the location, so the link is kept even when the location can't be resolved. It looks at:
+Each event class's `online_event_id` finds or creates an `OnlineAddress` for the event's online meeting link. `EventResolver#resolve` calls it before resolving the location, so its `OnlineAddress` is created even when the location raises a `Problem` and the event isn't saved. It looks at:
 
 - Google Meet custom properties (`x_google_conference`)
 - URLs in description matching: Zoom, Google Meet, Jitsi, Microsoft Teams
