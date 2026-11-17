@@ -102,7 +102,12 @@ module CalendarImporter::Events
     end
 
     def postcode
-      location_parts = location.split(/[\s,]+/)
+      Base.postcode_in(location)
+    end
+
+    # @return [String] the first full UK postcode in the text, normalised, or "" if there is none
+    def self.postcode_in(text)
+      location_parts = text.to_s.split(/[\s,]+/)
 
       location_parts.each_cons(2) do |location_part_pair|
         ukpc = UKPostcode.parse(location_part_pair.join(' '))

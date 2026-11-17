@@ -106,6 +106,16 @@ namespace :events do
     end
   end
 
+  # e.g. rails "events:unlisted_venues[20,csv]"
+  desc 'list the busiest venues of upcoming events that match no partner (read only)'
+  task :unlisted_venues, %i[limit format] => :environment do |_t, args|
+    format = args[:format].presence || 'text'
+    abort 'format must be text or csv' unless %w[text csv].include?(format)
+
+    report = UnlistedVenuesReport.new(limit: args[:limit])
+    puts format == 'csv' ? report.to_csv : report.to_text
+  end
+
   desc 'clean up OnlineAddresses'
   task refresh_online_addresses: :environment do
     Event.where.not(online_address_id: nil).map do |e|

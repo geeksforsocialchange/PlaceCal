@@ -18,6 +18,22 @@ class CalendarImporter::LocationResolver
   # match is :matched_venue, :event_address, :default_location, :room or :none
   Result = Data.define(:place, :address, :match)
 
+  # A location that is only a link is a meeting or a webpage, not an unreadable street address
+  ONLINE_LINK = %r{\Ahttps?://\S+\z}i
+
+  # The location text split on ", " with the postcode removed, e.g.
+  # "Age UK Hall, 1 Duke Street, Manchester M1 2AB" with postcode "M1 2AB" gives ["Age UK Hall", "1 Duke Street", "Manchester"].
+  # @return [Array<String>]
+  def self.location_components(location, postcode)
+    postcode = postcode.to_s.strip
+    postcode_pattern = /\b#{Regexp.escape(postcode)}\b/i if postcode.present?
+
+    location.to_s
+            .split(', ')
+            .map { |component| postcode_pattern ? component.gsub(postcode_pattern, '').strip : component.strip }
+            .compact_blank
+  end
+
   # @return [Symbol, nil] why the event's location text couldn't be read as an address (see Address.build_from_components_with_reason)
   attr_reader :unreadable_address_reason
 
@@ -108,27 +124,16 @@ class CalendarImporter::LocationResolver
     return unless event_data.location?
 
     address, reason = Address.build_from_components_with_reason(event_location_components, event_data.postcode)
-    # A location that is only a link is a meeting or a webpage, not an unreadable street address
     @unreadable_address_reason = reason unless location_is_link?
     address
   end
 
   def location_is_link?
-    event_data.location.to_s.strip.match?(%r{\Ahttps?://\S+\z}i)
+    event_data.location.to_s.strip.match?(ONLINE_LINK)
   end
 
-  # The location text split on ", " with the postcode removed, e.g.
-  # "Age UK Hall, 1 Duke Street, Manchester M1 2AB" with postcode "M1 2AB" gives ["Age UK Hall", "1 Duke Street", "Manchester"].
   # @return [Array<String>]
   def event_location_components
-    @event_location_components ||= begin
-      postcode = event_data.postcode.to_s.strip
-      postcode_pattern = /\b#{Regexp.escape(postcode)}\b/i if postcode.present?
-
-      event_data.location.to_s
-                .split(', ')
-                .map { |component| postcode_pattern ? component.gsub(postcode_pattern, '').strip : component.strip }
-                .compact_blank
-    end
+    @event_location_components ||= self.class.location_components(event_data.location, event_data.postcode)
   end
 end
