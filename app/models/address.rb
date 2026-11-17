@@ -28,7 +28,7 @@ class Address < ApplicationRecord
   include NeighbourhoodCacheInvalidator
 
   # Postcode lookup fields naming the town or wider area, which imported location text often repeats
-  PLACE_NAME_FIELDS = %w[admin_district admin_county region country].freeze
+  PLACE_NAME_FIELDS = %w[admin_district admin_county country].freeze
 
   # ==== Attributes ====
   attribute :city,            :string

@@ -272,12 +272,16 @@ RSpec.describe Address, type: :model do
         expect(street_lines_for(["Venue", "normal island", "10 Street", "Riverside Road"])).to eq(["Venue", "10 Street", nil])
       end
 
-      it "keeps a part that only contains a place name" do
+      it "keeps a part that contains a place name but isn't one" do
         expect(street_lines_for(["Venue", "Millbrook Hall", "10 Street"])).to eq(["Venue", "Millbrook Hall", "10 Street"])
       end
 
       it "never drops the first part" do
-        expect(street_lines_for(["Millbrook", "10 Street", "Northvale"])).to eq(["Millbrook", "10 Street", nil])
+        expect(street_lines_for(["Millbrook", "10 Street", "Normal Island"])).to eq(["Millbrook", "10 Street", nil])
+      end
+
+      it "keeps a region line, since London is both a region and the town people use" do
+        expect(street_lines_for(["Venue", "10 Street", "Northvale"])).to eq(["Venue", "10 Street", "Northvale"])
       end
 
       it "leaves addresses built from street lines alone" do
