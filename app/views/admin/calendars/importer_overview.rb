@@ -2,12 +2,36 @@
 
 class Views::Admin::Calendars::ImporterOverview < Views::Admin::Base
   include Phlex::Rails::Helpers::TimeAgoInWords
+  include Phlex::Rails::Helpers::DOMID
+
+  POLL_INTERVAL = 3.seconds
+  POLL_LIMIT = 10.minutes
 
   prop :calendar, Calendar, reader: :private
 
   def view_template
     return if calendar.new_record?
 
+    div(data: {
+          controller: 'import-status',
+          action: 'turbo:frame-missing->import-status#missing turbo:fetch-request-error->import-status#retry',
+          import_status_url_value: import_status_admin_calendar_path(calendar),
+          import_status_interval_value: POLL_INTERVAL.in_milliseconds.to_i,
+          import_status_limit_value: POLL_LIMIT.in_milliseconds.to_i
+        }) do
+      # Outside the frame so it exists before the final state arrives, or it would not be announced.
+      p(role: 'status', class: 'sr-only', data: { import_status_target: 'announcer' })
+      turbo_frame_tag(dom_id(calendar, :import_status), class: 'block', data: { import_status_target: 'frame' }) do
+        div(data: { import_status_target: 'state', poll: calendar.busy?, announcement: }) do
+          render_strip
+        end
+      end
+    end
+  end
+
+  private
+
+  def render_strip
     render_stale_warning
     retry_button = render_error_alert
 
@@ -21,9 +45,14 @@ class Views::Admin::Calendars::ImporterOverview < Views::Admin::Base
     render_notices
   end
 
-  private
+  # Failures announce themselves through the error alert
+  def announcement
+    t('admin.calendars.importer.import_finished') if calendar.calendar_state.idle?
+  end
 
   def render_stale_warning
+    # Inside the polled frame its role=alert would be announced again on every reload
+    return if calendar.busy?
     return unless calendar.checksum_updated_at.present? && calendar.last_import_at.present?
     return unless calendar.checksum_updated_at < 6.months.ago || calendar.last_import_at < 6.months.ago
 
@@ -87,7 +116,7 @@ class Views::Admin::Calendars::ImporterOverview < Views::Admin::Base
 
   def render_retry_button(retry_button)
     div(class: 'ml-auto') do
-      simple_form_for(:import, url: import_admin_calendar_path(calendar)) do |f|
+      simple_form_for(:import, url: import_admin_calendar_path(calendar), html: { data: { turbo_frame: '_top' } }) do |f|
         if retry_button == :idle
           raw f.submit(t('admin.calendars.importer.reimport'),
                        class: 'btn btn-sm bg-placecal-orange hover:bg-orange-600 text-white border-placecal-orange')
