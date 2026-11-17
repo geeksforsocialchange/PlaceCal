@@ -15,7 +15,7 @@ module OnlinePreviewSupport
     "Eventbrite page" => "https://www.eventbrite.co.uk/e/123"
   }.freeze
 
-  # Unsaved, with link_type set the way the importer would set it.
+  # Unsaved, with link_type direct for a known host and indirect otherwise.
   def address(url, link_type: OnlineAddress.service_for(url) ? :direct : :indirect)
     OnlineAddress.new(url:, link_type:)
   end

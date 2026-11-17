@@ -62,7 +62,7 @@ class CalendarImporter::CalendarImporterTask
   end
 
   def parser
-    @parser ||= CalendarImporter::CalendarImporter.new(calendar).parser
+    @parser ||= CalendarImporter::CalendarImporter.new(calendar).tap(&:check_source!).parser
   end
 
   # Get a properly formatted event list from the source
@@ -134,8 +134,8 @@ class CalendarImporter::CalendarImporterTask
 
     parsed_event.save_all_occurrences
   rescue CalendarImporter::LocationResolver::Problem => e
-    # No title: reading it can raise for a malformed source event
-    report.add_messages(:location_problem, [e.message], uid: parsed_event.uid)
+    # A calendar settings problem hits every event, so say it once; no title, as reading one can raise
+    report.add_messages(:location_problem, [e.message], uid: parsed_event.uid) unless report.notices.include?(e.message)
   end
 
   def within_occurrence_limit?(parsed_event)
