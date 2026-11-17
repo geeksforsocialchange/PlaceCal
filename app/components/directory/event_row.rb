@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Components::Directory::EventRow < Components::Directory::Base
+  include Components::Shared::EventRowDetails
+
   prop :event, _Interface(:summary, :dtstart)
   prop :context_partner, _Nilable(::Partner), default: nil
 
@@ -86,31 +88,5 @@ class Components::Directory::EventRow < Components::Directory::Base
   # Raleway's glyphs sit below the middle of their line box, so a centred icon looks high without the nudge
   def render_icon(name)
     raw(view_context.icon(name, size: nil, css_class: 'w-3.5 h-3.5 translate-y-px text-tertiary opacity-55 shrink-0'))
-  end
-
-  def show_place?
-    partner = @event.partner_at_location
-    address = @event.address&.street_address
-    return false if partner.blank? && address.blank?
-    return true if @context_partner.blank?
-
-    partner != @context_partner
-  end
-
-  def show_organiser?
-    organiser = @event.try(:organiser)
-    return false if organiser.blank?
-    return false if organiser == @event.partner_at_location
-    return false if organiser == @context_partner
-
-    true
-  end
-
-  def repeats
-    ::Event.rrule_frequency(@event.rrule)&.titleize
-  end
-
-  def fmt_time(time)
-    time.strftime('%M') == '00' ? time.strftime('%l%P').strip : time.strftime('%l:%M%P').strip
   end
 end

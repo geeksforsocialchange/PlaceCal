@@ -63,7 +63,7 @@ class Views::Sites::Partners::Show < Views::Base
 
   # Themes style the events section themselves; these are the built-in themes' look.
   CORE_EVENTS = {
-    header: 'flex flex-wrap items-center gap-y-2 gap-x-6 mt-8 mb-2 pb-2 border-b-3 border-rules',
+    header: 'flex flex-wrap items-center gap-y-2 gap-x-6 mt-8 mb-2',
     heading: 'allcaps text-xl m-0',
     count: 'hidden',
     repeating_filter: 'ml-auto print:hidden',
@@ -283,15 +283,17 @@ class Views::Sites::Partners::Show < Views::Base
       render_events_header if events_total_count&.positive?
       render_events_paginator if paginator
 
-      if events.any?
+      if events.any? && site.core_theme?
+        Sites::EventRows(events: events.is_a?(Hash) ? events.values.flatten : events.to_a, context_partner: partner,
+                         show_neighbourhoods: site.show_neighbourhoods?, badge_zoom_level: site.badge_zoom_level&.to_s)
+      elsif events.any?
         Sites::EventList(
           events:,
           period:,
           show_neighbourhoods: site.show_neighbourhoods?,
           badge_zoom_level: site.badge_zoom_level&.to_s,
           site_tagline: site.tagline,
-          context_partner: partner,
-          nested: site.core_theme?
+          context_partner: partner
         )
       else
         p { em { no_event_message || empty_period_message } }
