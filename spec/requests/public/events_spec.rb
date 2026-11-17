@@ -300,13 +300,12 @@ RSpec.describe "Public Events", type: :request do
       expect(ThemingTokens.read_by(html, "event-details") - PlaceCal::Theming.contract["event-details"][:tokens]).to be_empty
     end
 
-    # Hero back link (#3368): "All events" above the event page hero.
-    it "links the hero back link to the events index" do
+    it "has no back link or neighbourhood line in the hero" do
       get event_url(event, host: "#{site.slug}.lvh.me")
+      html = Nokogiri::HTML(response.body)
 
-      back = Nokogiri::HTML(response.body).at_css('a[data-scope="hero"][data-part="back"]')
-      expect(back.text).to eq(I18n.t("events.show.back"))
-      expect(back[:href]).to eq(events_path)
+      expect(html.at_css('[data-scope="hero"] a[href="/events"]')).to be_nil
+      expect(html.at_css('[data-scope="event"][data-part="detail"][data-variant="neighbourhood"]')).to be_nil
     end
   end
 
