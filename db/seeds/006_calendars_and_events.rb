@@ -77,7 +77,7 @@ module SeedCalendarsAndEvents # rubocop:disable Metrics/ModuleLength
     https://meet.google.com/plc-seed-%03d
   ].freeze
 
-  # Each calendar imports its own events from a file the dev server serves, so imports succeed and change nothing
+  # Each calendar imports its own events from a file the dev server serves, so imports succeed and keep them
   FEEDS_DIR = Rails.public_path.join('seed-feeds')
 
   def self.feed_url(partner)
