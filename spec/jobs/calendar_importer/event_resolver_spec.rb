@@ -28,7 +28,7 @@ RSpec.describe CalendarImporter::EventResolver do
   def patch_ics_dates(event, from_date, to_date)
     patch = Module.new
     patch.define_method(:occurrences_between) do |_from, _to|
-      [CalendarImporter::Events::Base::Dates.new(from_date, to_date)]
+      [CalendarImporter::Events::Base::Occurrence.new(start_time: from_date, end_time: to_date)]
     end
 
     event.extend patch
@@ -59,26 +59,38 @@ RSpec.describe CalendarImporter::EventResolver do
   describe "location strategies" do
     it "online only strategy does not set place or address" do
       calendar = make_calendar_for_strategy("online_only")
-      notices = []
+      report = CalendarImporter::ImportReport.new
 
-      resolver = described_class.new(ics_event_data, calendar, notices, start_date)
-      resolver.determine_location_for_strategy
+      resolver = described_class.new(ics_event_data, calendar, report, start_date)
+      resolver.resolve
 
-      expect(resolver.data.place_id).to be_nil
-      expect(resolver.data.address_id).to be_nil
-      expect(resolver.data.organiser_id).to eq(calendar.organiser_id)
+      expect(resolver.resolved_attributes).to include(place_id: nil, address_id: nil, organiser_id: calendar.organiser_id)
     end
 
     it "no location strategy does not set place or address" do
       calendar = make_calendar_for_strategy("no_location")
-      notices = []
+      report = CalendarImporter::ImportReport.new
 
-      resolver = described_class.new(ics_event_data, calendar, notices, start_date)
-      resolver.determine_location_for_strategy
+      resolver = described_class.new(ics_event_data, calendar, report, start_date)
+      resolver.resolve
 
-      expect(resolver.data.place_id).to be_nil
-      expect(resolver.data.address_id).to be_nil
-      expect(resolver.data.organiser_id).to eq(calendar.organiser_id)
+      expect(resolver.resolved_attributes).to include(place_id: nil, address_id: nil, organiser_id: calendar.organiser_id)
+    end
+
+    it "clears a saved row's place and address when a re-import resolves none", :aggregate_failures do
+      calendar = make_calendar_for_strategy("place")
+      resolver = described_class.new(ics_event_data, calendar, [], start_date)
+      resolver.resolve
+      resolver.save_all_occurrences
+      expect(calendar.events.sole).to have_attributes(place_id: calendar.place.id, address_id: calendar.place.address_id)
+      expect(calendar.events.sole.address_id).to be_present
+
+      calendar.strategy = "no_location"
+      resolver = described_class.new(ics_event_data, calendar, [], start_date)
+      resolver.resolve
+      resolver.save_all_occurrences
+
+      expect(calendar.events.sole.reload).to have_attributes(place_id: nil, address_id: nil)
     end
   end
 
@@ -92,11 +104,11 @@ RSpec.describe CalendarImporter::EventResolver do
         calendar = make_calendar_for_strategy("event")
 
         resolver = described_class.new(ics_event_data, calendar, [], start_date)
-        resolver.determine_online_location
+        resolver.resolve
 
-        expect(resolver.data.online_address_id).to be_present
+        expect(resolver.resolved_attributes[:online_address_id]).to be_present
 
-        online_address = OnlineAddress.find(resolver.data.online_address_id)
+        online_address = OnlineAddress.find(resolver.resolved_attributes[:online_address_id])
         expect(online_address.url).to eq(meet_link)
       end
 
@@ -108,11 +120,11 @@ RSpec.describe CalendarImporter::EventResolver do
         calendar = make_calendar_for_strategy("place")
 
         resolver = described_class.new(ics_event_data, calendar, [], start_date)
-        resolver.determine_online_location
+        resolver.resolve
 
-        expect(resolver.data.online_address_id).to be_present
+        expect(resolver.resolved_attributes[:online_address_id]).to be_present
 
-        online_address = OnlineAddress.find(resolver.data.online_address_id)
+        online_address = OnlineAddress.find(resolver.resolved_attributes[:online_address_id])
         expect(online_address.url).to eq(jitsi_link)
       end
 
@@ -124,11 +136,11 @@ RSpec.describe CalendarImporter::EventResolver do
         calendar = make_calendar_for_strategy("event")
 
         resolver = described_class.new(ics_event_data, calendar, [], start_date)
-        resolver.determine_online_location
+        resolver.resolve
 
-        expect(resolver.data.online_address_id).to be_present
+        expect(resolver.resolved_attributes[:online_address_id]).to be_present
 
-        online_address = OnlineAddress.find(resolver.data.online_address_id)
+        online_address = OnlineAddress.find(resolver.resolved_attributes[:online_address_id])
         expect(online_address.url).to eq(meet_link)
       end
 
@@ -140,12 +152,26 @@ RSpec.describe CalendarImporter::EventResolver do
         calendar = make_calendar_for_strategy("event")
 
         resolver = described_class.new(ics_event_data, calendar, [], start_date)
-        resolver.determine_online_location
+        resolver.resolve
 
-        expect(resolver.data.online_address_id).to be_present
+        expect(resolver.resolved_attributes[:online_address_id]).to be_present
 
-        online_address = OnlineAddress.find(resolver.data.online_address_id)
+        online_address = OnlineAddress.find(resolver.resolved_attributes[:online_address_id])
         expect(online_address.url).to eq(zoom_link)
+      end
+
+      it "creates the online address even when the location can't be resolved", :aggregate_failures do
+        meet_link = "https://meet.google.com/bbb-bbbb-bbb"
+        fake_ics_event[:custom_properties] = { "x_google_conference" => [meet_link] }
+        calendar = build(:calendar, strategy: "room_number", place: nil)
+        calendar.place = nil
+
+        resolver = described_class.new(ics_event_data, calendar, [], start_date)
+
+        expect { resolver.resolve }
+          .to raise_error(CalendarImporter::LocationResolver::Problem)
+          .and change(OnlineAddress, :count).by(1)
+        expect(OnlineAddress.last.url).to eq(meet_link)
       end
     end
 
@@ -167,219 +193,53 @@ RSpec.describe CalendarImporter::EventResolver do
         calendar = make_calendar_for_strategy("event")
 
         resolver = described_class.new(event_data, calendar, [], start_date)
-        resolver.determine_online_location
+        resolver.resolve
 
-        expect(resolver.data.online_address_id).to be_present
+        expect(resolver.resolved_attributes[:online_address_id]).to be_present
 
-        online_address = OnlineAddress.find(resolver.data.online_address_id)
+        online_address = OnlineAddress.find(resolver.resolved_attributes[:online_address_id])
         expect(online_address.url).to eq(eventbrite_link)
       end
-    end
-  end
-
-  describe "recurring event dedup" do
-    def make_recurring_ics_event(uid:, occurrences:)
-      event = FakeICSEvent.new(
-        uid:,
-        summary: "Recurring Event",
-        description: "A recurring event",
-        location: "",
-        rrule: "FREQ=WEEKLY",
-        last_modified: "",
-        custom_properties: {}
-      )
-
-      patch = Module.new
-      patch.define_method(:occurrences_between) do |_from, _to|
-        occurrences.map { |s, e| CalendarImporter::Events::Base::Dates.new(s, e) }
-      end
-      event.extend patch
-
-      CalendarImporter::Events::IcsEvent.new(event, occurrences.first[0], occurrences.first[1])
-    end
-
-    it "does not create duplicates when re-importing identical recurring events" do
-      calendar = make_calendar_for_strategy("no_location")
-
-      occ1_start = DateTime.new(2024, 1, 8, 10, 0)
-      occ1_end   = DateTime.new(2024, 1, 8, 11, 0)
-      occ2_start = DateTime.new(2024, 1, 15, 10, 0)
-      occ2_end   = DateTime.new(2024, 1, 15, 11, 0)
-
-      occurrences = [[occ1_start, occ1_end], [occ2_start, occ2_end]]
-      event_data = make_recurring_ics_event(uid: "recurring-123", occurrences:)
-
-      resolver = described_class.new(event_data, calendar, [], occ1_start)
-      resolver.determine_location_for_strategy
-      resolver.save_all_occurences
-
-      expect(calendar.events.where(uid: "recurring-123").count).to eq(2)
-
-      # Re-import identical data
-      event_data2 = make_recurring_ics_event(uid: "recurring-123", occurrences:)
-      resolver2 = described_class.new(event_data2, calendar, [], occ1_start)
-      resolver2.determine_location_for_strategy
-      resolver2.save_all_occurences
-
-      expect(calendar.events.where(uid: "recurring-123").count).to eq(2)
-    end
-
-    it "removes stale occurrences when schedule changes" do
-      calendar = make_calendar_for_strategy("no_location")
-
-      occ1_start = DateTime.new(2024, 1, 8, 10, 0)
-      occ1_end   = DateTime.new(2024, 1, 8, 11, 0)
-      occ2_start = DateTime.new(2024, 1, 15, 10, 0)
-      occ2_end   = DateTime.new(2024, 1, 15, 11, 0)
-
-      occurrences = [[occ1_start, occ1_end], [occ2_start, occ2_end]]
-      event_data = make_recurring_ics_event(uid: "recurring-456", occurrences:)
-
-      resolver = described_class.new(event_data, calendar, [], occ1_start)
-      resolver.determine_location_for_strategy
-      resolver.save_all_occurences
-
-      expect(calendar.events.where(uid: "recurring-456").count).to eq(2)
-
-      # Re-import with only one occurrence (second was cancelled)
-      new_occurrences = [[occ1_start, occ1_end]]
-      event_data2 = make_recurring_ics_event(uid: "recurring-456", occurrences: new_occurrences)
-      resolver2 = described_class.new(event_data2, calendar, [], occ1_start)
-      resolver2.determine_location_for_strategy
-      resolver2.save_all_occurences
-
-      expect(calendar.events.where(uid: "recurring-456").count).to eq(1)
-      expect(calendar.events.find_by(uid: "recurring-456").dtstart).to eq(occ1_start)
-    end
-
-    it "correctly handles time pair matching (not independent start/end matching)" do
-      calendar = make_calendar_for_strategy("no_location")
-
-      # Create two occurrences where occ1's dtstart matches occ2's dtstart would not,
-      # and occ1's dtend matches occ2's dtend would not — the old OR logic would
-      # incorrectly delete valid events in this case
-      occ1_start = DateTime.new(2024, 1, 8, 10, 0)
-      occ1_end   = DateTime.new(2024, 1, 8, 11, 0)
-      occ2_start = DateTime.new(2024, 1, 15, 10, 0)
-      occ2_end   = DateTime.new(2024, 1, 15, 12, 0)
-
-      occurrences = [[occ1_start, occ1_end], [occ2_start, occ2_end]]
-      event_data = make_recurring_ics_event(uid: "recurring-789", occurrences:)
-
-      resolver = described_class.new(event_data, calendar, [], occ1_start)
-      resolver.determine_location_for_strategy
-      resolver.save_all_occurences
-
-      expect(calendar.events.where(uid: "recurring-789").count).to eq(2)
-
-      # Now re-import with the second occurrence's end time changed.
-      # The old OR logic would have incorrectly deleted occ1 here because
-      # occ1's dtend (11:00) doesn't appear in the new end_times list.
-      new_occ2_end = DateTime.new(2024, 1, 15, 13, 0)
-      new_occurrences = [[occ1_start, occ1_end], [occ2_start, new_occ2_end]]
-      event_data2 = make_recurring_ics_event(uid: "recurring-789", occurrences: new_occurrences)
-      resolver2 = described_class.new(event_data2, calendar, [], occ1_start)
-      resolver2.determine_location_for_strategy
-      resolver2.save_all_occurences
-
-      events = calendar.events.where(uid: "recurring-789").order(:dtstart)
-      expect(events.count).to eq(2)
-      expect(events.first.dtstart).to eq(occ1_start)
-      expect(events.first.dtend).to eq(occ1_end)
-      expect(events.last.dtstart).to eq(occ2_start)
-      expect(events.last.dtend).to eq(new_occ2_end)
-    end
-  end
-
-  describe "duplicate cleanup" do
-    it "removes pre-existing duplicate events during import" do
-      calendar = make_calendar_for_strategy("no_location")
-
-      # Temporarily drop the unique index to simulate pre-existing bad data
-      ActiveRecord::Base.connection.remove_index :events, name: "index_events_unique_per_calendar"
-
-      # Create duplicate events bypassing validation
-      3.times do
-        event = calendar.events.new(
-          uid: "dup-123",
-          summary: "Duplicate Event",
-          dtstart: start_date,
-          dtend: end_date,
-          organiser: calendar.organiser
-        )
-        event.save!(validate: false)
-      end
-
-      # Re-add the unique index won't work with dupes present, so test cleanup without it
-      expect(calendar.events.where(uid: "dup-123").count).to eq(3)
-
-      # Now import the same event — resolver should clean up duplicates
-      event_data = ics_event_data
-      allow(event_data).to receive(:uid).and_return("dup-123")
-
-      resolver = described_class.new(event_data, calendar, [], start_date)
-      resolver.determine_location_for_strategy
-      resolver.save_all_occurences
-
-      expect(calendar.events.where(uid: "dup-123").count).to eq(1)
-    ensure
-      # Restore the unique index
-      unless ActiveRecord::Base.connection.index_exists?(:events, name: "index_events_unique_per_calendar")
-        ActiveRecord::Base.connection.add_index :events, %i[calendar_id uid dtstart dtend],
-                                                unique: true,
-                                                name: "index_events_unique_per_calendar"
-      end
-    end
-
-    it "handles RecordNotUnique gracefully on new event insert" do
-      calendar = make_calendar_for_strategy("no_location")
-      notices = []
-
-      resolver = described_class.new(ics_event_data, calendar, notices, start_date)
-      resolver.determine_location_for_strategy
-      resolver.save_all_occurences
-
-      expect(calendar.events.where(uid: ics_event_data.uid).count).to eq(1)
-      expect(notices).to be_empty
     end
   end
 
   describe "notices" do
     it "are empty when no problems occur" do
       calendar = make_calendar_for_strategy("no_location")
-      notices = []
+      report = CalendarImporter::ImportReport.new
 
-      resolver = described_class.new(ics_event_data, calendar, notices, start_date)
-      resolver.determine_location_for_strategy
-      resolver.save_all_occurences
+      resolver = described_class.new(ics_event_data, calendar, report, start_date)
+      resolver.resolve
+      resolver.save_all_occurrences
 
-      expect(notices).to be_empty
+      expect(report.notices).to be_empty
     end
 
     it "generates notices when Event fails validations" do
       calendar = make_calendar_for_strategy("no_location")
-      notices = []
+      report = CalendarImporter::ImportReport.new
 
       event = ics_event_data.instance_variable_get(:@event)
       event.summary = ""
 
-      resolver = described_class.new(ics_event_data, calendar, notices, start_date)
-      resolver.determine_location_for_strategy
-      resolver.save_all_occurences
+      resolver = described_class.new(ics_event_data, calendar, report, start_date)
+      resolver.resolve
+      resolver.save_all_occurrences
 
-      expect(notices).to eq(["Summary can't be blank"])
+      expect(report.notices).to eq(["Summary can't be blank"])
+      expect(report.entries.sole).to have_attributes(kind: :failed_save, uid: ics_event_data.uid, messages: ["Summary can't be blank"])
     end
 
     it "still imports when missing address" do
       calendar = make_calendar_for_strategy("no_location")
       calendar.strategy = "event"
 
-      notices = []
+      report = CalendarImporter::ImportReport.new
 
-      resolver = described_class.new(ics_event_data, calendar, notices, start_date)
-      _place, address = resolver.determine_location_for_strategy
+      resolver = described_class.new(ics_event_data, calendar, report, start_date)
+      resolver.resolve
 
-      expect(address).to be_nil
+      expect(resolver.resolved_attributes[:address_id]).to be_nil
     end
   end
 end

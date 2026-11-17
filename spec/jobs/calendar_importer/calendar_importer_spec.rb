@@ -313,7 +313,7 @@ RSpec.describe CalendarImporter::CalendarImporter do
         calendar = build(:calendar, name: "GFSC Studio", source: "https://gfsc.studio", importer_mode: "auto")
 
         expect do
-          described_class.new(calendar).parser
+          described_class.new(calendar).check_source!
         end.to raise_error(CalendarImporter::Exceptions::UnsupportedFeed)
       end
     end
@@ -330,12 +330,30 @@ RSpec.describe CalendarImporter::CalendarImporter do
     end
   end
 
+  describe ".new" do
+    it "makes no HTTP request" do
+      calendar = build(:calendar, source: "https://example.com/events.ics")
+
+      described_class.new(calendar)
+
+      expect(a_request(:any, //)).not_to have_been_made
+    end
+  end
+
+  describe "a set importer mode on a URL for a parser that skips the source check" do
+    it "picks the parser the URL matches" do
+      calendar = build(:calendar, source: "https://www.tickettailor.com/events/testorg", importer_mode: "ical")
+
+      expect(described_class.new(calendar).parser).to eq(CalendarImporter::Parsers::Tickettailor)
+    end
+  end
+
   describe "bad URL handling" do
     it "raises error for empty URL" do
       calendar = build(:calendar, source: "")
 
       expect do
-        described_class.new(calendar)
+        described_class.new(calendar).check_source!
       end.to raise_error(CalendarImporter::Exceptions::UnsupportedFeed, /missing/)
     end
 
@@ -343,7 +361,7 @@ RSpec.describe CalendarImporter::CalendarImporter do
       calendar = build(:calendar, source: "hts://example,com")
 
       expect do
-        described_class.new(calendar)
+        described_class.new(calendar).check_source!
       end.to raise_error(CalendarImporter::Exceptions::UnsupportedFeed, /not a valid URL/)
     end
   end
@@ -354,6 +372,7 @@ RSpec.describe CalendarImporter::CalendarImporter do
 
       # This should not make any HTTP requests - if it did, VCR would raise
       importer = described_class.new(calendar)
+      importer.check_source!
       expect(importer.parser).to eq(CalendarImporter::Parsers::Tickettailor)
     end
 
@@ -361,6 +380,7 @@ RSpec.describe CalendarImporter::CalendarImporter do
       calendar = build(:calendar, source: "https://www.ticketsource.co.uk/some-venue")
 
       importer = described_class.new(calendar)
+      importer.check_source!
       expect(importer.parser).to eq(CalendarImporter::Parsers::Ticketsource)
     end
 
@@ -368,6 +388,7 @@ RSpec.describe CalendarImporter::CalendarImporter do
       calendar = build(:calendar, source: "https://ra.co/promoters/73787")
 
       importer = described_class.new(calendar)
+      importer.check_source!
       expect(importer.parser).to eq(CalendarImporter::Parsers::ResidentAdvisor)
     end
 
@@ -376,7 +397,7 @@ RSpec.describe CalendarImporter::CalendarImporter do
         calendar = build(:calendar, source: "https://example.com/")
 
         expect do
-          described_class.new(calendar)
+          described_class.new(calendar).check_source!
         end.to raise_error(CalendarImporter::Exceptions::InaccessibleFeed)
       end
     end

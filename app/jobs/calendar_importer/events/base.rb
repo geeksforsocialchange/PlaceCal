@@ -4,16 +4,12 @@ module CalendarImporter::Events
   class Base
     ALLOWED_TAGS = %w[p a strong b em i ul ol li blockquote h3 h4 h5 h6 br].freeze
 
-    Dates = Struct.new(:start_time, :end_time, :status)
+    # status fills are_spaces_available; override is an event whose fields replace the series' on this date
+    Occurrence = Struct.new(:start_time, :end_time, :status, :override, keyword_init: true)
 
     def initialize(event)
       @event = event
     end
-
-    attr_accessor :place_id,
-                  :address_id,
-                  :organiser_id,
-                  :online_address_id
 
     def rrule
       nil
@@ -87,15 +83,11 @@ module CalendarImporter::Events
         description: html_sanitize(description),
         raw_location_from_source: location&.strip,
         rrule:,
-        place_id:,
-        address_id:,
-        organiser_id:,
-        publisher_url:,
-        online_address_id: }
+        publisher_url: }
     end
 
-    def attributes_for(_occurrence)
-      attributes
+    def attributes_for(occurrence)
+      attributes.merge(are_spaces_available: occurrence.status)
     end
 
     def footer; end
@@ -110,8 +102,18 @@ module CalendarImporter::Events
       false
     end
 
+    # @return [Array<Occurrence>] the event's one occurrence, for sources without repeats
+    def occurrences_between(*)
+      [Occurrence.new(start_time: dtstart, end_time: dtend)]
+    end
+
     def postcode
-      location_parts = location.split(/[\s,]+/)
+      Base.postcode_in(location)
+    end
+
+    # @return [String] the first full UK postcode in the text, normalised, or "" if there is none
+    def self.postcode_in(text)
+      location_parts = text.to_s.split(/[\s,]+/)
 
       location_parts.each_cons(2) do |location_part_pair|
         ukpc = UKPostcode.parse(location_part_pair.join(' '))

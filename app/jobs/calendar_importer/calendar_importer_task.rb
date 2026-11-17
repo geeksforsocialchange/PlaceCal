@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CalendarImporter::CalendarImporterTask
-  MAX_OCCURENCES = 20_000
+  MAX_OCCURRENCES_PER_CALENDAR = 20_000
   # How long a feed stays empty before its upcoming events are removed
   EMPTY_FEED_GRACE = 48.hours
 
@@ -28,29 +28,33 @@ class CalendarImporter::CalendarImporterTask
       # end
 
       parsed_events.each do |parsed_event|
-        break unless within_occurence_limit?(parsed_event)
+        break unless within_occurrence_limit?(parsed_event)
 
         process_event parsed_event
       end
 
       # Events past the limit were never processed, so their rows would look stale
-      purge_stale_events_from_calendar unless @occurence_limit_reached
+      purge_stale_events_from_calendar unless @occurrence_limit_reached
     end
 
     handle_empty_feed if calendar.feed_empty_since && !feed_edited
 
     add_unreadable_address_notices
 
-    calendar.flag_complete_import_job! notices, parser::KEY
+    calendar.flag_complete_import_job! report.notices, parser::KEY
     calendar.flag_checksum_change!(calendar_source.checksum) if calendar_source.checksum_changed
   rescue CalendarImporter::Exceptions::SourceUnavailable
-    calendar.flag_skipped_import_job! [I18n.t('admin.calendars.importer.source_unavailable', source: parser::NAME)]
+    # A skipped run keeps none of its other notices
+    skipped = CalendarImporter::ImportReport.new
+    skipped.add(:source_unavailable, 'admin.calendars.importer.source_unavailable', values: { source: parser::NAME })
+    calendar.flag_skipped_import_job! skipped.notices
   end
 
   private
 
-  def notices
-    @notices ||= []
+  # @return [CalendarImporter::ImportReport]
+  def report
+    @report ||= CalendarImporter::ImportReport.new
   end
 
   def active_event_uids
@@ -58,7 +62,7 @@ class CalendarImporter::CalendarImporterTask
   end
 
   def parser
-    @parser ||= CalendarImporter::CalendarImporter.new(calendar).parser
+    @parser ||= CalendarImporter::CalendarImporter.new(calendar).tap(&:check_source!).parser
   end
 
   # Get a properly formatted event list from the source
@@ -66,7 +70,8 @@ class CalendarImporter::CalendarImporterTask
     @calendar_source ||= parser.new(
       calendar,
       from: from_date,
-      force_import:
+      force_import:,
+      report:
     ).calendar_to_events
   end
 
@@ -83,12 +88,12 @@ class CalendarImporter::CalendarImporterTask
 
     if since <= EMPTY_FEED_GRACE.ago && upcoming.exists?
       upcoming.destroy_all
-      notices << I18n.t('admin.calendars.importer.feed_empty_removed', **dates)
+      report.add(:empty_feed, 'admin.calendars.importer.feed_empty_removed', values: dates)
     elsif upcoming.exists?
       removal = I18n.l((since + EMPTY_FEED_GRACE).to_date, format: :day_month_year)
-      notices << I18n.t('admin.calendars.importer.feed_empty', count: upcoming.count, removal:, **dates)
+      report.add(:empty_feed, 'admin.calendars.importer.feed_empty', values: { count: upcoming.count, removal:, **dates })
     else
-      notices << I18n.t('admin.calendars.importer.feed_empty_no_events', **dates)
+      report.add(:empty_feed, 'admin.calendars.importer.feed_empty_no_events', values: dates)
     end
   end
 
@@ -103,7 +108,8 @@ class CalendarImporter::CalendarImporterTask
       examples = events.uniq(&:location).first(3).map do |event|
         I18n.t('admin.calendars.importer.unreadable_address.example', summary: event.summary, location: event.location)
       end
-      notices << I18n.t("admin.calendars.importer.unreadable_address.#{reason}", count: events.size, examples: examples.to_sentence)
+      report.add(:unreadable_address, "admin.calendars.importer.unreadable_address.#{reason}",
+                 values: { count: events.size, examples: examples.to_sentence })
     end
   end
 
@@ -111,37 +117,35 @@ class CalendarImporter::CalendarImporterTask
   def event_data_from_parser
     return [] if !force_import && !calendar_source.checksum_changed
 
-    notices.concat(calendar_source.notices)
     calendar_source.events.map do |event_data|
-      CalendarImporter::EventResolver.new(event_data, calendar, notices, from_date)
+      CalendarImporter::EventResolver.new(event_data, calendar, report, from_date)
     end
   end
 
   # Attempt to create each event
   def process_event(parsed_event)
     return if parsed_event.private?
-    return if parsed_event.no_occurences?
+    return if parsed_event.no_occurrences?
 
-    parsed_event.determine_online_location
-
-    parsed_event.determine_location_for_strategy
+    parsed_event.resolve
     unreadable_addresses[parsed_event.unreadable_address_reason] << parsed_event.data if parsed_event.unreadable_address_reason
 
     active_event_uids << parsed_event.uid
 
-    parsed_event.save_all_occurences
+    parsed_event.save_all_occurrences
   rescue CalendarImporter::LocationResolver::Problem => e
-    notices << e.message
+    # A calendar settings problem hits every event, so say it once; no title, as reading one can raise
+    report.add_messages(:location_problem, [e.message], uid: parsed_event.uid) unless report.notices.include?(e.message)
   end
 
-  def within_occurence_limit?(parsed_event)
+  def within_occurrence_limit?(parsed_event)
     return true if parsed_event.private?
 
-    @occurence_count = @occurence_count.to_i + parsed_event.occurences.size
-    return true if @occurence_count <= MAX_OCCURENCES
+    @occurrence_count = @occurrence_count.to_i + parsed_event.occurrences.size
+    return true if @occurrence_count <= MAX_OCCURRENCES_PER_CALENDAR
 
-    notices << I18n.t('admin.calendars.importer.calendar_occurrence_limit', count: MAX_OCCURENCES)
-    @occurence_limit_reached = true
+    report.add(:calendar_occurrence_limit, 'admin.calendars.importer.calendar_occurrence_limit', values: { count: MAX_OCCURRENCES_PER_CALENDAR })
+    @occurrence_limit_reached = true
     false
   end
 

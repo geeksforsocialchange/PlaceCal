@@ -67,17 +67,19 @@ RSpec.describe CalendarImporter::Parsers::Ics do
         events = parser.parse_remote_calendars(ics_data).flat_map(&:events)
 
         expect(events.map { |event| event.summary.to_s }).to eq(["Good"])
-        expect(parser.notices).to eq(['Skipped "Broken" because its dates could not be read (Failed to parse "2026-11-0X" - invalid date).'])
+        expect(parser.report.notices).to eq(['Skipped "Broken" because its dates could not be read (Failed to parse "2026-11-0X" - invalid date).'])
+        expect(parser.report.entries.sole).to have_attributes(kind: :unreadable_event_dates, uid: "broken@example.com", title: "Broken")
       end
 
-      it "passes the notice on with the parsed events" do
+      it "adds the notice to the import's report alongside the parsed events" do
         calendar = create(:ics_calendar)
         stub_request(:get, calendar.source).to_return(status: 200, body: ics_data)
+        report = CalendarImporter::ImportReport.new
 
-        output = described_class.new(calendar, force_import: true).calendar_to_events
+        output = described_class.new(calendar, force_import: true, report:).calendar_to_events
 
         expect(output.events.map(&:summary)).to eq(["Good"])
-        expect(output.notices).to eq(['Skipped "Broken" because its dates could not be read (Failed to parse "2026-11-0X" - invalid date).'])
+        expect(report.notices).to eq(['Skipped "Broken" because its dates could not be read (Failed to parse "2026-11-0X" - invalid date).'])
       end
 
       it "imports the other events and records the notice on the calendar" do
