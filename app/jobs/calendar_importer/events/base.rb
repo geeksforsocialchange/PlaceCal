@@ -10,11 +10,6 @@ module CalendarImporter::Events
       @event = event
     end
 
-    attr_accessor :place_id,
-                  :address_id,
-                  :organiser_id,
-                  :online_address_id
-
     def rrule
       nil
     end
@@ -87,11 +82,7 @@ module CalendarImporter::Events
         description: html_sanitize(description),
         raw_location_from_source: location&.strip,
         rrule:,
-        place_id:,
-        address_id:,
-        organiser_id:,
-        publisher_url:,
-        online_address_id: }
+        publisher_url: }
     end
 
     def attributes_for(_occurrence)

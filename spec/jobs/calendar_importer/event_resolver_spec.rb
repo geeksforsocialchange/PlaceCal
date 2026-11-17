@@ -62,11 +62,9 @@ RSpec.describe CalendarImporter::EventResolver do
       notices = []
 
       resolver = described_class.new(ics_event_data, calendar, notices, start_date)
-      resolver.determine_location_for_strategy
+      resolver.resolve
 
-      expect(resolver.data.place_id).to be_nil
-      expect(resolver.data.address_id).to be_nil
-      expect(resolver.data.organiser_id).to eq(calendar.organiser_id)
+      expect(resolver.resolved_attributes).to include(place_id: nil, address_id: nil, organiser_id: calendar.organiser_id)
     end
 
     it "no location strategy does not set place or address" do
@@ -74,11 +72,25 @@ RSpec.describe CalendarImporter::EventResolver do
       notices = []
 
       resolver = described_class.new(ics_event_data, calendar, notices, start_date)
-      resolver.determine_location_for_strategy
+      resolver.resolve
 
-      expect(resolver.data.place_id).to be_nil
-      expect(resolver.data.address_id).to be_nil
-      expect(resolver.data.organiser_id).to eq(calendar.organiser_id)
+      expect(resolver.resolved_attributes).to include(place_id: nil, address_id: nil, organiser_id: calendar.organiser_id)
+    end
+
+    it "clears a saved row's place and address when a re-import resolves none", :aggregate_failures do
+      calendar = make_calendar_for_strategy("place")
+      resolver = described_class.new(ics_event_data, calendar, [], start_date)
+      resolver.resolve
+      resolver.save_all_occurences
+      expect(calendar.events.sole).to have_attributes(place_id: calendar.place.id, address_id: calendar.place.address_id)
+      expect(calendar.events.sole.address_id).to be_present
+
+      calendar.strategy = "no_location"
+      resolver = described_class.new(ics_event_data, calendar, [], start_date)
+      resolver.resolve
+      resolver.save_all_occurences
+
+      expect(calendar.events.sole.reload).to have_attributes(place_id: nil, address_id: nil)
     end
   end
 
@@ -92,11 +104,11 @@ RSpec.describe CalendarImporter::EventResolver do
         calendar = make_calendar_for_strategy("event")
 
         resolver = described_class.new(ics_event_data, calendar, [], start_date)
-        resolver.determine_online_location
+        resolver.resolve
 
-        expect(resolver.data.online_address_id).to be_present
+        expect(resolver.resolved_attributes[:online_address_id]).to be_present
 
-        online_address = OnlineAddress.find(resolver.data.online_address_id)
+        online_address = OnlineAddress.find(resolver.resolved_attributes[:online_address_id])
         expect(online_address.url).to eq(meet_link)
       end
 
@@ -108,11 +120,11 @@ RSpec.describe CalendarImporter::EventResolver do
         calendar = make_calendar_for_strategy("place")
 
         resolver = described_class.new(ics_event_data, calendar, [], start_date)
-        resolver.determine_online_location
+        resolver.resolve
 
-        expect(resolver.data.online_address_id).to be_present
+        expect(resolver.resolved_attributes[:online_address_id]).to be_present
 
-        online_address = OnlineAddress.find(resolver.data.online_address_id)
+        online_address = OnlineAddress.find(resolver.resolved_attributes[:online_address_id])
         expect(online_address.url).to eq(jitsi_link)
       end
 
@@ -124,11 +136,11 @@ RSpec.describe CalendarImporter::EventResolver do
         calendar = make_calendar_for_strategy("event")
 
         resolver = described_class.new(ics_event_data, calendar, [], start_date)
-        resolver.determine_online_location
+        resolver.resolve
 
-        expect(resolver.data.online_address_id).to be_present
+        expect(resolver.resolved_attributes[:online_address_id]).to be_present
 
-        online_address = OnlineAddress.find(resolver.data.online_address_id)
+        online_address = OnlineAddress.find(resolver.resolved_attributes[:online_address_id])
         expect(online_address.url).to eq(meet_link)
       end
 
@@ -140,12 +152,26 @@ RSpec.describe CalendarImporter::EventResolver do
         calendar = make_calendar_for_strategy("event")
 
         resolver = described_class.new(ics_event_data, calendar, [], start_date)
-        resolver.determine_online_location
+        resolver.resolve
 
-        expect(resolver.data.online_address_id).to be_present
+        expect(resolver.resolved_attributes[:online_address_id]).to be_present
 
-        online_address = OnlineAddress.find(resolver.data.online_address_id)
+        online_address = OnlineAddress.find(resolver.resolved_attributes[:online_address_id])
         expect(online_address.url).to eq(zoom_link)
+      end
+
+      it "creates the online address even when the location can't be resolved", :aggregate_failures do
+        meet_link = "https://meet.google.com/bbb-bbbb-bbb"
+        fake_ics_event[:custom_properties] = { "x_google_conference" => [meet_link] }
+        calendar = build(:calendar, strategy: "room_number", place: nil)
+        calendar.place = nil
+
+        resolver = described_class.new(ics_event_data, calendar, [], start_date)
+
+        expect { resolver.resolve }
+          .to raise_error(CalendarImporter::LocationResolver::Problem)
+          .and change(OnlineAddress, :count).by(1)
+        expect(OnlineAddress.last.url).to eq(meet_link)
       end
     end
 
@@ -167,11 +193,11 @@ RSpec.describe CalendarImporter::EventResolver do
         calendar = make_calendar_for_strategy("event")
 
         resolver = described_class.new(event_data, calendar, [], start_date)
-        resolver.determine_online_location
+        resolver.resolve
 
-        expect(resolver.data.online_address_id).to be_present
+        expect(resolver.resolved_attributes[:online_address_id]).to be_present
 
-        online_address = OnlineAddress.find(resolver.data.online_address_id)
+        online_address = OnlineAddress.find(resolver.resolved_attributes[:online_address_id])
         expect(online_address.url).to eq(eventbrite_link)
       end
     end
@@ -210,7 +236,7 @@ RSpec.describe CalendarImporter::EventResolver do
       event_data = make_recurring_ics_event(uid: "recurring-123", occurrences:)
 
       resolver = described_class.new(event_data, calendar, [], occ1_start)
-      resolver.determine_location_for_strategy
+      resolver.resolve
       resolver.save_all_occurences
 
       expect(calendar.events.where(uid: "recurring-123").count).to eq(2)
@@ -218,7 +244,7 @@ RSpec.describe CalendarImporter::EventResolver do
       # Re-import identical data
       event_data2 = make_recurring_ics_event(uid: "recurring-123", occurrences:)
       resolver2 = described_class.new(event_data2, calendar, [], occ1_start)
-      resolver2.determine_location_for_strategy
+      resolver2.resolve
       resolver2.save_all_occurences
 
       expect(calendar.events.where(uid: "recurring-123").count).to eq(2)
@@ -236,7 +262,7 @@ RSpec.describe CalendarImporter::EventResolver do
       event_data = make_recurring_ics_event(uid: "recurring-456", occurrences:)
 
       resolver = described_class.new(event_data, calendar, [], occ1_start)
-      resolver.determine_location_for_strategy
+      resolver.resolve
       resolver.save_all_occurences
 
       expect(calendar.events.where(uid: "recurring-456").count).to eq(2)
@@ -245,7 +271,7 @@ RSpec.describe CalendarImporter::EventResolver do
       new_occurrences = [[occ1_start, occ1_end]]
       event_data2 = make_recurring_ics_event(uid: "recurring-456", occurrences: new_occurrences)
       resolver2 = described_class.new(event_data2, calendar, [], occ1_start)
-      resolver2.determine_location_for_strategy
+      resolver2.resolve
       resolver2.save_all_occurences
 
       expect(calendar.events.where(uid: "recurring-456").count).to eq(1)
@@ -267,7 +293,7 @@ RSpec.describe CalendarImporter::EventResolver do
       event_data = make_recurring_ics_event(uid: "recurring-789", occurrences:)
 
       resolver = described_class.new(event_data, calendar, [], occ1_start)
-      resolver.determine_location_for_strategy
+      resolver.resolve
       resolver.save_all_occurences
 
       expect(calendar.events.where(uid: "recurring-789").count).to eq(2)
@@ -279,7 +305,7 @@ RSpec.describe CalendarImporter::EventResolver do
       new_occurrences = [[occ1_start, occ1_end], [occ2_start, new_occ2_end]]
       event_data2 = make_recurring_ics_event(uid: "recurring-789", occurrences: new_occurrences)
       resolver2 = described_class.new(event_data2, calendar, [], occ1_start)
-      resolver2.determine_location_for_strategy
+      resolver2.resolve
       resolver2.save_all_occurences
 
       events = calendar.events.where(uid: "recurring-789").order(:dtstart)
@@ -318,7 +344,7 @@ RSpec.describe CalendarImporter::EventResolver do
       allow(event_data).to receive(:uid).and_return("dup-123")
 
       resolver = described_class.new(event_data, calendar, [], start_date)
-      resolver.determine_location_for_strategy
+      resolver.resolve
       resolver.save_all_occurences
 
       expect(calendar.events.where(uid: "dup-123").count).to eq(1)
@@ -336,7 +362,7 @@ RSpec.describe CalendarImporter::EventResolver do
       notices = []
 
       resolver = described_class.new(ics_event_data, calendar, notices, start_date)
-      resolver.determine_location_for_strategy
+      resolver.resolve
       resolver.save_all_occurences
 
       expect(calendar.events.where(uid: ics_event_data.uid).count).to eq(1)
@@ -350,7 +376,7 @@ RSpec.describe CalendarImporter::EventResolver do
       notices = []
 
       resolver = described_class.new(ics_event_data, calendar, notices, start_date)
-      resolver.determine_location_for_strategy
+      resolver.resolve
       resolver.save_all_occurences
 
       expect(notices).to be_empty
@@ -364,7 +390,7 @@ RSpec.describe CalendarImporter::EventResolver do
       event.summary = ""
 
       resolver = described_class.new(ics_event_data, calendar, notices, start_date)
-      resolver.determine_location_for_strategy
+      resolver.resolve
       resolver.save_all_occurences
 
       expect(notices).to eq(["Summary can't be blank"])
@@ -377,9 +403,9 @@ RSpec.describe CalendarImporter::EventResolver do
       notices = []
 
       resolver = described_class.new(ics_event_data, calendar, notices, start_date)
-      _place, address = resolver.determine_location_for_strategy
+      resolver.resolve
 
-      expect(address).to be_nil
+      expect(resolver.resolved_attributes[:address_id]).to be_nil
     end
   end
 end
