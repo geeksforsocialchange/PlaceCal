@@ -22,8 +22,7 @@ class CalendarImporter::CalendarImporter
     CalendarImporter::Parsers::LdJson
   ].freeze
 
-  # @param key [String, nil]
-  # @return [Class, nil] the parser whose KEY is key
+  # @return [Class, nil]
   def self.parser_for_key(key)
     PARSERS.find { |parser| parser::KEY == key }
   end
@@ -42,12 +41,12 @@ class CalendarImporter::CalendarImporter
     @calendar = calendar
   end
 
-  # @return [Class, nil] the parser for the calendar, or nil when none is found
+  # Auto-detect can fetch the page and raise InaccessibleFeed; call check_source! first to validate the URL.
+  # @return [Class, nil]
   def parser
     @parser ||= parser_skipping_source_check || parser_for_mode
   end
 
-  # Checks the source URL is valid, reachable and has a parser.
   # @raise [UnsupportedFeed] when the URL is blank or invalid, or no parser is found
   # @raise [InaccessibleFeed] when the source can't be fetched
   def check_source!
