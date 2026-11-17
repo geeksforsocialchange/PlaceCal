@@ -15,7 +15,8 @@ class OnlineAddress < ApplicationRecord
   extend Enumerize
 
   # ==== Constants ====
-  # Hosts the importer treats as direct links, in the order it searches descriptions for them.
+  # Known online hosts, in the order the importer searches descriptions for them.
+  # Only meeting hosts mark an imported event online, as stream hosts also carry profile and video links.
   SERVICES = {
     jitsi: { domains: %w[meet.jit.si], kind: :meeting },
     google_meet: { domains: %w[meet.google.com], kind: :meeting },
@@ -35,7 +36,7 @@ class OnlineAddress < ApplicationRecord
     hopin: { domains: %w[hopin.com], kind: :meeting }
   }.freeze
 
-  DOMAINS = SERVICES.values.flat_map { it[:domains] }.freeze
+  MEETING_DOMAINS = SERVICES.values.select { it[:kind] == :meeting }.flat_map { it[:domains] }.freeze
 
   # ==== Enums / Enumerize ====
   enumerize :link_type,
@@ -58,6 +59,8 @@ class OnlineAddress < ApplicationRecord
   rescue URI::InvalidURIError
     nil
   end
+
+  def self.meeting?(url) = SERVICES.dig(service_for(url), :kind) == :meeting
 
   # ==== Instance methods ====
   def service = self.class.service_for(url)

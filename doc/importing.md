@@ -64,10 +64,12 @@ Location text becomes an address only with a street line and a full UK postcode 
 
 Each event class's `online_event_id` decides whether an event is online, for every strategy.
 
-- **iCal** ([ics_event.rb](../app/jobs/calendar_importer/events/ics_event.rb), also used by Meetup) checks, in order: the custom properties in `ONLINE_MEETING_PROPERTIES` (Google, Microsoft Teams and Zoom meeting links), a location that is an http(s) URL, then a description link on a domain in `OnlineAddress::SERVICES`, taking the domains in that list's order ([online_address.rb](../app/models/online_address.rb)). Links on those domains are `direct`; others are `indirect`.
+- **iCal** ([ics_event.rb](../app/jobs/calendar_importer/events/ics_event.rb), also used by Meetup) checks, in order: the custom properties in `ONLINE_MEETING_PROPERTIES` (Google, Microsoft Teams and Zoom meeting links), a LOCATION that is a link to a meeting host, then the first meeting link in the description. Meeting hosts are the `:meeting` services in `OnlineAddress::SERVICES` ([online_address.rb](../app/models/online_address.rb)), such as Zoom, Google Meet, Jitsi and Microsoft Teams. These links are stored as `direct`.
 - **Eventbrite** ([eventbrite_event.rb](../app/jobs/calendar_importer/events/eventbrite_event.rb)) uses the `online_event` flag and links to the Eventbrite page as `indirect`.
 
 Other sources are never marked online.
+
+Links to stream and social hosts (YouTube, Facebook, Instagram, LinkedIn and the like) don't mark an event online. A LOCATION that is a link to anything but a meeting host is the event's webpage link when it has no URL property.
 
 ## Parsers
 
