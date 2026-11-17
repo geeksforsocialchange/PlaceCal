@@ -273,9 +273,7 @@ class Calendar < ApplicationRecord
     return unless source_changed?
     return if errors[:source].any?
 
-    # The calendar importer will raise an exception if the source
-    #   URL has a problem
-    CalendarImporter::CalendarImporter.new(self)
+    CalendarImporter::CalendarImporter.new(self).check_source!
   rescue CalendarImporter::Exceptions::InaccessibleFeed => e
     errors.add :source, "The source URL returned an invalid code (#{e})"
   rescue CalendarImporter::Exceptions::UnsupportedFeed

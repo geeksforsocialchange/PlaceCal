@@ -12,11 +12,8 @@ module CalendarsHelper
   end
 
   def options_for_importer
-    CalendarImporter::CalendarImporter::PARSERS
-      .dup
-      .keep_if { |parser| parser::PUBLIC }
-      .map { |parser| [parser::NAME, parser::KEY] }
-      .prepend(['(Auto detect)', 'auto'])
+    parsers = CalendarImporter::CalendarImporter.public_parsers
+    parsers.map { |parser| [parser::NAME, parser::KEY] }.prepend(['(Auto detect)', 'auto'])
   end
 
   def source_test_labels
@@ -35,9 +32,7 @@ module CalendarsHelper
   end
 
   def calendar_import_sources
-    CalendarImporter::CalendarImporter::PARSERS
-      .select { |parser| parser::PUBLIC }
-      .sort_by { |parser| parser::NAME }
-      .map { |parser| [parser::NAME, parser::DOMAINS] }
+    parsers = CalendarImporter::CalendarImporter.public_parsers
+    parsers.sort_by { |parser| parser::NAME }.map { |parser| [parser::NAME, parser::DOMAINS] }
   end
 end

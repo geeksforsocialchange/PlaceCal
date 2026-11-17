@@ -22,50 +22,65 @@ class CalendarImporter::CalendarImporter
     CalendarImporter::Parsers::LdJson
   ].freeze
 
+  # @return [Class, nil]
+  def self.parser_for_key(key)
+    PARSERS.find { |parser| parser::KEY == key }
+  end
+
+  # @return [Array<Class>] parsers that read an API with the calendar's token
+  def self.api_token_parsers
+    PARSERS.select(&:requires_api_token?)
+  end
+
+  # @return [Array<Class>] parsers offered to admins, in PARSERS order
+  def self.public_parsers
+    PARSERS.select { |parser| parser::PUBLIC }
+  end
+
   def initialize(calendar)
     @calendar = calendar
-
-    validate_feed!
   end
 
+  # Auto-detect can fetch the page and raise InaccessibleFeed; call check_source! first to validate the URL.
+  # @return [Class, nil]
   def parser
-    @parser ||=
-      # A blank mode means auto-detect
-      if @calendar.importer_mode.blank? || @calendar.importer_mode == 'auto'
-        PARSERS.find { |parser| parser.handles_url?(@calendar) }
-
-      else
-        importer_mode = patch_legacy_modes(@calendar)
-        PARSERS.find { |parser| parser::KEY == importer_mode }
-      end
+    @parser ||= parser_skipping_source_check || parser_for_mode
   end
 
-  private
-
-  # This validates the feed URL to ensure that we do support it, and that it's live on the internet
-  # As a side effect, it runs CalendarImporter#parser, which sets self.parser to one of the values above
-  # This ensures that self.parser is set during calendar_importer_task
-  def validate_feed!
-    url = @calendar.source.to_s.strip
+  # @raise [UnsupportedFeed] when the URL is blank or invalid, or no parser is found
+  # @raise [InaccessibleFeed] when the source can't be fetched
+  def check_source!
     raise UnsupportedFeed, 'The provided URL is missing' if url.blank?
     raise UnsupportedFeed, 'The provided URL is not a valid URL' unless Validation::CALENDAR_URL_REGEX.match?(url)
-
-    # API-based parsers validate connectivity through their own API calls,
-    # and their source URLs may be behind Cloudflare challenges.
-    # Check by URL pattern to avoid triggering LdJson's HTTP-based handles_url?.
-    api_parser = PARSERS.find do |p|
-      p.skips_source_check? &&
-        p.respond_to?(:allowlist_pattern) &&
-        url.match?(p.allowlist_pattern)
-    end
-    if api_parser
-      @parser = api_parser
-      return
-    end
+    return if parser_skipping_source_check
 
     CalendarImporter::Parsers::Base.read_http_source url
 
     raise UnsupportedFeed, 'The provided URL is not supported' if parser.blank?
+  end
+
+  private
+
+  def url
+    @calendar.source.to_s.strip
+  end
+
+  # By URL pattern alone: these sources may sit behind Cloudflare challenges, and detection can fetch the page
+  def parser_skipping_source_check
+    PARSERS.find do |parser|
+      parser.skips_source_check? &&
+        parser.respond_to?(:allowlist_pattern) &&
+        url.match?(parser.allowlist_pattern)
+    end
+  end
+
+  def parser_for_mode
+    # A blank mode means auto-detect
+    if @calendar.importer_mode.blank? || @calendar.importer_mode == 'auto'
+      PARSERS.find { |parser| parser.handles_url?(@calendar) }
+    else
+      self.class.parser_for_key(patch_legacy_modes(@calendar))
+    end
   end
 
   def patch_legacy_modes(calendar)
