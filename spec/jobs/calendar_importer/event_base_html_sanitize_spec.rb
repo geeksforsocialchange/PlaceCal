@@ -23,6 +23,25 @@ RSpec.describe CalendarImporter::Events::Base do
       expect(event.html_sanitize(input, as_plaintext: true).strip).to eq("Film night")
     end
 
+    it "keeps indented markup and image links out of the text, as in a Squarespace gallery" do
+      input = <<~HTML
+        <p><a href="https://example.com/tickets">BOOK YOUR TICKET</a></p>
+        <div class="sqs-gallery">
+                    <a href="https://example.com/1.jpg">
+                      <img src="https://example.com/1.jpg">
+                    </a>
+                    <a href="https://example.com/2.jpg"><img src="https://example.com/2.jpg"></a>
+                    <p><em>Photographs taken by a volunteer.</em></p>
+        </div>
+      HTML
+
+      output = event.html_sanitize(input)
+
+      expect(output.lines).to all(satisfy { |line| !line.start_with?("    ") })
+      expect(output).not_to include("<a>", "</a>", "1.jpg", "2.jpg")
+      expect(output).to include("[BOOK YOUR TICKET]", "*Photographs taken by a volunteer.*")
+    end
+
     it "returns plain text if input" do
       input = "This is plain text"
       output = event.html_sanitize(input)
