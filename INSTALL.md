@@ -142,7 +142,7 @@ kamal rollback -d production
 
 ## Recurring jobs
 
-Recurring tasks (calendar import scanning, deduplication, counter refresh, address cleanup) run as self-scheduling delayed jobs inside the `job_worker` container. They are seeded on boot by `config/initializers/recurring_jobs.rb` and re-enqueue themselves after each run.
+Background jobs run on Solid Queue in the `job_worker` container (`bin/jobs --mode async`). Recurring tasks (the hourly calendar import scan and daily maintenance) are scheduled in `config/recurring.yml`. Root users can see the queue, recurring tasks and failed jobs at `/jobs` on the admin site.
 
 ## Syncing data between environments
 

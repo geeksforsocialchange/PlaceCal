@@ -52,8 +52,8 @@ RSpec.describe "Admin Accessibility", :slow, type: :system do
     "partnerships index" => "/partnerships",
     "tags index" => "/tags",
     "articles index" => "/articles",
-    "supporters index" => "/supporters",
-    "jobs" => "/jobs"
+    "supporters index" => "/supporters"
+    # /jobs is Mission Control Jobs' own interface, not ours
   }.each do |name, path|
     it "#{name} has no accessibility violations" do
       visit admin_url(path)

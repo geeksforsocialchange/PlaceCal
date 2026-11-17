@@ -6,14 +6,14 @@ RSpec.describe RecurringMaintenanceJob, type: :job do
   it "only tells search engines about changes from production" do
     allow(IndexNowSubmission).to receive(:new).and_call_original
 
-    described_class.perform_now
+    described_class.new.perform
     expect(IndexNowSubmission).not_to have_received(:new)
 
     allow(Rails.env).to receive(:production?).and_return(true)
     submission = instance_double(IndexNowSubmission, call: nil)
     allow(IndexNowSubmission).to receive(:new).and_return(submission)
 
-    described_class.perform_now
+    described_class.new.perform
     expect(submission).to have_received(:call)
     expect(IndexNowSubmission).to have_received(:new).with(since: be_within(1.minute).of(2.days.ago))
   end
@@ -22,7 +22,7 @@ RSpec.describe RecurringMaintenanceJob, type: :job do
     old = PaperTrail::Version.create!(item_type: "Event", item_id: 1, event: "update", created_at: 2.years.ago)
     recent = PaperTrail::Version.create!(item_type: "Event", item_id: 2, event: "update", created_at: 1.day.ago)
 
-    described_class.perform_now
+    described_class.new.perform
 
     expect(PaperTrail::Version.exists?(old.id)).to be(false)
     expect(PaperTrail::Version.exists?(recent.id)).to be(true)

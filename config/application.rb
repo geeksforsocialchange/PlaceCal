@@ -27,6 +27,7 @@ module PlaceCal
     config.load_defaults 8.1
 
     config.active_job.queue_adapter = :solid_queue
+    config.action_mailer.delivery_job = 'MailDeliveryJob'
     config.mission_control.jobs.adapters = [:solid_queue]
     config.mission_control.jobs.base_controller_class = 'Admin::JobDashboardController'
     config.mission_control.jobs.http_basic_auth_enabled = false

@@ -7,7 +7,7 @@ RSpec.describe RecurringCalendarScanJob, type: :job do
     allow(Calendar).to receive(:reset_stuck_imports!)
     allow(Calendar).to receive(:queue_all_for_import!)
 
-    described_class.perform_now
+    described_class.new.perform
 
     expect(Calendar).to have_received(:reset_stuck_imports!).ordered
     expect(Calendar).to have_received(:queue_all_for_import!).ordered
