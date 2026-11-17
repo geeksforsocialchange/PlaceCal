@@ -185,8 +185,9 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
         private?: false,
         no_occurrences?: false,
         uid: "event@example.com",
-        data: instance_double(CalendarImporter::Events::IcsEvent, summary: "Event")
+        data: instance_double(CalendarImporter::Events::IcsEvent)
       )
+      allow(parsed_event.data).to receive(:summary).and_raise(NoMethodError, "malformed source event")
       allow(parsed_event).to receive(:resolve)
         .and_raise(CalendarImporter::LocationResolver::Problem, "N/A")
 
