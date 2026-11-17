@@ -50,7 +50,6 @@ class Views::Sites::Events::Show < Views::Base
         display_context: :page,
         event:,
         site_tagline: site.tagline,
-        back: [t('events.show.back'), events_path],
         organiser_byline: !site.core_theme?
       )
       render_event_details

@@ -31,7 +31,7 @@ class Sites::EventPreview < Lookbook::Preview
 
   # @label Page with every detail
   def full_page
-    render Components::Sites::Event.new(display_context: :page, event: PreviewSupport.sample_full_event, back: ["All events", "/events"])
+    render Components::Sites::Event.new(display_context: :page, event: PreviewSupport.sample_full_event)
   end
 
   # @label Repeating event
