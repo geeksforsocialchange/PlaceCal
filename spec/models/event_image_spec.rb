@@ -93,6 +93,24 @@ RSpec.describe Event, "image" do
     expect(File.exist?(old_path)).to be(false)
   end
 
+  it "saves the event without an image, to try again next import, when caching the download fails" do
+    stub_image(poster_url)
+    allow_any_instance_of(EventImageUploader).to receive(:cache!).and_raise(Errno::EACCES, "uploads/tmp") # rubocop:disable RSpec/AnyInstance
+
+    expect(event.update(image_source_url: poster_url)).to be(true)
+    expect(event.reload).to have_attributes(image_source_url: nil)
+    expect(event.image).to be_blank
+  end
+
+  it "keeps the event, without an image, when writing the file fails after the download" do
+    stub_image(poster_url)
+    allow_any_instance_of(EventImageUploader).to receive(:store!).and_raise(Errno::ENOSPC) # rubocop:disable RSpec/AnyInstance
+
+    expect(event.update(image_source_url: poster_url)).to be(true)
+    expect(event.reload).to have_attributes(image_source_url: nil, summary: event.summary)
+    expect(event.read_attribute(:image)).to be_nil
+  end
+
   it "deletes the image with the event" do
     stub_image(poster_url)
     event.update!(image_source_url: poster_url)
