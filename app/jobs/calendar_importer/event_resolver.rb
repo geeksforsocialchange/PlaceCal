@@ -50,31 +50,19 @@ class CalendarImporter::EventResolver
     }
   end
 
+  # @return [CalendarImporter::OccurrenceSync::Result]
   def save_all_occurrences
-    calendar_events = calendar.events.where(uid: data.uid)
-    remove_stale_occurrences(calendar_events)
+    result = CalendarImporter::OccurrenceSync.new(
+      calendar:,
+      uid:,
+      from_date: @from_date,
+      occurrences:,
+      series: series?,
+      attributes_for: ->(occurrence) { data.attributes_for(occurrence).merge(resolved_attributes) }
+    ).call
 
-    occurrences.each do |occurrence|
-      event_time = { dtstart: occurrence.start_time, dtend: occurrence.end_time }
-      event = series? ? calendar_events.find_by(event_time) : one_off_event(calendar_events)
-
-      # Clean up any remaining duplicates for this specific occurrence
-      calendar_events.where(event_time).where.not(id: event.id).delete_all if event&.persisted?
-
-      # Not built through calendar.events, where an invalid event would fail the calendar's own save
-      event ||= Event.new(calendar_id: calendar.id)
-
-      event_time[:are_spaces_available] = occurrence.status if occurrence.respond_to?(:status)
-
-      attributes = data.attributes_for(occurrence).merge(resolved_attributes).merge(event_time)
-      begin
-        notices << event.errors.full_messages.join(', ') unless event.update(attributes)
-      rescue ActiveRecord::RecordNotUnique
-        # Duplicate detected by DB constraint: find and update existing instead
-        existing = calendar.events.find_by!(uid: data.uid, dtstart: event_time[:dtstart], dtend: event_time[:dtend])
-        notices << existing.errors.full_messages.join(', ') unless existing.update(attributes)
-      end
-    end
+    result.failures.each { |failure| notices << failure.errors.full_messages.join(', ') }
+    result
   end
 
   private
@@ -86,24 +74,5 @@ class CalendarImporter::EventResolver
   # RDATE gives an event several dates without an RRULE
   def series?
     data.recurring_event? || occurrences.many?
-  end
-
-  # Past rows are history, and occurrences are only generated from the import's from_date
-  def remove_stale_occurrences(calendar_events)
-    upcoming = calendar_events.where(dtstart: @from_date..)
-    stale = if series?
-              upcoming.without_matching_times(occurrences.map { |o| [o.start_time, o.end_time] })
-            else
-              upcoming.where.not(id: one_off_event(calendar_events))
-            end
-    stale.destroy_all
-  end
-
-  # Reuses an existing row so a rescheduled one-off keeps its id
-  def one_off_event(calendar_events)
-    occurrence = occurrences.first
-    @one_off_event ||= calendar_events.find_by(dtstart: occurrence.start_time, dtend: occurrence.end_time) ||
-                       calendar_events.where(dtstart: @from_date..).order(:dtstart).first ||
-                       calendar_events.order(:dtstart).first
   end
 end
