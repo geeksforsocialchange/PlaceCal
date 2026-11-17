@@ -92,7 +92,7 @@ class CalendarImporter::LocationResolver
     return unless event_data.location?
 
     address, reason = Address.build_from_components_with_reason(event_location_components, event_data.postcode)
-    # A location that is only a link is an online event's meeting address, not an unreadable street address
+    # A location that is only a link is a meeting or a webpage, not an unreadable street address
     @unreadable_address_reason = reason unless event_data.location.to_s.strip.match?(%r{\Ahttps?://\S+\z}i)
     address
   end

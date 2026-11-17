@@ -48,12 +48,20 @@ RSpec.describe OnlineAddress do
     end
   end
 
-  it "keeps the importer's domain list and its search order" do
-    expect(described_class::DOMAINS).to eq(%w[
-                                             meet.jit.si meet.google.com zoom.us teams.microsoft.com teams.live.com webex.com gotomeet.me gotomeeting.com
-                                             discord.gg discord.com youtube.com youtu.be twitch.tv vimeo.com facebook.com fb.watch instagram.com linkedin.com
-                                             crowdcast.io streamyard.com hopin.com
-                                           ])
+  it "keeps the importer's meeting domains and their search order" do
+    expect(described_class::MEETING_DOMAINS).to eq(%w[
+                                                     meet.jit.si meet.google.com zoom.us teams.microsoft.com teams.live.com webex.com gotomeet.me gotomeeting.com
+                                                     discord.gg discord.com hopin.com
+                                                   ])
+  end
+
+  describe ".meeting?" do
+    it "is true only for a meeting host" do
+      expect(described_class.meeting?("https://us02web.zoom.us/j/123")).to be(true)
+      expect(described_class.meeting?("https://www.youtube.com/live/abc")).to be(false)
+      expect(described_class.meeting?("https://tickets.example.com/?via=zoom.us")).to be(false)
+      expect(described_class.meeting?(nil)).to be(false)
+    end
   end
 
   it "has a display name for every service" do

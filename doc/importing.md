@@ -51,9 +51,11 @@ When the default place has no address (a partner with only a service area), the 
 
 `OnlineDetector` checks event data for online meeting links:
 
-- Google Meet custom properties (`x_google_conference`)
-- URLs in description matching: Zoom, Google Meet, Jitsi, Microsoft Teams
+- Meeting custom properties (`x_google_conference`, Microsoft Teams and Zoom)
+- A LOCATION that is a link to a meeting host, or the first meeting link in the description (meeting hosts are the `:meeting` services in `OnlineAddress::SERVICES`, such as Zoom, Google Meet, Jitsi and Microsoft Teams)
 - Eventbrite's `online_event` flag
+
+Links to stream and social hosts (YouTube, Facebook, Instagram, LinkedIn and the like) don't mark an event online. A LOCATION that is a link to anything but a meeting host is the event's webpage link when it has no URL property.
 
 ## Parsers
 
