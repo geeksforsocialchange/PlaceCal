@@ -24,7 +24,7 @@ class Views::Admin::Jobs::Index < Views::Admin::Base
     div(data_controller: 'live-counts', data_live_counts_url_value: admin_jobs_path(format: :json),
         data_action: 'admin-table:refreshed->live-counts#update') do
       render_calendars
-      turbo_frame_tag('failed_jobs_frame', data: { live_counts_target: 'frame' }) { render_failed_jobs if failed_jobs.any? }
+      turbo_frame_tag('failed_jobs_frame', target: '_top', data: { live_counts_target: 'frame' }) { render_failed_jobs if failed_jobs.any? }
     end
   end
 

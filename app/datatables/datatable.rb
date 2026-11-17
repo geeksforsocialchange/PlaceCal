@@ -94,7 +94,7 @@ class Datatable < AjaxDatatablesRails::ActiveRecord
     return render_relative_time(nil) unless datetime
 
     label = ERB::Util.html_escape(I18n.t('admin.time.ago', time: @view.time_ago_in_words(datetime)))
-    %(<time class="text-gray-500 text-sm whitespace-nowrap" datetime="#{datetime.iso8601}" title="#{datetime.strftime('%d %b %Y at %H:%M')}">#{label}</time>).html_safe # rubocop:disable Rails/OutputSafety
+    %(<time class="text-gray-500 text-sm whitespace-nowrap" datetime="#{datetime.iso8601}" title="#{I18n.l(datetime, format: :long)}">#{label}</time>).html_safe # rubocop:disable Rails/OutputSafety
   end
 
   INDICATOR_COLOURS = {

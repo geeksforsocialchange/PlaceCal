@@ -64,9 +64,15 @@ export default class extends Controller {
 		clearInterval(this.refreshTimer);
 	}
 
-	// Reloads the current page in place, keeping filters, sort and page; skipped while the tab is hidden
+	// Reloads the current page in place, keeping filters, sort and page. Skipped while the tab is hidden,
+	// a load is under way, or focus is in the table, which a reload would drop
 	async refresh() {
-		if (document.hidden) return;
+		if (
+			document.hidden ||
+			this.loading ||
+			this.element.contains(document.activeElement)
+		)
+			return;
 		if (await this.loadData({ silent: true })) this.dispatch("refreshed");
 	}
 
@@ -539,6 +545,7 @@ export default class extends Controller {
 	// Returns whether the rows were updated; a reply overtaken by a newer request is dropped
 	async loadData({ silent = false } = {}) {
 		const request = (this.latestRequest = (this.latestRequest || 0) + 1);
+		this.loading = true;
 		const params = new URLSearchParams({
 			draw: Date.now(),
 			start: this.currentPage * this.pageLengthValue,
@@ -596,8 +603,11 @@ export default class extends Controller {
 			return true;
 		} catch (error) {
 			console.error("Error loading table data:", error);
+			if (request !== this.latestRequest) return false;
 			if (!silent) this.showError();
 			return false;
+		} finally {
+			if (request === this.latestRequest) this.loading = false;
 		}
 	}
 

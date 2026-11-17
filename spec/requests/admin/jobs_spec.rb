@@ -42,7 +42,7 @@ RSpec.describe "Admin background jobs", type: :request do
 
       expect(html.at_css("[data-controller='admin-table']")["data-admin-table-refresh-interval-value"]).to eq(Views::Admin::Jobs::Index::REFRESH_SECONDS.to_s)
       expect(html.at_css("[data-controller='live-counts']")["data-live-counts-url-value"]).to eq(admin_jobs_path(format: :json))
-      expect(html.at_css("turbo-frame#failed_jobs_frame[data-live-counts-target='frame']")).to be_present
+      expect(html.at_css("turbo-frame#failed_jobs_frame[data-live-counts-target='frame'][target='_top']")).to be_present
       expect(html.css("[data-live-count]").map { it["data-live-count"] }).to include("jobs.failed", "state.problem", "state.bad_source")
     end
 
