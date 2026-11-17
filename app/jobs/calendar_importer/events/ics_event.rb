@@ -13,8 +13,6 @@ module CalendarImporter::Events
       x_zoom_meeting_url
     ].freeze
 
-    Occurrence = Struct.new(:start_time, :end_time, :override)
-
     OVERRIDABLE_FIELDS = %i[summary description publisher_url].freeze
 
     def initialize(event, start_date, end_date, overrides: [])
@@ -53,17 +51,21 @@ module CalendarImporter::Events
     end
 
     def occurrences_between(from, to)
-      return @event.occurrences_between(from, to) if overrides.empty?
+      occurrences = @event.occurrences_between(from, to).map do |occurrence|
+        Occurrence.new(start_time: occurrence.start_time, end_time: occurrence.end_time)
+      end
+      return occurrences if overrides.empty?
 
       overridden = overrides.map(&:recurrence_start)
       window = Icalendar::Recurrence::TimeUtil.to_time(from)..Icalendar::Recurrence::TimeUtil.to_time(to)
 
-      @event.occurrences_between(from, to).reject { |occurrence| overridden.include?(occurrence.start_time.to_i) } +
+      occurrences.reject { |occurrence| overridden.include?(occurrence.start_time.to_i) } +
         overrides.reject(&:hidden?).map(&:overriding_occurrence).select { |occurrence| window.cover?(occurrence.start_time) }
     end
 
+    # iCal has no availability, so are_spaces_available is left as it is
     def attributes_for(occurrence)
-      return attributes unless occurrence.respond_to?(:override)
+      return attributes unless occurrence.override
 
       attributes.merge(occurrence.override.attributes.slice(*OVERRIDABLE_FIELDS).compact_blank)
     end
@@ -77,7 +79,7 @@ module CalendarImporter::Events
     end
 
     def overriding_occurrence
-      Occurrence.new(@event.schedule.start_time.utc, @event.schedule.end_time.utc, self)
+      Occurrence.new(start_time: @event.schedule.start_time.utc, end_time: @event.schedule.end_time.utc, override: self)
     end
 
     # The iCal URL property links to the event's webpage, not a meeting; so does a LOCATION

@@ -30,7 +30,6 @@ class CalendarImporter::OccurrenceSync
       event ||= Event.new(calendar_id: @calendar.id)
 
       attributes = @attributes_for.call(occurrence).merge(event_time)
-      attributes[:are_spaces_available] = occurrence.status if occurrence.respond_to?(:status)
       begin
         save(event, attributes)
       rescue ActiveRecord::RecordNotUnique

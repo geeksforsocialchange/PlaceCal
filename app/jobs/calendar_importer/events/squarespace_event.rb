@@ -29,10 +29,6 @@ module CalendarImporter::Events
       Time.zone.at(@event['endDate'] / 1000)
     end
 
-    def occurrences_between(*)
-      [Dates.new(dtstart, dtend)]
-    end
-
     def location
       venue = @event['location']
       return nil unless venue.is_a?(Hash)

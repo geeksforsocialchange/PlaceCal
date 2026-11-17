@@ -2,10 +2,6 @@
 
 module CalendarImporter::Events
   class EventbriteEvent < Base
-    def initialize(event)
-      @event = event
-    end
-
     def uid
       @event['id']
     end
@@ -59,13 +55,6 @@ module CalendarImporter::Events
       DateTime.parse(@event['end']['utc'])
     rescue StandardError
       nil
-    end
-
-    def occurrences_between(*)
-      # TODO: Expand when multi-day events supported
-      @occurrences = []
-      @occurrences << Dates.new(dtstart, dtend)
-      @occurrences
     end
 
     def online_event_id

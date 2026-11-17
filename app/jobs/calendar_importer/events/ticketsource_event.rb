@@ -39,10 +39,6 @@ module CalendarImporter::Events
       venue.values_at(*VENUE_FIELDS).compact_blank.join(', ').presence
     end
 
-    def occurrences_between(*)
-      [Dates.new(dtstart, dtend)]
-    end
-
     private
 
     def parse_time(value)

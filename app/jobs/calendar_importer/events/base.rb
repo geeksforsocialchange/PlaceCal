@@ -4,7 +4,8 @@ module CalendarImporter::Events
   class Base
     ALLOWED_TAGS = %w[p a strong b em i ul ol li blockquote h3 h4 h5 h6 br].freeze
 
-    Dates = Struct.new(:start_time, :end_time, :status)
+    # status fills are_spaces_available; override is an event whose fields replace the series' on this date
+    Occurrence = Struct.new(:start_time, :end_time, :status, :override, keyword_init: true)
 
     def initialize(event)
       @event = event
@@ -85,8 +86,8 @@ module CalendarImporter::Events
         publisher_url: }
     end
 
-    def attributes_for(_occurrence)
-      attributes
+    def attributes_for(occurrence)
+      attributes.merge(are_spaces_available: occurrence.status)
     end
 
     def footer; end
@@ -99,6 +100,11 @@ module CalendarImporter::Events
 
     def recurring_event?
       false
+    end
+
+    # @return [Array<Occurrence>] the event's one occurrence, for sources without repeats
+    def occurrences_between(*)
+      [Occurrence.new(start_time: dtstart, end_time: dtend)]
     end
 
     def postcode

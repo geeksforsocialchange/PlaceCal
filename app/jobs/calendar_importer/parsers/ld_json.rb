@@ -5,10 +5,6 @@ module CalendarImporter::Parsers
     NAME = 'LD+JSON'
     KEY = 'ld-json'
 
-    def initialize(calendar, options = {})
-      super
-    end
-
     DOMAINS = ['various'].freeze
 
     class EventConsumer
@@ -120,7 +116,7 @@ module CalendarImporter::Parsers
     end
 
     def import_events_from(data)
-      consumer = EventConsumer.new
+      consumer = self.class::EventConsumer.new
       consumer.consume data
       consumer.validate_events
       consumer.events

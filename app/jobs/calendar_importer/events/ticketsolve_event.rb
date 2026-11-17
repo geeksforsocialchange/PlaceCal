@@ -25,19 +25,12 @@ module CalendarImporter::Events
     end
 
     def occurrences_between(*)
-      @occurrences = []
-
-      @event.css('events').each do |events|
-        events.xpath('event').each do |event|
-          start_time = Time.zone.parse(event.at_css('opening_time_iso').text)
-          # TODO: Refactor to make a bit less opaque
-          @occurrences << Dates.new(start_time,
-                                    nil,
-                                    event.at_css('status').text)
+      @event.css('events').flat_map do |events|
+        events.xpath('event').map do |event|
+          Occurrence.new(start_time: Time.zone.parse(event.at_css('opening_time_iso').text),
+                         status: event.at_css('status').text)
         end
       end
-
-      @occurrences
     end
   end
 end

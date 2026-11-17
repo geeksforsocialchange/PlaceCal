@@ -11,7 +11,7 @@ RSpec.describe CalendarImporter::OccurrenceSync do
       calendar:,
       uid:,
       from_date:,
-      occurrences: times.map { |start, finish| CalendarImporter::Events::Base::Dates.new(start, finish) },
+      occurrences: times.map { |start, finish| CalendarImporter::Events::Base::Occurrence.new(start_time: start, end_time: finish) },
       series:,
       attributes_for: ->(_occurrence) { { uid:, summary:, organiser_id: calendar.organiser_id } }
     ).call
@@ -146,6 +146,77 @@ RSpec.describe CalendarImporter::OccurrenceSync do
     expect(rows.sole.summary).to eq("An event")
     expect(result.updated).to eq([rows.sole])
     expect(result).to have_attributes(created: [], failures: [])
+  end
+
+  describe "are_spaces_available" do
+    let(:from_date) { Time.zone.local(2030, 1, 1) }
+
+    def sync_event(data)
+      described_class.new(
+        calendar:,
+        uid: data.uid,
+        from_date:,
+        occurrences: data.occurrences_between(from_date, from_date + 1.year),
+        series: true,
+        attributes_for: ->(occurrence) { data.attributes_for(occurrence).merge(organiser_id: calendar.organiser_id) }
+      ).call
+    end
+
+    def row_for(data)
+      calendar.events.find_by!(uid: data.uid)
+    end
+
+    it "writes an occurrence's status" do
+      data = CalendarImporter::Events::TicketsolveEvent.new(Nokogiri::XML(<<~XML).at_css("show"))
+        <show id="ts-1">
+          <name>A show</name>
+          <description>About the show</description>
+          <url>https://example.ticketsolve.com/shows/1</url>
+          <events><event><opening_time_iso>2030-02-01T19:00:00+00:00</opening_time_iso><status>available</status></event></events>
+        </show>
+      XML
+
+      sync_event(data)
+
+      expect(row_for(data).are_spaces_available).to eq("available")
+    end
+
+    it "clears it when the source's occurrences have no status" do
+      data = CalendarImporter::Events::TickettailorEvent.new(
+        "id" => "tt-1",
+        "name" => "A Ticket Tailor event",
+        "start" => { "date" => "2030-02-01", "time" => "19:00", "tz" => "UTC" },
+        "end" => { "date" => "2030-02-01", "time" => "21:00", "tz" => "UTC" }
+      )
+      sync_event(data)
+      row_for(data).update!(are_spaces_available: "Sold out")
+
+      sync_event(data)
+
+      expect(row_for(data).are_spaces_available).to be_nil
+    end
+
+    it "leaves it untouched for iCal occurrences" do
+      ical = Icalendar::Calendar.parse(<<~ICS).first.events.first
+        BEGIN:VCALENDAR
+        VERSION:2.0
+        PRODID:-//PlaceCal//Test//EN
+        BEGIN:VEVENT
+        UID:ics-1
+        DTSTART:20300201T190000Z
+        DTEND:20300201T210000Z
+        SUMMARY:An iCal event
+        END:VEVENT
+        END:VCALENDAR
+      ICS
+      data = CalendarImporter::Events::IcsEvent.new(ical, ical.dtstart, ical.dtend)
+      sync_event(data)
+      row_for(data).update!(are_spaces_available: "Sold out")
+
+      sync_event(data)
+
+      expect(row_for(data).are_spaces_available).to eq("Sold out")
+    end
   end
 
   it "reports a failed save with its errors", :aggregate_failures do
