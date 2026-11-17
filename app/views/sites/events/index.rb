@@ -58,8 +58,8 @@ class Views::Sites::Events::Index < Views::Base
     div(**part(:paginator, class: 'leading-snug print:hidden', id: 'paginator')) do
       div(**part(:context)) do
         Sites::Breadcrumb(trail: [[t('navigation.site.events'), events_path]], site_name: site.name) do
-          # A day strip is wider than the row, so it scrolls inside it and the sort filter wraps underneath.
-          UI::Cluster(gap: :sm, wrap: day_strip?, **part(:filter_bar, class: ('min-w-0 max-w-full' if day_strip?))) do
+          # Controls wrap onto a new row rather than squeezing their labels. A day strip scrolls inside the row.
+          UI::Cluster(gap: :sm, **part(:filter_bar, class: ('min-w-0 max-w-full' if day_strip?))) do
             today = Time.zone.today
             region_param = selected_region ? "&region=#{selected_region.slug}" : ''
             today_url = "/events/#{today.year}/#{today.month}/#{today.day}?period=#{period}&sort=#{sort}&repeating=#{repeating}#{region_param}#paginator"
