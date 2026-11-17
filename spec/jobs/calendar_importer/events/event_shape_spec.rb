@@ -73,8 +73,9 @@ RSpec.describe "Importer event classes" do
       "SquarespaceEvent" => [{ "id" => "sq-1", "title" => "A Squarespace event", "body" => "<p>About</p>", "url" => "/events", "urlId" => "1",
                                "startDate" => 1_896_202_800_000, "endDate" => 1_896_210_000_000 }],
       "TicketsolveEvent" => [Nokogiri::XML(ticketsolve).at_css("show")],
-      "TicketsourceEvent" => [{ "id" => "tso-1", "attributes" => { "name" => "A TicketSource event" },
-                                "date" => { "id" => "d1", "attributes" => { "start" => "2030-02-01T19:00:00Z", "end" => "2030-02-01T21:00:00Z" } } }],
+      "TicketsourceEvent" => [{ "id" => "tso-1", "name" => "A TicketSource event" },
+                              { "id" => "d1", "start" => "2030-02-01T19:00:00Z", "end" => "2030-02-01T21:00:00Z" },
+                              { publisher_url: "https://www.ticketsource.co.uk/example" }],
       "TickettailorEvent" => [{ "id" => "tt-1", "name" => "A Ticket Tailor event",
                                 "start" => { "date" => "2030-02-01", "time" => "19:00", "tz" => "UTC" },
                                 "end" => { "date" => "2030-02-01", "time" => "21:00", "tz" => "UTC" } }],
@@ -89,7 +90,12 @@ RSpec.describe "Importer event classes" do
 
   event_class_names.each do |class_name|
     describe class_name do
-      subject(:event) { "CalendarImporter::Events::#{class_name}".constantize.new(*arguments.fetch(class_name)) }
+      subject(:event) do
+        *args, last = arguments.fetch(class_name)
+        keywords = last.is_a?(Hash) && last.keys.all?(Symbol) ? last : nil
+        klass = "CalendarImporter::Events::#{class_name}".constantize
+        keywords ? klass.new(*args, **keywords) : klass.new(*args, last)
+      end
 
       it "answers the fields the importer reads" do
         expect(event).to respond_to(:uid, :summary, :description, :location, :publisher_url, :occurrences_between)
