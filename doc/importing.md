@@ -5,14 +5,28 @@ This document describes how PlaceCal imports events from external calendar sourc
 ## Pipeline Overview
 
 ```
-CalendarImporterJob
-  → CalendarImporter::CalendarImporter (detects parser)
-    → Parser (ICS, Eventbrite, TicketSource, etc.)
-      → CalendarImporter::Events::* (normalised event data)
-        → CalendarImporter::EventResolver (coordinator)
-          → resolve: online link, then CalendarImporter::LocationResolver (place + address), then organiser
-          → save_all_occurences (persist to DB)
+RecurringCalendarScanJob (hourly)
+  → CalendarImporterJob
+    → CalendarImporter::CalendarImporterTask
+      → CalendarImporter::CalendarImporter (validates the source, picks the parser)
+      → Parser (download, checksum, parse)
+        → CalendarImporter::Events::* (one per source event)
+      → CalendarImporter::EventResolver (one per event)
+        → resolve: online link, then LocationResolver (place + address), then organiser
+        → save_all_occurences (persist to DB)
 ```
+
+[RecurringCalendarScanJob](../app/jobs/recurring_calendar_scan_job.rb) resets stuck imports, then queues every calendar that is not already queued or importing. Creating a calendar also queues it. In [CalendarImporterJob](../app/jobs/calendar_importer_job.rb), an unreachable source puts the calendar in `bad_source` and other failures put it in `error`.
+
+[CalendarImporterTask](../app/jobs/calendar_importer/calendar_importer_task.rb) runs one import:
+
+- A feed whose checksum matches the last import is not parsed, unless the import is forced. Editing the source, importer or API key clears the checksum.
+- Private events are skipped: iCal `CLASS:PRIVATE`, or `#placecal-ignore` in the description.
+- Occurrences run from the import date to a year ahead, capped at 1,000 per event and 20,000 per calendar. Each cap adds a notice.
+- After a parsed feed, upcoming events whose UID was not imported this run are deleted, unless the calendar cap was reached.
+- An empty feed keeps its upcoming events for 48 hours, then deletes them.
+- Locations that can't be read as an address give one notice per reason.
+- If Eventbrite still fails after retries, the import is skipped and existing events stay.
 
 ## Key Concepts
 
@@ -20,64 +34,74 @@ CalendarImporterJob
 
 - **Organiser** (`event.organiser`): The Partner running the event. Set from `calendar.organiser`.
 - **Place** (`event.place`): The Partner whose venue hosts the event. May be the same as organiser, or different (e.g., "Book Club" runs events at "Central Library").
-- **Address** (`event.address`): The physical location. Can come from the event data, the place, or the organiser (fallback).
-- **Online Address** (`event.online_address`): A URL for virtual attendance (Zoom, Google Meet, Jitsi, etc.).
+- **Address** (`event.address`): The physical location, set by the location strategy.
+- **Online Address** (`event.online_address`): A URL for virtual attendance.
 
 ### Address Resolution Order
 
-When displaying an event's location, the system checks in order:
+[Event#resolved_address](../app/models/event.rb) uses the first of:
 
-1. Event's own address (`event.address`)
-2. Place's address (`event.partner_at_location.address`)
-3. Organiser's address (`event.organiser.address`)
+1. The event's own address.
+2. The place's address, when the place is not hidden. A place with no address gives no address, not the organiser's.
+3. The organiser's address, when there is no place or the place is hidden.
 
 ## Location Strategies
 
-Each Calendar has a `strategy` that determines how imported events get their place and address.
+Each Calendar has a `strategy` that sets how imported events get their place and address, in [location_resolver.rb](../app/jobs/calendar_importer/location_resolver.rb).
 
-| Strategy         | Place                               | Address                             | Use When                                 |
-| ---------------- | ----------------------------------- | ----------------------------------- | ---------------------------------------- |
-| `place`          | Calendar's default place            | Place's address                     | All events at one venue                  |
-| `event_override` | Calendar's default place (fallback) | From event data, or place's address | Most events at one venue, some elsewhere |
-| `event`          | None                                | Parsed from event location field    | Events at varying locations              |
-| `room_number`    | Calendar's default place            | Place's address + room from event   | One venue, different rooms               |
-| `no_location`    | None                                | None                                | Events without physical location         |
-| `online_only`    | None                                | None                                | Purely online events                     |
+| Strategy                     | Place and address                                                                                                                                                                          |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `event`                      | The event's location as an address, with a partner at that address as the place. No location: the default place (if set) and no address.                                                   |
+| `event_override`             | The event's location as an address, with a partner at that address as the place. If no partner matches but it is the default place's building: as `place`. No usable location: as `place`. |
+| `place`                      | The default place and its address.                                                                                                                                                         |
+| `room_number`                | The default place, with the event's location added as the first line of a copy of its address. Needs a default place.                                                                      |
+| `no_location`, `online_only` | No place and no address.                                                                                                                                                                   |
 
-When the default place has no address (a partner with only a service area), the `place`, `event_override` and `room_number` strategies import events at that place with no address. An event that fails validation is skipped and recorded as an import notice on the calendar.
+Location text becomes an address only with a street line and a full UK postcode that passes validation. When the default place has no address, `place`, `event_override` and `room_number` import events at that place with no address. An event that fails validation is skipped and recorded as an import notice.
 
 ## Online Detection
 
-Each event class's `online_event_id` finds or creates an `OnlineAddress` for the event's online meeting link. `EventResolver#resolve` calls it before resolving the location, so its `OnlineAddress` is created even when the location raises a `Problem` and the event isn't saved. It looks at:
+Each event class's `online_event_id` decides whether an event is online, for every strategy. `EventResolver#resolve` calls it before resolving the location, so its `OnlineAddress` is created even when the location raises a `Problem` and the event isn't saved.
 
-- Google Meet custom properties (`x_google_conference`)
-- URLs in description matching: Zoom, Google Meet, Jitsi, Microsoft Teams
-- Eventbrite's `online_event` flag
+- **iCal** ([ics_event.rb](../app/jobs/calendar_importer/events/ics_event.rb), also used by Meetup) checks, in order: the custom properties in `ONLINE_MEETING_PROPERTIES` (Google, Microsoft Teams and Zoom meeting links), a LOCATION that is a link to a meeting host, then the first meeting link in the description. Meeting hosts are the `:meeting` services in `OnlineAddress::SERVICES` ([online_address.rb](../app/models/online_address.rb)), such as Zoom, Google Meet, Jitsi and Microsoft Teams. These links are stored as `direct`.
+- **Eventbrite** ([eventbrite_event.rb](../app/jobs/calendar_importer/events/eventbrite_event.rb)) uses the `online_event` flag and links to the Eventbrite page as `indirect`.
+
+Other sources are never marked online.
+
+Links to stream and social hosts (YouTube, Facebook, Instagram, LinkedIn and the like) don't mark an event online. A LOCATION that is a link to anything but a meeting host is the event's webpage link when it has no URL property.
 
 ## Parsers
 
-| Parser       | Source                                   | API Key? | Notes                                  |
-| ------------ | ---------------------------------------- | -------- | -------------------------------------- |
-| ICS          | `.ics` feeds                             | No       | Google Calendar, Outlook, generic iCal |
-| Eventbrite   | `eventbrite.co.uk/o/`                    | No       | Scrapes organiser pages                |
-| TicketSource | `ticketsource.co.uk`, `ticketsource.com` | Yes      | Uses REST API with Basic Auth          |
-| TicketTailor | `tickettailor.com`                       | Yes      | Uses REST API                          |
-| Outsavvy     | `outsavvy.com`                           | No       | Scrapes event pages                    |
-| LdJson       | Any URL with JSON-LD                     | No       | Downloads page, parses LD+JSON schema  |
+`PARSERS` in [calendar_importer.rb](../app/jobs/calendar_importer/calendar_importer.rb), in detection order:
+
+| Parser                | Source URL                                                                | Reads                                                       |
+| --------------------- | ------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| Eventbrite            | `eventbrite.com/o/…`, `eventbrite.co.uk/o/…`                              | The Eventbrite API, with the server-wide `EVENTBRITE_TOKEN` |
+| Generic iCal / .ics   | Google Calendar, Outlook, Teamup, `webcal://`, `*.ics`, a few named sites | The iCal feed                                               |
+| TicketSource          | `ticketsource.co.uk/<venue>`, `ticketsource.com/<venue>`                  | The TicketSource API, with the calendar's API key           |
+| Manchester University | `events.manchester.ac.uk/f3vf/calendar/…`                                 | The XML feed (hidden from the admin importer list)          |
+| Meetup                | `meetup.com/<group>`                                                      | The group's iCal feed                                       |
+| OutSavvy              | `outsavvy.com/organiser/<name>`                                           | Each event page's LD+JSON, found from the organiser page    |
+| Resident Advisor      | `ra.co/promoters/<id>`, `ra.co/clubs/<id>`                                | The ra.co GraphQL API                                       |
+| Squarespace           | `*.squarespace.com`, or a custom domain detected as Squarespace           | The page's `?format=json` data                              |
+| Ticket Solve          | `*.ticketsolve.com`                                                       | The XML feed                                                |
+| Ticket Tailor         | `tickettailor.com/events/<box office>`                                    | The Ticket Tailor API, with the calendar's API key          |
+| Wix Events            | `*.wixsite.com`, or a custom domain detected as Wix                       | Event JSON embedded in the page                             |
+| LD+JSON               | Any page                                                                  | Schema.org events in the page's LD+JSON                     |
 
 ### Parser Detection
 
-`CalendarImporter::CalendarImporter` auto-detects the parser by:
+[CalendarImporter::CalendarImporter](../app/jobs/calendar_importer/calendar_importer.rb) picks the parser when a calendar's source is saved and at each import:
 
-1. Checking if any parser's `handles_url?` matches the source URL
-2. If `importer_mode` is set to a specific parser key, uses that directly
-3. Falls back to ICS if the URL returns valid iCal data
-
-API-based parsers (TicketSource, TicketTailor) extend `ApiBase` and use `skip_source_validation?` to skip HTTP source checks during calendar creation.
+1. A URL matching a parser whose `skips_source_check?` is true (TicketSource, Ticket Tailor, Resident Advisor) uses that parser, without fetching the page.
+2. Otherwise the URL is fetched, and an error status fails the check.
+3. A set `importer_mode` picks the parser with that key. The legacy modes `out-savvy` and `dice-fm` map to LD+JSON.
+4. With `importer_mode` blank or `auto`, the first parser in `PARSERS` whose `handles_url?` matches is used. Squarespace and Wix also fetch the page to detect custom domains. LD+JSON is last because it downloads and parses the page.
+5. If nothing matches, the feed is unsupported. There is no fallback to iCal.
 
 ## Source URL Restrictions
 
-Every fetch of a calendar source goes through `OutboundUrlGuard` (`app/services/outbound_url_guard.rb`), called from `CalendarImporter::Parsers::Base.read_http_source`. It stops an admin pointing the server at internal services (SSRF).
+Every fetch through `CalendarImporter::Parsers::Base.read_http_source` goes through `OutboundUrlGuard` ([outbound_url_guard.rb](../app/services/outbound_url_guard.rb)). It stops an admin pointing the server at internal services (SSRF). Requests to the TicketSource, Ticket Tailor, Eventbrite and Resident Advisor APIs go to fixed hosts and do not use it.
 
 The guard resolves the hostname and refuses the URL if any address is loopback, private, link-local or otherwise internal. Redirects are checked hop by hop. A refused URL raises `InaccessibleFeed` with the `admin.calendars.wizard.source.private_address` message.
 
@@ -90,12 +114,12 @@ To test an importer against a local file, record a VCR cassette or stub the requ
 
 In specs, `spec/support/outbound_url_guard.rb` stubs `OutboundUrlGuard.resolve` so hostnames resolve to a public documentation address and no real DNS lookup happens. Override that stub in a spec to simulate a hostname that resolves privately.
 
-Remote JSON-LD `@context` documents are only loaded from schema.org. A page that names any other remote context will not parse.
+Remote JSON-LD `@context` documents are only loaded from schema.org. Any other remote context is refused.
 
 ## Event Deduplication
 
-Events are identified by `(calendar_id, uid, dtstart, dtend)` with a unique database index. On re-import:
+Events are identified by `(calendar_id, uid, dtstart, dtend)` with a unique database index. On re-import, [EventResolver](../app/jobs/calendar_importer/event_resolver.rb):
 
-- Existing events with matching UIDs are updated in place
-- For recurring events, occurrences with changed times are removed
-- `RecordNotUnique` exceptions are caught and handled gracefully
+- Updates the existing row for each occurrence, matched by UID and times. A one-off event reuses its row, so a rescheduled event keeps its id.
+- Deletes rows for the UID from the import date on that match no current occurrence. Earlier rows are kept.
+- Catches `ActiveRecord::RecordNotUnique` and updates the matching row.

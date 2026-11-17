@@ -13,10 +13,7 @@ class Views::Admin::Calendars::New < Views::Admin::Base
   def view_template
     content_for(:title) { 'New Calendar' }
 
-    api_token_parsers = CalendarImporter::CalendarImporter::PARSERS
-                        .select(&:requires_api_token?)
-                        .map { |p| p::KEY }
-                        .to_json
+    api_token_parsers = CalendarImporter::CalendarImporter.api_token_parsers.map { |p| p::KEY }.to_json
 
     div(data: {
           controller: 'calendar-wizard',
@@ -64,7 +61,7 @@ class Views::Admin::Calendars::New < Views::Admin::Base
   def detected_parser
     return unless source_tested?
 
-    CalendarImporter::CalendarImporter::PARSERS.find { |p| p::KEY == calendar.importer_mode }
+    CalendarImporter::CalendarImporter.parser_for_key(calendar.importer_mode)
   end
 
   # The model's undetected-format error asks the user to pick a type from this list

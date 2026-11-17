@@ -98,7 +98,7 @@ RSpec.describe CalendarImporterJob do
       end
 
       before do
-        # The Eventbrite source page is reachable (validate_feed! passes)...
+        # The Eventbrite source page is reachable (check_source! passes)...
         stub_request(:get, calendar.source).to_return(status: 200, body: "ok")
         # ...but the Eventbrite API fetch (RestClient via EventbriteSDK) times out.
         allow(EventbriteSDK::Organizer).to receive(:retrieve)
