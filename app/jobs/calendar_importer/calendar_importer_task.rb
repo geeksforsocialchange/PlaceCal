@@ -58,7 +58,7 @@ class CalendarImporter::CalendarImporterTask
   end
 
   def parser
-    @parser ||= CalendarImporter::CalendarImporter.new(calendar).parser
+    @parser ||= CalendarImporter::CalendarImporter.new(calendar).tap(&:check_source!).parser
   end
 
   # Get a properly formatted event list from the source
