@@ -94,7 +94,8 @@ module CalendarImporter::Parsers
       parser = SkippingParser.new(with_iana_time_zones(data))
       calendars = parser.parse
       parser.skipped.each do |event, error|
-        notices << I18n.t('admin.calendars.importer.unreadable_event_dates', event: event.summary.to_s.presence || event.uid.to_s, error:)
+        report.add(:unreadable_event_dates, 'admin.calendars.importer.unreadable_event_dates',
+                   values: { event: event.summary.to_s.presence || event.uid.to_s, error: }, uid: event.uid.to_s, title: event.summary.to_s)
       end
       calendars
     rescue RuntimeError, *SkippingParser::DATE_ERRORS => e

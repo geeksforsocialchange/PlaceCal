@@ -5,15 +5,16 @@ class CalendarImporter::EventResolver
   # Twice-daily for a year fits; a minutely or hourly rule does not
   MAX_OCCURRENCES_PER_EVENT = 1000
 
-  attr_reader :data, :uid, :notices, :calendar, :unreadable_address_reason, :resolved_attributes
+  attr_reader :data, :uid, :report, :calendar, :unreadable_address_reason, :resolved_attributes
 
   delegate :private?, to: :data
 
-  def initialize(event_data, calendar, notices, from_date)
+  # @param report [CalendarImporter::ImportReport] the import run's report, which this event's notices are added to
+  def initialize(event_data, calendar, report, from_date)
     @data = event_data
     @uid = data.uid
     @calendar = calendar
-    @notices = notices
+    @report = report
     @from_date = from_date
   end
 
@@ -25,7 +26,8 @@ class CalendarImporter::EventResolver
     @occurrences ||= begin
       all = data.occurrences_between(@from_date, Calendar.import_up_to)
       if all.size > MAX_OCCURRENCES_PER_EVENT
-        notices << I18n.t('admin.calendars.importer.occurrence_limit', summary: data.summary, count: MAX_OCCURRENCES_PER_EVENT)
+        report.add(:occurrence_limit, 'admin.calendars.importer.occurrence_limit',
+                   values: { summary: data.summary, count: MAX_OCCURRENCES_PER_EVENT }, uid:, title: data.summary)
         all = all.sort_by(&:start_time).first(MAX_OCCURRENCES_PER_EVENT)
       end
       all
@@ -61,7 +63,9 @@ class CalendarImporter::EventResolver
       attributes_for: ->(occurrence) { data.attributes_for(occurrence).merge(resolved_attributes) }
     ).call
 
-    result.failures.each { |failure| notices << failure.errors.full_messages.join(', ') }
+    result.failures.each do |failure|
+      report.add_messages(:failed_save, failure.errors.full_messages, uid:, title: data.summary)
+    end
     result
   end
 
