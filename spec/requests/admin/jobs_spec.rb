@@ -37,6 +37,23 @@ RSpec.describe "Admin background jobs", type: :request do
       expect(job_count(table, :waiting)).to eq("0")
     end
 
+    it "refreshes itself: the table every few seconds, and the counts and failed jobs with it" do
+      html = page_html
+
+      expect(html.at_css("[data-controller='admin-table']")["data-admin-table-refresh-interval-value"]).to eq(Views::Admin::Jobs::Index::REFRESH_SECONDS.to_s)
+      expect(html.at_css("[data-controller='live-counts']")["data-live-counts-url-value"]).to eq(admin_jobs_path(format: :json))
+      expect(html.at_css("turbo-frame#failed_jobs_frame[data-live-counts-target='frame']")).to be_present
+      expect(html.css("[data-live-count]").map { it["data-live-count"] }).to include("jobs.failed", "state.problem", "state.bad_source")
+    end
+
+    it "gives the counts as JSON, keyed as the page marks them" do
+      create(:calendar).update_columns(calendar_state: "error") # rubocop:disable Rails/SkipsModelValidations
+
+      get admin_jobs_url(host: admin_host, format: :json)
+
+      expect(response.parsed_body).to include("jobs.waiting" => 0, "jobs.failed" => 0, "state.problem" => 1, "state.error" => 1, "state.idle" => 0)
+    end
+
     def failed_job(class_name, arguments)
       job = SolidQueue::Job.create!(queue_name: "default", class_name:, arguments: { "arguments" => arguments })
       job.ready_execution&.destroy

@@ -31,6 +31,7 @@ export default class extends Controller {
 		filteredRangeText: String,
 		totalText: String,
 		filteredTotalText: String,
+		refreshInterval: { type: Number, default: 0 },
 	};
 
 	connect() {
@@ -50,6 +51,23 @@ export default class extends Controller {
 
 		// Show sort indicator for default sort column
 		this.updateSortIndicators();
+
+		if (this.refreshIntervalValue > 0) {
+			this.refreshTimer = setInterval(
+				() => this.refresh(),
+				this.refreshIntervalValue * 1000,
+			);
+		}
+	}
+
+	disconnect() {
+		clearInterval(this.refreshTimer);
+	}
+
+	// Reloads the current page in place, keeping filters, sort and page; skipped while the tab is hidden
+	async refresh() {
+		if (document.hidden) return;
+		if (await this.loadData({ silent: true })) this.dispatch("refreshed");
 	}
 
 	applyDefaultFilters() {
@@ -518,7 +536,9 @@ export default class extends Controller {
 		this.loadData();
 	}
 
-	async loadData() {
+	// Returns whether the rows were updated; a reply overtaken by a newer request is dropped
+	async loadData({ silent = false } = {}) {
+		const request = (this.latestRequest = (this.latestRequest || 0) + 1);
 		const params = new URLSearchParams({
 			draw: Date.now(),
 			start: this.currentPage * this.pageLengthValue,
@@ -560,9 +580,10 @@ export default class extends Controller {
 		});
 
 		try {
-			this.showLoading();
+			if (!silent) this.showLoading();
 			const response = await fetch(`${this.sourceValue}?${params}`);
 			const data = await response.json();
+			if (request !== this.latestRequest) return false;
 
 			this.totalRecords = data.recordsTotal;
 			this.filteredRecords = data.recordsFiltered;
@@ -572,9 +593,11 @@ export default class extends Controller {
 			this.renderPagination();
 			this.renderInfo();
 			this.renderSummary();
+			return true;
 		} catch (error) {
 			console.error("Error loading table data:", error);
-			this.showError();
+			if (!silent) this.showError();
+			return false;
 		}
 	}
 
