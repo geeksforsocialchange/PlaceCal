@@ -25,7 +25,7 @@ class Views::Sites::Events::Show < Views::Base
                 section_body: 'The text under each section\'s heading.',
                 more: 'The "More from" list of the organiser\'s other events. Only when the organiser has other upcoming events.'
               },
-              tokens: %i[--text-sm --leading-normal --color-foreground --color-primary]
+              tokens: %i[--text-sm --leading-normal --color-foreground --color-primary --color-rules --radius-card]
 
   prop :event, ::Event, reader: :private
   prop :site, _Nilable(::Site), reader: :private
