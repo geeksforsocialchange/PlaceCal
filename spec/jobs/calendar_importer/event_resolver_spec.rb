@@ -81,13 +81,13 @@ RSpec.describe CalendarImporter::EventResolver do
       calendar = make_calendar_for_strategy("place")
       resolver = described_class.new(ics_event_data, calendar, [], start_date)
       resolver.resolve
-      resolver.save_all_occurences
+      resolver.save_all_occurrences
       expect(calendar.events.sole.place_id).to eq(calendar.place.id)
 
       calendar.strategy = "no_location"
       resolver = described_class.new(ics_event_data, calendar, [], start_date)
       resolver.resolve
-      resolver.save_all_occurences
+      resolver.save_all_occurrences
 
       expect(calendar.events.sole.reload).to have_attributes(place_id: nil, address_id: nil)
     end
@@ -236,7 +236,7 @@ RSpec.describe CalendarImporter::EventResolver do
 
       resolver = described_class.new(event_data, calendar, [], occ1_start)
       resolver.resolve
-      resolver.save_all_occurences
+      resolver.save_all_occurrences
 
       expect(calendar.events.where(uid: "recurring-123").count).to eq(2)
 
@@ -244,7 +244,7 @@ RSpec.describe CalendarImporter::EventResolver do
       event_data2 = make_recurring_ics_event(uid: "recurring-123", occurrences:)
       resolver2 = described_class.new(event_data2, calendar, [], occ1_start)
       resolver2.resolve
-      resolver2.save_all_occurences
+      resolver2.save_all_occurrences
 
       expect(calendar.events.where(uid: "recurring-123").count).to eq(2)
     end
@@ -262,7 +262,7 @@ RSpec.describe CalendarImporter::EventResolver do
 
       resolver = described_class.new(event_data, calendar, [], occ1_start)
       resolver.resolve
-      resolver.save_all_occurences
+      resolver.save_all_occurrences
 
       expect(calendar.events.where(uid: "recurring-456").count).to eq(2)
 
@@ -271,7 +271,7 @@ RSpec.describe CalendarImporter::EventResolver do
       event_data2 = make_recurring_ics_event(uid: "recurring-456", occurrences: new_occurrences)
       resolver2 = described_class.new(event_data2, calendar, [], occ1_start)
       resolver2.resolve
-      resolver2.save_all_occurences
+      resolver2.save_all_occurrences
 
       expect(calendar.events.where(uid: "recurring-456").count).to eq(1)
       expect(calendar.events.find_by(uid: "recurring-456").dtstart).to eq(occ1_start)
@@ -293,7 +293,7 @@ RSpec.describe CalendarImporter::EventResolver do
 
       resolver = described_class.new(event_data, calendar, [], occ1_start)
       resolver.resolve
-      resolver.save_all_occurences
+      resolver.save_all_occurrences
 
       expect(calendar.events.where(uid: "recurring-789").count).to eq(2)
 
@@ -305,7 +305,7 @@ RSpec.describe CalendarImporter::EventResolver do
       event_data2 = make_recurring_ics_event(uid: "recurring-789", occurrences: new_occurrences)
       resolver2 = described_class.new(event_data2, calendar, [], occ1_start)
       resolver2.resolve
-      resolver2.save_all_occurences
+      resolver2.save_all_occurrences
 
       events = calendar.events.where(uid: "recurring-789").order(:dtstart)
       expect(events.count).to eq(2)
@@ -344,7 +344,7 @@ RSpec.describe CalendarImporter::EventResolver do
 
       resolver = described_class.new(event_data, calendar, [], start_date)
       resolver.resolve
-      resolver.save_all_occurences
+      resolver.save_all_occurrences
 
       expect(calendar.events.where(uid: "dup-123").count).to eq(1)
     ensure
@@ -362,7 +362,7 @@ RSpec.describe CalendarImporter::EventResolver do
 
       resolver = described_class.new(ics_event_data, calendar, notices, start_date)
       resolver.resolve
-      resolver.save_all_occurences
+      resolver.save_all_occurrences
 
       expect(calendar.events.where(uid: ics_event_data.uid).count).to eq(1)
       expect(notices).to be_empty
@@ -376,7 +376,7 @@ RSpec.describe CalendarImporter::EventResolver do
 
       resolver = described_class.new(ics_event_data, calendar, notices, start_date)
       resolver.resolve
-      resolver.save_all_occurences
+      resolver.save_all_occurrences
 
       expect(notices).to be_empty
     end
@@ -390,7 +390,7 @@ RSpec.describe CalendarImporter::EventResolver do
 
       resolver = described_class.new(ics_event_data, calendar, notices, start_date)
       resolver.resolve
-      resolver.save_all_occurences
+      resolver.save_all_occurrences
 
       expect(notices).to eq(["Summary can't be blank"])
     end

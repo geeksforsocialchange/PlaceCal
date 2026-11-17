@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CalendarImporter::CalendarImporterTask
-  MAX_OCCURENCES = 20_000
+  MAX_OCCURRENCES_PER_CALENDAR = 20_000
   # How long a feed stays empty before its upcoming events are removed
   EMPTY_FEED_GRACE = 48.hours
 
@@ -28,13 +28,13 @@ class CalendarImporter::CalendarImporterTask
       # end
 
       parsed_events.each do |parsed_event|
-        break unless within_occurence_limit?(parsed_event)
+        break unless within_occurrence_limit?(parsed_event)
 
         process_event parsed_event
       end
 
       # Events past the limit were never processed, so their rows would look stale
-      purge_stale_events_from_calendar unless @occurence_limit_reached
+      purge_stale_events_from_calendar unless @occurrence_limit_reached
     end
 
     handle_empty_feed if calendar.feed_empty_since && !feed_edited
@@ -120,26 +120,26 @@ class CalendarImporter::CalendarImporterTask
   # Attempt to create each event
   def process_event(parsed_event)
     return if parsed_event.private?
-    return if parsed_event.no_occurences?
+    return if parsed_event.no_occurrences?
 
     parsed_event.resolve
     unreadable_addresses[parsed_event.unreadable_address_reason] << parsed_event.data if parsed_event.unreadable_address_reason
 
     active_event_uids << parsed_event.uid
 
-    parsed_event.save_all_occurences
+    parsed_event.save_all_occurrences
   rescue CalendarImporter::LocationResolver::Problem => e
     notices << e.message
   end
 
-  def within_occurence_limit?(parsed_event)
+  def within_occurrence_limit?(parsed_event)
     return true if parsed_event.private?
 
-    @occurence_count = @occurence_count.to_i + parsed_event.occurences.size
-    return true if @occurence_count <= MAX_OCCURENCES
+    @occurrence_count = @occurrence_count.to_i + parsed_event.occurrences.size
+    return true if @occurrence_count <= MAX_OCCURRENCES_PER_CALENDAR
 
-    notices << I18n.t('admin.calendars.importer.calendar_occurrence_limit', count: MAX_OCCURENCES)
-    @occurence_limit_reached = true
+    notices << I18n.t('admin.calendars.importer.calendar_occurrence_limit', count: MAX_OCCURRENCES_PER_CALENDAR)
+    @occurrence_limit_reached = true
     false
   end
 

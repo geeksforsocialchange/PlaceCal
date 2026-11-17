@@ -183,7 +183,7 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
       parsed_event = instance_double(
         CalendarImporter::EventResolver,
         private?: false,
-        no_occurences?: false
+        no_occurrences?: false
       )
       allow(parsed_event).to receive(:resolve)
         .and_raise(CalendarImporter::LocationResolver::Problem, "N/A")

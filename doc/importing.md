@@ -11,7 +11,7 @@ CalendarImporterJob
       → CalendarImporter::Events::* (normalised event data)
         → CalendarImporter::EventResolver (coordinator)
           → resolve: online link, then CalendarImporter::LocationResolver (place + address), then organiser
-          → save_all_occurences (persist to DB)
+          → save_all_occurrences (persist to DB)
 ```
 
 ## Key Concepts
