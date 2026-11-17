@@ -38,7 +38,7 @@ class Components::UI::Pill < Components::Base
                      variants: { root: VARIANTS.keys },
                      tokens: %i[--radius-pill --radius-sm --color-primary --color-primary-light --color-foreground --color-foreground-dark
                                 --color-background --color-home-background-3 --color-tertiary --color-overlay-light
-                                --text-sm --text-xs --text-2xs --leading-snug --font-weight-semibold --font-weight-bold]
+                                --text-sm --text-2xs --leading-snug --font-weight-semibold --font-weight-bold]
 
   prop :variant, _Union(*VARIANTS.keys), default: :tab
   prop :selected, _Boolean, default: false
