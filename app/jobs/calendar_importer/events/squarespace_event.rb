@@ -34,8 +34,15 @@ module CalendarImporter::Events
     end
 
     def location
-      # get from partner??
-      nil # TODO: ??? Why are we ignoring the venue for meetup events
+      venue = @event['location']
+      return nil unless venue.is_a?(Hash)
+
+      # Not addressCountry: the location resolver would keep a country name as a street line
+      venue.values_at('addressTitle', 'addressLine1', 'addressLine2')
+           .map { |part| part.to_s.strip }
+           .compact_blank
+           .join(', ')
+           .presence
     end
   end
 end
