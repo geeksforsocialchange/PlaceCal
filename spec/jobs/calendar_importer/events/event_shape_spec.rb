@@ -95,7 +95,7 @@ RSpec.describe "Importer event classes" do
         expect(event).to respond_to(:uid, :summary, :description, :location, :publisher_url, :occurrences_between)
       end
 
-      it "returns occurrences with a start and end", :aggregate_failures do
+      it "returns occurrences that answer start_time and end_time, with a start time", :aggregate_failures do
         occurrences = event.occurrences_between(Time.zone.local(2030, 1, 1), Time.zone.local(2031, 1, 1))
 
         expect(occurrences).to be_present
