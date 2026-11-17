@@ -29,21 +29,14 @@ module EventDisplay
     end
   end
 
-  # @return [String, false] ISO 8601 duration, or false if no end time
-  def duration
-    return false unless dtend
-
-    (dtend - dtstart).seconds.iso8601
-  end
-
   # @return [String] short date, e.g. "1 Jan"
   def date
     dtstart.strftime('%-d %b')
   end
 
-  # @return [String] date with year, e.g. " 1 Jan 2026"
+  # @return [String] date with year, e.g. "1 Jan 2026"
   def date_year
-    dtstart.strftime('%e %b %Y')
+    dtstart.strftime('%-d %b %Y')
   end
 
   # @return [String] Open Graph title combining summary, date, time, and organiser

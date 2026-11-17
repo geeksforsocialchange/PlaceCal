@@ -61,6 +61,8 @@ class Event < ApplicationRecord
   # ==== Constants ====
   VERSION_RETENTION = 1.year
   VERSION_PRUNE_BATCH_SIZE = 5_000
+  # Calendars with these strategies can import events that have no place, address or online link
+  LOCATION_OPTIONAL_STRATEGIES = %w[event no_location online_only].freeze
 
   # ==== Attributes ====
   self.ignored_columns += %w[notices]
@@ -96,31 +98,20 @@ class Event < ApplicationRecord
   # ==== Validations ====
   validates :summary, :dtstart, :organiser, presence: true
   validate :require_location
-  validate :unique_event, on: :create # If we are updating the event we don't want it to trigger!
+  validate :unique_event, on: :create
 
   # ==== Scopes ====
-  # For the API eventFilter find by neighbourhood
+  # Events whose organiser is based in, or serves, any of the neighbourhoods
   scope :for_neighbourhoods, lambda { |neighbourhoods|
-    neighbourhood_ids = neighbourhoods.map(&:id)
-
-    joins('left outer join partners on events.organiser_id = partners.id')
-      .joins('left outer join addresses on partners.address_id = addresses.id')
-      .joins('left outer join service_areas on partners.id = service_areas.partner_id')
-      .where('(service_areas.neighbourhood_id in (?)) or (addresses.neighbourhood_id in (?))',
-             neighbourhood_ids,
-             neighbourhood_ids)
+    based_there = Partner.joins(:address).where(addresses: { neighbourhood_id: neighbourhoods }).select(:id)
+    serving_there = ServiceArea.where(neighbourhood_id: neighbourhoods).select(:partner_id)
+    where(organiser_id: based_there).or(where(organiser_id: serving_there))
   }
 
-  scope :with_tags, lambda { |tags|
-    joins(:organiser)
-      .joins('left outer join partner_tags on partners.id = partner_tags.partner_id')
-      .where(partner_tags: { tag_id: tags.map(&:id) })
-  }
+  scope :with_tags, ->(tags) { joins(organiser: :partner_tags).where(partner_tags: { tag_id: tags }) }
 
   scope :in_place, ->(place) { where(place:) }
-
   scope :by_organiser, ->(organiser) { where(organiser:) }
-
   scope :by_organiser_or_place, ->(organiser) { in_place(organiser).or(by_organiser(organiser)) }
 
   # Hiding a partner is a moderation action, so its events leave every public listing
@@ -135,9 +126,8 @@ class Event < ApplicationRecord
   scope :without_matching_times, lambda { |time_pairs|
     return none if time_pairs.empty?
 
-    conditions = time_pairs.map { |s, e| arel_table[:dtstart].eq(s).and(arel_table[:dtend].eq(e)) }
-    matching = conditions.reduce(:or)
-    where.not(matching)
+    matching = time_pairs.map { |start_time, end_time| arel_table[:dtstart].eq(start_time).and(arel_table[:dtend].eq(end_time)) }
+    where.not(matching.reduce(:or))
   }
 
   scope :one_off_events_only, -> { where(rrule: false) }
@@ -182,8 +172,7 @@ class Event < ApplicationRecord
     @partner_at_location = (place unless place&.hidden) || Partner.matching_venue_for(address)
   end
 
-  # Whether the event is over (dtend-aware, so a multi-day event still
-  # running doesn't count). Used to noindex stale event pages.
+  # By its end, so a multi-day event still running isn't over
   # @return [Boolean]
   def past?
     (dtend || dtstart) < DateTime.current.beginning_of_day
@@ -191,33 +180,20 @@ class Event < ApplicationRecord
 
   private
 
-  # ==== Private methods ====
-
   def sanitize_rrule
     self.rrule = false if rrule.nil? || rrule == []
   end
 
   def require_location
-    # 'event', 'no_location', and 'online_only' do not require a Location
-    return if %w[event no_location online_only].include?(calendar&.strategy)
-
+    return if LOCATION_OPTIONAL_STRATEGIES.include?(calendar&.strategy)
     return if online_address_id || place_id || address_id
 
-    errors.add(:base, 'No place or address could be created or found for ' \
-                      "the event location: #{raw_location_from_source}")
+    errors.add(:base, :no_location, location: raw_location_from_source)
   end
 
-  # Ensures that the event added is unique
-  # Checks for a duplicate event with the properties dtstart, summary, and calendar_id
   def unique_event
-    return unless Event.where(uid:,
-                              dtstart:,
-                              summary:,
-                              calendar_id:)
-                       .any?
+    return unless Event.exists?(uid:, dtstart:, summary:, calendar_id:)
 
-    errors.add(:base, 'Unfortunately this event is a duplicate of an ' \
-                      "existing event for calendar: #{calendar_id} " \
-                      "('#{calendar.name}')")
+    errors.add(:base, :duplicate, calendar_id:, calendar: calendar&.name)
   end
 end

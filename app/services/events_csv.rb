@@ -32,7 +32,7 @@ class EventsCsv
   def row(event)
     [
       event.summary,
-      event.date_year.strip,
+      event.date_year,
       event.time,
       event.location,
       event.organiser&.name,
