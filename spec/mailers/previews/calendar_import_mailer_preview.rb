@@ -3,21 +3,21 @@
 # Built in memory, so viewing a preview writes nothing to the database.
 class CalendarImportMailerPreview < ActionMailer::Preview
   def import_failed
-    CalendarImportMailer.import_failed(calendar(:bad_source, I18n.t("admin.calendars.wizard.source.unreachable")), user)
+    CalendarImportMailer.import_failed(calendar, user, state: "bad_source", reason: I18n.t("admin.calendars.wizard.source.unreachable"))
   end
 
   def import_failed_with_error
     CalendarImportMailer.import_failed(
-      calendar(:error, "Calendar URL returned un-parsable data for calendar Riverside Community Events (id 1): unexpected token"),
-      user
+      calendar, user,
+      state: "error",
+      reason: "Calendar URL returned un-parsable data for calendar Riverside Community Events (id 1): unexpected token"
     )
   end
 
   private
 
-  def calendar(state, critical_error)
-    Calendar.new(id: 1, name: "Riverside Community Events", calendar_state: state, critical_error:,
-                 organiser: Partner.new(name: "Riverside Community Centre"))
+  def calendar
+    Calendar.new(id: 1, name: "Riverside Community Events", organiser: Partner.new(name: "Riverside Community Centre"))
   end
 
   def user

@@ -137,6 +137,47 @@ RSpec.describe CalendarImporterJob do
     end
   end
 
+  describe "failure emails" do
+    let(:organiser) { create(:partner, users: [create(:user)]) }
+    let(:calendar) do
+      create(:calendar, importer_mode: "ical", organiser:)
+        .tap { |c| c.update!(calendar_state: "in_queue") }
+    end
+    let(:task) { instance_double(CalendarImporter::CalendarImporterTask) }
+
+    before do
+      allow(Calendar::ImportState).to receive(:failure_emails_enabled?).and_return(true)
+      allow(CalendarImporter::CalendarImporterTask).to receive(:new).and_return(task)
+    end
+
+    [
+      CalendarImporter::Exceptions::UnsupportedFeed,
+      CalendarImporter::Exceptions::InvalidResponse
+    ].each do |source_fault|
+      it "emails the partner's users when the source fails with #{source_fault.name.demodulize}" do
+        allow(task).to receive(:run).and_raise(source_fault, "bad feed")
+
+        expect { perform_import }.to have_enqueued_mail(CalendarImportMailer, :import_failed).once
+        expect(calendar.reload.failure_notified_at).to be_present
+      end
+    end
+
+    it "does not email about an unexpected error" do
+      allow(task).to receive(:run).and_raise(KeyError, "boom")
+
+      expect { expect { perform_import }.to raise_error(KeyError) }.not_to have_enqueued_mail
+      expect(calendar.reload).to have_attributes(calendar_state: "error", failure_notified_at: nil)
+    end
+
+    it "does not email about a database error" do
+      allow(task).to receive(:run).and_raise(ActiveRecord::StatementInvalid, "db down")
+
+      expect { described_class.perform_now(calendar.id, Time.zone.today, true, silence_db_exceptions: true) }
+        .not_to have_enqueued_mail
+      expect(calendar.reload).to have_attributes(calendar_state: "error", failure_notified_at: nil)
+    end
+  end
+
   describe "an import that fails part-way" do
     before do
       stub_request(:get, calendar.source).to_return(status: 200, body: <<~ICS)

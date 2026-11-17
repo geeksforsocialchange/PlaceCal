@@ -2,6 +2,12 @@
 
 # Import state changes. None of them move updated_at, which records edits to the calendar's settings.
 module Calendar::ImportState
+  # Staging holds a copy of real partner addresses, so only production may send.
+  # @return [Boolean]
+  def self.failure_emails_enabled?
+    Rails.env.production? && ENV['CALENDAR_FAILURE_EMAILS_ENABLED'] == 'true'
+  end
+
   # Push calendar into the import queue.
   # @param force_import [Boolean] bypass redundant-import checks
   # @param from_date [Time] start point for the import window
@@ -72,8 +78,7 @@ module Calendar::ImportState
     save_state! last_checksum: checksum, checksum_updated_at: DateTime.current
   end
 
-  # Mark calendar as having an unreachable/invalid source.
-  # Emails the organiser's users if they have not been told about a failure since the last good import.
+  # Mark calendar as having an unreachable/invalid source, emailing its users if not yet told of this failure.
   # NOTE: reloads the model, discarding unsaved changes from the import.
   # @param problem [String] description of the source issue
   # @return [void]
@@ -81,41 +86,46 @@ module Calendar::ImportState
     reload
     return unless calendar_state.in_worker?
 
-    recipients = failure_recipients
-    save_state! calendar_state: :bad_source, critical_error: problem, **failure_stamp(recipients)
-    notify_failure(recipients)
+    recipients = failure_recipients(true)
+    save_state! calendar_state: :bad_source, critical_error: problem, **failure_stamp(true, recipients)
+    notify_failure(recipients, 'bad_source', problem)
   end
 
-  # Flag that an import error occurred; the hourly scan requeues it so it retries once the fault clears.
-  # Emails the organiser's users if they have not been told about a failure since the last good import.
+  # Flag an import error, which the hourly scan retries; emails like flag_bad_source! only when notify: is true.
   # NOTE: reloads the model, discarding unsaved changes from the import.
   # @param problem [String] description of the import failure
+  # @param notify [Boolean] whether the source caused the failure, so its users should hear about it
   # @return [void]
-  def flag_error_import_job!(problem)
+  def flag_error_import_job!(problem, notify: false)
     reload
     return unless calendar_state.in_worker?
 
-    recipients = failure_recipients
-    assign_attributes calendar_state: :error, critical_error: problem, **failure_stamp(recipients)
+    recipients = failure_recipients(notify)
+    assign_attributes calendar_state: :error, critical_error: problem, **failure_stamp(notify, recipients)
     # An invalid calendar still has to leave in_worker, or the hourly scan never requeues it
-    notify_failure(recipients) if save(touch: false, validate: false)
+    notify_failure(recipients, 'error', problem) if save(touch: false, validate: false)
   end
 
   private
 
   # The hourly retry fails again each time, so only a calendar not yet told about this failure gets emails.
-  def failure_recipients
-    return [] if failure_notified_at || ENV['CALENDAR_FAILURE_EMAILS_ENABLED'] != 'true'
+  def failure_recipients(notify)
+    return [] if !notify || failure_notified_at || !Calendar::ImportState.failure_emails_enabled? || !organiser
 
-    organiser ? organiser.users.to_a : []
+    # Users with a pending invitation have no login for the admin link
+    organiser.users.where('users.invitation_created_at IS NULL OR users.invitation_accepted_at IS NOT NULL').to_a
   end
 
-  def failure_stamp(recipients)
-    recipients.any? ? { failure_notified_at: Time.current } : {}
+  # Stamps while sending is off too, so switching it on emails nobody about failures that already exist.
+  def failure_stamp(notify, recipients)
+    return {} if !notify || failure_notified_at
+    return {} if recipients.empty? && Calendar::ImportState.failure_emails_enabled?
+
+    { failure_notified_at: Time.current }
   end
 
-  def notify_failure(recipients)
-    recipients.each { |user| CalendarImportMailer.import_failed(self, user).deliver_later }
+  def notify_failure(recipients, state, reason)
+    recipients.each { |user| CalendarImportMailer.import_failed(self, user, state:, reason:).deliver_later }
   end
 
   def save_state!(attributes)

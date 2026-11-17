@@ -304,5 +304,6 @@ class Calendar < ApplicationRecord
     self.last_import_at = nil
     self.last_checksum = nil
     self.feed_empty_since = nil
+    self.failure_notified_at = nil
   end
 end

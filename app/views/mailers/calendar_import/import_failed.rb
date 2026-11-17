@@ -3,6 +3,8 @@
 class Views::Mailers::CalendarImport::ImportFailed < Views::Mailers::Base
   prop :calendar, Calendar, reader: :private
   prop :user, User, reader: :private
+  prop :state, String, reader: :private
+  prop :reason, _Nilable(String), reader: :private
 
   def email_content
     div { image_tag(image_url('logo.png'), height: '75') }
@@ -25,10 +27,10 @@ class Views::Mailers::CalendarImport::ImportFailed < Views::Mailers::Base
   private
 
   def render_reason
-    return if calendar.critical_error.blank?
+    return if reason.blank?
 
-    state = calendar.calendar_state.bad_source? ? :bad_source : :error
-    p { t("mailers.calendar_import.import_failed.reason.#{state}") }
-    blockquote { calendar.critical_error }
+    key = state == 'bad_source' ? :bad_source : :error
+    p { t("mailers.calendar_import.import_failed.reason.#{key}") }
+    blockquote { reason }
   end
 end
