@@ -156,7 +156,7 @@ RSpec.describe CalendarImporter::Parsers::Ticketsource do
         expect(data.first["dates"].pluck("id")).to eq(["date_1"])
       end
 
-      it "keeps only the fields the importer reads, so ticket counts and the like don't change the checksum" do
+      it "keeps only the fields the importer reads in the downloaded records" do
         noisy_event = JSON.parse(events_response)
         noisy_event["data"].first["attributes"]["tickets_sold"] = 40
         stub_request(:get, "https://api.ticketsource.io/events?page=1&per_page=100")

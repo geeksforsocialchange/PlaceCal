@@ -2,7 +2,7 @@
 
 module CalendarImporter::Events
   class TicketsourceEvent < Base
-    VENUE_FIELDS = %w[name line_1 line_2 line_3 line_4 postcode].freeze
+    VENUE_FIELDS = ['name', *CalendarImporter::Parsers::Ticketsource::ADDRESS_FIELDS].freeze
 
     attr_reader :publisher_url
 

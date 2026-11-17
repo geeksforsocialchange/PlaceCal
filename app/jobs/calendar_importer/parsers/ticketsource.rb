@@ -36,12 +36,12 @@ module CalendarImporter
 
       private
 
-      # The records hold only the fields the import reads, so changes like ticket counts don't alter the checksum.
       # Dates and venues are fetched here so they count towards the checksum, and a failed request fails the import.
       def fetch_all_events
         fetch_all_pages('/events').select { |event| importable?(event) }.map { |event| event_record(event) }
       end
 
+      # Only the fields the import reads, so changes like ticket counts don't alter the checksum
       def event_record(event)
         attrs = event['attributes']
         {
