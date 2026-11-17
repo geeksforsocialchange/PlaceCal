@@ -41,7 +41,7 @@ RSpec.describe CalendarImporter::CalendarImporterTask, "with Squarespace event l
       expect(event.raw_location_from_source).to eq("Oldtown Community Hall, 10 Heritage Lane, Millbrook, ZZMB 2OT")
       expect(event.place).to eq(venue)
       expect(event.address).to have_attributes(street_address: "Oldtown Community Hall", street_address2: "10 Heritage Lane",
-                                               street_address3: "Millbrook", postcode: "ZZMB 2OT")
+                                               street_address3: nil, city: "Millbrook", postcode: "ZZMB 2OT")
     end
 
     it "gives the event an address with no venue when no partner is there", :aggregate_failures do

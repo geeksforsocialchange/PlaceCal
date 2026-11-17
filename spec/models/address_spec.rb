@@ -245,6 +245,51 @@ RSpec.describe Address, type: :model do
       expect(described_class.build_from_components_with_reason(["1 High Street"], "ZZMB 1RS").first).to be_persisted
       expect(described_class.build_from_components_with_reason(["1 High Street"], "ZZMB 1RS").last).to be_nil
     end
+
+    describe "dropping parts that repeat a place name from the postcode lookup" do
+      def street_lines_for(components, postcode = "ZZMB 1RS")
+        address = described_class.build_from_components(components, postcode)
+        [address.street_address, address.street_address2, address.street_address3]
+      end
+
+      it "drops the town the lookup gives as the city" do
+        address = described_class.build_from_components(["Venue", "10 Street", "Millbrook"], "ZZMB 1RS")
+
+        expect(address).to have_attributes(street_address: "Venue", street_address2: "10 Street", street_address3: nil, city: "Millbrook")
+      end
+
+      it "drops the country the lookup gives" do
+        create(:neighbourhood, unit_code_value: "E05011368")
+
+        expect(street_lines_for(["Venue", "10 Street", "England"], "M15 5DD")).to eq(["Venue", "10 Street", nil])
+      end
+
+      it "matches ignoring case and spacing" do
+        expect(street_lines_for(["Venue", "10 Street", " greater   MILLBROOK "])).to eq(["Venue", "10 Street", nil])
+      end
+
+      it "moves the third line up when the second is dropped, and still ignores later parts" do
+        expect(street_lines_for(["Venue", "normal island", "10 Street", "Riverside Road"])).to eq(["Venue", "10 Street", nil])
+      end
+
+      it "keeps a part that contains a place name but isn't one" do
+        expect(street_lines_for(["Venue", "Millbrook Hall", "10 Street"])).to eq(["Venue", "Millbrook Hall", "10 Street"])
+      end
+
+      it "never drops the first part" do
+        expect(street_lines_for(["Millbrook", "10 Street", "Normal Island"])).to eq(["Millbrook", "10 Street", nil])
+      end
+
+      it "keeps a region line, since London is both a region and the town people use" do
+        expect(street_lines_for(["Venue", "10 Street", "Northvale"])).to eq(["Venue", "10 Street", "Northvale"])
+      end
+
+      it "leaves addresses built from street lines alone" do
+        address = described_class.create!(street_address: "Venue", street_address2: "Millbrook", postcode: "ZZMB 1RS")
+
+        expect(address.street_address2).to eq("Millbrook")
+      end
+    end
   end
 
   describe ".find_by_street_or_postcode scope" do
