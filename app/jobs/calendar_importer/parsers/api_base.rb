@@ -59,6 +59,8 @@ module CalendarImporter
             raise InaccessibleFeed, "#{self.class::NAME} API key is invalid or expired"
           when 403
             raise InaccessibleFeed, "#{self.class::NAME} API key does not have permission to access events"
+          when 404
+            raise ApiNotFound, "#{self.class::NAME} API error (code=404)"
           when 429
             raise InaccessibleFeed, "#{self.class::NAME} API rate limit exceeded. Please try again later."
           else

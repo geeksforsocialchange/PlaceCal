@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Works out an imported event's place (a partner) and address from the calendar's location strategy.
-# See doc/importing.md for what each strategy is for.
+# See doc/importing.md for how each strategy places an event.
 class CalendarImporter::LocationResolver
   # Raised when the calendar's settings can't place the event; the import records the message as a notice
   class Problem < StandardError; end
@@ -75,7 +75,7 @@ class CalendarImporter::LocationResolver
   def room_number_strategy
     place = calendar.place
     raise Problem, I18n.t('admin.calendars.importer.room_number_without_venue') if place.blank?
-    return [place, place.address] unless event_data.location? && place.address
+    return [place, place.address] unless event_data.location? && place.address && !location_is_link?
 
     address = place.address.dup.prepend_room_number(event_data.location)
     address.save
@@ -92,9 +92,13 @@ class CalendarImporter::LocationResolver
     return unless event_data.location?
 
     address, reason = Address.build_from_components_with_reason(event_location_components, event_data.postcode)
-    # A location that is only a link is an online event's meeting address, not an unreadable street address
-    @unreadable_address_reason = reason unless event_data.location.to_s.strip.match?(%r{\Ahttps?://\S+\z}i)
+    # A location that is only a link is a meeting or a webpage, not an unreadable street address
+    @unreadable_address_reason = reason unless location_is_link?
     address
+  end
+
+  def location_is_link?
+    event_data.location.to_s.strip.match?(%r{\Ahttps?://\S+\z}i)
   end
 
   # The location text split on ", " with the postcode removed, e.g.

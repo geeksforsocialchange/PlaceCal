@@ -75,7 +75,7 @@ class CalendarImporter::CalendarImporter
   end
 
   def parser_for_mode
-    # Calendars saved before Manchester University had a key have a blank mode; detect their parser
+    # A blank mode means auto-detect
     if @calendar.importer_mode.blank? || @calendar.importer_mode == 'auto'
       PARSERS.find { |parser| parser.handles_url?(@calendar) }
     else
