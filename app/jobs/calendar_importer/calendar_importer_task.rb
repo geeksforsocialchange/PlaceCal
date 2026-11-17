@@ -9,10 +9,14 @@ class CalendarImporter::CalendarImporterTask
               :from_date,
               :force_import
 
-  def initialize(calendar, from_date, force_import)
+  # @param import_run [ImportRun, nil] the run to record this import's outcome, counts and events on
+  def initialize(calendar, from_date, force_import, import_run: nil)
     @calendar = calendar
     @from_date = from_date
     @force_import = force_import
+    @import_run = import_run
+    @counts = Hash.new(0)
+    @run_events = []
   end
 
   def run
@@ -41,16 +45,38 @@ class CalendarImporter::CalendarImporterTask
 
     add_unreadable_address_notices
 
-    calendar.flag_complete_import_job! report.notices, parser::KEY
+    # An unchanged feed keeps the last import's notices, unless this check found something new
+    calendar.flag_complete_import_job! (report.notices if source_read? || report.notices.any?), parser::KEY
     calendar.flag_checksum_change!(calendar_source.checksum) if calendar_source.checksum_changed
+    finish_run(source_read? ? 'imported' : 'unchanged')
   rescue CalendarImporter::Exceptions::SourceUnavailable
     # A skipped run keeps none of its other notices
     skipped = CalendarImporter::ImportReport.new
     skipped.add(:source_unavailable, 'admin.calendars.importer.source_unavailable', values: { source: parser::NAME })
     calendar.flag_skipped_import_job! skipped.notices
+    @import_run&.finish!(outcome: 'skipped', importer: parser::KEY, notices: skipped.notices)
   end
 
   private
+
+  def finish_run(outcome)
+    return unless @import_run
+
+    counts = @counts.transform_keys { :"events_#{it}" }
+    @import_run.finish!(outcome:, importer: parser::KEY, notices: report.notices, events: @run_events, **counts)
+  end
+
+  # @param location_result [String] an ImportRunEvent::LOCATION_RESULTS value
+  def record_event(parsed_event, location_result, reason: nil, occurrences: 0, title: parsed_event.data.summary)
+    @run_events << { uid: parsed_event.uid, title:, location: parsed_event.data.location.presence,
+                     location_result:, reason:, occurrences: }
+  end
+
+  def count_saved(result)
+    @counts[:added] += result.created.size
+    @counts[:changed] += result.updated.size
+    @counts[:removed] += result.removed.size
+  end
 
   # @return [CalendarImporter::ImportReport]
   def report
@@ -87,7 +113,7 @@ class CalendarImporter::CalendarImporterTask
     dates = { since: I18n.l(since.to_date, format: :day_month_year) }
 
     if since <= EMPTY_FEED_GRACE.ago && upcoming.exists?
-      upcoming.destroy_all
+      @counts[:removed] += upcoming.destroy_all.size
       report.add(:empty_feed, 'admin.calendars.importer.feed_empty_removed', values: dates)
     elsif upcoming.exists?
       removal = I18n.l((since + EMPTY_FEED_GRACE).to_date, format: :day_month_year)
@@ -124,18 +150,28 @@ class CalendarImporter::CalendarImporterTask
 
   # Attempt to create each event
   def process_event(parsed_event)
-    return if parsed_event.private?
-    return if parsed_event.no_occurrences?
+    return skip_event(parsed_event, 'private', title: nil) if parsed_event.private?
+    return skip_event(parsed_event, 'no_dates') if parsed_event.no_occurrences?
 
     parsed_event.resolve
     unreadable_addresses[parsed_event.unreadable_address_reason] << parsed_event.data if parsed_event.unreadable_address_reason
 
     active_event_uids << parsed_event.uid
 
-    parsed_event.save_all_occurrences
+    result = parsed_event.save_all_occurrences
+    count_saved(result)
+    failures = result.failures.flat_map { it.errors.full_messages }.uniq
+    record_event(parsed_event, parsed_event.location_match.to_s, reason: failures.join(', ').presence, occurrences: parsed_event.occurrences.size)
   rescue CalendarImporter::LocationResolver::Problem => e
     # A calendar settings problem hits every event, so say it once; no title, as reading one can raise
     report.add_messages(:location_problem, [e.message], uid: parsed_event.uid) unless report.notices.include?(e.message)
+    skip_event(parsed_event, nil, location_result: 'failed', reason: e.message, title: nil)
+  end
+
+  # A private event's title stays out of the record
+  def skip_event(parsed_event, reason_key, location_result: 'skipped', reason: reason_key, title: parsed_event.data.summary)
+    @counts[:skipped] += 1
+    record_event(parsed_event, location_result, reason:, title:)
   end
 
   def within_occurrence_limit?(parsed_event)
@@ -153,6 +189,6 @@ class CalendarImporter::CalendarImporterTask
     all_event_uids = Set.new(calendar.events.upcoming.pluck(:uid))
     stale_event_uids = all_event_uids - active_event_uids
 
-    calendar.events.upcoming.where(uid: stale_event_uids).destroy_all
+    @counts[:removed] += calendar.events.upcoming.where(uid: stale_event_uids).destroy_all.size
   end
 end

@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# One attempt to import a calendar: when it ran, how it ended and what it did to the calendar's events.
 # == Schema Information
 #
 # Table name: import_runs
@@ -26,6 +25,7 @@
 #
 #  fk_rails_...  (calendar_id => calendars.id) ON DELETE => cascade
 #
+# One attempt to import a calendar: when it ran, how it ended and what it did to the calendar's events.
 class ImportRun < ApplicationRecord
   OUTCOMES = %w[imported unchanged skipped error bad_source interrupted].freeze
   KEEP_UNCHANGED = 1.week

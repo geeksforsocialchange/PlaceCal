@@ -5,7 +5,7 @@ class CalendarImporter::EventResolver
   # Twice-daily for a year fits; a minutely or hourly rule does not
   MAX_OCCURRENCES_PER_EVENT = 1000
 
-  attr_reader :data, :uid, :report, :calendar, :unreadable_address_reason, :resolved_attributes
+  attr_reader :data, :uid, :report, :calendar, :unreadable_address_reason, :resolved_attributes, :location_match
 
   delegate :private?, to: :data
 
@@ -43,6 +43,7 @@ class CalendarImporter::EventResolver
     location_resolver = CalendarImporter::LocationResolver.new(calendar, data)
     location = location_resolver.resolve
     @unreadable_address_reason = location_resolver.unreadable_address_reason
+    @location_match = location.match
 
     @resolved_attributes = {
       place_id: location.place&.id,

@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# How one source event fared in its calendar's latest import.
 # == Schema Information
 #
 # Table name: import_run_events
@@ -22,6 +21,7 @@
 #
 #  fk_rails_...  (import_run_id => import_runs.id) ON DELETE => cascade
 #
+# How one source event fared in its calendar's latest import.
 class ImportRunEvent < ApplicationRecord
   # The LocationResolver matches, plus failed (the calendar's settings couldn't place it) and skipped
   LOCATION_RESULTS = %w[matched_venue event_address default_location room none failed skipped].freeze
