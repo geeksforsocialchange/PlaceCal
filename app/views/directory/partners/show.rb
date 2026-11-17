@@ -51,9 +51,10 @@ class Views::Directory::Partners::Show < Views::Sites::Partners::Show
     div(class: 'py-4') do
       UI::RuledHeading(caps: true, rule: :full, size: :lg) { t('directory.partners.show.location') }
       p(class: 'mb-3') { t('directory.partners.show.serves', area: partner_service_area_text(partner)) } if partner.service_areas?
+      # Address first so phones show it above the map; wider screens put the map on the left
       div(class: 'grid gap-4 items-start md:grid-cols-main-auto') do
+        div(class: 'md:order-last') { Shared::Address(address: partner.address) } if partner.address
         Shared::Map(points: map, compact: true) if map
-        Shared::Address(address: partner.address) if partner.address
       end
     end
   end

@@ -172,12 +172,13 @@ class Views::Sites::Events::Show < Views::Base
   def render_where_section
     div(class: 'py-4') do
       section_heading(t('directory.events.show.where'))
+      # Address first so phones show it above the map; wider screens put the map on the left
       div(class: 'grid gap-4 items-start md:grid-cols-main-auto') do
-        Shared::Map(points: map, compact: true) if map
-        div do
+        div(class: 'md:order-last') do
           div(class: 'font-extra-bold') { event.partner_at_location.name } if event.partner_at_location
           Shared::Address(address: event.address, raw_location: event.raw_location_from_source)
         end
+        Shared::Map(points: map, compact: true) if map
       end
     end
   end
