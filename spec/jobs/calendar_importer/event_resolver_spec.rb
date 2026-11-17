@@ -11,7 +11,9 @@ RSpec.describe CalendarImporter::EventResolver do
     :rrule,
     :last_modified,
     :custom_properties,
-    :url
+    :url,
+    :categories,
+    :organizer
   )
 
   FakeEventbriteEvent = Struct.new(
@@ -50,7 +52,8 @@ RSpec.describe CalendarImporter::EventResolver do
       location: "A location",
       rrule: "",
       last_modified: "",
-      custom_properties: {}
+      custom_properties: {},
+      categories: []
     )
     patch_ics_dates(event, start_date, end_date)
   end

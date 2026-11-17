@@ -37,6 +37,10 @@ RecurringCalendarScanJob (hourly)
 - **Address** (`event.address`): The physical location, set by the location strategy.
 - **Online Address** (`event.online_address`): A URL for virtual attendance.
 
+### Source Categories and Organiser
+
+Each event keeps, as plain text, the categories and organiser name its source gives: iCal `CATEGORIES` and the `CN` of `ORGANIZER`, JSON-LD `keywords` and the `organizer` name, and Squarespace `categories` and `tags`, in `source_categories` and `source_organiser`. They don't create or link PlaceCal categories or partners. Other sources give neither.
+
 ### Address Resolution Order
 
 [Event#resolved_address](../app/models/event.rb) uses the first of:

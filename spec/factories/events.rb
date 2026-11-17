@@ -16,6 +16,8 @@
 #  publisher_url            :string
 #  raw_location_from_source :text
 #  rrule                    :jsonb
+#  source_categories        :jsonb
+#  source_organiser         :string
 #  summary                  :text             not null
 #  summary_html             :string
 #  uid                      :string

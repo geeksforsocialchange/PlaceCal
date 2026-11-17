@@ -16,6 +16,8 @@
 #  publisher_url            :string
 #  raw_location_from_source :text
 #  rrule                    :jsonb
+#  source_categories        :jsonb
+#  source_organiser         :string
 #  summary                  :text             not null
 #  summary_html             :string
 #  uid                      :string
@@ -72,6 +74,8 @@ class Event < ApplicationRecord
   attribute :publisher_url,            :string                      # nullable
   attribute :raw_location_from_source, :text                        # nullable
   attribute :rrule,                    :json                        # nullable — Array<Hash{table: {frequency: String}}>, or false
+  attribute :source_categories,        :json                        # nullable, Array<String> as the source gave them
+  attribute :source_organiser,         :string                      # nullable, the organiser name the source gave
   attribute :summary,                  :text                        # NOT NULL
   attribute :summary_html,             :string                      # nullable, populated by HtmlRenderCache
   attribute :uid,                      :string                      # nullable
