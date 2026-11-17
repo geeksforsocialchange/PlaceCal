@@ -56,6 +56,19 @@ RSpec.describe "Admin::Calendars", type: :request do
         expect(response).to be_successful
         expect(response.body).to include(calendar.name)
       end
+
+      it "lists each event's source categories and source organiser, or that the source gave none", :aggregate_failures do
+        create(:event, calendar:, summary: "Tagged", source_categories: %w[Music Dance], source_organiser: "Folk Club")
+        create(:event, calendar:, summary: "Untagged")
+
+        get admin_calendar_url(calendar, host: admin_host)
+
+        page = Nokogiri::HTML(response.body)
+        cells = page.css("tbody tr").to_h { |row| [row.css("td")[1].text.strip, row.css("td").to_a.last(2).map { |cell| cell.text.strip }] }
+        expect(page.css("thead th").map { |heading| heading.text.strip }).to include("Source categories", "Source organiser")
+        expect(cells["Tagged"]).to eq(["Music, Dance", "Folk Club"])
+        expect(cells["Untagged"]).to eq(["None given", "None given"])
+      end
     end
   end
 

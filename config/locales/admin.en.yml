@@ -439,7 +439,10 @@ en:
       danger_zone:
         delete_description: "Permanently remove this calendar and all %{count} associated events. This action cannot be undone."
       show:
+        not_in_source: "None given"
         past_tab: "Past (%{count})"
+        source_categories: "Source categories"
+        source_organiser: "Source organiser"
         upcoming_tab: "Upcoming (%{count})"
 
     # -------------------------------------------------------------------------

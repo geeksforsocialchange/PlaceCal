@@ -18,6 +18,10 @@ module CalendarImporter::Events
       "#{@event['url']}/#{@event['urlId']}"
     end
 
+    def source_categories
+      Array(@event['categories']) + Array(@event['tags'])
+    end
+
     # The dates provided are in UTC time which is milliseconds since January 1, 1970, 00:00:00 UTC.
     # Time.at accepts Unix time which is seconds since January 1, 1970, 00:00:00 UTC.
     # to account for this we just devide by 1000.
