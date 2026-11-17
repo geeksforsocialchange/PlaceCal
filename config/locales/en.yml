@@ -1019,6 +1019,11 @@ en:
               not_found: "was not found"
               unmapped: "has been found but could not be mapped to a neighbourhood at this time"
               lookup_unavailable: "couldn't be checked because the postcode lookup service isn't responding. Please try again later"
+        event:
+          attributes:
+            base:
+              no_location: "No place or address could be created or found for the event location: %{location}"
+              duplicate: "Unfortunately this event is a duplicate of an existing event for calendar: %{calendar_id} ('%{calendar}')"
         partner:
           attributes:
             base:
