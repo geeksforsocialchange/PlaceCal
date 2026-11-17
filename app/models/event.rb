@@ -11,6 +11,8 @@
 #  dtend                    :datetime
 #  dtstart                  :datetime         not null
 #  footer                   :text
+#  image                    :string
+#  image_source_url         :string
 #  is_active                :boolean          default(TRUE), not null
 #  notices                  :jsonb
 #  publisher_url            :string
@@ -53,6 +55,7 @@ class Event < ApplicationRecord
   has_paper_trail ignore: %i[rrule]
 
   include HtmlRenderCache
+  include EventImage
   include EventJsonLd
   include Permalinkable
 
@@ -70,6 +73,7 @@ class Event < ApplicationRecord
   attribute :dtend,                    :datetime                    # nullable
   attribute :dtstart,                  :datetime                    # NOT NULL
   attribute :footer,                   :text                        # nullable
+  attribute :image_source_url,         :string                      # nullable, the source's URL for the stored image
   attribute :is_active,                :boolean, default: true      # NOT NULL
   attribute :publisher_url,            :string                      # nullable
   attribute :raw_location_from_source, :text                        # nullable
@@ -187,19 +191,18 @@ class Event < ApplicationRecord
   # Remove duplicate events (same uid, dtstart, dtend, calendar_id),
   # keeping the oldest record. Returns the number of deleted rows.
   def self.deduplicate!
-    result = connection.execute(<<~SQL.squish)
-      WITH duplicates AS (
+    duplicate_ids = <<~SQL.squish
+      SELECT id FROM (
         SELECT id, ROW_NUMBER() OVER (
           PARTITION BY uid, dtstart, dtend, calendar_id
           ORDER BY id
         ) as rn
         FROM events
-      )
-      DELETE FROM events WHERE id IN (
-        SELECT id FROM duplicates WHERE rn > 1
-      )
+      ) duplicates WHERE rn > 1
     SQL
-    result.cmd_tuples
+    # The DELETE skips callbacks, so their image files go first
+    where("id IN (#{duplicate_ids})").where.not(image: nil).find_each(&:remove_image!)
+    connection.execute("DELETE FROM events WHERE id IN (#{duplicate_ids})").cmd_tuples
   end
 
   # Deletes PaperTrail versions older than VERSION_RETENTION.

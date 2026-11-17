@@ -85,7 +85,8 @@ module CalendarImporter::Events
         rrule:,
         publisher_url:,
         source_categories: Base.clean_list(source_categories).presence,
-        source_organiser: Base.clean_list(source_organiser).first }
+        source_organiser: Base.clean_list(source_organiser).first,
+        image_source_url: image_url.to_s.strip.presence }
     end
 
     # Strings from the source, kept as text; they never become PlaceCal categories or partners
@@ -107,6 +108,8 @@ module CalendarImporter::Events
     def footer; end
 
     def publisher_url; end
+
+    def image_url; end
 
     def location?
       location.present?

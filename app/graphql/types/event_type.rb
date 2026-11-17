@@ -46,6 +46,9 @@ module Types
           method: :permalink,
           description: "The event's page on PlaceCal, with full details"
 
+    field :image, String,
+          description: "The URL of the event's image, served from PlaceCal, as its source gave it"
+
     field :repeatFrequency, String,
           description: 'How often this event repeats, e.g. "Weekly", "Monthly". Null for one-off events', method: :repeat_frequency
 
@@ -57,6 +60,15 @@ module Types
           resolver_method: :online_event_url_type,
           description: 'Whether the URL of the online event is a link to the live stream (direct)'\
                        ' or to an intermediary (indirect).'
+
+    def image
+      return if object.image.blank?
+
+      url = URI::HTTP.build(Rails.application.default_url_options)
+      url.scheme = Rails.application.default_url_options[:protocol]
+      url.path = object.image.url
+      url.to_s
+    end
 
     def online_event_url
       object&.online_address&.url

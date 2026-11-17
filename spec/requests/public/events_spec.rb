@@ -118,6 +118,25 @@ RSpec.describe "Public Events", type: :request do
       expect(response.body).to include(partner.name)
     end
 
+    context "with an image" do
+      before { event.update!(image: Rack::Test::UploadedFile.new(file_fixture("good-cat-picture.jpg"), "image/jpeg")) }
+
+      it "shows it above the description, named after the event, on the site and directory pages" do
+        ["#{site.slug}.lvh.me", "lvh.me"].each do |host|
+          get event_url(event, host:)
+          img = Nokogiri::HTML(response.body).at_css('[data-scope="event-image"] img')
+
+          expect(img["src"]).to eq(event.image.url)
+          expect(img["alt"]).to eq("Test Event")
+        end
+      end
+    end
+
+    it "shows no image when the event has none" do
+      get event_url(event, host: "#{site.slug}.lvh.me")
+      expect(Nokogiri::HTML(response.body).at_css('[data-scope="event-image"]')).to be_nil
+    end
+
     context "with a meeting link" do
       before { event.update!(online_address: create(:online_address, url: "https://meet.google.com/abc-defg-hij", link_type: "direct")) }
 
@@ -262,10 +281,11 @@ RSpec.describe "Public Events", type: :request do
       end
     end
 
-    it "marks every declared event-details part, and declares its tokens, when the event has a venue, a webpage and a sibling event" do
+    it "marks every declared event-details part, and declares its tokens, when the event has a venue, a webpage, an image and a sibling event" do
       venue = create(:partner, name: "The Venue", address:)
       full_event = create(:event, organiser: partner, place: venue, publisher_url: "https://example.org/event",
-                                  dtstart: 1.day.from_now, address:)
+                                  dtstart: 1.day.from_now, address:,
+                                  image: Rack::Test::UploadedFile.new(file_fixture("good-cat-picture.jpg"), "image/jpeg"))
       create(:event, organiser: partner, dtstart: 2.days.from_now, address:)
       get event_url(full_event, host: "#{site.slug}.lvh.me")
 

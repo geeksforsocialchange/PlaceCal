@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_17_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_17_130000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -118,6 +118,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_17_120000) do
     t.datetime "dtend", precision: nil
     t.datetime "dtstart", precision: nil, null: false
     t.text "footer"
+    t.string "image"
+    t.string "image_source_url"
     t.boolean "is_active", default: true, null: false
     t.jsonb "notices"
     t.bigint "online_address_id"
