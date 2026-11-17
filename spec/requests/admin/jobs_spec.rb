@@ -22,23 +22,19 @@ RSpec.describe "Admin background jobs", type: :request do
       Nokogiri::HTML(response.body)
     end
 
-    it "says all is clear when no calendar needs attention" do
-      expect(page_html.text).to include(I18n.t("admin.jobs.empty.title"))
-    end
+    def job_count(html, kind) = html.at_xpath("//dt[text()='#{I18n.t("admin.jobs.stats.#{kind}")}']/following-sibling::dd").text
 
-    it "lists calendars with problems, with their error, and calendars queued or importing" do
-      broken = create(:calendar, name: "Broken feed")
-      broken.update_columns(calendar_state: "error", critical_error: "Calendar URL returned un-parsable data") # rubocop:disable Rails/SkipsModelValidations
-      unreachable = create(:calendar, name: "Gone away")
-      unreachable.update_columns(calendar_state: "bad_source", critical_error: "404") # rubocop:disable Rails/SkipsModelValidations
-      busy = create(:calendar, name: "Busy feed")
-      busy.update_columns(calendar_state: "in_worker", import_started_at: 2.minutes.ago) # rubocop:disable Rails/SkipsModelValidations
+    it "shows calendars with a problem in the paginated calendars table, with the state buttons and job counts inside it" do
+      create(:calendar).update_columns(calendar_state: "bad_source") # rubocop:disable Rails/SkipsModelValidations
+      html = page_html
+      table = html.at_css("[data-controller='admin-table']")
 
-      text = page_html.text
-
-      expect(text).to include("Broken feed", "Calendar URL returned un-parsable data", "Gone away", "Busy feed")
-      expect(text).to include(I18n.t("admin.jobs.sections.problem_calendars"), I18n.t("admin.jobs.sections.busy_calendars"))
-      expect(text).not_to include(I18n.t("admin.jobs.empty.title"))
+      expect(table["data-admin-table-source-value"]).to eq(admin_calendars_path(format: :json))
+      expect(table.at_css("h1").text).to eq(I18n.t("admin.jobs.title"))
+      expect(table.at_css("[data-filter-column='state']")["data-filter-default"]).to eq("problem")
+      expect(table.at_css("button.bg-orange-700[data-filter-value='problem'] span").text).to eq("1")
+      expect(table.at_css("button[data-filter-value='bad_source'] span").text).to eq("1")
+      expect(job_count(table, :waiting)).to eq("0")
     end
 
     def failed_job(class_name, arguments)
@@ -53,12 +49,12 @@ RSpec.describe "Admin background jobs", type: :request do
       email = failed_job("MailDeliveryJob", %w[JoinMailer join_us deliver_now])
 
       html = page_html
-      rows = html.css("table").last.css("tbody tr").map { it.text.squish }
+      rows = html.css("#failed-jobs tbody tr").map { it.text.squish }
 
       expect(rows).to include(a_string_including(I18n.t("admin.jobs.kinds.import"), "Folk club feed", "Net::SMTPServerBusy: try later",
                                                  I18n.t("admin.jobs.actions.reimport")))
       expect(rows).to include(a_string_including(I18n.t("admin.jobs.kinds.email"), I18n.t("admin.jobs.actions.retry")))
-      expect(html.css("table").last.css("thead th").map { it.text.squish }).to eq(
+      expect(html.css("#failed-jobs table").css("thead th").map { it.text.squish }).to eq(
         %w[job about error failed_at actions].map { I18n.t("admin.jobs.failed_columns.#{it}") }
       )
       expect(html.text).not_to include("x.rb:1")
@@ -87,7 +83,7 @@ RSpec.describe "Admin background jobs", type: :request do
     it "counts Solid Queue's waiting and running jobs" do
       SolidQueue::Job.create!(queue_name: "default", class_name: "CalendarImporterJob", arguments: {})
 
-      expect(page_html.text).to include("#{I18n.t('admin.jobs.stats.waiting')}:1")
+      expect(job_count(page_html, :waiting)).to eq("1")
     end
   end
 end

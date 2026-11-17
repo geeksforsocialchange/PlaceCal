@@ -10,15 +10,9 @@ module Admin
     before_action :set_failed_job, only: %i[retry destroy]
 
     def index
-      problem_calendars = Calendar.where(calendar_state: %w[error bad_source]).includes(:organiser).order(:name)
-      busy_calendars = Calendar.busy.includes(:organiser).order(:name)
-
       render Views::Admin::Jobs::Index.new(
         job_counts:,
         calendar_counts: Calendar.group(:calendar_state).count,
-        problem_calendars:,
-        busy_calendars:,
-        event_counts: Event.where(calendar_id: problem_calendars.ids + busy_calendars.ids).group(:calendar_id).count,
         failed_jobs: SolidQueue::FailedExecution.includes(:job).order(created_at: :desc).limit(FAILED_JOBS_SHOWN).to_a
       )
     end

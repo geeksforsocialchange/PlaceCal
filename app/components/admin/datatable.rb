@@ -16,7 +16,9 @@ class Components::Admin::Datatable < Components::Admin::Base
   prop :new_link, _Nilable(String), default: nil
   prop :search_fieldset, _Boolean, default: false
 
-  def view_template
+  # The block adds to the header's right-hand side, beside the add link
+  def view_template(&header_extra)
+    @header_extra = header_extra
     content_for(:title) { @title }
     model_name = @model.to_s.chop.humanize
 
@@ -63,6 +65,7 @@ class Components::Admin::Datatable < Components::Admin::Base
           p(class: 'mt-1 text-sm text-gray-600', role: 'status', data_admin_table_target: 'summary') { t('admin.labels.loading') }
         end
         render_new_link(model_name) if @new_link
+        div(&@header_extra) if @header_extra
       end
     end
   end
@@ -128,7 +131,7 @@ class Components::Admin::Datatable < Components::Admin::Base
 
     ungrouped.each do |filter|
       RadioFilter(
-        column: filter[:column], label: filter[:label], options: filter[:options] || []
+        column: filter[:column], label: filter[:label], options: filter[:options] || [], default: filter[:default]
       )
     end
 
