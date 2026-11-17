@@ -28,7 +28,7 @@ RSpec.describe CalendarImporter::EventResolver do
   def patch_ics_dates(event, from_date, to_date)
     patch = Module.new
     patch.define_method(:occurrences_between) do |_from, _to|
-      [CalendarImporter::Events::Base::Dates.new(from_date, to_date)]
+      [CalendarImporter::Events::Base::Occurrence.new(start_time: from_date, end_time: to_date)]
     end
 
     event.extend patch

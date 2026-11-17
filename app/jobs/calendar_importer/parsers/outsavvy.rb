@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module CalendarImporter::Parsers
-  class Outsavvy < Base
+  class Outsavvy < LdJson
     NAME = 'OutSavvy'
     KEY = 'outsavvy'
     DOMAINS = %w[outsavvy.com].freeze
@@ -15,6 +15,11 @@ module CalendarImporter::Parsers
 
     def self.allowlist_pattern
       %r{^https://www\.outsavvy\.com/organiser/[^/]*/?$}
+    end
+
+    # Recognised from the URL alone, without fetching the page
+    def self.handles_url?(calendar)
+      calendar.source =~ allowlist_pattern
     end
 
     # Get event URLs from an organiser page
@@ -34,13 +39,6 @@ module CalendarImporter::Parsers
         doc = Nokogiri::HTML(Base.read_http_source(event_url))
         with_page_description(Base.parse_ld_json_document(doc), doc)
       end
-    end
-
-    def import_events_from(data)
-      consumer = EventConsumer.new
-      consumer.consume data
-      consumer.validate_events
-      consumer.events
     end
 
     private

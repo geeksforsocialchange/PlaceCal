@@ -38,10 +38,6 @@ module CalendarImporter::Events
       @event['url']
     end
 
-    def occurrences_between(*)
-      [Dates.new(dtstart, dtend)]
-    end
-
     private
 
     def parse_datetime(time_hash)

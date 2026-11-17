@@ -3,6 +3,16 @@
 require "rails_helper"
 
 RSpec.describe CalendarImporter::Parsers::Outsavvy do
+  describe ".handles_url?" do
+    it "matches on the URL without downloading the page", :aggregate_failures do
+      allow(CalendarImporter::Parsers::Base).to receive(:read_http_source)
+
+      expect(described_class).to be_handles_url(build(:calendar, source: "https://www.outsavvy.com/organiser/test"))
+      expect(described_class).not_to be_handles_url(build(:calendar, source: "https://example.com/events"))
+      expect(CalendarImporter::Parsers::Base).not_to have_received(:read_http_source)
+    end
+  end
+
   describe "#extract_event_urls" do
     it "extracts event URLs from organiser page with live events" do
       outsavvy_url = "https://www.outsavvy.com/organiser/a-whole-orange"
@@ -124,6 +134,15 @@ RSpec.describe CalendarImporter::Parsers::Outsavvy do
 
       it "falls back to the ld+json description when the page has none" do
         expect(imported_description("<div class=\"event-description\">Promo</div>")).to eq("HeadlinerParagraph one")
+      end
+
+      it "builds OutSavvy events, which read its malformed timestamps" do
+        allow(parser).to receive(:extract_event_urls).and_return(["https://www.outsavvy.com/event/1/gig"])
+        allow(CalendarImporter::Parsers::Base).to receive(:read_http_source).and_return(
+          %(<html><head><script type="application/ld+json">#{ld_json}</script></head></html>)
+        )
+
+        expect(parser.import_events_from(parser.download_calendar)).to contain_exactly(an_instance_of(CalendarImporter::Events::OutsavvyEvent))
       end
 
       context "with several dates" do

@@ -6,6 +6,9 @@ module CalendarImporter::Events
 
     attr_reader :uid, :start_time, :end_time, :summary, :description, :location, :status
 
+    alias dtstart start_time
+    alias dtend end_time
+
     def initialize(data)
       super
 
@@ -53,10 +56,6 @@ module CalendarImporter::Events
       components.join(', ').presence || loc['name']
     end
 
-    def attributes
-      valid? && in_future? && not_cancelled? && super
-    end
-
     def valid?
       @url.present? &&
         @start_time.present? &&
@@ -72,10 +71,6 @@ module CalendarImporter::Events
     def not_cancelled?
       status = @status.is_a?(Hash) ? @status['@id'] : @status
       EXCLUDED_STATUSES.exclude?(status.to_s.sub(%r{\A(https?://schema\.org/|schema:)}, ''))
-    end
-
-    def occurrences_between(*)
-      [Dates.new(start_time, end_time)]
     end
 
     def publisher_url

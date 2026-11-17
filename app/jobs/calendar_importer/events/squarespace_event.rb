@@ -29,10 +29,6 @@ module CalendarImporter::Events
       Time.zone.at(@event['endDate'] / 1000)
     end
 
-    def occurrences_between(*)
-      [Dates.new(dtstart, dtend)]
-    end
-
     def location
       # get from partner??
       nil # TODO: ??? Why are we ignoring the venue for meetup events
