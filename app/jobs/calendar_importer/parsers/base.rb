@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # In order for a parser to be recognized, it must be added
-# to the PARSERS constant list in app/models/calendar_parser.rb.
+# to CalendarImporter::CalendarImporter::PARSERS.
 # Parent parser classes should not be added.
 
 module CalendarImporter::Parsers
@@ -34,7 +34,7 @@ module CalendarImporter::Parsers
     def self.skips_source_check?
       requires_api_token?
     end
-    Output = Struct.new(:events, :checksum_changed, :checksum, :notices)
+    Output = Struct.new(:events, :checksum_changed, :checksum)
 
     CONTEXT = {
       'geo' => 'http://schema.org/geo',
@@ -121,6 +121,7 @@ module CalendarImporter::Parsers
       @from = options.delete(:from)
       @to = options.delete(:to)
       @force_import = options.delete(:force_import)
+      @report = options.delete(:report) || CalendarImporter::ImportReport.new
     end
 
     # Downloads the feed and parses it unless its checksum is unchanged (or the import is forced).
@@ -128,15 +129,13 @@ module CalendarImporter::Parsers
       data = download_calendar
       checksum = digest(data)
       checksum_changed = @calendar.last_checksum != checksum
-      return Output.new([], false, checksum, []) if !@force_import && !checksum_changed
+      return Output.new([], false, checksum) if !@force_import && !checksum_changed
 
-      Output.new(import_events_from(data), checksum_changed, checksum, notices)
+      Output.new(import_events_from(data), checksum_changed, checksum)
     end
 
-    # Problems with individual events that were skipped while parsing the feed
-    def notices
-      @notices ||= []
-    end
+    # @return [CalendarImporter::ImportReport] where problems with individual events skipped while parsing are added
+    attr_reader :report
 
     # @abstract Subclass is expect to implmement #download_calendar
     # @!method download_calendar

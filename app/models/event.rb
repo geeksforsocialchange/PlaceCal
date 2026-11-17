@@ -16,6 +16,8 @@
 #  publisher_url            :string
 #  raw_location_from_source :text
 #  rrule                    :jsonb
+#  source_categories        :jsonb
+#  source_organiser         :string
 #  summary                  :text             not null
 #  summary_html             :string
 #  uid                      :string
@@ -48,7 +50,7 @@
 #
 class Event < ApplicationRecord
   # ==== Includes / Extends ====
-  has_paper_trail ignore: %i[rrule notices]
+  has_paper_trail ignore: %i[rrule]
 
   include HtmlRenderCache
   include EventJsonLd
@@ -59,6 +61,8 @@ class Event < ApplicationRecord
   VERSION_PRUNE_BATCH_SIZE = 5_000
 
   # ==== Attributes ====
+  self.ignored_columns += %w[notices]
+
   # Columns marked (nullable) have no NOT NULL constraint in the DB.
   attribute :are_spaces_available,     :string                      # nullable
   attribute :description,              :text                        # nullable
@@ -67,10 +71,11 @@ class Event < ApplicationRecord
   attribute :dtstart,                  :datetime                    # NOT NULL
   attribute :footer,                   :text                        # nullable
   attribute :is_active,                :boolean, default: true      # NOT NULL
-  attribute :notices,                  :json                        # nullable — Array<String>, importer messages
   attribute :publisher_url,            :string                      # nullable
   attribute :raw_location_from_source, :text                        # nullable
   attribute :rrule,                    :json                        # nullable — Array<Hash{table: {frequency: String}}>, or false
+  attribute :source_categories,        :json                        # nullable, Array<String> as the source gave them
+  attribute :source_organiser,         :string                      # nullable, the organiser name the source gave
   attribute :summary,                  :text                        # NOT NULL
   attribute :summary_html,             :string                      # nullable, populated by HtmlRenderCache
   attribute :uid,                      :string                      # nullable

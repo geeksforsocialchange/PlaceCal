@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # In order for a parser to be recognized, it must be added
-# to the PARSERS constant list in app/models/calendar_parser.rb.
+# to CalendarImporter::CalendarImporter::PARSERS.
 # Parent parser classes should not be added.
 
 module CalendarImporter::Parsers
@@ -94,7 +94,8 @@ module CalendarImporter::Parsers
       parser = SkippingParser.new(with_iana_time_zones(data))
       calendars = parser.parse
       parser.skipped.each do |event, error|
-        notices << I18n.t('admin.calendars.importer.unreadable_event_dates', event: event.summary.to_s.presence || event.uid.to_s, error:)
+        report.add(:unreadable_event_dates, 'admin.calendars.importer.unreadable_event_dates',
+                   values: { event: event.summary.to_s.presence || event.uid.to_s, error: }, uid: event.uid.to_s, title: event.summary.to_s)
       end
       calendars
     rescue RuntimeError, *SkippingParser::DATE_ERRORS => e

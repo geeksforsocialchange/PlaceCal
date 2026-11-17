@@ -42,10 +42,6 @@ module CalendarImporter::Events
         [loc['name'], loc['address']].compact_blank.join(', ')
     end
 
-    def occurrences_between(*)
-      [Dates.new(dtstart, dtend)]
-    end
-
     private
 
     def scheduling_config

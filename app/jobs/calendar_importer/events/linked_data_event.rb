@@ -3,8 +3,13 @@
 module CalendarImporter::Events
   class LinkedDataEvent < Base
     EXCLUDED_STATUSES = %w[EventCancelled EventPostponed].freeze
+    # Not in Parsers::Base::CONTEXT, so compacting leaves it under its full IRI
+    KEYWORDS = 'http://schema.org/keywords'
 
     attr_reader :uid, :start_time, :end_time, :summary, :description, :location, :status
+
+    alias dtstart start_time
+    alias dtend end_time
 
     def initialize(data)
       super
@@ -53,10 +58,6 @@ module CalendarImporter::Events
       components.join(', ').presence || loc['name']
     end
 
-    def attributes
-      valid? && in_future? && not_cancelled? && super
-    end
-
     def valid?
       @url.present? &&
         @start_time.present? &&
@@ -74,12 +75,28 @@ module CalendarImporter::Events
       EXCLUDED_STATUSES.exclude?(status.to_s.sub(%r{\A(https?://schema\.org/|schema:)}, ''))
     end
 
-    def occurrences_between(*)
-      [Dates.new(start_time, end_time)]
-    end
-
     def publisher_url
       @event['url']
+    end
+
+    # keywords is one comma-separated string, or a list of strings or DefinedTerms
+    def source_categories
+      keywords = @event[KEYWORDS]
+      return keywords.split(',') if keywords.is_a?(String)
+
+      Array.wrap(keywords).flat_map { |keyword| named(keyword) }
+    end
+
+    def source_organiser
+      Base.clean_list(Array.wrap(@event['organiser']).flat_map { |organiser| named(organiser) }).join(', ').presence
+    end
+
+    private
+
+    def named(node)
+      return [node] unless node.is_a?(Hash)
+
+      Array.wrap(node.key?('@value') ? node['@value'] : node['name']).map { |name| name.is_a?(Hash) ? name['@value'] : name }
     end
   end
 end

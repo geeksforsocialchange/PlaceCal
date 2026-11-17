@@ -2,11 +2,6 @@
 
 module CalendarImporter::Events
   class ResidentAdvisor < Base
-    def initialize(event)
-      super
-      @event = event
-    end
-
     def uid
       @event['id']
     end
@@ -17,10 +12,6 @@ module CalendarImporter::Events
 
     def description
       @event['content'] || ''
-    end
-
-    def place
-      '' # N/A
     end
 
     def publisher_url
@@ -37,10 +28,6 @@ module CalendarImporter::Events
 
     def dtend
       @event['endTime']
-    end
-
-    def occurrences_between(*)
-      [Dates.new(dtstart, dtend)]
     end
   end
 end

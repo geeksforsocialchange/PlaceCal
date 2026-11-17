@@ -183,14 +183,42 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
       parsed_event = instance_double(
         CalendarImporter::EventResolver,
         private?: false,
-        no_occurences?: false,
-        determine_online_location: nil
+        no_occurrences?: false,
+        uid: "event@example.com",
+        data: instance_double(CalendarImporter::Events::IcsEvent)
       )
-      allow(parsed_event).to receive(:determine_location_for_strategy)
+      allow(parsed_event.data).to receive(:summary).and_raise(NoMethodError, "malformed source event")
+      allow(parsed_event).to receive(:resolve)
         .and_raise(CalendarImporter::LocationResolver::Problem, "N/A")
 
       expect { importer_task.send(:process_event, parsed_event) }.not_to raise_error
-      expect(importer_task.send(:notices)).to eq(["N/A"])
+      expect(importer_task.send(:report).notices).to eq(["N/A"])
+      expect(importer_task.send(:report).entries.sole).to have_attributes(kind: :location_problem, uid: "event@example.com", title: nil)
+    end
+
+    it "removes the upcoming rows of an event whose location can't be resolved", :aggregate_failures do
+      url = "https://calendar.example.org/rooms.ics"
+      start = 2.weeks.from_now.utc.strftime("%Y%m%dT100000Z")
+      vevents = %w[problem@example.com good@example.com].flat_map do |uid|
+        ["BEGIN:VEVENT", "UID:#{uid}", "DTSTAMP:20261101T000000Z", "DTSTART:#{start}", "SUMMARY:#{uid}", "END:VEVENT"]
+      end
+      body = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//PlaceCal//Test//EN", *vevents, "END:VCALENDAR", ""].join("\r\n")
+      stub_request(:get, url).to_return(status: 200, body:, headers: { "Content-Type" => "text/calendar" })
+
+      calendar = create(:calendar, source: url, importer_mode: "ical", strategy: "place")
+      calendar.update!(calendar_state: "in_worker")
+      create(:event, calendar:, uid: "problem@example.com", dtstart: 2.weeks.from_now, dtend: 2.weeks.from_now + 1.hour)
+
+      unplaceable = instance_double(CalendarImporter::LocationResolver)
+      allow(unplaceable).to receive(:resolve).and_raise(CalendarImporter::LocationResolver::Problem, "Can't place it")
+      allow(CalendarImporter::LocationResolver).to receive(:new).and_wrap_original do |original, cal, data|
+        data.uid == "problem@example.com" ? unplaceable : original.call(cal, data)
+      end
+
+      expect { described_class.new(calendar, Time.zone.today, true).run }
+        .to change { calendar.events.upcoming.where(uid: "problem@example.com").count }.from(1).to(0)
+      expect(calendar.events.upcoming.pluck(:uid)).to eq(["good@example.com"])
+      expect(calendar.reload.notices).to eq(["Can't place it"])
     end
   end
 
@@ -295,6 +323,7 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
                         importer_mode: "ticketsource", api_token: "test_key")
     end
     let(:dates_url) { "https://api.ticketsource.io/events/e1/dates?page=1&per_page=100" }
+    let(:venues_url) { "https://api.ticketsource.io/events/e1/venues" }
 
     def json(body)
       { status: 200, body: body.to_json, headers: { "Content-Type" => "application/json" } }
@@ -305,9 +334,17 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
                                       "end" => "2022-11-#{day}T21:00:00+00:00" } }
     end
 
+    def ts_venue(postcode)
+      { "data" => [{ "id" => "v1", "attributes" => { "name" => "Hall", "address" => { "line_1" => "1 High Street", "postcode" => postcode } } }] }
+    end
+
     def run_import
       calendar.update!(calendar_state: "in_worker")
       described_class.new(calendar, Time.zone.today, false).run
+    end
+
+    def event_postcode
+      calendar.events.sole.address&.postcode
     end
 
     before do
@@ -339,6 +376,40 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
 
       expect(calendar.reload.last_checksum).to eq(checksum)
       expect(calendar.events.pluck(:summary)).to eq(["Edited locally"])
+    end
+
+    it "updates an event's address when only its venue changes" do
+      create(:riverside_ward)
+      create(:oldtown_ward)
+      stub_request(:get, dates_url).to_return(json("data" => [ts_date("d1", 20)]))
+      stub_request(:get, venues_url).to_return(json(ts_venue("ZZMB 1RS")))
+      run_import
+      expect(event_postcode).to eq("ZZMB 1RS")
+
+      stub_request(:get, venues_url).to_return(json(ts_venue("ZZMB 2OT")))
+      run_import
+
+      expect(event_postcode).to eq("ZZMB 2OT")
+    end
+
+    it "keeps the event's address when a venue request fails, and reads the venue on the next import" do
+      allow(CalendarImporter::Parsers::Base).to receive(:sleep)
+      create(:riverside_ward)
+      create(:oldtown_ward)
+      stub_request(:get, dates_url).to_return(json("data" => [ts_date("d1", 20)]))
+      stub_request(:get, venues_url).to_return(json(ts_venue("ZZMB 1RS")))
+      run_import
+
+      checksum = calendar.reload.last_checksum
+      stub_request(:get, venues_url).to_return(status: 500)
+      expect { run_import }.to raise_error(CalendarImporter::Exceptions::InaccessibleFeed)
+      expect(event_postcode).to eq("ZZMB 1RS")
+      expect(calendar.reload.last_checksum).to eq(checksum)
+
+      stub_request(:get, venues_url).to_return(json(ts_venue("ZZMB 2OT")))
+      run_import
+
+      expect(event_postcode).to eq("ZZMB 2OT")
     end
   end
 end
