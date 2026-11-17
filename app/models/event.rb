@@ -53,6 +53,8 @@ class Event < ApplicationRecord
   has_paper_trail ignore: %i[rrule]
 
   include HtmlRenderCache
+  include EventDateScopes
+  include EventDisplay
   include EventJsonLd
   include Permalinkable
 
@@ -97,35 +99,6 @@ class Event < ApplicationRecord
   validate :unique_event, on: :create # If we are updating the event we don't want it to trigger!
 
   # ==== Scopes ====
-  # has_many :service_areas, through: :partner
-
-  # Events starting on app-zone dates first..last inclusive. dtstart is stored in UTC,
-  # so SQL DATE(dtstart) would put events from 00:00 to 01:00 BST on the day before.
-  scope :starting_between_days, lambda { |first, last|
-    where(dtstart: first.to_date.in_time_zone...last.to_date.next_day.in_time_zone)
-  }
-
-  # Find events that start on a given day
-  scope :find_by_day, ->(day) { starting_between_days(day, day) }
-
-  # Find by week (Monday to Sunday)
-  scope :find_by_week, lambda { |day|
-    date = day.to_date
-    starting_between_days(date.beginning_of_week, date.end_of_week)
-  }
-
-  # Find next 7 days from given day
-  scope :find_next_7_days, ->(day) { starting_between_days(day, day.to_date + 6.days) }
-
-  # Find from given day to end of that month
-  scope :for_month, ->(day) { starting_between_days(day, day.to_date.end_of_month) }
-
-  # Find by day onwards
-  scope :future, lambda { |day|
-    day_start = day.midnight # 2024-04-01 00:00:00 +0100
-    where(dtstart: day_start..)
-  }
-
   # For the API eventFilter find by neighbourhood
   scope :for_neighbourhoods, lambda { |neighbourhoods|
     neighbourhood_ids = neighbourhoods.map(&:id)
@@ -144,13 +117,10 @@ class Event < ApplicationRecord
       .where(partner_tags: { tag_id: tags.map(&:id) })
   }
 
-  # Filter by Place
   scope :in_place, ->(place) { where(place:) }
 
-  # Filter by Organiser
   scope :by_organiser, ->(organiser) { where(organiser:) }
 
-  # Filter by Organiser or Place
   scope :by_organiser_or_place, ->(organiser) { in_place(organiser).or(by_organiser(organiser)) }
 
   # Hiding a partner is a moderation action, so its events leave every public listing
@@ -159,7 +129,6 @@ class Event < ApplicationRecord
           'WHERE hidden_organisers.id = events.organiser_id AND hidden_organisers.hidden)')
   }
 
-  # Sort by Summary or Start Time
   scope :sort_by_summary, -> { order(summary: :asc).order(:dtstart) }
   scope :sort_by_time, -> { order(dtstart: :asc).order(summary: :asc) }
 
@@ -174,34 +143,10 @@ class Event < ApplicationRecord
   scope :one_off_events_only, -> { where(rrule: false) }
   scope :repeating_events_only, -> { where.not(rrule: false) }
 
-  scope :upcoming, -> { where(dtstart: DateTime.current.beginning_of_day..) }
-  scope :past, -> { where(dtstart: ..DateTime.current.beginning_of_day) }
-
-  # Global feed; six months ahead keeps busy sites' subscriptions small enough for calendar apps
-  scope :ical_feed, -> { where(dtstart: 1.week.ago...6.months.from_now) }
-
   # ==== Callbacks ====
   before_save :sanitize_rrule
 
   # ==== Class methods ====
-  # Remove duplicate events (same uid, dtstart, dtend, calendar_id),
-  # keeping the oldest record. Returns the number of deleted rows.
-  def self.deduplicate!
-    result = connection.execute(<<~SQL.squish)
-      WITH duplicates AS (
-        SELECT id, ROW_NUMBER() OVER (
-          PARTITION BY uid, dtstart, dtend, calendar_id
-          ORDER BY id
-        ) as rn
-        FROM events
-      )
-      DELETE FROM events WHERE id IN (
-        SELECT id FROM duplicates WHERE rn > 1
-      )
-    SQL
-    result.cmd_tuples
-  end
-
   # Deletes PaperTrail versions older than VERSION_RETENTION.
   # @return [Integer] number of deleted versions
   def self.prune_old_versions!
@@ -212,47 +157,7 @@ class Event < ApplicationRecord
     count
   end
 
-  # icalendar < 2.13 serialised each rule as an OpenStruct (keys under "table"), 2.13+ as a flat Struct.
-  # @return [String, nil] raw RFC 5545 FREQ value, e.g. "WEEKLY"
-  def self.rrule_frequency(rrule)
-    rule = rrule.is_a?(Array) ? rrule.first : nil
-    return if rule.blank?
-
-    (rule['table'] || rule)['frequency'].presence
-  end
-
   # ==== Instance methods ====
-
-  # @return [String, nil] human-readable recurrence label (e.g. "Weekly")
-  def repeat_frequency
-    self.class.rrule_frequency(rrule)&.titleize
-  end
-
-  # @return [String] formatted time range, e.g. "09:00 – 10:00"
-  def time
-    if dtend
-      "#{dtstart.strftime('%H:%M')} – #{dtend.strftime('%H:%M')}"
-    else
-      dtstart.strftime('%H:%M')
-    end
-  end
-
-  # @return [String, false] ISO 8601 duration, or false if no end time
-  def duration
-    return false unless dtend
-
-    (dtend - dtstart).seconds.iso8601
-  end
-
-  # @return [String] short date, e.g. "1 Jan"
-  def date
-    dtstart.strftime('%-d %b')
-  end
-
-  # @return [String] date with year, e.g. " 1 Jan 2026"
-  def date_year
-    dtstart.strftime('%e %b %Y')
-  end
 
   # @return [Neighbourhood, nil]
   def neighbourhood
@@ -275,30 +180,6 @@ class Event < ApplicationRecord
     return @partner_at_location if defined?(@partner_at_location)
 
     @partner_at_location = (place unless place&.hidden) || Partner.matching_venue_for(address)
-  end
-
-  # TODO: plan this out on paper, currently half finished
-  # @return [String, false] contact-blame string, or false if no organiser
-  def blame
-    organiser = calendar&.organiser
-    return false unless organiser
-
-    email = organiser.admin_email
-    name = organiser.admin_name
-    "Something wrong with this listing? Contact #{name} <#{email}> with reference {url}"
-  end
-
-  # @return [String] Open Graph title combining summary, date, time, and organiser
-  def og_title
-    str = all_day? ? "#{summary}, #{date}" : "#{summary}, #{date}, #{time}"
-    str += " @ #{organiser.name}" if organiser
-    str
-  end
-
-  # Starts at midnight and ends at midnight, or has no end: imported all-day events look like this.
-  # @return [Boolean]
-  def all_day?
-    dtstart == dtstart.beginning_of_day && (dtend.nil? || dtend == dtend.beginning_of_day)
   end
 
   # Whether the event is over (dtend-aware, so a multi-day event still

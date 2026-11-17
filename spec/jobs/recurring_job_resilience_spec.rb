@@ -20,7 +20,7 @@ RSpec.describe SelfRescheduling do
       setter = double("setter")
       allow(RecurringMaintenanceJob).to receive(:set).and_return(setter)
       allow(setter).to receive(:perform_later)
-      allow(Event).to receive(:deduplicate!).and_raise("boom")
+      allow(Event).to receive(:prune_old_versions!).and_raise("boom")
 
       expect { RecurringMaintenanceJob.perform_now }.to raise_error("boom")
       expect(setter).not_to have_received(:perform_later)
