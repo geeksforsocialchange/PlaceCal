@@ -4,8 +4,8 @@ module CalendarImporter::Events
   class IcsEvent < Base
     class MissingTypeForURL < StandardError; end
 
-    # Domains that indicate a direct online meeting/streaming link
-    ONLINE_MEETING_DOMAINS = OnlineAddress::DOMAINS
+    # Domains that indicate a direct online meeting link
+    ONLINE_MEETING_DOMAINS = OnlineAddress::MEETING_DOMAINS
 
     # Calendar custom properties that may contain online meeting URLs
     ONLINE_MEETING_PROPERTIES = %w[
@@ -86,17 +86,17 @@ module CalendarImporter::Events
       Occurrence.new(@event.schedule.start_time.utc, @event.schedule.end_time.utc, self)
     end
 
-    # The iCal URL property links to more info about the event (its webpage),
-    # not to an online meeting. Use this for publisher_url, not online detection.
+    # The iCal URL property links to the event's webpage, not a meeting; so does a LOCATION
+    # that is a link anywhere but a meeting host, such as a ticket page.
     def publisher_url
       url = @event.url
       url = url.first if url.is_a?(Array)
-      url.to_s.presence
+      url.to_s.presence || location_webpage
     end
 
     def online_event_id
       link = online_meeting_custom_property
-      link ||= maybe_location_is_link
+      link ||= meeting_location
       link ||= find_event_link_in_description
 
       link = link.first if link.is_a?(Array)
@@ -104,7 +104,8 @@ module CalendarImporter::Events
 
       return if link.blank?
 
-      online_address = OnlineAddress.find_or_create_by(url: link, link_type: link_type_for(link))
+      # Every link found here is a way to join, even on a host we don't list
+      online_address = OnlineAddress.find_or_create_by(url: link, link_type: 'direct')
       online_address.id
     end
 
@@ -115,15 +116,19 @@ module CalendarImporter::Events
       ONLINE_MEETING_PROPERTIES.lazy.filter_map { |key| props[key] }.first
     end
 
-    def maybe_location_is_link
-      return if location.blank?
-
-      uri = URI.parse(location)
-      return unless uri.scheme&.match?(/\Ahttps?\z/i)
-
-      uri.to_s
+    def location_link
+      uri = URI.parse(location.strip)
+      uri.to_s if uri.scheme&.match?(/\Ahttps?\z/i) && uri.host.present?
     rescue URI::InvalidURIError
       nil
+    end
+
+    def meeting_location
+      location_link if OnlineAddress.meeting?(location_link)
+    end
+
+    def location_webpage
+      location_link unless OnlineAddress.meeting?(location_link)
     end
 
     def find_event_link_in_description
@@ -134,10 +139,6 @@ module CalendarImporter::Events
         return match[0] if match
       end
       nil
-    end
-
-    def link_type_for(link)
-      ONLINE_MEETING_DOMAINS.any? { |domain| link.include?(domain) } ? 'direct' : 'indirect'
     end
 
     def url_regex_for(domain)

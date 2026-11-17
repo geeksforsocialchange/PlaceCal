@@ -197,6 +197,15 @@ RSpec.describe CalendarImporter::LocationResolver do
       expect { described_class.new(calendar, event_data).resolve }
         .to raise_error(described_class::Problem, /no default location/)
     end
+
+    it "keeps the venue's own address when the location is only a link", :aggregate_failures do
+      event_data.location = "https://tickets.example.com/show"
+      calendar = create_calendar_with(strategy: "room_number", place: address_partner)
+
+      result = nil
+      expect { result = described_class.new(calendar, event_data).resolve }.not_to change(Address, :count)
+      expect(result).to eq([address_partner, address_partner.address])
+    end
   end
 
   describe "place strategy" do
