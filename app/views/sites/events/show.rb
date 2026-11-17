@@ -393,13 +393,10 @@ class Views::Sites::Events::Show < Views::Base
   end
 
   def render_site_more_from_organiser
-    section(**part(:more, class: 'container-narrowish')) do
-      UI::RuledHeading(caps: true, rule: :full, size: :lg, spacing: :section) { t('events.show.more_from', name: event.organiser.name) }
-      ul(class: 'reset') do
-        Array(more_from_organiser).each do |other_event|
-          li(class: 'block w-full') { Sites::Event(event: other_event, context_partner: event.organiser, nested: true) }
-        end
-      end
+    section(**part(:more, class: 'container-narrowish mb-8')) do
+      UI::RuledHeading(caps: true, rule: :none, size: :lg, spacing: :section) { t('events.show.more_from', name: event.organiser.name) }
+      Sites::EventRows(events: Array(more_from_organiser), context_partner: event.organiser,
+                       show_neighbourhoods: site.show_neighbourhoods?, badge_zoom_level: site.badge_zoom_level&.to_s)
     end
   end
 
