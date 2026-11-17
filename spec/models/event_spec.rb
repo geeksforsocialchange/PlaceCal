@@ -11,8 +11,9 @@
 #  dtend                    :datetime
 #  dtstart                  :datetime         not null
 #  footer                   :text
+#  image                    :string
+#  image_source_url         :string
 #  is_active                :boolean          default(TRUE), not null
-#  notices                  :jsonb
 #  publisher_url            :string
 #  raw_location_from_source :text
 #  rrule                    :jsonb
@@ -38,7 +39,7 @@
 #  index_events_on_organiser_id_and_dtstart  (organiser_id,dtstart)
 #  index_events_on_place_id                  (place_id)
 #  index_events_uid                          (uid)
-#  index_events_unique_per_calendar          (calendar_id,uid,dtstart,dtend) UNIQUE
+#  index_events_unique_per_calendar          (calendar_id,uid,dtstart,dtend) UNIQUE NULLS NOT DISTINCT
 #
 # Foreign Keys
 #

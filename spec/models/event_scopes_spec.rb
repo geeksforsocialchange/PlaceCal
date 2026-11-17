@@ -30,6 +30,15 @@ RSpec.describe Event, "scopes and validations" do
     end
   end
 
+  describe "unique index" do
+    it "refuses a second event on a calendar with the same uid and start and no end time" do
+      existing = create(:event, dtend: nil)
+      duplicate = build(:event, calendar: existing.calendar, uid: existing.uid, dtstart: existing.dtstart, dtend: nil, summary: "Renamed")
+
+      expect { duplicate.save!(validate: false) }.to raise_error(ActiveRecord::RecordNotUnique)
+    end
+  end
+
   describe "validations" do
     it "names the source's location when the calendar needs one and none could be found" do
       event = build(:event, calendar: create(:calendar, strategy: "place"), place: nil, address: nil, raw_location_from_source: "Back room")

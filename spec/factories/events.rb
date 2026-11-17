@@ -50,6 +50,7 @@
 #
 FactoryBot.define do
   factory :event do
+    sequence(:uid) { |n| "event-#{n}@example.com" }
     sequence(:summary) { |n| "Event #{n}" }
     description { Faker::Lorem.paragraph }
     dtstart { 1.day.from_now.at_beginning_of_hour }
