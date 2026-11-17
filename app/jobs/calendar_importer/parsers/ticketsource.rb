@@ -2,7 +2,6 @@
 
 # In order for a parser to be recognized, it must be added
 # to the PARSERS constant list in app/jobs/calendar_importer/calendar_importer.rb.
-# Parent parser classes should not be added.
 
 module CalendarImporter
   module Parsers
@@ -13,6 +12,7 @@ module CalendarImporter
 
       API_BASE_URL = 'https://api.ticketsource.io'
       USER_AGENT = 'ticketsource-placecal'
+      ADDRESS_FIELDS = %w[line_1 line_2 line_3 line_4 postcode].freeze
 
       # Venue pages like https://www.ticketsource.co.uk/fairfield-house or https://www.ticketsource.com/mcr-balfolk
       def self.allowlist_pattern
@@ -26,43 +26,43 @@ module CalendarImporter
       def import_events_from(data)
         return [] unless data.is_a?(Array)
 
-        data.flat_map do |event_data|
-          next unless importable?(event_data)
-
-          event_id = event_data['id']
-          attrs = event_data['attributes']
-          venue = fetch_event_venues(event_id).first
-
-          (event_data['dates'] || []).filter_map do |date_data|
-            date_attrs = date_data['attributes'] || {}
-            next if date_attrs['cancelled']
-
-            merged = {
-              'id' => event_id,
-              'attributes' => attrs,
-              'date' => date_data,
-              'venue' => venue,
-              'publisher_url' => build_publisher_url(event_data)
-            }
-            Events::TicketsourceEvent.new(merged)
+        data.flat_map do |record|
+          publisher_url = build_publisher_url(record)
+          record['dates'].reject { |date| date['cancelled'] }.map do |date|
+            Events::TicketsourceEvent.new(record, date, publisher_url:)
           end
-        end.compact
+        end
       end
 
       private
 
-      # Dates are fetched here so they count towards the checksum, and a failed request fails the import.
+      # Dates and venues are fetched here so they count towards the checksum, and a failed request fails the import.
       def fetch_all_events
-        fetch_all_pages('/events').each do |event_data|
-          next unless importable?(event_data)
-
-          event_data['dates'] = fetch_all_pages("/events/#{event_data['id']}/dates").map { |date| date_fields(date) }
-        end
+        fetch_all_pages('/events').select { |event| importable?(event) }.map { |event| event_record(event) }
       end
 
-      # Only the fields the importer reads, so changes like ticket counts don't alter the checksum.
-      def date_fields(date)
-        { 'id' => date['id'], 'attributes' => (date['attributes'] || {}).slice('start', 'end', 'cancelled') }
+      # Only the fields the import reads, so changes like ticket counts don't alter the checksum
+      def event_record(event)
+        attrs = event['attributes']
+        {
+          'id' => event['id'],
+          'name' => attrs['name'],
+          'description' => attrs['description'],
+          'reference' => attrs['reference'],
+          'dates' => fetch_all_pages("/events/#{event['id']}/dates").map { |date| date_record(date) },
+          'venue' => venue_record(fetch_event_venues(event['id']).first)
+        }
+      end
+
+      def date_record(date)
+        { 'id' => date['id'], **(date['attributes'] || {}).slice('start', 'end', 'cancelled') }
+      end
+
+      def venue_record(venue)
+        return unless venue
+
+        attrs = venue['attributes'] || {}
+        { 'name' => attrs['name'], **(attrs['address'] || {}).slice(*ADDRESS_FIELDS) }
       end
 
       def fetch_all_pages(path)
@@ -85,22 +85,20 @@ module CalendarImporter
         records
       end
 
-      def importable?(event_data)
-        attrs = event_data['attributes'] || {}
+      def importable?(event)
+        attrs = event['attributes'] || {}
         !attrs['archived'] && attrs['public']
       end
 
       def fetch_event_venues(event_id)
         url = "#{API_BASE_URL}/events/#{event_id}/venues"
-        response = fetch_page_json(url)
-        response['data'] || []
-      rescue StandardError => e
-        Rails.logger.warn "#{NAME}: Failed to fetch venues for event #{event_id}: #{e.message}"
+        fetch_page_json(url)['data'] || []
+      rescue ApiNotFound
         []
       end
 
-      def build_publisher_url(event_data)
-        ref = event_data.dig('attributes', 'reference')
+      def build_publisher_url(record)
+        ref = record['reference']
         ref.present? ? "#{@url.chomp('/')}/#{ref}" : @url
       end
     end

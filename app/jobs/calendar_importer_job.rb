@@ -65,8 +65,6 @@ class CalendarImporterJob < ApplicationJob
   # @param calendar_id [int] The ID of the Calendar object to import from
   # @param from_date [Date] The Date from which to import from
   def perform(calendar_id, from_date, force_import, silence_db_exceptions: false)
-    Calendar.record_timestamps = false
-
     @silence_db_exceptions = silence_db_exceptions
     @calendar_id = calendar_id
 
@@ -88,10 +86,6 @@ class CalendarImporterJob < ApplicationJob
 
   def report_error(exception, message)
     full_message = "#{message} for calendar #{calendar.name} (id #{calendar.id}):  #{exception}"
-
-    # FIXME: we should not be reloading the calendar here.
-    #   see note in Calendar#flag_error_import_job! for details
-    calendar.reload
     calendar.flag_error_import_job! full_message
   end
 

@@ -74,6 +74,14 @@ export default class extends Controller {
 		this.updateApiTokenVisibility();
 	}
 
+	// Parsers left out of the type list are still detected, and auto-detect finds them again on import
+	listedImporter(key) {
+		const listed = Array.from(this.importerModeSelectTarget.options).some(
+			(option) => option.value === key,
+		);
+		return listed ? key : "auto";
+	}
+
 	// Show or hide the API token field based on the selected importer.
 	// A token that is already saved keeps the field visible so it can be edited.
 	updateApiTokenVisibility() {
@@ -158,7 +166,9 @@ export default class extends Controller {
 				// Auto-select detected importer
 				if (data.importer_key && data.importer_key !== "auto") {
 					if (this.hasImporterModeSelectTarget) {
-						this.importerModeSelectTarget.value = data.importer_key;
+						this.importerModeSelectTarget.value = this.listedImporter(
+							data.importer_key,
+						);
 					}
 					if (this.hasDetectedFormatTarget) {
 						this.detectedFormatTarget.classList.remove("hidden");
