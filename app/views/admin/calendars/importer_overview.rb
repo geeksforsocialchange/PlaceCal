@@ -45,10 +45,9 @@ class Views::Admin::Calendars::ImporterOverview < Views::Admin::Base
     render_notices
   end
 
+  # Failures announce themselves through the error alert
   def announcement
-    return if calendar.busy?
-
-    calendar.calendar_state.idle? ? t('admin.calendars.importer.import_finished') : t('admin.calendars.importer.import_failed')
+    t('admin.calendars.importer.import_finished') if calendar.calendar_state.idle?
   end
 
   def render_stale_warning

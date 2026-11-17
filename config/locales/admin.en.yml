@@ -423,7 +423,6 @@ en:
         feed_empty_removed: "The feed has had no events since %{since}, so its upcoming events have been removed."
         feed_empty_no_events: "The feed has had no events since %{since}."
         importing: "Importing..."
-        import_failed: "Import failed"
         import_finished: "Import finished"
         last_import: "Last import:"
         notices: "Import notices"

@@ -47,13 +47,13 @@ RSpec.describe "Admin calendar import status", type: :request do
     end
 
     %w[error bad_source].each do |failed_state|
-      it "stops polling and announces failure when #{failed_state}", :aggregate_failures do
+      it "stops polling and leaves the failure to the error alert when #{failed_state}", :aggregate_failures do
         set_state(failed_state, critical_error: "The feed could not be read")
         get import_status_admin_calendar_url(calendar, host: admin_host)
 
         expect(state["data-poll"]).to be_nil
-        expect(state["data-announcement"]).to eq(I18n.t("admin.calendars.importer.import_failed"))
-        expect(response.body).to include("The feed could not be read")
+        expect(state["data-announcement"]).to be_nil
+        expect(html.at_css("[role='alert']").text).to include("The feed could not be read")
         expect(html.at_css("form[action='#{import_admin_calendar_path(calendar)}'][data-turbo-frame='_top']")).to be_present
       end
     end
