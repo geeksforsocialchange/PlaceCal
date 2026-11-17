@@ -15,6 +15,7 @@ class Components::Admin::Datatable < Components::Admin::Base
   prop :source, String
   prop :new_link, _Nilable(String), default: nil
   prop :search_fieldset, _Boolean, default: false
+  prop :refresh_every, _Nilable(Integer), default: nil
 
   # The block adds to the header's right-hand side, beside the add link
   def view_template(&header_extra)
@@ -36,7 +37,8 @@ class Components::Admin::Datatable < Components::Admin::Base
       data_admin_table_range_text_value: t('admin.datatable.range'),
       data_admin_table_filtered_range_text_value: t('admin.datatable.filtered_range'),
       data_admin_table_total_text_value: t('admin.datatable.total'),
-      data_admin_table_filtered_total_text_value: t('admin.datatable.filtered_total')
+      data_admin_table_filtered_total_text_value: t('admin.datatable.filtered_total'),
+      data_admin_table_refresh_interval_value: @refresh_every
     ) do
       render_header(model_name)
       render_filter_bar
