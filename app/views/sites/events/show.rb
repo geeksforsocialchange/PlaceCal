@@ -304,7 +304,7 @@ class Views::Sites::Events::Show < Views::Base
       if event.image.present?
         div(**part(:columns, class: 'grid grid-areas-partner-details')) do
           div(class: 'grid-area-main') { render_description_and_links }
-          aside(**part(:aside, class: 'grid-area-right')) { Shared::SidebarImage(src: event.image.url, alt: event.summary, **part(:image)) }
+          aside(**part(:aside, class: 'grid-area-right max-lg:mt-8')) { Shared::SidebarImage(src: event.image.url, alt: event.summary, **part(:image)) }
         end
       else
         render_description_and_links
