@@ -146,9 +146,9 @@ class Views::Layouts::Admin::Application < Phlex::HTML
       leftbar_main_links
       leftbar_quick_actions
       leftbar_content_types
+      leftbar_tools
       leftbar_support_links
       leftbar_dev_links
-      leftbar_sources_link
       leftbar_build_info
     end
   end
@@ -174,7 +174,6 @@ class Views::Layouts::Admin::Application < Phlex::HTML
     leftbar_section(t('admin.leftbar.content_types')) do
       admin_nav_link(human_model_name(Partner, count: 2), admin_partners_path, :partner) if policy(Partner).index?
       admin_nav_link(human_model_name(Calendar, count: 2), admin_calendars_path, :calendar) if policy(Calendar).index?
-      admin_nav_link(t('admin.leftbar.find_event'), lookup_admin_events_path, :search) if policy(Event).show?
       admin_nav_link(human_model_name(User, count: 2), admin_users_path, :users) if policy(User).index?
       admin_nav_link(human_model_name(Site, count: 2), admin_sites_path, :site) if policy(Site).index?
       admin_nav_link(human_model_name(Neighbourhood, count: 2), admin_neighbourhoods_path, :neighbourhood) if policy(Neighbourhood).index?
@@ -207,10 +206,15 @@ class Views::Layouts::Admin::Application < Phlex::HTML
     end
   end
 
-  def leftbar_sources_link
-    return unless policy(Calendar).new?
+  def leftbar_tools
+    find_event = policy(Event).show?
+    sources = policy(Calendar).new?
+    return unless find_event || sources
 
-    ul(class: 'space-y-1 px-2 mt-6') { admin_nav_link(t('admin.leftbar.calendar_sources'), sources_admin_calendars_path, :calendar) }
+    leftbar_section(t('admin.leftbar.tools')) do
+      admin_nav_link(t('admin.leftbar.find_event'), lookup_admin_events_path, :search) if find_event
+      admin_nav_link(t('admin.leftbar.calendar_sources'), sources_admin_calendars_path, :calendar) if sources
+    end
   end
 
   def leftbar_section(heading, &)

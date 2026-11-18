@@ -166,5 +166,7 @@ RSpec.describe "Admin event inspector", type: :request do
     html = Nokogiri::HTML(response.body)
     expect(html.at_css(%(nav a[href="#{lookup_admin_events_path}"])).text.strip).to eq(I18n.t("admin.leftbar.find_event"))
     expect(html.at_css("header form[role=search]")).to be_nil
+    headings = html.css("nav h2").map { it.text.strip.downcase }
+    expect(headings.index(I18n.t("admin.leftbar.tools").downcase)).to eq(headings.index(I18n.t("admin.leftbar.get_support").downcase) - 1)
   end
 end
