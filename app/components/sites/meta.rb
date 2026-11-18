@@ -27,7 +27,7 @@ class Components::Sites::Meta < Components::Base
     yield self if block_given?
 
     div(**part(:root, class: 'text-sm leading-normal bg-rules py-8 print:hidden')) do
-      div(**part(:content, class: 'container-public flex flex-wrap items-baseline gap-x-6')) do
+      div(**part(:content, class: 'container-public flex flex-wrap items-baseline gap-x-6 gap-y-2')) do
         raw(view_context.capture(&@link_content)) if @link_content
         if @permalink
           div(**part(:permalink, class: 'ms-auto')) do

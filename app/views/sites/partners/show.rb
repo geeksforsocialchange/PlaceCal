@@ -78,7 +78,7 @@ class Views::Sites::Partners::Show < Views::Base
     set_content_for_tags
     render_local_layout
     if site.core_theme?
-      Sites::Meta(permalink) { |meta| meta.with_link { Sites::PageActions(links: page_action_links, in_meta_band: true) } }
+      Sites::Meta() { |meta| meta.with_link { Sites::PageActions(links: band_links, in_meta_band: true) } }
     else
       render_meta_section
       render_page_actions
@@ -415,6 +415,13 @@ class Views::Sites::Partners::Show < Views::Base
              [t('partners.show.subscribe_ical', name: partner.name), partner_url(partner, protocol: :webcal, format: :ics)]]
     links << [t('events.csv_export.link'), partner_url(partner, format: :csv)] if events.any?
     links
+  end
+
+  # The band's links on core themes: the feed, the export and the permalink
+  def band_links
+    links = [[t('partners.show.subscribe_ical', name: partner.name), partner_url(partner, protocol: :webcal, format: :ics)]]
+    links << [t('events.csv_export.link'), partner_url(partner, format: :csv)] if events.any?
+    links << [t('components.meta.permalink'), permalink]
   end
 
   # Meta carries the permalink alone; the feed and export are page actions.

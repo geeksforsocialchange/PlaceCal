@@ -16,11 +16,12 @@ class Views::Sites::Events::Show < Views::Base
                 columns: 'The description and links beside the event\'s image, like the partner page. Only when the event has an image.',
                 aside: 'The column beside the description, holding the event\'s image. Only when the event has an image.',
                 image: 'The box holding the event\'s image, the same as a partner page\'s. Only when the event has one.',
-                info: 'The group of headed sections below: contact, address, organiser and venue.',
+                info: 'The group of headed sections below: contact and address, then on core themes the map, and on others the organiser and venue.',
                 contact: 'The organiser\'s contact section. Its heading only when the event has an organiser.',
                 contact_name: 'The organiser\'s name, linked, heading the contact details. Not on core themes.',
                 address: 'The event\'s address section.',
-                organiser: 'The organiser section, linking to their page.',
+                organiser: 'The organiser section, linking to their page. Not on core themes, which name the organiser above the address.',
+                organiser_name: 'On core themes, the organiser\'s name, linked, at the top of the address section.',
                 venue: 'The venue section, when the venue is a different partner from the organiser. On core themes, the venue\'s name above the address instead.',
                 section_body: 'The text under each section\'s heading.',
                 more: 'The "More from" list of the organiser\'s other events. Only when the organiser has other upcoming events.'
@@ -53,10 +54,11 @@ class Views::Sites::Events::Show < Views::Base
         organiser_byline: !site.core_theme?
       )
       render_event_details
-      div(class: 'border-t-10 border-tertiary-light', aria_hidden: 'true') if site.core_theme? && map.present?
-      Shared::Map(points: map, style: :multi)
+      # Core themes show the map boxed beside the address instead
+      Shared::Map(points: map, style: :multi) unless site.core_theme?
       render_site_more_from_organiser if Array(more_from_organiser).any?
-      render_page_actions
+      # Core themes put the actions in the meta band, as partner pages do
+      render_page_actions unless site.core_theme?
       render_event_meta
     end
   end
@@ -310,12 +312,27 @@ class Views::Sites::Events::Show < Views::Base
         render_description_and_links
       end
 
-      div(**part(:info, class: 'grid gap-4 items-start mt-5.5 lg:grid-cols-3')) do
-        render_contact_info if core_theme? ? event.organiser&.contactable? : true
+      core_theme? ? render_info_with_map : render_info_sections
+    end
+  end
+
+  # Contact and address stacked beside the map, which gets about the width it has on partner pages
+  def render_info_with_map
+    div(**part(:info, class: 'grid gap-8 items-start mt-5.5 lg:grid-cols-2')) do
+      UI::Stack(gap: :sm) do
+        render_contact_info if event.organiser&.contactable?
         render_event_address
-        render_event_organiser if event.organiser
-        render_event_venue if !core_theme? && show_venue?
       end
+      Shared::Map(points: map, compact: true) if map.present?
+    end
+  end
+
+  def render_info_sections
+    div(**part(:info, class: 'grid gap-4 items-start mt-5.5 lg:grid-cols-3')) do
+      render_contact_info
+      render_event_address
+      render_event_organiser if event.organiser
+      render_event_venue if show_venue?
     end
   end
 
@@ -346,7 +363,10 @@ class Views::Sites::Events::Show < Views::Base
     div(**part(:address)) do
       details_heading { t('events.show.address_heading') }
       div(**part(:section_body, class: section_body)) do
-        p(**part(:venue)) { link_to(venue.name, venue) } if core_theme? && venue
+        if core_theme?
+          p(**part(:organiser_name)) { link_to(event.organiser.name, event.organiser) } if event.organiser
+          p(**part(:venue)) { link_to(venue.name, venue) } if venue && venue != event.organiser
+        end
         Shared::Address(address: event.address, raw_location: event.raw_location_from_source)
       end
     end
@@ -397,20 +417,39 @@ class Views::Sites::Events::Show < Views::Base
       UI::RuledHeading(caps: true, rule: :none, size: :lg, spacing: :section) { t('events.show.more_from', name: event.organiser.name) }
       Sites::EventRows(events: Array(more_from_organiser), context_partner: event.organiser,
                        show_neighbourhoods: site.show_neighbourhoods?, badge_zoom_level: site.badge_zoom_level&.to_s)
+      div(class: 'flex justify-center mt-6') do
+        UI::Button(variant: :primary, size: :lg, href: partner_path(event.organiser)) { t('events.show.all_organiser_events', name: event.organiser.name) }
+      end
     end
   end
 
   # Page actions row (Components::Sites::PageActions, #3368): organiser's other
   # events (when there is an organiser), add to calendar, back to the index.
   def render_page_actions
+    Sites::PageActions(links: page_action_links)
+  end
+
+  def page_action_links
     links = []
     links << [t('events.show.organiser_events', name: event.organiser.name), partner_path(event.organiser)] if event.organiser
     links << [t('events.show.add_to_calendar'), event_url(event, protocol: :webcal, format: :ics)]
     links << [t('events.show.go_back'), events_path]
-    Sites::PageActions(links:)
+  end
+
+  # The band's links on core themes: adding to a calendar, reporting a problem and the permalink
+  def band_links
+    links = [[t('events.show.add_to_calendar'), event_url(event, protocol: :webcal, format: :ics)]]
+    contact = event.calendar&.contact_information
+    if contact
+      subject = t('events.show.problem_subject', url: "http://placecal.org#{event_path(event)}")
+      links << [t('events.show.report_problem'), "mailto:#{contact[0]}?subject=#{ERB::Util.url_encode(subject)}&cc=support%40placecal.org"]
+    end
+    links << [t('components.meta.permalink'), permalink]
   end
 
   def render_event_meta
+    return Sites::Meta() { |meta| meta.with_link { Sites::PageActions(links: band_links, in_meta_band: true) } } if site.core_theme?
+
     Sites::Meta(permalink) do |component|
       component.with_link do
         contact = event.calendar&.contact_information
