@@ -20,6 +20,13 @@ RSpec.describe WebpVersions do
       .to eq("#{image.standard_webp.url} 1x, #{image.retina_webp.url} 2x")
   end
 
+  it "puts the quality in the copies' URLs, and leaves the original's alone" do
+    image = partner.reload.image
+
+    expect(image.standard_webp.url).to end_with(".webp?q=#{WebpVersions::QUALITY}")
+    expect(image.url).not_to include("?q=")
+  end
+
   it "has no srcset until every copy exists" do
     image = partner.reload.image
     FileUtils.rm(image.retina_webp.path)

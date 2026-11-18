@@ -9,6 +9,8 @@ module CalendarImporter::Parsers
     include CalendarImporter::Exceptions
 
     PUBLIC = true
+    # A ticketing platform, whose event pages are where people book
+    TICKETING = false
     NAME = ''
     # The source's page under HANDBOOK_SOURCES_URL
     HANDBOOK_PAGE = nil

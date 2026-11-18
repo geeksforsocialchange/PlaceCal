@@ -4,6 +4,7 @@ module CalendarImporter::Parsers
   class Outsavvy < LdJson
     NAME = 'OutSavvy'
     HANDBOOK_PAGE = 'outsavvy'
+    TICKETING = true
     KEY = 'outsavvy'
     DOMAINS = %w[outsavvy.com].freeze
 
