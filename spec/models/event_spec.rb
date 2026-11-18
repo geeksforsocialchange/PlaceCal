@@ -14,7 +14,6 @@
 #  image                    :string
 #  image_source_url         :string
 #  is_active                :boolean          default(TRUE), not null
-#  notices                  :jsonb
 #  publisher_url            :string
 #  raw_location_from_source :text
 #  rrule                    :jsonb
