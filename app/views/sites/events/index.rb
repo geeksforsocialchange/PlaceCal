@@ -17,6 +17,7 @@ class Views::Sites::Events::Index < Views::Base
   prop :period, String, reader: :private
   prop :sort, String, reader: :private
   prop :repeating, String, reader: :private
+  prop :long_running, String, reader: :private, default: 'on'
   prop :current_day, Date, reader: :private
   prop :site, Site, reader: :private
   prop :selected_neighbourhood, _Nilable(String), reader: :private
@@ -62,12 +63,13 @@ class Views::Sites::Events::Index < Views::Base
           UI::Cluster(gap: :sm, **part(:filter_bar, class: ('min-w-0 max-w-full' if day_strip?))) do
             today = Time.zone.today
             region_param = selected_region ? "&region=#{selected_region.slug}" : ''
-            today_url = "/events/#{today.year}/#{today.month}/#{today.day}?period=#{period}&sort=#{sort}&repeating=#{repeating}#{region_param}#paginator"
+            today_url = "/events/#{today.year}/#{today.month}/#{today.day}?period=#{period}&sort=#{sort}&repeating=#{repeating}&long_running=#{long_running}#{region_param}#paginator"
             Sites::EventFilter(
               pointer: current_day,
               period:,
               sort:,
               repeating:,
+              long_running:,
               today_url:,
               today: current_day == today,
               site:,
@@ -85,6 +87,7 @@ class Views::Sites::Events::Index < Views::Base
         period:,
         sort:,
         repeating:,
+        long_running:,
         path: 'events'
       )
     end
@@ -115,7 +118,7 @@ class Views::Sites::Events::Index < Views::Base
   # Carries the current view's filters into the CSV export, so the download
   # matches whatever the visitor is looking at rather than the whole site.
   def csv_export_params
-    params = { period:, sort:, repeating: }
+    params = { period:, sort:, repeating:, long_running: }
     params[:region] = selected_region.slug if selected_region
     params[:neighbourhood] = selected_neighbourhood if selected_neighbourhood.present?
     params

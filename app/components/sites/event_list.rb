@@ -3,6 +3,7 @@
 class Components::Sites::EventList < Components::Base
   theme_scope :event_list,
               parts: {
+                ongoing: 'The long-running events already on, listed once above the days under an "On now" heading. Only on partner pages, and only when there are some.',
                 day: 'One day\'s list of events, under its date heading.',
                 item: 'One event in a day\'s list, holding its card.',
                 truncated: 'The line saying only the first events are shown. Only when the list is cut short.',
@@ -22,18 +23,21 @@ class Components::Sites::EventList < Components::Base
   prop :nested, _Boolean, default: false
   # One dated row per event (Sites::EventRows) instead of cards under day headings, as core themes show them
   prop :rows, _Boolean, default: false
+  # Long-running events already on, which no day of the listing holds
+  prop :ongoing, _Array(_Interface(:summary, :dtstart)), default: -> { [] }
 
   def view_template
-    @events.any? ? render_events : render_empty_state
+    @events.any? || @ongoing.any? ? render_events : render_empty_state
   end
 
   private
 
   def render_events
     if @rows
-      Sites::EventRows(events: @events.values.flatten, context_partner: @context_partner,
+      Sites::EventRows(events: @ongoing + @events.values.flatten, context_partner: @context_partner,
                        show_neighbourhoods: @show_neighbourhoods, badge_zoom_level: @badge_zoom_level)
     else
+      render_ongoing if @ongoing.any?
       @events.each do |day, day_events|
         UI::RuledHeading(rule: :full, size: (@nested ? :lg : :inherit)) { I18n.l(day, format: :event_day) }
         render_day(day_events)
@@ -42,8 +46,13 @@ class Components::Sites::EventList < Components::Base
     p(**part(:truncated)) { t('components.event_list.truncated') } if @truncated
   end
 
-  def render_day(day_events)
-    ol(**part(:day, class: 'reset')) do
+  def render_ongoing
+    UI::RuledHeading(rule: :full, size: (@nested ? :lg : :inherit)) { t('components.event_list.on_now') }
+    render_day(@ongoing, list_part: :ongoing)
+  end
+
+  def render_day(day_events, list_part: :day)
+    ol(**part(list_part, class: 'reset')) do
       day_events.each do |event|
         li(**part(:item, class: 'block w-full')) { render_event(event) }
       end

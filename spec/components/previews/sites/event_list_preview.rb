@@ -6,6 +6,12 @@ class Sites::EventListPreview < Lookbook::Preview
     render Components::Sites::EventList.new(events: PreviewSupport.sample_events_by_day)
   end
 
+  # @label With events already on
+  # @notes A partner page lists long-running events already on once, above the days.
+  def with_ongoing
+    render Components::Sites::EventList.new(events: PreviewSupport.sample_events_by_day, ongoing: [LongRunningPreviewSupport.event])
+  end
+
   # @label Cut short
   def truncated
     render Components::Sites::EventList.new(events: PreviewSupport.sample_events_by_day, truncated: true)

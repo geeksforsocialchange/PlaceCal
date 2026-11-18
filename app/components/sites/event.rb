@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Components::Sites::Event < Components::Base
+  include Components::Shared::LongRunningDates
+
   theme_scope :event,
               parts: {
                 root: 'The whole event: a card in a listing, the top of the page on the event\'s own page (see the variant).',
@@ -83,7 +85,8 @@ class Components::Sites::Event < Components::Base
     div(**part(:details, class: "flex flex-wrap items-center gap-x-4 gap-y-1 text-detail border-rules py-2 md:py-3 #{page? ? 'border-b-10' : 'border-y-3'}")) do
       render_status_detail if called_off? && !page?
       render_date_detail
-      render_time_detail
+      # The page's date line already says the range
+      render_time_detail unless page? && long_running?(@event)
       render_detail(:duration, :event_duration, duration) if duration
       render_detail(:repeats, :event_repeats, repeats) if repeats
       render_detail(:online, :event_online, online_label) if online?
@@ -105,19 +108,31 @@ class Components::Sites::Event < Components::Base
     div(**detail(:time, struck_class)) do
       render_icon(:event_time)
       whitespace
-      time(class: 'dt-start', datetime: @event.dtstart.iso8601) { fmt_time(@event.dtstart) }
-      if @event.dtend
-        plain " \u2013 "
-        time(class: 'dt-end', datetime: @event.dtend.iso8601) { end_time }
-      end
+      long_running?(@event) ? render_until : render_time_range
     end
+  end
+
+  def render_time_range
+    time(class: 'dt-start', datetime: @event.dtstart.iso8601) { fmt_time(@event.dtstart) }
+    return unless @event.dtend
+
+    plain " \u2013 "
+    time(class: 'dt-end', datetime: @event.dtend.iso8601) { end_time }
+  end
+
+  def render_until
+    time(class: 'dt-end', datetime: @event.dtend.iso8601) { until_text(@event) }
   end
 
   def render_date_detail
     div(**detail(:date, struck_class)) do
       render_icon(:event_date)
       whitespace
-      plain date
+      if long_running?(@event)
+        time(class: 'dt-start', datetime: @event.dtstart.iso8601) { page? ? date_range_text(@event) : date }
+      else
+        plain date
+      end
     end
   end
 

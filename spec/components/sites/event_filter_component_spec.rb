@@ -93,6 +93,12 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
 
       expect(page).to have_css("input[type='hidden'][name='repeating'][value='on']", visible: :all)
     end
+
+    it "includes long-running hidden fields, one for the date picker" do
+      render_inline(described_class.new(**base_attrs, long_running: "off"))
+
+      expect(page).to have_css("input[type='hidden'][name='long_running'][value='off'][data-date-picker-target='longRunning']", visible: :all)
+    end
   end
 
   describe "active state on the filter toggle" do
@@ -110,6 +116,12 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
 
     it "marks the toggle when only one-off events are shown" do
       render_inline(described_class.new(**base_attrs, repeating: "off"))
+
+      expect(page).to have_css("button[data-part='toggle-button'][data-state='active']")
+    end
+
+    it "marks the toggle when long-running events are hidden" do
+      render_inline(described_class.new(**base_attrs, long_running: "off"))
 
       expect(page).to have_css("button[data-part='toggle-button'][data-state='active']")
     end
@@ -146,6 +158,14 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
 
       expect(page).to have_css("[data-scope='event-filter'][data-part='applied']", text: "Showing today, Sorted by name, One-off events only")
       expect(page).to have_link("Reset filters", href: "/events#paginator")
+    end
+
+    it "names the long-running setting" do
+      render_inline(described_class.new(**base_attrs, long_running: "off"))
+      expect(page).to have_css("[data-part='applied']", text: "Showing today, Long-running events hidden")
+
+      render_inline(described_class.new(**base_attrs, long_running: "only"))
+      expect(page).to have_css("[data-part='applied']", text: "Showing today, Long-running events only")
     end
   end
 
@@ -239,6 +259,23 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
         render_inline(described_class.new(**base_attrs))
 
         expect(page).to have_checked_field("repeating_on")
+      end
+    end
+
+    describe "long-running options" do
+      it "offers to show, hide or show only long-running events, showing them by default" do
+        render_inline(described_class.new(**base_attrs))
+
+        group = page.find("[data-part='group'][data-variant='long-running']")
+        expect(group).to have_checked_field("Show long-running events")
+        expect(group).to have_field("Hide long-running events", type: "radio")
+        expect(group).to have_field("Only long-running events", type: "radio")
+      end
+
+      it "checks the current option" do
+        render_inline(described_class.new(**base_attrs, long_running: "only"))
+
+        expect(page).to have_checked_field("long_running_only")
       end
     end
   end
@@ -402,6 +439,13 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
       expect(page).to have_link("All upcoming", href: "/events?period=future&repeating=off&sort=summary#paginator")
     end
 
+    it "carries a non-default long-running setting in the links" do
+      render_inline(described_class.new(**day_strip_attrs, long_running: "only"))
+
+      expect(page).to have_link("Today", href: "/events/2022/11/8?long_running=only&period=day#paginator")
+      expect(page).to have_link("All upcoming", href: "/events?long_running=only&period=future#paginator")
+    end
+
     it "highlights the current day" do
       render_inline(described_class.new(**day_strip_attrs))
 
@@ -497,11 +541,11 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
   end
 
   describe "filter groups" do
-    it "groups the sort, period and repeating options separately" do
+    it "groups the sort, period, repeating and long-running options separately" do
       render_inline(described_class.new(**base_attrs))
 
       groups = page.all("div[data-scope='event-filter'][data-part='group']").map { |group| group.all("input[type='radio']").map { |radio| radio[:name] }.uniq }
-      expect(groups).to eq([["sort"], ["period"], ["repeating"]])
+      expect(groups).to eq([["sort"], ["period"], ["repeating"], ["long_running"]])
     end
   end
 

@@ -17,7 +17,8 @@ module EventsHelper
       anchor: 'paginator',
       period: @period,
       sort: @sort,
-      repeating: @repeating
+      repeating: @repeating,
+      long_running: @long_running
     }.compact_blank!
 
     events_by_date_path(opts)

@@ -11,7 +11,7 @@ class Components::Sites::EventFilter < Components::Base
                                'and aria-expanded whether the panel is open.',
                 link: 'The underlined label inside a toggle button, and the Today link.',
                 dropdown: 'The filter-and-sort panel. The state says whether it is open.',
-                group: 'One group of radio buttons in the panel: sort, period or repeating.',
+                group: 'One group of radio buttons in the panel: sort, period, repeating or long-running.',
                 option: 'One radio button and its label.',
                 label: 'An option\'s label.',
                 applied: 'The line saying what is applied, with its reset link. Only when something is.',
@@ -20,7 +20,7 @@ class Components::Sites::EventFilter < Components::Base
                 day_strip_list: 'The list of days inside the strip.',
                 day_strip_item: 'One day of the strip, holding its pill. The last is All upcoming (see the variant).'
               },
-              variants: { toggle_button: %i[date sort], group: %i[sort period repeating], day_strip_item: %i[all] },
+              variants: { toggle_button: %i[date sort], group: %i[sort period repeating long_running], day_strip_item: %i[all] },
               states: { toggle_button: %i[active], dropdown: %i[open closed] },
               tokens: %i[--color-background --color-foreground --color-primary --color-rules --color-rules-dark --font-sans --shadow-dropdown]
 
@@ -28,6 +28,7 @@ class Components::Sites::EventFilter < Components::Base
   prop :period, _Nilable(String), default: nil
   prop :sort, _Nilable(String), default: nil
   prop :repeating, _Nilable(String), default: nil
+  prop :long_running, _Nilable(String), default: nil
   prop :today_url, String
   prop :today, _Boolean, default: false
   prop :site, _Nilable(::Site), default: nil
@@ -48,6 +49,7 @@ class Components::Sites::EventFilter < Components::Base
 
   def after_initialize
     @sort ||= 'time'
+    @long_running ||= 'on'
     @selected_neighbourhood = @selected_neighbourhood.to_i
   end
 
@@ -131,11 +133,12 @@ class Components::Sites::EventFilter < Components::Base
                                                                              data: { date_picker_target: 'period' })
     hidden_field_tag(:sort, @sort, id: nil, data: { date_picker_target: 'sort' })
     hidden_field_tag(:repeating, @repeating, id: nil, data: { date_picker_target: 'repeating' })
+    hidden_field_tag(:long_running, @long_running, id: nil, data: { date_picker_target: 'longRunning' })
     hidden_field_tag(:region, @selected_region.slug, id: nil) if @selected_region
   end
 
   # D22: Today / Tomorrow / next five days plus "All upcoming", linking to the
-  # existing dated event URLs. No new query parameters; sort and repeating ride
+  # existing dated event URLs. No new query parameters; sort and the event filters ride
   # along only when they differ from the controller defaults.
   def render_day_strip
     nav(**part(:day_strip, class: 'min-w-0 overflow-x-auto', aria: { label: t('filters.day_strip.label') })) do
@@ -183,6 +186,7 @@ class Components::Sites::EventFilter < Components::Base
     params = {}
     params[:sort] = @sort if @sort.present? && @sort != 'time'
     params[:repeating] = @repeating if @repeating.present? && @repeating != 'on'
+    params[:long_running] = @long_running if @long_running.present? && @long_running != 'on'
     params[:region] = @selected_region.slug if @selected_region
     params
   end
@@ -194,6 +198,7 @@ class Components::Sites::EventFilter < Components::Base
           view_context.hidden_field_tag(:period, @period),
           view_context.hidden_field_tag(:sort, @sort),
           view_context.hidden_field_tag(:repeating, @repeating),
+          view_context.hidden_field_tag(:long_running, @long_running),
           (@selected_region ? view_context.hidden_field_tag(:region, @selected_region.slug, id: nil) : nil),
           view_context.render(Components::Sites::Filter.new(
                                 name: 'neighbourhood',
@@ -240,7 +245,7 @@ class Components::Sites::EventFilter < Components::Base
 
   # Something other than the defaults is applied, so the closed toggle can say so.
   def filters_active?
-    @sort != 'time' || (@repeating.present? && @repeating != 'on') || @period == 'week'
+    @sort != 'time' || (@repeating.present? && @repeating != 'on') || (@long_running.present? && @long_running != 'on') || @period == 'week'
   end
 
   # What is applied, in words, with a way back to the plain listing. The
@@ -264,6 +269,8 @@ class Components::Sites::EventFilter < Components::Base
     parts << t('filters.applied.sorted_by_name') if @sort == 'summary'
     parts << t('filters.applied.one_off_only') if @repeating == 'off'
     parts << t('filters.applied.repeating_only') if @repeating == 'only'
+    parts << t('filters.applied.long_running_hidden') if @long_running == 'off'
+    parts << t('filters.applied.long_running_only') if @long_running == 'only'
     parts
   end
 
@@ -298,6 +305,8 @@ class Components::Sites::EventFilter < Components::Base
     buf << render_period_group
     buf << view_context.tag.hr(class: DROPDOWN_RULE)
     buf << render_repeating_group
+    buf << view_context.tag.hr(class: DROPDOWN_RULE)
+    buf << render_long_running_group
     buf
   end
 
@@ -322,6 +331,12 @@ class Components::Sites::EventFilter < Components::Base
       render_radio('repeating', 'on', @repeating == 'on', t('filters.repeating.on')) +
         render_radio('repeating', 'off', @repeating == 'off', t('filters.repeating.off')) +
         render_radio('repeating', 'only', @repeating == 'only', t('filters.repeating.only'))
+    end
+  end
+
+  def render_long_running_group
+    view_context.content_tag(:div, **part(:group, variant: :long_running)) do
+      safe_join(%w[on off only].map { |value| render_radio('long_running', value, @long_running == value, t("filters.long_running.#{value}")) })
     end
   end
 

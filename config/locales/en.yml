@@ -103,6 +103,8 @@ en:
       truncated: "Showing first 50 events. Use the date picker to see more."
       empty: "No events with this selection."
       skip_to_next: "Skip to next date with events."
+      # Heading over long-running events already on, above the days of a partner's events
+      on_now: "On now"
     profile:
       heading: "Your local contact"
       call_on: "Call on"
@@ -205,6 +207,11 @@ en:
       "on": "All events"
       "off": "Only one-off events"
       "only": "Only repeating events"
+    # Events running more than 3 days, such as exhibitions
+    long_running:
+      "on": "Show long-running events"
+      "off": "Hide long-running events"
+      "only": "Only long-running events"
     # Day strip event filter (D22): the Today / Tomorrow / next five days
     # navigation rendered for themes with event_filter_style :day_strip.
     day_strip:
@@ -222,6 +229,8 @@ en:
       sorted_by_name: "Sorted by name"
       one_off_only: "One-off events only"
       repeating_only: "Repeating events only"
+      long_running_hidden: "Long-running events hidden"
+      long_running_only: "Long-running events only"
       reset: "Reset filters"
 
   # Region selector shown on local sites with more than one Partnership tag
@@ -579,6 +588,8 @@ en:
         one: "across %{count} day"
         other: "across %{count} days"
       show_label: "Show"
+      # Names the long-running select, whose options say what they show
+      long_running_label: "Long-running events"
       show_more_days:
         one: "Show %{count} more day"
         other: "Show %{count} more days"
@@ -694,6 +705,10 @@ en:
     status:
       cancelled: "Cancelled"
       postponed: "Postponed"
+    # Events running more than 3 days show their dates in place of a time range
+    long_running:
+      until: "Until %{date}"
+      range: "%{from} to %{to}"
     index:
       # Read out by screen readers when a filter or date change reloads the list.
       results_summary:
@@ -804,6 +819,8 @@ en:
       timeline_month_year: "%b %Y"
       timeline_week_start: "%-d"
       timeline_day_month: "%-d %b"
+      # A long-running event's dates, e.g. "17 Jan 2027"
+      long_running: "%-d %b %Y"
       # Full dates in admin notices, e.g. "9 November 2026"
       day_month_year: "%-d %B %Y"
 

@@ -2,6 +2,7 @@
 
 class Components::Directory::EventRow < Components::Directory::Base
   include Components::Shared::EventRowDetails
+  include Components::Shared::LongRunningDates
 
   prop :event, _Interface(:summary, :dtstart)
   prop :context_partner, _Nilable(::Partner), default: nil
@@ -54,12 +55,20 @@ class Components::Directory::EventRow < Components::Directory::Base
   def render_meta_time
     span(class: "inline-flex items-center gap-1#{' line-through' if called_off?}") do
       render_icon(:event_time)
-      time(datetime: @event.dtstart.iso8601) { fmt_time(@event.dtstart) }
-      if @event.dtend && @event.dtend != @event.dtstart
-        plain ' – '
-        time(datetime: @event.dtend.iso8601) { fmt_time(@event.dtend) }
-      end
+      long_running?(@event) ? render_until : render_time_range
     end
+  end
+
+  def render_time_range
+    time(datetime: @event.dtstart.iso8601) { fmt_time(@event.dtstart) }
+    return unless @event.dtend && @event.dtend != @event.dtstart
+
+    plain ' – '
+    time(datetime: @event.dtend.iso8601) { fmt_time(@event.dtend) }
+  end
+
+  def render_until
+    time(datetime: @event.dtend.iso8601) { until_text(@event) }
   end
 
   def render_meta_place

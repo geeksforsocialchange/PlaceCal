@@ -142,6 +142,12 @@ RSpec.describe Event, type: :model do
       expect(event.og_title).to eq("Tea Dance, 2 Nov, 14:00 – 16:00")
     end
 
+    it "gives the dates of a long-running event in place of its times" do
+      event = build(:event, summary: "Magic Place", organiser: nil,
+                            dtstart: Time.zone.local(2026, 11, 28, 10), dtend: Time.zone.local(2027, 1, 18))
+      expect(event.og_title).to eq("Magic Place, 28 Nov to 17 Jan")
+    end
+
     it "leaves out the times of an all-day event" do
       event = build(:event, summary: "Bin collection", organiser: nil,
                             dtstart: Time.zone.local(2026, 11, 2), dtend: Time.zone.local(2026, 11, 3))
@@ -479,5 +485,52 @@ RSpec.describe Event, "#partner_at_location", type: :model do
     end
 
     expect(venue_queries).to eq(1)
+  end
+end
+
+RSpec.describe Event, "long-running", type: :model do
+  let(:start) { Time.zone.local(2022, 11, 1, 10) }
+
+  describe ".long_running?" do
+    it "is false for an event of exactly 3 days" do
+      expect(described_class.long_running?(start, start + 72.hours)).to be(false)
+    end
+
+    it "is true for an event a minute over 3 days" do
+      expect(described_class.long_running?(start, start + 72.hours + 1.minute)).to be(true)
+    end
+
+    it "is false for an event with no end" do
+      expect(described_class.long_running?(start, nil)).to be(false)
+    end
+
+    it "agrees with the long_running scope" do
+      short = create(:event, dtstart: start, dtend: start + 72.hours)
+      long = create(:event, dtstart: start, dtend: start + 72.hours + 1.minute)
+      open_ended = create(:event, dtstart: start, dtend: nil)
+
+      expect(described_class.long_running).to contain_exactly(long)
+      expect(described_class.not_long_running).to contain_exactly(short, open_ended)
+      expect(long.long_running?).to be(true)
+      expect(short.long_running?).to be(false)
+    end
+  end
+
+  # Specs run on 8 Nov 2022
+  describe ".running_on and .upcoming_or_running" do
+    let(:today) { Time.zone.today }
+    let!(:on_now) { create(:event, dtstart: Time.zone.local(2022, 10, 1, 10), dtend: Time.zone.local(2022, 12, 1, 17)) }
+    let!(:ended) { create(:event, dtstart: Time.zone.local(2022, 10, 1, 10), dtend: Time.zone.local(2022, 11, 7, 17)) }
+    let!(:not_started) { create(:event, dtstart: Time.zone.local(2022, 11, 20, 10), dtend: Time.zone.local(2023, 1, 20, 17)) }
+    let!(:started_today) { create(:event, dtstart: Time.zone.local(2022, 11, 8, 10), dtend: Time.zone.local(2022, 12, 8, 17)) }
+    let!(:short_over_midnight) { create(:event, dtstart: Time.zone.local(2022, 11, 6, 10), dtend: Time.zone.local(2022, 11, 9, 9)) }
+
+    it "picks long-running events that started before the day and have not ended" do
+      expect(described_class.running_on(today)).to contain_exactly(on_now)
+    end
+
+    it "holds the future and what is running" do
+      expect(described_class.upcoming_or_running(today)).to contain_exactly(on_now, not_started, started_today)
+    end
   end
 end

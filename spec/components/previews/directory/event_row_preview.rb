@@ -21,6 +21,12 @@ class Directory::EventRowPreview < Lookbook::Preview
     render RowGrid.new([PreviewSupport.sample_repeating_event.tap { it.online_address = OnlinePreviewSupport.address("https://zoom.us/meeting/123") }])
   end
 
+  # @label Long-running event
+  # @notes An event of more than 3 days says when it runs until in place of its times.
+  def long_running
+    render RowGrid.new([LongRunningPreviewSupport.event])
+  end
+
   # @label Online services
   # @notes Known meeting and streaming hosts are named; anything else says "Online".
   def online_services

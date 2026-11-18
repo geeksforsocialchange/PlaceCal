@@ -41,7 +41,13 @@ module EventDisplay
 
   # @return [String] Open Graph title combining summary, date, time, and organiser
   def og_title
-    str = all_day? ? "#{summary}, #{date}" : "#{summary}, #{date}, #{time}"
+    str = if long_running?
+            "#{summary}, #{I18n.t('events.long_running.range', from: date, to: self.class.last_day(dtend).strftime('%-d %b'))}"
+          elsif all_day?
+            "#{summary}, #{date}"
+          else
+            "#{summary}, #{date}, #{time}"
+          end
     str += " @ #{organiser.name}" if organiser
     str
   end

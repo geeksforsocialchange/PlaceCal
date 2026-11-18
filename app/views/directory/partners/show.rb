@@ -31,7 +31,7 @@ class Views::Directory::Partners::Show < Views::Sites::Partners::Show
   end
 
   def render_directory_events
-    flat = events.respond_to?(:values) ? events.values.flatten : Array(events)
+    flat = ongoing + (events.respond_to?(:values) ? events.values.flatten : Array(events))
     return unless flat.any?
 
     div(class: 'py-4') do

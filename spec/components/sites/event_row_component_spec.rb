@@ -25,6 +25,14 @@ RSpec.describe Components::Sites::EventRow, type: :component do
     expect(page).to have_css("[data-variant='organiser'] a", text: "Folk Club")
   end
 
+  it "says when a long-running event runs until in place of its times" do
+    allow(event).to receive(:dtend).and_return(Time.zone.parse("2027-01-17 17:00"))
+    row
+
+    expect(page).to have_css("[data-variant='time']", text: "Until 17 Jan 2027")
+    expect(page).to have_no_text("7pm")
+  end
+
   it "leaves out the venue and the organiser on their own partner pages" do
     row(context_partner: venue)
     expect(page).to have_no_css("[data-variant='place']")

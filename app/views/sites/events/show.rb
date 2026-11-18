@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Views::Sites::Events::Show < Views::Base
+  include Components::Shared::LongRunningDates
+
   register_value_helper :html_to_plaintext
 
   MIN_DESCRIPTION_LENGTH = 100
@@ -139,8 +141,12 @@ class Views::Sites::Events::Show < Views::Base
 
   def render_hero_chips
     div(class: 'flex flex-wrap gap-2 mt-4 mb-2') do
-      hero_chip(:event_date, event.dtstart.strftime('%a %-e %b'), struck: event.called_off?)
-      render_hero_time
+      if long_running?(event)
+        hero_chip(:event_date, date_range_text(event), struck: event.called_off?)
+      else
+        hero_chip(:event_date, event.dtstart.strftime('%a %-e %b'), struck: event.called_off?)
+        render_hero_time
+      end
       hero_chip(:event_repeats, event.repeat_frequency) if event.repeat_frequency
       hero_chip(:event_online, event.online_address.service_name || t('directory.event_row.online')) if event.online_address.present?
     end
@@ -218,8 +224,12 @@ class Views::Sites::Events::Show < Views::Base
     UI::Card(variant: :panel, padding: :sm) do
       sidebar_heading(t('directory.events.show.information'))
       UI::Stack(gap: :sm) do
-        info_row(:event_date, struck: event.called_off?) { event.dtstart.strftime('%a %-e %b %Y') }
-        info_row(:event_time, struck: event.called_off?) { event.time }
+        if long_running?(event)
+          info_row(:event_date, struck: event.called_off?) { date_range_text(event) }
+        else
+          info_row(:event_date, struck: event.called_off?) { event.dtstart.strftime('%a %-e %b %Y') }
+          info_row(:event_time, struck: event.called_off?) { event.time }
+        end
         info_row(:event_repeats) { event.repeat_frequency } if event.repeat_frequency
         if event.partner_at_location
           info_row(:event_place) do

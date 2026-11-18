@@ -16,6 +16,13 @@ class Sites::EventRowPreview < Lookbook::Preview
     render Components::Sites::EventRow.new(event:, show_neighbourhoods: true)
   end
 
+  # @label Long-running
+  # @notes An event of more than 3 days says when it runs until in place of its times; struck through when called off.
+  def long_running
+    render_inline_rows(LongRunningPreviewSupport.event,
+                       LongRunningPreviewSupport.event(id: 9, summary: "Stained Metal", status: "cancelled"))
+  end
+
   # @label Cancelled and postponed
   # @notes The status word before a struck-through title, with the date and details faded.
   def called_off

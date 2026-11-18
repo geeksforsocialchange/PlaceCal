@@ -39,6 +39,45 @@ RSpec.describe Components::Sites::Event, type: :component do
     expect(page).to have_text("Community Meetup")
   end
 
+  context "with a long-running event" do
+    let(:event_dtstart) { Time.zone.parse("2026-11-28 10:00") }
+    let(:event_dtend) { Time.zone.parse("2027-01-17 17:00") }
+
+    it "says when it runs until in place of the time range on a card" do
+      rendered
+
+      expect(page).to have_css("[data-variant='date'] time.dt-start", text: "28 Nov 2026")
+      expect(page).to have_css("[data-variant='time'] time.dt-end[datetime^='2027-01-17']", text: "Until 17 Jan 2027")
+      expect(page).to have_no_text("10am")
+    end
+
+    it "shows the date range and no time line on the page" do
+      render_inline(described_class.new(display_context: :page, event:))
+
+      expect(page).to have_css("[data-variant='date']", text: "28 Nov 2026 to 17 Jan 2027")
+      expect(page).to have_no_css("[data-variant='time']")
+    end
+
+    it "ends on the day before a midnight end" do
+      allow(event).to receive(:dtend).and_return(Time.zone.parse("2027-01-18 00:00"))
+      rendered
+
+      expect(page).to have_text("Until 17 Jan 2027")
+    end
+  end
+
+  context "with an event of exactly 3 days" do
+    let(:event_dtstart) { Time.zone.parse("2024-01-15 10:00") }
+    let(:event_dtend) { Time.zone.parse("2024-01-18 10:00") }
+
+    it "keeps its time range" do
+      rendered
+
+      expect(page).to have_css("[data-variant='time']", text: "10am – 18 Jan 10am")
+      expect(page).to have_no_text("Until")
+    end
+  end
+
   it "leads the details with the date, then the time" do
     rendered
     variants = page.all('[data-scope="event"][data-part="detail"]').map { it["data-variant"] }

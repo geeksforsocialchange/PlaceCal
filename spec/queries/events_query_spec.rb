@@ -123,6 +123,26 @@ RSpec.describe EventsQuery do
       end
     end
 
+    describe "long-running filtering" do
+      let!(:short_event) { create(:future_event, organiser: partner) }
+      let!(:exhibition) { create(:event, organiser: partner, dtstart: 2.days.from_now, dtend: 2.days.from_now + 3.days + 1.minute) }
+
+      it "includes long-running events by default" do
+        result = described_class.new(site:, day: today).call(period: "future")
+        expect(result.values.flatten).to contain_exactly(short_event, exhibition)
+      end
+
+      it "excludes them with long_running: 'off'" do
+        result = described_class.new(site:, day: today).call(period: "future", long_running: "off")
+        expect(result.values.flatten).to contain_exactly(short_event)
+      end
+
+      it "selects only them with long_running: 'only'" do
+        result = described_class.new(site:, day: today).call(period: "future", long_running: "only")
+        expect(result.values.flatten).to contain_exactly(exhibition)
+      end
+    end
+
     describe "sort filtering" do
       before do
         create(:future_event, organiser: partner, summary: "Zebra event", dtstart: 1.day.from_now)
@@ -411,6 +431,14 @@ RSpec.describe EventsQuery do
       expect(counts).to eq(Date.new(2023, 7, 4) => 1, Date.new(2023, 7, 5) => 1, Date.new(2023, 7, 6) => 1)
     end
 
+    it "applies the long-running filter" do
+      exhibition = create(:event, organiser:, dtstart: Time.zone.local(2023, 7, 7, 10), dtend: Time.zone.local(2023, 8, 7, 17))
+
+      expect(query.future_counts_by_day(organiser_or_place: organiser, long_running: "only")).to eq(Date.new(2023, 7, 7) => 1)
+      expect(query.future_counts_by_day(organiser_or_place: organiser, long_running: "off").keys).not_to include(Date.new(2023, 7, 7))
+      expect(query.future_through(Date.new(2023, 7, 7), organiser_or_place: organiser, long_running: "only").values.flatten).to eq([exhibition])
+    end
+
     it "applies the repeating filter" do
       expect(query.future_counts_by_day(organiser_or_place: organiser, repeating: "off").keys)
         .to eq([Date.new(2023, 7, 4), Date.new(2023, 7, 5)])
@@ -423,6 +451,33 @@ RSpec.describe EventsQuery do
 
       expect(events).to eq([late_event])
       expect(events).not_to include(after_midnight_event, repeating_event)
+    end
+  end
+
+  # Specs run on 8 Nov 2022
+  describe "#running" do
+    let(:organiser) { create(:partner) }
+    let(:query) { described_class.new(site: nil, day: today) }
+    let!(:on_now) { create(:event, organiser:, dtstart: Time.zone.local(2022, 10, 1, 10), dtend: Time.zone.local(2023, 1, 17, 17)) }
+    let!(:on_now_repeating) do
+      create(:recurring_event, organiser:, dtstart: Time.zone.local(2022, 10, 2, 10), dtend: Time.zone.local(2023, 1, 17, 17))
+    end
+
+    before do
+      create(:event, organiser:, dtstart: Time.zone.local(2022, 9, 1, 10), dtend: Time.zone.local(2022, 11, 7, 17))
+      create(:event, organiser:, dtstart: Time.zone.local(2022, 11, 20, 10), dtend: Time.zone.local(2023, 1, 20, 17))
+      create(:event, organiser:, dtstart: Time.zone.local(2022, 11, 6, 10), dtend: Time.zone.local(2022, 11, 9, 9))
+      create(:event, dtstart: Time.zone.local(2022, 10, 1, 10), dtend: Time.zone.local(2023, 1, 17, 17))
+    end
+
+    it "returns the partner's long-running events already on, by start" do
+      expect(query.running(organiser_or_place: organiser)).to eq([on_now, on_now_repeating])
+    end
+
+    it "applies the repeating and long-running filters" do
+      expect(query.running(organiser_or_place: organiser, repeating: "off")).to eq([on_now])
+      expect(query.running(organiser_or_place: organiser, long_running: "only")).to eq([on_now, on_now_repeating])
+      expect(query.running(organiser_or_place: organiser, long_running: "off")).to eq([])
     end
   end
 
@@ -771,6 +826,14 @@ RSpec.describe EventsQuery do
       create(:past_event, place: partner)
 
       expect(described_class.upcoming_counts_by_partner([partner.id])).to eq({})
+    end
+
+    it "counts long-running events still on, not ones that have ended" do
+      partner = create(:partner)
+      create(:event, place: partner, dtstart: 1.month.ago, dtend: 1.month.from_now)
+      create(:event, place: partner, dtstart: 1.month.ago, dtend: 1.day.ago)
+
+      expect(described_class.upcoming_counts_by_partner([partner.id])).to eq(partner.id => 1)
     end
 
     it "counts events a partner organises with no place or elsewhere, and its own events once" do

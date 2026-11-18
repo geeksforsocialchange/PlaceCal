@@ -17,12 +17,15 @@ class Views::Sites::Partners::Show < Views::Base
                 opening_times: 'The list of opening hours. Only when the partner has some.',
                 events_browser: 'The turbo frame holding the partner\'s events, replaced as the visitor moves through dates.',
                 paginator: 'The timeline tabs and event filter above the events. Only when the partner has enough events to page through.',
-                events_header: 'The row above the events: the heading, the count and the repeating filter.',
+                events_header: 'The row above the events: the heading, the count and the event filters.',
                 events_heading: 'The "Upcoming events" heading.',
                 events_count: 'How many events, over how many days. Hidden on core themes.',
-                events_repeating_filter: 'The repeating-events filter in the header.',
+                events_repeating_filter: 'The event filters in the header: the repeating-events and long-running-events selects.',
                 events_repeating_label: 'The label holding the repeating-events select.',
                 events_repeating: 'The repeating-events select.',
+                events_long_running_label: 'The label holding the long-running-events select.',
+                events_long_running_text: 'The words of the long-running-events label. For screen readers only on core themes, as the options say what they show.',
+                events_long_running: 'The long-running-events select.',
                 events_actions: 'The row under the events holding the show-more link. Only when there are more days to show.',
                 events_more: 'The link that shows more days.'
               }
@@ -41,6 +44,9 @@ class Views::Sites::Partners::Show < Views::Base
   prop :period, _Nilable(String), reader: :private
   prop :sort, _Nilable(String), reader: :private
   prop :repeating, _Nilable(String), reader: :private
+  prop :long_running, _Nilable(String), reader: :private, default: nil
+  # Long-running events already on, listed once above the days
+  prop :ongoing, Array, reader: :private, default: -> { [] }
   prop :no_event_message, _Nilable(String), reader: :private
   prop :paginator, _Nilable(_Boolean), reader: :private
   prop :date_period, _Nilable(String), reader: :private, default: nil
@@ -61,6 +67,9 @@ class Views::Sites::Partners::Show < Views::Base
 
   EVENTS_STATUS_ID = 'partner-events-status'
 
+  EVENTS_SELECT = 'select-caret appearance-none py-1 pl-3 pr-9 border-2 border-primary rounded-check bg-background text-foreground ' \
+                  'font-sans text-sm font-bold normal-case tracking-normal cursor-pointer'
+
   # Themes style the events section themselves; these are the built-in themes' look.
   CORE_EVENTS = {
     header: 'flex flex-wrap items-center gap-y-2 gap-x-6 mt-8 mb-2',
@@ -68,8 +77,10 @@ class Views::Sites::Partners::Show < Views::Base
     count: 'hidden',
     repeating_filter: 'ml-auto print:hidden',
     repeating_label: 'inline-flex items-center gap-2 text-sm allcaps whitespace-nowrap',
-    repeating: 'select-caret appearance-none py-1 pl-3 pr-9 border-2 border-primary rounded-check bg-background text-foreground ' \
-               'font-sans text-sm font-bold normal-case tracking-normal cursor-pointer',
+    repeating: EVENTS_SELECT,
+    long_running_label: 'inline-flex items-center text-sm',
+    long_running_text: 'sr-only',
+    long_running: EVENTS_SELECT,
     actions: 'flex justify-center mt-6 print:hidden',
     more: 'py-1 px-3.5 border-2 border-primary rounded-check bg-primary text-foreground text-sm font-bold no-underline'
   }.freeze
@@ -284,9 +295,10 @@ class Views::Sites::Partners::Show < Views::Base
       render_events_header if events_total_count&.positive?
       render_events_paginator if paginator
 
-      if events.any?
+      if events.any? || ongoing.any?
         Sites::EventList(
           events:,
+          ongoing:,
           period:,
           show_neighbourhoods: site.show_neighbourhoods?,
           badge_zoom_level: site.badge_zoom_level&.to_s,
@@ -329,7 +341,7 @@ class Views::Sites::Partners::Show < Views::Base
 
   def render_repeating_filter
     div(**events_part(:repeating_filter, data: { controller: 'filters' })) do
-      form_tag('', method: :get, enforce_utf8: false,
+      form_tag('', method: :get, enforce_utf8: false, class: ('flex flex-wrap items-center justify-end gap-2' if site.core_theme?),
                    data: { turbo_frame: 'events-browser', turbo_action: 'advance',
                            filters_target: 'form', action: 'change->filters#submit' }) do
         hidden_field_tag(:days, days, id: nil)
@@ -344,12 +356,24 @@ class Views::Sites::Partners::Show < Views::Base
             options_for_select(repeating_options, repeating)
           end
         end
+        render_long_running_select
       end
     end
   end
 
-  def repeating_options
-    %w[on off only].map { |value| [t("filters.repeating.#{value}"), value] }
+  def render_long_running_select
+    label(**events_part(:long_running_label)) do
+      span(**events_part(:long_running_text)) { t('partners.show.long_running_label') }
+      select_tag(:long_running, **events_part(:long_running), id: nil) do
+        options_for_select(filter_options(:long_running), long_running)
+      end
+    end
+  end
+
+  def repeating_options = filter_options(:repeating)
+
+  def filter_options(name)
+    %w[on off only].map { |value| [t("filters.#{name}.#{value}"), value] }
   end
 
   def render_show_more_days
@@ -364,6 +388,7 @@ class Views::Sites::Partners::Show < Views::Base
     url_params[:period] = period if period.present?
     url_params[:sort] = sort if sort.present?
     url_params[:repeating] = repeating if repeating.present?
+    url_params[:long_running] = long_running if long_running.present?
     partner_path(partner, **url_params)
   end
 
@@ -378,16 +403,18 @@ class Views::Sites::Partners::Show < Views::Base
         date_period:,
         sort:,
         repeating:,
+        long_running:,
         path:,
         show_upcoming: true
       )
       div(class: 'relative z-10 flex gap-4 items-center justify-end text-sm pt-1 mb-2') do
-        today_url = "/#{path}/#{today.year}/#{today.month}/#{today.day}?period=#{filter_period}&sort=#{sort}&repeating=#{repeating}#paginator"
+        today_url = "/#{path}/#{today.year}/#{today.month}/#{today.day}?period=#{filter_period}&sort=#{sort}&repeating=#{repeating}&long_running=#{long_running}#paginator"
         Sites::EventFilter(
           pointer: current_day,
           period: filter_period,
           sort:,
           repeating:,
+          long_running:,
           today_url:,
           today: current_day == today,
           show_monthly:

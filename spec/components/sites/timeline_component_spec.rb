@@ -12,6 +12,7 @@ RSpec.describe Components::Sites::Timeline, type: :component do
       period: "day",
       sort: "time",
       repeating: "on",
+      long_running: "on",
       path: "events"
     }
   end
@@ -118,7 +119,7 @@ RSpec.describe Components::Sites::Timeline, type: :component do
       it "generates URLs with month period" do
         render_inline(described_class.new(**attrs))
 
-        expect(page).to have_link(href: %r{/events/\d+/\d+/\d+\?period=month&sort=time&repeating=on#paginator})
+        expect(page).to have_link(href: %r{/events/\d+/\d+/\d+\?period=month&sort=time&repeating=on&long_running=on#paginator})
       end
     end
 
@@ -200,7 +201,7 @@ RSpec.describe Components::Sites::Timeline, type: :component do
     it "generates correct URLs with all params" do
       render_inline(described_class.new(**base_attrs))
 
-      expect(page).to have_link(href: %r{/events/2022/11/\d+\?period=day&sort=time&repeating=on#paginator})
+      expect(page).to have_link(href: %r{/events/2022/11/\d+\?period=day&sort=time&repeating=on&long_running=on#paginator})
     end
 
     context "with custom path" do

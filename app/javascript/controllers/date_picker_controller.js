@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus";
 
 // Date Picker Controller - Navigate on date selection
 export default class extends Controller {
-	static targets = ["input", "period", "sort", "repeating"];
+	static targets = ["input", "period", "sort", "repeating", "longRunning"];
 
 	open(event) {
 		event.preventDefault();
@@ -30,11 +30,14 @@ export default class extends Controller {
 		const repeating = this.hasRepeatingTarget
 			? this.repeatingTarget.value
 			: "on";
+		const longRunning = this.hasLongRunningTarget
+			? this.longRunningTarget.value
+			: "on";
 
 		const basePath = this.getBasePath();
 		const newUrl = `${basePath}/${year}/${parseInt(month)}/${parseInt(
 			day,
-		)}?period=${period}&sort=${sort}&repeating=${repeating}#paginator`;
+		)}?period=${period}&sort=${sort}&repeating=${repeating}&long_running=${longRunning}#paginator`;
 
 		const frame = document.querySelector("turbo-frame#events-browser");
 		if (frame) {

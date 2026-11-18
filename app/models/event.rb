@@ -68,6 +68,9 @@ class Event < ApplicationRecord
   LOCATION_OPTIONAL_STRATEGIES = %w[event no_location online_only].freeze
   # Cancelled and postponed events stay listed, marked as such, so people who planned to go find out
   STATUSES = %w[scheduled cancelled postponed].freeze
+  # Exhibitions and festivals: listed while they are on rather than only on their first day
+  LONG_RUNNING_AFTER = 3.days
+  LONG_RUNNING_SQL = "events.dtend > events.dtstart + interval '3 days'"
 
   # ==== Attributes ====
   # Columns marked (nullable) have no NOT NULL constraint in the DB.
@@ -139,6 +142,20 @@ class Event < ApplicationRecord
   scope :one_off_events_only, -> { where(rrule: false) }
   scope :repeating_events_only, -> { where.not(rrule: false) }
 
+  scope :long_running, -> { where(LONG_RUNNING_SQL) }
+  scope :not_long_running, -> { where("events.dtend IS NULL OR NOT (#{LONG_RUNNING_SQL})") }
+
+  # Started before the day and not ended by its start
+  scope :running_on, lambda { |day|
+    midnight = day.to_date.in_time_zone
+    long_running.where(dtstart: ...midnight).where('events.dtend > ?', midnight)
+  }
+
+  # What a partner's listing holds. One where, not .or, so it chains onto relations with joins
+  scope :upcoming_or_running, lambda { |day = Time.zone.today|
+    where("events.dtstart >= :midnight OR (#{LONG_RUNNING_SQL} AND events.dtend > :midnight)", midnight: day.to_date.in_time_zone)
+  }
+
   # ==== Callbacks ====
   before_save :sanitize_rrule
 
@@ -153,7 +170,21 @@ class Event < ApplicationRecord
     count
   end
 
+  # Takes the times rather than an event so components can ask it of test doubles
+  # @return [Boolean]
+  def self.long_running?(dtstart, dtend)
+    dtend.present? && dtend - dtstart > LONG_RUNNING_AFTER.to_i
+  end
+
+  # Feeds end all-day events at the next midnight, which is not a day the event is on
+  # @return [Date]
+  def self.last_day(dtend)
+    dtend == dtend.beginning_of_day ? dtend.to_date.prev_day : dtend.to_date
+  end
+
   # ==== Instance methods ====
+  def long_running? = self.class.long_running?(dtstart, dtend)
+
   def cancelled? = status == 'cancelled'
   def postponed? = status == 'postponed'
 
