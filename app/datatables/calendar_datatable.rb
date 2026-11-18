@@ -31,11 +31,11 @@ class CalendarDatatable < Datatable
         state: render_state_cell(record),
         state_badge: render_state_badge(record),
         details: render_details_cell(record),
-        import_started_at: render_relative_time(record.import_started_at),
+        import_started_at: render_time_ago(record.import_started_at),
         importer: render_importer_cell(record),
         events: render_count_cell(events_count, 'event'),
         notices: render_notices_cell(record),
-        last_import_at: render_relative_time(record.last_import_at),
+        last_import_at: render_time_ago(record.last_import_at),
         checksum_updated_at: render_relative_time(record.checksum_updated_at),
         actions: render_actions(record)
       }

@@ -31,10 +31,23 @@ RSpec.describe "Event page details on core and extension themes", type: :request
       expect(response.body).not_to match(%r{<h2[^>]*>Venue</h2>})
     end
 
-    it "names the organiser's own building as the venue too" do
-      event.update!(place: organiser)
+    it "heads the address with the organiser, then a different venue, and shows the map in the sidebar instead of an organiser section",
+       :aggregate_failures do
+      html = details_for(site)
+      address_section = part(html, "address")
 
-      expect(part(details_for(site), "address").at_css('[data-part="venue"] a')&.text).to eq("Oldtown Library")
+      expect(address_section.css('[data-part="organiser-name"] a, [data-part="venue"] a').map(&:text)).to eq(["Oldtown Library", "Harbourside Arts Centre"])
+      expect(address_section.at_css('[data-part="organiser-name"]').text).to eq("By Oldtown Library")
+      expect(part(html, "organiser")).to be_nil
+      expect(part(html, "aside").at_css('[data-scope="map"]')).to be_present
+    end
+
+    it "names the organiser once when the event is at the organiser's own building" do
+      event.update!(place: organiser)
+      address_section = part(details_for(site), "address")
+
+      expect(address_section.at_css('[data-part="organiser-name"] a')&.text).to eq("Oldtown Library")
+      expect(address_section.at_css('[data-part="venue"]')).to be_nil
     end
 
     it "leaves out the venue line when the venue is hidden" do
@@ -43,10 +56,42 @@ RSpec.describe "Event page details on core and extension themes", type: :request
       expect(part(details_for(site), "address").at_css('[data-part="venue"]')).to be_nil
     end
 
-    it "leaves out Contact information when the organiser has no contact details" do
+    it "leaves out Get in touch when the organiser has no contact details" do
       organiser.update_columns(public_email: nil, public_phone: nil, url: nil, facebook_link: nil, twitter_handle: nil, instagram_handle: nil) # rubocop:disable Rails/SkipsModelValidations
 
       expect(part(details_for(site), "contact")).to be_nil
+    end
+
+    it "puts a meeting link in an Online section above the location, with a filled join button", :aggregate_failures do
+      event.update!(online_address: create(:direct_online_address))
+      html = details_for(site)
+
+      online = part(html, "online")
+      expect(online.text).to include("On Zoom")
+      expect(online.at_css('a[data-variant="primary"][href="https://zoom.us/j/1234567890"]').text).to eq("Join on Zoom")
+      expect(part(html, "links").at_css('a[href="https://zoom.us/j/1234567890"]')).to be_nil
+      expect(html.css('[data-scope="event-details"][data-part="online"] ~ [data-part="address"]')).to be_present
+    end
+
+    it "says the joining details are on the linked page when the link is not the meeting itself", :aggregate_failures do
+      event.update!(online_address: create(:online_address, url: "https://example.org/register"))
+      online = part(details_for(site), "online")
+
+      expect(online.at_css('[data-part="online-note"]')).to be_present
+      expect(online.at_css('a[href="https://example.org/register"]').text).to eq("Visit the webpage for this event")
+    end
+
+    it "leaves out Event location for an online event with no address, even when its feed gave the meeting link as the location" do
+      event.update!(online_address: create(:direct_online_address), address: nil, place: nil,
+                    raw_location_from_source: "https://zoom.us/j/1234567890")
+
+      expect(part(details_for(site), "address")).to be_nil
+    end
+
+    it "keeps Event location for an online event whose feed names a place without an address" do
+      event.update!(online_address: create(:direct_online_address), address: nil, place: nil, raw_location_from_source: "The Town Hall")
+
+      expect(part(details_for(site), "address").text).to include("The Town Hall")
     end
   end
 

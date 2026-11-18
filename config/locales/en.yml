@@ -97,7 +97,8 @@ en:
       later: "Later"
       this_month: "This month"
       next_7_days: "Next 7 days"
-      week: "%{from} - %{to}"
+      week: "%{from}-%{to}"
+      week_across_months: "%{from} - %{to}"
     event_list:
       truncated: "Showing first 50 events. Use the date picker to see more."
       empty: "No events with this selection."
@@ -713,6 +714,7 @@ en:
       # Text before the organiser link in the event list, blank in core
       organiser_prefix: ""
       online: "Online"
+      online_on: "Online on %{service}"
       duration_hours:
         one: "%{count} hour"
         other: "%{count} hours"
@@ -744,16 +746,22 @@ en:
       visit_webpage: "Visit the webpage for this event"
       join_meeting: "Join this meeting"
       join_on: "Join on %{service}"
+      online_heading: "Online"
+      online_on: "On %{service}"
+      online_event: "Online event"
+      online_details_on_webpage: "Joining details are on the event's webpage."
       watch_on: "Watch on %{service}"
-      address_heading: "Event address"
+      address_heading: "Event location"
       organiser_heading: "Event organiser"
       venue_heading: "Venue"
       # Prompt and link inviting a reader to report a bad listing
       problem_prompt: "Problem with this listing? "
       problem_link: "Let us know."
+      report_problem: "Report a problem with this listing"
       problem_subject: "I think there's a problem with PlaceCal event %{url}"
       # Page actions row (Components::PageActions, #3368).
       organiser_events: "More from %{name}"
+      all_organiser_events: "All events from %{name}"
       # Heading over the organiser's other upcoming events on a site's event page
       more_from: "More from %{name}"
       # Line under the event name in the page header; the name is a link

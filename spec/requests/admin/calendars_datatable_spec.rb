@@ -69,6 +69,13 @@ RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
         expect(names_for("error")).to contain_exactly("Broken")
       end
 
+      it "gives when an import was last tried in minutes, with the exact time on hover" do
+        datatable_request(filter: { state: "error" })
+        cell = Nokogiri::HTML(response.parsed_body["data"].first["import_started_at"]).at_css("time")
+        expect(cell.text).to eq("2 minutes ago")
+        expect(cell["title"]).to be_present
+      end
+
       it "gives the state as a named badge and the whole error as the details" do
         datatable_request(filter: { state: "error" })
         row = response.parsed_body["data"].first
@@ -284,7 +291,7 @@ RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
 
       before do
         calendar.update_column(:calendar_state, "idle") # rubocop:disable Rails/SkipsModelValidations
-        calendar.update_column(:last_import_at, Time.current) # rubocop:disable Rails/SkipsModelValidations
+        calendar.update_columns(last_import_at: Time.current, checksum_updated_at: Time.current) # rubocop:disable Rails/SkipsModelValidations
         create(:event, calendar:)
       end
 
@@ -333,7 +340,7 @@ RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
         expect(notices_html).to include('data-status="warning"')
       end
 
-      it_behaves_like "datatable renders relative time", field: :last_import_at
+      it_behaves_like "datatable renders relative time", field: :checksum_updated_at
       it_behaves_like "datatable renders edit button"
     end
   end

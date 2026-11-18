@@ -21,10 +21,23 @@ class Components::Sites::PageActions < Components::Base
     return if @links.empty?
 
     nav(**part(:root, variant: (:meta_band if @in_meta_band), aria_label: t('page_actions.label'))) do
-      UI::Cluster(as: :ul, gap: @in_meta_band ? :lg : :md, row_gap: (:sm if @in_meta_band), justify: @in_meta_band ? :start : :center, **part(:list)) do
-        @links.each do |label, href, options|
-          li { link_to(label, href, part(:link, **(options || {}), class: @in_meta_band ? Sites::Meta::LINK : 'underline')) }
-        end
+      @in_meta_band ? render_band_list : render_row
+    end
+  end
+
+  private
+
+  def render_row
+    UI::Cluster(as: :ul, gap: :md, justify: :center, **part(:list)) do
+      @links.each { |label, href, options| li { link_to(label, href, part(:link, **(options || {}), class: 'underline')) } }
+    end
+  end
+
+  # One link per line on phones; one dotted line from md up
+  def render_band_list
+    ul(**part(:list, class: 'reset flex flex-col gap-1 md:flex-row md:flex-wrap md:gap-y-1')) do
+      @links.each_with_index do |(label, href, options), index|
+        li(class: ('md:separator-dot' if index.positive?)) { link_to(label, href, part(:link, **(options || {}), class: Sites::Meta::LINK)) }
       end
     end
   end

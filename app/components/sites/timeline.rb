@@ -10,10 +10,11 @@ class Components::Sites::Timeline < Components::Base
 
   DEFAULT_STEPS = 7
 
-  LIST = 'relative grid grid-cols-paginator gap-1 md:gap-2 list-none m-0 px-10 pb-2 font-bold'
-  # The pill fills its cell; a label wider than the cell overflows rather than widening the column.
-  TAB = 'grid grid-cols-1'
-  ARROW = 'absolute top-0 size-9 p-0 bg-primary hover:bg-foreground'
+  # The side padding is an arrow's width plus the gap, so each arrow sits as far from the tabs as they do from each other
+  LIST = 'relative flex flex-wrap gap-1 md:gap-2 list-none m-0 px-10 md:px-11 pb-2 font-bold'
+  # Each tab takes its label's width plus an equal share of the row, and is as tall as the arrows
+  TAB = 'grid flex-auto h-9'
+  ARROW = 'absolute top-0 size-9 p-0 rounded-full overflow-hidden bg-primary hover:bg-foreground'
   ARROW_LINK = 'flex items-center justify-center size-full text-inherit'
   ARROW_ICON = 'size-4 text-background'
   TURBO = { turbo_frame: 'events-browser', turbo_action: 'advance' }.freeze
@@ -57,7 +58,7 @@ class Components::Sites::Timeline < Components::Base
   end
 
   def render_tab(btn)
-    UI::Pill(variant: :segment, selected: btn[:active], href: btn[:link], data: TURBO) { btn[:text] }
+    UI::Pill(variant: :segment, selected: btn[:active], href: btn[:link], data: TURBO, class: 'h-full py-0') { btn[:text] }
   end
 
   def renderable?
@@ -186,8 +187,9 @@ class Components::Sites::Timeline < Components::Base
 
     return t('components.timeline.next_7_days') if date == today
 
-    from = I18n.l(date, format: date.month == end_date.month ? :timeline_week_start : :timeline_day_month)
-    t('components.timeline.week', from:, to: I18n.l(end_date, format: :timeline_day_month))
+    return t('components.timeline.week', from: I18n.l(date, format: :timeline_week_start), to: I18n.l(end_date, format: :timeline_day_month)) if date.month == end_date.month
+
+    t('components.timeline.week_across_months', from: I18n.l(date, format: :timeline_day_month), to: I18n.l(end_date, format: :timeline_day_month))
   end
 
   def upcoming_url

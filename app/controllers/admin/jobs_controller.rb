@@ -10,11 +10,16 @@ module Admin
     before_action :set_failed_job, only: %i[retry destroy]
 
     def index
-      render Views::Admin::Jobs::Index.new(
-        job_counts:,
-        calendar_counts: Calendar.group(:calendar_state).count,
-        failed_jobs: SolidQueue::FailedExecution.includes(:job).order(created_at: :desc).limit(FAILED_JOBS_SHOWN).to_a
-      )
+      calendar_counts = Calendar.group(:calendar_state).count
+      respond_to do |format|
+        format.html do
+          render Views::Admin::Jobs::Index.new(
+            job_counts:, calendar_counts:,
+            failed_jobs: SolidQueue::FailedExecution.includes(:job).order(created_at: :desc).limit(FAILED_JOBS_SHOWN).to_a
+          )
+        end
+        format.json { render json: Views::Admin::Jobs::Index.live_counts(job_counts, calendar_counts) }
+      end
     end
 
     def retry
