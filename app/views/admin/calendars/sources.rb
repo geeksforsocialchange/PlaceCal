@@ -33,7 +33,13 @@ class Views::Admin::Calendars::Sources < Views::Admin::Base
     field_map = parser.event_class.field_map
     tr(class: 'align-top') do
       th(scope: 'row', class: 'font-medium text-gray-900') do
-        div { parser::NAME }
+        div do
+          if parser.handbook_url
+            link_to parser::NAME, parser.handbook_url, class: 'link link-hover text-placecal-orange-dark'
+          else
+            plain parser::NAME
+          end
+        end
         div(class: 'text-xs font-normal text-gray-600') { parser::DOMAINS.join(', ') }
       end
       fields.each { |field| td { render_cell(field_map[field]) } }

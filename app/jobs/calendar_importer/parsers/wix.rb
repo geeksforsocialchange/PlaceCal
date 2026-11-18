@@ -4,6 +4,7 @@ module CalendarImporter
   module Parsers
     class Wix < Base
       NAME = 'Wix Events'
+      HANDBOOK_PAGE = 'wix'
       KEY = 'wix'
       DOMAINS = %w[wixsite.com].freeze
 
