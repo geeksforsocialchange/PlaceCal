@@ -3,19 +3,14 @@ import { Controller } from "@hotwired/stimulus";
 export default class extends Controller {
 	static values = { markers: Array, styleUrl: String, labels: Object };
 
-	connect() {
-		if ("requestIdleCallback" in window) {
-			this._idleId = requestIdleCallback(() => this._loadMap(), {
-				timeout: 4000,
-			});
-		} else {
-			this._timerId = setTimeout(() => this._loadMap(), 200);
-		}
+	async connect() {
+		const { whenVisible } = await import("controllers/mixins/when_visible");
+		if (!this.element.isConnected) return;
+		this._stopWatching = whenVisible(this.element, () => this._loadMap());
 	}
 
 	disconnect() {
-		if (this._idleId) cancelIdleCallback(this._idleId);
-		if (this._timerId) clearTimeout(this._timerId);
+		this._stopWatching?.();
 		this.map?.remove();
 	}
 
@@ -39,6 +34,7 @@ export default class extends Controller {
 			maxZoom: 18,
 			zoomSnap: 0.1,
 		});
+		this.map.attributionControl.setPrefix(false);
 
 		L.control
 			.zoom({
@@ -81,10 +77,12 @@ export default class extends Controller {
 			},
 		});
 
+		// A 24px target around the 10px dot, the smallest tap target WCAG allows
 		const icon = L.divIcon({
-			className: "partner-dot",
-			iconSize: [10, 10],
-			iconAnchor: [5, 5],
+			className: "partner-dot-target",
+			html: '<span class="partner-dot"></span>',
+			iconSize: [24, 24],
+			iconAnchor: [12, 12],
 		});
 
 		for (const m of this.markersValue) {
