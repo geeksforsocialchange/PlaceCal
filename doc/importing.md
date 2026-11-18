@@ -80,20 +80,19 @@ Links to stream and social hosts (YouTube, Facebook, Instagram, LinkedIn and the
 
 `PARSERS` in [calendar_importer.rb](../app/jobs/calendar_importer/calendar_importer.rb), in detection order:
 
-| Parser                | Source URL                                                                | Reads                                                       |
-| --------------------- | ------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| Eventbrite            | `eventbrite.com/o/…`, `eventbrite.co.uk/o/…`                              | The Eventbrite API, with the server-wide `EVENTBRITE_TOKEN` |
-| Generic iCal / .ics   | Google Calendar, Outlook, Teamup, `webcal://`, `*.ics`, a few named sites | The iCal feed                                               |
-| TicketSource          | `ticketsource.co.uk/<venue>`, `ticketsource.com/<venue>`                  | The TicketSource API, with the calendar's API key           |
-| Manchester University | `events.manchester.ac.uk/f3vf/calendar/…`                                 | The XML feed (hidden from the admin importer list)          |
-| Meetup                | `meetup.com/<group>`                                                      | The group's iCal feed                                       |
-| OutSavvy              | `outsavvy.com/organiser/<name>`                                           | Each event page's LD+JSON, found from the organiser page    |
-| Resident Advisor      | `ra.co/promoters/<id>`, `ra.co/clubs/<id>`                                | The ra.co GraphQL API                                       |
-| Squarespace           | `*.squarespace.com`, or a custom domain detected as Squarespace           | The page's `?format=json` data                              |
-| Ticket Solve          | `*.ticketsolve.com`                                                       | The XML feed                                                |
-| Ticket Tailor         | `tickettailor.com/events/<box office>`                                    | The Ticket Tailor API, with the calendar's API key          |
-| Wix Events            | `*.wixsite.com`, or a custom domain detected as Wix                       | Event JSON embedded in the page                             |
-| LD+JSON               | Any page                                                                  | Schema.org events in the page's LD+JSON                     |
+| Parser              | Source URL                                                                | Reads                                                       |
+| ------------------- | ------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| Eventbrite          | `eventbrite.com/o/…`, `eventbrite.co.uk/o/…`                              | The Eventbrite API, with the server-wide `EVENTBRITE_TOKEN` |
+| Generic iCal / .ics | Google Calendar, Outlook, Teamup, `webcal://`, `*.ics`, a few named sites | The iCal feed                                               |
+| TicketSource        | `ticketsource.co.uk/<venue>`, `ticketsource.com/<venue>`                  | The TicketSource API, with the calendar's API key           |
+| Meetup              | `meetup.com/<group>`                                                      | The group's iCal feed                                       |
+| OutSavvy            | `outsavvy.com/organiser/<name>`                                           | Each event page's LD+JSON, found from the organiser page    |
+| Resident Advisor    | `ra.co/promoters/<id>`, `ra.co/clubs/<id>`                                | The ra.co GraphQL API                                       |
+| Squarespace         | `*.squarespace.com`, or a custom domain detected as Squarespace           | The page's `?format=json` data                              |
+| Ticket Solve        | `*.ticketsolve.com`                                                       | The XML feed                                                |
+| Ticket Tailor       | `tickettailor.com/events/<box office>`                                    | The Ticket Tailor API, with the calendar's API key          |
+| Wix Events          | `*.wixsite.com`, or a custom domain detected as Wix                       | Event JSON embedded in the page                             |
+| LD+JSON             | Any page                                                                  | Schema.org events in the page's LD+JSON                     |
 
 ### Parser Detection
 

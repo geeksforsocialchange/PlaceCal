@@ -91,7 +91,12 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
   describe "testing a source" do
     let(:ics_url) { "https://example.com/events.ics" }
     let(:ticket_tailor_url) { "https://www.tickettailor.com/events/testorg" }
-    let(:manchester_url) { "https://events.manchester.ac.uk/f3vf/calendar/tag:martin_harris_centre/view:list/p:q_details/calml.xml" }
+    let(:hidden_url) { "https://example.com/hidden-format" }
+    let(:hidden_parser) do
+      Class.new(CalendarImporter::Parsers::Base).tap do |parser|
+        { NAME: "Hidden format", KEY: "hidden-format", PUBLIC: false }.each { |name, value| parser.const_set(name, value) }
+      end
+    end
 
     def stub_detection(parser)
       importer = instance_double(CalendarImporter::CalendarImporter, parser:, check_source!: nil)
@@ -148,10 +153,10 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
         expect(page).to have_content("Detected format: Generic iCal")
         expect(find("#calendar_importer_mode", visible: :all).value).to eq("ical")
 
-        stub_detection(CalendarImporter::Parsers::ManchesterUni)
-        test_source(manchester_url)
+        stub_detection(hidden_parser)
+        test_source(hidden_url)
 
-        expect(page).to have_content("Manchester University")
+        expect(page).to have_content("Hidden format")
         expect(find("#calendar_importer_mode", visible: :all).value).to eq("auto")
       end
 
@@ -227,8 +232,8 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
 
         it "sets the type to auto-detect when the detected type isn't in the type list", :aggregate_failures do
           expect(find("#calendar_importer_mode").value).to eq("ical")
-          stub_detection(CalendarImporter::Parsers::ManchesterUni)
-          test_source(manchester_url)
+          stub_detection(hidden_parser)
+          test_source(hidden_url)
 
           expect(page).to have_content("This URL is valid and ready to import!")
           expect(find("#calendar_importer_mode").value).to eq("auto")

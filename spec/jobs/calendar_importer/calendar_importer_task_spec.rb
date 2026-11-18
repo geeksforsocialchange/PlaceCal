@@ -222,25 +222,6 @@ RSpec.describe CalendarImporter::CalendarImporterTask do
     end
   end
 
-  describe "Manchester University import" do
-    it "records the Manchester University importer" do
-      VCR.use_cassette("Martin_Harris_Centre", allow_playback_repeats: true) do
-        calendar = create(
-          :calendar,
-          name: "Martin Harris Centre",
-          source: "http://events.manchester.ac.uk/f3vf/calendar/tag:martin_harris_centre/view:list/p:q_details/calml.xml"
-        )
-
-        calendar.update calendar_state: "in_worker"
-
-        importer_task = described_class.new(calendar, Time.zone.today, true)
-        importer_task.run
-
-        expect(calendar.reload.importer_used).to eq("manchester-uni")
-      end
-    end
-  end
-
   describe "generic iCal import" do
     it "can import from generic iCal feed" do
       VCR.use_cassette(:generic_ical_feed, allow_playback_repeats: true) do
