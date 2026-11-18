@@ -104,6 +104,7 @@ class Views::Sites::Events::Show < Views::Base
   def render_directory_layout
     Directory::PageHero(
       title: event.summary,
+      struck: event.called_off?,
       breadcrumbs: hero_breadcrumbs
     ) do
       render_hero_chips

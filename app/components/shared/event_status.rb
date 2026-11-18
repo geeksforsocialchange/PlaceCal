@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-# The word saying an event is cancelled or postponed, beside its struck-through title
+# The word saying an event is cancelled or postponed, at the start of its struck-through details
 class Components::Shared::EventStatus < Components::Base
   CALLED_OFF = %w[cancelled postponed].freeze
 
   theme_scope :event_status,
               parts: { root: 'The word "Cancelled" or "Postponed"; the variant says which. Only for an event that is called off.' },
               variants: { root: CALLED_OFF.map(&:to_sym) },
-              tokens: %i[--text-sm --font-weight-bold --tracking-wide]
+              tokens: %i[--text-2xs --font-weight-bold --tracking-wide]
 
   prop :event, _Any
 
@@ -17,7 +17,7 @@ class Components::Shared::EventStatus < Components::Base
   def view_template
     return unless self.class.called_off?(@event)
 
-    span(**part(:root, variant: @event.status.to_sym, class: 'shrink-0 text-sm font-bold uppercase tracking-wide no-underline')) do
+    span(**part(:root, variant: @event.status.to_sym, class: 'text-2xs font-bold uppercase tracking-wide')) do
       t("events.status.#{@event.status}")
     end
   end
