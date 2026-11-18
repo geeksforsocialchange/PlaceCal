@@ -19,6 +19,7 @@
 #  rrule                    :jsonb
 #  source_categories        :jsonb
 #  source_organiser         :string
+#  status                   :string           default("scheduled"), not null
 #  summary                  :text             not null
 #  summary_html             :string
 #  uid                      :string
