@@ -10,13 +10,17 @@ class Components::Shared::SidebarImage < Components::Base
   prop :src, String
   prop :alt, String
   prop :srcset, _Nilable(String), default: nil
+  prop :webp_srcset, _Nilable(String), default: nil
   prop :layout, _Union(*LOOK.keys), default: :site
   prop :attributes, Hash, :**
 
   def view_template
     look = LOOK[@layout]
     div(class: [look[:root], @attributes[:class]].compact.join(' '), **@attributes.except(:class)) do
-      img(src: @src, srcset: @srcset, alt: @alt, decoding: 'async', class: look[:image])
+      picture do
+        source(type: 'image/webp', srcset: @webp_srcset) if @webp_srcset
+        img(src: @src, srcset: @srcset, alt: @alt, decoding: 'async', class: look[:image])
+      end
     end
   end
 end

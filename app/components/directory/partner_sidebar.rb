@@ -22,6 +22,7 @@ class Components::Directory::PartnerSidebar < Components::Directory::Base
     render Shared::SidebarImage.new(
       src: @partner.image.standard.url,
       srcset: "#{@partner.image.standard.url} 1x, #{@partner.image.retina.url} 2x",
+      webp_srcset: @partner.image.webp_srcset(standard: '1x', retina: '2x'),
       alt: @partner.name,
       layout: :directory,
       class: 'mt-4'

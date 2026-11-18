@@ -221,6 +221,7 @@ class Views::Sites::Partners::Show < Views::Base
     Shared::SidebarImage(
       src: partner.image.standard.url,
       srcset: "#{partner.image.standard.url} 1x, #{partner.image.retina.url} 2x",
+      webp_srcset: partner.image.webp_srcset(standard: '1x', retina: '2x'),
       alt: t('partners.show.image_alt', name: partner.name),
       **part(:image, class: 'my-6')
     )
