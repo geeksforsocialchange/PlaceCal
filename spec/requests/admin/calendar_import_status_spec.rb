@@ -25,6 +25,40 @@ RSpec.describe "Admin calendar import status", type: :request do
       expect(html.at_css('[role="status"]')).to be_present
     end
 
+    context "with the hourly scan scheduled" do
+      before { SolidQueue::RecurringTask.create!(key: "calendar_scan", class_name: "RecurringCalendarScanJob", schedule: "every hour at minute 5") }
+
+      it "says when the scan next checks the calendar" do
+        set_state("idle")
+        Timecop.freeze(Time.zone.parse("2026-11-18 13:50")) { get import_status_admin_calendar_url(calendar, host: admin_host) }
+
+        expect(state.text).to include("#{I18n.t('admin.calendars.importer.next_check')}in 15 minutes")
+      end
+
+      it "says nothing about the next check while the calendar is importing" do
+        set_state("in_worker")
+        get import_status_admin_calendar_url(calendar, host: admin_host)
+
+        expect(state.text).not_to include(I18n.t("admin.calendars.importer.next_check"))
+      end
+    end
+
+    it "says nothing about the next check where nothing schedules imports" do
+      set_state("idle")
+      get import_status_admin_calendar_url(calendar, host: admin_host)
+
+      expect(state.text).not_to include(I18n.t("admin.calendars.importer.next_check"))
+    end
+
+    it "links to the calendar's latest import run" do
+      set_state("idle")
+      run = calendar.import_runs.create!(started_at: 10.minutes.ago).tap { it.finish!(outcome: "unchanged") }
+
+      get import_status_admin_calendar_url(calendar, host: admin_host)
+
+      expect(state.at_css("a[href='#{admin_import_run_path(run)}']").text).to eq("Latest run ##{run.id}")
+    end
+
     it "shows the stale warning only when the calendar isn't importing", :aggregate_failures do
       calendar.update_columns(calendar_state: "idle", checksum_updated_at: 1.year.ago, last_import_at: 1.year.ago) # rubocop:disable Rails/SkipsModelValidations
       stale = I18n.t("admin.calendars.warnings.stale")
@@ -77,6 +111,13 @@ RSpec.describe "Admin calendar import status", type: :request do
     it "renders the strip" do
       get import_status_admin_calendar_url(calendar, host: admin_host)
       expect(response).to be_successful
+    end
+
+    it "doesn't link to the run, whose page is for root users" do
+      calendar.import_runs.create!(started_at: 10.minutes.ago).tap { it.finish!(outcome: "unchanged") }
+      get import_status_admin_calendar_url(calendar, host: admin_host)
+
+      expect(response.body).not_to include("Latest run")
     end
   end
 
