@@ -145,7 +145,7 @@ module SeedCalendarsAndEvents # rubocop:disable Metrics/ModuleLength
         k = partner_idx + i
         # Odd multiples of 5 are online only; repeating online events (multiples of 20) keep their address.
         online = (k % 5).zero?
-        online_address = OnlineAddress.find_or_create_by!(url: format(MEETING_URLS[(k / 5) % MEETING_URLS.length], k)) if online
+        online_address = OnlineAddress.find_or_create_by!(url: format(MEETING_URLS[(k / 5) % MEETING_URLS.length], k), link_type: :direct) if online
         Event.create!(
           uid: "seed_event_#{partner.id}_#{i}", summary: title,
           description: "#{title} at #{partner.name}. Everyone welcome!",

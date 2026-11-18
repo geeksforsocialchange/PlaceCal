@@ -53,8 +53,13 @@ class Components::Sites::EventRow < Components::Base
       detail(:place, :event_place) { place_name } if show_place?
       detail(:organiser, :partner) { UI::Link(href: partner_path(@event.organiser), variant: :thin, data: { turbo_frame: '_top' }) { truncated(@event.organiser.name, 25) } } if show_organiser?
       detail(:repeats, :event_repeats) { plain repeats } if repeats
-      detail(:online, :event_online) { plain @event.online_address.service_name || t('events.card.online') } if @event.online_address.present?
+      detail(:online, :event_online) { plain online_label } if @event.online_address.present?
     end
+  end
+
+  def online_label
+    service = @event.online_address.service_name
+    service ? t('events.card.online_on', service:) : t('events.card.online')
   end
 
   def detail(name, icon_name, &)

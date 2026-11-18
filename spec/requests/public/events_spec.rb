@@ -283,10 +283,10 @@ RSpec.describe "Public Events", type: :request do
       end
     end
 
-    it "marks every declared event-details part, and declares its tokens, when the event has a venue, a webpage, an image and a sibling event" do
+    it "marks every declared event-details part, and declares its tokens, when the event has a venue, a webpage, an online link, an image and a sibling event" do
       venue = create(:partner, name: "The Venue", address:)
       full_event = create(:event, organiser: partner, place: venue, publisher_url: "https://example.org/event",
-                                  dtstart: 1.day.from_now, address:,
+                                  dtstart: 1.day.from_now, address:, online_address: create(:online_address),
                                   image: Rack::Test::UploadedFile.new(file_fixture("good-cat-picture.jpg"), "image/jpeg"))
       create(:event, organiser: partner, dtstart: 2.days.from_now, address:)
       get event_url(full_event, host: "#{site.slug}.lvh.me")

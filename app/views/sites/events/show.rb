@@ -16,10 +16,13 @@ class Views::Sites::Events::Show < Views::Base
                 columns: 'The description and links beside the event\'s image, like the partner page. Only when the event has an image.',
                 aside: 'The column beside the description, holding the event\'s image. Only when the event has an image.',
                 image: 'The box holding the event\'s image, the same as a partner page\'s. Only when the event has one.',
-                info: 'The group of headed sections below: contact and address, then on core themes the map, and on others the organiser and venue.',
+                info: 'The group of headed sections below the description: on core themes online, location and contact, and on others contact, address, organiser and venue.',
                 contact: 'The organiser\'s contact section. Its heading only when the event has an organiser.',
                 contact_name: 'The organiser\'s name, linked, heading the contact details. Not on core themes.',
                 address: 'The event\'s address section.',
+                online: 'On core themes, the Online section: which service the event is on and how to join.',
+                online_service: 'The video icon and the service the event is on.',
+                online_note: 'For a link to a page rather than the meeting itself, that the joining details are on that page.',
                 organiser: 'The organiser section, linking to their page. Not on core themes, which name the organiser above the address.',
                 organiser_name: 'On core themes, "By" and the organiser\'s name, linked, at the top of the address section.',
                 venue: 'The venue section, when the venue is a different partner from the organiser. On core themes, the venue\'s name above the address instead.',
@@ -51,7 +54,8 @@ class Views::Sites::Events::Show < Views::Base
         display_context: :page,
         event:,
         site_tagline: site.tagline,
-        organiser_byline: !site.core_theme?
+        organiser_byline: !site.core_theme?,
+        online_on: site.core_theme?
       )
       render_event_details
       # Core themes show the map boxed beside the address instead
@@ -313,7 +317,8 @@ class Views::Sites::Events::Show < Views::Base
       div(class: ('grid-area-main' if aside?)) do
         render_description_and_links
         div(**part(:info)) do
-          render_event_address
+          render_online_section if event.online_address
+          render_event_address if physical_location?
           render_contact_info if event.organiser&.contactable?
         end
       end
@@ -357,7 +362,7 @@ class Views::Sites::Events::Show < Views::Base
     div(**part(:description, class: 'markdown-content')) { raw safe(OrganiserHtml.call(event.description_html, under: 1)) }
     div(**part(:links, class: 'flex flex-col items-start gap-2 mt-10 empty:hidden')) do
       render_event_link
-      render_online_link
+      render_online_link unless core_theme?
     end
   end
 
@@ -374,6 +379,28 @@ class Views::Sites::Events::Show < Views::Base
         end
       end
     end
+  end
+
+  def render_online_section
+    online_address = event.online_address
+    div(**part(:online)) do
+      details_heading { t('events.show.online_heading') }
+      div(**part(:section_body, class: section_body)) do
+        p(**part(:online_service, class: 'flex items-center gap-2')) do
+          raw(view_context.icon(:video, size: '5'))
+          plain(online_address.service_name ? t('events.show.online_on', service: online_address.service_name) : t('events.show.online_event'))
+        end
+        p(**part(:online_note)) { t('events.show.online_details_on_webpage') } unless online_address.link_type.direct?
+        Shared::OnlineEventButton(online_address:, has_webpage: event.publisher_url.present?, variant: :primary)
+      end
+    end
+  end
+
+  # Feeds often give a meeting link as the location, which is not somewhere to go
+  def physical_location?
+    raw_location = event.raw_location_from_source.to_s.strip
+    event.online_address.nil? || event.address.present? ||
+      (raw_location.present? && !raw_location.match?(CalendarImporter::LocationResolver::ONLINE_LINK))
   end
 
   def render_event_address

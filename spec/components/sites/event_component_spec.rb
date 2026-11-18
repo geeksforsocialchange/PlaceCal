@@ -39,6 +39,12 @@ RSpec.describe Components::Sites::Event, type: :component do
     expect(page).to have_text("Community Meetup")
   end
 
+  it "leads the details with the date, then the time" do
+    rendered
+    variants = page.all('[data-scope="event"][data-part="detail"]').map { it["data-variant"] }
+    expect(variants.first(2)).to eq(%w[date time])
+  end
+
   it "renders event time" do
     rendered
     expect(page).to have_text("10am")
@@ -248,7 +254,12 @@ RSpec.describe Components::Sites::Event, type: :component do
 
       it "names the service" do
         rendered
-        expect(page).to have_css('[data-scope="event"][data-part="detail"][data-variant="online"]', text: "Google Meet")
+        expect(page).to have_css('[data-scope="event"][data-part="detail"][data-variant="online"]', text: /\A\s*Google Meet\z/)
+      end
+
+      it "says Online on the service when asked to, as on a core event page" do
+        render_inline(described_class.new(display_context: :page, event:, online_on: true))
+        expect(page).to have_css('[data-scope="event"][data-part="detail"][data-variant="online"]', text: /\A\s*Online on Google Meet\z/)
       end
     end
 

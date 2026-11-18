@@ -61,6 +61,38 @@ RSpec.describe "Event page details on core and extension themes", type: :request
 
       expect(part(details_for(site), "contact")).to be_nil
     end
+
+    it "puts a meeting link in an Online section above the location, with a filled join button", :aggregate_failures do
+      event.update!(online_address: create(:direct_online_address))
+      html = details_for(site)
+
+      online = part(html, "online")
+      expect(online.text).to include("On Zoom")
+      expect(online.at_css('a[data-variant="primary"][href="https://zoom.us/j/1234567890"]').text).to eq("Join on Zoom")
+      expect(part(html, "links").at_css('a[href="https://zoom.us/j/1234567890"]')).to be_nil
+      expect(html.css('[data-scope="event-details"][data-part="online"] ~ [data-part="address"]')).to be_present
+    end
+
+    it "says the joining details are on the linked page when the link is not the meeting itself", :aggregate_failures do
+      event.update!(online_address: create(:online_address, url: "https://example.org/register"))
+      online = part(details_for(site), "online")
+
+      expect(online.at_css('[data-part="online-note"]')).to be_present
+      expect(online.at_css('a[href="https://example.org/register"]').text).to eq("Visit the webpage for this event")
+    end
+
+    it "leaves out Event location for an online event with no address, even when its feed gave the meeting link as the location" do
+      event.update!(online_address: create(:direct_online_address), address: nil, place: nil,
+                    raw_location_from_source: "https://zoom.us/j/1234567890")
+
+      expect(part(details_for(site), "address")).to be_nil
+    end
+
+    it "keeps Event location for an online event whose feed names a place without an address" do
+      event.update!(online_address: create(:direct_online_address), address: nil, place: nil, raw_location_from_source: "The Town Hall")
+
+      expect(part(details_for(site), "address").text).to include("The Town Hall")
+    end
   end
 
   context "with an extension theme" do
