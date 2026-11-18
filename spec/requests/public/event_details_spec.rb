@@ -31,7 +31,7 @@ RSpec.describe "Event page details on core and extension themes", type: :request
       expect(response.body).not_to match(%r{<h2[^>]*>Venue</h2>})
     end
 
-    it "heads the address with the organiser, then a different venue, and shows the map in place of an organiser section",
+    it "heads the address with the organiser, then a different venue, and shows the map in the sidebar instead of an organiser section",
        :aggregate_failures do
       html = details_for(site)
       address_section = part(html, "address")
@@ -39,7 +39,7 @@ RSpec.describe "Event page details on core and extension themes", type: :request
       expect(address_section.css('[data-part="organiser-name"] a, [data-part="venue"] a').map(&:text)).to eq(["Oldtown Library", "Harbourside Arts Centre"])
       expect(address_section.at_css('[data-part="organiser-name"]').text).to eq("By Oldtown Library")
       expect(part(html, "organiser")).to be_nil
-      expect(part(html, "info").at_css('[data-scope="map"]')).to be_present
+      expect(part(html, "aside").at_css('[data-scope="map"]')).to be_present
     end
 
     it "names the organiser once when the event is at the organiser's own building" do

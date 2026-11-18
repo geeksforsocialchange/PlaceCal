@@ -303,28 +303,47 @@ class Views::Sites::Events::Show < Views::Base
 
   def render_event_details
     div(**part(:root, class: 'container-narrowish mb-12 e-content')) do
-      if event.image.present?
-        div(**part(:columns, class: 'grid grid-areas-partner-details')) do
-          div(class: 'grid-area-main') { render_description_and_links }
-          aside(**part(:aside, class: 'grid-area-right max-lg:mt-8')) { Shared::SidebarImage(src: event.image.url, alt: event.summary, **part(:image)) }
-        end
-      else
-        render_description_and_links
-      end
-
-      core_theme? ? render_info_with_map : render_info_sections
+      core_theme? ? render_core_details : render_extension_details
     end
   end
 
-  # Contact and address stacked beside the map, which gets about the width it has on partner pages
-  def render_info_with_map
-    div(**part(:info, class: 'grid gap-8 items-start mt-5.5 lg:grid-cols-2')) do
-      UI::Stack(gap: :sm) do
-        render_contact_info if event.organiser&.contactable?
-        render_event_address
+  # The partner page's columns: the text, address and contact on the left, the image and map on the right
+  def render_core_details
+    div(**part(:columns, class: ('grid grid-areas-partner-details' if aside?))) do
+      div(class: ('grid-area-main' if aside?)) do
+        render_description_and_links
+        div(**part(:info, class: 'mt-5.5')) do
+          UI::Stack(gap: :sm) do
+            render_event_address
+            render_contact_info if event.organiser&.contactable?
+          end
+        end
       end
-      Shared::Map(points: map, compact: true) if map.present?
+      if aside?
+        aside(**part(:aside, class: 'grid-area-right max-lg:mt-8')) do
+          UI::Stack(gap: :lg) do
+            Shared::SidebarImage(src: event.image.url, alt: event.summary, **part(:image)) if event.image.present?
+            Shared::Map(points: map, compact: true) if map.present?
+          end
+        end
+      end
     end
+  end
+
+  def aside?
+    event.image.present? || map.present?
+  end
+
+  def render_extension_details
+    if event.image.present?
+      div(**part(:columns, class: 'grid grid-areas-partner-details')) do
+        div(class: 'grid-area-main') { render_description_and_links }
+        aside(**part(:aside, class: 'grid-area-right max-lg:mt-8')) { Shared::SidebarImage(src: event.image.url, alt: event.summary, **part(:image)) }
+      end
+    else
+      render_description_and_links
+    end
+    render_info_sections
   end
 
   def render_info_sections
@@ -418,7 +437,7 @@ class Views::Sites::Events::Show < Views::Base
       Sites::EventRows(events: Array(more_from_organiser), context_partner: event.organiser,
                        show_neighbourhoods: site.show_neighbourhoods?, badge_zoom_level: site.badge_zoom_level&.to_s)
       div(class: 'flex justify-center mt-6') do
-        UI::Button(variant: :primary, size: :lg, href: partner_path(event.organiser)) { t('events.show.all_organiser_events', name: event.organiser.name) }
+        event_button(partner_path(event.organiser), t('events.show.all_organiser_events', name: event.organiser.name))
       end
     end
   end
