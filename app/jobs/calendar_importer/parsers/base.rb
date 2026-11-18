@@ -10,6 +10,9 @@ module CalendarImporter::Parsers
 
     PUBLIC = true
     NAME = ''
+    # The source's page under HANDBOOK_SOURCES_URL
+    HANDBOOK_PAGE = nil
+    HANDBOOK_SOURCES_URL = 'https://handbook.placecal.org/reference/supported-calendar-sources'
     KEY = ''
 
     # Third-party event sources intermittently return rate-limit (429) and
@@ -25,6 +28,10 @@ module CalendarImporter::Parsers
     HTTP_RETRY_BACKOFF = 2 # seconds, multiplied by the attempt number
     HTTP_MAX_REDIRECTS = 5
     JSON_LD_CONTEXT_HOSTS = %w[schema.org www.schema.org].freeze
+
+    def self.handbook_url
+      "#{HANDBOOK_SOURCES_URL}/#{self::HANDBOOK_PAGE}" if self::HANDBOOK_PAGE
+    end
 
     def self.requires_api_token?
       false

@@ -7,6 +7,7 @@
 module CalendarImporter::Parsers
   class Meetup < Ics
     NAME = 'Meetup'
+    HANDBOOK_PAGE = 'meetup'
     KEY = 'meetup'
     DOMAINS = %w[www.meetup.com].freeze
 

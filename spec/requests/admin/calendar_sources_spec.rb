@@ -51,6 +51,12 @@ RSpec.describe "Admin calendar sources", type: :request do
         expect(rows.keys).to match_array(CalendarImporter::CalendarImporter::PARSERS.map { |parser| parser::NAME })
       end
 
+      it "links each source to its handbook page" do
+        links = page.css("tbody th a").to_h { |link| [link.text.strip, link[:href]] }
+        expect(links.size).to eq(CalendarImporter::CalendarImporter::PARSERS.size)
+        expect(links["Ticket Tailor"]).to eq("https://handbook.placecal.org/reference/supported-calendar-sources/ticket-tailor")
+      end
+
       it "is linked from the admin menu" do
         expect(Nokogiri::HTML(response.body).at_css("nav a[href='#{sources_admin_calendars_path}']")).to be_present
       end

@@ -3,6 +3,7 @@
 module CalendarImporter::Parsers
   class LdJson < Base
     NAME = 'LD+JSON'
+    HANDBOOK_PAGE = 'json-ld-generic'
     KEY = 'ld-json'
 
     DOMAINS = ['various'].freeze

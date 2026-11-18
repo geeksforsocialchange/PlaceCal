@@ -8,6 +8,7 @@ module CalendarImporter
   module Parsers
     class Tickettailor < ApiBase
       NAME = 'Ticket Tailor'
+      HANDBOOK_PAGE = 'ticket-tailor'
       KEY = 'tickettailor'
       DOMAINS = %w[www.tickettailor.com tickettailor.com].freeze
 
