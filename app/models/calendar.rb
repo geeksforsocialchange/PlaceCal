@@ -13,7 +13,6 @@
 #  import_started_at    :datetime
 #  importer_mode        :string           default("auto")
 #  importer_used        :string
-#  is_working           :boolean          default(TRUE), not null
 #  last_checksum        :string
 #  last_import_at       :datetime
 #  name                 :string           not null
@@ -84,8 +83,6 @@ class Calendar < ApplicationRecord
   # calendar_state -- managed by enumerize, attribute declaration skipped
 
   # ==== Attributes ====
-  self.ignored_columns += %w[is_working]
-
   # Columns marked (nullable) have no NOT NULL constraint in the DB.
   attribute :api_token,            :string                       # nullable
   attribute :checksum_updated_at,  :datetime                     # nullable
