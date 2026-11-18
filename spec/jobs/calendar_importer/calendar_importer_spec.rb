@@ -330,6 +330,13 @@ RSpec.describe CalendarImporter::CalendarImporter do
     end
   end
 
+  describe "ticketing platforms" do
+    it "are the sources whose event pages sell tickets" do
+      ticketing = described_class::PARSERS.select { it::TICKETING }.map { it::KEY }
+      expect(ticketing).to contain_exactly("eventbrite", "outsavvy", "ticket-solve", "ticketsource", "tickettailor")
+    end
+  end
+
   describe ".new" do
     it "makes no HTTP request" do
       calendar = build(:calendar, source: "https://example.com/events.ics")

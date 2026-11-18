@@ -513,6 +513,35 @@ RSpec.describe "Public Events", type: :request do
     end
   end
 
+  describe "GET /events/:id webpage button" do
+    let(:calendar) { create(:calendar, organiser: partner) }
+    let(:event) do
+      create(:event, organiser: partner, calendar:, address:, dtstart: 1.day.from_now, dtend: 1.day.from_now + 2.hours,
+                     publisher_url: "https://www.eventbrite.co.uk/e/1")
+    end
+
+    def button_text
+      get event_url(event, host: "#{site.slug}.lvh.me")
+      Nokogiri::HTML(response.body).css("a[href='https://www.eventbrite.co.uk/e/1']").map { it.text.strip }
+    end
+
+    it "says Book tickets when the calendar is on a ticketing platform" do
+      calendar.update_column(:importer_used, "eventbrite") # rubocop:disable Rails/SkipsModelValidations
+      expect(button_text).to include(I18n.t("events.show.book_tickets"))
+    end
+
+    it "says visit the webpage for other sources" do
+      calendar.update_column(:importer_used, "ical") # rubocop:disable Rails/SkipsModelValidations
+      expect(button_text).to include(I18n.t("events.show.visit_webpage"))
+    end
+
+    it "says visit the webpage for a cancelled event, even on a ticketing platform" do
+      calendar.update_column(:importer_used, "eventbrite") # rubocop:disable Rails/SkipsModelValidations
+      event.update!(status: "cancelled")
+      expect(button_text).to include(I18n.t("events.show.visit_webpage"))
+    end
+  end
+
   describe "GET /events/:id show content" do
     let(:event) do
       create(:event,

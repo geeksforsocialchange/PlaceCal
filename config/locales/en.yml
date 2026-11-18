@@ -750,6 +750,7 @@ en:
       meta_date_format: "%A %-d %B"
       contact_heading: "Contact information"
       visit_webpage: "Visit the webpage for this event"
+      book_tickets: "Book tickets"
       join_meeting: "Join this meeting"
       join_on: "Join on %{service}"
       online_heading: "Online"
