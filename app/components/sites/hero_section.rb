@@ -2,6 +2,7 @@
 
 class Components::Sites::HeroSection < Components::Base
   prop :image_path, _Nilable(String), default: nil
+  prop :image_srcset, _Nilable(String), default: nil
   prop :image_credit, _Nilable(String), default: nil
   prop :title, _Nilable(String), default: nil
   prop :alttext, _Nilable(String), default: nil
@@ -24,6 +25,8 @@ class Components::Sites::HeroSection < Components::Base
 
   def render_image
     attrs = @alttext.presence ? { alt: @alttext } : { 'aria-hidden': 'true' }
-    img(class: 'block w-full aspect-2/1 object-cover lg:aspect-3/1', src: @image_path, **attrs)
+    # The page's largest image, so it loads first; width and height reserve its space
+    img(class: 'block w-full aspect-2/1 object-cover lg:aspect-3/1', src: @image_path, srcset: @image_srcset, sizes: ('100vw' if @image_srcset),
+        width: 2260, height: 700, fetchpriority: 'high', **attrs)
   end
 end

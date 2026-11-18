@@ -12,6 +12,7 @@ class Views::Sites::Default < Views::Base
 
     Sites::HeroSection(
       image_path: site.hero_image.url,
+      image_srcset: ("#{site.hero_image.standard.url} 1130w, #{site.hero_image.url} 2260w" if site.hero_image.present?),
       image_credit: site.hero_image_credit,
       title: site.hero_text,
       alttext: site.hero_alttext

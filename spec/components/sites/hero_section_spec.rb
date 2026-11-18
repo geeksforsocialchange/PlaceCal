@@ -14,6 +14,14 @@ RSpec.describe Components::Sites::HeroSection, type: :phlex do
     expect(page).to have_text("Image credit: Sam")
   end
 
+  it "loads the image first, offering the smaller size to narrow screens" do
+    render_inline(described_class.new(image_path: "/hero.jpg", image_srcset: "/standard_hero.jpg 1130w, /hero.jpg 2260w"))
+    img = page.find("img", visible: :all)
+    expect(img[:fetchpriority]).to eq("high")
+    expect(img[:srcset]).to include("/standard_hero.jpg 1130w")
+    expect([img[:width], img[:height]]).to eq(%w[2260 700])
+  end
+
   it "falls back to its own heading, not the search description" do
     render_inline(described_class.new)
     expect(page).to have_css("h1", text: "PlaceCal is a community events calendar where you can find out everything that's happening, all in one place.")
