@@ -6,7 +6,7 @@ class Views::Sites::Events::Show < Views::Base
   MIN_DESCRIPTION_LENGTH = 100
   SECTION_BODY = 'text-sm leading-normal'
   # Core themes sit the details close under their headings, with the venue's name and the address as one block
-  CORE_SECTION_BODY = 'text-sm leading-normal details-body'
+  CORE_SECTION_BODY = 'details-body'
 
   theme_scope :event_details,
               parts: {
@@ -302,7 +302,7 @@ class Views::Sites::Events::Show < Views::Base
   # ── Local site layout ──
 
   def render_event_details
-    div(**part(:root, class: 'container-narrowish mb-12 e-content')) do
+    div(**part(:root, class: "#{core_theme? ? 'container-public' : 'container-narrowish'} mb-12 e-content")) do
       core_theme? ? render_core_details : render_extension_details
     end
   end
@@ -312,11 +312,9 @@ class Views::Sites::Events::Show < Views::Base
     div(**part(:columns, class: ('grid grid-areas-partner-details' if aside?))) do
       div(class: ('grid-area-main' if aside?)) do
         render_description_and_links
-        div(**part(:info, class: 'mt-5.5')) do
-          UI::Stack(gap: :sm) do
-            render_event_address
-            render_contact_info if event.organiser&.contactable?
-          end
+        div(**part(:info)) do
+          render_event_address
+          render_contact_info if event.organiser&.contactable?
         end
       end
       if aside?
@@ -369,7 +367,7 @@ class Views::Sites::Events::Show < Views::Base
   def render_contact_info
     div(**part(:contact)) do
       if event.organiser
-        details_heading { t('events.show.contact_heading') }
+        details_heading { t(core_theme? ? 'partners.show.contact_heading' : 'events.show.contact_heading') }
         div(**part(:section_body, class: section_body)) do
           p(**part(:contact_name)) { link_to(event.organiser.name, partner_path(event.organiser)) } unless core_theme?
           Shared::ContactDetails(partner: event.organiser, social_labels: core_theme? ? :handle : :network)
@@ -423,8 +421,11 @@ class Views::Sites::Events::Show < Views::Base
     site&.core_theme?
   end
 
+  # On core themes, the partner page's section headings
   def details_heading(&)
-    UI::RuledHeading(size: :lg, spacing: core_theme? ? :details : :section, &)
+    return UI::RuledHeading(caps: true, rule: :full, size: :lg, spacing: :section, &) if core_theme?
+
+    UI::RuledHeading(size: :lg, spacing: :section, &)
   end
 
   def section_body
@@ -432,7 +433,7 @@ class Views::Sites::Events::Show < Views::Base
   end
 
   def render_site_more_from_organiser
-    section(**part(:more, class: 'container-narrowish mb-8')) do
+    section(**part(:more, class: "#{core_theme? ? 'container-public' : 'container-narrowish'} mb-8")) do
       UI::RuledHeading(caps: true, rule: :none, size: :lg, spacing: :section) { t('events.show.more_from', name: event.organiser.name) }
       Sites::EventRows(events: Array(more_from_organiser), context_partner: event.organiser,
                        show_neighbourhoods: site.show_neighbourhoods?, badge_zoom_level: site.badge_zoom_level&.to_s)

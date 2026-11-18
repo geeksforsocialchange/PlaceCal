@@ -746,7 +746,7 @@ en:
       join_meeting: "Join this meeting"
       join_on: "Join on %{service}"
       watch_on: "Watch on %{service}"
-      address_heading: "Event address"
+      address_heading: "Event location"
       organiser_heading: "Event organiser"
       venue_heading: "Venue"
       # Prompt and link inviting a reader to report a bad listing

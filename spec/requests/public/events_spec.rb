@@ -533,15 +533,15 @@ RSpec.describe "Public Events", type: :request do
     # here skips a level and axe reports heading-order.
     it "shows contact information section with consistent heading level" do
       get event_url(event, host: "#{site.slug}.lvh.me")
-      expect(response.body).to include("Contact information")
-      expect(response.body).to match(%r{<h2[^>]*>Contact information</h2>})
+      expect(response.body).to include("Get in touch")
+      expect(response.body).to match(%r{<h2[^>]*>Get in touch</h2>})
       expect(Nokogiri::HTML(response.body).at_css('[data-scope="event-details"][data-part="contact"] a[href^="/partners/"]')).to be_nil
     end
 
-    it "shows event address with consistent heading level" do
+    it "shows event location with consistent heading level" do
       get event_url(event, host: "#{site.slug}.lvh.me")
-      expect(response.body).to include("Event address")
-      expect(response.body).to match(%r{<h2[^>]*>Event address</h2>})
+      expect(response.body).to include("Event location")
+      expect(response.body).to match(%r{<h2[^>]*>Event location</h2>})
     end
 
     it "includes Event JSON-LD structured data" do
