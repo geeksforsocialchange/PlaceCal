@@ -519,7 +519,7 @@ en:
         skipped: "Skipped"
         took: "Took"
       took:
-        under_a_second: "under a second"
+        under_a_second: "<1s"
         seconds:
           one: "%{count}s"
           other: "%{count}s"
