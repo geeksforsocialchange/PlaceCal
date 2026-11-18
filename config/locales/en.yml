@@ -707,7 +707,7 @@ en:
       postponed: "Postponed"
     # Events running more than 3 days show their dates in place of a time range
     long_running:
-      until: "Until %{date}"
+      from_until: "From %{from} until %{to}"
       range: "%{from} to %{to}"
     index:
       # Read out by screen readers when a filter or date change reloads the list.
@@ -821,6 +821,7 @@ en:
       timeline_day_month: "%-d %b"
       # A long-running event's dates, e.g. "17 Jan 2027"
       long_running: "%-d %b %Y"
+      long_running_no_year: "%-d %b"
       # Full dates in admin notices, e.g. "9 November 2026"
       day_month_year: "%-d %B %Y"
 

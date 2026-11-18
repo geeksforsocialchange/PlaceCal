@@ -18,7 +18,14 @@ RSpec.describe Components::Directory::EventRow, type: :component do
     allow(event).to receive(:dtend).and_return(Time.zone.parse("2027-01-17 17:00"))
     render_inline(described_class.new(event:))
 
-    expect(page).to have_text("Until 17 Jan 2027")
+    expect(page).to have_text("From 28 Nov 2026 until 17 Jan 2027")
     expect(page).to have_no_text("10am")
+  end
+
+  it "leaves the start's year out when it ends in the same year" do
+    allow(event).to receive(:dtend).and_return(Time.zone.parse("2026-12-20 17:00"))
+    render_inline(described_class.new(event:))
+
+    expect(page).to have_text("From 28 Nov until 20 Dec 2026")
   end
 end

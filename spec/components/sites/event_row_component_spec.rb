@@ -29,7 +29,7 @@ RSpec.describe Components::Sites::EventRow, type: :component do
     allow(event).to receive(:dtend).and_return(Time.zone.parse("2027-01-17 17:00"))
     row
 
-    expect(page).to have_css("[data-variant='time']", text: "Until 17 Jan 2027")
+    expect(page).to have_css("[data-variant='time']", text: "From 19 Nov 2026 until 17 Jan 2027")
     expect(page).to have_no_text("7pm")
   end
 

@@ -47,7 +47,7 @@ RSpec.describe Components::Sites::Event, type: :component do
       rendered
 
       expect(page).to have_css("[data-variant='date'] time.dt-start", text: "28 Nov 2026")
-      expect(page).to have_css("[data-variant='time'] time.dt-end[datetime^='2027-01-17']", text: "Until 17 Jan 2027")
+      expect(page).to have_css("[data-variant='time'] time.dt-end[datetime^='2027-01-17']", text: "From 28 Nov 2026 until 17 Jan 2027")
       expect(page).to have_no_text("10am")
     end
 
@@ -62,7 +62,7 @@ RSpec.describe Components::Sites::Event, type: :component do
       allow(event).to receive(:dtend).and_return(Time.zone.parse("2027-01-18 00:00"))
       rendered
 
-      expect(page).to have_text("Until 17 Jan 2027")
+      expect(page).to have_text("From 28 Nov 2026 until 17 Jan 2027")
     end
   end
 

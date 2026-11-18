@@ -42,7 +42,7 @@ RSpec.describe "Long-running events", type: :request do
 
       expect(titles).to eq(["Winter Collages", "Magic Place"])
       row = frame.find(".h-event", text: "Magic Place")
-      expect(row).to have_text("Until 17 Jan 2023")
+      expect(row).to have_text("From 28 Nov 2022 until 17 Jan 2023")
       expect(row).to have_css("time.dt-start[datetime^='2022-11-28']")
       expect(frame).to have_text("2 events")
     end
@@ -71,11 +71,11 @@ RSpec.describe "Long-running events", type: :request do
       expect(frame).to have_css("input[type='hidden'][name='long_running'][value='off']", visible: :all)
     end
 
-    it "strikes through the Until line of a called-off event" do
+    it "strikes through the From and until line of a called-off event" do
       opens_later.update!(status: "cancelled")
       get events_url(host:, period: "future")
 
-      expect(frame.find(".h-event", text: "Magic Place")).to have_css(".line-through", text: "Until 17 Jan 2023")
+      expect(frame.find(".h-event", text: "Magic Place")).to have_css(".line-through", text: "From 28 Nov 2022 until 17 Jan 2023")
     end
   end
 
@@ -84,7 +84,7 @@ RSpec.describe "Long-running events", type: :request do
       get partner_url(partner, host:)
 
       expect(titles).to eq(["Dead or Alive", "Winter Collages", "Magic Place"])
-      expect(frame.find(".h-event", text: "Dead or Alive")).to have_text("Until 17 Jan 2023")
+      expect(frame.find(".h-event", text: "Dead or Alive")).to have_text("From 1 Oct 2022 until 17 Jan 2023")
     end
 
     it "counts running events as on today" do
@@ -161,7 +161,7 @@ RSpec.describe "Long-running events", type: :request do
 
       summaries = Capybara.string(response.body).all("a[href^='/events/']").map(&:text) & [on_now, opens_later, short, ended].map(&:summary)
       expect(summaries).to eq(["Dead or Alive", "Winter Collages", "Magic Place"])
-      expect(response.body).to include("Until 17 Jan 2023")
+      expect(response.body).to include("From 1 Oct 2022 until 17 Jan 2023")
     end
   end
 
