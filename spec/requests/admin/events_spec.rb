@@ -60,16 +60,28 @@ RSpec.describe "Admin event inspector", type: :request do
 
       before { sign_in user }
 
-      it "shows the event" do
+      it "shows the event and the calendar's feed URL" do
         get admin_event_url(event, host: admin_host)
 
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include("Knit and natter")
+        expect(response.body).to include("Knit and natter", "https://calendar.google.com/library/basic.ics")
       end
     end
 
     context "as an admin who cannot edit the event's calendar" do
       before { sign_in create(:partner_admin) }
+
+      it "shows the event but not the calendar's feed URL, which may be a secret link" do
+        get admin_event_url(event, host: admin_host)
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Knit and natter", "Library Google feed")
+        expect(response.body).not_to include("https://calendar.google.com/library/basic.ics")
+      end
+    end
+
+    context "as a citizen with no admin role" do
+      before { sign_in create(:citizen_user) }
 
       it "turns them away" do
         get admin_event_url(event, host: admin_host)
@@ -82,15 +94,8 @@ RSpec.describe "Admin event inspector", type: :request do
       let(:user) { create(:partner_admin) }
       let(:uncalendared) { create(:event, calendar: nil, organiser: user.partners.first, summary: "Hand-made event") }
 
-      it "turns away an admin of its organiser" do
+      it "shows any admin that it has no calendar and no siblings section" do
         sign_in user
-        get admin_event_url(uncalendared, host: admin_host)
-
-        expect(response).to redirect_to(admin_root_path)
-      end
-
-      it "shows root that it has no calendar and no siblings section" do
-        sign_in create(:root_user)
         get admin_event_url(uncalendared, host: admin_host)
 
         expect(response.body).to include("Hand-made event", I18n.t("admin.events.show.no_calendar"))

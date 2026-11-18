@@ -94,7 +94,8 @@ class Views::Admin::Events::Show < Views::Admin::Base
         field(:calendar_name) do
           link_to calendar.name, admin_calendar_path(calendar), class: 'font-medium link link-hover text-placecal-orange-dark'
         end
-        field(:source) { external_link(calendar.source) }
+        # Some feed URLs are secret links, so only the calendar's editors see them
+        field(:source) { external_link(calendar.source) } if policy(calendar).update?
         field(:importer) { importer_label(calendar) }
         field(:state) do
           state = calendar.calendar_state.to_s

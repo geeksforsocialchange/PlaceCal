@@ -1,11 +1,8 @@
 # frozen_string_literal: true
 
 class EventPolicy < ApplicationPolicy
-  # Whoever can edit the source calendar can inspect its events
+  # Any admin can inspect any event; the page only reads
   def show?
-    return true if user.root?
-    return false if record.calendar.nil?
-
-    CalendarPolicy.new(user, record.calendar).update?
+    user.admin_roles.present?
   end
 end
