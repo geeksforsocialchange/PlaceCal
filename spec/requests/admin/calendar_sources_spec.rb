@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe "Admin calendar sources", type: :request do
   def sources_link(body)
-    Nokogiri::HTML(body).at_css("a[href='#{sources_admin_calendars_path}']")
+    Nokogiri::HTML(body).css("a[href='#{sources_admin_calendars_path}']").find { |link| link.ancestors("nav").empty? }
   end
 
   describe "GET /calendars/sources" do
@@ -47,10 +47,12 @@ RSpec.describe "Admin calendar sources", type: :request do
                                 "Source organiser"])
       end
 
-      it "has a row for each public source and none for the others" do
-        public_names = CalendarImporter::CalendarImporter.public_parsers.map { |parser| parser::NAME }
-        expect(rows.keys).to match_array(public_names)
-        expect(rows.keys).not_to include("Manchester University")
+      it "has a row for every source, hidden ones included" do
+        expect(rows.keys).to match_array(CalendarImporter::CalendarImporter::PARSERS.map { |parser| parser::NAME })
+      end
+
+      it "is linked from the admin menu" do
+        expect(Nokogiri::HTML(response.body).at_css("nav a[href='#{sources_admin_calendars_path}']")).to be_present
       end
 
       it "fills each cell from the source's event class", :aggregate_failures do

@@ -186,6 +186,7 @@ en:
 
     leftbar:
       build: "Build"
+      calendar_sources: "Calendar sources"
       content_types: "Content types"
       discord: "Discord"
       get_support: "Get support"

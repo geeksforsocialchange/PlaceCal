@@ -191,6 +191,7 @@ class Views::Layouts::Admin::Application < Phlex::HTML
           plain t('contact.email')
         end
       end
+      admin_nav_link(t('admin.leftbar.calendar_sources'), sources_admin_calendars_path, :calendar) if policy(Calendar).new?
     end
   end
 
