@@ -61,7 +61,7 @@ class CalendarImporter::EventResolver
       from_date: @from_date,
       occurrences:,
       series: series?,
-      attributes_for: ->(occurrence) { data.attributes_for(occurrence).merge(resolved_attributes) }
+      attributes_for: ->(occurrence) { with_default_description(data.attributes_for(occurrence)).merge(resolved_attributes) }
     ).call
 
     result.failures.each do |failure|
@@ -79,5 +79,11 @@ class CalendarImporter::EventResolver
   # RDATE gives an event several dates without an RRULE
   def series?
     data.recurring_event? || occurrences.many?
+  end
+
+  def with_default_description(attributes)
+    return attributes if attributes[:description].present? || calendar.default_description.blank?
+
+    attributes.merge(description: calendar.default_description)
   end
 end

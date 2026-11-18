@@ -193,7 +193,8 @@ module Admin
         :api_token,
         :public_contact_name,
         :public_contact_phone,
-        :public_contact_email
+        :public_contact_email,
+        :default_description
       )
     end
   end

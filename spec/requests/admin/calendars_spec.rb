@@ -356,6 +356,20 @@ RSpec.describe "Admin::Calendars", type: :request do
       expect(calendar.importer_mode).to eq("eventbrite")
     end
 
+    it "saves a default event description" do
+      put admin_calendar_url(calendar, host: admin_host),
+          params: { calendar: { default_description: "Details are on our Discord." } }
+
+      expect(calendar.reload.default_description).to eq("Details are on our Discord.")
+    end
+
+    it "shows the default event description field on the calendar's edit page" do
+      get edit_admin_calendar_url(calendar, host: admin_host)
+
+      expect(response.body).to include(I18n.t("admin.calendars.fields.default_description_hint").gsub('"', "&quot;"))
+      expect(Nokogiri::HTML(response.body).at_css("textarea[name='calendar[default_description]']")).to be_present
+    end
+
     it "does not move the calendar to a partner outside the user's scope" do
       put admin_calendar_url(calendar, host: admin_host),
           params: { calendar: { organiser_id: other_partner.id } }

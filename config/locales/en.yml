@@ -968,6 +968,7 @@ en:
         public_contact_name: "Contact Name"
         public_contact_email: "Contact Email"
         public_contact_phone: "Contact Phone"
+        default_description: "Default event description"
 
       neighbourhood:
         <<: *default_attrs
