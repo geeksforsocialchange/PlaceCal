@@ -351,20 +351,21 @@ RSpec.describe CalendarImporter::Parsers::Ticketsource do
       expect(event.dtend.hour).to eq(22)
     end
 
-    it "filters out cancelled dates" do
+    it "keeps a cancelled date, marked cancelled" do
       cancelled_event = sample_event_data.deep_dup
       cancelled_event["dates"].first["cancelled"] = true
 
-      events = parser.import_events_from([cancelled_event])
-      expect(events).to be_empty
+      expect(parser.import_events_from([cancelled_event]).map(&:status)).to eq(["cancelled"])
     end
 
-    it "imports one event per remaining date" do
+    it "imports one event per date, cancelled or not" do
       record = sample_event_data.deep_dup
       record["dates"] << { "id" => "date_789", "start" => "2026-03-22T19:30:00+00:00", "cancelled" => true }
       record["dates"] << { "id" => "date_999", "start" => "2026-03-29T19:30:00+00:00" }
 
-      expect(parser.import_events_from([record]).map(&:uid)).to eq(%w[evt_123-date_456 evt_123-date_999])
+      expect(parser.import_events_from([record]).map { [it.uid, it.status] }).to eq(
+        [%w[evt_123-date_456 scheduled], %w[evt_123-date_789 cancelled], %w[evt_123-date_999 scheduled]]
+      )
     end
 
     it "imports the event without a location when it has no venue" do

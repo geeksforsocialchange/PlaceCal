@@ -94,7 +94,7 @@ RSpec.describe "Source categories and organiser" do
       cancelled = imported(CalendarImporter::Parsers::Outsavvy, :outsavvy_cancelled_event, "https://www.outsavvy.com/organiser/a-whole-orange")
       single = imported(CalendarImporter::Parsers::Outsavvy, :outsavvy_publisher_url, "https://www.outsavvy.com/organiser/ldn-queer-mart")
 
-      expect(cancelled.pluck(:source_organiser).tally).to eq("A Whole Orange" => 41, "Vagina Museum" => 8)
+      expect(cancelled.pluck(:source_organiser).tally).to eq("A Whole Orange" => 41, "Vagina Museum" => 10)
       expect(single).to eq([{ source_categories: nil, source_organiser: "LDN QUEER MART" }])
     end
 

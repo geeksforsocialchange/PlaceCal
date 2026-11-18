@@ -28,6 +28,10 @@ module CalendarImporter::Events
       parse_time(@date['start'])
     end
 
+    def status
+      @date['cancelled'] ? 'cancelled' : 'scheduled'
+    end
+
     def dtend
       parse_time(@date['end'])
     end
