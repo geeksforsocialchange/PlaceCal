@@ -235,6 +235,10 @@ class Views::Admin::Calendars::New < Views::Admin::Base
             end
           end
         end
+        p(class: 'text-xs pt-3') do
+          link_to t('admin.calendars.sources.link'), sources_admin_calendars_path,
+                  target: '_blank', rel: 'noopener', class: 'link underline hover:no-underline text-placecal-orange-dark'
+        end
       end
     end
   end

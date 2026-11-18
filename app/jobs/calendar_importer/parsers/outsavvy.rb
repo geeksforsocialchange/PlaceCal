@@ -3,15 +3,11 @@
 module CalendarImporter::Parsers
   class Outsavvy < LdJson
     NAME = 'OutSavvy'
+    TICKETING = true
     KEY = 'outsavvy'
     DOMAINS = %w[outsavvy.com].freeze
 
-    # Custom EventConsumer that uses OutsavvyEvent to handle malformed timestamps
-    class EventConsumer < LdJson::EventConsumer
-      def consume_event(data)
-        events << ::CalendarImporter::Events::OutsavvyEvent.new(data)
-      end
-    end
+    def self.event_class = CalendarImporter::Events::OutsavvyEvent
 
     def self.allowlist_pattern
       %r{^https://www\.outsavvy\.com/organiser/[^/]*/?$}

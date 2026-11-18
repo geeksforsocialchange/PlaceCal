@@ -9,6 +9,8 @@ module CalendarImporter::Parsers
     include CalendarImporter::Exceptions
 
     PUBLIC = true
+    # A ticketing platform, whose event pages are where people book
+    TICKETING = false
     NAME = ''
     KEY = ''
 
@@ -28,6 +30,11 @@ module CalendarImporter::Parsers
 
     def self.requires_api_token?
       false
+    end
+
+    # @return [Class] the CalendarImporter::Events class this parser builds its events from
+    def self.event_class
+      raise NotImplementedError
     end
 
     # Parsers that read an API skip the check that the source page is reachable.

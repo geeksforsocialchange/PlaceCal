@@ -4,6 +4,10 @@ name: Visual regression
 # Chromium and WebKit, for the PR's merge base and head, and comments the diff.
 # Informational: the job fails only when capture itself breaks.
 on:
+  # Pushes to main only warm the apt cache, which pull requests can read but not share with each other
+  push:
+    branches:
+      - main
   pull_request:
     branches:
       - main
@@ -34,7 +38,37 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  warm-apt-cache:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: ".node-version"
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+
+      - name: Read Playwright version
+        id: playwright
+        run: echo "version=$(node -p "require('playwright/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      # Must match the screenshots job's install step, or the cache key differs
+      - name: Install Imagemagick, libvips and browser libraries
+        timeout-minutes: 40
+        uses: ./.github/actions/install-apt-packages
+        with:
+          packages: imagemagick libvips42t64
+          key: playwright-${{ steps.playwright.outputs.version }}
+          extra-packages-command: >-
+            yarn -s playwright install-deps --dry-run chromium webkit
+            | awk '/^Missing system dependencies/ { found = 1; sub(/^[^:]*:/, "") } found'
+            | tr -s ' ' '\n' | grep -E '^[a-z0-9][a-z0-9.+-]+$' || true
+
   screenshots:
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     permissions:

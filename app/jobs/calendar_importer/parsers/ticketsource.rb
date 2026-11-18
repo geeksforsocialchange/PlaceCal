@@ -7,8 +7,11 @@ module CalendarImporter
   module Parsers
     class Ticketsource < ApiBase
       NAME = 'TicketSource'
+      TICKETING = true
       KEY = 'ticketsource'
       DOMAINS = %w[www.ticketsource.co.uk ticketsource.co.uk www.ticketsource.com ticketsource.com].freeze
+
+      def self.event_class = Events::TicketsourceEvent
 
       API_BASE_URL = 'https://api.ticketsource.io'
       USER_AGENT = 'ticketsource-placecal'
@@ -29,7 +32,7 @@ module CalendarImporter
         data.flat_map do |record|
           publisher_url = build_publisher_url(record)
           record['dates'].map do |date|
-            Events::TicketsourceEvent.new(record, date, publisher_url:)
+            self.class.event_class.new(record, date, publisher_url:)
           end
         end
       end

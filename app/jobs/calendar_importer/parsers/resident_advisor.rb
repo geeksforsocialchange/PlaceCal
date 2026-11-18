@@ -3,8 +3,11 @@
 module CalendarImporter::Parsers
   class ResidentAdvisor < Base
     NAME = 'Resident Advisor'
+    TICKETING = true
     KEY = 'residentadvisor'
     DOMAINS = %w[ra.co].freeze
+
+    def self.event_class = CalendarImporter::Events::ResidentAdvisor
     RA_ENDPOINT = 'https://ra.co/graphql'
     RA_REGEX = %r{^https://ra\.co/(promoters|clubs)/(\d+)$} # Accept club or promoter URLs
 
@@ -29,7 +32,7 @@ module CalendarImporter::Parsers
     end
 
     def import_events_from(data)
-      data.map { |d| CalendarImporter::Events::ResidentAdvisor.new(d) }
+      data.map { |d| self.class.event_class.new(d) }
     end
 
     # Converts an RA URL into [(promoter OR club), (id of entity)]

@@ -2,6 +2,10 @@
 
 module CalendarImporter::Events
   class LinkedDataEvent < Base
+    imports title: 'name', description: 'description', start_time: 'startDate', end_time: 'endDate', repeats: nil,
+            location: 'location', webpage: 'url', online_link: nil, spaces_available: nil, status: 'eventStatus',
+            image: 'image', source_categories: 'keywords', source_organiser: 'organizer'
+
     STATUSES = { 'EventCancelled' => 'cancelled', 'EventPostponed' => 'postponed' }.freeze
     # Not in Parsers::Base::CONTEXT, so compacting leaves it under its full IRI
     KEYWORDS = 'http://schema.org/keywords'

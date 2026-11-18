@@ -7,6 +7,8 @@ module CalendarImporter::Parsers
 
     DOMAINS = ['various'].freeze
 
+    def self.event_class = CalendarImporter::Events::LinkedDataEvent
+
     class EventConsumer
       TYPE_DISPATCH = {
         'Event' => :consume_event,
@@ -55,8 +57,12 @@ module CalendarImporter::Parsers
       def consume_brand(data); end
       def consume_website(data); end
 
+      def initialize(event_class: CalendarImporter::Events::LinkedDataEvent)
+        @event_class = event_class
+      end
+
       def consume_event(data)
-        events << ::CalendarImporter::Events::LinkedDataEvent.new(data)
+        events << @event_class.new(data)
       end
 
       def consume(data)
@@ -116,7 +122,7 @@ module CalendarImporter::Parsers
     end
 
     def import_events_from(data)
-      consumer = self.class::EventConsumer.new
+      consumer = EventConsumer.new(event_class: self.class.event_class)
       consumer.consume data
       consumer.validate_events
       consumer.events

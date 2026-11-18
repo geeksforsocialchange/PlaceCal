@@ -288,7 +288,8 @@ class Views::Sites::Events::Show < Views::Base
   def render_event_link
     return if event.publisher_url.blank?
 
-    event_button(event.publisher_url, t('events.show.visit_webpage'))
+    label = event.ticketed? && !event.called_off? ? t('events.show.book_tickets') : t('events.show.visit_webpage')
+    event_button(event.publisher_url, label)
   end
 
   def render_online_link
