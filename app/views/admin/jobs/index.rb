@@ -8,49 +8,54 @@ class Views::Admin::Jobs::Index < Views::Admin::Base
                 'RecurringMaintenanceJob' => :maintenance, 'RecurringCalendarScanJob' => :scan }.freeze
 
   prop :job_counts, Hash, reader: :private
-  prop :calendar_counts, Hash, reader: :private
+  prop :run_counts, Hash, reader: :private
   prop :failed_jobs, Array, reader: :private
 
   REFRESH_SECONDS = 10
 
+  OUTCOME_FILTERS = %w[failed imported unchanged skipped running].freeze
+
   # Keyed as the page's data-live-count markers, for the live counts controller
-  def self.live_counts(job_counts, calendar_counts)
-    states = Calendar::ALLOWED_STATES.to_h { ["state.#{it}", calendar_counts[it.to_s].to_i] }
-    problems = CalendarDatatable::STATE_GROUPS['problem'].sum { calendar_counts[it].to_i }
-    job_counts.transform_keys { "jobs.#{it}" }.merge('state.problem' => problems).merge(states)
+  def self.live_counts(job_counts, run_counts)
+    outcomes = OUTCOME_FILTERS.to_h do |filter|
+      group = ImportRunDatatable::OUTCOME_GROUPS.fetch(filter, [filter])
+      ["outcome.#{filter}", group.sum { run_counts[it].to_i }]
+    end
+    job_counts.transform_keys { "jobs.#{it}" }.merge(outcomes)
   end
 
   def view_template
     div(data_controller: 'live-counts', data_live_counts_url_value: admin_jobs_path(format: :json),
         data_action: 'admin-table:refreshed->live-counts#update') do
-      render_calendars
+      render_runs
       turbo_frame_tag('failed_jobs_frame', target: '_top', data: { live_counts_target: 'frame' }) { render_failed_jobs if failed_jobs.any? }
     end
   end
 
   private
 
-  def render_calendars
+  def render_runs
     Datatable(
       title: t('admin.jobs.title'),
-      model: :calendars,
-      column_titles: [t('admin.table.calendar'), t('admin.table.state'), t('admin.jobs.columns.error'),
-                      t('admin.jobs.columns.last_tried'), t('admin.jobs.columns.last_succeeded')],
-      columns: %i[name state_badge details import_started_at last_import_at],
-      column_config: { state_badge: { sortable: false, fit: true }, details: { sortable: false },
-                       import_started_at: { fit: true }, last_import_at: { fit: true } },
-      default_sort: { column: 'name', direction: 'asc' },
-      filters: [{ type: :radio, column: 'state', label: t('admin.table.state'), default: 'problem', options: state_options }],
-      data: Calendar.none,
-      source: admin_calendars_path(format: :json),
+      model: :import_runs,
+      column_titles: %i[when calendar outcome importer added changed removed skipped took].map { t("admin.import_runs.columns.#{it}") },
+      columns: %i[started_at calendar outcome importer events_added events_changed events_removed events_skipped took],
+      column_config: { started_at: { fit: true }, outcome: { sortable: false, fit: true }, importer: { fit: true },
+                       events_added: { fit: true }, events_changed: { fit: true }, events_removed: { fit: true },
+                       events_skipped: { fit: true }, took: { sortable: false, fit: true } },
+      default_sort: { column: 'started_at', direction: 'desc' },
+      filters: [{ type: :radio, column: 'outcome', label: t('admin.import_runs.outcome'), options: outcome_options }],
+      data: ImportRun.none,
+      source: admin_import_runs_path(format: :json),
       refresh_every: REFRESH_SECONDS
     ) { render_job_counts }
   end
 
-  def state_options
-    counts = self.class.live_counts(job_counts, calendar_counts)
-    [{ value: 'problem', label: t('admin.jobs.state_groups.problem') }, *Calendar::ALLOWED_STATES.map { { value: it.to_s, label: t("admin.jobs.states.#{it}") } }]
-      .map { it.merge(count: counts["state.#{it[:value]}"], count_key: "state.#{it[:value]}") }
+  def outcome_options
+    counts = self.class.live_counts(job_counts, run_counts)
+    OUTCOME_FILTERS.map do |filter|
+      { value: filter, label: t("admin.import_runs.outcome_filters.#{filter}"), count: counts["outcome.#{filter}"], count_key: "outcome.#{filter}" }
+    end
   end
 
   def render_job_counts

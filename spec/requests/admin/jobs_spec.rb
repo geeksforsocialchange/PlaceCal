@@ -24,16 +24,20 @@ RSpec.describe "Admin background jobs", type: :request do
 
     def job_count(html, kind) = html.at_xpath("//dt[text()='#{I18n.t("admin.jobs.stats.#{kind}")}']/following-sibling::dd").text
 
-    it "shows calendars with a problem in the paginated calendars table, with the state buttons and job counts inside it" do
-      create(:calendar).update_columns(calendar_state: "bad_source") # rubocop:disable Rails/SkipsModelValidations
+    def finished_run(outcome, **attributes)
+      create(:calendar).import_runs.create!(started_at: 5.minutes.ago).tap { it.finish!(outcome:, **attributes) }
+    end
+
+    it "lists import runs in the paginated table, with the outcome buttons and job counts inside it" do
+      finished_run("bad_source", error: "404")
+      finished_run("imported")
       html = page_html
       table = html.at_css("[data-controller='admin-table']")
 
-      expect(table["data-admin-table-source-value"]).to eq(admin_calendars_path(format: :json))
+      expect(table["data-admin-table-source-value"]).to eq(admin_import_runs_path(format: :json))
       expect(table.at_css("h1").text).to eq(I18n.t("admin.jobs.title"))
-      expect(table.at_css("[data-filter-column='state']")["data-filter-default"]).to eq("problem")
-      expect(table.at_css("button.bg-orange-700[data-filter-value='problem'] span").text).to eq("1")
-      expect(table.at_css("button[data-filter-value='bad_source'] span").text).to eq("1")
+      expect(table.at_css("button[data-filter-value='failed'] span").text).to eq("1")
+      expect(table.at_css("button[data-filter-value='imported'] span").text).to eq("1")
       expect(job_count(table, :waiting)).to eq("0")
     end
 
@@ -43,15 +47,17 @@ RSpec.describe "Admin background jobs", type: :request do
       expect(html.at_css("[data-controller='admin-table']")["data-admin-table-refresh-interval-value"]).to eq(Views::Admin::Jobs::Index::REFRESH_SECONDS.to_s)
       expect(html.at_css("[data-controller='live-counts']")["data-live-counts-url-value"]).to eq(admin_jobs_path(format: :json))
       expect(html.at_css("turbo-frame#failed_jobs_frame[data-live-counts-target='frame'][target='_top']")).to be_present
-      expect(html.css("[data-live-count]").map { it["data-live-count"] }).to include("jobs.failed", "state.problem", "state.bad_source")
+      expect(html.css("[data-live-count]").map { it["data-live-count"] }).to include("jobs.failed", "outcome.failed", "outcome.running")
     end
 
     it "gives the counts as JSON, keyed as the page marks them" do
-      create(:calendar).update_columns(calendar_state: "error") # rubocop:disable Rails/SkipsModelValidations
+      finished_run("error")
+      finished_run("interrupted")
+      create(:calendar).import_runs.create!(started_at: Time.current)
 
       get admin_jobs_url(host: admin_host, format: :json)
 
-      expect(response.parsed_body).to include("jobs.waiting" => 0, "jobs.failed" => 0, "state.problem" => 1, "state.error" => 1, "state.idle" => 0)
+      expect(response.parsed_body).to include("jobs.waiting" => 0, "outcome.failed" => 2, "outcome.running" => 1, "outcome.imported" => 0)
     end
 
     def failed_job(class_name, arguments)

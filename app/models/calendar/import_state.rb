@@ -11,7 +11,7 @@ module Calendar::ImportState
       lock! # re-read the state so a scan that queued it meanwhile isn't doubled
       return false if busy?
 
-      save_state! calendar_state: :in_queue, notices: nil, import_started_at: DateTime.current, import_job_id: nil
+      save_state! calendar_state: :in_queue, import_started_at: DateTime.current, import_job_id: nil
       job = CalendarImporterJob.perform_later id, from_date, force_import
       update_column :import_job_id, job.provider_job_id if job.try(:provider_job_id) # rubocop:disable Rails/SkipsModelValidations
       true
@@ -23,11 +23,11 @@ module Calendar::ImportState
   def flag_start_import_job!
     return unless calendar_state.in_queue?
 
-    save_state! calendar_state: :in_worker, notices: nil, import_started_at: DateTime.current
+    save_state! calendar_state: :in_worker, import_started_at: DateTime.current
   end
 
   # Flag that importing completed successfully; stores notices and timestamp.
-  # @param notices [Array<String>] messages generated during import
+  # @param notices [Array<String>, nil] messages generated during import; nil keeps the last import's
   # @param importer_used [String] name of the importer that ran
   # @return [void]
   def flag_complete_import_job!(notices, importer_used)
@@ -35,7 +35,7 @@ module Calendar::ImportState
 
     save_state!(
       calendar_state: :idle,
-      notices:,
+      **({ notices: } unless notices.nil?),
       last_import_at: DateTime.current,
       critical_error: nil,
       importer_used:

@@ -78,6 +78,7 @@ Rails.application.routes.draw do
     resources :jobs, only: %i[index destroy] do
       member { post :retry }
     end
+    resources :import_runs, only: %i[index show]
     get 'profile', to: 'users#profile', as: :profile
 
     root 'pages#home'

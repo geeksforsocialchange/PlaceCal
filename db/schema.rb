@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_17_150100) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_17_190000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -140,6 +140,32 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_17_150100) do
     t.index ["organiser_id", "dtstart"], name: "index_events_on_organiser_id_and_dtstart"
     t.index ["place_id"], name: "index_events_on_place_id"
     t.index ["uid"], name: "index_events_uid"
+  end
+
+  create_table "import_run_events", force: :cascade do |t|
+    t.bigint "import_run_id", null: false
+    t.string "uid", null: false
+    t.string "title"
+    t.text "location"
+    t.string "location_result", null: false
+    t.text "reason"
+    t.integer "occurrences", default: 0, null: false
+    t.index ["import_run_id"], name: "index_import_run_events_on_import_run_id"
+  end
+
+  create_table "import_runs", force: :cascade do |t|
+    t.bigint "calendar_id", null: false
+    t.datetime "started_at", null: false
+    t.datetime "finished_at"
+    t.string "outcome"
+    t.string "importer"
+    t.text "error"
+    t.jsonb "notices", default: [], null: false
+    t.integer "events_added", default: 0, null: false
+    t.integer "events_changed", default: 0, null: false
+    t.integer "events_removed", default: 0, null: false
+    t.integer "events_skipped", default: 0, null: false
+    t.index ["calendar_id", "started_at"], name: "index_import_runs_on_calendar_id_and_started_at"
   end
 
   create_table "neighbourhoods", force: :cascade do |t|
@@ -547,6 +573,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_17_150100) do
   add_foreign_key "events", "online_addresses"
   add_foreign_key "events", "partners", column: "organiser_id"
   add_foreign_key "events", "partners", column: "place_id"
+  add_foreign_key "import_run_events", "import_runs", on_delete: :cascade
+  add_foreign_key "import_runs", "calendars", on_delete: :cascade
   add_foreign_key "neighbourhoods_users", "neighbourhoods"
   add_foreign_key "neighbourhoods_users", "users"
   add_foreign_key "partner_tags", "partners"
