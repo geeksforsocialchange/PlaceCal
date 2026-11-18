@@ -58,7 +58,8 @@ export default class extends Controller {
 
 		const cluster = L.markerClusterGroup({
 			showCoverageOnHover: false,
-			maxClusterRadius: 40,
+			// Wide enough that a cluster icon (up to 52px) never overlaps a neighbouring marker
+			maxClusterRadius: 60,
 			spiderfyOnMaxZoom: true,
 			iconCreateFunction: (c) => {
 				const count = c.getChildCount();
@@ -105,7 +106,11 @@ export default class extends Controller {
 		if (this.markersValue.length > 0) {
 			const bounds = cluster.getBounds();
 			if (bounds.isValid()) {
-				this.map.fitBounds(bounds, { padding: [10, 10] });
+				// The extra bottom padding keeps markers off the map credit
+				this.map.fitBounds(bounds, {
+					paddingTopLeft: [10, 10],
+					paddingBottomRight: [10, 40],
+				});
 			}
 		} else {
 			this.map.setView([54.0, -2.0], 6);
