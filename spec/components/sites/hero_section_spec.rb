@@ -22,6 +22,12 @@ RSpec.describe Components::Sites::HeroSection, type: :phlex do
     expect([img[:width], img[:height]]).to eq(%w[2260 700])
   end
 
+  it "offers WebP first when there are WebP copies" do
+    render_inline(described_class.new(image_path: "/hero.jpg", image_webp_srcset: "/standard_webp_hero.webp 1130w, /webp_hero.webp 2260w"))
+    expect(page).to have_css("source[type='image/webp'][srcset*='standard_webp_hero.webp 1130w']", visible: :all)
+    expect(page).to have_css("picture img[src='/hero.jpg']", visible: :all)
+  end
+
   it "falls back to its own heading, not the search description" do
     render_inline(described_class.new)
     expect(page).to have_css("h1", text: "PlaceCal is a community events calendar where you can find out everything that's happening, all in one place.")

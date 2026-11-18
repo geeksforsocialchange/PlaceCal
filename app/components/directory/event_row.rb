@@ -31,7 +31,7 @@ class Components::Directory::EventRow < Components::Directory::Base
                 class: 'no-underline text-foreground hover:border-b-2 hover:border-primary',
                 data: { turbo_frame: '_top' })
       end
-      div(class: 'flex flex-wrap gap-x-3 gap-y-0.5 text-sm text-tertiary') do
+      div(class: 'flex flex-wrap gap-x-3 gap-y-1 text-sm text-tertiary') do
         render_meta_time
         render_meta_place if show_place?
         render_meta_organiser if show_organiser?

@@ -16,6 +16,21 @@ class HeroImageUploader < DefaultUploader
     process resize_to_fill: [160, 160]
   end
 
+  # WebP copies for the public hero; `bin/rails images:hero_webp` makes them for earlier uploads
+  version :webp do
+    process resize_to_fill: [2260, 700]
+    process convert: 'webp'
+
+    def full_filename(for_file) = "webp_#{File.basename(for_file, '.*')}.webp"
+  end
+
+  version :standard_webp do
+    process resize_to_fill: [1130, 350]
+    process convert: 'webp'
+
+    def full_filename(for_file) = "standard_webp_#{File.basename(for_file, '.*')}.webp"
+  end
+
   # Add a white list of extensions which are allowed to be uploaded.
   # For images you might use something like this:
   def extension_allowlist

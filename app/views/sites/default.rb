@@ -13,6 +13,7 @@ class Views::Sites::Default < Views::Base
     Sites::HeroSection(
       image_path: site.hero_image.url,
       image_srcset: ("#{site.hero_image.standard.url} 1130w, #{site.hero_image.url} 2260w" if site.hero_image.present?),
+      image_webp_srcset: hero_webp_srcset,
       image_credit: site.hero_image_credit,
       title: site.hero_text,
       alttext: site.hero_alttext
@@ -25,6 +26,14 @@ class Views::Sites::Default < Views::Base
   end
 
   private
+
+  # Only once images:hero_webp or a new upload has made the files, so the browser never picks a missing source
+  def hero_webp_srcset
+    hero = site.hero_image
+    return unless hero.present? && hero.webp.file&.exists? && hero.standard_webp.file&.exists?
+
+    "#{hero.standard_webp.url} 1130w, #{hero.webp.url} 2260w"
+  end
 
   # A site with more than one Partnership tag offers the region filter on its
   # homepage too (#3368 D7); the choice then travels through the site nav.
