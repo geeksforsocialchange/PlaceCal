@@ -37,6 +37,7 @@ RSpec.describe "Event page details on core and extension themes", type: :request
       address_section = part(html, "address")
 
       expect(address_section.css('[data-part="organiser-name"] a, [data-part="venue"] a').map(&:text)).to eq(["Oldtown Library", "Harbourside Arts Centre"])
+      expect(address_section.at_css('[data-part="organiser-name"]').text).to eq("By Oldtown Library")
       expect(part(html, "organiser")).to be_nil
       expect(part(html, "info").at_css('[data-scope="map"]')).to be_present
     end

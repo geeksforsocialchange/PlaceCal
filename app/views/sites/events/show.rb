@@ -21,7 +21,7 @@ class Views::Sites::Events::Show < Views::Base
                 contact_name: 'The organiser\'s name, linked, heading the contact details. Not on core themes.',
                 address: 'The event\'s address section.',
                 organiser: 'The organiser section, linking to their page. Not on core themes, which name the organiser above the address.',
-                organiser_name: 'On core themes, the organiser\'s name, linked, at the top of the address section.',
+                organiser_name: 'On core themes, "By" and the organiser\'s name, linked, at the top of the address section.',
                 venue: 'The venue section, when the venue is a different partner from the organiser. On core themes, the venue\'s name above the address instead.',
                 section_body: 'The text under each section\'s heading.',
                 more: 'The "More from" list of the organiser\'s other events. Only when the organiser has other upcoming events.'
@@ -364,7 +364,7 @@ class Views::Sites::Events::Show < Views::Base
       details_heading { t('events.show.address_heading') }
       div(**part(:section_body, class: section_body)) do
         if core_theme?
-          p(**part(:organiser_name)) { link_to(event.organiser.name, event.organiser) } if event.organiser
+          p(**part(:organiser_name)) { raw safe(t('events.show.by_organiser_html', name: view_context.link_to(event.organiser.name, partner_path(event.organiser)))) } if event.organiser
           p(**part(:venue)) { link_to(venue.name, venue) } if venue && venue != event.organiser
         end
         Shared::Address(address: event.address, raw_location: event.raw_location_from_source)
