@@ -80,7 +80,8 @@ RSpec.describe "Lookbook previews", type: :request do
     get preview_path("sites/event")
     expect(response).to be_successful
     expect(Nokogiri::HTML(response.body).css("lookbook-embed").map { it["scenario"] })
-      .to contain_exactly("list_view", "page_view", "online_event", "online_services", "full_card", "full_page", "repeating_event")
+      .to contain_exactly("list_view", "page_view", "online_event", "online_services", "full_card", "full_page", "repeating_event",
+                          "cancelled_page", "postponed_card", "postponed_page")
   end
 
   it "opens on the overview page, and the overview renders" do

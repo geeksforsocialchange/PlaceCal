@@ -15,8 +15,10 @@ class Components::Directory::EventRow < Components::Directory::Base
 
   private
 
+  def called_off? = Shared::EventStatus.called_off?(@event)
+
   def render_date_badge
-    div(class: 'font-serif text-center bg-home-background-3 rounded-sm py-1 px-2') do
+    div(class: "font-serif text-center bg-home-background-3 rounded-sm py-1 px-2#{' opacity-70' if called_off?}") do
       div(class: 'text-2xl leading-none font-regular') { @event.dtstart.day.to_s }
       div(class: 'font-sans text-2xs uppercase tracking-wide text-tertiary font-extra-bold mt-1') do
         plain @event.dtstart.strftime('%b').upcase
@@ -26,12 +28,13 @@ class Components::Directory::EventRow < Components::Directory::Base
 
   def render_body
     div do
-      div(class: 'font-bold text-lg leading-tight mb-1') do
+      div(class: 'flex flex-wrap items-baseline gap-x-2 font-bold text-lg leading-tight mb-1') do
+        Shared::EventStatus(event: @event)
         link_to(@event.summary, event_path(@event),
-                class: 'no-underline text-foreground hover:border-b-2 hover:border-primary',
+                class: "text-foreground #{called_off? ? 'line-through' : 'no-underline hover:border-b-2 hover:border-primary'}",
                 data: { turbo_frame: '_top' })
       end
-      div(class: 'flex flex-wrap gap-x-3 gap-y-1 text-sm text-tertiary') do
+      div(class: "flex flex-wrap gap-x-3 gap-y-1 text-sm text-tertiary#{' opacity-70' if called_off?}") do
         render_meta_time
         render_meta_place if show_place?
         render_meta_organiser if show_organiser?

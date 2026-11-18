@@ -110,6 +110,7 @@ class Views::Sites::Events::Show < Views::Base
     end
 
     div(class: 'container-public py-6') do
+      p(class: 'mb-6 text-lg font-bold') { t("events.show.status_notice.#{event.status}") } if event.called_off?
       div(class: 'lg:grid lg:grid-cols-sidebar lg:gap-8') do
         div do
           render_about_section

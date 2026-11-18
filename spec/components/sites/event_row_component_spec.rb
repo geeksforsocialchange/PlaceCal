@@ -40,4 +40,20 @@ RSpec.describe Components::Sites::EventRow, type: :component do
     row(show_neighbourhoods: true)
     expect(page).to have_css("[data-part='neighbourhood']", text: "Hulme")
   end
+
+  it "puts the word before a struck-through title for an event that is called off" do
+    allow(event).to receive(:status).and_return("postponed")
+    row
+
+    expect(page).to have_css("[data-scope='event-status'][data-variant='postponed']", text: "Postponed")
+    expect(page).to have_css("[data-part='title'] a.line-through", text: "Sing-around")
+  end
+
+  it "shows no status for an event that is going ahead" do
+    allow(event).to receive(:status).and_return("scheduled")
+    row
+
+    expect(page).to have_no_css("[data-scope='event-status']")
+    expect(page).to have_no_css("[data-part='title'] a.line-through")
+  end
 end

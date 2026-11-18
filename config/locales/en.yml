@@ -691,6 +691,9 @@ en:
   # ===========================================================================
 
   events:
+    status:
+      cancelled: "Cancelled"
+      postponed: "Postponed"
     index:
       # Read out by screen readers when a filter or date change reloads the list.
       results_summary:
@@ -734,6 +737,9 @@ en:
       # A multi-day event's end date, shown before its end time
       end_date_format: "%-d %b"
     show:
+      status_notice:
+        cancelled: "This event has been cancelled."
+        postponed: "This event has been postponed. Check with the organiser for a new date."
       # Section name above the event page title, blank in core
       section: ""
       # Share and search description for an event with no description of its own.
