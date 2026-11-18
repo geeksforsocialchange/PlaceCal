@@ -108,9 +108,8 @@ class Views::Layouts::Admin::Application < Phlex::HTML
         topbar_quick_action(new_admin_user_path, User) if policy(User).new?
       end
 
-      # Right zone: Event lookup and user menu
+      # Right zone: User menu
       div(class: 'flex items-center gap-2 justify-end') do
-        render_event_lookup(id: 'topbar-event-lookup', css_class: 'hidden lg:flex', dark: true)
         link_to admin_profile_path, class: 'flex items-center gap-2 px-2 md:px-3 py-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800/80 transition-colors' do
           if current_user&.avatar.present?
             image_tag current_user.avatar.standard.url, class: 'w-7 h-7 rounded-full object-cover', alt: ''
@@ -133,21 +132,6 @@ class Views::Layouts::Admin::Application < Phlex::HTML
     end
   end
 
-  # Takes a public event URL or ID and jumps to that event's admin page
-  def render_event_lookup(id:, css_class:, dark: false)
-    input_class = dark ? 'w-48 xl:w-64 bg-gray-800 border-gray-700 text-white placeholder:text-gray-400' : 'w-full'
-    button_class = dark ? 'text-gray-400 hover:text-white hover:bg-gray-800/80' : 'text-gray-700 hover:bg-gray-200'
-    form(action: lookup_admin_events_path, method: 'get', role: 'search', class: "#{css_class} items-center gap-1") do
-      label(for: id, class: 'sr-only') { t('admin.topbar.event_lookup') }
-      input(type: 'search', id:, name: 'q', required: true, placeholder: t('admin.topbar.event_lookup_placeholder'),
-            class: "input input-sm #{input_class}")
-      button(type: 'submit', class: "flex items-center px-2 py-1.5 rounded-lg #{button_class}") do
-        icon(:search, size: '4')
-        span(class: 'sr-only') { t('admin.topbar.event_lookup') }
-      end
-    end
-  end
-
   def topbar_quick_action(path, model)
     link_to path, class: 'group flex items-center gap-2 px-3 py-1.5 rounded-full text-gray-400 hover:text-white hover:bg-gray-800/80 transition-all duration-200' do
       span(class: 'w-5 h-5 flex items-center justify-center rounded-full bg-gray-700 group-hover:bg-placecal-orange transition-colors duration-200') do
@@ -160,8 +144,6 @@ class Views::Layouts::Admin::Application < Phlex::HTML
   def render_leftbar
     div(class: 'flex flex-col') do
       leftbar_main_links
-      # The top bar only has room for the lookup from lg
-      div(class: 'px-4 mt-4 lg:hidden') { render_event_lookup(id: 'leftbar-event-lookup', css_class: 'flex') }
       leftbar_quick_actions
       leftbar_content_types
       leftbar_support_links
@@ -192,6 +174,7 @@ class Views::Layouts::Admin::Application < Phlex::HTML
     leftbar_section(t('admin.leftbar.content_types')) do
       admin_nav_link(human_model_name(Partner, count: 2), admin_partners_path, :partner) if policy(Partner).index?
       admin_nav_link(human_model_name(Calendar, count: 2), admin_calendars_path, :calendar) if policy(Calendar).index?
+      admin_nav_link(t('admin.leftbar.find_event'), lookup_admin_events_path, :search) if policy(Event).show?
       admin_nav_link(human_model_name(User, count: 2), admin_users_path, :users) if policy(User).index?
       admin_nav_link(human_model_name(Site, count: 2), admin_sites_path, :site) if policy(Site).index?
       admin_nav_link(human_model_name(Neighbourhood, count: 2), admin_neighbourhoods_path, :neighbourhood) if policy(Neighbourhood).index?

@@ -129,30 +129,42 @@ RSpec.describe "Admin event inspector", type: :request do
       "https://placecal.org/partners/ID",
       "NEXT_ID",
       "99999999999999999999999",
-      "knit and natter",
-      ""
+      "knit and natter"
     ].each do |query|
-      it "goes back with a warning for #{query.inspect}" do
+      it "shows the lookup page again with a warning for #{query.inspect}" do
         q = query.sub("NEXT_ID", (event.id + 1000).to_s).sub("ID", event.id.to_s)
-        get lookup_admin_events_url(host: admin_host, q:), headers: { "HTTP_REFERER" => admin_calendars_url(host: admin_host) }
+        get lookup_admin_events_url(host: admin_host, q:)
 
-        expect(response).to redirect_to(admin_calendars_url(host: admin_host))
-        expect(flash[:alert]).to eq(I18n.t("admin.events.lookup.not_found"))
+        expect(response).to have_http_status(:ok)
+        html = Nokogiri::HTML(response.body)
+        expect(html.at_css("main [role=alert]").text).to eq(I18n.t("admin.events.lookup.not_found"))
+        expect(html.at_css("main input[name=q]")[:value]).to eq(q.strip)
       end
     end
 
-    it "goes to the dashboard when there is nowhere to go back to" do
-      get lookup_admin_events_url(host: admin_host, q: "nothing")
+    it "shows the lookup box at the top of its page, with no warning, when nothing has been looked up" do
+      get lookup_admin_events_url(host: admin_host)
+
+      html = Nokogiri::HTML(response.body)
+      expect(html.at_css("main h1").text).to eq(I18n.t("admin.events.lookup.title"))
+      expect(html.at_css("main form[role=search] input[name=q]")).to be_present
+      expect(html.at_css("main [role=alert]")).to be_nil
+    end
+
+    it "turns away a citizen" do
+      sign_in create(:citizen_user)
+      get lookup_admin_events_url(host: admin_host)
 
       expect(response).to redirect_to(admin_root_path)
     end
   end
 
-  it "puts the lookup box in the admin top bar" do
-    sign_in create(:root_user)
+  it "links the lookup page from the admin menu and keeps the top bar free of it" do
+    sign_in create(:partner_admin)
     get admin_root_url(host: admin_host)
 
-    form = Nokogiri::HTML(response.body).at_css(%(header form[action="#{lookup_admin_events_path}"]))
-    expect(form.at_css('input[name="q"]')).to be_present
+    html = Nokogiri::HTML(response.body)
+    expect(html.at_css(%(nav a[href="#{lookup_admin_events_path}"])).text.strip).to eq(I18n.t("admin.leftbar.find_event"))
+    expect(html.at_css("header form[role=search]")).to be_nil
   end
 end

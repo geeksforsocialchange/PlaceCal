@@ -190,8 +190,6 @@ en:
 
     topbar:
       admin: "Admin"
-      event_lookup: "Find an event"
-      event_lookup_placeholder: "Event URL or ID"
       menu: "Menu"
       sign_out: "Sign out"
 
@@ -200,6 +198,7 @@ en:
       calendar_sources: "Calendar sources"
       content_types: "Content types"
       discord: "Discord"
+      find_event: "Find an event"
       get_support: "Get support"
       handbook: "Handbook"
       import_status: "Import status"
@@ -481,7 +480,11 @@ en:
     # -------------------------------------------------------------------------
     events:
       lookup:
+        intro: "Paste a public event link from any PlaceCal site, or an event ID, to see where the event came from."
         not_found: "No event matches that URL or ID."
+        placeholder: "Event URL or ID"
+        submit: "Find"
+        title: "Find an event"
       show:
         auto_detect: "Auto detect"
         auto_detected: "Auto detect (last used %{importer})"

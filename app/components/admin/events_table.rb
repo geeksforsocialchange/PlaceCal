@@ -9,7 +9,8 @@ class Components::Admin::EventsTable < Components::Admin::Base
 
   def view_template
     div(class: 'overflow-x-auto') do
-      table(class: 'table table-sm') do
+      # The outer cells line up with the card's own padding
+      table(class: 'table table-sm [&_tr>*:first-child]:pl-6 [&_tr>*:last-child]:pr-6') do
         thead do
           tr do
             th(class: 'w-24') { t('admin.events_table.date') }
@@ -33,7 +34,7 @@ class Components::Admin::EventsTable < Components::Admin::Base
         div(class: 'text-xs text-gray-600') { event.dtstart.strftime(past ? '%Y' : '%H:%M') }
       end
       td do
-        link_to truncate(event.summary, length: 70), admin_event_path(event), class: 'font-medium link link-hover'
+        link_to truncate(event.summary, length: 70), admin_event_path(event), class: 'text-sm font-medium link link-hover'
       end
       td(class: 'text-sm text-base-content/70') { render_location(event) }
       td(class: 'text-sm text-base-content/70') { render_source_value(Array(event.source_categories).join(', ')) }
