@@ -14,6 +14,18 @@ class UI::LinkPreview < Lookbook::Preview
     end)
   end
 
+  # A 1px underline, for links in small text such as an event row's venue and organiser.
+  # @label Thin
+  def thin
+    render(Sentence.new do |s|
+      s.plain "At "
+      s.render(Components::UI::Link.new(href: "#", variant: :thin)) { "Riverside Community Hub" }
+      s.plain ", organised by "
+      s.render(Components::UI::Link.new(href: "#", variant: :thin)) { "Millbrook Arts" }
+      s.plain "."
+    end)
+  end
+
   # Underlined on hover only, for lists of links such as footers and contact details.
   # @label Quiet
   def quiet

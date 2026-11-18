@@ -39,6 +39,8 @@ export default class extends Controller {
 
 	createMap() {
 		this.map = L.map(this.element, { zoomControl: false });
+		// The data and tile credits stay; the library's own credit is optional and crowds small maps
+		this.map.attributionControl.setPrefix(false);
 		this.map.scrollWheelZoom.disable();
 		L.control
 			.zoom({

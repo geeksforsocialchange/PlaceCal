@@ -60,15 +60,6 @@ class Calendar < ApplicationRecord
   # Skips just-queued attempts so a concurrent re-enqueue can't be reset by a stale snapshot.
   STUCK_IMPORT_GRACE = 5.minutes
 
-  STUCK_IMPORT_CONDITION = <<~SQL.squish
-    calendar_state IN ('in_queue', 'in_worker') AND (
-      (import_job_id IS NOT NULL AND import_started_at < :grace_cutoff AND NOT EXISTS (
-        SELECT 1 FROM delayed_jobs WHERE delayed_jobs.id = calendars.import_job_id AND delayed_jobs.failed_at IS NULL
-      ))
-      OR (import_job_id IS NULL AND (import_started_at IS NULL OR import_started_at < :threshold_cutoff))
-    )
-  SQL
-
   # Attributes that change what an import fetches
   FEED_ATTRIBUTES = %w[source importer_mode api_token].freeze
 
@@ -96,7 +87,7 @@ class Calendar < ApplicationRecord
   attribute :api_token,            :string                       # nullable
   attribute :checksum_updated_at,  :datetime                     # nullable
   attribute :critical_error,       :text                         # nullable
-  attribute :import_job_id,        :integer, limit: 8            # nullable, delayed_jobs row driving the current attempt
+  attribute :import_job_id,        :integer, limit: 8            # nullable, Solid Queue job driving the current attempt
   attribute :import_started_at,    :datetime                     # nullable — when the current import attempt was queued/started
   attribute :importer_mode,        :string, default: 'auto'      # nullable
   attribute :importer_used,        :string                       # nullable
@@ -131,6 +122,18 @@ class Calendar < ApplicationRecord
   validate :check_source_reachable
 
   # ==== Scopes ====
+  scope :busy, -> { where(calendar_state: %w[in_queue in_worker]) }
+
+  # Busy, and either their job is no longer running or, with no job recorded, they've been busy longer than the threshold
+  scope :stuck_imports, lambda { |threshold = STUCK_IMPORT_THRESHOLD|
+    running_jobs = SolidQueue::Job.where(finished_at: nil).where.not(id: SolidQueue::FailedExecution.select(:job_id))
+    started = arel_table[:import_started_at]
+
+    job_gone = busy.where(import_started_at: ...STUCK_IMPORT_GRACE.ago).where.not(import_job_id: nil)
+                   .where.not(import_job_id: running_jobs.select(:id))
+    untracked = busy.where(import_job_id: nil).where(started.eq(nil).or(started.lt(threshold.ago)))
+    job_gone.or(untracked)
+  }
   scope :that_appear_on_site, lambda { |site|
     site_partnership_tag_ids = site.tags.map(&:id)
 
@@ -183,11 +186,12 @@ class Calendar < ApplicationRecord
   # @param threshold [ActiveSupport::Duration] busy time before a calendar with no recorded job is reset
   # @return [Array<Integer>] ids of the calendars that were reset
   def self.reset_stuck_imports!(threshold: STUCK_IMPORT_THRESHOLD)
-    condition = sanitize_sql([STUCK_IMPORT_CONDITION,
-                              { grace_cutoff: STUCK_IMPORT_GRACE.ago, threshold_cutoff: threshold.ago }])
-    ids = connection.exec_query(<<~SQL.squish).rows.flatten
-      UPDATE calendars SET calendar_state = 'idle', import_job_id = NULL WHERE #{condition} RETURNING id
-    SQL
+    ids = transaction do
+      # SKIP LOCKED passes over a calendar that queue_for_import! is re-queueing right now
+      stuck_imports(threshold).lock('FOR UPDATE SKIP LOCKED').pluck(:id).tap do |found|
+        where(id: found).update_all(calendar_state: 'idle', import_job_id: nil) # rubocop:disable Rails/SkipsModelValidations
+      end
+    end
     Rails.logger.warn("[Calendar] Reset #{ids.size} stuck calendar(s) to idle: #{ids.join(', ')}") if ids.any?
     ids
   end

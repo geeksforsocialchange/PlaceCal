@@ -1,11 +1,18 @@
 # frozen_string_literal: true
 
 class CalendarDatatable < Datatable
+  STATE_GROUPS = { 'problem' => %w[error bad_source] }.freeze
+  STATE_BADGES = { 'idle' => 'badge-success', 'in_queue' => 'badge-info', 'in_worker' => 'badge-info', 'error' => 'badge-error',
+                   'bad_source' => 'badge-error' }.freeze
+
   def view_columns
     @view_columns ||= {
       name: { source: 'Calendar.name', cond: :like, searchable: true },
       partner: { source: 'partners.name', searchable: false, orderable: false },
       state: { source: 'Calendar.calendar_state', searchable: false, orderable: false },
+      state_badge: { source: 'Calendar.calendar_state', searchable: false, orderable: false },
+      details: { source: 'Calendar.critical_error', searchable: false, orderable: false },
+      import_started_at: { source: 'Calendar.import_started_at', searchable: false, orderable: true },
       importer: { source: 'Calendar.importer_used', searchable: false, orderable: true },
       events: { source: 'Calendar.id', searchable: false, orderable: false },
       notices: { source: 'Calendar.notice_count', searchable: false, orderable: true },
@@ -22,10 +29,13 @@ class CalendarDatatable < Datatable
         name: render_name_cell(record),
         partner: render_partner_cell(record),
         state: render_state_cell(record),
+        state_badge: render_state_badge(record),
+        details: render_details_cell(record),
+        import_started_at: render_time_ago(record.import_started_at),
         importer: render_importer_cell(record),
         events: render_count_cell(events_count, 'event'),
         notices: render_notices_cell(record),
-        last_import_at: render_relative_time(record.last_import_at),
+        last_import_at: render_time_ago(record.last_import_at),
         checksum_updated_at: render_relative_time(record.checksum_updated_at),
         actions: render_actions(record)
       }
@@ -41,7 +51,7 @@ class CalendarDatatable < Datatable
     # Apply filters from request params
     if params[:filter].present?
       # State filter
-      records = records.where(calendar_state: params[:filter][:state]) if params[:filter][:state].present?
+      records = records.where(calendar_state: STATE_GROUPS.fetch(params[:filter][:state], params[:filter][:state])) if params[:filter][:state].present?
 
       # Partner filter
       records = records.where(organiser_id: params[:filter][:partner]) if params[:filter][:partner].present?
@@ -124,6 +134,17 @@ class CalendarDatatable < Datatable
     when 'bad_source' then render_indicator(:error, 'Bad source URL', icon(:link_off))
     else render_indicator(:none, 'Unknown state', icon(:x))
     end
+  end
+
+  def render_state_badge(record)
+    state = record.calendar_state.to_s
+    %(<span class="badge badge-sm whitespace-nowrap #{STATE_BADGES[state]}">#{ERB::Util.html_escape(I18n.t("admin.jobs.states.#{state}"))}</span>).html_safe # rubocop:disable Rails/OutputSafety
+  end
+
+  def render_details_cell(record)
+    return '' unless record.calendar_state.to_s.in?(STATE_GROUPS['problem'])
+
+    %(<span class="block max-w-xl whitespace-normal break-words text-sm text-red-700">#{ERB::Util.html_escape(record.critical_error)}</span>).html_safe # rubocop:disable Rails/OutputSafety
   end
 
   def render_notices_cell(record)

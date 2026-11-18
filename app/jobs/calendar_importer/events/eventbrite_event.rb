@@ -18,6 +18,10 @@ module CalendarImporter::Events
       @event['url']
     end
 
+    def image_url
+      @event.to_h.dig('logo', 'original', 'url')
+    end
+
     # The venue only arrives via the `expand=venue` expansion. The SDK defines
     # `venue` as a relationship, so the resource always responds to it while
     # `[]` raises for the absent key. Read the raw attribute hash instead, which

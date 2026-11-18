@@ -11,6 +11,8 @@
 #  dtend                    :datetime
 #  dtstart                  :datetime         not null
 #  footer                   :text
+#  image                    :string
+#  image_source_url         :string
 #  is_active                :boolean          default(TRUE), not null
 #  publisher_url            :string
 #  raw_location_from_source :text
@@ -49,6 +51,7 @@
 #
 FactoryBot.define do
   factory :event do
+    sequence(:uid) { |n| "event-#{n}@example.com" }
     sequence(:summary) { |n| "Event #{n}" }
     description { Faker::Lorem.paragraph }
     dtstart { 1.day.from_now.at_beginning_of_hour }

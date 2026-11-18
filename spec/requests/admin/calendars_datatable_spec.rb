@@ -10,6 +10,9 @@ RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
       { data: :name, searchable: true, orderable: true },
       { data: :partner },
       { data: :state },
+      { data: :state_badge },
+      { data: :details },
+      { data: :import_started_at },
       { data: :events },
       { data: :notices, orderable: true },
       { data: :last_import_at, orderable: true },
@@ -21,7 +24,7 @@ RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
   before { sign_in admin_user }
 
   def datatable_request(params = {})
-    base_params = build_datatable_params(columns: datatable_columns, default_sort_column: 5)
+    base_params = build_datatable_params(columns: datatable_columns, default_sort_column: 8)
     get admin_calendars_url(format: :json, host: admin_host), params: base_params.deep_merge(params)
   end
 
@@ -45,6 +48,39 @@ RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
         json = response.parsed_body
         names = json["data"].map { |d| d["name"] }
         expect(names.join).to include("Test Calendar")
+      end
+    end
+
+    context "state groups, as the background jobs page filters them" do
+      before do
+        { "Broken" => ["error", "Un-parsable data"], "Gone" => %w[bad_source 404], "Busy" => ["in_worker", nil],
+          "Fine" => ["idle", nil] }.each do |name, (state, error)|
+          create(:calendar, name:).update_columns(calendar_state: state, critical_error: error, import_started_at: 2.minutes.ago) # rubocop:disable Rails/SkipsModelValidations
+        end
+      end
+
+      def names_for(state)
+        datatable_request(filter: { state: })
+        response.parsed_body["data"].map { Nokogiri::HTML(it["name"]).text.squish }.map { it[/\A\S+/] }
+      end
+
+      it "picks calendars with a problem as a group" do
+        expect(names_for("problem")).to contain_exactly("Broken", "Gone")
+        expect(names_for("error")).to contain_exactly("Broken")
+      end
+
+      it "gives when an import was last tried in minutes, with the exact time on hover" do
+        datatable_request(filter: { state: "error" })
+        cell = Nokogiri::HTML(response.parsed_body["data"].first["import_started_at"]).at_css("time")
+        expect(cell.text).to eq("2 minutes ago")
+        expect(cell["title"]).to be_present
+      end
+
+      it "gives the state as a named badge and the whole error as the details" do
+        datatable_request(filter: { state: "error" })
+        row = response.parsed_body["data"].first
+        expect(Nokogiri::HTML(row["state_badge"]).text).to eq(I18n.t("admin.jobs.states.error"))
+        expect(row["details"]).to include("Un-parsable data")
       end
     end
 
@@ -255,7 +291,7 @@ RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
 
       before do
         calendar.update_column(:calendar_state, "idle") # rubocop:disable Rails/SkipsModelValidations
-        calendar.update_column(:last_import_at, Time.current) # rubocop:disable Rails/SkipsModelValidations
+        calendar.update_columns(last_import_at: Time.current, checksum_updated_at: Time.current) # rubocop:disable Rails/SkipsModelValidations
         create(:event, calendar:)
       end
 
@@ -304,7 +340,7 @@ RSpec.describe "Admin::Calendars Datatable JSON API", type: :request do
         expect(notices_html).to include('data-status="warning"')
       end
 
-      it_behaves_like "datatable renders relative time", field: :last_import_at
+      it_behaves_like "datatable renders relative time", field: :checksum_updated_at
       it_behaves_like "datatable renders edit button"
     end
   end

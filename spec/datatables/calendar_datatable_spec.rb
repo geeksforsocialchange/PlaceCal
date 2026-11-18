@@ -41,7 +41,8 @@ RSpec.describe CalendarDatatable do
 
       columns = datatable.view_columns
       expect(columns.keys).to contain_exactly(
-        :name, :partner, :state, :importer, :events, :notices, :last_import_at, :checksum_updated_at, :actions
+        :name, :partner, :state, :state_badge, :details, :importer, :events, :notices, :import_started_at, :last_import_at,
+        :checksum_updated_at, :actions
       )
     end
 
@@ -91,7 +92,8 @@ RSpec.describe CalendarDatatable do
       data = datatable.data
       expect(data).to be_an(Array)
       expect(data.first.keys).to contain_exactly(
-        :name, :partner, :state, :importer, :events, :notices, :last_import_at, :checksum_updated_at, :actions
+        :name, :partner, :state, :state_badge, :details, :importer, :events, :notices, :import_started_at, :last_import_at,
+        :checksum_updated_at, :actions
       )
     end
 

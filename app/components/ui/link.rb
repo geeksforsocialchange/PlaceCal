@@ -3,6 +3,8 @@
 class Components::UI::Link < Components::Base
   VARIANTS = {
     underline: 'underline decoration-primary decoration-2 underline-offset-2 skip-ink-auto hover:opacity-80',
+    # A 1px underline for links in small text, such as an event row's venue and organiser
+    thin: 'underline decoration-primary decoration-1 underline-offset-2 skip-ink-auto hover:opacity-80',
     quiet: 'no-underline hover:underline hover:decoration-primary decoration-auto underline-offset-auto skip-ink-auto',
     action: 'inline-flex items-center gap-1.5 font-bold no-underline hover:underline hover:decoration-primary decoration-auto underline-offset-auto skip-ink-auto'
   }.freeze

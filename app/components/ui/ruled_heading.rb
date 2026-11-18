@@ -3,14 +3,16 @@
 # A sans section heading with a rule under it, as on the partner and event pages. Its outer spacing comes from its parent, or from spacing:.
 class Components::UI::RuledHeading < Components::Base
   # :centered keeps the rule under the words but stays a block, so it sits on its own line and its margins collapse.
-  RULES = { inline: 'inline-block', full: 'block', centered: 'block w-fit mx-auto' }.freeze
+  # :none is the same heading with no rule, for a list whose rows carry their own.
+  RULES = { inline: 'inline-block pb-2 border-b-3', full: 'block pb-2 border-b-3', centered: 'block w-fit mx-auto pb-2 border-b-3',
+            none: 'block' }.freeze
   # The rule's colour; :background and :secondary for headings on a rules-coloured band or a card.
   TONES = { rules: 'border-rules', background: 'border-background', secondary: 'border-secondary' }.freeze
   # :inherit keeps the base heading size for its level.
   SIZES = { inherit: nil, sm: 'text-base', lg: 'text-xl' }.freeze
-  # :section is the rhythm of the partner and event pages' detail sections; :details heads a short block of details close under its rule;
+  # :section is the rhythm of the partner and event pages' detail sections;
   # :card titles a card, :illustrated sits under a card's picture.
-  SPACING = { none: nil, section: 'my-5.5', details: 'mt-5.5 mb-3', card: 'mb-6', illustrated: 'mt-8 mb-6' }.freeze
+  SPACING = { none: nil, section: 'my-5.5', card: 'mb-6', illustrated: 'mt-8 mb-6' }.freeze
 
   theme_scope :ruled_heading, parts: { root: 'The heading element (h1 to h4) with its rule underneath.' },
                               tokens: %i[--color-foreground --color-rules --color-background --color-secondary --text-base --text-xl
@@ -25,7 +27,7 @@ class Components::UI::RuledHeading < Components::Base
   prop :attributes, Hash, :**
 
   def view_template(&)
-    css = ['ruled-heading text-foreground pb-2 border-b-3', TONES[@tone], RULES[@rule], SIZES[@size], SPACING[@spacing],
+    css = ['ruled-heading text-foreground', TONES[@tone], RULES[@rule], SIZES[@size], SPACING[@spacing],
            @caps ? 'allcaps' : 'font-bold', @attributes[:class]].compact.join(' ')
     content = capture(&)
     public_send(:"h#{@level}", **part(:root, class: css, aria_label: caps_label(content), **@attributes.except(:class))) do

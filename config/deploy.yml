@@ -11,7 +11,7 @@ servers:
     options:
       memory: 1g
   job_worker:
-    cmd: bin/rails jobs:work
+    cmd: bin/jobs --mode async
     proxy: false
     options:
       memory: 768m

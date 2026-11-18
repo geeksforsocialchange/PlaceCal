@@ -5,6 +5,11 @@ class CalendarImporterJob < ApplicationJob
 
   queue_as :default
 
+  # A stuck feed can't hold a worker indefinitely. The hourly scan queues the calendar again
+  MAX_RUN_TIME = 20.minutes
+
+  around_perform { |_job, block| Timeout.timeout(MAX_RUN_TIME, &block) }
+
   # Backstop for exceptions not matched by a more specific handler below. A
   # worker that dies mid-import strands the calendar in `in_worker`; an
   # *uncaught* exception does the same (the state transition never completes).

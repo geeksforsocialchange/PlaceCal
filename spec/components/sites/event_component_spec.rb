@@ -39,6 +39,12 @@ RSpec.describe Components::Sites::Event, type: :component do
     expect(page).to have_text("Community Meetup")
   end
 
+  it "leads the details with the date, then the time" do
+    rendered
+    variants = page.all('[data-scope="event"][data-part="detail"]').map { it["data-variant"] }
+    expect(variants.first(2)).to eq(%w[date time])
+  end
+
   it "renders event time" do
     rendered
     expect(page).to have_text("10am")
@@ -149,28 +155,11 @@ RSpec.describe Components::Sites::Event, type: :component do
       end
     end
 
-    it "renders no neighbourhood line when the event has no neighbourhood" do
+    it "has no neighbourhood line, even when the event has a neighbourhood" do
+      allow(event).to receive(:neighbourhood).and_return(double(shortname: "Moss Side", district: nil, name_from_badge_zoom: "Moss Side"))
       render_inline(described_class.new(display_context: :page, event:))
 
-      expect(page).to have_no_css('[data-scope="event"][data-part="detail"][data-variant="neighbourhood"]')
-    end
-
-    context "when the event has a neighbourhood" do
-      let(:event_neighbourhood) do
-        double(shortname: "Moss Side", district: double(shortname: "Manchester"), name_from_badge_zoom: "Moss Side")
-      end
-
-      it "renders the neighbourhood with its district" do
-        render_inline(described_class.new(display_context: :page, event:))
-
-        expect(page).to have_css('[data-scope="event"][data-part="detail"][data-variant="neighbourhood"]', text: "Moss Side, Manchester")
-      end
-
-      it "leaves it off the list card" do
-        render_inline(described_class.new(display_context: :list, event:))
-
-        expect(page).to have_no_css('[data-scope="event"][data-part="detail"][data-variant="neighbourhood"]')
-      end
+      expect(page).to have_no_text("Moss Side")
     end
   end
 
@@ -265,7 +254,12 @@ RSpec.describe Components::Sites::Event, type: :component do
 
       it "names the service" do
         rendered
-        expect(page).to have_css('[data-scope="event"][data-part="detail"][data-variant="online"]', text: "Google Meet")
+        expect(page).to have_css('[data-scope="event"][data-part="detail"][data-variant="online"]', text: /\A\s*Google Meet\z/)
+      end
+
+      it "says Online on the service when asked to, as on a core event page" do
+        render_inline(described_class.new(display_context: :page, event:, online_on: true))
+        expect(page).to have_css('[data-scope="event"][data-part="detail"][data-variant="online"]', text: /\A\s*Online on Google Meet\z/)
       end
     end
 

@@ -18,4 +18,10 @@ class UI::RuledHeadingPreview < Lookbook::Preview
   def card_title
     render(Components::UI::RuledHeading.new(level: 3, caps: true, tone: :secondary, rule: :centered, size: :sm, spacing: :card)) { "Your local contact" }
   end
+
+  # Allcaps with no rule, heading a list whose rows carry their own: an event page's More from.
+  # @label Caps, no rule
+  def caps_no_rule
+    render(Components::UI::RuledHeading.new(caps: true, rule: :none, size: :lg)) { "More from Hulme Garden Centre" }
+  end
 end

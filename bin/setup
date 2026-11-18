@@ -24,6 +24,7 @@ FileUtils.chdir APP_ROOT do
   FileUtils.cp '.env.example', '.env' unless File.exist?('.env')
 
   puts "\n== Preparing database =="
+  system 'bin/check-postgres'
   system! 'bin/rails db:prepare'
 
   puts "\n== Seeding development data =="

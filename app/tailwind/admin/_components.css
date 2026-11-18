@@ -61,6 +61,15 @@
 	transform: rotate(90deg);
 }
 
+/* Radio filter buttons; the selected one carries shadow-sm */
+.filter-btn {
+	@apply cursor-pointer;
+}
+
+.filter-btn:not(.shadow-sm):hover {
+	@apply bg-white text-gray-900;
+}
+
 /* Custom select dropdown with chevron */
 .select-filter {
 	@apply block pl-3 pr-6 py-2 text-xs border border-control-border rounded-md bg-white;

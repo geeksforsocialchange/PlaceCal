@@ -47,8 +47,8 @@ RSpec.describe "Theming parts", type: :request do
   it "shows a component's scope, parts and tokens in its Lookbook theming panel" do
     get(Lookbook::Previews.all.find { it.lookup_path == "shared/hero" }.url_path.then { "#{it}/record_page" })
 
-    row = Nokogiri::HTML(response.body).css(".theming-panel tr").find { it.at_css("td code")&.text == "back" }
-    expect(row.css("td").map { it.text.strip }).to include(a_string_including("The back link"), "<a>", "content", "Record page with back link")
+    row = Nokogiri::HTML(response.body).css(".theming-panel tr").find { it.at_css("td code")&.text == "kicker" }
+    expect(row.css("td").map { it.text.strip }).to include(a_string_including("section name"), "<p>", "content", "Record page")
     expect(response.body).to include("--color-primary")
   end
 
@@ -56,7 +56,7 @@ RSpec.describe "Theming parts", type: :request do
     allow(PlaceCal::Theming).to receive(:render_scenario).and_raise(PlaceCal::Theming::UndeclaredPart, "hero has no part :kickr")
     get(Lookbook::Previews.all.find { it.lookup_path == "shared/hero" }.url_path.then { "#{it}/record_page" })
 
-    expect(Nokogiri::HTML(response.body).at_css(".theming-panel").text).to include("Record page with back link: PlaceCal::Theming::UndeclaredPart: hero has no part :kickr")
+    expect(Nokogiri::HTML(response.body).at_css(".theming-panel").text).to include("Record page: PlaceCal::Theming::UndeclaredPart: hero has no part :kickr")
   end
 
   it "opens the inspector of a component without hooks" do
