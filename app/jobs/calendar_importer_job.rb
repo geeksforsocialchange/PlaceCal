@@ -6,7 +6,7 @@ class CalendarImporterJob < ApplicationJob
   queue_as :default
 
   # A stuck feed can't hold a worker indefinitely. The hourly scan queues the calendar again
-  MAX_RUN_TIME = 20.minutes
+  MAX_RUN_TIME = 2.minutes
 
   around_perform { |_job, block| Timeout.timeout(MAX_RUN_TIME, &block) }
 
