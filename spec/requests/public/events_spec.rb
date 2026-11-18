@@ -561,6 +561,7 @@ RSpec.describe "Public Events", type: :request do
         get event_url(event, host: "#{site.slug}.lvh.me")
         expect(response.body).to include(I18n.t("events.show.status_notice.cancelled"))
         expect(Nokogiri::HTML(response.body).at_css("h1")[:class]).to include("line-through")
+        expect(Nokogiri::HTML(response.body).css(".line-through time.dt-start")).to be_present
 
         json_ld_blocks = response.body.scan(%r{<script type="application/ld\+json">(.+?)</script>}m)
         event_ld = json_ld_blocks.map { |m| JSON.parse(m[0]) }.find { |d| d["@type"] == "Event" }
