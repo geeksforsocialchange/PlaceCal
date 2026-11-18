@@ -714,6 +714,7 @@ en:
       # Text before the organiser link in the event list, blank in core
       organiser_prefix: ""
       online: "Online"
+      online_on: "Online on %{service}"
       duration_hours:
         one: "%{count} hour"
         other: "%{count} hours"

@@ -64,11 +64,11 @@ class Components::Sites::Event < Components::Base
 
   def render_event_details
     div(**part(:details, class: "flex flex-wrap items-center gap-x-4 gap-y-1 text-detail border-rules py-2 md:py-3 #{page? ? 'border-b-10' : 'border-y-3'}")) do
+      render_date_detail
       render_time_detail
       render_detail(:duration, :event_duration, duration) if duration
-      render_date_detail
       render_detail(:repeats, :event_repeats, repeats) if repeats
-      render_detail(:online, :event_online, @event.online_address.service_name || t('events.card.online')) if online?
+      render_detail(:online, :event_online, online_label) if online?
       render_organiser if show_organiser?
       render_place if show_place?
     end
@@ -216,6 +216,11 @@ class Components::Sites::Event < Components::Base
 
   def neighbourhood_name
     @event.neighbourhood&.name_from_badge_zoom(@badge_zoom_level)
+  end
+
+  def online_label
+    service = @event.online_address.service_name
+    service ? t('events.card.online_on', service:) : t('events.card.online')
   end
 
   def online?
