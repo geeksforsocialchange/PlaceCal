@@ -84,7 +84,7 @@ class UnlistedVenuesReport
       @total = 0
 
       events.in_batches(of: BATCH_SIZE) do |batch|
-        batch.pluck(:raw_location_from_source, :calendar_id).each do |text, calendar_id|
+        batch.order(:id).pluck(:raw_location_from_source, :calendar_id).each do |text, calendar_id|
           text = text.squish
           next if text.match?(CalendarImporter::LocationResolver::ONLINE_LINK)
 
