@@ -93,6 +93,10 @@ class Views::Admin::Calendars::FormTabSource < Views::Admin::Base
             end
           end
         end
+        p(class: 'text-xs mt-3') do
+          link_to t('admin.calendars.sources.link'), sources_admin_calendars_path,
+                  target: '_blank', rel: 'noopener', class: 'link underline hover:no-underline text-placecal-orange-dark'
+        end
         if calendar.importer_used.present?
           p(class: 'text-xs text-gray-600 mt-3 pt-3 border-t border-base-300') do
             plain t('admin.calendars.sections.last_imported_using', importer: calendar.importer_used)

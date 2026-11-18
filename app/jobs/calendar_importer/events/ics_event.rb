@@ -2,6 +2,13 @@
 
 module CalendarImporter::Events
   class IcsEvent < Base
+    imports title: 'SUMMARY', description: 'DESCRIPTION', start_time: 'DTSTART', end_time: 'DTEND', repeats: 'RRULE',
+            location: 'LOCATION', webpage: %w[URL LOCATION],
+            online_link: %w[X-GOOGLE-CONFERENCE X-MICROSOFT-SKYPETEAMSMEETINGURL X-MICROSOFT-ONLINEMEETINGCONFLINK
+                            X-ZOOM-MEETING-URL LOCATION DESCRIPTION],
+            spaces_available: nil, status: 'STATUS', image: %w[IMAGE ATTACH], source_categories: 'CATEGORIES',
+            source_organiser: 'ORGANIZER'
+
     # Domains that indicate a direct online meeting link
     ONLINE_MEETING_DOMAINS = OnlineAddress::MEETING_DOMAINS
 

@@ -186,6 +186,7 @@ en:
 
     leftbar:
       build: "Build"
+      calendar_sources: "Calendar sources"
       content_types: "Content types"
       discord: "Discord"
       get_support: "Get support"
@@ -447,6 +448,26 @@ en:
         source_categories: "Source categories"
         source_organiser: "Source organiser"
         upcoming_tab: "Upcoming (%{count})"
+      sources:
+        title: "What each calendar source imports"
+        intro: "Each row is a source PlaceCal can import events from. Each cell names the field PlaceCal reads from that source to fill the event field in its column."
+        source: "Source"
+        not_imported: "Not imported"
+        link: "See what each source imports"
+        fields:
+          title: "Title"
+          description: "Description"
+          start_time: "Start"
+          end_time: "End"
+          repeats: "Repeats"
+          location: "Event location"
+          webpage: "Event webpage"
+          online_link: "Meeting link"
+          spaces_available: "Spaces available"
+          status: "Cancelled or postponed"
+          image: "Image"
+          source_categories: "Source categories"
+          source_organiser: "Source organiser"
 
     # -------------------------------------------------------------------------
     # Jobs / Import Status
