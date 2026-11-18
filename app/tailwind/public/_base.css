@@ -31,6 +31,20 @@
 		}
 	}
 
+	/* iOS zooms the page into any field under 16px and leaves it zoomed. Important so it wins over a smaller size utility */
+	@media (pointer: coarse) {
+		input:not(
+			[type="checkbox"],
+			[type="radio"],
+			[type="range"],
+			[type="color"]
+		),
+		select,
+		textarea {
+			font-size: max(16px, 1em) !important;
+		}
+	}
+
 	/* Keyboard focus is an outline in the text colour; components override the colour only where that would vanish */
 	:focus-visible {
 		outline: 2px solid currentColor;
