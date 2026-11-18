@@ -47,6 +47,11 @@ Rails.application.routes.draw do
         get :import_status
       end
     end
+    resources :events, only: [:show] do
+      collection do
+        get :lookup
+      end
+    end
     resources :neighbourhoods do
       collection do
         get :children

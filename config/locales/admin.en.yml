@@ -135,6 +135,15 @@ en:
     # COMPONENTS
     # =========================================================================
 
+    events_table:
+      date: "Date"
+      event: "Event"
+      location: "Location"
+      no_location: "None"
+      not_in_source: "None given"
+      source_categories: "Source categories"
+      source_organiser: "Source organiser"
+
     save_bar:
       unsaved_changes: "Unsaved changes"
       confirm_tab_switch: "You have unsaved changes. Are you sure you want to switch tabs?"
@@ -181,6 +190,8 @@ en:
 
     topbar:
       admin: "Admin"
+      event_lookup: "Find an event"
+      event_lookup_placeholder: "Event URL or ID"
       menu: "Menu"
       sign_out: "Sign out"
 
@@ -441,11 +452,51 @@ en:
       danger_zone:
         delete_description: "Permanently remove this calendar and all %{count} associated events. This action cannot be undone."
       show:
-        not_in_source: "None given"
         past_tab: "Past (%{count})"
-        source_categories: "Source categories"
-        source_organiser: "Source organiser"
         upcoming_tab: "Upcoming (%{count})"
+
+    # -------------------------------------------------------------------------
+    # Event inspector
+    # -------------------------------------------------------------------------
+    events:
+      lookup:
+        not_found: "No event matches that URL or ID."
+      show:
+        auto_detect: "Auto detect"
+        auto_detected: "Auto detect (last used %{importer})"
+        calendar: "Source calendar"
+        details: "Event details"
+        does_not_repeat: "Does not repeat"
+        fields:
+          calendar_name: "Calendar"
+          created_at: "Created"
+          dtend: "Ends"
+          dtstart: "Starts"
+          importer: "Importer"
+          last_import_at: "Last import"
+          organiser: "Organiser"
+          place: "Place"
+          publisher_url: "Publisher URL"
+          repeats: "Repeats"
+          source: "Source URL"
+          state: "State"
+          status: "Status"
+          uid: "UID"
+          updated_at: "Last updated"
+        no_calendar: "This event was not imported from a calendar."
+        no_upcoming_siblings: "No upcoming events from this calendar share this event's title."
+        none: "Not set"
+        partners: "Partners"
+        public_page: "View the public page"
+        siblings: "Same title, same calendar"
+        siblings_count: "%{upcoming} upcoming of %{total} other events from this calendar with this title."
+        siblings_shown:
+          one: "Showing the next upcoming event."
+          other: "Showing the next %{count} upcoming events."
+        statuses:
+          cancelled: "Cancelled"
+          postponed: "Postponed"
+          scheduled: "Scheduled"
 
     # -------------------------------------------------------------------------
     # Jobs / Import Status

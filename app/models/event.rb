@@ -68,6 +68,8 @@ class Event < ApplicationRecord
   LOCATION_OPTIONAL_STRATEGIES = %w[event no_location online_only].freeze
   # Cancelled and postponed events stay listed, marked as such, so people who planned to go find out
   STATUSES = %w[scheduled cancelled postponed].freeze
+  # A public event URL on any host, with or without a scheme or format, or a bare path
+  EVENT_URL = %r{\A(?:[a-z][a-z\d+.-]*://)?[^/?#\s]*/events/(\d+)(?:\.[a-z]+)?/?(?:[?#]\S*)?\z}i
 
   # ==== Attributes ====
   # Columns marked (nullable) have no NOT NULL constraint in the DB.
@@ -153,7 +155,23 @@ class Event < ApplicationRecord
     count
   end
 
+  # @param text [String] a public event URL or a bare event ID
+  # @return [Event, nil]
+  def self.lookup(text)
+    text = text.to_s.strip
+    id = text[/\A\d+\z/] || text[EVENT_URL, 1]
+    find_by(id:) if id
+  end
+
   # ==== Instance methods ====
+  # Other events from the same calendar with the same summary, such as a repeat's other dates
+  # @return [ActiveRecord::Relation<Event>]
+  def siblings
+    return Event.none if calendar_id.nil?
+
+    Event.where(calendar_id:, summary:).where.not(id:)
+  end
+
   def cancelled? = status == 'cancelled'
   def postponed? = status == 'postponed'
 

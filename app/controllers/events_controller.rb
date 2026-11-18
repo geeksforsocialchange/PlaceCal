@@ -53,7 +53,7 @@ class EventsController < ApplicationController
     respond_to do |format|
       format.html do
         render Views::Sites::Events::Show.new(
-          event: @event, site: @site, map: @map, more_from_organiser: @more_from_organiser
+          event: @event, site: @site, map: @map, more_from_organiser: @more_from_organiser, admin_url: event_admin_url
         )
       end
       format.ics do
@@ -66,6 +66,13 @@ class EventsController < ApplicationController
   end
 
   private
+
+  # The admin session cookie reaches *.placecal.org sites but not custom domains, so the link only shows there
+  def event_admin_url
+    return unless current_user && policy(@event).show?
+
+    admin_event_url(@event, subdomain: Site::ADMIN_SUBDOMAIN)
+  end
 
   # Treats a wildcard Accept header (curl, crawlers) as HTML, matching how
   # respond_to would serve it. The directory has no Site row, so falling

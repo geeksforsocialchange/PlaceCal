@@ -774,6 +774,8 @@ en:
       by_organiser_html: "By %{name}"
       add_to_calendar: "Add to calendar"
       go_back: "All events"
+      # Shown only to signed-in admins who can inspect the event
+      open_in_admin: "Open in admin"
     csv_export:
       link: "Download as CSV"
       # Column headers for the events CSV (app/services/events_csv.rb).

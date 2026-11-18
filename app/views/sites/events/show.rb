@@ -35,6 +35,8 @@ class Views::Sites::Events::Show < Views::Base
   prop :site, _Nilable(::Site), reader: :private
   prop :map, _Nilable(Array), reader: :private
   prop :more_from_organiser, _Nilable(_Interface(:each)), reader: :private, default: nil
+  # Set only for a signed-in user allowed to inspect the event
+  prop :admin_url, _Nilable(String), reader: :private, default: nil
 
   def view_template
     content_for(:title) { event.og_title }
@@ -270,6 +272,7 @@ class Views::Sites::Events::Show < Views::Base
           plain t('directory.sidebar.subscribe_ical')
         end
       end
+      div(class: 'mt-3') { UI::Link(href: admin_url, variant: :action, size: :sm) { t('events.show.open_in_admin') } } if admin_url
     end
   end
 
@@ -489,6 +492,8 @@ class Views::Sites::Events::Show < Views::Base
     links << [t('events.show.organiser_events', name: event.organiser.name), partner_path(event.organiser)] if event.organiser
     links << [t('events.show.add_to_calendar'), event_url(event, protocol: :webcal, format: :ics)]
     links << [t('events.show.go_back'), events_path]
+    links << [t('events.show.open_in_admin'), admin_url] if admin_url
+    links
   end
 
   # The band's links on core themes: adding to a calendar, reporting a problem and the permalink
@@ -500,6 +505,8 @@ class Views::Sites::Events::Show < Views::Base
       links << [t('events.show.report_problem'), "mailto:#{contact[0]}?subject=#{ERB::Util.url_encode(subject)}&cc=support%40placecal.org"]
     end
     links << [t('components.meta.permalink'), permalink]
+    links << [t('events.show.open_in_admin'), admin_url] if admin_url
+    links
   end
 
   def render_event_meta
