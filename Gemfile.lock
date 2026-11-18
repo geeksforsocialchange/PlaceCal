@@ -386,7 +386,7 @@ GEM
       net-smtp
     marcel (1.2.1)
     matrix (0.4.3)
-    mcp (1.9.0)
+    mcp (1.10.0)
       json_schemer (>= 2.4)
     memoist3 (1.0.0)
     mime-types (3.7.0)
@@ -567,7 +567,7 @@ GEM
     refract (1.1.0)
       prism
       zeitwerk
-    regexp_parser (2.13.1)
+    regexp_parser (2.13.4)
     reline (0.7.0)
       io-console (~> 0.5)
     request_store (1.7.0)
@@ -788,7 +788,7 @@ DEPENDENCIES
   listen
   literal
   lookbook (>= 2.3.14)
-  mcp (= 1.9.0)
+  mcp (= 1.10.0)
   mini_magick
   pagy
   paper_trail
