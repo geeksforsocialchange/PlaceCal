@@ -81,10 +81,17 @@ RSpec.describe "Event page details on core and extension themes", type: :request
       expect(online.at_css('a[href="https://example.org/register"]').text).to eq("Visit the webpage for this event")
     end
 
-    it "leaves out Event location for an online event with no address" do
-      event.update!(online_address: create(:direct_online_address), address: nil, place: nil)
+    it "leaves out Event location for an online event with no address, even when its feed gave the meeting link as the location" do
+      event.update!(online_address: create(:direct_online_address), address: nil, place: nil,
+                    raw_location_from_source: "https://zoom.us/j/1234567890")
 
       expect(part(details_for(site), "address")).to be_nil
+    end
+
+    it "keeps Event location for an online event whose feed names a place without an address" do
+      event.update!(online_address: create(:direct_online_address), address: nil, place: nil, raw_location_from_source: "The Town Hall")
+
+      expect(part(details_for(site), "address").text).to include("The Town Hall")
     end
   end
 

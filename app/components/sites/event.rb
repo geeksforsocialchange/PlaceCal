@@ -29,6 +29,8 @@ class Components::Sites::Event < Components::Base
   prop :nested, _Boolean, default: false
   # Core themes leave the organiser to the details row; extension themes put it under the title
   prop :organiser_byline, _Boolean, default: true
+  # Core event pages say Online on Zoom; elsewhere the row names just the service
+  prop :online_on, _Boolean, default: false
 
   ICON = 'size-7 mr-1 text-secondary'
 
@@ -220,7 +222,9 @@ class Components::Sites::Event < Components::Base
 
   def online_label
     service = @event.online_address.service_name
-    service ? t('events.card.online_on', service:) : t('events.card.online')
+    return t('events.card.online') unless service
+
+    @online_on ? t('events.card.online_on', service:) : service
   end
 
   def online?

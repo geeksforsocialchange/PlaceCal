@@ -54,7 +54,8 @@ class Views::Sites::Events::Show < Views::Base
         display_context: :page,
         event:,
         site_tagline: site.tagline,
-        organiser_byline: !site.core_theme?
+        organiser_byline: !site.core_theme?,
+        online_on: site.core_theme?
       )
       render_event_details
       # Core themes show the map boxed beside the address instead
@@ -395,9 +396,11 @@ class Views::Sites::Events::Show < Views::Base
     end
   end
 
-  # An online-only event has no address to show, only perhaps the place name its feed gave
+  # Feeds often give a meeting link as the location, which is not somewhere to go
   def physical_location?
-    event.online_address.nil? || event.address.present? || event.raw_location_from_source.present?
+    raw_location = event.raw_location_from_source.to_s.strip
+    event.online_address.nil? || event.address.present? ||
+      (raw_location.present? && !raw_location.match?(CalendarImporter::LocationResolver::ONLINE_LINK))
   end
 
   def render_event_address
