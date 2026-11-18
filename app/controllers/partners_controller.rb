@@ -56,8 +56,8 @@ class PartnersController < ApplicationController
           partner: @partner, site: @site, current_day: @current_day,
           map: @map, events: @events,
           period: @period, date_period: @date_period, sort: @sort,
-          repeating: @repeating, long_running: @long_running, ongoing: @ongoing || [], no_event_message: @no_event_message,
-          paginator: @paginator, show_monthly: @show_monthly || false,
+          repeating: @repeating, long_running: @long_running, offer_long_running: @offer_long_running != false, ongoing: @ongoing || [],
+          no_event_message: @no_event_message, paginator: @paginator, show_monthly: @show_monthly || false,
           containing_sites: @containing_sites,
           days: @days, more_days: @more_days || 0,
           events_total_count: @events_total_count, events_total_days: @events_total_days
@@ -142,7 +142,7 @@ class PartnersController < ApplicationController
   def events_query
     @repeating, @long_running = params.values_at(:repeating, :long_running).map { it || 'on' }
     @event_filters = { organiser_or_place: @event_partner_ids, repeating: @repeating, long_running: @long_running }
-    EventsQuery.new(site: nil, day: @current_day).tap { @ongoing = it.running(**@event_filters) }
+    EventsQuery.new(site: nil, day: @current_day).tap { @ongoing, @offer_long_running = it.running_and_offer(**@event_filters) }
   end
 
   # Totals from per-day counts cover every upcoming event; only the first @days days load.

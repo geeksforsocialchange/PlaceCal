@@ -45,6 +45,7 @@ class Views::Sites::Partners::Show < Views::Base
   prop :sort, _Nilable(String), reader: :private
   prop :repeating, _Nilable(String), reader: :private
   prop :long_running, _Nilable(String), reader: :private, default: nil
+  prop :offer_long_running, _Boolean, reader: :private, default: true
   # Long-running events already on, listed once above the days
   prop :ongoing, Array, reader: :private, default: -> { [] }
   prop :no_event_message, _Nilable(String), reader: :private
@@ -356,7 +357,7 @@ class Views::Sites::Partners::Show < Views::Base
             options_for_select(repeating_options, repeating)
           end
         end
-        render_long_running_select
+        render_long_running_select if offer_long_running
       end
     end
   end

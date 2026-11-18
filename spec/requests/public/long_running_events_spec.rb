@@ -87,6 +87,21 @@ RSpec.describe "Long-running events", type: :request do
       expect(frame.find(".h-event", text: "Dead or Alive")).to have_text("From 1 Oct 2022 until 17 Jan 2023")
     end
 
+    it "offers the long-running select only to a partner with long-running events, or once one is chosen" do
+      long_running_select = "select[name='long_running']"
+      get partner_url(partner, host:)
+      expect(Capybara.string(response.body)).to have_css(long_running_select)
+
+      other = create(:partner, address: create(:riverside_address, neighbourhood: ward))
+      create(:event, organiser: other, dtstart: 2.days.from_now, dtend: 2.days.from_now + 2.hours)
+      get partner_url(other, host:)
+      expect(Capybara.string(response.body)).to have_css("select[name='repeating']")
+      expect(Capybara.string(response.body)).to have_no_css(long_running_select)
+
+      get partner_url(other, host:, params: { long_running: "off" })
+      expect(Capybara.string(response.body)).to have_css(long_running_select)
+    end
+
     it "counts running events as on today" do
       get partner_url(partner, host:)
 

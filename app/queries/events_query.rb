@@ -96,6 +96,14 @@ class EventsQuery
     group_and_sort(events.future(@day).where(dtstart: ...last_day.next_day.in_time_zone), sort)
   end
 
+  # @return [Array(Array<Event>, Boolean)] the events already on, and whether to offer the long-running filter
+  def running_and_offer(**filters) = [running(**filters), offer_long_running?(**filters)]
+
+  # The long-running filter is worth showing once one is chosen, or while a long-running event is on or still to come
+  def offer_long_running?(long_running: 'on', organiser_or_place: nil, **)
+    long_running != 'on' || build_filtered_scope(repeating: 'on', long_running: 'on', organiser_or_place:).upcoming_or_running(@day).long_running.exists?
+  end
+
   # Long-running events already on when the day starts, which no day of a listing from it holds.
   # @return [Array<Event>]
   def running(repeating: 'on', long_running: 'on', organiser_or_place: nil)
