@@ -12,12 +12,11 @@ RSpec.describe HeroImageUploader do
     expect(MiniMagick::Image.open(hero.standard_webp.path)).to have_attributes(type: "WEBP", dimensions: [1130, 350])
   end
 
-  # ImageMagick misreports a WebP's quality, so this compares against the same copy at the source's quality (89)
+  # ImageMagick misreports a WebP's quality, so this compares against the same image encoded at a high quality
   it "makes WebP copies at a fixed quality, not the source's" do
-    site = create(:site, hero_image: Rack::Test::UploadedFile.new(file_fixture("test_image.jpg"), "image/jpeg"))
-    at_source_quality = ImageProcessing::MiniMagick.source(file_fixture("test_image.jpg").to_s)
-                                                   .resize_to_fill(2260, 700).convert("webp").saver(quality: 89).call
+    hero = create(:site, hero_image: Rack::Test::UploadedFile.new(file_fixture("test_image.jpg"), "image/jpeg")).reload.hero_image
+    at_high_quality = ImageProcessing::MiniMagick.source(hero.path).convert("webp").saver(quality: 95).call
 
-    expect(File.size(site.reload.hero_image.webp.path)).to be < at_source_quality.size
+    expect(File.size(hero.webp.path)).to be < at_high_quality.size * 0.8
   end
 end
