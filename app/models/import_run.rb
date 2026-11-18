@@ -34,6 +34,7 @@ class ImportRun < ApplicationRecord
   belongs_to :calendar
   has_many :events, class_name: 'ImportRunEvent', dependent: :delete_all
 
+  validates :started_at, presence: true
   validates :outcome, inclusion: { in: OUTCOMES }, allow_nil: true
 
   scope :finished, -> { where.not(finished_at: nil) }

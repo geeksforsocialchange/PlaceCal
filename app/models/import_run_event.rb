@@ -28,5 +28,6 @@ class ImportRunEvent < ApplicationRecord
 
   belongs_to :import_run
 
+  validates :uid, presence: true
   validates :location_result, inclusion: { in: LOCATION_RESULTS }
 end
