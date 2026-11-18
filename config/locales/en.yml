@@ -746,15 +746,17 @@ en:
       join_meeting: "Join this meeting"
       join_on: "Join on %{service}"
       watch_on: "Watch on %{service}"
-      address_heading: "Event address"
+      address_heading: "Event location"
       organiser_heading: "Event organiser"
       venue_heading: "Venue"
       # Prompt and link inviting a reader to report a bad listing
       problem_prompt: "Problem with this listing? "
       problem_link: "Let us know."
+      report_problem: "Report a problem with this listing"
       problem_subject: "I think there's a problem with PlaceCal event %{url}"
       # Page actions row (Components::PageActions, #3368).
       organiser_events: "More from %{name}"
+      all_organiser_events: "All events from %{name}"
       # Heading over the organiser's other upcoming events on a site's event page
       more_from: "More from %{name}"
       # Line under the event name in the page header; the name is a link

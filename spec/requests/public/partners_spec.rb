@@ -95,8 +95,9 @@ RSpec.describe "Public Partners", type: :request do
 
       it "canonicalises to the domain, with a JSON-LD @id and permalink to match" do
         get partner_url(partner, host: "transdimension.uk")
+        permalink = Nokogiri::HTML(response.body).css("[data-scope='meta'] a").find { it.text == I18n.t("components.meta.permalink") }
+        expect(permalink["href"]).to eq("https://transdimension.uk/partners/#{partner.slug}")
         expect(response.body).to include(
-          %(href="https://transdimension.uk/partners/#{partner.slug}" class=),
           %(<link rel="canonical" href="https://transdimension.uk/partners/#{partner.slug}">),
           %(<meta property="og:url" content="https://transdimension.uk/partners/#{partner.slug}">),
           %("@id":"https://transdimension.uk/partners/#{partner.slug}")
@@ -122,7 +123,7 @@ RSpec.describe "Public Partners", type: :request do
 
     it "links the permalink to the slug URL" do
       get partner_url(partner, host: "#{site.slug}.lvh.me")
-      link = Nokogiri::HTML(response.body).at_css("[data-part='permalink'] a")
+      link = Nokogiri::HTML(response.body).css("[data-scope='meta'] a").find { it.text == I18n.t("components.meta.permalink") }
       expect(link["href"]).to eq("https://placecal.org/partners/#{partner.slug}")
     end
 
@@ -172,15 +173,12 @@ RSpec.describe "Public Partners", type: :request do
       expect(Capybara.string(response.body)).not_to have_css("[data-scope='hero'][data-part='root'] a[href='#{partners_path}']")
     end
 
-    # Page actions row (Components::Sites::PageActions, #3368): back, then the feed.
-    it "renders a page actions row with a link back to the partners index and the feed" do
+    it "lists the feed and the permalink in the meta band on a core theme" do
       get partner_url(partner, host: "#{site.slug}.lvh.me")
 
       links = page_actions_links
-      expect(links.map(&:text)).to eq([I18n.t("partners.show.go_back"),
-                                       I18n.t("partners.show.subscribe_ical", name: partner.name)])
-      expect(links.first[:href]).to eq(partners_path)
-      expect(links.last[:href]).to start_with("webcal://").and include(".ics")
+      expect(links.map(&:text)).to eq([I18n.t("partners.show.subscribe_ical", name: partner.name), I18n.t("components.meta.permalink")])
+      expect(links.first[:href]).to start_with("webcal://").and include(".ics")
     end
 
     it "includes Organization JSON-LD structured data" do
@@ -492,9 +490,9 @@ RSpec.describe "Public Partners", type: :request do
 
         expect(Capybara.string(events_browser_html).all("a").last.text).to eq("Show 4 more days")
         expect(hrefs.size).to eq(3)
-        expect(hrefs[0]).to eq(partners_path)
-        expect(hrefs[1]).to include(".ics")
-        expect(hrefs[2]).to include(".csv")
+        expect(hrefs[0]).to include(".ics")
+        expect(hrefs[1]).to include(".csv")
+        expect(hrefs[2]).to eq("https://placecal.org/partners/#{partner.slug}")
         expect(response.body.scan(".ics").size).to eq(1)
       end
 

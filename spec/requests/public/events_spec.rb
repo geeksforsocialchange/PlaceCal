@@ -186,7 +186,7 @@ RSpec.describe "Public Events", type: :request do
 
       it "links the permalink to the domain" do
         get event_url(event, host: "transdimension.uk")
-        link = Nokogiri::HTML(response.body).at_css("[data-part='permalink'] a")
+        link = Nokogiri::HTML(response.body).css("[data-scope='meta'] a").find { it.text == I18n.t("components.meta.permalink") }
         expect(link["href"]).to eq("https://transdimension.uk/events/#{event.id}")
       end
 
@@ -234,18 +234,15 @@ RSpec.describe "Public Events", type: :request do
         Nokogiri::HTML(response.body).at_css("nav[data-scope='page-actions']")
       end
 
-      it "links to the organiser's own page, add-to-calendar and the events index" do
+      it "lists add-to-calendar and the permalink in the meta band on a core theme" do
         get event_url(event, host: "#{site.slug}.lvh.me")
 
         links = page_actions.css("a[data-scope='page-actions'][data-part='link']")
-        expect(links.map(&:text)).to contain_exactly(
-          I18n.t("events.show.organiser_events", name: partner.name),
-          I18n.t("events.show.add_to_calendar"),
-          I18n.t("events.show.go_back")
-        )
+        expect(page_actions["data-variant"]).to eq("meta-band")
+        expect(links.map(&:text)).to include(I18n.t("events.show.add_to_calendar"), I18n.t("components.meta.permalink"))
+        expect(links.map(&:text)).not_to include(I18n.t("events.show.go_back"), I18n.t("events.show.organiser_events", name: partner.name))
         expect(links.find { |a| a.text == I18n.t("events.show.add_to_calendar") }[:href])
           .to eq(event_url(event, host: "#{site.slug}.lvh.me", protocol: :webcal, format: :ics))
-        expect(links.find { |a| a.text == I18n.t("events.show.go_back") }[:href]).to eq(events_path)
       end
 
       # `organiser_id` is NOT NULL at the database level (see db/schema.rb),
@@ -295,8 +292,8 @@ RSpec.describe "Public Events", type: :request do
       get event_url(full_event, host: "#{site.slug}.lvh.me")
 
       html = Nokogiri::HTML(response.body)
-      # contact-name is for extension themes only; spec/requests/public/event_details_spec.rb covers it
-      expect(html.css('[data-scope="event-details"]').map { it["data-part"] }.uniq).to match_array(PlaceCal::Theming.contract["event-details"][:parts] - %w[contact-name])
+      # contact-name and organiser are for extension themes only; spec/requests/public/event_details_spec.rb covers them
+      expect(html.css('[data-scope="event-details"]').map { it["data-part"] }.uniq).to match_array(PlaceCal::Theming.contract["event-details"][:parts] - %w[contact-name organiser])
       expect(ThemingTokens.read_by(html, "event-details") - PlaceCal::Theming.contract["event-details"][:tokens]).to be_empty
     end
 
@@ -536,21 +533,15 @@ RSpec.describe "Public Events", type: :request do
     # here skips a level and axe reports heading-order.
     it "shows contact information section with consistent heading level" do
       get event_url(event, host: "#{site.slug}.lvh.me")
-      expect(response.body).to include("Contact information")
-      expect(response.body).to match(%r{<h2[^>]*>Contact information</h2>})
+      expect(response.body).to include("Get in touch")
+      expect(response.body).to match(%r{<h2[^>]*>Get in touch</h2>})
       expect(Nokogiri::HTML(response.body).at_css('[data-scope="event-details"][data-part="contact"] a[href^="/partners/"]')).to be_nil
     end
 
-    it "shows event address with consistent heading level" do
+    it "shows event location with consistent heading level" do
       get event_url(event, host: "#{site.slug}.lvh.me")
-      expect(response.body).to include("Event address")
-      expect(response.body).to match(%r{<h2[^>]*>Event address</h2>})
-    end
-
-    it "shows event organiser with consistent heading level" do
-      get event_url(event, host: "#{site.slug}.lvh.me")
-      expect(response.body).to include("Event organiser")
-      expect(response.body).to match(%r{<h2[^>]*>Event organiser</h2>})
+      expect(response.body).to include("Event location")
+      expect(response.body).to match(%r{<h2[^>]*>Event location</h2>})
     end
 
     it "includes Event JSON-LD structured data" do
