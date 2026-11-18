@@ -90,7 +90,7 @@ namespace :db do
 
     DbTaskHelpers.with_config do |_app, host, db, user|
       full_path = "#{backup_dir}/#{Time.current.strftime('%Y%m%d%H%M%S')}_#{db}.#{dump_sfx}"
-      cmd       = "pg_dump -F #{dump_fmt} -v -O --exclude-table-data=solid_cache_entries -U '#{user}' -h '#{host}' -d '#{db}' -f '#{full_path}'"
+      cmd       = "pg_dump -F #{dump_fmt} -v -O #{DUMP_EXCLUDES} -U '#{user}' -h '#{host}' -d '#{db}' -f '#{full_path}'"
     end
 
     puts cmd
@@ -192,6 +192,8 @@ namespace :db do
 
   # Remote Docker container and paths for Kamal-managed servers
   REMOTE_DB_CONTAINER = 'placecal-db'
+  # Cache rows and queued jobs stay behind, so a copy never runs production's jobs
+  DUMP_EXCLUDES = %(--exclude-table-data=solid_cache_entries --exclude-table-data="solid_queue_*")
   REMOTE_UPLOADS_PATH = '/data/placecal/uploads'
 
   desc 'Synchronize staging with the production database'
@@ -207,7 +209,7 @@ namespace :db do
     staging_db = ENV.fetch('STAGING_DB', 'placecal_staging')
 
     $stdout.puts 'Dumping production database...'
-    system("ssh root@#{prod_host} 'docker exec #{REMOTE_DB_CONTAINER} pg_dump -U #{pg_user} -Fc --exclude-table-data=solid_cache_entries #{prod_db}' > #{dump_file}")
+    system("ssh root@#{prod_host} 'docker exec #{REMOTE_DB_CONTAINER} pg_dump -U #{pg_user} -Fc #{DUMP_EXCLUDES} #{prod_db}' > #{dump_file}")
     abort 'Failed to dump production database!' unless $CHILD_STATUS.success?
 
     $stdout.puts 'Restoring to staging database...'
@@ -234,7 +236,7 @@ namespace :db do
     pg_db = ENV.fetch('POSTGRES_DB', 'placecal_production')
 
     $stdout.puts "Downloading production db to #{filename} (May take a while.) ..."
-    system("ssh root@#{prod_host} 'docker exec #{REMOTE_DB_CONTAINER} pg_dump -U #{pg_user} -Fc --exclude-table-data=solid_cache_entries #{pg_db}' > #{filename}")
+    system("ssh root@#{prod_host} 'docker exec #{REMOTE_DB_CONTAINER} pg_dump -U #{pg_user} -Fc #{DUMP_EXCLUDES} #{pg_db}' > #{filename}")
     if $CHILD_STATUS.success?
       $stdout.puts "Downloaded production db to #{filename}"
       ENV[DB_DUMP_ENV_KEY] = filename

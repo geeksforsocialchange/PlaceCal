@@ -48,7 +48,7 @@ class EventsController < ApplicationController
       @more_from_organiser = query.scope.merge(Event.by_organiser_or_place(@event.organiser))
                                   .upcoming.sort_by_time
                                   .where.not(id: @event.id)
-                                  .limit(4)
+                                  .limit(5)
     end
     respond_to do |format|
       format.html do

@@ -15,4 +15,6 @@ if [ -d public/assets ] && [ "$(ls -A public/assets 2>/dev/null)" ]; then
   mkdir -p public/assets
 fi
 
+bin/check-postgres
+
 foreman start -f Procfile.dev "$@"

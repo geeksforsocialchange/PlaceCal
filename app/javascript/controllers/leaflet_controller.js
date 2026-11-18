@@ -3,19 +3,14 @@ import { Controller } from "@hotwired/stimulus";
 export default class extends Controller {
 	static values = { args: Object };
 
-	connect() {
-		if ("requestIdleCallback" in window) {
-			this._idleId = requestIdleCallback(() => this._loadMap(), {
-				timeout: 4000,
-			});
-		} else {
-			this._timerId = setTimeout(() => this._loadMap(), 200);
-		}
+	async connect() {
+		const { whenVisible } = await import("controllers/mixins/when_visible");
+		if (!this.element.isConnected) return;
+		this._stopWatching = whenVisible(this.element, () => this._loadMap());
 	}
 
 	disconnect() {
-		if (this._idleId) cancelIdleCallback(this._idleId);
-		if (this._timerId) clearTimeout(this._timerId);
+		this._stopWatching?.();
 		this.element.classList.remove("map");
 		if (this.argsValue.styleClass?.length)
 			this.element.classList.remove(...this.argsValue.styleClass);
@@ -39,6 +34,8 @@ export default class extends Controller {
 
 	createMap() {
 		this.map = L.map(this.element, { zoomControl: false });
+		// The data and tile credits stay; the library's own credit is optional and crowds small maps
+		this.map.attributionControl.setPrefix(false);
 		this.map.scrollWheelZoom.disable();
 		L.control
 			.zoom({

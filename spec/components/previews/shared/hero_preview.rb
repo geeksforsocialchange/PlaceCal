@@ -25,9 +25,9 @@ class Shared::HeroPreview < Lookbook::Preview
                                         standfirst_detail: "Every partner here publishes their events on PlaceCal.")
   end
 
-  # @label Record page with back link
+  # @label Record page
   def record_page
-    render Components::Shared::Hero.new("Repair Café", "PlaceCal Hulme", section: "Events", back: ["All events", "/events"])
+    render Components::Shared::Hero.new("Repair Café", "PlaceCal Hulme", section: "Events")
   end
 
   # @label With schema property

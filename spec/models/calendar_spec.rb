@@ -14,7 +14,6 @@
 #  import_started_at    :datetime
 #  importer_mode        :string           default("auto")
 #  importer_used        :string
-#  is_working           :boolean          default(TRUE), not null
 #  last_checksum        :string
 #  last_import_at       :datetime
 #  name                 :string           not null
@@ -241,19 +240,19 @@ RSpec.describe Calendar, type: :model do
 
     around do |example|
       original = CalendarImporterJob.queue_adapter
-      CalendarImporterJob.queue_adapter = :delayed_job
+      CalendarImporterJob.queue_adapter = :solid_queue
       example.run
     ensure
       CalendarImporterJob.queue_adapter = original
     end
 
-    it "records the delayed job driving the attempt" do
+    it "records the Solid Queue job driving the attempt" do
       calendar.update_columns(calendar_state: "idle", import_job_id: 999_999) # rubocop:disable Rails/SkipsModelValidations
 
       calendar.queue_for_import!(false)
 
-      job = Delayed::Job.last
-      expect(job.handler).to include("CalendarImporterJob")
+      job = SolidQueue::Job.last
+      expect(job.class_name).to eq("CalendarImporterJob")
       expect(calendar.reload.import_job_id).to eq(job.id)
     end
   end
@@ -265,8 +264,12 @@ RSpec.describe Calendar, type: :model do
       calendar.update_columns(calendar_state: state, import_started_at: started_at, import_job_id: job_id) # rubocop:disable Rails/SkipsModelValidations
     end
 
-    def delayed_job(**attrs)
-      Delayed::Job.create!(handler: "--- {}\n", run_at: Time.current, **attrs)
+    def queued_job(**attrs)
+      SolidQueue::Job.create!(queue_name: "default", class_name: "CalendarImporterJob", arguments: {}, **attrs)
+    end
+
+    def failed_job
+      queued_job.tap { |job| SolidQueue::FailedExecution.create!(job:, error: { exception_class: "RuntimeError", message: "boom" }) }
     end
 
     context "without a recorded job" do
@@ -303,50 +306,46 @@ RSpec.describe Calendar, type: :model do
 
     context "with a recorded job" do
       it "leaves an in_queue calendar whose job is waiting in a long backlog" do
-        put_stuck("in_queue", 3.hours.ago, job_id: delayed_job.id)
+        put_stuck("in_queue", 3.hours.ago, job_id: queued_job.id)
 
         expect(described_class.reset_stuck_imports!).to be_empty
         expect(calendar.reload.calendar_state).to eq("in_queue")
       end
 
       it "resets an in_queue calendar whose job no longer exists, without waiting for the threshold" do
-        put_stuck("in_queue", 10.minutes.ago, job_id: delayed_job.tap(&:destroy).id)
+        put_stuck("in_queue", 10.minutes.ago, job_id: queued_job.tap(&:destroy).id)
 
         expect(described_class.reset_stuck_imports!).to contain_exactly(calendar.id)
         expect(calendar.reload).to have_attributes(calendar_state: "idle", import_job_id: nil)
       end
 
-      it "leaves an in_worker calendar whose job is locked by a worker" do
-        put_stuck("in_worker", 3.hours.ago, job_id: delayed_job(locked_at: 1.minute.ago, locked_by: "w1").id)
-
-        expect(described_class.reset_stuck_imports!).to be_empty
-        expect(calendar.reload.calendar_state).to eq("in_worker")
-      end
-
-      it "leaves an in_worker calendar whose worker died, since Delayed::Job re-runs stale locks" do
-        put_stuck("in_worker", 3.hours.ago, job_id: delayed_job(locked_at: 1.day.ago, locked_by: "dead").id)
-
-        expect(described_class.reset_stuck_imports!).to be_empty
-        expect(calendar.reload.calendar_state).to eq("in_worker")
-      end
-
-      it "leaves a calendar whose job failed and is waiting to retry" do
-        job = delayed_job(attempts: 1, run_at: 1.hour.from_now, last_error: "boom")
+      it "leaves an in_worker calendar whose job a worker is running" do
+        process = SolidQueue::Process.create!(kind: "Worker", last_heartbeat_at: Time.current, pid: 1, hostname: "w1", name: "worker-1")
+        job = queued_job
+        job.ready_execution&.destroy
+        SolidQueue::ClaimedExecution.create!(job:, process:)
         put_stuck("in_worker", 3.hours.ago, job_id: job.id)
 
         expect(described_class.reset_stuck_imports!).to be_empty
         expect(calendar.reload.calendar_state).to eq("in_worker")
       end
 
-      it "resets a calendar whose job exhausted its retries and was kept as failed" do
-        put_stuck("in_worker", 10.minutes.ago, job_id: delayed_job(attempts: 4, failed_at: 1.minute.ago).id)
+      it "resets a calendar whose job failed, including one whose worker died (Solid Queue fails its jobs)" do
+        put_stuck("in_worker", 10.minutes.ago, job_id: failed_job.id)
+
+        expect(described_class.reset_stuck_imports!).to contain_exactly(calendar.id)
+        expect(calendar.reload.calendar_state).to eq("idle")
+      end
+
+      it "resets a calendar whose job finished without moving it on" do
+        put_stuck("in_worker", 10.minutes.ago, job_id: queued_job(finished_at: 1.minute.ago).id)
 
         expect(described_class.reset_stuck_imports!).to contain_exactly(calendar.id)
         expect(calendar.reload.calendar_state).to eq("idle")
       end
 
       it "leaves a calendar queued within the grace period even if its job is not visible" do
-        put_stuck("in_queue", 1.minute.ago, job_id: delayed_job.tap(&:destroy).id)
+        put_stuck("in_queue", 1.minute.ago, job_id: queued_job.tap(&:destroy).id)
 
         expect(described_class.reset_stuck_imports!).to be_empty
         expect(calendar.reload.calendar_state).to eq("in_queue")

@@ -15,8 +15,11 @@ class Components::Admin::Datatable < Components::Admin::Base
   prop :source, String
   prop :new_link, _Nilable(String), default: nil
   prop :search_fieldset, _Boolean, default: false
+  prop :refresh_every, _Nilable(Integer), default: nil
 
-  def view_template
+  # The block adds to the header's right-hand side, beside the add link
+  def view_template(&header_extra)
+    @header_extra = header_extra
     content_for(:title) { @title }
     model_name = @model.to_s.chop.humanize
 
@@ -34,7 +37,8 @@ class Components::Admin::Datatable < Components::Admin::Base
       data_admin_table_range_text_value: t('admin.datatable.range'),
       data_admin_table_filtered_range_text_value: t('admin.datatable.filtered_range'),
       data_admin_table_total_text_value: t('admin.datatable.total'),
-      data_admin_table_filtered_total_text_value: t('admin.datatable.filtered_total')
+      data_admin_table_filtered_total_text_value: t('admin.datatable.filtered_total'),
+      data_admin_table_refresh_interval_value: @refresh_every
     ) do
       render_header(model_name)
       render_filter_bar
@@ -63,6 +67,7 @@ class Components::Admin::Datatable < Components::Admin::Base
           p(class: 'mt-1 text-sm text-gray-600', role: 'status', data_admin_table_target: 'summary') { t('admin.labels.loading') }
         end
         render_new_link(model_name) if @new_link
+        div(&@header_extra) if @header_extra
       end
     end
   end
@@ -128,7 +133,7 @@ class Components::Admin::Datatable < Components::Admin::Base
 
     ungrouped.each do |filter|
       RadioFilter(
-        column: filter[:column], label: filter[:label], options: filter[:options] || []
+        column: filter[:column], label: filter[:label], options: filter[:options] || [], default: filter[:default]
       )
     end
 

@@ -275,7 +275,8 @@ RSpec.describe "Theme slots", type: :request do
       expect(response.body).not_to include('data-part="toggle-label"')
       expect(response.body).to include("Go to date")
       expect(response.body).not_to include('data-part="day-strip"')
-      expect(response.body).to include(" 9 Nov")
+      date = Nokogiri::HTML(response.body).at_css("[data-scope='event-row'][data-part='date']")
+      expect([date.at_css("[data-part='day']").text, date.at_css("[data-part='month']").text]).to eq(%w[9 Nov])
       expect(response.body).not_to include('data-part="organiser-prefix"')
     end
 

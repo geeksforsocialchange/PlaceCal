@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Warns when the local PostgreSQL server's major version differs from production's (config/deploy.yml).
+# Never fails: bin/dev and bin/setup carry on either way.
+cd "$(dirname "$0")/.." || exit 0
+
+expected=$(sed -nE 's/^[[:space:]]*image:[[:space:]]*postgres:([0-9]+).*/\1/p' config/deploy.yml | head -1)
+[[ -z $expected ]] && exit 0
+command -v psql >/dev/null || exit 0
+
+version_num=$(psql -tAX -c 'SHOW server_version_num' "${DATABASE_URL:-postgres}" 2>/dev/null) || exit 0
+[[ -z $version_num ]] && exit 0
+local_major=$((version_num / 10000))
+
+if [[ $local_major != "$expected" ]]; then
+  echo "Warning: your PostgreSQL server is version $local_major, but production runs $expected (config/deploy.yml)."
+  echo "  With Homebrew: brew install postgresql@$expected, then move your data across (pg_dumpall from the old server, psql -f into the new one)."
+fi
+exit 0

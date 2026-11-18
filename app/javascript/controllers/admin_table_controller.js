@@ -31,6 +31,7 @@ export default class extends Controller {
 		filteredRangeText: String,
 		totalText: String,
 		filteredTotalText: String,
+		refreshInterval: { type: Number, default: 0 },
 	};
 
 	connect() {
@@ -50,6 +51,32 @@ export default class extends Controller {
 
 		// Show sort indicator for default sort column
 		this.updateSortIndicators();
+
+		if (this.refreshIntervalValue > 0) {
+			this.refreshTimer = setInterval(
+				() => this.refresh(),
+				this.refreshIntervalValue * 1000,
+			);
+		}
+	}
+
+	disconnect() {
+		clearInterval(this.refreshTimer);
+	}
+
+	// Reloads the current page in place, keeping filters, sort and page. Skipped while the tab is hidden,
+	// a load is under way, or focus is on a row or page button, which a reload would replace
+	async refresh() {
+		if (document.hidden || this.loading || this.focusInRedrawnParts()) return;
+		if (await this.loadData({ silent: true })) this.dispatch("refreshed");
+	}
+
+	focusInRedrawnParts() {
+		const focused = document.activeElement;
+		return (
+			this.tbodyTarget.contains(focused) ||
+			(this.hasPaginationTarget && this.paginationTarget.contains(focused))
+		);
 	}
 
 	applyDefaultFilters() {
@@ -62,6 +89,19 @@ export default class extends Controller {
 				// The selected attribute is already set in the template
 			}
 		});
+		Object.assign(this.filters, this.radioDefaults());
+	}
+
+	// Radio filters rendered with a default button already selected
+	radioDefaults() {
+		const defaults = {};
+		this.radioFilterTargets.forEach((container) => {
+			if (container.dataset.filterDefault) {
+				defaults[container.dataset.filterColumn] =
+					container.dataset.filterDefault;
+			}
+		});
+		return defaults;
 	}
 
 	search(event) {
@@ -151,7 +191,7 @@ export default class extends Controller {
 		container.querySelectorAll("button").forEach((btn) => {
 			btn.classList.remove(
 				"bg-white",
-				"bg-orange-500",
+				"bg-orange-700",
 				"text-gray-900",
 				"text-white",
 				"shadow-sm",
@@ -164,7 +204,7 @@ export default class extends Controller {
 		if (isAllButton) {
 			button.classList.add("bg-white", "text-gray-900", "shadow-sm");
 		} else {
-			button.classList.add("bg-orange-500", "text-white", "shadow-sm");
+			button.classList.add("bg-orange-700", "text-white", "shadow-sm");
 		}
 
 		if (value) {
@@ -356,18 +396,27 @@ export default class extends Controller {
 			container.querySelectorAll("button").forEach((btn) => {
 				btn.classList.remove(
 					"bg-white",
-					"bg-orange-500",
+					"bg-orange-700",
 					"text-gray-900",
 					"text-white",
 					"shadow-sm",
 				);
 				btn.classList.add("text-gray-500", "hover:text-gray-700");
 			});
-			const allBtn = container.querySelector('button[data-filter-value=""]');
-			if (allBtn) {
-				allBtn.classList.remove("text-gray-500", "hover:text-gray-700");
-				allBtn.classList.add("bg-white", "text-gray-900", "shadow-sm");
+			const defaultValue = container.dataset.filterDefault || "";
+			const selected = container.querySelector(
+				`button[data-filter-value="${defaultValue}"]`,
+			);
+			if (selected) {
+				selected.classList.remove("text-gray-500", "hover:text-gray-700");
+				selected.classList.add(
+					...(defaultValue
+						? ["bg-orange-700", "text-white", "shadow-sm"]
+						: ["bg-white", "text-gray-900", "shadow-sm"]),
+				);
 			}
+			if (defaultValue)
+				this.filters[container.dataset.filterColumn] = defaultValue;
 		});
 		this.currentPage = 0;
 		this.loadData();
@@ -394,7 +443,7 @@ export default class extends Controller {
 					container.querySelectorAll("button").forEach((btn) => {
 						btn.classList.remove(
 							"bg-white",
-							"bg-orange-500",
+							"bg-orange-700",
 							"text-gray-900",
 							"text-white",
 							"shadow-sm",
@@ -406,7 +455,7 @@ export default class extends Controller {
 					);
 					if (btn) {
 						btn.classList.remove("text-gray-500", "hover:text-gray-700");
-						btn.classList.add("bg-orange-500", "text-white", "shadow-sm");
+						btn.classList.add("bg-orange-700", "text-white", "shadow-sm");
 					}
 				}
 			});
@@ -436,6 +485,7 @@ export default class extends Controller {
 				defaults[select.dataset.filterColumn] = defaultValue;
 			}
 		});
+		Object.assign(defaults, this.radioDefaults());
 
 		// Check if current filters differ from defaults
 		const currentKeys = Object.keys(this.filters);
@@ -495,7 +545,10 @@ export default class extends Controller {
 		this.loadData();
 	}
 
-	async loadData() {
+	// Returns whether the rows were updated; a reply overtaken by a newer request is dropped
+	async loadData({ silent = false } = {}) {
+		const request = (this.latestRequest = (this.latestRequest || 0) + 1);
+		this.loading = true;
 		const params = new URLSearchParams({
 			draw: Date.now(),
 			start: this.currentPage * this.pageLengthValue,
@@ -537,9 +590,10 @@ export default class extends Controller {
 		});
 
 		try {
-			this.showLoading();
+			if (!silent) this.showLoading();
 			const response = await fetch(`${this.sourceValue}?${params}`);
 			const data = await response.json();
+			if (request !== this.latestRequest) return false;
 
 			this.totalRecords = data.recordsTotal;
 			this.filteredRecords = data.recordsFiltered;
@@ -549,9 +603,14 @@ export default class extends Controller {
 			this.renderPagination();
 			this.renderInfo();
 			this.renderSummary();
+			return true;
 		} catch (error) {
 			console.error("Error loading table data:", error);
-			this.showError();
+			if (request !== this.latestRequest) return false;
+			if (!silent) this.showError();
+			return false;
+		} finally {
+			if (request === this.latestRequest) this.loading = false;
 		}
 	}
 
@@ -594,7 +653,7 @@ export default class extends Controller {
 			this.tbodyTarget.innerHTML = `
         <tr>
           <td colspan="${this.visibleColumnsCount}" class="px-6 py-12 text-center">
-            <div class="flex flex-col items-center justify-center text-gray-400">
+            <div class="flex flex-col items-center justify-center text-gray-600">
               <svg class="w-12 h-12 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
               </svg>
@@ -621,18 +680,24 @@ export default class extends Controller {
 					? `${row.DT_RowClass} hover:bg-orange-50/30 transition-colors`
 					: "hover:bg-orange-50/30 transition-colors";
 
+				// DT_RowDetail: a full-width line under the row, from the second column, sharing the row's classes
+				const detail = row.DT_RowDetail
+					? `<tr class="${rowClass}"><td class="px-4 pt-0 pb-4"></td><td colspan="${this.visibleColumnsCount - 1}" class="px-4 pt-0 pb-4 text-sm">${row.DT_RowDetail}</td></tr>`
+					: "";
+				const cellPadding = row.DT_RowDetail ? "pt-4 pb-1" : "py-4";
+
 				return `
-        <tr class="${rowClass}"${rowAttrs}>
+        <tr class="${rowClass}${row.DT_RowDetail ? " border-b-0" : ""}"${rowAttrs}>
           ${this.columnsValue
 						.filter((col) => !col.hidden)
 						.map(
 							(col) =>
-								`<td class="px-4 py-4 text-sm${
+								`<td class="px-4 ${cellPadding} text-sm${
 									col.align === "center" ? " text-center" : ""
 								}">${row[col.data] ?? ""}</td>`,
 						)
 						.join("")}
-        </tr>
+        </tr>${detail}
       `;
 			})
 			.join("");

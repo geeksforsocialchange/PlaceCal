@@ -5,6 +5,11 @@ class CalendarImporterJob < ApplicationJob
 
   queue_as :default
 
+  # A stuck feed can't hold a worker indefinitely. The hourly scan queues the calendar again
+  MAX_RUN_TIME = 2.minutes
+
+  around_perform { |_job, block| Timeout.timeout(MAX_RUN_TIME, &block) }
+
   # Backstop for exceptions not matched by a more specific handler below. A
   # worker that dies mid-import strands the calendar in `in_worker`; an
   # *uncaught* exception does the same (the state transition never completes).
@@ -76,9 +81,9 @@ class CalendarImporterJob < ApplicationJob
     message += ' is forced' if force_import
     Rails.logger.info message
 
-    # calendar.import_events(from)
+    @import_run = calendar.import_runs.create!(started_at: Time.current)
     CalendarImporter::CalendarImporterTask
-      .new(calendar, from_date, force_import)
+      .new(calendar, from_date, force_import, import_run: @import_run)
       .run
   end
 
@@ -86,11 +91,17 @@ class CalendarImporterJob < ApplicationJob
 
   def report_error(exception, message, notify: false)
     full_message = "#{message} for calendar #{calendar.name} (id #{calendar.id}):  #{exception}"
-    calendar.flag_error_import_job! full_message, notify:
+    calendar.flag_error_import_job!(full_message, notify:)
+    finish_failed_run 'error', full_message
   end
 
   def report_bad_source_error(message)
     # problems with HTTP URLs that don't respond with status==200
     calendar.flag_bad_source! message
+    finish_failed_run 'bad_source', message
+  end
+
+  def finish_failed_run(outcome, error)
+    @import_run.finish!(outcome:, error:) if @import_run && !@import_run.finished_at
   end
 end

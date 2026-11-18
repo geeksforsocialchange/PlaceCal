@@ -93,19 +93,6 @@ namespace :events do
     PaperTrail::Version.all.delete_all
   end
 
-  desc 'Remove duplicate events (same uid, dtstart, dtend, calendar_id)'
-  task deduplicate: :environment do
-    deleted = Event.deduplicate!
-
-    if deleted.positive?
-      msg = "events:deduplicate removed #{deleted} duplicate event rows"
-      puts msg
-      Appsignal.send_error(StandardError.new(msg)) if defined?(Appsignal)
-    else
-      puts 'No duplicate events found'
-    end
-  end
-
   # e.g. rails "events:unlisted_venues[20,csv]"
   desc 'list the busiest venues of upcoming events that match no partner (read only)'
   task :unlisted_venues, %i[limit format] => :environment do |_t, args|

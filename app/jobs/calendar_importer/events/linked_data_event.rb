@@ -79,6 +79,12 @@ module CalendarImporter::Events
       @event['url']
     end
 
+    # schema.org image is a URL, an ImageObject, or a list of either
+    def image_url
+      image = Array.wrap(@event['image_url']).first
+      image.is_a?(Hash) ? image['@id'] || image['url'] : image
+    end
+
     # keywords is one comma-separated string, or a list of strings or DefinedTerms
     def source_categories
       keywords = @event[KEYWORDS]

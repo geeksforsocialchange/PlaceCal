@@ -11,8 +11,9 @@
 #  dtend                    :datetime
 #  dtstart                  :datetime         not null
 #  footer                   :text
+#  image                    :string
+#  image_source_url         :string
 #  is_active                :boolean          default(TRUE), not null
-#  notices                  :jsonb
 #  publisher_url            :string
 #  raw_location_from_source :text
 #  rrule                    :jsonb
@@ -53,16 +54,19 @@ class Event < ApplicationRecord
   has_paper_trail ignore: %i[rrule]
 
   include HtmlRenderCache
+  include EventDateScopes
+  include EventDisplay
+  include EventImage
   include EventJsonLd
   include Permalinkable
 
   # ==== Constants ====
   VERSION_RETENTION = 1.year
   VERSION_PRUNE_BATCH_SIZE = 5_000
+  # Calendars with these strategies can import events that have no place, address or online link
+  LOCATION_OPTIONAL_STRATEGIES = %w[event no_location online_only].freeze
 
   # ==== Attributes ====
-  self.ignored_columns += %w[notices]
-
   # Columns marked (nullable) have no NOT NULL constraint in the DB.
   attribute :are_spaces_available,     :string                      # nullable
   attribute :description,              :text                        # nullable
@@ -70,6 +74,7 @@ class Event < ApplicationRecord
   attribute :dtend,                    :datetime                    # nullable
   attribute :dtstart,                  :datetime                    # NOT NULL
   attribute :footer,                   :text                        # nullable
+  attribute :image_source_url,         :string                      # nullable, the source's URL for the stored image
   attribute :is_active,                :boolean, default: true      # NOT NULL
   attribute :publisher_url,            :string                      # nullable
   attribute :raw_location_from_source, :text                        # nullable
@@ -94,63 +99,20 @@ class Event < ApplicationRecord
   # ==== Validations ====
   validates :summary, :dtstart, :organiser, presence: true
   validate :require_location
-  validate :unique_event, on: :create # If we are updating the event we don't want it to trigger!
+  validate :unique_event, on: :create
 
   # ==== Scopes ====
-  # has_many :service_areas, through: :partner
-
-  # Events starting on app-zone dates first..last inclusive. dtstart is stored in UTC,
-  # so SQL DATE(dtstart) would put events from 00:00 to 01:00 BST on the day before.
-  scope :starting_between_days, lambda { |first, last|
-    where(dtstart: first.to_date.in_time_zone...last.to_date.next_day.in_time_zone)
-  }
-
-  # Find events that start on a given day
-  scope :find_by_day, ->(day) { starting_between_days(day, day) }
-
-  # Find by week (Monday to Sunday)
-  scope :find_by_week, lambda { |day|
-    date = day.to_date
-    starting_between_days(date.beginning_of_week, date.end_of_week)
-  }
-
-  # Find next 7 days from given day
-  scope :find_next_7_days, ->(day) { starting_between_days(day, day.to_date + 6.days) }
-
-  # Find from given day to end of that month
-  scope :for_month, ->(day) { starting_between_days(day, day.to_date.end_of_month) }
-
-  # Find by day onwards
-  scope :future, lambda { |day|
-    day_start = day.midnight # 2024-04-01 00:00:00 +0100
-    where(dtstart: day_start..)
-  }
-
-  # For the API eventFilter find by neighbourhood
+  # Events whose organiser is based in, or serves, any of the neighbourhoods
   scope :for_neighbourhoods, lambda { |neighbourhoods|
-    neighbourhood_ids = neighbourhoods.map(&:id)
-
-    joins('left outer join partners on events.organiser_id = partners.id')
-      .joins('left outer join addresses on partners.address_id = addresses.id')
-      .joins('left outer join service_areas on partners.id = service_areas.partner_id')
-      .where('(service_areas.neighbourhood_id in (?)) or (addresses.neighbourhood_id in (?))',
-             neighbourhood_ids,
-             neighbourhood_ids)
+    based_there = Partner.joins(:address).where(addresses: { neighbourhood_id: neighbourhoods }).select(:id)
+    serving_there = ServiceArea.where(neighbourhood_id: neighbourhoods).select(:partner_id)
+    where(organiser_id: based_there).or(where(organiser_id: serving_there))
   }
 
-  scope :with_tags, lambda { |tags|
-    joins(:organiser)
-      .joins('left outer join partner_tags on partners.id = partner_tags.partner_id')
-      .where(partner_tags: { tag_id: tags.map(&:id) })
-  }
+  scope :with_tags, ->(tags) { joins(organiser: :partner_tags).where(partner_tags: { tag_id: tags }) }
 
-  # Filter by Place
   scope :in_place, ->(place) { where(place:) }
-
-  # Filter by Organiser
   scope :by_organiser, ->(organiser) { where(organiser:) }
-
-  # Filter by Organiser or Place
   scope :by_organiser_or_place, ->(organiser) { in_place(organiser).or(by_organiser(organiser)) }
 
   # Hiding a partner is a moderation action, so its events leave every public listing
@@ -159,49 +121,23 @@ class Event < ApplicationRecord
           'WHERE hidden_organisers.id = events.organiser_id AND hidden_organisers.hidden)')
   }
 
-  # Sort by Summary or Start Time
   scope :sort_by_summary, -> { order(summary: :asc).order(:dtstart) }
   scope :sort_by_time, -> { order(dtstart: :asc).order(summary: :asc) }
 
   scope :without_matching_times, lambda { |time_pairs|
     return none if time_pairs.empty?
 
-    conditions = time_pairs.map { |s, e| arel_table[:dtstart].eq(s).and(arel_table[:dtend].eq(e)) }
-    matching = conditions.reduce(:or)
-    where.not(matching)
+    matching = time_pairs.map { |start_time, end_time| arel_table[:dtstart].eq(start_time).and(arel_table[:dtend].eq(end_time)) }
+    where.not(matching.reduce(:or))
   }
 
   scope :one_off_events_only, -> { where(rrule: false) }
   scope :repeating_events_only, -> { where.not(rrule: false) }
 
-  scope :upcoming, -> { where(dtstart: DateTime.current.beginning_of_day..) }
-  scope :past, -> { where(dtstart: ..DateTime.current.beginning_of_day) }
-
-  # Global feed; six months ahead keeps busy sites' subscriptions small enough for calendar apps
-  scope :ical_feed, -> { where(dtstart: 1.week.ago...6.months.from_now) }
-
   # ==== Callbacks ====
   before_save :sanitize_rrule
 
   # ==== Class methods ====
-  # Remove duplicate events (same uid, dtstart, dtend, calendar_id),
-  # keeping the oldest record. Returns the number of deleted rows.
-  def self.deduplicate!
-    result = connection.execute(<<~SQL.squish)
-      WITH duplicates AS (
-        SELECT id, ROW_NUMBER() OVER (
-          PARTITION BY uid, dtstart, dtend, calendar_id
-          ORDER BY id
-        ) as rn
-        FROM events
-      )
-      DELETE FROM events WHERE id IN (
-        SELECT id FROM duplicates WHERE rn > 1
-      )
-    SQL
-    result.cmd_tuples
-  end
-
   # Deletes PaperTrail versions older than VERSION_RETENTION.
   # @return [Integer] number of deleted versions
   def self.prune_old_versions!
@@ -212,47 +148,7 @@ class Event < ApplicationRecord
     count
   end
 
-  # icalendar < 2.13 serialised each rule as an OpenStruct (keys under "table"), 2.13+ as a flat Struct.
-  # @return [String, nil] raw RFC 5545 FREQ value, e.g. "WEEKLY"
-  def self.rrule_frequency(rrule)
-    rule = rrule.is_a?(Array) ? rrule.first : nil
-    return if rule.blank?
-
-    (rule['table'] || rule)['frequency'].presence
-  end
-
   # ==== Instance methods ====
-
-  # @return [String, nil] human-readable recurrence label (e.g. "Weekly")
-  def repeat_frequency
-    self.class.rrule_frequency(rrule)&.titleize
-  end
-
-  # @return [String] formatted time range, e.g. "09:00 – 10:00"
-  def time
-    if dtend
-      "#{dtstart.strftime('%H:%M')} – #{dtend.strftime('%H:%M')}"
-    else
-      dtstart.strftime('%H:%M')
-    end
-  end
-
-  # @return [String, false] ISO 8601 duration, or false if no end time
-  def duration
-    return false unless dtend
-
-    (dtend - dtstart).seconds.iso8601
-  end
-
-  # @return [String] short date, e.g. "1 Jan"
-  def date
-    dtstart.strftime('%-d %b')
-  end
-
-  # @return [String] date with year, e.g. " 1 Jan 2026"
-  def date_year
-    dtstart.strftime('%e %b %Y')
-  end
 
   # @return [Neighbourhood, nil]
   def neighbourhood
@@ -277,32 +173,7 @@ class Event < ApplicationRecord
     @partner_at_location = (place unless place&.hidden) || Partner.matching_venue_for(address)
   end
 
-  # TODO: plan this out on paper, currently half finished
-  # @return [String, false] contact-blame string, or false if no organiser
-  def blame
-    organiser = calendar&.organiser
-    return false unless organiser
-
-    email = organiser.admin_email
-    name = organiser.admin_name
-    "Something wrong with this listing? Contact #{name} <#{email}> with reference {url}"
-  end
-
-  # @return [String] Open Graph title combining summary, date, time, and organiser
-  def og_title
-    str = all_day? ? "#{summary}, #{date}" : "#{summary}, #{date}, #{time}"
-    str += " @ #{organiser.name}" if organiser
-    str
-  end
-
-  # Starts at midnight and ends at midnight, or has no end: imported all-day events look like this.
-  # @return [Boolean]
-  def all_day?
-    dtstart == dtstart.beginning_of_day && (dtend.nil? || dtend == dtend.beginning_of_day)
-  end
-
-  # Whether the event is over (dtend-aware, so a multi-day event still
-  # running doesn't count). Used to noindex stale event pages.
+  # By its end, so a multi-day event still running isn't over
   # @return [Boolean]
   def past?
     (dtend || dtstart) < DateTime.current.beginning_of_day
@@ -310,33 +181,20 @@ class Event < ApplicationRecord
 
   private
 
-  # ==== Private methods ====
-
   def sanitize_rrule
     self.rrule = false if rrule.nil? || rrule == []
   end
 
   def require_location
-    # 'event', 'no_location', and 'online_only' do not require a Location
-    return if %w[event no_location online_only].include?(calendar&.strategy)
-
+    return if LOCATION_OPTIONAL_STRATEGIES.include?(calendar&.strategy)
     return if online_address_id || place_id || address_id
 
-    errors.add(:base, 'No place or address could be created or found for ' \
-                      "the event location: #{raw_location_from_source}")
+    errors.add(:base, :no_location, location: raw_location_from_source)
   end
 
-  # Ensures that the event added is unique
-  # Checks for a duplicate event with the properties dtstart, summary, and calendar_id
   def unique_event
-    return unless Event.where(uid:,
-                              dtstart:,
-                              summary:,
-                              calendar_id:)
-                       .any?
+    return unless Event.exists?(uid:, dtstart:, summary:, calendar_id:)
 
-    errors.add(:base, 'Unfortunately this event is a duplicate of an ' \
-                      "existing event for calendar: #{calendar_id} " \
-                      "('#{calendar.name}')")
+    errors.add(:base, :duplicate, calendar_id:, calendar: calendar&.name)
   end
 end

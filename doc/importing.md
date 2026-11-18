@@ -16,7 +16,7 @@ RecurringCalendarScanJob (hourly)
         → save_all_occurrences: OccurrenceSync (persist to DB)
 ```
 
-[RecurringCalendarScanJob](../app/jobs/recurring_calendar_scan_job.rb) resets stuck imports, then queues every calendar that is not already queued or importing. Creating a calendar also queues it. In [CalendarImporterJob](../app/jobs/calendar_importer_job.rb), an unreachable source puts the calendar in `bad_source` and other failures put it in `error`.
+[RecurringCalendarScanJob](../app/jobs/recurring_calendar_scan_job.rb), run hourly by Solid Queue from [config/recurring.yml](../config/recurring.yml), resets stuck imports, then queues every calendar that is not already queued or importing. Creating a calendar also queues it. In [CalendarImporterJob](../app/jobs/calendar_importer_job.rb), an unreachable source puts the calendar in `bad_source` and other failures put it in `error`; neither is retried, since the next hourly scan queues the calendar again. An import is stopped after 2 minutes. Root users see calendars with problems and imports in progress at `/jobs` on the admin site; job errors go to AppSignal.
 
 [CalendarImporterTask](../app/jobs/calendar_importer/calendar_importer_task.rb) runs one import:
 
@@ -40,6 +40,8 @@ RecurringCalendarScanJob (hourly)
 ### Source Categories and Organiser
 
 Each event keeps, as plain text, the categories and organiser name its source gives: iCal `CATEGORIES` and the `CN` of `ORGANIZER`, JSON-LD `keywords` and the `organizer` name, and Squarespace `categories` and `tags`, in `source_categories` and `source_organiser`. They don't create or link PlaceCal categories or partners. Other sources give neither.
+
+An event stores one image, downloaded from its source into `event.image` (`EventImageUploader`) when the source's URL for it, kept in `image_source_url`, changes. Eventbrite (`logo.original.url`), Ticket Tailor (`images.header`), Squarespace (`assetUrl`), JSON-LD (`image`) and iCal (`IMAGE`, or the first `ATTACH` that is an image; Google Drive links are fetched in their download form, which works when the file is shared publicly) give one. A download that fails leaves the event without an image and is retried on the next import that reads it. A file that isn't a JPEG, PNG, GIF or WebP image leaves it without one until the source's URL changes.
 
 ### Address Resolution Order
 

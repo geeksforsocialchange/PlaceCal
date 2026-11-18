@@ -1,141 +1,110 @@
 # frozen_string_literal: true
 
 class Views::Admin::Jobs::Index < Views::Admin::Base
-  prop :job_count, Integer, reader: :private
-  prop :calendar_counts, Hash, reader: :private
-  prop :error_calendars, ActiveRecord::Relation, reader: :private
-  prop :busy_calendars, ActiveRecord::Relation, reader: :private
+  include Phlex::Rails::Helpers::ButtonTo
+  include Phlex::Rails::Helpers::TimeAgoInWords
+
+  JOB_KINDS = { 'CalendarImporterJob' => :import, 'MailDeliveryJob' => :email, 'ActionMailer::MailDeliveryJob' => :email,
+                'RecurringMaintenanceJob' => :maintenance, 'RecurringCalendarScanJob' => :scan }.freeze
+
+  prop :job_counts, Hash, reader: :private
+  prop :run_counts, Hash, reader: :private
+  prop :failed_jobs, Array, reader: :private
+
+  REFRESH_SECONDS = 10
+
+  OUTCOME_FILTERS = %w[failed imported unchanged skipped running].freeze
+
+  # Keyed as the page's data-live-count markers, for the live counts controller
+  def self.live_counts(job_counts, run_counts)
+    outcomes = OUTCOME_FILTERS.to_h do |filter|
+      group = ImportRunDatatable::OUTCOME_GROUPS.fetch(filter, [filter])
+      ["outcome.#{filter}", group.sum { run_counts[it].to_i }]
+    end
+    job_counts.transform_keys { "jobs.#{it}" }.merge(outcomes)
+  end
 
   def view_template
-    render_header
-    render_stats
-    render_error_calendars if error_calendars.any?
-    render_busy_calendars if busy_calendars.any?
-    render_empty_state if error_calendars.none? && busy_calendars.none?
+    div(data_controller: 'live-counts', data_live_counts_url_value: admin_jobs_path(format: :json),
+        data_action: 'admin-table:refreshed->live-counts#update') do
+      render_runs
+      turbo_frame_tag('failed_jobs_frame', target: '_top', data: { live_counts_target: 'frame' }) { render_failed_jobs if failed_jobs.any? }
+    end
   end
 
   private
 
-  def render_header
-    div(class: 'mb-6') do
-      h1(class: 'text-2xl font-bold') { t('admin.jobs.title') }
-      p(class: 'text-sm text-gray-600 mt-1') { t('admin.jobs.description') }
+  def render_runs
+    Datatable(
+      title: t('admin.jobs.title'),
+      model: :import_runs,
+      column_titles: %i[when calendar outcome importer added changed removed skipped took].map { t("admin.import_runs.columns.#{it}") },
+      columns: %i[started_at calendar outcome importer events_added events_changed events_removed events_skipped took],
+      column_config: { started_at: { fit: true }, outcome: { sortable: false, fit: true }, importer: { fit: true },
+                       events_added: { fit: true }, events_changed: { fit: true }, events_removed: { fit: true },
+                       events_skipped: { fit: true }, took: { sortable: false, fit: true } },
+      default_sort: { column: 'started_at', direction: 'desc' },
+      filters: [{ type: :radio, column: 'outcome', label: t('admin.import_runs.outcome'), options: outcome_options }],
+      data: ImportRun.none,
+      source: admin_import_runs_path(format: :json),
+      refresh_every: REFRESH_SECONDS
+    ) { render_job_counts }
+  end
+
+  def outcome_options
+    counts = self.class.live_counts(job_counts, run_counts)
+    OUTCOME_FILTERS.map do |filter|
+      { value: filter, label: t("admin.import_runs.outcome_filters.#{filter}"), count: counts["outcome.#{filter}"], count_key: "outcome.#{filter}" }
     end
   end
 
-  def render_stats
-    div(class: 'flex flex-wrap gap-2 mb-8') do
-      div(class: 'badge badge-lg badge-outline gap-1') do
-        span(class: 'text-gray-600') { "#{t('admin.jobs.stats.jobs')}:" }
-        span(class: 'font-bold') { job_count.to_s }
-      end
-      Calendar::ALLOWED_STATES.each do |state_name|
-        count = calendar_counts[state_name.to_s] || 0
-        badge_class = state_badge_class(state_name)
-        div(class: "badge badge-lg #{badge_class} gap-1") do
-          span { "#{state_name.to_s.titleize}:" }
-          span(class: 'font-bold') { count.to_s }
+  def render_job_counts
+    dl(class: 'flex gap-4 text-sm') do
+      job_counts.each do |kind, count|
+        div(class: 'flex gap-1') do
+          dt(class: 'text-gray-600') { t("admin.jobs.stats.#{kind}") }
+          dd(class: 'font-semibold tabular-nums') { span(data_live_count: "jobs.#{kind}") { count.to_s } }
         end
       end
     end
   end
 
-  def state_badge_class(state_name)
-    case state_name
-    when :idle then 'badge-success'
-    when :in_queue, :in_worker then 'badge-info'
-    when :error, :bad_source then 'badge-error'
-    else 'badge-ghost'
-    end
-  end
-
-  def render_error_calendars
-    div(class: 'mb-6') do
-      h2(class: 'font-bold flex items-center gap-2 mb-3 text-error') do
-        icon(:warning, size: '4')
-        plain t('admin.jobs.sections.error_calendars')
-        span(class: 'badge badge-error badge-sm') { error_calendars.count.to_s }
+  def render_failed_jobs
+    div(id: 'failed-jobs', class: 'bg-white shadow-sm rounded-xl overflow-hidden border border-gray-200 mt-8') do
+      div(class: 'px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white') do
+        h2(class: 'text-xl font-semibold text-gray-900') { t('admin.jobs.sections.failed_jobs') }
+        p(class: 'mt-1 text-sm text-gray-600') { t('admin.jobs.failed_note', count: failed_jobs.size) }
       end
-
       div(class: 'overflow-x-auto') do
         table(class: 'table table-sm') do
-          render_error_table_head
-          tbody do
-            error_calendars.order(:name).each { |cal| render_error_row(cal) }
-          end
+          thead { tr { %i[job about error failed_at actions].each { |column| th { t("admin.jobs.failed_columns.#{column}") } } } }
+          tbody { failed_jobs.each { render_failed_row(it) } }
         end
       end
     end
   end
 
-  def render_error_table_head
-    thead do
-      tr do
-        th { t('admin.table.calendar') }
-        th { t('admin.table.partner') }
-        th { t('admin.table.state') }
-        th { t('admin.table.error') }
-        th(class: 'text-right') { t('admin.table.events') }
-      end
-    end
-  end
-
-  def render_error_row(cal)
+  def render_failed_row(failed)
+    kind = JOB_KINDS[failed.job.class_name]
+    calendar = Calendar.find_by(id: failed.job.arguments.dig('arguments', 0)) if kind == :import
     tr(class: 'hover') do
-      td { link_to cal.name, edit_admin_calendar_path(cal), class: 'link link-hover text-placecal-orange-dark font-medium' }
-      td(class: 'text-sm') { link_to cal.organiser.name, admin_partner_path(cal.organiser), class: 'link link-hover' }
-      td { span(class: 'badge badge-error badge-sm') { cal.calendar_state } }
-      td(class: 'text-sm text-error max-w-md truncate') { cal.critical_error }
-      td(class: 'text-right tabular-nums') { cal.events.count.to_s }
+      td(class: 'text-sm font-medium') { kind ? t("admin.jobs.kinds.#{kind}") : failed.job.class_name }
+      td(class: 'text-sm') { link_to calendar.name, edit_admin_calendar_path(calendar), class: 'link link-hover' if calendar }
+      td(class: 'text-sm text-error max-w-xl whitespace-normal break-words') { "#{failed.exception_class}: #{failed.message}" }
+      td(class: 'text-sm whitespace-nowrap') { t('admin.time.ago', time: time_ago_in_words(failed.created_at)) }
+      td(class: 'whitespace-nowrap') { render_failed_actions(failed, calendar) }
     end
   end
 
-  def render_busy_calendars
-    div(class: 'mb-6') do
-      h2(class: 'font-bold flex items-center gap-2 mb-3 text-info') do
-        span(class: 'loading loading-spinner loading-xs')
-        plain t('admin.jobs.sections.busy_calendars')
-        span(class: 'badge badge-info badge-sm') { busy_calendars.count.to_s }
+  # A failed import is retried by re-importing its calendar, which also clears its error state
+  def render_failed_actions(failed, calendar)
+    div(class: 'flex gap-1') do
+      if calendar
+        button_to(t('admin.jobs.actions.reimport'), import_admin_calendar_path(calendar), class: 'btn btn-xs')
+      else
+        button_to(t('admin.jobs.actions.retry'), retry_admin_job_path(failed), class: 'btn btn-xs')
       end
-
-      div(class: 'overflow-x-auto') do
-        table(class: 'table table-sm') do
-          render_busy_table_head
-          tbody do
-            busy_calendars.order(:name).each { |cal| render_busy_row(cal) }
-          end
-        end
-      end
-    end
-  end
-
-  def render_busy_table_head
-    thead do
-      tr do
-        th { t('admin.table.calendar') }
-        th { t('admin.table.partner') }
-        th { t('admin.table.state') }
-        th { t('admin.table.strategy') }
-        th(class: 'text-right') { t('admin.table.events') }
-      end
-    end
-  end
-
-  def render_busy_row(cal)
-    tr(class: 'hover') do
-      td { link_to cal.name, edit_admin_calendar_path(cal), class: 'link link-hover text-placecal-orange-dark font-medium' }
-      td(class: 'text-sm') { link_to cal.organiser.name, admin_partner_path(cal.organiser), class: 'link link-hover' }
-      td { span(class: 'badge badge-info badge-sm') { cal.calendar_state } }
-      td(class: 'text-sm') { cal.strategy }
-      td(class: 'text-right tabular-nums') { cal.events.count.to_s }
-    end
-  end
-
-  def render_empty_state
-    div(class: 'text-center py-12') do
-      icon(:check_circle, size: '12', css_class: 'mx-auto text-success/40 stroke-[1.5]')
-      p(class: 'mt-3 font-medium text-success') { t('admin.jobs.empty.title') }
-      p(class: 'text-sm text-gray-600') { t('admin.jobs.empty.description') }
+      button_to(t('admin.jobs.actions.dismiss'), admin_job_path(failed), method: :delete, class: 'btn btn-xs btn-ghost')
     end
   end
 end

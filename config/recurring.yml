@@ -1,0 +1,20 @@
+# Solid Queue's scheduler runs these in the job worker
+default: &default
+  calendar_scan:
+    class: RecurringCalendarScanJob
+    schedule: every hour at minute 5
+  daily_maintenance:
+    class: RecurringMaintenanceJob
+    schedule: every day at 3am
+  clear_old_failed_jobs:
+    command: "SolidQueue::FailedExecution.where(created_at: ...30.days.ago).discard_all_in_batches"
+    schedule: every day at 4am
+  clear_finished_jobs:
+    command: "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.3)"
+    schedule: every hour at minute 35
+
+staging:
+  <<: *default
+
+production:
+  <<: *default
