@@ -73,7 +73,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_17_190000) do
     t.datetime "import_started_at"
     t.string "importer_mode", default: "auto"
     t.string "importer_used"
-    t.boolean "is_working", default: true, null: false
     t.string "last_checksum"
     t.datetime "last_import_at", precision: nil
     t.string "name", null: false
@@ -121,7 +120,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_17_190000) do
     t.string "image"
     t.string "image_source_url"
     t.boolean "is_active", default: true, null: false
-    t.jsonb "notices"
     t.bigint "online_address_id"
     t.bigint "organiser_id", null: false
     t.bigint "place_id"

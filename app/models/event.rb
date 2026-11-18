@@ -14,7 +14,6 @@
 #  image                    :string
 #  image_source_url         :string
 #  is_active                :boolean          default(TRUE), not null
-#  notices                  :jsonb
 #  publisher_url            :string
 #  raw_location_from_source :text
 #  rrule                    :jsonb
@@ -68,8 +67,6 @@ class Event < ApplicationRecord
   LOCATION_OPTIONAL_STRATEGIES = %w[event no_location online_only].freeze
 
   # ==== Attributes ====
-  self.ignored_columns += %w[notices]
-
   # Columns marked (nullable) have no NOT NULL constraint in the DB.
   attribute :are_spaces_available,     :string                      # nullable
   attribute :description,              :text                        # nullable
