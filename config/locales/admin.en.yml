@@ -125,6 +125,7 @@ en:
     # Time phrases
     time:
       ago: "%{time} ago"
+      from_now: "in %{time}"
       added_ago: "Added %{time} ago"
       events_in_days: "Events in the next %{days} days"
       no_upcoming_in_days: "No upcoming events in the next %{days} days"
@@ -424,6 +425,8 @@ en:
         importing: "Importing..."
         import_finished: "Import finished"
         last_import: "Last import:"
+        next_check: "Next check:"
+        latest_run: "Latest run #%{id}"
         notices: "Import notices"
         occurrence_limit: '"%{summary}" repeats more than %{count} times, so only its first %{count} dates were imported.'
         pending: "Pending import"
@@ -516,7 +519,7 @@ en:
         skipped: "Skipped"
         took: "Took"
       took:
-        under_a_second: "under a second"
+        under_a_second: "<1s"
         seconds:
           one: "%{count}s"
           other: "%{count}s"

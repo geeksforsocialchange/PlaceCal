@@ -2,6 +2,7 @@
 
 class Views::Admin::Calendars::ImporterOverview < Views::Admin::Base
   include Phlex::Rails::Helpers::TimeAgoInWords
+  include Phlex::Rails::Helpers::DistanceOfTimeInWords
   include Phlex::Rails::Helpers::DOMID
 
   POLL_INTERVAL = 3.seconds
@@ -39,6 +40,8 @@ class Views::Admin::Calendars::ImporterOverview < Views::Admin::Base
       retry_button = render_status_badge(retry_button)
       render_checksum_info
       render_last_import_info
+      render_next_check_info
+      render_latest_run_link
       render_retry_button(retry_button) if retry_button
     end
 
@@ -112,6 +115,29 @@ class Views::Admin::Calendars::ImporterOverview < Views::Admin::Base
       span(class: 'text-gray-600') { t('admin.calendars.importer.last_import') }
       span(class: 'font-medium') { t('admin.time.ago', time: time_ago_in_words(calendar.last_import_at)) }
     end
+  end
+
+  # From the scheduler's own record of the hourly scan, so it's absent where nothing schedules imports
+  def render_next_check_info
+    return if calendar.busy?
+
+    next_check = SolidQueue::RecurringTask.find_by(key: 'calendar_scan')&.next_time
+    return unless next_check
+
+    div(class: 'flex items-center gap-2 text-sm') do
+      span(class: 'text-gray-600') { t('admin.calendars.importer.next_check') }
+      span(class: 'font-medium', title: I18n.l(next_check.in_time_zone, format: :long)) do
+        t('admin.time.from_now', time: distance_of_time_in_words(Time.current, next_check))
+      end
+    end
+  end
+
+  def render_latest_run_link
+    run = current_user.root? && calendar.import_runs.latest_first.first
+    return unless run
+
+    link_to t('admin.calendars.importer.latest_run', id: run.id), admin_import_run_path(run),
+            class: 'text-sm link link-hover text-gray-600', data: { turbo_frame: '_top' }
   end
 
   def render_retry_button(retry_button)
