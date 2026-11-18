@@ -41,6 +41,16 @@ class ImportRun < ApplicationRecord
   scope :imported, -> { where(outcome: 'imported') }
   scope :latest_first, -> { order(started_at: :desc, id: :desc) }
 
+  # 0.4 => "under a second", 4.2 => "4s", 83 => "1m 23s", 120 => "2m"
+  def self.duration_label(seconds)
+    return I18n.t('admin.import_runs.took.under_a_second') if seconds < 1
+
+    minutes, secs = seconds.round.divmod(60)
+    return I18n.t('admin.import_runs.took.seconds', count: secs) if minutes.zero?
+
+    secs.zero? ? I18n.t('admin.import_runs.took.whole_minutes', count: minutes) : I18n.t('admin.import_runs.took.minutes', minutes:, seconds: secs)
+  end
+
   # Closes runs whose worker stopped without finishing them
   def self.interrupt!(calendar_ids)
     unfinished.where(calendar_id: calendar_ids).update_all(outcome: 'interrupted', finished_at: Time.current) # rubocop:disable Rails/SkipsModelValidations

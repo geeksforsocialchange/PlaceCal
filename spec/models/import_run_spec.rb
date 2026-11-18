@@ -2,6 +2,31 @@
 
 require "rails_helper"
 
+# == Schema Information
+#
+# Table name: import_runs
+#
+#  id             :bigint           not null, primary key
+#  error          :text
+#  events_added   :integer          default(0), not null
+#  events_changed :integer          default(0), not null
+#  events_removed :integer          default(0), not null
+#  events_skipped :integer          default(0), not null
+#  finished_at    :datetime
+#  importer       :string
+#  notices        :jsonb            not null
+#  outcome        :string
+#  started_at     :datetime         not null
+#  calendar_id    :bigint           not null
+#
+# Indexes
+#
+#  index_import_runs_on_calendar_id_and_started_at  (calendar_id,started_at)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (calendar_id => calendars.id) ON DELETE => cascade
+#
 RSpec.describe ImportRun do
   let(:calendar) { create(:calendar) }
 

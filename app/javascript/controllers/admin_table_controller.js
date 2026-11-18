@@ -680,18 +680,24 @@ export default class extends Controller {
 					? `${row.DT_RowClass} hover:bg-orange-50/30 transition-colors`
 					: "hover:bg-orange-50/30 transition-colors";
 
+				// DT_RowDetail: a full-width line under the row, from the second column, sharing the row's classes
+				const detail = row.DT_RowDetail
+					? `<tr class="${rowClass}"><td class="px-4 pt-0 pb-4"></td><td colspan="${this.visibleColumnsCount - 1}" class="px-4 pt-0 pb-4 text-sm">${row.DT_RowDetail}</td></tr>`
+					: "";
+				const cellPadding = row.DT_RowDetail ? "pt-4 pb-1" : "py-4";
+
 				return `
-        <tr class="${rowClass}"${rowAttrs}>
+        <tr class="${rowClass}${row.DT_RowDetail ? " border-b-0" : ""}"${rowAttrs}>
           ${this.columnsValue
 						.filter((col) => !col.hidden)
 						.map(
 							(col) =>
-								`<td class="px-4 py-4 text-sm${
+								`<td class="px-4 ${cellPadding} text-sm${
 									col.align === "center" ? " text-center" : ""
 								}">${row[col.data] ?? ""}</td>`,
 						)
 						.join("")}
-        </tr>
+        </tr>${detail}
       `;
 			})
 			.join("");

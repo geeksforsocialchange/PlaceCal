@@ -489,6 +489,76 @@ en:
         retried: "Queued the job to run again."
         dismissed: "Dismissed the failed job."
 
+    import_runs:
+      outcome: "Outcome"
+      outcomes:
+        imported: "Imported"
+        unchanged: "Unchanged"
+        skipped: "Skipped"
+        error: "Error"
+        bad_source: "Bad source"
+        interrupted: "Interrupted"
+        running: "Running"
+      outcome_filters:
+        failed: "Failed"
+        imported: "Imported"
+        unchanged: "Unchanged"
+        skipped: "Skipped"
+        running: "Running"
+      columns:
+        when: "When"
+        calendar: "Calendar"
+        outcome: "Outcome"
+        importer: "Importer"
+        added: "Added"
+        changed: "Changed"
+        removed: "Removed"
+        skipped: "Skipped"
+        took: "Took"
+      took:
+        under_a_second: "under a second"
+        seconds:
+          one: "%{count}s"
+          other: "%{count}s"
+        minutes: "%{minutes}m %{seconds}s"
+        whole_minutes:
+          one: "%{count}m"
+          other: "%{count}m"
+      default_errors:
+        error: "The import failed without saying why."
+        bad_source: "The source couldn't be read."
+        interrupted: "The import stopped before it finished: it ran over the time limit, or the worker restarted."
+      location_results:
+        matched_venue: "At a partner"
+        event_address: "Its own address"
+        default_location: "Default location"
+        room: "Room at the default location"
+        none: "No location"
+        failed: "Couldn't be placed"
+        skipped: "Skipped"
+      show:
+        title: "Import run #%{id}"
+        importer: "Importer"
+        took: "Took"
+        changes: "Events"
+        changes_summary: "%{added} added, %{changed} changed, %{removed} removed, %{skipped} skipped"
+        notices:
+          one: "1 notice"
+          other: "%{count} notices"
+        events_title:
+          one: "1 event in the feed"
+          other: "%{count} events in the feed"
+        events_kept: "How each event in the feed was read and placed. Only a calendar's latest import keeps this list."
+        events_gone: "Only a calendar's latest import keeps its list of events, and a newer import has replaced this one's."
+        untitled: "(no title)"
+        recent_runs: "Recent runs of this calendar"
+        columns:
+          event: "Event in the feed"
+          location: "Location as given"
+          placed: "Placed"
+          occurrences: "Dates"
+          note: "Note"
+
     # -------------------------------------------------------------------------
     # Neighbourhoods
     # -------------------------------------------------------------------------
