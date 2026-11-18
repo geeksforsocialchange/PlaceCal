@@ -2,6 +2,11 @@
 
 module CalendarImporter::Events
   class WixEvent < Base
+    imports title: 'title', description: %w[full_description description], start_time: 'scheduling.config.startDate',
+            end_time: 'scheduling.config.endDate', repeats: nil,
+            location: %w[location.fullAddress location.name location.address], webpage: 'slug', online_link: nil,
+            spaces_available: nil, status: nil, image: nil, source_categories: nil, source_organiser: nil
+
     def initialize(event, base_url: nil)
       super(event)
       @base_url = base_url

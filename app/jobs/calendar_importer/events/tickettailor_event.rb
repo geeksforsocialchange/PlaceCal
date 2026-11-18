@@ -2,6 +2,10 @@
 
 module CalendarImporter::Events
   class TickettailorEvent < Base
+    imports title: 'name', description: 'description', start_time: 'start', end_time: 'end', repeats: nil,
+            location: %w[venue.name venue.postal_code], webpage: 'url', online_link: nil, spaces_available: nil,
+            status: nil, image: 'images.header', source_categories: nil, source_organiser: nil
+
     def uid
       @event['id']
     end

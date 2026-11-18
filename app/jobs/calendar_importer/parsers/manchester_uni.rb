@@ -11,13 +11,15 @@ module CalendarImporter::Parsers
     KEY = 'manchester-uni'
     DOMAINS = %w[events.manchester.ac.uk].freeze
 
+    def self.event_class = CalendarImporter::Events::ManchesterUniEvent
+
     def self.allowlist_pattern
       %r{^https?://events\.manchester\.ac\.uk/f3vf/calendar/.*}
     end
 
     def import_events_from(data)
       data.xpath('//ns:event').map do |event|
-        CalendarImporter::Events::ManchesterUniEvent.new(event)
+        self.class.event_class.new(event)
       end
     end
   end

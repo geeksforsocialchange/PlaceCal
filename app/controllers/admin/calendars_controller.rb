@@ -39,6 +39,12 @@ module Admin
       )
     end
 
+    # Open to anyone who can add a calendar, since it helps them pick a source
+    def sources
+      authorize Calendar, :new?
+      render Views::Admin::Calendars::Sources.new(parsers: CalendarImporter::CalendarImporter.public_parsers.sort_by { it::NAME })
+    end
+
     def edit
       authorize @calendar
       @partner = @calendar.organiser

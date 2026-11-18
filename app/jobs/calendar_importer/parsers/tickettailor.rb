@@ -10,6 +10,8 @@ module CalendarImporter
       NAME = 'Ticket Tailor'
       KEY = 'tickettailor'
       DOMAINS = %w[www.tickettailor.com tickettailor.com].freeze
+
+      def self.event_class = Events::TickettailorEvent
       API_BASE_URL = 'https://api.tickettailor.com/v1'
 
       # Match TicketTailor box office pages like:
@@ -25,7 +27,7 @@ module CalendarImporter
         data.filter_map do |event_data|
           next unless event_data['status'] == 'published'
 
-          Events::TickettailorEvent.new(event_data)
+          self.class.event_class.new(event_data)
         end
       end
 

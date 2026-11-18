@@ -2,6 +2,10 @@
 
 module CalendarImporter::Events
   class ManchesterUniEvent < Base
+    imports title: 'title', description: 'description', start_time: 'times.start', end_time: 'times.end', repeats: nil,
+            location: nil, webpage: nil, online_link: nil, spaces_available: nil, status: nil, image: nil,
+            source_categories: nil, source_organiser: nil
+
     def uid
       @event.at_xpath('./ns:id').text
     end

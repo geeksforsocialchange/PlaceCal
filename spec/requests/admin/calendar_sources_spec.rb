@@ -1,0 +1,82 @@
+# frozen_string_literal: true
+
+require "rails_helper"
+
+RSpec.describe "Admin calendar sources", type: :request do
+  def sources_link(body)
+    Nokogiri::HTML(body).at_css("a[href='#{sources_admin_calendars_path}']")
+  end
+
+  describe "GET /calendars/sources" do
+    it "sends a signed-out visitor to log in" do
+      get sources_admin_calendars_url(host: admin_host)
+      expect(response).to redirect_to(new_user_session_path)
+    end
+
+    it "turns away a user who can't add calendars" do
+      sign_in create(:citizen_user)
+      get sources_admin_calendars_url(host: admin_host)
+      expect(response).to redirect_to(admin_root_path)
+    end
+
+    %i[root_user partner_admin neighbourhood_admin].each do |role|
+      it "shows the table to a #{role.to_s.humanize(capitalize: false)}" do
+        sign_in create(role)
+        get sources_admin_calendars_url(host: admin_host)
+        expect(response).to be_successful
+      end
+    end
+
+    context "when signed in" do
+      before do
+        sign_in create(:partner_admin)
+        get sources_admin_calendars_url(host: admin_host)
+      end
+
+      let(:page) { Nokogiri::HTML(response.body) }
+      let(:headings) { page.css("thead th").map { |heading| heading.text.strip } }
+      let(:rows) do
+        page.css("tbody tr").to_h do |row|
+          [row.at_css("th div").text.strip, headings.drop(1).zip(row.css("td").map { |cell| cell.text.strip }).to_h]
+        end
+      end
+
+      it "has a column for each event field, in the words the admin and event pages use" do
+        expect(headings).to eq(["Source", "Title", "Description", "Start", "End", "Repeats", "Event location", "Event webpage",
+                                "Meeting link", "Spaces available", "Cancelled or postponed", "Image", "Source categories",
+                                "Source organiser"])
+      end
+
+      it "has a row for each public source and none for the others" do
+        public_names = CalendarImporter::CalendarImporter.public_parsers.map { |parser| parser::NAME }
+        expect(rows.keys).to match_array(public_names)
+        expect(rows.keys).not_to include("Manchester University")
+      end
+
+      it "fills each cell from the source's event class", :aggregate_failures do
+        expect(rows["Meetup"]).to eq(rows["Generic iCal / .ics"])
+        expect(rows["Generic iCal / .ics"]["Title"]).to eq("SUMMARY")
+        expect(rows["Ticket Solve"]["Spaces available"]).to eq("status")
+        expect(rows["Ticket Solve"]["End"]).to eq("Not imported")
+        expect(rows["OutSavvy"]["Cancelled or postponed"]).to eq("eventStatus")
+        expect(rows["Wix Events"]["Image"]).to eq("Not imported")
+      end
+    end
+  end
+
+  it "is linked from the new calendar wizard" do
+    sign_in create(:partner_admin)
+    get new_admin_calendar_url(host: admin_host)
+    expect(sources_link(response.body)&.text).to eq("See what each source imports")
+  end
+
+  it "is linked from a calendar's Source tab" do
+    sign_in create(:root_user)
+    calendar = build(:calendar)
+    allow(calendar).to receive(:check_source_reachable)
+    calendar.save!
+
+    get edit_admin_calendar_url(calendar, host: admin_host)
+    expect(sources_link(response.body)&.text).to eq("See what each source imports")
+  end
+end

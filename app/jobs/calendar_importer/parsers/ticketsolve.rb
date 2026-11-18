@@ -10,6 +10,8 @@ module CalendarImporter::Parsers
     KEY = 'ticket-solve'
     DOMAINS = %w[*.ticketsolve.com].freeze
 
+    def self.event_class = CalendarImporter::Events::TicketsolveEvent
+
     def self.allowlist_pattern
       %r{^https?://([^.]*)\.ticketsolve\.com/?}
     end
@@ -18,7 +20,7 @@ module CalendarImporter::Parsers
       @events = []
 
       data.css('show').each do |show|
-        @events << CalendarImporter::Events::TicketsolveEvent.new(show)
+        @events << self.class.event_class.new(show)
       end
 
       @events

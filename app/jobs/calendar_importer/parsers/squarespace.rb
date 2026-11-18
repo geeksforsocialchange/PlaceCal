@@ -12,6 +12,8 @@ module CalendarImporter
       KEY = 'squarespace'
       DOMAINS = %w[squarespace.com].freeze
 
+      def self.event_class = Events::SquarespaceEvent
+
       def self.allowlist_pattern
         %r{^https://.*\.squarespace\.com/[^/]*/?$}
       end
@@ -67,8 +69,7 @@ module CalendarImporter
         end
         data['upcoming'].map do |d|
           d['url'] = data['website']['baseUrl'] + data['collection']['fullUrl']
-          # CalendarImporter::Events::SquarespaceEvent.new(d)
-          Events::SquarespaceEvent.new(d)
+          self.class.event_class.new(d)
         end
       end
     end
