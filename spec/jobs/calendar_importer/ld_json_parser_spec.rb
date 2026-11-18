@@ -67,6 +67,11 @@ RSpec.describe CalendarImporter::Parsers::LdJson do
       parser.import_events_from(parser.download_calendar).map(&:summary)
     end
 
+    def imported_statuses
+      parser = described_class.new(calendar)
+      parser.import_events_from(parser.download_calendar).to_h { [it.summary, it.status] }
+    end
+
     it "imports events with no eventStatus" do
       stub_page ld_json_event("No status")
 
@@ -81,7 +86,7 @@ RSpec.describe CalendarImporter::Parsers::LdJson do
       expect(imported_names).to contain_exactly("Scheduled", "Rescheduled", "Moved online")
     end
 
-    it "skips cancelled events however the status is written" do
+    it "marks cancelled events however the status is written, keeping them" do
       stub_page ld_json_event("Cancelled https", "https://schema.org/EventCancelled"),
                 ld_json_event("Cancelled http", "http://schema.org/EventCancelled"),
                 ld_json_event("Cancelled bare", "EventCancelled"),
@@ -89,14 +94,14 @@ RSpec.describe CalendarImporter::Parsers::LdJson do
                 ld_json_event("Cancelled id", { "@id" => "https://schema.org/EventCancelled" }),
                 ld_json_event("Kept")
 
-      expect(imported_names).to eq(["Kept"])
+      expect(imported_statuses).to eq("Cancelled https" => "cancelled", "Cancelled http" => "cancelled", "Cancelled bare" => "cancelled",
+                                      "Cancelled prefixed" => "cancelled", "Cancelled id" => "cancelled", "Kept" => "scheduled")
     end
 
-    it "skips postponed events, whose start date is no longer happening" do
-      stub_page ld_json_event("Postponed", "https://schema.org/EventPostponed"),
-                ld_json_event("Kept")
+    it "marks postponed events, keeping them on their old date" do
+      stub_page ld_json_event("Postponed", "https://schema.org/EventPostponed"), ld_json_event("Rescheduled", "EventRescheduled")
 
-      expect(imported_names).to eq(["Kept"])
+      expect(imported_statuses).to eq("Postponed" => "postponed", "Rescheduled" => "scheduled")
     end
 
     describe ".handles_url?" do
@@ -106,10 +111,10 @@ RSpec.describe CalendarImporter::Parsers::LdJson do
         expect(described_class.handles_url?(calendar)).to be(true)
       end
 
-      it "rejects a page whose only events are cancelled" do
+      it "accepts a page whose only events are cancelled, since they're still listed" do
         stub_page ld_json_event("Cancelled", "http://schema.org/EventCancelled")
 
-        expect(described_class.handles_url?(calendar)).to be(false)
+        expect(described_class.handles_url?(calendar)).to be(true)
       end
     end
   end

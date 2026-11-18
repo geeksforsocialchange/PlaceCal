@@ -82,22 +82,24 @@ module CalendarImporter::Events
       window = Icalendar::Recurrence::TimeUtil.to_time(from)..Icalendar::Recurrence::TimeUtil.to_time(to)
 
       occurrences.reject { |occurrence| overridden.include?(occurrence.start_time.to_i) } +
-        overrides.reject(&:hidden?).map(&:overriding_occurrence).select { |occurrence| window.cover?(occurrence.start_time) }
+        overrides.reject(&:private?).map(&:overriding_occurrence).select { |occurrence| window.cover?(occurrence.start_time) }
     end
 
     # iCal has no availability, so are_spaces_available is left as it is
     def attributes_for(occurrence)
       return attributes unless occurrence.override
 
-      attributes.merge(occurrence.override.attributes.slice(*OVERRIDABLE_FIELDS).compact_blank)
+      override = occurrence.override
+      attributes.merge(override.attributes.slice(*OVERRIDABLE_FIELDS).compact_blank, status: override.status)
     end
 
     def recurrence_start
       Icalendar::Recurrence::TimeUtil.to_time(@event.recurrence_id).to_i
     end
 
-    def hidden?
-      private? || @event.status.to_s.casecmp?('CANCELLED')
+    # iCal has no postponed status, only CANCELLED, TENTATIVE and CONFIRMED
+    def status
+      @event.status.to_s.casecmp?('CANCELLED') ? 'cancelled' : 'scheduled'
     end
 
     def overriding_occurrence

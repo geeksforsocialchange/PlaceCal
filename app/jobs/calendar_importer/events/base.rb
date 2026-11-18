@@ -90,8 +90,12 @@ module CalendarImporter::Events
         publisher_url:,
         source_categories: Base.clean_list(source_categories).presence,
         source_organiser: Base.clean_list(source_organiser).first,
-        image_source_url: image_url.to_s.strip.presence }
+        image_source_url: image_url.to_s.strip.presence,
+        status: }
     end
+
+    # One of Event::STATUSES; sources that can mark an event cancelled or postponed override it
+    def status = 'scheduled'
 
     # Strings from the source, kept as text; they never become PlaceCal categories or partners
     def source_categories

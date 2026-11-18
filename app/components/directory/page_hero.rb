@@ -16,6 +16,8 @@ class Components::Directory::PageHero < Components::Directory::Base
          'color-mix(in srgb, var(--color-foreground) 15%, transparent) 88%, transparent 100%)'
 
   prop :title, String
+  # Strikes through the title, for an event that is cancelled or postponed
+  prop :struck, _Boolean, default: false
   prop :kicker, _Nilable(String), default: nil
   prop :subtitle, _Nilable(String), default: nil
   prop :breadcrumb_label, _Nilable(String), default: nil
@@ -33,7 +35,7 @@ class Components::Directory::PageHero < Components::Directory::Base
       div(class: 'container-public relative z-10') do
         render_breadcrumb if @breadcrumb_label || @breadcrumbs
         render_kicker if @kicker
-        h1(**part(:title, class: 'hero-title')) { @title }
+        h1(**part(:title, class: "hero-title#{' line-through' if @struck}")) { @title }
         render_subtitle if @subtitle
         yield if block
       end

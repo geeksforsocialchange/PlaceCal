@@ -15,7 +15,8 @@ RSpec.describe CalendarImporter::EventResolver do
     :categories,
     :organizer,
     :image,
-    :attach
+    :attach,
+    :status
   )
 
   FakeEventbriteEvent = Struct.new(

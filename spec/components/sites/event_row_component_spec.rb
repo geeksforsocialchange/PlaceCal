@@ -40,4 +40,23 @@ RSpec.describe Components::Sites::EventRow, type: :component do
     row(show_neighbourhoods: true)
     expect(page).to have_css("[data-part='neighbourhood']", text: "Hulme")
   end
+
+  it "leads the details with the status and strikes through the title, date and time of an event that is called off" do
+    allow(event).to receive(:status).and_return("postponed")
+    row
+
+    expect(page).to have_css("[data-part='details'] > [data-variant='status']:first-child svg[data-icon-name='event_status']")
+    expect(page).to have_css("[data-variant='status'] [data-scope='event-status'][data-variant='postponed']", text: "Postponed")
+    expect(page).to have_css("[data-part='title'] a.line-through", text: "Sing-around")
+    expect(page).to have_css("time[data-part='date'].line-through")
+    expect(page).to have_css("[data-variant='time'].line-through")
+  end
+
+  it "shows no status for an event that is going ahead" do
+    allow(event).to receive(:status).and_return("scheduled")
+    row
+
+    expect(page).to have_no_css("[data-scope='event-status']")
+    expect(page).to have_no_css("[data-part='title'] a.line-through")
+  end
 end

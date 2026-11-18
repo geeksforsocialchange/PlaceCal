@@ -5,6 +5,8 @@
 module EventFeeds
   extend ActiveSupport::Concern
 
+  ICAL_STATUSES = { 'cancelled' => 'CANCELLED', 'postponed' => 'TENTATIVE' }.freeze
+
   private
 
   # A feed is a download, not a page to list in search results.
@@ -45,6 +47,7 @@ module EventFeeds
   end
 
   # Convert an event object into an ics listing
+
   def create_ical_event(source, site_url)
     event_url = "#{site_url}/events/#{source.id}"
     event = Icalendar::Event.new
@@ -56,6 +59,8 @@ module EventFeeds
     event.description = "#{unescape_ical_text(source.description)}\n\n#{event_url}"
     event.url = event_url
     event.location = source.location
+    # iCal has no postponed status; TENTATIVE says the date isn't certain
+    event.status = ICAL_STATUSES[source.status] if ICAL_STATUSES.key?(source.status)
     event
   end
 

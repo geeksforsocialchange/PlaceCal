@@ -12,7 +12,7 @@ module EventJsonLd
       'name' => summary,
       'startDate' => dtstart.in_time_zone('Europe/London').iso8601,
       'url' => event_url,
-      'eventStatus' => 'https://schema.org/EventScheduled'
+      'eventStatus' => json_ld_event_status
     }
 
     data['endDate'] = dtend.in_time_zone('Europe/London').iso8601 if dtend
@@ -26,6 +26,12 @@ module EventJsonLd
     build_json_ld_event_series(data, event_url)
 
     data
+  end
+
+  JSON_LD_STATUSES = { 'cancelled' => 'https://schema.org/EventCancelled', 'postponed' => 'https://schema.org/EventPostponed' }.freeze
+
+  def json_ld_event_status
+    JSON_LD_STATUSES.fetch(status, 'https://schema.org/EventScheduled')
   end
 
   def json_ld_attendance_mode

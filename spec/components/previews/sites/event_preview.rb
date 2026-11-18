@@ -13,6 +13,22 @@ class Sites::EventPreview < Lookbook::Preview
     render Components::Sites::Event.new(display_context: :page, event: PreviewSupport.sample_event)
   end
 
+  # @label Cancelled, page view
+  # @notes A notice above the details says the event is cancelled.
+  def cancelled_page
+    render Components::Sites::Event.new(display_context: :page, event: PreviewSupport.sample_event(status: "cancelled"))
+  end
+
+  # @label Postponed, list view
+  def postponed_card
+    render Components::Sites::Event.new(event: PreviewSupport.sample_event(status: "postponed"))
+  end
+
+  # @label Postponed, page view
+  def postponed_page
+    render Components::Sites::Event.new(display_context: :page, event: PreviewSupport.sample_event(status: "postponed"))
+  end
+
   # @label Online event
   def online_event
     render Components::Sites::Event.new(display_context: :list, event: PreviewSupport.sample_online_event)

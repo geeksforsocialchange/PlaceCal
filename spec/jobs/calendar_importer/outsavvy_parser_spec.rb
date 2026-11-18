@@ -96,7 +96,7 @@ RSpec.describe CalendarImporter::Parsers::Outsavvy do
         consumer.consume data
         consumer.events
 
-        expect(consumer.events[18].not_cancelled?).to be(false)
+        expect(consumer.events[18].status).to eq("cancelled")
       end
     end
 

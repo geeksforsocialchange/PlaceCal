@@ -28,7 +28,7 @@ module CalendarImporter
 
         data.flat_map do |record|
           publisher_url = build_publisher_url(record)
-          record['dates'].reject { |date| date['cancelled'] }.map do |date|
+          record['dates'].map do |date|
             Events::TicketsourceEvent.new(record, date, publisher_url:)
           end
         end

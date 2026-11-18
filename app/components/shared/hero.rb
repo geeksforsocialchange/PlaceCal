@@ -25,6 +25,8 @@ class Components::Shared::Hero < Components::Base
   prop :standfirst_detail, _Nilable(String), default: nil
   # Optional section name shown above the hero (e.g. "Events" on an event page).
   prop :section, _Nilable(String), default: nil
+  # Strikes through the title, for an event that is cancelled or postponed
+  prop :struck, _Boolean, default: false
 
   def after_initialize
     @title_lines = title_lines(@title)
@@ -39,7 +41,7 @@ class Components::Shared::Hero < Components::Base
           p(**part(:subtitle, class: 'allcaps inline-block mt-2 mb-6 leading-tight max-md:max-w-56')) { @subtitle }
           div(role: 'presentation', **part(:divider, class: 'mx-auto w-18 border-b-4 border-background'))
         end
-        h1(**part(:title, class: 'mt-5', property: @schema)) { render_title }
+        h1(**part(:title, class: "mt-5#{' line-through' if @struck}", property: @schema)) { render_title }
         p(**part(:standfirst)) { @standfirst } if @standfirst.present?
         p(**part(:standfirst_detail)) { @standfirst_detail } if @standfirst_detail.present?
       end
