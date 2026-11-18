@@ -4,12 +4,13 @@ class Components::Shared::OnlineEventButton < Components::Base
   prop :online_address, OnlineAddress
   # An indirect link only stands in for a missing webpage link.
   prop :has_webpage, _Boolean, default: false
+  prop :variant, _Union(:outline, :primary), default: :outline
 
   def view_template
     if @online_address.link_type.direct?
-      UI::Button(variant: :outline, href: @online_address.url) { join_label }
+      UI::Button(variant: @variant, href: @online_address.url) { join_label }
     elsif !@has_webpage
-      UI::Button(variant: :outline, href: @online_address.url) { t('events.show.visit_webpage') }
+      UI::Button(variant: @variant, href: @online_address.url) { t('events.show.visit_webpage') }
     end
   end
 
