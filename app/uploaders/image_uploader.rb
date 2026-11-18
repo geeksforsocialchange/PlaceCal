@@ -2,6 +2,8 @@
 
 # app/uploaders/image_uploader.rb
 class ImageUploader < DefaultUploader
+  include WebpVersions
+
   # Process files as they are uploaded:
   process resize_to_fit: [1200, 1200]
 
@@ -21,6 +23,8 @@ class ImageUploader < DefaultUploader
   version :thumb do
     process resize_to_fit: [100, 100]
   end
+
+  webp_versions standard: [420, 840], retina: [840, 1200]
 
   # Add a white list of extensions which are allowed to be uploaded.
   # For images you might use something like this:

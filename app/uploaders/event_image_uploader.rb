@@ -1,9 +1,14 @@
 # frozen_string_literal: true
 
 class EventImageUploader < DefaultUploader
+  include WebpVersions
+
   EXTENSIONS = { 'image/jpeg' => 'jpg', 'image/png' => 'png', 'image/gif' => 'gif', 'image/webp' => 'webp' }.freeze
 
   process resize_to_fit: [1200, 1200]
+
+  # Sized for the event page's side column
+  webp_versions standard: [420, 840], retina: [840, 1200]
 
   # Checked by content, since source URLs often have no extension (Eventbrite's end in a date)
   def content_type_allowlist

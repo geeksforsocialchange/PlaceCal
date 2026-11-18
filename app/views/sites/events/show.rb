@@ -117,7 +117,7 @@ class Views::Sites::Events::Show < Views::Base
           render_more_from_organiser if Array(more_from_organiser).any?
         end
         aside(class: 'flex flex-col gap-4 max-lg:mt-8') do
-          Shared::SidebarImage(src: event.image.url, alt: event.summary, layout: :directory) if event.image.present?
+          Shared::SidebarImage(src: event.image.url, webp_srcset: event_image_webp_srcset, alt: event.summary, layout: :directory) if event.image.present?
           render_information_card
           render_organiser_contact_card if event.organiser
           render_share_card
@@ -325,12 +325,16 @@ class Views::Sites::Events::Show < Views::Base
       if aside?
         aside(**part(:aside, class: 'grid-area-right max-lg:mt-8')) do
           UI::Stack(gap: :lg) do
-            Shared::SidebarImage(src: event.image.url, alt: event.summary, **part(:image)) if event.image.present?
+            Shared::SidebarImage(src: event.image.url, webp_srcset: event_image_webp_srcset, alt: event.summary, **part(:image)) if event.image.present?
             Shared::Map(points: map, compact: true) if map.present?
           end
         end
       end
     end
+  end
+
+  def event_image_webp_srcset
+    event.image.webp_srcset(standard: '1x', retina: '2x')
   end
 
   def aside?
@@ -341,7 +345,7 @@ class Views::Sites::Events::Show < Views::Base
     if event.image.present?
       div(**part(:columns, class: 'grid grid-areas-partner-details')) do
         div(class: 'grid-area-main') { render_description_and_links }
-        aside(**part(:aside, class: 'grid-area-right max-lg:mt-8')) { Shared::SidebarImage(src: event.image.url, alt: event.summary, **part(:image)) }
+        aside(**part(:aside, class: 'grid-area-right max-lg:mt-8')) { Shared::SidebarImage(src: event.image.url, webp_srcset: event_image_webp_srcset, alt: event.summary, **part(:image)) }
       end
     else
       render_description_and_links
