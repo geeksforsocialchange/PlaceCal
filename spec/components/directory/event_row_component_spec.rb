@@ -22,10 +22,11 @@ RSpec.describe Components::Directory::EventRow, type: :component do
     expect(page).to have_no_text("10am")
   end
 
-  it "leaves the start's year out when it ends in the same year" do
+  it "leaves out the year of a date in the current year" do
     allow(event).to receive(:dtend).and_return(Time.zone.parse("2026-12-20 17:00"))
-    render_inline(described_class.new(event:))
+    Timecop.travel(Time.zone.local(2026, 11, 1)) { render_inline(described_class.new(event:)) }
 
-    expect(page).to have_text("From 28 Nov until 20 Dec 2026")
+    expect(page).to have_text("From 28 Nov until 20 Dec")
+    expect(page).to have_no_text("2026")
   end
 end

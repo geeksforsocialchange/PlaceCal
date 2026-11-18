@@ -6,17 +6,18 @@ module Components::Shared::LongRunningDates
 
   def long_running?(event) = ::Event.long_running?(event.dtstart, event.dtend)
 
-  # "From 28 Nov until 17 Jan 2027", with the start's year only when it differs from the end's
+  # "From 28 Nov until 17 Jan 2027" in 2026
   def until_text(event)
-    start = event.dtstart.to_date
-    last = ::Event.last_day(event.dtend)
-    t('events.long_running.from_until', from: I18n.l(start, format: start.year == last.year ? :long_running_no_year : :long_running),
-                                        to: I18n.l(last, format: :long_running))
+    t('events.long_running.from_until', from: long_running_date(event.dtstart.to_date), to: long_running_date(::Event.last_day(event.dtend)))
   end
 
-  # "28 Nov 2026 to 17 Jan 2027"
+  # "28 Nov to 17 Jan 2027" in 2026
   def date_range_text(event)
-    t('events.long_running.range', from: I18n.l(event.dtstart.to_date, format: :long_running),
-                                   to: I18n.l(::Event.last_day(event.dtend), format: :long_running))
+    t('events.long_running.range', from: long_running_date(event.dtstart.to_date), to: long_running_date(::Event.last_day(event.dtend)))
+  end
+
+  # A date's year shows only when it isn't this year
+  def long_running_date(date)
+    I18n.l(date, format: date.year == Time.zone.today.year ? :long_running_no_year : :long_running)
   end
 end

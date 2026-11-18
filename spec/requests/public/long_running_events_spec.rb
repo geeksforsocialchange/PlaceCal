@@ -42,7 +42,7 @@ RSpec.describe "Long-running events", type: :request do
 
       expect(titles).to eq(["Winter Collages", "Magic Place"])
       row = frame.find(".h-event", text: "Magic Place")
-      expect(row).to have_text("From 28 Nov 2022 until 17 Jan 2023")
+      expect(row).to have_text("From 28 Nov until 17 Jan 2023")
       expect(row).to have_css("time.dt-start[datetime^='2022-11-28']")
       expect(frame).to have_text("2 events")
     end
@@ -75,7 +75,7 @@ RSpec.describe "Long-running events", type: :request do
       opens_later.update!(status: "cancelled")
       get events_url(host:, period: "future")
 
-      expect(frame.find(".h-event", text: "Magic Place")).to have_css(".line-through", text: "From 28 Nov 2022 until 17 Jan 2023")
+      expect(frame.find(".h-event", text: "Magic Place")).to have_css(".line-through", text: "From 28 Nov until 17 Jan 2023")
     end
   end
 
@@ -84,7 +84,7 @@ RSpec.describe "Long-running events", type: :request do
       get partner_url(partner, host:)
 
       expect(titles).to eq(["Dead or Alive", "Winter Collages", "Magic Place"])
-      expect(frame.find(".h-event", text: "Dead or Alive")).to have_text("From 1 Oct 2022 until 17 Jan 2023")
+      expect(frame.find(".h-event", text: "Dead or Alive")).to have_text("From 1 Oct until 17 Jan 2023")
     end
 
     it "offers the long-running select only to a partner with long-running events, or once one is chosen" do
@@ -176,7 +176,7 @@ RSpec.describe "Long-running events", type: :request do
 
       summaries = Capybara.string(response.body).all("a[href^='/events/']").map(&:text) & [on_now, opens_later, short, ended].map(&:summary)
       expect(summaries).to eq(["Dead or Alive", "Winter Collages", "Magic Place"])
-      expect(response.body).to include("From 1 Oct 2022 until 17 Jan 2023")
+      expect(response.body).to include("From 1 Oct until 17 Jan 2023")
     end
   end
 
@@ -191,7 +191,7 @@ RSpec.describe "Long-running events", type: :request do
       get event_url(on_now, host:)
       details = Capybara.string(response.body).find("[data-scope='event'][data-part='details']")
 
-      expect(details).to have_css("[data-variant='date']", text: "1 Oct 2022 to 17 Jan 2023")
+      expect(details).to have_css("[data-variant='date']", text: "1 Oct to 17 Jan 2023")
       expect(details).to have_no_css("[data-variant='time']")
     end
 
@@ -199,7 +199,7 @@ RSpec.describe "Long-running events", type: :request do
       get event_url(on_now, host: "lvh.me")
       html = Capybara.string(response.body).find("main")
 
-      expect(html).to have_text("1 Oct 2022 to 17 Jan 2023", count: 2)
+      expect(html).to have_text("1 Oct to 17 Jan 2023", count: 2)
       expect(html).to have_no_text("10:00 – 17:00")
     end
 
