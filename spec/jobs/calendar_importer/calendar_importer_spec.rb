@@ -333,7 +333,7 @@ RSpec.describe CalendarImporter::CalendarImporter do
   describe "ticketing platforms" do
     it "are the sources whose event pages sell tickets" do
       ticketing = described_class::PARSERS.select { it::TICKETING }.map { it::KEY }
-      expect(ticketing).to contain_exactly("eventbrite", "outsavvy", "ticket-solve", "ticketsource", "tickettailor")
+      expect(ticketing).to contain_exactly("eventbrite", "outsavvy", "residentadvisor", "ticket-solve", "ticketsource", "tickettailor")
     end
   end
 

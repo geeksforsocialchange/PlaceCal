@@ -3,6 +3,7 @@
 module CalendarImporter::Parsers
   class ResidentAdvisor < Base
     NAME = 'Resident Advisor'
+    TICKETING = true
     KEY = 'residentadvisor'
     DOMAINS = %w[ra.co].freeze
     RA_ENDPOINT = 'https://ra.co/graphql'
