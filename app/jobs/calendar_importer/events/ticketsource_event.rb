@@ -2,6 +2,10 @@
 
 module CalendarImporter::Events
   class TicketsourceEvent < Base
+    imports title: 'name', description: 'description', start_time: 'dates.start', end_time: 'dates.end', repeats: nil,
+            location: %w[venue.name venue.address], webpage: 'reference', online_link: nil, spaces_available: nil,
+            status: 'dates.cancelled', image: nil, source_categories: nil, source_organiser: nil
+
     VENUE_FIELDS = ['name', *CalendarImporter::Parsers::Ticketsource::ADDRESS_FIELDS].freeze
 
     attr_reader :publisher_url

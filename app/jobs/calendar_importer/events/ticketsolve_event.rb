@@ -2,6 +2,10 @@
 
 module CalendarImporter::Events
   class TicketsolveEvent < Base
+    imports title: 'name', description: %w[description url], start_time: 'opening_time_iso', end_time: nil, repeats: nil,
+            location: nil, webpage: nil, online_link: nil, spaces_available: 'status', status: nil, image: nil,
+            source_categories: nil, source_organiser: nil
+
     def uid
       @event.attribute('id').text
     end

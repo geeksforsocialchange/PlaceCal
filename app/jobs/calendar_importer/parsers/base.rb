@@ -30,6 +30,11 @@ module CalendarImporter::Parsers
       false
     end
 
+    # @return [Class] the CalendarImporter::Events class this parser builds its events from
+    def self.event_class
+      raise NotImplementedError
+    end
+
     # Parsers that read an API skip the check that the source page is reachable.
     def self.skips_source_check?
       requires_api_token?
