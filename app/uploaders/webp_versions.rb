@@ -21,6 +21,12 @@ module WebpVersions
     end
   end
 
+  # The quality in the URL changes it when the copies are remade, as a CDN keeps the old file at an unchanged URL
+  def url(*)
+    url = super
+    url && version_name.to_s.end_with?('webp') ? "#{url}?q=#{QUALITY}" : url
+  end
+
   def convert_to_webp
     minimagick! { |builder| builder.convert('webp').saver(quality: QUALITY) }
   end

@@ -10,6 +10,8 @@ module CalendarImporter::Parsers
     KEY = 'eventbrite'
     DOMAINS = %w[www.eventbrite.com www.eventbrite.co.uk].freeze
 
+    def self.event_class = CalendarImporter::Events::EventbriteEvent
+
     # Eventbrite is the only parser that talks to its API via RestClient (the
     # rest use HTTParty, whose transient responses are retried by status code in
     # Base.read_http_source / ApiBase). RestClient signals transient failures by
@@ -82,7 +84,7 @@ module CalendarImporter::Parsers
     end
 
     def import_events_from(data)
-      data.map { |d| CalendarImporter::Events::EventbriteEvent.new(d) }
+      data.map { |d| self.class.event_class.new(d) }
     end
 
     # Fetch a single event's full description, tolerating transient Eventbrite

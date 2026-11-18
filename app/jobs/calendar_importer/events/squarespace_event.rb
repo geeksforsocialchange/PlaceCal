@@ -2,6 +2,11 @@
 
 module CalendarImporter::Events
   class SquarespaceEvent < Base
+    imports title: 'title', description: 'body', start_time: 'startDate', end_time: 'endDate', repeats: nil,
+            location: %w[location.addressTitle location.addressLine1 location.addressLine2], webpage: %w[website.baseUrl collection.fullUrl urlId],
+            online_link: nil, spaces_available: nil, status: nil, image: 'assetUrl', source_categories: %w[categories tags],
+            source_organiser: nil
+
     def uid
       @event['id']
     end

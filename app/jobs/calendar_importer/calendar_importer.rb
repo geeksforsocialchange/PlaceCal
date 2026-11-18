@@ -8,7 +8,6 @@ class CalendarImporter::CalendarImporter
     CalendarImporter::Parsers::Eventbrite,
     CalendarImporter::Parsers::Ics,
     CalendarImporter::Parsers::Ticketsource,
-    CalendarImporter::Parsers::ManchesterUni,
     CalendarImporter::Parsers::Meetup,
     CalendarImporter::Parsers::Outsavvy,
     CalendarImporter::Parsers::ResidentAdvisor,
@@ -77,10 +76,15 @@ class CalendarImporter::CalendarImporter
   def parser_for_mode
     # A blank mode means auto-detect
     if @calendar.importer_mode.blank? || @calendar.importer_mode == 'auto'
-      PARSERS.find { |parser| parser.handles_url?(@calendar) }
+      detect_parser
     else
-      self.class.parser_for_key(patch_legacy_modes(@calendar))
+      # A mode whose importer has since been removed falls back to detection
+      self.class.parser_for_key(patch_legacy_modes(@calendar)) || detect_parser
     end
+  end
+
+  def detect_parser
+    PARSERS.find { |parser| parser.handles_url?(@calendar) }
   end
 
   def patch_legacy_modes(calendar)
