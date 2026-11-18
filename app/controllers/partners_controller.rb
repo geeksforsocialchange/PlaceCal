@@ -93,7 +93,7 @@ class PartnersController < ApplicationController
   # (flat, day-windowed), or many events (paginated, day-windowed by default
   # or the older Timeline/EventFilter paginator for an explicit period).
   def assign_events_for_show
-    upcoming_count = Event.with_visible_organiser.by_organiser_or_place(@event_partner_ids).upcoming_or_running(@current_day).count
+    upcoming_count = Event.with_visible_organiser.by_organiser_or_place(@event_partner_ids).upcoming_or_running.count
     if upcoming_count.zero?
       @events = []
       @no_event_message = no_upcoming_events_reason(@partner)

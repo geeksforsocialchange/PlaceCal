@@ -140,6 +140,22 @@ RSpec.describe "Long-running events", type: :request do
       end
     end
 
+    context "with enough events to page through" do
+      before do
+        31.times do |i|
+          create(:event, organiser: partner, dtstart: (i + 1).days.from_now.change(hour: 9), dtend: (i + 1).days.from_now.change(hour: 10))
+        end
+      end
+
+      it "keeps the paginator on a later week, with the events running then above the week" do
+        get "/partners/#{partner.slug}/events/2022/12/5", params: { period: "week" }, headers: { host: }
+
+        expect(frame).to have_css("[data-scope='timeline'][data-part='root']")
+        expect(titles.first).to eq("Dead or Alive")
+        expect(titles).to include("Magic Place").once
+      end
+    end
+
     it "lists a running event at the top on the directory too" do
       get partner_url(partner, host: "lvh.me")
 
