@@ -124,6 +124,18 @@ RSpec.describe Event, type: :model do
     end
   end
 
+  describe "#time" do
+    it "gives the start and end" do
+      event = build(:event, dtstart: Time.zone.local(2026, 11, 20, 19, 30), dtend: Time.zone.local(2026, 11, 20, 21, 30))
+      expect(event.time).to eq("19:30 – 21:30")
+    end
+
+    it "gives only the start when the event ends as it starts, as for a feed with no end time" do
+      event = build(:event, dtstart: Time.zone.local(2026, 11, 20, 19, 30), dtend: Time.zone.local(2026, 11, 20, 19, 30))
+      expect(event.time).to eq("19:30")
+    end
+  end
+
   describe "#og_title" do
     it "includes the organiser when present" do
       event = build(:event, summary: "Tea Dance", organiser: build(:partner, name: "The Powerhouse"))

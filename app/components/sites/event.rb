@@ -114,7 +114,7 @@ class Components::Sites::Event < Components::Base
 
   def render_time_range
     time(class: 'dt-start', datetime: @event.dtstart.iso8601) { fmt_time(@event.dtstart) }
-    return unless @event.dtend
+    return unless ends?
 
     plain " \u2013 "
     time(class: 'dt-end', datetime: @event.dtend.iso8601) { end_time }
@@ -194,7 +194,7 @@ class Components::Sites::Event < Components::Base
   end
 
   def duration
-    return false unless @event.dtend
+    return false unless ends?
 
     mins = ((@event.dtend - @event.dtstart) / 60).to_i
     hours = mins / 60
@@ -221,6 +221,9 @@ class Components::Sites::Event < Components::Base
   def date
     formatted_date(@event.dtstart)
   end
+
+  # Feeds without an end time give one equal to the start
+  def ends? = @event.dtend.present? && @event.dtend != @event.dtstart
 
   def end_time
     return fmt_time(@event.dtend) unless multi_day?

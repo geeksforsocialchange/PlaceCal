@@ -22,22 +22,6 @@ RSpec.describe "Importer event classes" do
     ICS
   end
 
-  let(:manchester_uni) do
-    <<~XML
-      <ns:events xmlns:ns="http://example.com/events">
-        <ns:event>
-          <ns:id>mu-1</ns:id>
-          <ns:title>A lecture</ns:title>
-          <ns:description>About the lecture</ns:description>
-          <ns:times type="local">
-            <ns:start><ns:date>2030-02-01</ns:date><ns:time>19:00:00</ns:time></ns:start>
-            <ns:end><ns:date>2030-02-01</ns:date><ns:time>21:00:00</ns:time></ns:end>
-          </ns:times>
-        </ns:event>
-      </ns:events>
-    XML
-  end
-
   let(:ticketsolve) do
     <<~XML
       <show id="ts-1">
@@ -66,7 +50,6 @@ RSpec.describe "Importer event classes" do
                               "start" => { "utc" => "2030-02-01T19:00:00Z" }, "end" => { "utc" => "2030-02-01T21:00:00Z" } }],
       "IcsEvent" => [ical, ical.dtstart, ical.dtend],
       "LinkedDataEvent" => [linked_data],
-      "ManchesterUniEvent" => [Nokogiri::XML(manchester_uni).at_xpath("//ns:event")],
       "OutsavvyEvent" => [linked_data],
       "ResidentAdvisor" => [{ "id" => "ra-1", "title" => "A night", "contentUrl" => "/events/1",
                               "startTime" => "2030-02-01T19:00:00", "endTime" => "2030-02-01T23:00:00" }],

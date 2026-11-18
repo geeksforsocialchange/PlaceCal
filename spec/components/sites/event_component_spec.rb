@@ -153,6 +153,16 @@ RSpec.describe Components::Sites::Event, type: :component do
       end
     end
 
+    context "when the event ends as it starts, as for a feed with no end time" do
+      let(:event_dtend) { event_dtstart }
+
+      it "shows only the start time and no duration" do
+        rendered
+        expect(page).to have_css('[data-scope="event"][data-part="detail"][data-variant="time"]', exact_text: /\A\s*10am\s*\z/)
+        expect(page).to have_no_css('[data-scope="event"][data-part="detail"][data-variant="duration"]')
+      end
+    end
+
     context "when the event lasts a day or more" do
       let(:event_dtstart) { Time.zone.local(Time.zone.now.year, 10, 23, 23) }
       let(:event_dtend) { Time.zone.local(Time.zone.now.year, 10, 25, 15) }

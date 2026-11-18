@@ -87,29 +87,6 @@ RSpec.describe CalendarImporter::CalendarImporter do
       end
     end
 
-    context "with manchester uni calendars" do
-      let(:url) { "http://events.manchester.ac.uk/f3vf/calendar/tag:martin_harris_centre/view:list/p:q_details/calml.xml" }
-
-      it "imports manchester uni calendars" do
-        VCR.use_cassette("Martin_Harris_Centre", allow_playback_repeats: true) do
-          calendar = create(:calendar, name: "Martin Harris Centre", source: url)
-
-          parser_class = described_class.new(calendar).parser
-          output = parser_class.new(calendar).calendar_to_events
-          events = output.events
-
-          expect(events.count).to eq(3)
-          expect(events.first.summary).to eq("Technical tours of the Martin Harris Centre for Music and Drama")
-          expect(events.last.summary).to eq("KIDNAP@20: The Art of Incarceration")
-
-          # Feed gives bare local times; during BST they must come out as +01:00, not UTC
-          first = events.first.occurrences_between(nil, nil).first
-          expect(first.start_time).to eq(Time.zone.parse("2018-07-04 10:00:00"))
-          expect(first.start_time.utc_offset).to eq(3600)
-        end
-      end
-    end
-
     context "with ticketsolve calendars" do
       let(:url) { "https://z-arts.ticketsolve.com/shows.xml" }
 
@@ -320,13 +297,16 @@ RSpec.describe CalendarImporter::CalendarImporter do
   end
 
   describe "manual selection" do
-    it "picks the Manchester University parser when its key is the importer mode" do
-      VCR.use_cassette("Martin_Harris_Centre", allow_playback_repeats: true) do
-        calendar = create(:calendar, source: "http://events.manchester.ac.uk/f3vf/calendar/tag:martin_harris_centre/view:list/p:q_details/calml.xml",
-                                     importer_mode: "manchester-uni")
+    let(:columba_ics) { "https://events.manchester.ac.uk/f3vf/calendar/tag:whitworth/view:list/p:q_details/calendar.ics" }
 
-        expect(described_class.new(calendar).parser).to eq(CalendarImporter::Parsers::ManchesterUni)
-      end
+    it "picks the parser whose key is the importer mode" do
+      calendar = build(:calendar, source: columba_ics, importer_mode: "ical")
+      expect(described_class.new(calendar).parser).to eq(CalendarImporter::Parsers::Ics)
+    end
+
+    it "detects the parser when the mode's importer has been removed" do
+      calendar = build(:calendar, source: columba_ics, importer_mode: "manchester-uni")
+      expect(described_class.new(calendar).parser).to eq(CalendarImporter::Parsers::Ics)
     end
   end
 
