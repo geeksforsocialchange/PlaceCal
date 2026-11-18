@@ -31,10 +31,23 @@ RSpec.describe "Event page details on core and extension themes", type: :request
       expect(response.body).not_to match(%r{<h2[^>]*>Venue</h2>})
     end
 
-    it "names the organiser's own building as the venue too" do
-      event.update!(place: organiser)
+    it "heads the address with the organiser, then a different venue, and shows the map in the sidebar instead of an organiser section",
+       :aggregate_failures do
+      html = details_for(site)
+      address_section = part(html, "address")
 
-      expect(part(details_for(site), "address").at_css('[data-part="venue"] a')&.text).to eq("Oldtown Library")
+      expect(address_section.css('[data-part="organiser-name"] a, [data-part="venue"] a').map(&:text)).to eq(["Oldtown Library", "Harbourside Arts Centre"])
+      expect(address_section.at_css('[data-part="organiser-name"]').text).to eq("By Oldtown Library")
+      expect(part(html, "organiser")).to be_nil
+      expect(part(html, "aside").at_css('[data-scope="map"]')).to be_present
+    end
+
+    it "names the organiser once when the event is at the organiser's own building" do
+      event.update!(place: organiser)
+      address_section = part(details_for(site), "address")
+
+      expect(address_section.at_css('[data-part="organiser-name"] a')&.text).to eq("Oldtown Library")
+      expect(address_section.at_css('[data-part="venue"]')).to be_nil
     end
 
     it "leaves out the venue line when the venue is hidden" do
@@ -43,7 +56,7 @@ RSpec.describe "Event page details on core and extension themes", type: :request
       expect(part(details_for(site), "address").at_css('[data-part="venue"]')).to be_nil
     end
 
-    it "leaves out Contact information when the organiser has no contact details" do
+    it "leaves out Get in touch when the organiser has no contact details" do
       organiser.update_columns(public_email: nil, public_phone: nil, url: nil, facebook_link: nil, twitter_handle: nil, instagram_handle: nil) # rubocop:disable Rails/SkipsModelValidations
 
       expect(part(details_for(site), "contact")).to be_nil
