@@ -158,7 +158,7 @@ class Views::Sites::Events::Show < Views::Base
       raw(view_context.icon(:event_time, size: nil, css_class: 'w-3.5 h-3.5 shrink-0 opacity-80'))
       span(class: ('line-through' if event.called_off?)) do
         time(class: 'dt-start', datetime: event.dtstart.iso8601) { event.dtstart.strftime('%H:%M') }
-        if event.dtend
+        if event.ends?
           plain ' – '
           time(class: 'dt-end', datetime: event.dtend.iso8601) { event.dtend.strftime('%H:%M') }
         end
