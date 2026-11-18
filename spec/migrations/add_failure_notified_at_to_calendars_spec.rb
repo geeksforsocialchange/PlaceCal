@@ -11,6 +11,12 @@ RSpec.describe AddFailureNotifiedAtToCalendars do
     allow(CalendarImporterJob).to receive(:perform_later).and_return(nil)
   end
 
+  # Re-adding the column moves it to the end of the table, which outlives the rollback in prepared statements
+  after do
+    ActiveRecord::Base.connection.clear_cache!
+    Calendar.reset_column_information
+  end
+
   # The test schema already has the column; the example's transaction rolls this back
   def migrate_up
     migration.migrate(:down)
