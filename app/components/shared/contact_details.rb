@@ -126,7 +126,8 @@ class Components::Shared::ContactDetails < Components::Base
       if @social_labels == :network
         link_to(link.name, link.url, title: link.label, target: '_blank', rel: 'noopener')
       else
-        a(href: link.url, target: '_blank', rel: 'noopener') do
+        # A handle-less label is a whole address, which must wrap at 320px
+        a(href: link.url, target: '_blank', rel: 'noopener', class: 'min-w-0 wrap-anywhere') do
           plain link.label
           network = network_for(link)
           network_name(network) if network

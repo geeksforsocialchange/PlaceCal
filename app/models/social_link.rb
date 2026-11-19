@@ -16,6 +16,9 @@ class SocialLink
   MASTODON_ICON = :contact_mastodon
   LINK_ICON = :link
 
+  # Looser than URI.parse, which rejects addresses with accented letters
+  URL_PARTS = %r{\Ahttps?://(?<host>[^/?#\s:@]+)(?::\d+)?(?<path>/[^?#\s]*)?(?:\?(?<query>[^#\s]*))?(?:#\S*)?\z}i
+
   # Any fediverse server: /@name, or /@name@home.server for a remote account
   FEDIVERSE_PATH = %r{\A/@([\w.-]+)(?:@([\w.-]+\.[a-z]{2,}))?/?\z}i
   HANDLE_SEGMENT = %r{\A/@?([\w.-]+)/?\z}
@@ -23,10 +26,7 @@ class SocialLink
   attr_reader :url
 
   def self.valid_url?(url)
-    uri = URI.parse(url.to_s)
-    uri.is_a?(URI::HTTP) && uri.host.present? && url.to_s.match?(/\A\S+\z/)
-  rescue URI::InvalidURIError
-    false
+    url.to_s.match?(URL_PARTS)
   end
 
   # Platform names by host, for the admin form to recognise links as they're typed.
@@ -75,25 +75,29 @@ class SocialLink
   end
 
   def host
-    uri&.host.to_s.downcase.delete_prefix('www.')
+    parts&.[](:host).to_s.downcase.delete_prefix('www.')
   end
 
   def to_s = url
 
   private
 
-  def uri
-    return @uri if defined?(@uri)
+  def parts
+    return @parts if defined?(@parts)
 
-    @uri = self.class.valid_url?(url) ? URI.parse(url) : nil
+    @parts = url.match(URL_PARTS)
   end
 
   def path
-    uri&.path.to_s
+    parts&.[](:path).to_s
+  end
+
+  def query
+    parts&.[](:query)
   end
 
   def detect_platform
-    return :link unless uri
+    return :link unless parts
 
     found = PLATFORMS.find { |_, info| info[:hosts].any? { host == it || host.end_with?(".#{it}") } }
     return found.first if found
@@ -103,7 +107,7 @@ class SocialLink
   end
 
   def derive_handle
-    return if uri.nil? || uri.query.present?
+    return if parts.nil? || query.present?
 
     case platform
     when :mastodon then mastodon_handle
@@ -121,9 +125,9 @@ class SocialLink
   end
 
   def display_url
-    return url unless uri
+    return url unless parts
 
     shown = "#{host}#{path.delete_suffix('/')}"
-    uri&.query.present? ? "#{shown}?#{uri.query}" : shown
+    query.present? ? "#{shown}?#{query}" : shown
   end
 end

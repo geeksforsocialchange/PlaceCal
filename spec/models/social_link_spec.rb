@@ -24,6 +24,8 @@ RSpec.describe SocialLink do
       "https://x.com/hulmecc" => [:x, "X", "@hulmecc", :contact_x],
       "https://twitter.com/hulmecc" => [:x, "X", "@hulmecc", :contact_x],
       "https://www.fedex.com/@hulmecc" => [:mastodon, "Mastodon", "@hulmecc@fedex.com", :contact_mastodon],
+      "https://www.facebook.com/Café-Hulme" => [:facebook, "Facebook", nil, :contact_facebook],
+      "https://hulme.example.org:8443/newsletter#latest" => [:link, "hulme.example.org", nil, :link],
       "https://hulme.example.org/newsletter" => [:link, "hulme.example.org", nil, :link],
       "https://www.fedex.com/en-gb/home.html" => [:link, "fedex.com", nil, :link]
     }.each do |url, (platform, name, handle, icon)|
@@ -43,6 +45,11 @@ RSpec.describe SocialLink do
     end
   end
 
+  it "accepts addresses with accented letters, which URI.parse rejects" do
+    expect(described_class.valid_url?("https://www.facebook.com/Café-Hulme")).to be true
+    expect(described_class.new("https://www.facebook.com/Café-Hulme").label).to eq("facebook.com/Café-Hulme")
+  end
+
   describe "#label" do
     it "is the handle when there is one" do
       expect(described_class.new("https://www.instagram.com/hulmecc/").label).to eq("@hulmecc")
@@ -55,7 +62,7 @@ RSpec.describe SocialLink do
   end
 
   describe "with an address that isn't a web link" do
-    %w[not-a-url ftp://example.org/hulme javascript:alert(1) https://].each do |value|
+    ["not-a-url", "ftp://example.org/hulme", "javascript:alert(1)", "https://", "https://user@example.org", "https://example.org/a b"].each do |value|
       it "treats #{value.inspect} as an unrecognised link without raising" do
         link = described_class.new(value)
 
