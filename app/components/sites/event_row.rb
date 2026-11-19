@@ -3,6 +3,7 @@
 # One event as a row: a date badge, then the title and a line of details. The directory's row in the site's style.
 class Components::Sites::EventRow < Components::Base
   include Components::Shared::EventRowDetails
+  include Components::Shared::LongRunningDates
 
   theme_scope :event_row,
               parts: {
@@ -75,6 +76,8 @@ class Components::Sites::EventRow < Components::Base
   end
 
   def time_range
+    return plain(until_text(@event)) if long_running?(@event)
+
     plain fmt_time(@event.dtstart)
     plain " – #{fmt_time(@event.dtend)}" if @event.dtend && @event.dtend != @event.dtstart
   end

@@ -56,8 +56,8 @@ class PartnersController < ApplicationController
           partner: @partner, site: @site, current_day: @current_day,
           map: @map, events: @events,
           period: @period, date_period: @date_period, sort: @sort,
-          repeating: @repeating, no_event_message: @no_event_message,
-          paginator: @paginator, show_monthly: @show_monthly || false,
+          types: @types || EventTypes.all, offer_long_running: @offer_long_running != false, ongoing: @ongoing || [],
+          no_event_message: @no_event_message, paginator: @paginator, show_monthly: @show_monthly || false,
           containing_sites: @containing_sites,
           days: @days, more_days: @more_days || 0,
           events_total_count: @events_total_count, events_total_days: @events_total_days
@@ -93,7 +93,7 @@ class PartnersController < ApplicationController
   # (flat, day-windowed), or many events (paginated, day-windowed by default
   # or the older Timeline/EventFilter paginator for an explicit period).
   def assign_events_for_show
-    upcoming_count = Event.with_visible_organiser.by_organiser_or_place(@event_partner_ids).upcoming.count
+    upcoming_count = Event.with_visible_organiser.by_organiser_or_place(@event_partner_ids).upcoming_or_running.count
     if upcoming_count.zero?
       @events = []
       @no_event_message = no_upcoming_events_reason(@partner)
@@ -108,11 +108,9 @@ class PartnersController < ApplicationController
   # view windows this by day (new events browser); the directory view keeps
   # its own client-revealed overflow list, so it gets the whole future set.
   def assign_flat_events
-    @repeating = params[:repeating] || 'on'
-    @paginator = false
-    query = EventsQuery.new(site: nil, day: @current_day)
+    query = events_query
     if directory_request?
-      @events = query.call(period: 'future', organiser_or_place: @event_partner_ids, repeating: @repeating, sort: 'time')
+      @events = query.call(period: 'future', **@event_filters, sort: 'time')
     else
       assign_days_windowed_events(sort: 'time', query:)
     end
@@ -129,26 +127,33 @@ class PartnersController < ApplicationController
     @date_period = weekly_count >= EventsQuery::WEEKLY_DENSITY_THRESHOLD ? 'week' : 'month'
     @period = params[:period] || 'upcoming'
     @sort = params[:sort] || 'time'
-    @repeating = params[:repeating] || 'on'
     @paginator = true
 
-    query = EventsQuery.new(site: nil, day: @current_day)
+    query = events_query
     if !directory_request? && @period == 'upcoming'
       assign_days_windowed_events(sort: @sort, query:)
     else
-      @events = query.call(period: @period, organiser_or_place: @event_partner_ids, repeating: @repeating, sort: @sort)
+      @events = query.call(period: @period, **@event_filters, sort: @sort)
     end
     @show_monthly = query.show_monthly?
   end
 
+  # Also reads the filters the view keeps, and finds the long-running events already on
+  def events_query
+    @types = EventTypes.from_params(params)
+    @event_filters = { organiser_or_place: @event_partner_ids, types: @types }
+    EventsQuery.new(site: nil, day: @current_day).tap { @ongoing, @offer_long_running = it.running_and_offer(**@event_filters) }
+  end
+
   # Totals from per-day counts cover every upcoming event; only the first @days days load.
-  def assign_days_windowed_events(sort:, query: EventsQuery.new(site: nil, day: @current_day))
-    day_counts = query.future_counts_by_day(organiser_or_place: @event_partner_ids, repeating: @repeating)
+  # Events already running count as on the first day.
+  def assign_days_windowed_events(sort:, query:)
+    day_counts = query.future_counts_by_day(**@event_filters)
     last_day = day_counts.keys.first(@days).last
-    @events_total_count = day_counts.values.sum
-    @events_total_days = day_counts.size
+    @events_total_count = day_counts.values.sum + @ongoing.size
+    @events_total_days = day_counts.size + (@ongoing.any? && !day_counts.key?(@current_day) ? 1 : 0)
     @more_days = [day_counts.size - @days, 0].max
-    @events = last_day ? query.future_through(last_day, sort:, organiser_or_place: @event_partner_ids, repeating: @repeating) : {}
+    @events = last_day ? query.future_through(last_day, sort:, **@event_filters) : {}
   end
 
   def clamp_days(raw_days)

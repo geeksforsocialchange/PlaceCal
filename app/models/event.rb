@@ -68,6 +68,16 @@ class Event < ApplicationRecord
   LOCATION_OPTIONAL_STRATEGIES = %w[event no_location online_only].freeze
   # Cancelled and postponed events stay listed, marked as such, so people who planned to go find out
   STATUSES = %w[scheduled cancelled postponed].freeze
+  # Exhibitions and festivals: listed while they are on rather than only on their first day
+  LONG_RUNNING_AFTER = 3.days
+  LONG_RUNNING_SQL = "events.dtend > events.dtstart + interval '3 days'"
+  NOT_LONG_RUNNING_SQL = "(events.dtend IS NULL OR NOT (#{LONG_RUNNING_SQL}))".freeze
+  # Long-running wins over repeating, so every event is exactly one type
+  TYPE_SQL = {
+    'one_off' => "#{NOT_LONG_RUNNING_SQL} AND (events.rrule IS NULL OR events.rrule = 'false'::jsonb)",
+    'repeating' => "#{NOT_LONG_RUNNING_SQL} AND events.rrule <> 'false'::jsonb",
+    'long_running' => LONG_RUNNING_SQL
+  }.freeze
   # A public event URL on any host, with or without a scheme or format, or a bare path
   EVENT_URL = %r{\A(?:[a-z][a-z\d+.-]*://)?[^/?#\s]*/events/(\d+)(?:\.[a-z]+)?/?(?:[?#]\S*)?\z}i
 
@@ -138,8 +148,21 @@ class Event < ApplicationRecord
     where.not(matching.reduce(:or))
   }
 
-  scope :one_off_events_only, -> { where(rrule: false) }
-  scope :repeating_events_only, -> { where.not(rrule: false) }
+  scope :long_running, -> { where(LONG_RUNNING_SQL) }
+
+  # @param types [Array<String>] keys of TYPE_SQL
+  scope :of_types, ->(types) { types.empty? ? none : where(types.map { "(#{TYPE_SQL.fetch(it)})" }.join(' OR ')) }
+
+  # Started before the day and not ended by its start
+  scope :running_on, lambda { |day|
+    midnight = day.to_date.in_time_zone
+    long_running.where(dtstart: ...midnight).where('events.dtend > ?', midnight)
+  }
+
+  # What a partner's listing holds. One where, not .or, so it chains onto relations with joins
+  scope :upcoming_or_running, lambda { |day = Time.zone.today|
+    where("events.dtstart >= :midnight OR (#{LONG_RUNNING_SQL} AND events.dtend > :midnight)", midnight: day.to_date.in_time_zone)
+  }
 
   # ==== Callbacks ====
   before_save :sanitize_rrule
@@ -155,6 +178,18 @@ class Event < ApplicationRecord
     count
   end
 
+  # Takes the times rather than an event so components can ask it of test doubles
+  # @return [Boolean]
+  def self.long_running?(dtstart, dtend)
+    dtend.present? && dtend - dtstart > LONG_RUNNING_AFTER.to_i
+  end
+
+  # Feeds end all-day events at the next midnight, which is not a day the event is on
+  # @return [Date]
+  def self.last_day(dtend)
+    dtend == dtend.beginning_of_day ? dtend.to_date.prev_day : dtend.to_date
+  end
+
   # @param text [String] a public event URL or a bare event ID
   # @return [Event, nil]
   def self.lookup(text)
@@ -164,6 +199,8 @@ class Event < ApplicationRecord
   end
 
   # ==== Instance methods ====
+  def long_running? = self.class.long_running?(dtstart, dtend)
+
   # Other events from the same calendar with the same summary, such as a repeat's other dates
   # @return [ActiveRecord::Relation<Event>]
   def siblings

@@ -17,18 +17,17 @@ class Views::Sites::Partners::Show < Views::Base
                 opening_times: 'The list of opening hours. Only when the partner has some.',
                 events_browser: 'The turbo frame holding the partner\'s events, replaced as the visitor moves through dates.',
                 paginator: 'The timeline tabs and event filter above the events. Only when the partner has enough events to page through.',
-                events_header: 'The row above the events: the heading, the count and the repeating filter.',
+                events_header: 'The row above the events: the heading, the count and the event filters.',
                 events_heading: 'The "Upcoming events" heading.',
                 events_count: 'How many events, over how many days. Hidden on core themes.',
-                events_repeating_filter: 'The repeating-events filter in the header.',
-                events_repeating_label: 'The label holding the repeating-events select.',
-                events_repeating: 'The repeating-events select.',
+                events_repeating_filter: 'The event type filter in the header: the Show label, then a checkbox per type.',
+                events_repeating_label: 'The Show label, which names the event type checkboxes.',
+                events_types: 'The group of event type checkboxes, with the Show label. Long-running only when the partner has such events, or it is unticked.',
+                events_type: 'One event type: its checkbox and words.',
+                events_type_input: 'An event type checkbox.',
                 events_actions: 'The row under the events holding the show-more link. Only when there are more days to show.',
                 events_more: 'The link that shows more days.'
               }
-
-  include Phlex::Rails::Helpers::SelectTag
-  include Phlex::Rails::Helpers::OptionsForSelect
 
   register_value_helper :partner_service_area_text
   register_value_helper :html_to_plaintext
@@ -40,7 +39,10 @@ class Views::Sites::Partners::Show < Views::Base
   prop :events, _Interface(:each), reader: :private
   prop :period, _Nilable(String), reader: :private
   prop :sort, _Nilable(String), reader: :private
-  prop :repeating, _Nilable(String), reader: :private
+  prop :types, ::EventTypes, reader: :private, default: -> { ::EventTypes.all }
+  prop :offer_long_running, _Boolean, reader: :private, default: true
+  # Long-running events already on, listed once above the days
+  prop :ongoing, Array, reader: :private, default: -> { [] }
   prop :no_event_message, _Nilable(String), reader: :private
   prop :paginator, _Nilable(_Boolean), reader: :private
   prop :date_period, _Nilable(String), reader: :private, default: nil
@@ -48,7 +50,7 @@ class Views::Sites::Partners::Show < Views::Base
   prop :containing_sites, _Nilable(_Interface(:each)), reader: :private, default: nil
   # Days-based "Show more days" paging for the events browser (see
   # PartnersController#show). `events_total_count`/`events_total_days` are
-  # the whole upcoming set after the repeating filter but before the days
+  # the whole upcoming set after the event type filter but before the days
   # limit is applied, so the header can report a total independent of what's
   # actually on screen.
   prop :days, Integer, reader: :private, default: 4
@@ -60,6 +62,7 @@ class Views::Sites::Partners::Show < Views::Base
   SIDEBAR_SECTION = 'pt-6'
 
   EVENTS_STATUS_ID = 'partner-events-status'
+  EVENTS_TYPES_LABEL_ID = 'partner-events-types-label'
 
   # Themes style the events section themselves; these are the built-in themes' look.
   CORE_EVENTS = {
@@ -67,9 +70,9 @@ class Views::Sites::Partners::Show < Views::Base
     heading: 'allcaps text-xl m-0',
     count: 'hidden',
     repeating_filter: 'ml-auto print:hidden',
-    repeating_label: 'inline-flex items-center gap-2 text-sm allcaps whitespace-nowrap',
-    repeating: 'select-caret appearance-none py-1 pl-3 pr-9 border-2 border-primary rounded-check bg-background text-foreground ' \
-               'font-sans text-sm font-bold normal-case tracking-normal cursor-pointer',
+    repeating_label: 'text-sm allcaps whitespace-nowrap',
+    types: 'flex flex-wrap items-center justify-end gap-x-4 gap-y-2',
+    type: 'inline-flex items-center gap-2 text-sm cursor-pointer',
     actions: 'flex justify-center mt-6 print:hidden',
     more: 'py-1 px-3.5 border-2 border-primary rounded-check bg-primary text-foreground text-sm font-bold no-underline'
   }.freeze
@@ -281,12 +284,14 @@ class Views::Sites::Partners::Show < Views::Base
   def render_events_section
     turbo_frame_tag 'events-browser', **part(:events_browser, **results_frame_attributes(EVENTS_STATUS_ID, data: { turbo_action: 'advance' })) do
       results_summary(events_total_count&.positive? ? events_count_text : (no_event_message || empty_period_message))
-      render_events_header if events_total_count&.positive?
+      # Kept while a type is unticked, so the visitor can tick it again when nothing matches
+      render_events_header if events_total_count && (events_total_count.positive? || !types.all?)
       render_events_paginator if paginator
 
-      if events.any?
+      if events.any? || ongoing.any?
         Sites::EventList(
           events:,
+          ongoing:,
           period:,
           show_neighbourhoods: site.show_neighbourhoods?,
           badge_zoom_level: site.badge_zoom_level&.to_s,
@@ -313,7 +318,7 @@ class Views::Sites::Partners::Show < Views::Base
     div(**events_part(:header)) do
       h2(**events_part(:heading)) { t('partners.show.upcoming_events') }
       span(**events_part(:count)) { events_count_text }
-      render_repeating_filter
+      render_types_filter
     end
   end
 
@@ -327,7 +332,7 @@ class Views::Sites::Partners::Show < Views::Base
     "#{events_text} #{days_text}"
   end
 
-  def render_repeating_filter
+  def render_types_filter
     div(**events_part(:repeating_filter, data: { controller: 'filters' })) do
       form_tag('', method: :get, enforce_utf8: false,
                    data: { turbo_frame: 'events-browser', turbo_action: 'advance',
@@ -335,21 +340,25 @@ class Views::Sites::Partners::Show < Views::Base
         hidden_field_tag(:days, days, id: nil)
         hidden_field_tag(:period, period, id: nil) if period.present?
         hidden_field_tag(:sort, sort, id: nil) if sort.present?
-        # The select is wrapped in its label (implicit association) rather
-        # than paired by id: the paginator's own repeating radios reuse
-        # "repeating"-derived ids, and this form can render alongside them.
-        label(**events_part(:repeating_label)) do
-          plain t('partners.show.show_label')
-          select_tag(:repeating, **events_part(:repeating), id: nil) do
-            options_for_select(repeating_options, repeating)
-          end
+        # Blank so that no box ticked reads as none; a long-running box not offered stays ticked.
+        hidden_field_tag('types[]', '', id: nil)
+        hidden_field_tag('types[]', 'long_running', id: nil) unless offer_long_running
+        div(**events_part(:types, role: 'group', aria: { labelledby: EVENTS_TYPES_LABEL_ID })) do
+          span(**events_part(:repeating_label, id: EVENTS_TYPES_LABEL_ID)) { t('partners.show.show_label') }
+          offered_types.each { render_type_checkbox(it) }
         end
       end
     end
   end
 
-  def repeating_options
-    %w[on off only].map { |value| [t("filters.repeating.#{value}"), value] }
+  def offered_types = offer_long_running ? ::EventTypes::ALL : ::EventTypes::ALL - %w[long_running]
+
+  # Wrapped in its label rather than paired by id, as the paginator's filter panel can render the same boxes alongside.
+  def render_type_checkbox(type)
+    label(**events_part(:type)) do
+      input(type: 'checkbox', name: 'types[]', value: type, checked: types.include?(type), **part(:events_type_input, class: Sites::Filter::CHOICE_INPUT))
+      plain t("partners.show.event_types.#{type}")
+    end
   end
 
   def render_show_more_days
@@ -363,8 +372,7 @@ class Views::Sites::Partners::Show < Views::Base
     url_params = { days: days + 4 }
     url_params[:period] = period if period.present?
     url_params[:sort] = sort if sort.present?
-    url_params[:repeating] = repeating if repeating.present?
-    partner_path(partner, **url_params)
+    partner_path(partner, **url_params, **types.to_params)
   end
 
   def render_events_paginator
@@ -377,17 +385,18 @@ class Views::Sites::Partners::Show < Views::Base
         period:,
         date_period:,
         sort:,
-        repeating:,
+        types:,
         path:,
         show_upcoming: true
       )
       div(class: 'relative z-10 flex gap-4 items-center justify-end text-sm pt-1 mb-2') do
-        today_url = "/#{path}/#{today.year}/#{today.month}/#{today.day}?period=#{filter_period}&sort=#{sort}&repeating=#{repeating}#paginator"
+        today_query = { period: filter_period, sort:, **types.to_params }.to_query
+        today_url = "/#{path}/#{today.year}/#{today.month}/#{today.day}?#{today_query}#paginator"
         Sites::EventFilter(
           pointer: current_day,
           period: filter_period,
           sort:,
-          repeating:,
+          types:,
           today_url:,
           today: current_day == today,
           show_monthly:

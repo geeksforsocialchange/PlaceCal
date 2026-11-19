@@ -103,6 +103,8 @@ en:
       truncated: "Showing first 50 events. Use the date picker to see more."
       empty: "No events with this selection."
       skip_to_next: "Skip to next date with events."
+      # Heading over long-running events already on, above the days of a partner's events
+      on_now: "On now"
     profile:
       heading: "Your local contact"
       call_on: "Call on"
@@ -191,7 +193,7 @@ en:
     # Toggle value shown when a Components::Filter dropdown has no selection.
     show_all: "Show all"
     search_partners: "Search partners"
-    # Radio labels in the sort/period/repeats dropdown, grouped as they appear
+    # Option labels in the filter-and-sort dropdown, grouped as they appear
     sort:
       time: "Sort by date"
       summary: "Sort by name"
@@ -200,11 +202,12 @@ en:
       week: "Weekly view"
       month: "Monthly view"
       future: "Show all"
-    # "on"/"off" are quoted: YAML would otherwise read them as booleans
-    repeating:
-      "on": "All events"
-      "off": "Only one-off events"
-      "only": "Only repeating events"
+    # Checkboxes for each type of event; long-running ones run more than 3 days, such as exhibitions
+    types:
+      label: "Event types"
+      one_off: "One-off events"
+      repeating: "Regular events"
+      long_running: "Long-running events"
     # Day strip event filter (D22): the Today / Tomorrow / next five days
     # navigation rendered for themes with event_filter_style :day_strip.
     day_strip:
@@ -220,8 +223,11 @@ en:
       from_date: "From %{date}"
       date_format: "%a %-d %b"
       sorted_by_name: "Sorted by name"
-      one_off_only: "One-off events only"
-      repeating_only: "Repeating events only"
+      # One for each unticked event type
+      types_hidden:
+        one_off: "One-off events hidden"
+        repeating: "Regular events hidden"
+        long_running: "Long-running events hidden"
       reset: "Reset filters"
 
   # Region selector shown on local sites with more than one Partnership tag
@@ -578,7 +584,12 @@ en:
       events_count_days:
         one: "across %{count} day"
         other: "across %{count} days"
+      # Names the event type checkboxes beside it
       show_label: "Show"
+      event_types:
+        one_off: "One-off"
+        repeating: "Regular"
+        long_running: "Long-running"
       show_more_days:
         one: "Show %{count} more day"
         other: "Show %{count} more days"
@@ -694,6 +705,10 @@ en:
     status:
       cancelled: "Cancelled"
       postponed: "Postponed"
+    # Events running more than 3 days show their dates in place of a time range
+    long_running:
+      from_until: "From %{from} until %{to}"
+      range: "%{from} to %{to}"
     index:
       # Read out by screen readers when a filter or date change reloads the list.
       results_summary:
@@ -805,6 +820,10 @@ en:
       timeline_month_year: "%b %Y"
       timeline_week_start: "%-d"
       timeline_day_month: "%-d %b"
+      # A long-running event's dates, e.g. "17 Jan 2027"
+      long_running: "%-d %b %Y"
+      long_running_no_year: "%-d %b"
+      long_running_day: "%-d"
       # Full dates in admin notices, e.g. "9 November 2026"
       day_month_year: "%-d %B %Y"
 

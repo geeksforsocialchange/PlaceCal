@@ -5,6 +5,18 @@ module EventDisplay
   extend ActiveSupport::Concern
 
   class_methods do
+    # The end shows its year unless it's this year; the start drops what it shares with the end
+    # @return [Array(String, String)] e.g. ["24", "28 Nov"] or ["28 Nov", "17 Jan 2027"] in 2026
+    def long_running_dates(dtstart, dtend)
+      first = dtstart.to_date
+      last = last_day(dtend)
+      format = if first.year == last.year && first.month == last.month then :long_running_day
+               elsif first.year != last.year && first.year != Time.zone.today.year then :long_running
+               else :long_running_no_year
+               end
+      [I18n.l(first, format:), I18n.l(last, format: last.year == Time.zone.today.year ? :long_running_no_year : :long_running)]
+    end
+
     # icalendar < 2.13 serialised each rule as an OpenStruct (keys under "table"), 2.13+ as a flat Struct.
     # @return [String, nil] raw RFC 5545 FREQ value, e.g. "WEEKLY"
     def rrule_frequency(rrule)
@@ -50,7 +62,14 @@ module EventDisplay
 
   # @return [String] Open Graph title combining summary, date, time, and organiser
   def og_title
-    str = all_day? ? "#{summary}, #{date}" : "#{summary}, #{date}, #{time}"
+    str = if long_running?
+            from, to = self.class.long_running_dates(dtstart, dtend)
+            "#{summary}, #{I18n.t('events.long_running.range', from:, to:)}"
+          elsif all_day?
+            "#{summary}, #{date}"
+          else
+            "#{summary}, #{date}, #{time}"
+          end
     str += " @ #{organiser.name}" if organiser
     str
   end

@@ -8,7 +8,6 @@ class Sites::EventFilterPreview < Lookbook::Preview
       pointer: Time.zone.today,
       period: "day",
       sort: "time",
-      repeating: "on",
       today_url: "/events",
       today: true
     )
@@ -20,7 +19,6 @@ class Sites::EventFilterPreview < Lookbook::Preview
       pointer: Time.zone.today + 7.days,
       period: "week",
       sort: "time",
-      repeating: "on",
       today_url: "/events",
       today: false
     )
@@ -34,7 +32,7 @@ class Sites::EventFilterPreview < Lookbook::Preview
       pointer: Time.zone.today + 1.day,
       period: "day",
       sort: "summary",
-      repeating: "off",
+      types: EventTypes.new(%w[one_off long_running]),
       today_url: "/events",
       today: false
     )

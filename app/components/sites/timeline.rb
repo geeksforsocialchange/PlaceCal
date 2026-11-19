@@ -22,7 +22,7 @@ class Components::Sites::Timeline < Components::Base
   prop :pointer, _Union(Date, String)
   prop :period, _Nilable(String), default: nil
   prop :sort, _Nilable(String), default: nil
-  prop :repeating, _Nilable(String), default: nil
+  prop :types, ::EventTypes, default: -> { ::EventTypes.all }
   prop :path, _Nilable(String), default: nil
   prop :show_upcoming, _Boolean, default: false
   prop :date_period, _Nilable(String), default: nil
@@ -194,7 +194,7 @@ class Components::Sites::Timeline < Components::Base
 
   def upcoming_url
     today = Time.zone.today
-    "/#{@path}/#{today.year}/#{today.month}/#{today.day}?period=upcoming&sort=#{@sort}&repeating=#{@repeating}#paginator"
+    "/#{@path}/#{today.year}/#{today.month}/#{today.day}?#{query('upcoming')}#paginator"
   end
 
   def url_for(date)
@@ -204,6 +204,8 @@ class Components::Sites::Timeline < Components::Base
       today = Time.zone.today
       d = d.year == today.year && d.month == today.month ? today : d.beginning_of_month
     end
-    "/#{@path}/#{d.year}/#{d.month}/#{d.day}?period=#{period_for_url}&sort=#{@sort}&repeating=#{@repeating}#paginator"
+    "/#{@path}/#{d.year}/#{d.month}/#{d.day}?#{query(period_for_url)}#paginator"
   end
+
+  def query(period) = { period:, sort: @sort, **@types.to_params }.to_query
 end

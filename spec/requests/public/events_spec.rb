@@ -41,7 +41,7 @@ RSpec.describe "Public Events", type: :request do
       csv_link = meta.css("a").find { |a| a.text.include?("Download as CSV") }
 
       expect(ical_link["href"]).to eq(events_url(host: "#{site.slug}.lvh.me", protocol: "webcal", format: :ics))
-      expect(csv_link["href"]).to eq(events_url(host: "#{site.slug}.lvh.me", format: :csv, period: "future", sort: "time", repeating: "on"))
+      expect(csv_link["href"]).to eq(events_url(host: "#{site.slug}.lvh.me", format: :csv, period: "future", sort: "time"))
     end
 
     it "has no permalink, since the listing has no single page on placecal.org" do

@@ -11,7 +11,6 @@ RSpec.describe Components::Sites::Timeline, type: :component do
       pointer: today,
       period: "day",
       sort: "time",
-      repeating: "on",
       path: "events"
     }
   end
@@ -118,7 +117,7 @@ RSpec.describe Components::Sites::Timeline, type: :component do
       it "generates URLs with month period" do
         render_inline(described_class.new(**attrs))
 
-        expect(page).to have_link(href: %r{/events/\d+/\d+/\d+\?period=month&sort=time&repeating=on#paginator})
+        expect(page).to have_link(href: %r{/events/\d+/\d+/\d+\?period=month&sort=time#paginator})
       end
     end
 
@@ -200,7 +199,13 @@ RSpec.describe Components::Sites::Timeline, type: :component do
     it "generates correct URLs with all params" do
       render_inline(described_class.new(**base_attrs))
 
-      expect(page).to have_link(href: %r{/events/2022/11/\d+\?period=day&sort=time&repeating=on#paginator})
+      expect(page).to have_link(href: %r{/events/2022/11/\d+\?period=day&sort=time#paginator})
+    end
+
+    it "carries unticked event types in the URLs" do
+      render_inline(described_class.new(**base_attrs, types: EventTypes.new(%w[long_running])))
+
+      expect(page.all("a").map { it[:href] }).to all(end_with("&sort=time&types%5B%5D=long_running#paginator"))
     end
 
     context "with custom path" do

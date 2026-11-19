@@ -90,36 +90,29 @@ RSpec.describe EventsQuery do
       end
     end
 
-    describe "repeating filtering" do
+    describe "event type filtering" do
       let!(:one_off_event) { create(:future_event, organiser: partner, rrule: nil) }
       let!(:recurring_event) { create(:recurring_event, organiser: partner, dtstart: 2.days.from_now) }
+      let!(:exhibition) { create(:event, organiser: partner, dtstart: 2.days.from_now, dtend: 2.days.from_now + 3.days + 1.minute) }
 
-      context "with repeating: 'on' (default)" do
-        it "includes all events" do
-          query = described_class.new(site:, day: today)
-          result = query.call(period: "future", repeating: "on")
-          expect(result.values.flatten.count).to eq(2)
-        end
+      def listed(types)
+        described_class.new(site:, day: today).call(period: "future", types: EventTypes.new(types)).values.flatten
       end
 
-      context "with repeating: 'off'" do
-        it "excludes recurring events" do
-          query = described_class.new(site:, day: today)
-          result = query.call(period: "future", repeating: "off")
-          events = result.values.flatten
-          expect(events).to include(one_off_event)
-          expect(events).not_to include(recurring_event)
-        end
+      it "lists every type by default" do
+        expect(described_class.new(site:, day: today).call(period: "future").values.flatten)
+          .to contain_exactly(one_off_event, recurring_event, exhibition)
       end
 
-      context "with repeating: 'only'" do
-        it "excludes one-off events" do
-          query = described_class.new(site:, day: today)
-          result = query.call(period: "future", repeating: "only")
-          events = result.values.flatten
-          expect(events).to include(recurring_event)
-          expect(events).not_to include(one_off_event)
-        end
+      it "lists only the ticked types" do
+        expect(listed(%w[one_off repeating long_running])).to contain_exactly(one_off_event, recurring_event, exhibition)
+        expect(listed(%w[one_off])).to contain_exactly(one_off_event)
+        expect(listed(%w[long_running])).to contain_exactly(exhibition)
+        expect(listed(%w[one_off repeating])).to contain_exactly(one_off_event, recurring_event)
+      end
+
+      it "lists nothing when no type is ticked" do
+        expect(listed([])).to be_empty
       end
     end
 
@@ -411,11 +404,17 @@ RSpec.describe EventsQuery do
       expect(counts).to eq(Date.new(2023, 7, 4) => 1, Date.new(2023, 7, 5) => 1, Date.new(2023, 7, 6) => 1)
     end
 
-    it "applies the repeating filter" do
-      expect(query.future_counts_by_day(organiser_or_place: organiser, repeating: "off").keys)
+    it "applies the event type filter" do
+      exhibition = create(:event, organiser:, dtstart: Time.zone.local(2023, 7, 7, 10), dtend: Time.zone.local(2023, 8, 7, 17))
+      long_running = EventTypes.new(%w[long_running])
+
+      expect(query.future_counts_by_day(organiser_or_place: organiser, types: long_running)).to eq(Date.new(2023, 7, 7) => 1)
+      expect(query.future_through(Date.new(2023, 7, 7), organiser_or_place: organiser, types: long_running).values.flatten).to eq([exhibition])
+      expect(query.future_counts_by_day(organiser_or_place: organiser, types: EventTypes.new(%w[one_off])).keys)
         .to eq([Date.new(2023, 7, 4), Date.new(2023, 7, 5)])
-      expect(query.future_counts_by_day(organiser_or_place: organiser, repeating: "only").keys)
+      expect(query.future_counts_by_day(organiser_or_place: organiser, types: EventTypes.new(%w[repeating])).keys)
         .to eq([Date.new(2023, 7, 6)])
+      expect(query.future_counts_by_day(organiser_or_place: organiser, types: EventTypes.new([]))).to eq({})
     end
 
     it "loads events up to the end of the given local day" do
@@ -423,6 +422,32 @@ RSpec.describe EventsQuery do
 
       expect(events).to eq([late_event])
       expect(events).not_to include(after_midnight_event, repeating_event)
+    end
+  end
+
+  # Specs run on 8 Nov 2022
+  describe "#running" do
+    let(:organiser) { create(:partner) }
+    let(:query) { described_class.new(site: nil, day: today) }
+    let!(:on_now) { create(:event, organiser:, dtstart: Time.zone.local(2022, 10, 1, 10), dtend: Time.zone.local(2023, 1, 17, 17)) }
+    let!(:on_now_repeating) do
+      create(:recurring_event, organiser:, dtstart: Time.zone.local(2022, 10, 2, 10), dtend: Time.zone.local(2023, 1, 17, 17))
+    end
+
+    before do
+      create(:event, organiser:, dtstart: Time.zone.local(2022, 9, 1, 10), dtend: Time.zone.local(2022, 11, 7, 17))
+      create(:event, organiser:, dtstart: Time.zone.local(2022, 11, 20, 10), dtend: Time.zone.local(2023, 1, 20, 17))
+      create(:event, organiser:, dtstart: Time.zone.local(2022, 11, 6, 10), dtend: Time.zone.local(2022, 11, 9, 9))
+      create(:event, dtstart: Time.zone.local(2022, 10, 1, 10), dtend: Time.zone.local(2023, 1, 17, 17))
+    end
+
+    it "returns the partner's long-running events already on, by start" do
+      expect(query.running(organiser_or_place: organiser)).to eq([on_now, on_now_repeating])
+    end
+
+    it "returns them while long-running events are ticked, repeating or not" do
+      expect(query.running(organiser_or_place: organiser, types: EventTypes.new(%w[long_running]))).to eq([on_now, on_now_repeating])
+      expect(query.running(organiser_or_place: organiser, types: EventTypes.new(%w[one_off repeating]))).to eq([])
     end
   end
 
@@ -771,6 +796,14 @@ RSpec.describe EventsQuery do
       create(:past_event, place: partner)
 
       expect(described_class.upcoming_counts_by_partner([partner.id])).to eq({})
+    end
+
+    it "counts long-running events still on, not ones that have ended" do
+      partner = create(:partner)
+      create(:event, place: partner, dtstart: 1.month.ago, dtend: 1.month.from_now)
+      create(:event, place: partner, dtstart: 1.month.ago, dtend: 1.day.ago)
+
+      expect(described_class.upcoming_counts_by_partner([partner.id])).to eq(partner.id => 1)
     end
 
     it "counts events a partner organises with no place or elsewhere, and its own events once" do

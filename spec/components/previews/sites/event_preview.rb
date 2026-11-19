@@ -50,6 +50,18 @@ class Sites::EventPreview < Lookbook::Preview
     render Components::Sites::Event.new(display_context: :page, event: PreviewSupport.sample_full_event)
   end
 
+  # @label Long-running, list view
+  # @notes An event of more than 3 days says when it runs until in place of its times.
+  def long_running_card
+    render Components::Sites::Event.new(display_context: :list, event: LongRunningPreviewSupport.event)
+  end
+
+  # @label Long-running, page view
+  # @notes The date line gives the whole range, with no time line.
+  def long_running_page
+    render Components::Sites::Event.new(display_context: :page, event: LongRunningPreviewSupport.event)
+  end
+
   # @label Repeating event
   def repeating_event
     render Components::Sites::Event.new(display_context: :list, event: PreviewSupport.sample_repeating_event)
