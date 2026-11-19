@@ -3,12 +3,14 @@
 module CalendarImporter::Events
   class LinkedDataEvent < Base
     imports title: 'name', description: 'description', start_time: 'startDate', end_time: 'endDate', repeats: nil,
-            location: 'location', webpage: 'url', online_link: nil, spaces_available: nil, status: 'eventStatus',
-            image: 'image', source_categories: 'keywords', source_organiser: 'organizer'
+            location: %w[location.address location.name], webpage: 'url', online_link: nil, spaces_available: nil, status: 'eventStatus',
+            image: 'image', source_categories: 'keywords', source_organiser: %w[organizer performer]
 
     STATUSES = { 'EventCancelled' => 'cancelled', 'EventPostponed' => 'postponed' }.freeze
-    # Not in Parsers::Base::CONTEXT, so compacting leaves it under its full IRI
+    SCHEMA_ORG = %r{\A(https?://schema\.org/|schema:)}
+    # Not in Parsers::Base::CONTEXT, so compacting leaves them under their full IRI
     KEYWORDS = 'http://schema.org/keywords'
+    PERFORMER = 'http://schema.org/performer'
 
     attr_reader :uid, :start_time, :end_time, :summary, :description, :location
 
@@ -49,6 +51,8 @@ module CalendarImporter::Events
       return if loc.blank?
 
       address = loc['address']
+      # Some sites (dice.fm) give the address as one line of text, postcode included
+      return address.strip.presence || loc['name'] if address.is_a?(String)
       return loc['name'] unless address.is_a?(Hash)
 
       # Build full address from components
@@ -76,7 +80,7 @@ module CalendarImporter::Events
     # eventStatus is optional; a postponed event keeps its old startDate, so it's shown on that date as postponed
     def status
       value = @event_status.is_a?(Hash) ? @event_status['@id'] : @event_status
-      STATUSES.fetch(value.to_s.sub(%r{\A(https?://schema\.org/|schema:)}, ''), 'scheduled')
+      STATUSES.fetch(value.to_s.sub(SCHEMA_ORG, ''), 'scheduled')
     end
 
     def publisher_url
@@ -97,11 +101,20 @@ module CalendarImporter::Events
       Array.wrap(keywords).flat_map { |keyword| named(keyword) }
     end
 
+    # Older OutSavvy pages name the organiser only as a performer; a performer that is a person or band is the act
     def source_organiser
-      Base.clean_list(Array.wrap(@event['organiser']).flat_map { |organiser| named(organiser) }).join(', ').presence
+      names_of(@event['organiser']) || names_of(Array.wrap(@event[PERFORMER]).select { |node| organization?(node) })
     end
 
     private
+
+    def names_of(nodes)
+      Base.clean_list(Array.wrap(nodes).flat_map { |node| named(node) }).join(', ').presence
+    end
+
+    def organization?(node)
+      node.is_a?(Hash) && Array.wrap(node['@type']).any? { |type| type.to_s.sub(SCHEMA_ORG, '') == 'Organization' }
+    end
 
     def named(node)
       return [node] unless node.is_a?(Hash)

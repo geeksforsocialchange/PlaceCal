@@ -25,16 +25,17 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
                                                      .and_return(CalendarSourceResolver::Result.new(kind: "luma", source: luma_feed))
     end
 
+    # Stimulus loads as a module, so it can be undefined on the first try; synchronize retries only Capybara errors
     def await_source_controller
       page.document.synchronize do
-        connected = page.evaluate_script(%(Stimulus.controllers.some((c) => c.identifier === "calendar-source")))
+        connected = page.evaluate_script(%(window.Stimulus?.controllers.some((c) => c.identifier === "calendar-source")))
         raise Capybara::ElementNotFound, "calendar-source not connected" unless connected
       end
     end
 
     def await_lookup
       page.document.synchronize do
-        pending = page.evaluate_script(%(Stimulus.controllers.find((c) => c.identifier === "calendar-source").pendingValue))
+        pending = page.evaluate_script(%(window.Stimulus?.controllers.find((c) => c.identifier === "calendar-source")?.pendingValue))
         raise Capybara::ExpectationNotMet, "source lookup still running" if pending
       end
     end

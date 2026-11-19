@@ -67,7 +67,11 @@ RSpec.describe "Admin calendar sources", type: :request do
         expect(rows["Ticket Solve"]["Spaces available"]).to eq("status")
         expect(rows["Ticket Solve"]["End"]).to eq("Not imported")
         expect(rows["OutSavvy"]["Cancelled or postponed"]).to eq("eventStatus")
-        expect(rows["Wix Events"]["Image"]).to eq("Not imported")
+        expect(rows["Wix Events"]["Image"]).to eq("mainImage.url")
+        expect(rows["Wix Events"]["Source organiser"]).to eq("Not imported")
+        expect(rows["Ticket Solve"]["Event webpage"]).to eq("url")
+        expect(rows["Resident Advisor"]["Cancelled or postponed"]).to eq("title")
+        expect(rows["TicketSource"]["Image"]).to eq("images.src")
       end
     end
   end
