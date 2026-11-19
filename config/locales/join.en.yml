@@ -175,20 +175,22 @@ en:
           items:
             - title: Calendar apps
               icon: calendar
-              brands: [googlecalendar, microsoftoutlook, teamup]
-              body: Google Calendar, Outlook and Microsoft 365, Teamup, and any calendar that publishes an iCal feed.
+              brands: [googlecalendar, microsoftoutlook, apple, teamup]
+              body: Google Calendar, Outlook and Microsoft 365, Apple Calendar, Teamup, and any calendar that publishes an iCal feed.
             - title: Ticketing and event sites
               icon: ticket
               brands:
                 [
                   eventbrite,
                   meetup,
+                  luma,
                   tickettailor,
                   ticketsource,
                   ticketsolve,
                   outsavvy,
+                  residentadvisor,
                 ]
-              body: Eventbrite, Meetup, Ticket Tailor, TicketSource, Ticketsolve, OutSavvy and Resident Advisor.
+              body: Eventbrite, Meetup, Luma, Ticket Tailor, TicketSource, Ticketsolve, OutSavvy and Resident Advisor.
             - title: Website builders
               icon: desktop
               brands: [wordpress, squarespace, wix]

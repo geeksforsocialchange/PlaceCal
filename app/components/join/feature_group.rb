@@ -18,7 +18,7 @@ class Components::Join::FeatureGroup < Components::Join::Base
         UI::Heading(id: "#{@group[:key]}-heading", size: :title, spacing: :xs) { @group[:title] }
         UI::Text(variant: :lede, tone: :muted, measure: :prose, spacing: :lg, pretty: true) { @group[:summary] }
         UI::Grid(cols: { md: 2, lg: @group[:items].size == 3 ? 3 : 4 }) do
-          @group[:items].each { |item| Join::FeatureCard(title: item[:title], body: item[:body], icon: item[:icon]&.to_sym, brands: Array(item[:brands]).map(&:to_sym)) }
+          @group[:items].each { |item| Join::FeatureCard(title: item[:title], body: item[:body], icon: item[:icon]&.to_sym, brands: Array(item[:brands]).map(&:to_sym), subgrid: true) }
         end
         render_link if @group[:link]
       end

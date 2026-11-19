@@ -161,6 +161,13 @@ module Admin
       end
     end
 
+    def resolve_source
+      authorize Calendar, :create?
+
+      result = CalendarSourceResolver.call(params[:source])
+      render json: { source: result&.source, kind: result&.kind }
+    end
+
     private
 
     def build_partner_options
