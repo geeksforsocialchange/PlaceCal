@@ -16,6 +16,13 @@ RSpec.describe CalendarImporter::CalendarImporter do
   end
 
   describe "#parser" do
+    it "reads a Luma calendar feed as iCal without fetching it" do
+      calendar = Calendar.new(source: "https://api.lu.ma/ics/get?entity=calendar&id=cal-8tfFZUVfInFAcNa", importer_mode: "auto")
+
+      expect(described_class.new(calendar).parser).to eq(CalendarImporter::Parsers::Ics)
+      expect(a_request(:any, /.*/)).not_to have_been_made
+    end
+
     context "with webcal calendars" do
       let(:url) { "webcal://p24-calendars.icloud.com/published/2/WvhkIr4F3oBQrToPU-lkO6WwDTpzNTpENs-Qtbo48FhhrAfDp3gkIal2XPd5eUVO0LLERrehetRzj43c6zvbotf9_DNI6heKXBejvAkz8JQ" }
 

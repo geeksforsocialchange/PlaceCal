@@ -16,6 +16,15 @@ module CalendarsHelper
     parsers.map { |parser| [parser::NAME, parser::KEY] }.prepend(['(Auto detect)', 'auto'])
   end
 
+  def calendar_source_data
+    notices = %w[google eventbrite luma].index_with { t("admin.calendars.wizard.source.rewritten.#{it}") }
+    {
+      controller: 'calendar-source',
+      'calendar-source-resolve-url-value': resolve_source_admin_calendars_path,
+      'calendar-source-notices-value': notices.to_json
+    }
+  end
+
   def source_test_labels
     scope = 'admin.calendars.wizard.source'
     {

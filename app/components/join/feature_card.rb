@@ -10,12 +10,16 @@ class Components::Join::FeatureCard < Components::Join::Base
   prop :icon, _Nilable(Symbol), default: nil
   # Logos of the products the card names; decorative, since the text names them.
   prop :brands, _Array(Symbol), default: -> { [] }
+  # Shares its text and logo rows with the cards beside it, so the logos start level across the grid.
+  prop :subgrid, _Boolean, default: false
 
   def view_template
-    UI::Card(class: 'flex flex-col') do
-      div(class: 'mb-3 text-secondary-strong') { icon(@icon, size: '7') } if @icon
-      UI::Heading(level: @heading_level, size: :item, spacing: :xs, balance: true) { @title }
-      UI::Text(variant: :lede, tone: :muted, spacing: :none, pretty: true) { @body }
+    UI::Card(class: @subgrid ? 'grid grid-rows-subgrid row-span-2 gap-y-0' : 'flex flex-col') do
+      div do
+        div(class: 'mb-3 text-secondary-strong') { icon(@icon, size: '7') } if @icon
+        UI::Heading(level: @heading_level, size: :item, spacing: :xs, balance: true) { @title }
+        UI::Text(variant: :lede, tone: :muted, spacing: :none, pretty: true) { @body }
+      end
       render_brands if @brands.any?
     end
   end
@@ -23,7 +27,7 @@ class Components::Join::FeatureCard < Components::Join::Base
   private
 
   def render_brands
-    div(class: 'mt-auto pt-4 text-tertiary') do
+    div(class: @subgrid ? 'pt-4 text-tertiary' : 'mt-auto pt-4 text-tertiary') do
       UI::Cluster(gap: :sm_md) { @brands.each { |brand| render_brand(brand) } }
     end
   end

@@ -27,29 +27,27 @@ class Components::Admin::SourceInput < Components::Admin::Base
   def render_source_field
     Field(for: @form.field_id(:source), label: I18n.t('activerecord.attributes.calendar.source'), required: true,
           hint: I18n.t('admin.calendars.handbook_hint_html').html_safe,
-          data: { controller: 'google-calendar-source' }) do |f|
+          data: calendar_source_data) do |f|
       div(class: 'flex gap-2') do
         raw(@form.input_field(:source, **f.aria,
                               class: 'input input-bordered flex-1 font-mono text-sm',
                               placeholder: I18n.t('admin.calendars.fields.source_placeholder'),
                               autocomplete: 'off',
                               'data-source-validator-target': 'input',
-                              'data-google-calendar-source-target': 'input',
+                              'data-calendar-source-target': 'input',
                               'data-action': 'input->source-validator#sourceChanged ' \
-                                             'input->google-calendar-source#rewrite change->google-calendar-source#rewrite'))
+                                             'input->calendar-source#rewrite change->calendar-source#rewrite'))
         render_test_button
       end
       f.after do
-        render_google_rewrite_notice
+        render_rewrite_notice
         render_feedback
       end
     end
   end
 
-  def render_google_rewrite_notice
-    p(class: 'text-sm text-success mt-2 hidden', role: 'status', data_google_calendar_source_target: 'notice') do
-      I18n.t('admin.calendars.wizard.source.google_rewritten')
-    end
+  def render_rewrite_notice
+    p(class: 'text-sm text-success mt-2 hidden', role: 'status', data_calendar_source_target: 'notice')
   end
 
   def render_test_button

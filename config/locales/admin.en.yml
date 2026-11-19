@@ -340,7 +340,10 @@ en:
           test_button: "Test"
           test_ok: "OK!"
           test_error: "Error"
-          google_rewritten: "We changed this to your calendar's feed address, which is the one PlaceCal can read."
+          rewritten:
+            google: "We changed this to your calendar's feed address, which is the one PlaceCal can read."
+            eventbrite: "We changed this to the organiser's Eventbrite page, so PlaceCal imports all their events, not just this one."
+            luma: "We changed this to your Luma calendar's feed address, which is the one PlaceCal can read."
           success: "This URL is valid and ready to import!"
           error: "Unable to validate this URL"
           api_key_heading: "This calendar needs an API key"
