@@ -39,10 +39,7 @@ class Views::Layouts::Application < Phlex::HTML
         stylesheet_link_tag 'public_tailwind', media: 'all', 'data-turbo-track': 'reload'
         Shared::ThemeHead(theme:)
         raw content_for(:theme_head) if content_for?(:theme_head)
-        preload_font('rawline/rawline-500.woff2')
-        preload_font('rawline/rawline-700.woff2')
-        preload_font('rawline/rawline-800.woff2')
-        preload_font('trocchi/Trocchi-Regular.woff2')
+        preload_core_fonts unless theme.font_stylesheet
         render_meta
         shim_url = asset_path('es-module-shims.js')
         script do
@@ -264,6 +261,11 @@ class Views::Layouts::Application < Phlex::HTML
     return t('directory.home.description') unless site
 
     site.og_description || t('meta.description', site: site.name)
+  end
+
+  # A theme with its own webfont doesn't use these, and preloading them would hold up its first paint
+  def preload_core_fonts
+    %w[rawline/rawline-500.woff2 rawline/rawline-700.woff2 rawline/rawline-800.woff2 trocchi/Trocchi-Regular.woff2].each { preload_font(it) }
   end
 
   def preload_font(path)
