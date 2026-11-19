@@ -183,10 +183,12 @@ en:
                 [
                   eventbrite,
                   meetup,
+                  luma,
                   tickettailor,
                   ticketsource,
                   ticketsolve,
                   outsavvy,
+                  residentadvisor,
                 ]
               body: Eventbrite, Meetup, Luma, Ticket Tailor, TicketSource, Ticketsolve, OutSavvy and Resident Advisor.
             - title: Website builders
