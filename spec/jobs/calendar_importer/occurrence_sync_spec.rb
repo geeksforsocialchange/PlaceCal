@@ -185,8 +185,8 @@ RSpec.describe CalendarImporter::OccurrenceSync do
       data = CalendarImporter::Events::TickettailorEvent.new(
         "id" => "tt-1",
         "name" => "A Ticket Tailor event",
-        "start" => { "date" => "2030-02-01", "time" => "19:00", "tz" => "UTC" },
-        "end" => { "date" => "2030-02-01", "time" => "21:00", "tz" => "UTC" }
+        "start" => { "date" => "2030-02-01", "time" => "19:00", "iso" => "2030-02-01T19:00:00+00:00" },
+        "end" => { "date" => "2030-02-01", "time" => "21:00", "iso" => "2030-02-01T21:00:00+00:00" }
       )
       sync_event(data)
       row_for(data).update!(are_spaces_available: "Sold out")
