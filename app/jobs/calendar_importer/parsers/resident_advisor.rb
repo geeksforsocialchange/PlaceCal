@@ -68,7 +68,7 @@ module CalendarImporter::Parsers
         }
       GRAPHQL
 
-      events_from(query_graphql_endpoint(query), 'promoter')
+      record_from(query_graphql_endpoint(query), 'promoter')['events'] || []
     end
 
     def get_club_events(id)
@@ -90,17 +90,20 @@ module CalendarImporter::Parsers
         }
       GRAPHQL
 
-      events_from(query_graphql_endpoint(query), 'venue')
+      club = record_from(query_graphql_endpoint(query), 'venue')
+      # The club's events don't name a venue: they're all at the club
+      venue = club.slice('id', 'name', 'address')
+      (club['events'] || []).map { |event| { 'venue' => venue }.merge(event) }
     end
 
     # A missing entity must fail loudly: nothing else notices a deleted promoter or venue.
-    def events_from(response, entity)
+    def record_from(response, entity)
       raise InaccessibleFeed, I18n.t('admin.calendars.wizard.source.unreadable', code: response.code) unless response.success?
 
       record = response.dig('data', entity)
       raise InaccessibleFeed, I18n.t('admin.calendars.wizard.source.not_found') if record.nil?
 
-      record['events'] || []
+      record
     end
 
     # Send a POST request to the GraphQL endpoint

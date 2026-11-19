@@ -60,8 +60,8 @@ RSpec.describe "Importer event classes" do
                               { "id" => "d1", "start" => "2030-02-01T19:00:00Z", "end" => "2030-02-01T21:00:00Z" },
                               { publisher_url: "https://www.ticketsource.co.uk/example" }],
       "TickettailorEvent" => [{ "id" => "tt-1", "name" => "A Ticket Tailor event",
-                                "start" => { "date" => "2030-02-01", "time" => "19:00", "tz" => "UTC" },
-                                "end" => { "date" => "2030-02-01", "time" => "21:00", "tz" => "UTC" } }],
+                                "start" => { "date" => "2030-02-01", "time" => "19:00", "iso" => "2030-02-01T19:00:00+00:00" },
+                                "end" => { "date" => "2030-02-01", "time" => "21:00", "iso" => "2030-02-01T21:00:00+00:00" } }],
       "WixEvent" => [{ "id" => "wix-1", "title" => "A Wix event",
                        "scheduling" => { "config" => { "startDate" => "2030-02-01T19:00:00Z", "endDate" => "2030-02-01T21:00:00Z" } } }]
     }

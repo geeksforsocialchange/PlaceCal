@@ -97,15 +97,22 @@ RSpec.describe CalendarImporter::Parsers::Tickettailor do
         "id" => "ev_123456",
         "name" => "Test Event",
         "description" => "A test event description",
+        "timezone" => "Europe/London",
         "start" => {
-          "date" => "2026-03-15",
+          "date" => "2026-06-15",
+          "formatted" => "Mon 15 Jun 2026 2:00 PM",
+          "iso" => "2026-06-15T14:00:00+01:00",
           "time" => "14:00",
-          "tz" => "Europe/London"
+          "timezone" => "+01:00",
+          "unix" => 1_781_528_400
         },
         "end" => {
-          "date" => "2026-03-15",
+          "date" => "2026-06-15",
+          "formatted" => "Mon 15 Jun 2026 5:00 PM",
+          "iso" => "2026-06-15T17:00:00+01:00",
           "time" => "17:00",
-          "tz" => "Europe/London"
+          "timezone" => "+01:00",
+          "unix" => 1_781_539_200
         },
         "venue" => {
           "name" => "Test Venue",
@@ -135,18 +142,30 @@ RSpec.describe CalendarImporter::Parsers::Tickettailor do
       expect(event.publisher_url).to eq("https://www.tickettailor.com/events/testorg/123456")
     end
 
-    it "parses start and end times correctly" do
-      events = parser.import_events_from([sample_event_data])
-      event = events.first
+    it "parses start and end times at their UTC offset" do
+      event = parser.import_events_from([sample_event_data]).first
 
-      expect(event.dtstart).to be_present
-      expect(event.dtstart.year).to eq(2026)
-      expect(event.dtstart.month).to eq(3)
-      expect(event.dtstart.day).to eq(15)
-      expect(event.dtstart.hour).to eq(14)
+      expect(event.dtstart).to eq(Time.utc(2026, 6, 15, 13, 0))
+      expect(event.dtend).to eq(Time.utc(2026, 6, 15, 16, 0))
+    end
 
-      expect(event.dtend).to be_present
-      expect(event.dtend.hour).to eq(17)
+    it "reads a time without an iso field in the event's timezone" do
+      data = sample_event_data.merge("timezone" => "Europe/Paris", "start" => { "date" => "2026-06-15", "time" => "14:00" })
+
+      expect(parser.import_events_from([data]).first.dtstart).to eq(Time.utc(2026, 6, 15, 12, 0))
+    end
+
+    it "keeps the recorded events at their London times, in summer and winter", :aggregate_failures do
+      events = VCR.use_cassette("tickettailor_events", match_requests_on: %i[method uri]) do
+        parser.import_events_from(described_class.new(calendar).download_calendar)
+      end
+      summer = events.find { it.uid == "ev_4668136" }
+      winter = events.find { it.uid == "ev_4739593" }
+
+      expect(summer.dtstart).to eq(Time.utc(2024, 10, 12, 9, 0))
+      expect(summer.dtstart.in_time_zone("Europe/London").strftime("%H:%M")).to eq("10:00")
+      expect(winter.dtstart).to eq(Time.utc(2024, 11, 16, 10, 0))
+      expect(winter.dtend).to eq(Time.utc(2024, 11, 16, 12, 30))
     end
 
     it "filters out non-published events" do
