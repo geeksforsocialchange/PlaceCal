@@ -1,8 +1,8 @@
-# Contributing
+## Contributing
 
-Interested in getting involved? Jump into [PlaceCal RocketChat](https://chat.placecal.org) and say hi or email [kim@gfsc.studio](mailto:kim@gfsc.studio) for an induction.
+Want to start using PlaceCal, or know more about it? The [PlaceCal Handbook](https://handbook.placecal.org/) is your first stop.
 
-More to come!
+Interested in getting involved in PlaceCal development? Jump into [Geeks for Social Change Discord](https://discord.gfsc.community/?ref=CONTRIBUTING.md) and join the `#placecal` channel, or email [kim@gfsc.studio](mailto:kim@gfsc.studio) for an induction.
 
 ## Code of Conduct
 
