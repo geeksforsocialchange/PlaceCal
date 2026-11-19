@@ -358,4 +358,20 @@ RSpec.describe User, type: :model do
       expect(user.admin_roles).to include("partnership_admin")
     end
   end
+
+  describe "#any_admin_role?" do
+    it "agrees with admin_roles for every kind of admin" do
+      %i[root_user editor_user neighbourhood_admin partner_admin partnership_admin].each do |factory|
+        user = create(factory)
+        expect(user.any_admin_role?).to be(true), "#{factory} should count as an admin"
+        expect(user.admin_roles).to be_present
+      end
+    end
+
+    it "is false for a user with no admin role" do
+      user = create(:citizen_user)
+      expect(user.any_admin_role?).to be(false)
+      expect(user.admin_roles).to be_blank
+    end
+  end
 end

@@ -264,6 +264,12 @@ class User < ApplicationRecord
     tags.any? { |tag| tag[:type] == 'Partnership' }
   end
 
+  # Stops at the first role found, unlike admin_roles, as the admin sidebar asks on every page
+  # @return [Boolean]
+  def any_admin_role?
+    root? || national_admin? || editor? || neighbourhood_admin? || partner_admin? || partnership_admin? || site_admin?
+  end
+
   # @return [String] comma-separated list of active admin role names
   def admin_roles
     types = []
