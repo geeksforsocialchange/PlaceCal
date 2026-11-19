@@ -10,7 +10,16 @@ class SocialLink
     youtube: { hosts: %w[youtube.com youtu.be], icon: :contact_youtube },
     linkedin: { hosts: %w[linkedin.com], icon: :contact_linkedin },
     threads: { hosts: %w[threads.net threads.com], icon: :contact_threads },
-    x: { hosts: %w[x.com twitter.com], icon: :contact_x }
+    x: { hosts: %w[x.com twitter.com], icon: :contact_x },
+    whatsapp: { hosts: %w[whatsapp.com wa.me], icon: :contact_whatsapp },
+    telegram: { hosts: %w[t.me telegram.me], icon: :contact_telegram },
+    discord: { hosts: %w[discord.gg discord.com], icon: :contact_discord },
+    linktree: { hosts: %w[linktr.ee], icon: :contact_linktree },
+    pixelfed: { hosts: %w[pixelfed.social], icon: :contact_pixelfed },
+    bandcamp: { hosts: %w[bandcamp.com], icon: :contact_bandcamp },
+    soundcloud: { hosts: %w[soundcloud.com], icon: :contact_soundcloud },
+    twitch: { hosts: %w[twitch.tv], icon: :contact_twitch },
+    vimeo: { hosts: %w[vimeo.com], icon: :contact_vimeo }
   }.freeze
 
   # Blogs whose profile addresses look like fediverse ones (/@name)
@@ -118,7 +127,8 @@ class SocialLink
     when :bluesky then path[%r{\A/profile/([^/]+)/?\z}, 1]
     when :facebook then path[HANDLE_SEGMENT, 1]&.then { it unless it.end_with?('.php') }
     when :youtube then path[%r{\A/@([\w.-]+)/?\z}, 1]&.then { "@#{it}" }
-    when :link, :linkedin then nil
+    # Invite codes and video numbers, not account names
+    when :link, :linkedin, :whatsapp, :discord, :vimeo then nil
     else path[HANDLE_SEGMENT, 1]&.then { "@#{it}" }
     end
   end

@@ -18,7 +18,9 @@ class Views::Admin::Pages::Icons < Views::Admin::Base
     'Event' => %i[event_date event_duration event_place event_repeats event_time],
     'Contact' => %i[contact_email contact_facebook contact_instagram contact_instagram_circle contact_phone
                     contact_twitter contact_website contact_bluesky contact_linkedin contact_mastodon
-                    contact_threads contact_tiktok contact_x contact_youtube],
+                    contact_threads contact_tiktok contact_x contact_youtube contact_whatsapp contact_telegram
+                    contact_discord contact_linktree contact_pixelfed contact_bandcamp contact_soundcloud
+                    contact_twitch contact_vimeo],
     'Misc' => %i[misc_menu misc_place misc_question_mark misc_repeats misc_roundel misc_time],
     'Home' => %i[home_quote_open home_quote_close home_slide home_minus home_plus]
   }.freeze

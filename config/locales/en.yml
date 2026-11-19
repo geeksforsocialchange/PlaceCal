@@ -534,6 +534,15 @@ en:
         tiktok: "TikTok"
         x: "X"
         youtube: "YouTube"
+        whatsapp: "WhatsApp"
+        telegram: "Telegram"
+        discord: "Discord"
+        linktree: "Linktree"
+        pixelfed: "Pixelfed"
+        bandcamp: "Bandcamp"
+        soundcloud: "SoundCloud"
+        twitch: "Twitch"
+        vimeo: "Vimeo"
     join:
       hero:
         kicker: "Join PlaceCal"
