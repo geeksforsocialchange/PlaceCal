@@ -37,7 +37,7 @@ module CalendarImporter::Events
       image['url'] if image.is_a?(Hash)
     end
 
-    # Wix documents each category as an object with a name; every recorded event's list is empty
+    # Every recorded event's list is empty, so a category is assumed to be a name or an object with one
     def source_categories
       Array.wrap(@event['categories']).map { |category| category.is_a?(Hash) ? category['name'] : category }
     end
