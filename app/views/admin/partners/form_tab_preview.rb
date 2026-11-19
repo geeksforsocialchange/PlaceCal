@@ -119,7 +119,7 @@ class Views::Admin::Partners::FormTabPreview < Views::Admin::Base
       description: t('admin.partners.sections.upcoming_events_description')
     )
 
-    upcoming_events = partner.events.upcoming.where(dtstart: ..30.days.from_now).order(:dtstart).limit(20)
+    upcoming_events = partner.events.upcoming.where(dtstart: ..30.days.from_now).includes(:calendar).order(:dtstart).limit(20)
 
     if upcoming_events.any?
       render_events_table(upcoming_events)

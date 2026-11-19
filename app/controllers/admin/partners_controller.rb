@@ -289,10 +289,10 @@ module Admin
 
     # Override ApplicationController#set_partner with eager loading for admin forms
     def set_partner
-      @partner = Partner.friendly
-                        .includes(:calendars, :users, :facilities, :categories,
-                                  :service_areas, address: :neighbourhood)
-                        .find(params[:id])
+      partners = Partner.friendly.includes(:service_areas, address: :neighbourhood)
+      # Only the edit form's tabs list these; saving never reads them
+      partners = partners.includes(:calendars, :users, :facilities, :categories) if action_name == 'edit'
+      @partner = partners.find(params[:id])
     end
 
     def user_not_authorized
