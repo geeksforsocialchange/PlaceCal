@@ -64,6 +64,7 @@ RSpec.describe "Admin Accessibility", :slow, type: :system do
 
   {
     "calendar page" => -> { "/calendars/#{calendar.id}" },
+    "event page" => -> { "/events/#{event.id}" },
     "site page" => -> { "/sites/#{site.id}" },
     "neighbourhood page" => -> { "/neighbourhoods/#{ward.id}" },
     "partner edit form" => -> { "/partners/#{partner.id}/edit" },

@@ -23,7 +23,7 @@ pin 'tom-select', to: 'https://cdn.jsdelivr.net/npm/tom-select@2.7.0/+esm', prel
 pin 'leaflet', to: 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/+esm', preload: false
 
 # MapLibre GL for vector tile rendering with custom styles
-pin 'maplibre-gl', to: 'https://cdn.jsdelivr.net/npm/maplibre-gl@6.17.0/+esm', preload: false
+pin 'maplibre-gl', to: 'https://cdn.jsdelivr.net/npm/maplibre-gl@6.18.0/+esm', preload: false
 # maplibre-gl-leaflet 0.1.x is the first line to declare maplibre-gl v6 peer compat.
 # Its plain module, not +esm: jsDelivr's +esm bundle hard-codes its own maplibre-gl version instead of using the pin above.
 pin '@maplibre/maplibre-gl-leaflet', to: 'https://cdn.jsdelivr.net/npm/@maplibre/maplibre-gl-leaflet@0.1.4/dist/leaflet-maplibre-gl.mjs', preload: false

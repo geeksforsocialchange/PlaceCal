@@ -9,6 +9,7 @@
 #  calendar_state       :string           default("idle")
 #  checksum_updated_at  :datetime
 #  critical_error       :text
+#  default_description  :text
 #  feed_empty_since     :datetime
 #  import_started_at    :datetime
 #  importer_mode        :string           default("auto")
@@ -92,6 +93,7 @@ class Calendar < ApplicationRecord
   attribute :importer_mode,        :string, default: 'auto'      # nullable
   attribute :importer_used,        :string                       # nullable
   attribute :last_checksum,        :string                       # nullable
+  attribute :default_description,  :text                         # nullable
   attribute :last_import_at,       :datetime                     # nullable
   attribute :name,                 :string                       # NOT NULL
   attribute :notice_count,         :integer                      # nullable
@@ -103,7 +105,7 @@ class Calendar < ApplicationRecord
 
   alias_attribute :to_s, :name
 
-  auto_strip_attributes :name, :source, :public_contact_name, :public_contact_email, :public_contact_phone
+  auto_strip_attributes :name, :source, :public_contact_name, :public_contact_email, :public_contact_phone, :default_description
   # Normalised on assignment, so the form's blank field doesn't count as a feed change
   normalizes :api_token, with: ->(token) { token.strip.presence }
 
@@ -162,6 +164,7 @@ class Calendar < ApplicationRecord
 
   # ==== Callbacks ====
   before_save :clear_status_on_feed_change
+  before_save :reimport_on_default_description_change
   before_save :update_notice_count
 
   after_create :automatically_queue_calendar
@@ -281,6 +284,11 @@ class Calendar < ApplicationRecord
     errors.add :source, "The source URL returned an invalid code (#{e})"
   rescue CalendarImporter::Exceptions::UnsupportedFeed
     errors.add :source, 'Unable to autodetect calendar format, please pick an option from the list below'
+  end
+
+  # The feed is unchanged, so without this the next import would skip its events and keep the old default
+  def reimport_on_default_description_change
+    self.last_checksum = nil if persisted? && default_description_changed?
   end
 
   def clear_status_on_feed_change

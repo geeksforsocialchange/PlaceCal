@@ -7,6 +7,7 @@
 module CalendarImporter::Parsers
   class Eventbrite < Base
     NAME = 'Eventbrite'
+    HANDBOOK_PAGE = 'eventbrite'
     TICKETING = true
     KEY = 'eventbrite'
     DOMAINS = %w[www.eventbrite.com www.eventbrite.co.uk].freeze

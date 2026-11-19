@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class Views::Admin::Calendars::Show < Views::Admin::Base
-  include Phlex::Rails::Helpers::Truncate
-
   prop :calendar, Calendar, reader: :private
 
   def view_template
@@ -106,54 +104,6 @@ class Views::Admin::Calendars::Show < Views::Admin::Base
   end
 
   def render_events_table(events, type)
-    div(class: 'overflow-x-auto') do
-      table(class: 'table table-sm') do
-        thead do
-          tr do
-            th(class: 'w-24') { 'Date' }
-            th { 'Event' }
-            th { 'Location' }
-            th { t('admin.calendars.show.source_categories') }
-            th { t('admin.calendars.show.source_organiser') }
-          end
-        end
-        tbody do
-          events.each { |event| render_event_row(event, type) }
-        end
-      end
-    end
-  end
-
-  def render_event_row(event, type)
-    tr(class: 'hover') do
-      td(class: 'whitespace-nowrap') do
-        div(class: 'font-semibold text-sm') { event.dtstart.strftime('%d %b') }
-        div(class: 'text-xs text-gray-600') do
-          plain type == :past ? event.dtstart.strftime('%Y') : event.dtstart.strftime('%H:%M')
-        end
-      end
-      td { div(class: 'font-medium') { truncate(event.summary, length: 70) } }
-      td(class: 'text-sm text-base-content/70') { render_event_location(event) }
-      td(class: 'text-sm text-base-content/70') { render_source_value(Array(event.source_categories).join(', ')) }
-      td(class: 'text-sm text-base-content/70') { render_source_value(event.source_organiser) }
-    end
-  end
-
-  def render_source_value(value)
-    if value.present?
-      span(title: (value if value.length > 50)) { truncate(value, length: 50) }
-    else
-      span(class: 'text-gray-600') { t('admin.calendars.show.not_in_source') }
-    end
-  end
-
-  def render_event_location(event)
-    if event.address
-      plain truncate(event.address.to_s, length: 50)
-    elsif event.organiser
-      plain event.organiser.name
-    else
-      span(class: 'text-gray-500') { "\u2014" }
-    end
+    EventsTable(events:, past: type == :past)
   end
 end

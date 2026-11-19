@@ -78,6 +78,8 @@ class Event < ApplicationRecord
     'repeating' => "#{NOT_LONG_RUNNING_SQL} AND events.rrule <> 'false'::jsonb",
     'long_running' => LONG_RUNNING_SQL
   }.freeze
+  # A public event URL on any host, with or without a scheme or format, or a bare path
+  EVENT_URL = %r{\A(?:[a-z][a-z\d+.-]*://)?[^/?#\s]*/events/(\d+)(?:\.[a-z]+)?/?(?:[?#]\S*)?\z}i
 
   # ==== Attributes ====
   # Columns marked (nullable) have no NOT NULL constraint in the DB.
@@ -188,8 +190,24 @@ class Event < ApplicationRecord
     dtend == dtend.beginning_of_day ? dtend.to_date.prev_day : dtend.to_date
   end
 
+  # @param text [String] a public event URL or a bare event ID
+  # @return [Event, nil]
+  def self.lookup(text)
+    text = text.to_s.strip
+    id = text[/\A\d+\z/] || text[EVENT_URL, 1]
+    find_by(id:) if id
+  end
+
   # ==== Instance methods ====
   def long_running? = self.class.long_running?(dtstart, dtend)
+
+  # Other events from the same calendar with the same summary, such as a repeat's other dates
+  # @return [ActiveRecord::Relation<Event>]
+  def siblings
+    return Event.none if calendar_id.nil?
+
+    Event.where(calendar_id:, summary:).where.not(id:)
+  end
 
   def cancelled? = status == 'cancelled'
   def postponed? = status == 'postponed'

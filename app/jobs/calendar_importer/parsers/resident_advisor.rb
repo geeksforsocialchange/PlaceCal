@@ -3,6 +3,7 @@
 module CalendarImporter::Parsers
   class ResidentAdvisor < Base
     NAME = 'Resident Advisor'
+    HANDBOOK_PAGE = 'resident-advisor-ra'
     TICKETING = true
     KEY = 'residentadvisor'
     DOMAINS = %w[ra.co].freeze

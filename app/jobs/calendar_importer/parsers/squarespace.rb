@@ -9,6 +9,7 @@ module CalendarImporter
     class Squarespace < Base
       # These constants are only used for the frontend interface
       NAME = 'Squarespace'
+      HANDBOOK_PAGE = 'squarespace'
       KEY = 'squarespace'
       DOMAINS = %w[squarespace.com].freeze
 

@@ -31,6 +31,7 @@ module CalendarImporter::Parsers
 
     # These constants are only used for the frontend interface
     NAME = 'Generic iCal / .ics'
+    HANDBOOK_PAGE = 'ical-generic'
     KEY = 'ical'
     DOMAINS = %w[
       calendar.google.com

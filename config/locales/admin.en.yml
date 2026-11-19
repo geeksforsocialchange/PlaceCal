@@ -135,6 +135,15 @@ en:
     # COMPONENTS
     # =========================================================================
 
+    events_table:
+      date: "Date"
+      event: "Event"
+      location: "Location"
+      no_location: "None"
+      not_in_source: "None given"
+      source_categories: "Source categories"
+      source_organiser: "Source organiser"
+
     save_bar:
       unsaved_changes: "Unsaved changes"
       confirm_tab_switch: "You have unsaved changes. Are you sure you want to switch tabs?"
@@ -189,6 +198,7 @@ en:
       calendar_sources: "Calendar sources"
       content_types: "Content types"
       discord: "Discord"
+      find_event: "Find an event"
       get_support: "Get support"
       handbook: "Handbook"
       import_status: "Import status"
@@ -196,6 +206,7 @@ en:
       label: "Main navigation"
       quick_actions: "Quick actions"
       report_bug: "Report a bug"
+      tools: "Tools"
 
     # =========================================================================
     # PAGES
@@ -380,6 +391,7 @@ en:
         default_location_blank: "(No default location)"
         default_location_hint: "Used when strategy requires a fallback location"
         name_hint: "A simple description to help remember what this calendar is"
+        default_description_hint: 'Used as the description of imported events whose feed gives none, such as "Details are on our Discord". Events with their own description keep it. Takes effect at the next import.'
         partner_hint: "Which group organises these events?"
         partner_organiser: "Partner Organiser"
         source_placeholder: "https://your-domain.com/events.ics"
@@ -442,10 +454,7 @@ en:
       danger_zone:
         delete_description: "Permanently remove this calendar and all %{count} associated events. This action cannot be undone."
       show:
-        not_in_source: "None given"
         past_tab: "Past (%{count})"
-        source_categories: "Source categories"
-        source_organiser: "Source organiser"
         upcoming_tab: "Upcoming (%{count})"
       sources:
         title: "What each calendar source imports"
@@ -467,6 +476,53 @@ en:
           image: "Image"
           source_categories: "Source categories"
           source_organiser: "Source organiser"
+
+    # -------------------------------------------------------------------------
+    # Event inspector
+    # -------------------------------------------------------------------------
+    events:
+      lookup:
+        intro: "Paste a public event link from any PlaceCal site, or an event ID, to see where the event came from."
+        not_found: "No event matches that URL or ID."
+        placeholder: "Event URL or ID"
+        submit: "Find"
+        title: "Find an event"
+      show:
+        auto_detect: "Auto detect"
+        auto_detected: "Auto detect (last used %{importer})"
+        calendar: "Source calendar"
+        details: "Event details"
+        does_not_repeat: "Does not repeat"
+        fields:
+          calendar_name: "Calendar"
+          created_at: "Created"
+          dtend: "Ends"
+          dtstart: "Starts"
+          importer: "Importer"
+          last_import_at: "Last import"
+          organiser: "Organiser"
+          place: "Place"
+          publisher_url: "Publisher URL"
+          repeats: "Repeats"
+          source: "Source URL"
+          state: "State"
+          status: "Status"
+          uid: "UID"
+          updated_at: "Last updated"
+        no_calendar: "This event was not imported from a calendar."
+        no_upcoming_siblings: "No upcoming events from this calendar share this event's title."
+        none: "Not set"
+        partners: "Partners"
+        public_page: "View the public page"
+        siblings: "Same title, same calendar"
+        siblings_count: "%{upcoming} upcoming of %{total} other events from this calendar with this title."
+        siblings_shown:
+          one: "Showing the next upcoming event."
+          other: "Showing the next %{count} upcoming events."
+        statuses:
+          cancelled: "Cancelled"
+          postponed: "Postponed"
+          scheduled: "Scheduled"
 
     # -------------------------------------------------------------------------
     # Jobs / Import Status
