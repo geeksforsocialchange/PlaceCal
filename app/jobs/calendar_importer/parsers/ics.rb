@@ -38,6 +38,7 @@ module CalendarImporter::Parsers
       outlook.office365.com
       outlook.live.com
       ics.teamup.com
+      lu.ma
       webcal://
     ].freeze
 
@@ -66,6 +67,7 @@ module CalendarImporter::Parsers
         webcal: %r{^webcal://},
         mossley: %r{^https?://mossleycommunitycentre\.org\.uk},
         teamup: %r{^https?://ics\.teamup\.com/feed/.*},
+        luma: %r{^https://api\.lu\.ma/ics/get\?},
         consortium: %r{^https://www\.consortium\.lgbt/events/.*},
         generic: %r{^https?://.*\.ics$}
       }

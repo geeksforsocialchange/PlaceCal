@@ -8,15 +8,34 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
   let!(:partner) { create(:riverside_community_hub) }
   let!(:partner_two) { create(:oldtown_library) }
 
-  describe "Google Calendar links in the source field" do
+  describe "Calendar links in the source field" do
     let(:calendar_id) { "abc123@group.calendar.google.com" }
     let(:feed_url) { "https://calendar.google.com/calendar/ical/abc123%40group.calendar.google.com/public/basic.ics" }
     let(:notice) { "We changed this to your calendar's feed address" }
+    let(:eventbrite_link) { "https://www.eventbrite.co.uk/e/918839984127?aff=oddtdtcreator" }
+    let(:eventbrite_organiser) { "https://www.eventbrite.co.uk/o/85889707613" }
+    let(:luma_link) { "https://lu.ma/london-pattern-club" }
+    let(:luma_feed) { "https://api.lu.ma/ics/get?entity=calendar&id=cal-8tfFZUVfInFAcNa" }
+
+    before do
+      allow(CalendarSourceResolver).to receive(:call).and_return(nil)
+      allow(CalendarSourceResolver).to receive(:call).with(eventbrite_link)
+                                                     .and_return(CalendarSourceResolver::Result.new(kind: "eventbrite", source: eventbrite_organiser))
+      allow(CalendarSourceResolver).to receive(:call).with(luma_link)
+                                                     .and_return(CalendarSourceResolver::Result.new(kind: "luma", source: luma_feed))
+    end
 
     def await_source_controller
       page.document.synchronize do
-        connected = page.evaluate_script(%(Stimulus.controllers.some((c) => c.identifier === "google-calendar-source")))
-        raise Capybara::ElementNotFound, "google-calendar-source not connected" unless connected
+        connected = page.evaluate_script(%(Stimulus.controllers.some((c) => c.identifier === "calendar-source")))
+        raise Capybara::ElementNotFound, "calendar-source not connected" unless connected
+      end
+    end
+
+    def await_lookup
+      page.document.synchronize do
+        pending = page.evaluate_script(%(Stimulus.controllers.find((c) => c.identifier === "calendar-source").pendingValue))
+        raise Capybara::ExpectationNotMet, "source lookup still running" if pending
       end
     end
 
@@ -29,7 +48,7 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
       JS
     end
 
-    shared_examples "a form that rewrites Google links" do
+    shared_examples "a form that rewrites calendar links" do
       it "rewrites a pasted embed link and says so", :aggregate_failures do
         paste_source("https://calendar.google.com/calendar/embed?src=#{calendar_id}&ctz=Europe%2FLondon")
 
@@ -64,6 +83,29 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
         expect(page).to have_field("calendar_source", with: "https://calendar.google.com/calendar/u/1/r/day/2024/8/23")
         expect(page).to have_no_content(notice)
       end
+
+      it "swaps a pasted Eventbrite event link for the organiser's page and says so", :aggregate_failures do
+        paste_source(eventbrite_link)
+
+        expect(page).to have_field("calendar_source", with: eventbrite_organiser)
+        expect(page).to have_content("We changed this to the organiser's Eventbrite page")
+      end
+
+      it "swaps a pasted Luma page for its feed and says so", :aggregate_failures do
+        paste_source(luma_link)
+
+        expect(page).to have_field("calendar_source", with: luma_feed)
+        expect(page).to have_content("We changed this to your Luma calendar's feed address")
+      end
+
+      it "leaves a link it can't look up as pasted, without a note", :aggregate_failures do
+        paste_source("https://lu.ma/no-such-calendar")
+        await_lookup
+
+        expect(page).to have_field("calendar_source", with: "https://lu.ma/no-such-calendar")
+        expect(page).to have_no_content("We changed this")
+        expect(CalendarSourceResolver).to have_received(:call).with("https://lu.ma/no-such-calendar")
+      end
     end
 
     context "when editing a calendar" do
@@ -75,7 +117,7 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
         click_link "Test Calendar"
       end
 
-      it_behaves_like "a form that rewrites Google links"
+      it_behaves_like "a form that rewrites calendar links"
     end
 
     context "when adding a calendar" do
@@ -84,7 +126,7 @@ RSpec.describe "Admin Calendars", :slow, type: :system do
         click_link "Add Calendar"
       end
 
-      it_behaves_like "a form that rewrites Google links"
+      it_behaves_like "a form that rewrites calendar links"
     end
   end
 
