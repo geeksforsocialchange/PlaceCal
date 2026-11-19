@@ -58,8 +58,18 @@ RSpec.describe "Theme slots", type: :request do
     expect(head).to include('<link rel="preconnect" href="https://fonts.example.org" crossorigin>')
     expect(head).to include('<link rel="preconnect" href="https://f.example.net" crossorigin>')
     expect(head).to include('<link rel="preload" as="style" href="https://fonts.example.org/fixture.css">')
-    expect(head).to include('<link rel="stylesheet" href="https://fonts.example.org/fixture.css">')
+    expect(head).to include(%(<link rel="stylesheet" href="https://fonts.example.org/fixture.css" media="print" onload="this.media='all'">))
+    expect(head).to include('<noscript><link rel="stylesheet" href="https://fonts.example.org/fixture.css"></noscript>')
     expect(head.index("preconnect")).to be < head.index('rel="preload"')
+  end
+
+  it "preloads core's fonts only for a theme without its own webfont" do
+    get "http://themed.lvh.me"
+    expect(head_html).not_to match(/rawline|Trocchi/)
+
+    get "http://plain.lvh.me"
+    expect(head_html).to match(%r{<link rel="preload" href="/assets/rawline/rawline-500-[0-9a-f]+\.woff2" as="font"})
+    expect(head_html).to match(%r{<link rel="preload" href="/assets/trocchi/Trocchi-Regular-[0-9a-f]+\.woff2" as="font"})
   end
 
   it "links the theme's icons and theme-color in place of core's" do

@@ -125,8 +125,9 @@ module PlaceCal
 
     # A webfont stylesheet the theme's sites load, with the origins worth
     # preconnecting to. Rendered in <head> as those preconnects, a preload and
-    # the stylesheet link, which is the whole of what a theme's head component
-    # used to exist for.
+    # a stylesheet link that doesn't block the first paint, with a <noscript>
+    # copy. A theme with a webfont replaces core's Rawline and Trocchi, so
+    # core stops preloading them.
     #
     #   theme.font_stylesheet 'https://use.typekit.net/qwi3qrw.css',
     #                         preconnect: %w[https://use.typekit.net https://p.typekit.net]
