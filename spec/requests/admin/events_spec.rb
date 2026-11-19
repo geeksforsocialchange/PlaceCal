@@ -40,6 +40,18 @@ RSpec.describe "Admin event inspector", type: :request do
         expect(main.css("form, button")).to be_empty
       end
 
+      it "shows where the event is: its address, the feed's location text and its meeting link" do
+        address = create(:address, street_address: "12 Library Lane", postcode: "M15 5DD")
+        online = create(:online_address, url: "https://meet.jit.si/knit-and-natter")
+        event.update_columns(address_id: address.id, raw_location_from_source: "Library, 12 Library Lane, M15 5DD", online_address_id: online.id) # rubocop:disable Rails/SkipsModelValidations
+
+        get admin_event_url(event, host: admin_host)
+
+        main = Nokogiri::HTML(response.body).at_css("main")
+        expect(main.text).to include(I18n.t("admin.events.show.location"), "12 Library Lane", "Library, 12 Library Lane, M15 5DD")
+        expect(main.at_css(%(a[href="https://meet.jit.si/knit-and-natter"]))).to be_present
+      end
+
       it "lists upcoming events from the same calendar with the same summary, with a count" do
         create(:event, calendar:, organiser:, summary: "Knit and natter", dtstart: 1.week.from_now, dtend: 1.week.from_now + 1.hour)
         create(:event, calendar:, organiser:, summary: "Knit and natter", dtstart: 2.weeks.from_now, dtend: 2.weeks.from_now + 1.hour)

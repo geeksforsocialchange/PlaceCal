@@ -15,6 +15,7 @@ class Views::Admin::Events::Show < Views::Admin::Base
       render_header
       render_details
       render_calendar
+      render_location
       render_partners
       render_siblings if event.calendar
     end
@@ -113,6 +114,17 @@ class Views::Admin::Events::Show < Views::Admin::Base
 
     used = CalendarImporter::CalendarImporter.parser_for_key(calendar.importer_used)
     used ? t('admin.events.show.auto_detected', importer: used::NAME) : t('admin.events.show.auto_detect')
+  end
+
+  def render_location
+    card do
+      card_heading(t('admin.events.show.location'))
+      field_list do
+        field(:address) { event.address ? plain(event.address.to_s) : none }
+        field(:raw_location) { event.raw_location_from_source.present? ? plain(event.raw_location_from_source) : none }
+        field(:online_link) { event.online_address ? external_link(event.online_address.url) : none }
+      end
+    end
   end
 
   def render_partners

@@ -5,7 +5,7 @@ module Admin
     SIBLINGS_SHOWN = 50
 
     def show
-      event = Event.includes(:calendar, :organiser, :place, :address).find(params[:id])
+      event = Event.includes(:calendar, :organiser, :place, :address, :online_address).find(params[:id])
       authorize event
 
       siblings = event.siblings
