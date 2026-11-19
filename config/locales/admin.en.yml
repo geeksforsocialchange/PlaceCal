@@ -380,6 +380,7 @@ en:
         default_location_blank: "(No default location)"
         default_location_hint: "Used when strategy requires a fallback location"
         name_hint: "A simple description to help remember what this calendar is"
+        default_description_hint: 'Used as the description of imported events whose feed gives none, such as "Details are on our Discord". Events with their own description keep it. Takes effect at the next import.'
         partner_hint: "Which group organises these events?"
         partner_organiser: "Partner Organiser"
         source_placeholder: "https://your-domain.com/events.ics"
