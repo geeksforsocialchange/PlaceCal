@@ -45,7 +45,7 @@ An event stores one image, downloaded from its source into `event.image` (`Event
 
 ### Ticket Data
 
-An event stores a ticket link (`ticket_url`, where tickets are bought when that isn't the webpage), the lowest ticket price (`price_from`, in pounds rather than pence, with `price_currency` as an ISO 4217 code; 0 is free and needs no currency) and whether it is sold out (`sold_out`, nil when the source doesn't say). A price without a currency isn't kept, unless it is 0.
+An event stores a ticket link (`ticket_url`, where tickets are bought when that isn't the webpage), the lowest ticket price (`price_from`, in pounds rather than pence, with `price_currency` as an ISO 4217 code; 0 is free and needs no currency) and whether it is sold out (`sold_out`, nil when the source doesn't say). A ticket link that is the same as the webpage isn't kept, nor is a price without a currency, unless it is 0.
 
 - Ticket Tailor: `checkout_url`, the lowest `ticket_types[].price` (pence) among types on sale, `currency`, and sold out only when `unavailable_status` says so, since `tickets_available` is also false before and after sales.
 - Wix: `registration.ticketing.lowestTicketPrice` and `soldOut`.

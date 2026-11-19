@@ -93,7 +93,7 @@ module EventJsonLd
     }
   end
 
-  # An unknown sold_out is stated as InStock, as every offer was before sources gave availability
+  # An unknown sold_out is stated as InStock
   def build_json_ld_offers(data)
     url = ticket_url.presence || publisher_url
     return if url.blank?

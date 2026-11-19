@@ -109,14 +109,16 @@ module CalendarImporter::Events
         **ticket_attributes }
     end
 
-    # A price is kept only with a currency, except free, which needs none
+    # A ticket link the same as the webpage isn't kept; a price is kept only with a currency, except free
     def ticket_attributes
+      link = ticket_url.to_s.strip.presence
+      link = nil if link == publisher_url.to_s.strip
       price = Base.price(price_from)
       currency = price_currency.to_s.strip.upcase.presence if price
       currency = nil unless currency&.match?(/\A[A-Z]{3}\z/)
       price = nil if currency.nil? && !price&.zero?
 
-      { ticket_url: ticket_url.to_s.strip.presence, price_from: price, price_currency: currency, sold_out: }
+      { ticket_url: link, price_from: price, price_currency: currency, sold_out: }
     end
 
     def ticket_url; end

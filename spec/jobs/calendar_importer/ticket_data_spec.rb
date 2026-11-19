@@ -84,10 +84,8 @@ RSpec.describe "Ticket link, price and sold-out state from each source" do
     it "takes the lowest ticket on sale, not the summary range or a sold-out ticket" do
       event = events(:outsavvy_cancelled_event, "a-whole-orange").find { |e| e.summary.start_with?("COMMUNICATION IN DATING") }
 
-      expect(ticket_data(event)).to eq(
-        ticket_url: "https://www.outsavvy.com/event/28861/communication-in-dating-47-queer-zine-dating-workshop-series",
-        price_from: 15, price_currency: "GBP", sold_out: false
-      )
+      expect(ticket_data(event)).to eq(ticket_url: nil, price_from: 15, price_currency: "GBP", sold_out: false)
+      expect(event.attributes[:publisher_url]).to eq("https://www.outsavvy.com/event/28861/communication-in-dating-47-queer-zine-dating-workshop-series")
     end
 
     it "reads a free ticket among paid ones as a lowest price of 0" do
@@ -109,13 +107,19 @@ RSpec.describe "Ticket link, price and sold-out state from each source" do
   end
 
   describe "JSON-LD" do
-    it "reads a generic site's single offer" do
+    it "reads a generic site's single offer, whose link is the series page rather than the date's" do
       event = imported(CalendarImporter::Parsers::LdJson, :heart_of_torbay_events, "https://www.heartoftorbaycic.com/events/").sole
 
       expect(ticket_data(event)).to eq(
         ticket_url: "https://www.heartoftorbaycic.com/events/tidy-home-tidy-mind-support-group-monthly/",
         price_from: 0, price_currency: "GBP", sold_out: false
       )
+    end
+
+    it "leaves out a ticket link that is the event's own page" do
+      event = linked_data_event({ "@type" => "Offer", "url" => "https://example.com/1", "price" => "0" })
+
+      expect(ticket_data(event)).to eq(ticket_url: nil, price_from: 0, price_currency: nil, sold_out: nil)
     end
 
     it "stores nothing from dice.fm's empty offers" do
