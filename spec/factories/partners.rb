@@ -13,15 +13,13 @@
 #  calendar_email          :string
 #  calendar_name           :string
 #  calendar_phone          :string
-#  can_be_assigned_events  :boolean          default(FALSE), not null
+#  can_be_assigned_events  :boolean          default(TRUE), not null
 #  description             :text
 #  description_html        :string
-#  facebook_link           :string
 #  hidden                  :boolean          default(FALSE), not null
 #  hidden_reason           :text
 #  hidden_reason_html      :string
 #  image                   :string
-#  instagram_handle        :string
 #  is_a_place              :boolean          default(FALSE), not null
 #  name                    :string           not null
 #  opening_times           :jsonb
@@ -32,9 +30,9 @@
 #  public_name             :string
 #  public_phone            :string
 #  slug                    :string
+#  social_links            :jsonb            not null
 #  summary                 :string
 #  summary_html            :string
-#  twitter_handle          :string
 #  url                     :string
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
@@ -72,9 +70,7 @@ FactoryBot.define do
       name { NormalIsland::PARTNERS[:riverside_community_hub][:name] }
       summary { NormalIsland::PARTNERS[:riverside_community_hub][:summary] }
       # with contact details for spec/components/contact_details_component_spec.rb
-      twitter_handle { "rchtwit" }
-      instagram_handle { "rchinsta" }
-      facebook_link { "rchfb" }
+      social_links { ["https://www.facebook.com/rchfb", "https://bsky.app/profile/rch.bsky.social", "https://www.instagram.com/rchinsta/"] }
       association :address, factory: :riverside_address
     end
 

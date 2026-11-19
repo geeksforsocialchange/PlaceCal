@@ -702,7 +702,7 @@ RSpec.describe "Public Events", type: :request do
     it "still titles the organiser card when the organiser has no contact details" do
       organiser = create(:partner, name: "Contactless Org", address:,
                                    public_email: nil, public_phone: nil, url: nil,
-                                   facebook_link: nil, twitter_handle: nil, instagram_handle: nil)
+                                   social_links: [])
       event = create(:event, organiser:, dtstart: 1.day.from_now, address:)
       get event_url(event, host: "lvh.me")
       expect(response).to be_successful

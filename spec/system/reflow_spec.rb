@@ -41,4 +41,23 @@ RSpec.describe "Reflow at 320px", :slow, type: :system do
     expect(page).to have_css("[data-scope='navigation'][data-part='menu'] a", visible: :visible)
     expect(page_width).to be <= 320
   end
+
+  context "with long social link addresses" do
+    before do
+      riverside_hub.update!(social_links: ["https://www.facebook.com/profile.php?id=100064123456789012",
+                                           "https://newsletters.riverside-community-hub.example.org/subscribe/weekly-digest"])
+    end
+
+    {
+      "a site's partner page" => -> { "http://riverside.lvh.me:#{Capybara.current_session.server.port}/partners/#{riverside_hub.slug}" },
+      "the directory partner page" => -> { public_url("/partners/#{riverside_hub.slug}") }
+    }.each do |name, url|
+      it "does not scroll sideways on #{name}" do
+        visit instance_exec(&url)
+
+        expect(page).to have_link(href: riverside_hub.social_links.last)
+        expect(page_width).to be <= 320
+      end
+    end
+  end
 end

@@ -27,6 +27,27 @@ RSpec.describe PartnerPolicy, type: :policy do
     it { is_expected.to permit_action(:destroy) }
   end
 
+  describe "#permitted_attributes" do
+    let(:user) { create(:root_user) }
+
+    it "permits the social links as a list, and none of the old single-network fields" do
+      attrs = described_class.new(user, partner).permitted_attributes
+      nested = attrs.grep(Hash).reduce({}, :merge)
+
+      expect(nested[:social_links]).to eq([])
+      expect(attrs).not_to include(:facebook_link, :twitter_handle, :instagram_handle)
+    end
+
+    it "lets a partner admin save a list of links through strong params" do
+      partner_admin = create(:partner_admin, partner:)
+      params = ActionController::Parameters.new(partner: { social_links: ["https://x.com/a", "https://bsky.app/profile/a"], twitter_handle: "a" })
+
+      permitted = params.require(:partner).permit(described_class.new(partner_admin, partner).permitted_attributes)
+
+      expect(permitted.to_h).to eq("social_links" => ["https://x.com/a", "https://bsky.app/profile/a"])
+    end
+  end
+
   describe "for a partner admin" do
     let(:user) { create(:partner_admin) }
     let(:partner) { user.partners.first }

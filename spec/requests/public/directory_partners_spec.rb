@@ -194,7 +194,7 @@ RSpec.describe "Directory Partners", type: :request do
       bare = create(:partner,
                     address: create(:address, neighbourhood: ward),
                     public_email: nil, public_phone: nil, url: nil,
-                    twitter_handle: nil, facebook_link: nil, instagram_handle: nil)
+                    social_links: [])
       get partner_url(bare, host: "lvh.me")
       expect(response.body).not_to include("tel:0161")
     end

@@ -57,7 +57,7 @@ RSpec.describe "Event page details on core and extension themes", type: :request
     end
 
     it "leaves out Get in touch when the organiser has no contact details" do
-      organiser.update_columns(public_email: nil, public_phone: nil, url: nil, facebook_link: nil, twitter_handle: nil, instagram_handle: nil) # rubocop:disable Rails/SkipsModelValidations
+      organiser.update_columns(public_email: nil, public_phone: nil, url: nil, social_links: []) # rubocop:disable Rails/SkipsModelValidations
 
       expect(part(details_for(site), "contact")).to be_nil
     end

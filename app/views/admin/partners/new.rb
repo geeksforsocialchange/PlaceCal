@@ -258,21 +258,7 @@ class Views::Admin::Partners::New < Views::Admin::Base
         raw form.input_field(:url, class: 'input input-bordered w-full bg-base-100',
                                    placeholder: t('admin.partners.fields.website_placeholder'))
       end
-      div(class: 'grid grid-cols-1 sm:grid-cols-3 gap-3') do
-        render_social_field(form, :facebook_link, attr_label(:partner, :facebook), 'facebook.com/')
-        render_social_field(form, :twitter_handle, attr_label(:partner, :twitter), '@')
-        render_social_field(form, :instagram_handle, attr_label(:partner, :instagram), '@')
-      end
-    end
-  end
-
-  def render_social_field(form, field, label_text, prefix)
-    fieldset(class: 'fieldset') do
-      legend(class: 'fieldset-legend') { label_text }
-      label(class: 'input input-bordered flex items-center gap-1 bg-base-100') do
-        span(class: 'text-gray-600 text-sm shrink-0') { prefix }
-        raw form.input_field(field, class: 'grow bg-transparent border-0 focus:outline-none min-w-0')
-      end
+      SocialLinksField(form:)
     end
   end
 

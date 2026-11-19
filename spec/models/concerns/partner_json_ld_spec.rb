@@ -53,21 +53,14 @@ RSpec.describe PartnerJsonLd do
     end
 
     context "with social links" do
-      it "includes sameAs with twitter and instagram" do
-        partner.update!(twitter_handle: "testorg", instagram_handle: "testorg")
-        same_as = partner.to_json_ld["sameAs"]
-        expect(same_as).to include("https://twitter.com/testorg")
-        expect(same_as).to include("https://instagram.com/testorg")
-      end
-
-      it "includes facebook in sameAs" do
-        partner.update!(facebook_link: "testorg")
-        same_as = partner.to_json_ld["sameAs"]
-        expect(same_as).to include("https://facebook.com/testorg")
+      it "lists every social link in sameAs, in the partner's order" do
+        links = ["https://social.coop/@testorg", "https://www.facebook.com/groups/testorg", "https://x.com/testorg"]
+        partner.update!(social_links: links)
+        expect(partner.to_json_ld["sameAs"]).to eq(links)
       end
 
       it "omits sameAs when no social links" do
-        partner.update!(twitter_handle: "", instagram_handle: "", facebook_link: "")
+        partner.update!(social_links: [])
         expect(partner.to_json_ld).not_to have_key("sameAs")
       end
     end

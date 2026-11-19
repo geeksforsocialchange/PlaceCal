@@ -13,6 +13,46 @@ RSpec.describe "Admin Partners", :slow, type: :system do
   let!(:category) { create(:category) }
   let!(:facility) { create(:facility) }
 
+  describe "social links on the partner form" do
+    it "adds, recognises and removes links, and saves the list in order", :aggregate_failures do
+      partner.update!(social_links: ["https://x.com/rch"])
+      visit admin_url("/partners/#{partner.id}/edit")
+      go_to_contact_tab
+
+      within("fieldset", text: Partner.human_attribute_name(:social_links)) do
+        expect(page).to have_field("partner_social_links_0", with: "https://x.com/rch")
+        expect(page).to have_css(".nested-fields", text: "X")
+
+        click_button I18n.t("admin.partners.social_links.add")
+        all("input[name='partner[social_links][]'][type='text']").last.fill_in(with: "https://social.coop/@rch")
+        expect(page).to have_css(".nested-fields", text: "Mastodon")
+
+        click_button I18n.t("admin.partners.social_links.add")
+        all("input[name='partner[social_links][]'][type='text']").last.fill_in(with: "www.facebook.com/groups/rch")
+        expect(page).to have_css(".nested-fields", text: "Facebook")
+
+        first(".nested-fields").click_button(I18n.t("admin.actions.remove"))
+        expect(page).to have_no_field("partner_social_links_0")
+      end
+      click_button "Save"
+
+      expect(page).to have_content("successfully")
+      expect(partner.reload.social_links).to eq(["https://social.coop/@rch", "https://www.facebook.com/groups/rch"])
+    end
+
+    it "empties the list when every link is removed" do
+      partner.update!(social_links: ["https://x.com/rch"])
+      visit admin_url("/partners/#{partner.id}/edit")
+      go_to_contact_tab
+
+      find(".nested-fields", text: "X").click_button(I18n.t("admin.actions.remove"))
+      click_button "Save"
+
+      expect(page).to have_content("successfully")
+      expect(partner.reload.social_links).to eq([])
+    end
+  end
+
   describe "form inputs on partner form" do
     it "allows adding categories and facilities", :aggregate_failures do
       click_link "Partners"
@@ -282,9 +322,9 @@ RSpec.describe "Admin Partners", :slow, type: :system do
       # Step 3: Tags
       click_button "Continue"
 
-      # Step 4: Contact — a hyphenated Facebook name passes the client-side
-      # checks but fails the server-side format validation
-      fill_in "partner_facebook_link", with: "Group-Name"
+      # Step 4: Contact: a social link that is not a web address passes the
+      # client-side checks but fails the server-side validation
+      fill_in "partner_social_links_0", with: "not a link"
       click_button "Continue"
 
       # Step 5: Invite (optional), Step 6: Confirm
@@ -306,8 +346,8 @@ RSpec.describe "Admin Partners", :slow, type: :system do
       expect(page).to have_content("Set Location")
       click_button "Continue"
       click_button "Continue"
-      fill_in "partner_facebook_link", with: "GroupName"
-      expect(page).to have_field("partner_facebook_link", with: "GroupName")
+      fill_in "partner_social_links_0", with: "https://www.facebook.com/groups/GroupName"
+      expect(page).to have_field("partner_social_links_0", with: "https://www.facebook.com/groups/GroupName")
       click_button "Continue"
       click_button "Continue"
       click_button "Create Partner"
