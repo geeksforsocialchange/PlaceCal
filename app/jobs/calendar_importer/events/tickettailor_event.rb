@@ -2,7 +2,7 @@
 
 module CalendarImporter::Events
   class TickettailorEvent < Base
-    imports title: 'name', description: 'description', start_time: 'start', end_time: 'end', repeats: nil,
+    imports title: 'name', description: 'description', start_time: 'start.iso', end_time: 'end.iso', repeats: nil,
             location: %w[venue.name venue.postal_code], webpage: 'url', online_link: nil, spaces_available: nil,
             status: nil, image: 'images.header', source_categories: nil, source_organiser: nil,
             ticket_url: 'checkout_url', price: %w[ticket_types.price currency], sold_out: %w[tickets_available unavailable_status]
@@ -74,17 +74,14 @@ module CalendarImporter::Events
 
     def parse_datetime(time_hash)
       return nil unless time_hash.is_a?(Hash)
+      return Time.zone.iso8601(time_hash['iso']) if time_hash['iso'].present?
 
       date = time_hash['date']
-      time = time_hash['time']
-      timezone = time_hash['tz'] || 'UTC'
-
       return nil if date.blank?
 
-      datetime_string = time.present? ? "#{date} #{time}" : date
-
-      ActiveSupport::TimeZone[timezone]&.parse(datetime_string) ||
-        DateTime.parse(datetime_string)
+      # The event's own timezone names a zone; the time's "timezone" is only an offset
+      zone = ActiveSupport::TimeZone[@event['timezone'].to_s] || Time.zone
+      zone.parse([date, time_hash['time']].compact_blank.join(' '))
     rescue ArgumentError
       nil
     end

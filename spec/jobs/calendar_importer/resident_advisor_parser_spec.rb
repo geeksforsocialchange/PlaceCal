@@ -99,5 +99,25 @@ RSpec.describe CalendarImporter::Parsers::ResidentAdvisor do
         expect(records.count).to eq(MAXIMUM_RA_RETURNED_RESULTS)
       end
     end
+
+    it "places a club's events at the club" do
+      VCR.use_cassette(:ra_club) do
+        club_calendar = build(:calendar, strategy: :event, source: valid_ra_club)
+        parser = described_class.new(club_calendar)
+
+        locations = parser.import_events_from(parser.download_calendar).map(&:location)
+        expect(locations).to all(eq("95 Cheetham Hill Rd, Cheetham Hill, Manchester M8 8PY"))
+      end
+    end
+
+    it "places a promoter's events at each event's own venue" do
+      VCR.use_cassette(:ra_promoter) do
+        parser = described_class.new(promoter_calendar)
+        records = parser.download_calendar
+
+        locations = parser.import_events_from(records).map(&:location)
+        expect(locations).to eq(records.map { it.dig("venue", "address") })
+      end
+    end
   end
 end
