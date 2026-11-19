@@ -17,7 +17,7 @@ RSpec.describe "Event fields read from each source's feed" do
       expect(events.map(&:location).tally).to eq("Manchester Communication Academy" => 1, "Z-arts" => 37)
     end
 
-    it "reads the show's page as the webpage, and no longer adds it to the description" do
+    it "reads the show's page as the webpage, and leaves it out of the description" do
       expect(inuk.attributes[:publisher_url]).to eq("https://z-arts.ticketsolve.com/shows/873589467/events")
       expect(inuk.attributes[:description]).not_to include("Tickets:")
       expect(events.map { |event| event.attributes[:publisher_url] }).to all(start_with("https://z-arts.ticketsolve.com/shows/"))
@@ -93,7 +93,7 @@ RSpec.describe "Event fields read from each source's feed" do
       expect(events.map { |event| event.attributes[:source_categories] }).to all(be_nil)
     end
 
-    it "reads category names, given as Wix documents them, as objects" do
+    it "reads category names from category objects" do
       event = CalendarImporter::Events::WixEvent.new(
         { "id" => "1", "title" => "A Wix event", "categories" => [{ "id" => "c1", "name" => "Workshops" }, { "id" => "c2", "name" => " " }] }
       )
