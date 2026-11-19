@@ -116,7 +116,10 @@ class Partner < ApplicationRecord
   html_render_cache :hidden_reason
 
   auto_strip_attributes :name, :summary, :url, :public_phone, :public_email
-  normalizes :social_links, with: ->(links) { Array.wrap(links).map { it.to_s.strip }.compact_blank.uniq }
+  # People paste addresses without https://, so add it rather than reject them
+  normalizes :social_links, with: lambda { |links|
+    Array.wrap(links).map { it.to_s.strip }.compact_blank.map { it.match?(%r{\A[a-z][a-z\d+.-]*://}i) ? it : "https://#{it}" }.uniq
+  }
   permalink_resource 'partners'
 
   # ==== Associations ====

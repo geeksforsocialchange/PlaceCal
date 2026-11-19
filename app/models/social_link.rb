@@ -13,6 +13,8 @@ class SocialLink
     x: { hosts: %w[x.com twitter.com], icon: :contact_x }
   }.freeze
 
+  # Blogs whose profile addresses look like fediverse ones (/@name)
+  NOT_FEDIVERSE_HOSTS = %w[medium.com substack.com].freeze
   MASTODON_ICON = :contact_mastodon
   LINK_ICON = :link
 
@@ -33,7 +35,8 @@ class SocialLink
   def self.detection_rules
     {
       hosts: PLATFORMS.flat_map { |platform, info| info[:hosts].map { [it, platform_name(platform)] } }.to_h,
-      fediverse: platform_name(:mastodon)
+      fediverse: platform_name(:mastodon),
+      not_fediverse: NOT_FEDIVERSE_HOSTS
     }
   end
 
@@ -101,6 +104,7 @@ class SocialLink
 
     found = PLATFORMS.find { |_, info| info[:hosts].any? { host == it || host.end_with?(".#{it}") } }
     return found.first if found
+    return :link if NOT_FEDIVERSE_HOSTS.any? { host == it || host.end_with?(".#{it}") }
     return :mastodon if path.match?(FEDIVERSE_PATH)
 
     :link

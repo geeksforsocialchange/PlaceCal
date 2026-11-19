@@ -35,7 +35,8 @@ class Components::Admin::SocialLinksField < Components::Admin::Base
 
   def row(link, index)
     div(class: 'nested-fields flex items-center gap-2') do
-      input(type: 'url', name: field_name, value: link, id: "#{@form.object_name}_social_links_#{index}",
+      # Text rather than url, so an address pasted without https:// reaches the model, which adds it
+      input(type: 'text', inputmode: 'url', spellcheck: 'false', name: field_name, value: link, id: "#{@form.object_name}_social_links_#{index}",
             class: 'input input-bordered grow min-w-0 bg-base-100', placeholder: 'https://',
             aria_label: t('admin.partners.social_links.input_label'),
             data: { action: 'input->social-links#detect' })

@@ -24,6 +24,8 @@ RSpec.describe SocialLink do
       "https://x.com/hulmecc" => [:x, "X", "@hulmecc", :contact_x],
       "https://twitter.com/hulmecc" => [:x, "X", "@hulmecc", :contact_x],
       "https://www.fedex.com/@hulmecc" => [:mastodon, "Mastodon", "@hulmecc@fedex.com", :contact_mastodon],
+      "https://medium.com/@hulmecc" => [:link, "medium.com", nil, :link],
+      "https://substack.com/@hulmecc" => [:link, "substack.com", nil, :link],
       "https://www.facebook.com/Café-Hulme" => [:facebook, "Facebook", nil, :contact_facebook],
       "https://hulme.example.org:8443/newsletter#latest" => [:link, "hulme.example.org", nil, :link],
       "https://hulme.example.org/newsletter" => [:link, "hulme.example.org", nil, :link],
@@ -80,6 +82,7 @@ RSpec.describe SocialLink do
 
       expect(rules[:hosts]).to include("bsky.app" => "Bluesky", "twitter.com" => "X", "fb.com" => "Facebook")
       expect(rules[:fediverse]).to eq("Mastodon")
+      expect(rules[:not_fediverse]).to eq(%w[medium.com substack.com])
     end
   end
 end

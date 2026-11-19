@@ -24,11 +24,11 @@ RSpec.describe "Admin Partners", :slow, type: :system do
         expect(page).to have_css(".nested-fields", text: "X")
 
         click_button I18n.t("admin.partners.social_links.add")
-        all("input[name='partner[social_links][]'][type='url']").last.fill_in(with: "https://social.coop/@rch")
+        all("input[name='partner[social_links][]'][type='text']").last.fill_in(with: "https://social.coop/@rch")
         expect(page).to have_css(".nested-fields", text: "Mastodon")
 
         click_button I18n.t("admin.partners.social_links.add")
-        all("input[name='partner[social_links][]'][type='url']").last.fill_in(with: "https://www.facebook.com/groups/rch")
+        all("input[name='partner[social_links][]'][type='text']").last.fill_in(with: "www.facebook.com/groups/rch")
         expect(page).to have_css(".nested-fields", text: "Facebook")
 
         first(".nested-fields").click_button(I18n.t("admin.actions.remove"))
@@ -322,9 +322,9 @@ RSpec.describe "Admin Partners", :slow, type: :system do
       # Step 3: Tags
       click_button "Continue"
 
-      # Step 4: Contact: a social link without its scheme passes the client-side
-      # checks but fails the server-side validation
-      fill_in "partner_social_links_0", with: "facebook.com/GroupName"
+      # Step 4: Contact: a social link that is not a web address passes the
+      # client-side checks but fails the server-side validation
+      fill_in "partner_social_links_0", with: "not a link"
       click_button "Continue"
 
       # Step 5: Invite (optional), Step 6: Confirm

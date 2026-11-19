@@ -163,11 +163,17 @@ RSpec.describe Partner, type: :model do
         expect(partner.social_links).to eq(["https://x.com/a", "https://bsky.app/profile/a"])
       end
 
+      it "adds https:// to an address typed without a scheme" do
+        partner.social_links = ["bsky.app/profile/a", "http://example.org/a"]
+        expect(partner.social_links).to eq(["https://bsky.app/profile/a", "http://example.org/a"])
+        expect(partner).to be_valid
+      end
+
       it "rejects an address that isn't an http(s) link with a host" do
-        partner.social_links = ["https://x.com/a", "instagram.com/a", "ftp://example.org", "https://"]
+        partner.social_links = ["https://x.com/a", "not a link", "ftp://example.org", "https://"]
         expect(partner).not_to be_valid
         expect(partner.errors[:social_links].size).to eq(3)
-        expect(partner.errors.full_messages.join).to include("instagram.com/a")
+        expect(partner.errors.full_messages.join).to include("not a link")
       end
 
       it "allows at most #{Partner::MAX_SOCIAL_LINKS} links" do
