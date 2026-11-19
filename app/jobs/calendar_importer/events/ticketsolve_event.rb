@@ -4,7 +4,8 @@ module CalendarImporter::Events
   class TicketsolveEvent < Base
     imports title: 'name', description: 'description', start_time: 'opening_time_iso', end_time: nil, repeats: nil,
             location: 'venue.name', webpage: 'url', online_link: nil, spaces_available: 'status', status: nil,
-            image: 'images.image.url', source_categories: 'event_category', source_organiser: nil
+            image: 'images.image.url', source_categories: 'event_category', source_organiser: nil,
+            ticket_url: nil, price: nil, sold_out: nil
 
     def uid
       @event.attribute('id').text

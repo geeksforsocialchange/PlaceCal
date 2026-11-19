@@ -4,13 +4,21 @@ module CalendarImporter::Events
   class LinkedDataEvent < Base
     imports title: 'name', description: 'description', start_time: 'startDate', end_time: 'endDate', repeats: nil,
             location: %w[location.address location.name], webpage: 'url', online_link: nil, spaces_available: nil, status: 'eventStatus',
-            image: 'image', source_categories: 'keywords', source_organiser: %w[organizer performer]
+            image: 'image', source_categories: 'keywords', source_organiser: %w[organizer performer],
+            ticket_url: 'offers.url', price: %w[offers.price offers.lowPrice offers.priceCurrency], sold_out: 'offers.availability'
 
     STATUSES = { 'EventCancelled' => 'cancelled', 'EventPostponed' => 'postponed' }.freeze
     SCHEMA_ORG = %r{\A(https?://schema\.org/|schema:)}
     # Not in Parsers::Base::CONTEXT, so compacting leaves them under their full IRI
     KEYWORDS = 'http://schema.org/keywords'
     PERFORMER = 'http://schema.org/performer'
+    OFFERS = 'http://schema.org/offers'
+    PRICE = 'http://schema.org/price'
+    LOW_PRICE = 'http://schema.org/lowPrice'
+    HIGH_PRICE = 'http://schema.org/highPrice'
+    PRICE_CURRENCY = 'http://schema.org/priceCurrency'
+    AVAILABILITY = 'http://schema.org/availability'
+    SOLD_OUT = %w[SoldOut OutOfStock].freeze
 
     attr_reader :uid, :start_time, :end_time, :summary, :description, :location
 
@@ -106,7 +114,57 @@ module CalendarImporter::Events
       names_of(@event['organiser']) || names_of(Array.wrap(@event[PERFORMER]).select { |node| organization?(node) })
     end
 
+    def ticket_url
+      (offers + single_offers).filter_map { |offer| offer['url'].presence }.first
+    end
+
+    # Each ticket's own price, preferring tickets still on sale; an AggregateOffer's lowPrice only without them
+    def price_from
+      priced = single_offers.select { |offer| value_of(offer[PRICE]).present? }
+      on_sale = priced.reject { |offer| sold_out_offer?(offer) }
+      prices = (on_sale.presence || priced).filter_map { |offer| Base.price(value_of(offer[PRICE])) }
+      prices = offers.reject { |offer| placeholder_range?(offer) }.filter_map { |offer| Base.price(value_of(offer[LOW_PRICE])) } if prices.empty?
+      prices.min
+    end
+
+    def price_currency
+      (single_offers + offers).filter_map { |offer| value_of(offer[PRICE_CURRENCY]).presence }.first
+    end
+
+    # Sold out when every stated availability is SoldOut or OutOfStock, which OutSavvy also gives once sales close
+    def sold_out
+      stated = offers.filter_map { |offer| availability(offer) }
+      stated = single_offers.filter_map { |offer| availability(offer) } if stated.empty?
+      stated.all? { |value| SOLD_OUT.include?(value) } if stated.any?
+    end
+
     private
+
+    def offers
+      Array.wrap(@event[OFFERS]).grep(Hash)
+    end
+
+    # The tickets inside each AggregateOffer, and each offer that has none
+    def single_offers
+      offers.flat_map { |offer| Array.wrap(offer[OFFERS]).grep(Hash).presence || [offer] }
+    end
+
+    # OutSavvy sends a range of 0 to 0 with no tickets when it has nothing to sell
+    def placeholder_range?(offer)
+      [LOW_PRICE, HIGH_PRICE].all? { |key| Base.price(value_of(offer[key]))&.zero? }
+    end
+
+    def sold_out_offer?(offer)
+      SOLD_OUT.include?(availability(offer))
+    end
+
+    def availability(offer)
+      value_of(offer[AVAILABILITY]).to_s.sub(SCHEMA_ORG, '').presence
+    end
+
+    def value_of(value)
+      value.is_a?(Hash) ? value['@value'] || value['@id'] : value
+    end
 
     def names_of(nodes)
       Base.clean_list(Array.wrap(nodes).flat_map { |node| named(node) }).join(', ').presence

@@ -4,7 +4,8 @@ module CalendarImporter::Events
   class TickettailorEvent < Base
     imports title: 'name', description: 'description', start_time: 'start', end_time: 'end', repeats: nil,
             location: %w[venue.name venue.postal_code], webpage: 'url', online_link: nil, spaces_available: nil,
-            status: nil, image: 'images.header', source_categories: nil, source_organiser: nil
+            status: nil, image: 'images.header', source_categories: nil, source_organiser: nil,
+            ticket_url: 'checkout_url', price: %w[ticket_types.price currency], sold_out: %w[tickets_available unavailable_status]
 
     def uid
       @event['id']
@@ -44,6 +45,29 @@ module CalendarImporter::Events
 
     def image_url
       @event.dig('images', 'header')
+    end
+
+    def ticket_url
+      @event['checkout_url']
+    end
+
+    # Prices are in pence; ticket types on sale count over ones that aren't
+    def price_from
+      types = Array.wrap(@event['ticket_types']).select { |type| type.is_a?(Hash) && type['price'].is_a?(Integer) }
+      on_sale = types.select { |type| type['status'] == 'on_sale' }
+      lowest = (on_sale.presence || types).pluck('price').min
+      BigDecimal(lowest) / 100 if lowest
+    end
+
+    def price_currency
+      @event['currency']
+    end
+
+    # tickets_available is also "false" before sales open and after they close, so only a sold-out status says sold out
+    def sold_out
+      return true if @event['unavailable_status'].to_s.match?(/sold.?out/i)
+
+      false if Base.boolean(@event['tickets_available'])
     end
 
     private

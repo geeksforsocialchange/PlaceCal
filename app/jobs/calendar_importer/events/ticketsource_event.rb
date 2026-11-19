@@ -5,7 +5,8 @@ module CalendarImporter::Events
     imports title: 'name', description: 'description', start_time: 'dates.start', end_time: 'dates.end', repeats: nil,
             location: %w[venue.name venue.address], webpage: 'reference', online_link: nil, spaces_available: nil,
             status: 'dates.cancelled', image: 'images.src', source_categories: %w[keywords category genre],
-            source_organiser: nil
+            source_organiser: nil,
+            ticket_url: nil, price: nil, sold_out: nil
 
     VENUE_FIELDS = ['name', *CalendarImporter::Parsers::Ticketsource::ADDRESS_FIELDS].freeze
 

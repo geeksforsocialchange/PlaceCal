@@ -14,14 +14,18 @@
 #  image                    :string
 #  image_source_url         :string
 #  is_active                :boolean          default(TRUE), not null
+#  price_currency           :string
+#  price_from               :decimal(10, 2)
 #  publisher_url            :string
 #  raw_location_from_source :text
 #  rrule                    :jsonb
+#  sold_out                 :boolean
 #  source_categories        :jsonb
 #  source_organiser         :string
 #  status                   :string           default("scheduled"), not null
 #  summary                  :text             not null
 #  summary_html             :string
+#  ticket_url               :string
 #  uid                      :string
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
@@ -91,14 +95,18 @@ class Event < ApplicationRecord
   attribute :footer,                   :text                        # nullable
   attribute :image_source_url,         :string                      # nullable, the source's URL for the stored image
   attribute :is_active,                :boolean, default: true      # NOT NULL
+  attribute :price_currency,           :string                      # nullable, ISO 4217 code for price_from
+  attribute :price_from,               :decimal                     # nullable, lowest ticket price in pounds (not pence); 0 is free
   attribute :publisher_url,            :string                      # nullable
   attribute :raw_location_from_source, :text                        # nullable
   attribute :rrule,                    :json                        # nullable — Array<Hash{table: {frequency: String}}>, or false
+  attribute :sold_out,                 :boolean                     # nullable, nil when the source doesn't say
   attribute :source_categories,        :json                        # nullable, Array<String> as the source gave them
   attribute :source_organiser,         :string                      # nullable, the organiser name the source gave
   attribute :status,                   :string, default: 'scheduled' # NOT NULL, one of STATUSES
   attribute :summary,                  :text                        # NOT NULL
   attribute :summary_html,             :string                      # nullable, populated by HtmlRenderCache
+  attribute :ticket_url,               :string                      # nullable, where tickets are bought, if not the webpage
   attribute :uid,                      :string                      # nullable
 
   html_render_cache :description
@@ -115,6 +123,8 @@ class Event < ApplicationRecord
   # ==== Validations ====
   validates :summary, :dtstart, :organiser, presence: true
   validates :status, inclusion: { in: STATUSES }
+  validates :price_from, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
+  validates :price_currency, format: { with: /\A[A-Z]{3}\z/ }, allow_nil: true
   validate :require_location
   validate :unique_event, on: :create
 

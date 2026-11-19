@@ -7,7 +7,8 @@ module CalendarImporter::Events
             online_link: %w[X-GOOGLE-CONFERENCE X-MICROSOFT-SKYPETEAMSMEETINGURL X-MICROSOFT-ONLINEMEETINGCONFLINK
                             X-ZOOM-MEETING-URL LOCATION DESCRIPTION],
             spaces_available: nil, status: 'STATUS', image: %w[IMAGE ATTACH], source_categories: 'CATEGORIES',
-            source_organiser: 'ORGANIZER'
+            source_organiser: 'ORGANIZER',
+            ticket_url: nil, price: nil, sold_out: nil
 
     # Domains that indicate a direct online meeting link
     ONLINE_MEETING_DOMAINS = OnlineAddress::MEETING_DOMAINS
