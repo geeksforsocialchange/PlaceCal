@@ -737,6 +737,10 @@ en:
         description_hint: "Full description of what this partner does"
         summary_hint: "A brief one-line summary"
         website_placeholder: "https://your-website.org"
+      social_links:
+        hint: "Paste the address of your page on any social network, such as Bluesky, Mastodon, Instagram or Facebook."
+        add: "Add a link"
+        input_label: "Social link address"
       image:
         title: "Partner Image"
       validation:

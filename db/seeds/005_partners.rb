@@ -251,9 +251,12 @@ module SeedPartners # rubocop:disable Metrics/ModuleLength
 
     partner.update_columns( # rubocop:disable Rails/SkipsModelValidations
       url: "https://#{partner.slug}.example.org",
-      twitter_handle: handle,
-      instagram_handle: handle,
-      facebook_link: handle,
+      social_links: [
+        "https://www.facebook.com/#{handle}",
+        "https://www.instagram.com/#{handle}/",
+        "https://bsky.app/profile/#{handle}.bsky.social",
+        "https://social.example.org/@#{handle}"
+      ],
       public_phone: "0161 #{phone_a} #{phone_b}",
       public_email: "hello@#{partner.slug}.example.org",
       public_name: partner.name,

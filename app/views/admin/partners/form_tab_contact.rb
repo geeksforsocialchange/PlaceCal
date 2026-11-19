@@ -30,21 +30,7 @@ class Views::Admin::Partners::FormTabContact < Views::Admin::Base
                                    'data-validate-url': 'true',
                                    'data-validate-url-message': t('admin.hints.url_validation'))
       end
-      div(class: 'grid grid-cols-1 sm:grid-cols-3 gap-3') do
-        render_social_field(:facebook_link, attr_label(:partner, :facebook), 'facebook.com/', label_class: 'pr-1')
-        render_social_field(:twitter_handle, attr_label(:partner, :twitter), '@')
-        render_social_field(:instagram_handle, attr_label(:partner, :instagram), '@')
-      end
-    end
-  end
-
-  def render_social_field(field, label_text, prefix, label_class: nil)
-    fieldset(class: 'fieldset') do
-      legend(class: 'fieldset-legend') { label_text }
-      label(class: "input input-bordered flex items-center gap-1 bg-base-100#{" #{label_class}" if label_class}") do
-        span(class: 'text-gray-600 text-sm shrink-0') { prefix }
-        raw form.input_field(field, class: 'grow bg-transparent border-0 focus:outline-none min-w-0', 'aria-label': label_text)
-      end
+      SocialLinksField(form:)
     end
   end
 

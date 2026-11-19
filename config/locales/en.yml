@@ -525,9 +525,15 @@ en:
       # Screen-reader-only end of a social handle link; the icon beside it shows the network visually.
       on_network: "on %{network}"
       networks:
+        bluesky: "Bluesky"
         facebook: "Facebook"
-        twitter: "Twitter"
         instagram: "Instagram"
+        linkedin: "LinkedIn"
+        mastodon: "Mastodon"
+        threads: "Threads"
+        tiktok: "TikTok"
+        x: "X"
+        youtube: "YouTube"
     join:
       hero:
         kicker: "Join PlaceCal"
@@ -1003,9 +1009,7 @@ en:
         tag_ids: ""
         accessibility_info: "Accessibility Information"
         hidden_reason: "Reason for Hiding"
-        facebook: "Facebook"
-        twitter: "X (Twitter)"
-        instagram: "Instagram"
+        social_links: "Social links"
 
       partnership:
         <<: *default_attrs
@@ -1062,6 +1066,9 @@ en:
             base:
               default_venue: "This partner is the default location for %{calendars}. Change those calendars' location before deleting it."
               default_venue_calendar: "%{calendar} (%{organiser})"
+            social_links:
+              not_a_web_address: "has an address that isn't a web link: %{link}. Paste the whole address, starting with https://"
+              too_long: "can have at most %{count} links"
             tag_ids:
               blank: "Select at least one Tag"
             opening_times:

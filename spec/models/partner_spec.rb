@@ -13,15 +13,13 @@
 #  calendar_email          :string
 #  calendar_name           :string
 #  calendar_phone          :string
-#  can_be_assigned_events  :boolean          default(FALSE), not null
+#  can_be_assigned_events  :boolean          default(TRUE), not null
 #  description             :text
 #  description_html        :string
-#  facebook_link           :string
 #  hidden                  :boolean          default(FALSE), not null
 #  hidden_reason           :text
 #  hidden_reason_html      :string
 #  image                   :string
-#  instagram_handle        :string
 #  is_a_place              :boolean          default(FALSE), not null
 #  name                    :string           not null
 #  opening_times           :jsonb
@@ -32,25 +30,28 @@
 #  public_name             :string
 #  public_phone            :string
 #  slug                    :string
+#  social_links            :jsonb            not null
 #  summary                 :string
 #  summary_html            :string
-#  twitter_handle          :string
 #  url                     :string
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
 #  address_id              :bigint
 #  hidden_blame_id         :integer
+#  parent_id               :bigint
 #
 # Indexes
 #
 #  index_partners_hidden         (hidden)
 #  index_partners_lower_name_    (lower((name)::text)) UNIQUE
 #  index_partners_on_address_id  (address_id)
+#  index_partners_on_parent_id   (parent_id)
 #  index_partners_on_slug        (slug) UNIQUE
 #
 # Foreign Keys
 #
 #  fk_rails_...  (address_id => addresses.id)
+#  fk_rails_...  (parent_id => partners.id)
 #
 require "rails_helper"
 
@@ -148,53 +149,49 @@ RSpec.describe Partner, type: :model do
       end
     end
 
-    describe "twitter_handle" do
+    describe "social_links" do
       let(:partner) { build(:partner) }
 
-      it "accepts valid handle with @" do
-        partner.twitter_handle = "@asdf"
+      it "accepts web addresses on any site" do
+        partner.social_links = ["https://bsky.app/profile/a.bsky.social", "https://social.coop/@a", "http://example.org/a"]
         partner.valid?
-        expect(partner.errors[:twitter_handle]).to be_empty
+        expect(partner.errors[:social_links]).to be_empty
       end
 
-      it "accepts valid handle without @" do
-        partner.twitter_handle = "asdf"
-        partner.valid?
-        expect(partner.errors[:twitter_handle]).to be_empty
+      it "strips whitespace, drops blanks and duplicates, and keeps the partner's order" do
+        partner.social_links = ["  https://x.com/a ", "", nil, "https://bsky.app/profile/a", "https://x.com/a"]
+        expect(partner.social_links).to eq(["https://x.com/a", "https://bsky.app/profile/a"])
       end
 
-      it "rejects full URL" do
-        partner.twitter_handle = "https://twitter.com/asdf"
+      it "rejects an address that isn't an http(s) link with a host" do
+        partner.social_links = ["https://x.com/a", "instagram.com/a", "ftp://example.org", "https://"]
         expect(partner).not_to be_valid
-        expect(partner.errors[:twitter_handle]).to be_present
+        expect(partner.errors[:social_links].size).to eq(3)
+        expect(partner.errors.full_messages.join).to include("instagram.com/a")
       end
 
-      it "rejects invalid characters" do
-        partner.twitter_handle = "asd£$%dsa"
+      it "allows at most #{Partner::MAX_SOCIAL_LINKS} links" do
+        partner.social_links = Array.new(Partner::MAX_SOCIAL_LINKS) { "https://example.org/#{it}" }
+        expect(partner).to be_valid
+
+        partner.social_links += ["https://example.org/one-too-many"]
         expect(partner).not_to be_valid
-        expect(partner.errors[:twitter_handle]).to be_present
+        expect(partner.errors[:social_links]).to include("can have at most #{Partner::MAX_SOCIAL_LINKS} links")
+      end
+
+      it "saves a real JSON array that defaults to empty" do
+        partner = create(:partner, social_links: ["https://x.com/a"])
+        expect(partner.reload.social_links).to eq(["https://x.com/a"])
+        expect(described_class.where(id: partner).pick(Arel.sql("jsonb_typeof(social_links)"))).to eq("array")
+        expect(described_class.new.social_links).to eq([])
       end
     end
 
-    describe "facebook_link" do
-      let(:partner) { build(:partner) }
-
-      it "accepts valid page name" do
-        partner.facebook_link = "GroupName"
-        partner.valid?
-        expect(partner.errors[:facebook_link]).to be_empty
-      end
-
-      it "rejects full URL" do
-        partner.facebook_link = "https://facebook.com/group-name"
-        expect(partner).not_to be_valid
-        expect(partner.errors[:facebook_link]).to be_present
-      end
-
-      it "rejects hyphenated names" do
-        partner.facebook_link = "Group-Name"
-        expect(partner).not_to be_valid
-        expect(partner.errors[:facebook_link]).to be_present
+    describe "#social_link_for" do
+      it "returns the first link on that platform" do
+        partner = build(:partner, social_links: ["https://bsky.app/profile/a", "https://twitter.com/old", "https://x.com/new"])
+        expect(partner.social_link_for(:x)).to eq("https://twitter.com/old")
+        expect(partner.social_link_for(:instagram)).to be_nil
       end
     end
 
@@ -554,9 +551,13 @@ RSpec.describe Partner, type: :model do
 
     it "is false when every public contact method is blank" do
       partner = build(:partner,
-                      public_email: nil, public_phone: nil, url: nil,
-                      facebook_link: nil, twitter_handle: nil, instagram_handle: nil)
+                      public_email: nil, public_phone: nil, url: nil, social_links: [])
       expect(partner.contactable?).to be false
+    end
+
+    it "is true when the partner only has a social link" do
+      partner = build(:partner, public_email: nil, public_phone: nil, url: nil, social_links: ["https://x.com/a"])
+      expect(partner.contactable?).to be true
     end
   end
 

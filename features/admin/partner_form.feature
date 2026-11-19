@@ -88,13 +88,11 @@ Feature: Partner Editing
     And I click the "Save" button
     Then I should see a success message
 
-  Scenario: Updating partner social media handles
+  Scenario: Updating partner social links
     Given there is a partner called "Social Media Org"
     When I edit the partner "Social Media Org"
     And I go to the "Contact" step
-    And I fill in "partner_facebook_link" with "SocialMediaOrgPage"
-    And I fill in "partner_twitter_handle" with "SocialMediaOrg"
-    And I fill in "partner_instagram_handle" with "socialmediaorg"
+    And I fill in "partner_social_links_0" with "https://bsky.app/profile/socialmediaorg.bsky.social"
     And I click the "Save" button
     Then I should see a success message
 

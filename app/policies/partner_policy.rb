@@ -49,9 +49,9 @@ class PartnerPolicy < ApplicationPolicy
     attrs = [:name, :image, :remove_image, :summary, :description, :accessibility_info,
              :public_name, :public_email, :public_phone,
              :partner_name, :partner_email, :partner_phone,
-             :url, :facebook_link, :twitter_handle, :instagram_handle,
-             :opening_times, :can_be_assigned_events,
-             { calendars_attributes: %i[id name source strategy _destroy],
+             :url, :opening_times, :can_be_assigned_events,
+             { social_links: [],
+               calendars_attributes: %i[id name source strategy _destroy],
                address_attributes: %i[id street_address street_address2 street_address3 city postcode],
                service_areas_attributes: %i[id neighbourhood_id _destroy],
                category_ids: [], facility_ids: [] }]

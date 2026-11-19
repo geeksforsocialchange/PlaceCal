@@ -69,9 +69,9 @@ RSpec.describe "Public Partners", type: :request do
     end
 
     it "names social accounts by handle on a built-in theme" do
-      partner.update!(twitter_handle: "riverside_hub")
+      partner.update!(social_links: ["https://social.coop/@riverside_hub"])
       get partner_url(partner, host: "#{site.slug}.lvh.me")
-      expect(response.body).to include(">@riverside_hub<span class=\"sr-only\"> on Twitter</span></a>")
+      expect(response.body).to include(">@riverside_hub@social.coop<span class=\"sr-only\"> on Mastodon</span></a>")
     end
 
     it "canonicalises to the directory apex, not the site subdomain" do
@@ -763,9 +763,10 @@ RSpec.describe "Public Partners", type: :request do
 
       it "shows social media links" do
         get partner_url(partner, host: "lvh.me")
-        expect(response.body).to include("@#{partner.twitter_handle}")
-        expect(response.body).to include("@#{partner.instagram_handle}")
-        expect(response.body).to include("Facebook")
+        partner.social_profiles.each do |link|
+          expect(response.body).to include(%(href="#{link.url}"))
+          expect(response.body).to include("#{link.label}<span class=\"sr-only\"> on #{link.name}</span>")
+        end
       end
     end
 
@@ -773,7 +774,7 @@ RSpec.describe "Public Partners", type: :request do
       let(:partner) do
         create(:partner,
                public_email: nil, public_phone: nil, url: nil,
-               twitter_handle: nil, instagram_handle: nil, facebook_link: nil)
+               social_links: [])
       end
 
       it "hides contact card" do
@@ -970,7 +971,7 @@ RSpec.describe "Public Partners", type: :request do
       let(:partner) do
         create(:partner, summary: nil, description: nil,
                          public_email: nil, public_phone: nil, url: nil,
-                         twitter_handle: nil, instagram_handle: nil, facebook_link: nil)
+                         social_links: [])
       end
 
       it "renders without errors" do

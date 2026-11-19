@@ -5,9 +5,13 @@ class Shared::ContactDetailsPreview < Lookbook::Preview
   def with_all_contacts
     partner = Partner.new(
       name: "Hulme Community Hub",
-      facebook_link: "HulmeCommunity",
-      twitter_handle: "hulme_cc",
-      instagram_handle: "hulmecc"
+      social_links: [
+        "https://bsky.app/profile/hulmecc.bsky.social",
+        "https://social.coop/@hulmecc",
+        "https://www.facebook.com/groups/hulmecommunity",
+        "https://www.instagram.com/hulmecc/",
+        "https://hulme.example.org/newsletter"
+      ]
     )
     render Components::Shared::ContactDetails.new(
       partner:,

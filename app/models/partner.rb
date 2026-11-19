@@ -16,12 +16,10 @@
 #  can_be_assigned_events  :boolean          default(TRUE), not null
 #  description             :text
 #  description_html        :string
-#  facebook_link           :string
 #  hidden                  :boolean          default(FALSE), not null
 #  hidden_reason           :text
 #  hidden_reason_html      :string
 #  image                   :string
-#  instagram_handle        :string
 #  is_a_place              :boolean          default(FALSE), not null
 #  name                    :string           not null
 #  opening_times           :jsonb
@@ -32,9 +30,9 @@
 #  public_name             :string
 #  public_phone            :string
 #  slug                    :string
+#  social_links            :jsonb            not null
 #  summary                 :string
 #  summary_html            :string
-#  twitter_handle          :string
 #  url                     :string
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
@@ -64,11 +62,15 @@ class Partner < ApplicationRecord
   include HtmlRenderCache
   include SlugRetainable
 
+  # Dropped in a later release, so a rollback keeps the data the social_links backfill came from
+  self.ignored_columns += %w[facebook_link instagram_handle twitter_handle]
+
   # ==== Constants ====
 
   MAX_CATEGORIES = 3
   OPENING_TIMES_DAY = %r{\Ahttps?://schema\.org/(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\z}
   NEIGHBOURHOOD_UNIT_RANK = %w[ward district county region].freeze
+  MAX_SOCIAL_LINKS = 10
 
   # ==== Attributes ====
   # Columns marked (nullable) have no NOT NULL constraint in the DB.
@@ -83,13 +85,11 @@ class Partner < ApplicationRecord
   attribute :can_be_assigned_events,  :boolean, default: true      # NOT NULL
   attribute :description,             :text                        # nullable
   attribute :description_html,        :string                      # nullable, populated by HtmlRenderCache
-  attribute :facebook_link,           :string                      # nullable
   attribute :hidden,                  :boolean, default: false     # NOT NULL
   attribute :hidden_blame_id,         :integer                     # nullable
   attribute :hidden_reason,           :text                        # nullable
   attribute :hidden_reason_html,      :string                      # nullable, populated by HtmlRenderCache
   # image -- managed by CarrierWave, attribute declaration skipped
-  attribute :instagram_handle,        :string                      # nullable
   attribute :is_a_place,              :boolean, default: false     # NOT NULL
   attribute :name,                    :string                      # NOT NULL
   attribute :opening_times,           :json                        # nullable — Array<Hash{dayOfWeek, opens, closes}>, schema.org OpeningHoursSpecification
@@ -101,9 +101,9 @@ class Partner < ApplicationRecord
   attribute :public_name,             :string                      # nullable
   attribute :public_phone,            :string                      # nullable
   attribute :slug,                    :string                      # nullable
+  attribute :social_links,            :jsonb, default: -> { [] }   # NOT NULL, Array<String> of profile URLs in the partner's order
   attribute :summary,                 :string                      # nullable
   attribute :summary_html,            :string                      # nullable, populated by HtmlRenderCache
-  attribute :twitter_handle,          :string                      # nullable
   attribute :url,                     :string                      # nullable
 
   attr_accessor :accessed_by_user
@@ -115,7 +115,8 @@ class Partner < ApplicationRecord
   html_render_cache :accessibility_info
   html_render_cache :hidden_reason
 
-  auto_strip_attributes :name, :summary, :url, :twitter_handle, :instagram_handle, :facebook_link, :public_phone, :public_email
+  auto_strip_attributes :name, :summary, :url, :public_phone, :public_email
+  normalizes :social_links, with: ->(links) { Array.wrap(links).map { it.to_s.strip }.compact_blank.uniq }
   permalink_resource 'partners'
 
   # ==== Associations ====
@@ -189,15 +190,7 @@ class Partner < ApplicationRecord
   validates :url,
             format: { with: URL_REGEX, message: 'is invalid' },
             allow_blank: true
-  validates :twitter_handle,
-            format: { with: TWITTER_REGEX, message: 'invalid account name' },
-            allow_blank: true
-  validates :instagram_handle,
-            format: { with: INSTAGRAM_REGEX, message: 'invalid account name' },
-            allow_blank: true
-  validates :facebook_link,
-            format: { with: FACEBOOK_REGEX, message: 'invalid page name' },
-            allow_blank: true
+  validates :social_links, length: { maximum: MAX_SOCIAL_LINKS }
   validates :public_phone, :partner_phone,
             format: { with: UK_NUMBER_REGEX, message: 'invalid phone number' },
             allow_blank: true
@@ -212,6 +205,7 @@ class Partner < ApplicationRecord
   validate :check_neighbourhood_access
   validate :neighbourhood_admin_address_access, on: %i[create update]
   validate :must_have_address_or_service_area
+  validate :social_links_are_web_addresses
   validate :opening_times_is_json_or_nil
   validate :opening_times_are_valid
   validate :three_or_less_category_tags
@@ -255,13 +249,6 @@ class Partner < ApplicationRecord
   end
 
   # ==== Instance methods ====
-
-  # Strips leading @ from Twitter handles before saving.
-  # @param handle [String, nil]
-  # @return [String, nil]
-  def twitter_handle=(handle)
-    super(handle&.gsub('@', ''))
-  end
 
   # @return [Array<Integer>] this partner's id and its visible children's ids
   def self_and_child_ids
@@ -346,14 +333,15 @@ class Partner < ApplicationRecord
     end
   end
 
-  # @return [String, nil] full Twitter profile URL
-  def twitter_url
-    "https://twitter.com/#{twitter_handle}" if twitter_handle.present?
+  # @return [Array<SocialLink>] in the partner's order
+  def social_profiles
+    social_links.map { SocialLink.new(it) }
   end
 
-  # @return [String, nil] full Instagram profile URL
-  def instagram_url
-    "https://instagram.com/#{instagram_handle}" if instagram_handle.present?
+  # @param platform [Symbol] a SocialLink platform
+  # @return [String, nil] the first link on that platform
+  def social_link_for(platform)
+    social_profiles.find { it.platform == platform }&.url
   end
 
   # @return [String, nil] CarrierWave image URL
@@ -404,8 +392,7 @@ class Partner < ApplicationRecord
 
   # @return [Boolean] whether any public contact method is present
   def contactable?
-    public_email.present? || public_phone.present? || url.present? ||
-      facebook_link.present? || twitter_handle.present? || instagram_handle.present?
+    public_email.present? || public_phone.present? || url.present? || social_links.any?
   end
 
   # @return [Boolean] whether name passes format/length validation
@@ -544,6 +531,12 @@ class Partner < ApplicationRecord
     true
   rescue JSON::ParserError, TypeError => _e
     false
+  end
+
+  def social_links_are_web_addresses
+    social_links.reject { SocialLink.valid_url?(it) }.each do |link|
+      errors.add(:social_links, :not_a_web_address, link:)
+    end
   end
 
   def opening_times_is_json_or_nil

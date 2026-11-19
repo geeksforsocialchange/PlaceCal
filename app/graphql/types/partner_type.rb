@@ -33,15 +33,19 @@ module Types
     field :url, String,
           description: 'The URL provided by the partner for users to find out more info'
 
+    field :social_links, [SocialLinkType],
+          null: false,
+          method: :social_profiles,
+          description: "Partner's profiles on social networks and other sites, in the partner's order"
+
     field :twitter_url, String,
-          description: "Full URL for partner's Twitter / X profile"
+          description: "Full URL of partner's first X / Twitter profile in `socialLinks`"
 
     field :facebook_url, String,
-          method: :facebook_link,
-          description: "Full URL of partner's Facebook page"
+          description: "Full URL of partner's first Facebook page, group or profile in `socialLinks`"
 
     field :instagram_url, String,
-          description: "Full URL of partner's instagram page"
+          description: "Full URL of partner's first Instagram profile in `socialLinks`"
 
     field :areas_served, [NeighbourhoodType],
           method: :service_area_neighbourhoods,
@@ -63,6 +67,10 @@ module Types
     def contact
       object
     end
+
+    def twitter_url = object.social_link_for(:x)
+    def facebook_url = object.social_link_for(:facebook)
+    def instagram_url = object.social_link_for(:instagram)
 
     def opening_hours
       JSON.parse(object.opening_times) if object.opening_times.present?

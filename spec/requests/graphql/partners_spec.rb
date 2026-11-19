@@ -119,6 +119,60 @@ RSpec.describe "GraphQL Partners", type: :request do
     end
   end
 
+  describe "partner social link fields" do
+    let(:partner) do
+      create(:riverside_partner, social_links: ["https://social.coop/@rch", "https://www.facebook.com/groups/rch",
+                                                "https://twitter.com/rch", "https://www.instagram.com/rch/",
+                                                "https://x.com/rch_new"])
+    end
+    let(:query) do
+      <<-GRAPHQL
+        query($id: ID!) {
+          partner(id: $id) {
+            twitterUrl
+            facebookUrl
+            instagramUrl
+            socialLinks { url platform name handle }
+          }
+        }
+      GRAPHQL
+    end
+
+    it "lists every link with its recognised platform, name and handle" do
+      result = execute_query(query, variables: { id: partner.id })
+
+      expect(result["errors"]).to be_nil
+      expect(result["data"]["partner"]["socialLinks"]).to eq(
+        [
+          { "url" => "https://social.coop/@rch", "platform" => "mastodon", "name" => "Mastodon", "handle" => "@rch@social.coop" },
+          { "url" => "https://www.facebook.com/groups/rch", "platform" => "facebook", "name" => "Facebook", "handle" => nil },
+          { "url" => "https://twitter.com/rch", "platform" => "x", "name" => "X", "handle" => "@rch" },
+          { "url" => "https://www.instagram.com/rch/", "platform" => "instagram", "name" => "Instagram", "handle" => "@rch" },
+          { "url" => "https://x.com/rch_new", "platform" => "x", "name" => "X", "handle" => "@rch_new" }
+        ]
+      )
+    end
+
+    it "keeps the single-network URL fields, as full URLs from the first link on each network" do
+      result = execute_query(query, variables: { id: partner.id })
+
+      expect(result["data"]["partner"]).to include(
+        "twitterUrl" => "https://twitter.com/rch",
+        "facebookUrl" => "https://www.facebook.com/groups/rch",
+        "instagramUrl" => "https://www.instagram.com/rch/"
+      )
+    end
+
+    it "returns an empty list and null URLs for a partner with no links" do
+      partner.update!(social_links: [])
+      result = execute_query(query, variables: { id: partner.id })
+
+      expect(result["data"]["partner"]).to eq(
+        "twitterUrl" => nil, "facebookUrl" => nil, "instagramUrl" => nil, "socialLinks" => []
+      )
+    end
+  end
+
   describe "partner events field" do
     let(:partner) { create(:partner) }
     let!(:future_event) { create(:event, organiser: partner, dtstart: 1.week.from_now, dtend: 1.week.from_now + 2.hours) }

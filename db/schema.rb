@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_18_160000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_19_100100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -247,6 +247,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_18_160000) do
     t.string "twitter_handle"
     t.datetime "updated_at", precision: nil, null: false
     t.string "url"
+    t.jsonb "social_links", default: [], null: false
     t.index "lower((name)::text)", name: "index_partners_lower_name_", unique: true
     t.index ["address_id"], name: "index_partners_on_address_id"
     t.index ["hidden"], name: "index_partners_hidden"

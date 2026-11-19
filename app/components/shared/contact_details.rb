@@ -54,9 +54,7 @@ class Components::Shared::ContactDetails < Components::Base
       contact_row(:contact_phone, @phone, "tel:#{@phone}") if @phone.present?
       contact_row(:contact_email, @email, "mailto:#{@email}") if @email.present?
       contact_row(:contact_website, strip_url(@url), @url) if @url.present?
-      contact_row(:contact_facebook, 'Facebook', "https://facebook.com/#{@partner.facebook_link}") if @partner.facebook_link.present?
-      contact_row(:contact_twitter, "@#{@partner.twitter_handle}", "https://twitter.com/#{@partner.twitter_handle}", network: :twitter) if @partner.twitter_handle.present?
-      contact_row(:contact_instagram, "@#{@partner.instagram_handle}", "https://www.instagram.com/#{@partner.instagram_handle}/", network: :instagram) if @partner.instagram_handle.present?
+      @partner.social_profiles.each { contact_row(it.icon, it.label, it.url, network: network_for(it)) }
     end
   end
 
@@ -71,7 +69,12 @@ class Components::Shared::ContactDetails < Components::Base
   end
 
   def network_name(network)
-    span(class: 'sr-only') { " #{t('directory.contact.on_network', network: t("directory.contact.networks.#{network}"))}" }
+    span(class: 'sr-only') { " #{t('directory.contact.on_network', network:)}" }
+  end
+
+  # An unrecognised site's label already starts with its host
+  def network_for(link)
+    link.name if link.known_platform?
   end
 
   # ── Local-site variant ──
@@ -81,9 +84,7 @@ class Components::Shared::ContactDetails < Components::Base
       render_phone
       render_email
       render_website
-      render_facebook
-      render_twitter
-      render_instagram
+      @partner.social_profiles.each { social_link(it) }
       plain t('directory.contact.no_contact') unless contact?
     end
   end
@@ -119,41 +120,23 @@ class Components::Shared::ContactDetails < Components::Base
     end
   end
 
-  def render_facebook
-    return if @partner.facebook_link.blank?
-
-    social_link(:facebook, @partner.facebook_link, "https://facebook.com/#{@partner.facebook_link}")
-  end
-
-  def render_twitter
-    return if @partner.twitter_handle.blank?
-
-    social_link(:twitter, "@#{@partner.twitter_handle}", "https://twitter.com/#{@partner.twitter_handle}")
-  end
-
-  def render_instagram
-    return if @partner.instagram_handle.blank?
-
-    social_link(:instagram, "@#{@partner.instagram_handle}", "https://www.instagram.com/#{@partner.instagram_handle}/")
-  end
-
-  def social_link(network, handle, href)
+  def social_link(link)
     span(**part(:item, variant: :social, class: 'contents')) do
-      raw(view_context.icon(:"contact_#{network}", size: '4', css_class: 'mt-1'))
+      raw(view_context.icon(link.icon, size: '4', css_class: 'mt-1'))
       if @social_labels == :network
-        link_to(t("directory.contact.networks.#{network}"), href, title: handle, target: '_blank', rel: 'noopener')
+        link_to(link.name, link.url, title: link.label, target: '_blank', rel: 'noopener')
       else
-        a(href:, target: '_blank', rel: 'noopener') do
-          plain handle
-          network_name(network)
+        a(href: link.url, target: '_blank', rel: 'noopener') do
+          plain link.label
+          network = network_for(link)
+          network_name(network) if network
         end
       end
     end
   end
 
   def contact?
-    @phone.present? || @email.present? || @url.present? ||
-      @partner.facebook_link.present? || @partner.twitter_handle.present? || @partner.instagram_handle.present?
+    @phone.present? || @email.present? || @url.present? || @partner.social_links.any?
   end
 
   def strip_url(target_url)

@@ -19,10 +19,7 @@ module PartnerJsonLd
     data['email'] = public_email if public_email.present?
     data['image'] = image.url if image?
 
-    same_as = [twitter_url, instagram_url]
-    same_as << "https://facebook.com/#{facebook_link}" if facebook_link.present?
-    same_as = same_as.compact
-    data['sameAs'] = same_as if same_as.any?
+    data['sameAs'] = social_links if social_links.any?
 
     if address
       postal_address = address.to_json_ld
