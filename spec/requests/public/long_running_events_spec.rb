@@ -84,7 +84,7 @@ RSpec.describe "Long-running events", type: :request do
 
       expect(response).to be_successful
       expect(titles).to be_empty
-      %w[One-off Repeating Long-running].each { expect(frame).to have_unchecked_field("#{it} events") }
+      %w[One-off Regular Long-running].each { expect(frame).to have_unchecked_field("#{it} events") }
     end
 
     it "strikes through the From and until line of a called-off event" do
@@ -110,7 +110,7 @@ RSpec.describe "Long-running events", type: :request do
       other = create(:partner, address: create(:riverside_address, neighbourhood: ward))
       create(:event, organiser: other, dtstart: 2.days.from_now, dtend: 2.days.from_now + 2.hours)
       get partner_url(other, host:)
-      expect(frame).to have_checked_field("Repeating")
+      expect(frame).to have_checked_field("Regular")
       expect(frame).to have_no_field("Long-running")
       # Ticking the others again must not untick a box the visitor never saw
       expect(frame).to have_css("input[type='hidden'][name='types[]'][value='long_running']", visible: :all)
@@ -123,7 +123,7 @@ RSpec.describe "Long-running events", type: :request do
       get partner_url(partner, host:, params: { types: [""] })
 
       expect(titles).to be_empty
-      %w[One-off Repeating Long-running].each { expect(frame).to have_unchecked_field(it) }
+      %w[One-off Regular Long-running].each { expect(frame).to have_unchecked_field(it) }
     end
 
     it "draws the header checkboxes at the panel's size in the theme's colour" do

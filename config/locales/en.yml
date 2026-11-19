@@ -206,7 +206,7 @@ en:
     types:
       label: "Event types"
       one_off: "One-off events"
-      repeating: "Repeating events"
+      repeating: "Regular events"
       long_running: "Long-running events"
     # Day strip event filter (D22): the Today / Tomorrow / next five days
     # navigation rendered for themes with event_filter_style :day_strip.
@@ -226,7 +226,7 @@ en:
       # One for each unticked event type
       types_hidden:
         one_off: "One-off events hidden"
-        repeating: "Repeating events hidden"
+        repeating: "Regular events hidden"
         long_running: "Long-running events hidden"
       reset: "Reset filters"
 
@@ -588,7 +588,7 @@ en:
       show_label: "Show"
       event_types:
         one_off: "One-off"
-        repeating: "Repeating"
+        repeating: "Regular"
         long_running: "Long-running"
       show_more_days:
         one: "Show %{count} more day"
@@ -823,6 +823,7 @@ en:
       # A long-running event's dates, e.g. "17 Jan 2027"
       long_running: "%-d %b %Y"
       long_running_no_year: "%-d %b"
+      long_running_day: "%-d"
       # Full dates in admin notices, e.g. "9 November 2026"
       day_month_year: "%-d %B %Y"
 

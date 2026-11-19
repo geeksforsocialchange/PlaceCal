@@ -517,7 +517,7 @@ RSpec.describe "Public Partners", type: :request do
         group = Capybara.string(response.body).find("[data-part='events-types'][role='group']")
         expect(group).to have_css("##{group['aria-labelledby']}", text: "Show")
         expect(group).to have_checked_field("One-off")
-        expect(group).to have_checked_field("Repeating")
+        expect(group).to have_checked_field("Regular")
       end
     end
 

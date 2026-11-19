@@ -233,7 +233,7 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
 
         group = page.find("[data-part='group'][data-variant='types'][role='group'][aria-label='Event types']")
         expect(group).to have_checked_field("One-off events", type: "checkbox")
-        expect(group).to have_checked_field("Repeating events", type: "checkbox")
+        expect(group).to have_checked_field("Regular events", type: "checkbox")
         expect(group).to have_checked_field("Long-running events", type: "checkbox")
         expect(group).to have_css("input[type='hidden'][name='types[]'][value='']", visible: :all)
       end
@@ -242,7 +242,7 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
         render_inline(described_class.new(**base_attrs, types: EventTypes.new(%w[long_running])))
 
         expect(page).to have_unchecked_field("One-off events")
-        expect(page).to have_unchecked_field("Repeating events")
+        expect(page).to have_unchecked_field("Regular events")
         expect(page).to have_checked_field("Long-running events")
       end
 
