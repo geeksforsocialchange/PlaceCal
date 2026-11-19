@@ -14,9 +14,9 @@ class Views::Admin::Events::Show < Views::Admin::Base
     div(class: 'space-y-6') do
       render_header
       render_details
-      render_calendar
       render_location
       render_partners
+      render_calendar
       render_siblings if event.calendar
     end
   end
