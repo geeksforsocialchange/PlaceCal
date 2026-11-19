@@ -5,7 +5,8 @@ module CalendarImporter::Events
     imports title: 'title', description: %w[full_description description], start_time: 'scheduling.config.startDate',
             end_time: 'scheduling.config.endDate', repeats: nil,
             location: %w[location.fullAddress location.name location.address], webpage: 'slug', online_link: nil,
-            spaces_available: nil, status: nil, image: nil, source_categories: nil, source_organiser: nil
+            spaces_available: nil, status: nil, image: 'mainImage.url', source_categories: 'categories.name',
+            source_organiser: nil
 
     def initialize(event, base_url: nil)
       super(event)
@@ -28,6 +29,16 @@ module CalendarImporter::Events
       return unless @event['slug'] && @base_url
 
       "#{@base_url}/event-details/#{@event['slug']}"
+    end
+
+    def image_url
+      image = @event['mainImage']
+      image['url'] if image.is_a?(Hash)
+    end
+
+    # Wix documents each category as an object with a name; every recorded event's list is empty
+    def source_categories
+      Array.wrap(@event['categories']).map { |category| category.is_a?(Hash) ? category['name'] : category }
     end
 
     def dtstart

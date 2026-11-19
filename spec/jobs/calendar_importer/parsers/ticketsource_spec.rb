@@ -175,11 +175,44 @@ RSpec.describe CalendarImporter::Parsers::Ticketsource do
             "name" => "Test Show",
             "description" => "A great show",
             "reference" => "test-show",
+            "images" => [],
             "dates" => [{ "id" => "date_1", "start" => "2026-03-15T19:30:00+00:00",
                           "end" => "2026-03-15T22:00:00+00:00", "cancelled" => false }],
             "venue" => { "name" => "Fairfield House", "line_1" => "10 High Street", "line_3" => "Bath", "postcode" => "BA1 5AH" }
           }]
         )
+      end
+
+      it "keeps the documented keywords, category, genre and image sources" do
+        listing = JSON.parse(events_response)
+        listing["data"].first["attributes"].merge!(
+          "keywords" => "folk, dance", "category" => "Music", "genre" => "Folk", "terms" => "No refunds",
+          "images" => [{ "type" => "header", "src" => "https://cdn.ticketsource.io/a.jpg" }, { "type" => "thumbnail" }]
+        )
+        stub_request(:get, "https://api.ticketsource.io/events?page=1&per_page=100")
+          .to_return(status: 200, body: listing.to_json, headers: { "Content-Type" => "application/json" })
+
+        record = described_class.new(calendar).download_calendar.first
+
+        expect(record).to include("keywords" => "folk, dance", "category" => "Music", "genre" => "Folk",
+                                  "images" => ["https://cdn.ticketsource.io/a.jpg"])
+        expect(record).not_to have_key("terms")
+      end
+
+      it "leaves out a date marked not public, and keeps one without the flag" do
+        stub_request(:get, "https://api.ticketsource.io/events?page=1&per_page=100")
+          .to_return(status: 200, body: events_response, headers: { "Content-Type" => "application/json" })
+        dates = [
+          { "id" => "date_1", "attributes" => { "start" => "2026-03-15T19:30:00+00:00", "public" => true } },
+          { "id" => "date_2", "attributes" => { "start" => "2026-03-16T19:30:00+00:00", "public" => false } },
+          { "id" => "date_3", "attributes" => { "start" => "2026-03-17T19:30:00+00:00" } }
+        ]
+        stub_request(:get, dates_url)
+          .to_return(status: 200, body: { "data" => dates }.to_json, headers: { "Content-Type" => "application/json" })
+
+        data = described_class.new(calendar).download_calendar
+
+        expect(data.first["dates"].pluck("id")).to eq(%w[date_1 date_3])
       end
 
       it "raises when an event's venues request fails" do

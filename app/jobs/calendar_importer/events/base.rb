@@ -85,11 +85,6 @@ module CalendarImporter::Events
             end
           end
 
-          if footer.present?
-            doc << '<br/><br/>'
-            doc << footer
-          end
-
           body_text = doc.serialize
           # Indented page markup (Squarespace's galleries) would otherwise read as a Markdown code block
           clean_text = ActionController::Base.helpers.sanitize(body_text, tags: ALLOWED_TAGS).gsub(/^[ \t]+/, '')
@@ -131,8 +126,6 @@ module CalendarImporter::Events
     def attributes_for(occurrence)
       attributes.merge(are_spaces_available: occurrence.status)
     end
-
-    def footer; end
 
     def publisher_url; end
 

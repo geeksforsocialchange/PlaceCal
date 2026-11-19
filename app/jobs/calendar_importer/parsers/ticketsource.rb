@@ -53,13 +53,19 @@ module CalendarImporter
           'name' => attrs['name'],
           'description' => attrs['description'],
           'reference' => attrs['reference'],
-          'dates' => fetch_all_pages("/events/#{event['id']}/dates").map { |date| date_record(date) },
+          **attrs.slice('keywords', 'category', 'genre'),
+          'images' => Array.wrap(attrs['images']).filter_map { |image| image['src'] if image.is_a?(Hash) },
+          'dates' => fetch_all_pages("/events/#{event['id']}/dates").filter_map { |date| date_record(date) },
           'venue' => venue_record(fetch_event_venues(event['id']).first)
         }
       end
 
+      # A date marked not public is left out; one without the flag is kept
       def date_record(date)
-        { 'id' => date['id'], **(date['attributes'] || {}).slice('start', 'end', 'cancelled') }
+        attrs = date['attributes'] || {}
+        return if attrs['public'] == false
+
+        { 'id' => date['id'], **attrs.slice('start', 'end', 'cancelled') }
       end
 
       def venue_record(venue)

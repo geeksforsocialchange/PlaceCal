@@ -2,26 +2,38 @@
 
 module CalendarImporter::Events
   class TicketsolveEvent < Base
-    imports title: 'name', description: %w[description url], start_time: 'opening_time_iso', end_time: nil, repeats: nil,
-            location: nil, webpage: nil, online_link: nil, spaces_available: 'status', status: nil, image: nil,
-            source_categories: nil, source_organiser: nil
+    imports title: 'name', description: 'description', start_time: 'opening_time_iso', end_time: nil, repeats: nil,
+            location: 'venue.name', webpage: 'url', online_link: nil, spaces_available: 'status', status: nil,
+            image: 'images.image.url', source_categories: 'event_category', source_organiser: nil
 
     def uid
       @event.attribute('id').text
     end
 
     def summary
-      @event.at_css('name').text.gsub(/\A(\n)+\z/, '').strip
+      child_text('name')
     end
 
     def description
-      @event.at_css('description').text.gsub(/\A(\n)+\z/, '').strip
+      child_text('description')
     end
 
-    def location; end
+    # The feed lists each show under the venue it's at, which has a name but no address
+    def location
+      @event.ancestors('venue').first&.at_xpath('name')&.text.to_s.strip.presence
+    end
 
-    def footer
-      "Tickets: #{@event.at_css('url').text}"
+    def publisher_url
+      child_text('url').presence
+    end
+
+    def image_url
+      image = @event.xpath('images/image').min_by { |node| node['priority'].to_i }
+      image&.at_xpath('url[@size="large"]')&.text.to_s.strip.presence
+    end
+
+    def source_categories
+      [child_text('event_category')].compact_blank
     end
 
     def recurring_event?
@@ -35,6 +47,12 @@ module CalendarImporter::Events
                          status: event.at_css('status').text)
         end
       end
+    end
+
+    private
+
+    def child_text(name)
+      @event.at_xpath(name)&.text.to_s.strip
     end
   end
 end
