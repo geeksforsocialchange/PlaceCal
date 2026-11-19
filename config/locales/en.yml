@@ -193,7 +193,7 @@ en:
     # Toggle value shown when a Components::Filter dropdown has no selection.
     show_all: "Show all"
     search_partners: "Search partners"
-    # Radio labels in the sort/period/repeats dropdown, grouped as they appear
+    # Option labels in the filter-and-sort dropdown, grouped as they appear
     sort:
       time: "Sort by date"
       summary: "Sort by name"
@@ -202,16 +202,12 @@ en:
       week: "Weekly view"
       month: "Monthly view"
       future: "Show all"
-    # "on"/"off" are quoted: YAML would otherwise read them as booleans
-    repeating:
-      "on": "All events"
-      "off": "Only one-off events"
-      "only": "Only repeating events"
-    # Events running more than 3 days, such as exhibitions
-    long_running:
-      "on": "Show long-running events"
-      "off": "Hide long-running events"
-      "only": "Only long-running events"
+    # Checkboxes for each type of event; long-running ones run more than 3 days, such as exhibitions
+    types:
+      label: "Event types"
+      one_off: "One-off events"
+      repeating: "Repeating events"
+      long_running: "Long-running events"
     # Day strip event filter (D22): the Today / Tomorrow / next five days
     # navigation rendered for themes with event_filter_style :day_strip.
     day_strip:
@@ -227,10 +223,11 @@ en:
       from_date: "From %{date}"
       date_format: "%a %-d %b"
       sorted_by_name: "Sorted by name"
-      one_off_only: "One-off events only"
-      repeating_only: "Repeating events only"
-      long_running_hidden: "Long-running events hidden"
-      long_running_only: "Long-running events only"
+      # One for each unticked event type
+      types_hidden:
+        one_off: "One-off events hidden"
+        repeating: "Repeating events hidden"
+        long_running: "Long-running events hidden"
       reset: "Reset filters"
 
   # Region selector shown on local sites with more than one Partnership tag
@@ -587,9 +584,12 @@ en:
       events_count_days:
         one: "across %{count} day"
         other: "across %{count} days"
+      # Names the event type checkboxes beside it
       show_label: "Show"
-      # Names the long-running select, whose options say what they show
-      long_running_label: "Long-running events"
+      event_types:
+        one_off: "One-off"
+        repeating: "Repeating"
+        long_running: "Long-running"
       show_more_days:
         one: "Show %{count} more day"
         other: "Show %{count} more days"

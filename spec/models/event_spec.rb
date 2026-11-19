@@ -522,9 +522,30 @@ RSpec.describe Event, "long-running", type: :model do
       open_ended = create(:event, dtstart: start, dtend: nil)
 
       expect(described_class.long_running).to contain_exactly(long)
-      expect(described_class.not_long_running).to contain_exactly(short, open_ended)
+      expect(described_class.of_types(%w[one_off repeating])).to contain_exactly(short, open_ended)
       expect(long.long_running?).to be(true)
       expect(short.long_running?).to be(false)
+    end
+  end
+
+  describe ".of_types" do
+    let!(:one_off) { create(:event, dtstart: start, dtend: start + 2.hours) }
+    let!(:open_ended) { create(:event, dtstart: start, dtend: nil) }
+    let!(:repeating) { create(:recurring_event, dtstart: start, dtend: start + 2.hours) }
+    let!(:long_one_off) { create(:event, dtstart: start, dtend: start + 10.days) }
+    let!(:long_repeating) { create(:recurring_event, dtstart: start, dtend: start + 10.days) }
+    # Saving turns a nil rule into false, so only a row written around the callback has none
+    let!(:no_rule) { create(:event, dtstart: start, dtend: start + 2.hours).tap { it.update_column(:rrule, nil) } } # rubocop:disable Rails/SkipsModelValidations
+
+    it "puts every event in exactly one type, long-running before repeating" do
+      expect(described_class.of_types(%w[one_off])).to contain_exactly(one_off, open_ended, no_rule)
+      expect(described_class.of_types(%w[repeating])).to contain_exactly(repeating)
+      expect(described_class.of_types(%w[long_running])).to contain_exactly(long_one_off, long_repeating)
+      expect(described_class.of_types(EventTypes::ALL)).to match_array(described_class.all)
+    end
+
+    it "finds nothing for no types" do
+      expect(described_class.of_types([])).to be_empty
     end
   end
 

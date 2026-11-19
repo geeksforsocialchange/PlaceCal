@@ -51,8 +51,7 @@ class EventsQuery
   #
   # @param period [String] 'day', 'week', or 'future'
   # @param sort [String] 'time' (default) or 'summary'
-  # @param repeating [String] 'on' (all, default), 'off' (one-off only), or 'only' (repeating only)
-  # @param long_running [String] 'on' (all, default), 'off' (none long-running), or 'only' (long-running only)
+  # @param types [EventTypes] which event types to show (all by default)
   # @param organiser [Partner] filter to events by this organiser
   # @param place [Partner] filter to events at this place
   # @param organiser_or_place [Partner, Array<Integer>] filter to events by OR at this organiser (or these partner ids)
@@ -63,7 +62,7 @@ class EventsQuery
   #
   # @return [Hash] events grouped by date { Date => [Event, ...] }
   # rubocop:disable Metrics/ParameterLists
-  def call(period:, sort: 'time', repeating: 'on', long_running: 'on', organiser: nil, place: nil,
+  def call(period:, sort: 'time', types: EventTypes.all, organiser: nil, place: nil,
            organiser_or_place: nil, neighbourhood_id: nil, tag_id: nil, limit: nil)
     # rubocop:enable Metrics/ParameterLists
     events = build_filtered_scope(
@@ -72,8 +71,7 @@ class EventsQuery
       organiser_or_place:,
       neighbourhood_id:,
       tag_id:,
-      repeating:,
-      long_running:
+      types:
     )
     events = apply_period(events, period)
     events = events.limit(limit) if limit
@@ -81,8 +79,8 @@ class EventsQuery
   end
 
   # Uncapped, unlike period 'future', so callers can total by day without loading rows.
-  def future_counts_by_day(repeating: 'on', long_running: 'on', organiser_or_place: nil)
-    build_filtered_scope(repeating:, long_running:, organiser_or_place:)
+  def future_counts_by_day(types: EventTypes.all, organiser_or_place: nil)
+    build_filtered_scope(types:, organiser_or_place:)
       .future(@day)
       .reorder(nil)
       .group_by_day(:dtstart, series: false)
@@ -91,25 +89,25 @@ class EventsQuery
   end
 
   # Grouped like #call but uncapped.
-  def future_through(last_day, sort: 'time', repeating: 'on', long_running: 'on', organiser_or_place: nil)
-    events = build_filtered_scope(repeating:, long_running:, organiser_or_place:)
+  def future_through(last_day, sort: 'time', types: EventTypes.all, organiser_or_place: nil)
+    events = build_filtered_scope(types:, organiser_or_place:)
     group_and_sort(events.future(@day).where(dtstart: ...last_day.next_day.in_time_zone), sort)
   end
 
-  # @return [Array(Array<Event>, Boolean)] the events already on, and whether to offer the long-running filter
+  # @return [Array(Array<Event>, Boolean)] the events already on, and whether to offer the long-running checkbox
   def running_and_offer(**filters) = [running(**filters), offer_long_running?(**filters)]
 
-  # The long-running filter is worth showing once one is chosen, or while a long-running event is on or still to come
-  def offer_long_running?(long_running: 'on', organiser_or_place: nil, **)
-    long_running != 'on' || build_filtered_scope(repeating: 'on', long_running: 'on', organiser_or_place:).upcoming_or_running(@day).long_running.exists?
+  # The long-running checkbox is worth showing once it is unticked, or while a long-running event is on or still to come
+  def offer_long_running?(types: EventTypes.all, organiser_or_place: nil)
+    types.exclude?('long_running') || build_filtered_scope(organiser_or_place:).upcoming_or_running(@day).long_running.exists?
   end
 
   # Long-running events already on when the day starts, which no day of a listing from it holds.
   # @return [Array<Event>]
-  def running(repeating: 'on', long_running: 'on', organiser_or_place: nil)
-    return [] if long_running == 'off'
+  def running(types: EventTypes.all, organiser_or_place: nil)
+    return [] unless types.include?('long_running')
 
-    build_filtered_scope(repeating:, long_running:, organiser_or_place:).running_on(@day).distinct.sort_by_time.to_a
+    build_filtered_scope(organiser_or_place:).running_on(@day).distinct.sort_by_time.to_a
   end
 
   # Returns the base scope as a flat relation for further chaining
@@ -124,7 +122,7 @@ class EventsQuery
   # @param period [String] 'day', 'week', 'month', or 'future'
   # @return [ActiveRecord::Relation<Event>]
   def flat_call(period:)
-    apply_period(build_filtered_scope(repeating: 'on'), period).distinct.sort_by_time
+    apply_period(build_filtered_scope, period).distinct.sort_by_time
   end
 
   # Returns events as a flat relation for iCal feeds (no grouping)
@@ -215,7 +213,7 @@ class EventsQuery
   # ===================
 
   # rubocop:disable Metrics/ParameterLists
-  def build_filtered_scope(repeating:, long_running: 'on', organiser: nil, place: nil, organiser_or_place: nil,
+  def build_filtered_scope(types: EventTypes.all, organiser: nil, place: nil, organiser_or_place: nil,
                            neighbourhood_id: nil, tag_id: nil)
     # rubocop:enable Metrics/ParameterLists
     events = base_scope
@@ -224,8 +222,7 @@ class EventsQuery
     events = events.in_place(place) if place
     events = events.by_organiser_or_place(organiser_or_place) if organiser_or_place
     events = filter_by_neighbourhood(events, neighbourhood_id) if neighbourhood_id.present?
-    events = apply_repeating_filter(events, repeating)
-    apply_long_running_filter(events, long_running)
+    types.all? ? events : events.of_types(types.to_a)
   end
 
   # Restrict to events whose organiser or place carries the tag. Mirrors
@@ -250,22 +247,6 @@ class EventsQuery
       .left_joins(:address, organiser: :address)
       .where('COALESCE(addresses.neighbourhood_id, addresses_partners.neighbourhood_id) IN (?)', matching_ids)
       .distinct
-  end
-
-  def apply_repeating_filter(events, repeating)
-    case repeating
-    when 'off' then events.one_off_events_only
-    when 'only' then events.repeating_events_only
-    else events
-    end
-  end
-
-  def apply_long_running_filter(events, long_running)
-    case long_running
-    when 'off' then events.not_long_running
-    when 'only' then events.long_running
-    else events
-    end
   end
 
   # ===================

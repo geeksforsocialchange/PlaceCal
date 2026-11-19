@@ -90,56 +90,29 @@ RSpec.describe EventsQuery do
       end
     end
 
-    describe "repeating filtering" do
+    describe "event type filtering" do
       let!(:one_off_event) { create(:future_event, organiser: partner, rrule: nil) }
       let!(:recurring_event) { create(:recurring_event, organiser: partner, dtstart: 2.days.from_now) }
-
-      context "with repeating: 'on' (default)" do
-        it "includes all events" do
-          query = described_class.new(site:, day: today)
-          result = query.call(period: "future", repeating: "on")
-          expect(result.values.flatten.count).to eq(2)
-        end
-      end
-
-      context "with repeating: 'off'" do
-        it "excludes recurring events" do
-          query = described_class.new(site:, day: today)
-          result = query.call(period: "future", repeating: "off")
-          events = result.values.flatten
-          expect(events).to include(one_off_event)
-          expect(events).not_to include(recurring_event)
-        end
-      end
-
-      context "with repeating: 'only'" do
-        it "excludes one-off events" do
-          query = described_class.new(site:, day: today)
-          result = query.call(period: "future", repeating: "only")
-          events = result.values.flatten
-          expect(events).to include(recurring_event)
-          expect(events).not_to include(one_off_event)
-        end
-      end
-    end
-
-    describe "long-running filtering" do
-      let!(:short_event) { create(:future_event, organiser: partner) }
       let!(:exhibition) { create(:event, organiser: partner, dtstart: 2.days.from_now, dtend: 2.days.from_now + 3.days + 1.minute) }
 
-      it "includes long-running events by default" do
-        result = described_class.new(site:, day: today).call(period: "future")
-        expect(result.values.flatten).to contain_exactly(short_event, exhibition)
+      def listed(types)
+        described_class.new(site:, day: today).call(period: "future", types: EventTypes.new(types)).values.flatten
       end
 
-      it "excludes them with long_running: 'off'" do
-        result = described_class.new(site:, day: today).call(period: "future", long_running: "off")
-        expect(result.values.flatten).to contain_exactly(short_event)
+      it "lists every type by default" do
+        expect(described_class.new(site:, day: today).call(period: "future").values.flatten)
+          .to contain_exactly(one_off_event, recurring_event, exhibition)
       end
 
-      it "selects only them with long_running: 'only'" do
-        result = described_class.new(site:, day: today).call(period: "future", long_running: "only")
-        expect(result.values.flatten).to contain_exactly(exhibition)
+      it "lists only the ticked types" do
+        expect(listed(%w[one_off repeating long_running])).to contain_exactly(one_off_event, recurring_event, exhibition)
+        expect(listed(%w[one_off])).to contain_exactly(one_off_event)
+        expect(listed(%w[long_running])).to contain_exactly(exhibition)
+        expect(listed(%w[one_off repeating])).to contain_exactly(one_off_event, recurring_event)
+      end
+
+      it "lists nothing when no type is ticked" do
+        expect(listed([])).to be_empty
       end
     end
 
@@ -431,19 +404,17 @@ RSpec.describe EventsQuery do
       expect(counts).to eq(Date.new(2023, 7, 4) => 1, Date.new(2023, 7, 5) => 1, Date.new(2023, 7, 6) => 1)
     end
 
-    it "applies the long-running filter" do
+    it "applies the event type filter" do
       exhibition = create(:event, organiser:, dtstart: Time.zone.local(2023, 7, 7, 10), dtend: Time.zone.local(2023, 8, 7, 17))
+      long_running = EventTypes.new(%w[long_running])
 
-      expect(query.future_counts_by_day(organiser_or_place: organiser, long_running: "only")).to eq(Date.new(2023, 7, 7) => 1)
-      expect(query.future_counts_by_day(organiser_or_place: organiser, long_running: "off").keys).not_to include(Date.new(2023, 7, 7))
-      expect(query.future_through(Date.new(2023, 7, 7), organiser_or_place: organiser, long_running: "only").values.flatten).to eq([exhibition])
-    end
-
-    it "applies the repeating filter" do
-      expect(query.future_counts_by_day(organiser_or_place: organiser, repeating: "off").keys)
+      expect(query.future_counts_by_day(organiser_or_place: organiser, types: long_running)).to eq(Date.new(2023, 7, 7) => 1)
+      expect(query.future_through(Date.new(2023, 7, 7), organiser_or_place: organiser, types: long_running).values.flatten).to eq([exhibition])
+      expect(query.future_counts_by_day(organiser_or_place: organiser, types: EventTypes.new(%w[one_off])).keys)
         .to eq([Date.new(2023, 7, 4), Date.new(2023, 7, 5)])
-      expect(query.future_counts_by_day(organiser_or_place: organiser, repeating: "only").keys)
+      expect(query.future_counts_by_day(organiser_or_place: organiser, types: EventTypes.new(%w[repeating])).keys)
         .to eq([Date.new(2023, 7, 6)])
+      expect(query.future_counts_by_day(organiser_or_place: organiser, types: EventTypes.new([]))).to eq({})
     end
 
     it "loads events up to the end of the given local day" do
@@ -474,10 +445,9 @@ RSpec.describe EventsQuery do
       expect(query.running(organiser_or_place: organiser)).to eq([on_now, on_now_repeating])
     end
 
-    it "applies the repeating and long-running filters" do
-      expect(query.running(organiser_or_place: organiser, repeating: "off")).to eq([on_now])
-      expect(query.running(organiser_or_place: organiser, long_running: "only")).to eq([on_now, on_now_repeating])
-      expect(query.running(organiser_or_place: organiser, long_running: "off")).to eq([])
+    it "returns them while long-running events are ticked, repeating or not" do
+      expect(query.running(organiser_or_place: organiser, types: EventTypes.new(%w[long_running]))).to eq([on_now, on_now_repeating])
+      expect(query.running(organiser_or_place: organiser, types: EventTypes.new(%w[one_off repeating]))).to eq([])
     end
   end
 

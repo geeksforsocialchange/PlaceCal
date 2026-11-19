@@ -56,6 +56,14 @@ RSpec.describe "Long-running events", type: :request do
     end
 
     it "hides long-running events, or shows only them" do
+      get events_url(host:, period: "future", types: %w[one_off repeating])
+      expect(titles).to eq(["Winter Collages"])
+
+      get events_url(host:, period: "future", types: %w[long_running])
+      expect(titles).to eq(["Magic Place"])
+    end
+
+    it "still reads the old long_running param" do
       get events_url(host:, period: "future", long_running: "off")
       expect(titles).to eq(["Winter Collages"])
 
@@ -64,11 +72,19 @@ RSpec.describe "Long-running events", type: :request do
     end
 
     it "keeps the filter in the timeline and the filter panel" do
-      get events_url(host:, period: "week", long_running: "off")
+      get events_url(host:, period: "week", types: %w[one_off repeating])
 
-      expect(frame.all("[data-scope='timeline'] a").map { it[:href] }).to all(include("long_running=off"))
-      expect(frame).to have_css("input[type='radio'][name='long_running'][value='off'][checked]")
-      expect(frame).to have_css("input[type='hidden'][name='long_running'][value='off']", visible: :all)
+      expect(frame.all("[data-scope='timeline'] a").map { it[:href] }).to all(include("types%5B%5D=one_off&types%5B%5D=repeating"))
+      expect(frame).to have_unchecked_field("Long-running events")
+      expect(frame).to have_css("input[type='hidden'][name='types[]'][value='repeating']", visible: :all)
+    end
+
+    it "shows the empty listing when no type is ticked" do
+      get events_url(host:, period: "future", types: [""])
+
+      expect(response).to be_successful
+      expect(titles).to be_empty
+      %w[One-off Repeating Long-running].each { expect(frame).to have_unchecked_field("#{it} events") }
     end
 
     it "strikes through the From and until line of a called-off event" do
@@ -87,19 +103,33 @@ RSpec.describe "Long-running events", type: :request do
       expect(frame.find(".h-event", text: "Dead or Alive")).to have_text("From 1 Oct until 17 Jan 2023")
     end
 
-    it "offers the long-running select only to a partner with long-running events, or once one is chosen" do
-      long_running_select = "select[name='long_running']"
+    it "offers the long-running checkbox only to a partner with long-running events, or once it is unticked" do
       get partner_url(partner, host:)
-      expect(Capybara.string(response.body)).to have_css(long_running_select)
+      expect(frame).to have_checked_field("Long-running")
 
       other = create(:partner, address: create(:riverside_address, neighbourhood: ward))
       create(:event, organiser: other, dtstart: 2.days.from_now, dtend: 2.days.from_now + 2.hours)
       get partner_url(other, host:)
-      expect(Capybara.string(response.body)).to have_css("select[name='repeating']")
-      expect(Capybara.string(response.body)).to have_no_css(long_running_select)
+      expect(frame).to have_checked_field("Repeating")
+      expect(frame).to have_no_field("Long-running")
+      # Ticking the others again must not untick a box the visitor never saw
+      expect(frame).to have_css("input[type='hidden'][name='types[]'][value='long_running']", visible: :all)
 
-      get partner_url(other, host:, params: { long_running: "off" })
-      expect(Capybara.string(response.body)).to have_css(long_running_select)
+      get partner_url(other, host:, params: { types: %w[one_off repeating] })
+      expect(frame).to have_unchecked_field("Long-running")
+    end
+
+    it "keeps the checkboxes when nothing matches, so a type can be ticked again" do
+      get partner_url(partner, host:, params: { types: [""] })
+
+      expect(titles).to be_empty
+      %w[One-off Repeating Long-running].each { expect(frame).to have_unchecked_field(it) }
+    end
+
+    it "draws the header checkboxes at the panel's size in the theme's colour" do
+      get partner_url(partner, host:)
+
+      expect(frame.all("input[type='checkbox']").map { it[:class].split }).to all(include("size-4", "accent-primary"))
     end
 
     it "counts running events as on today" do
@@ -108,19 +138,21 @@ RSpec.describe "Long-running events", type: :request do
       expect(frame).to have_text("3 events across 3 days")
     end
 
-    it "applies the long-running filter to running events too" do
-      get partner_url(partner, host:, params: { long_running: "off" })
+    it "applies the event types to running events too" do
+      get partner_url(partner, host:, params: { types: %w[one_off repeating] })
       expect(titles).to eq(["Winter Collages"])
+
+      get partner_url(partner, host:, params: { types: %w[long_running] })
+      expect(titles).to eq(["Dead or Alive", "Magic Place"])
 
       get partner_url(partner, host:, params: { long_running: "only" })
       expect(titles).to eq(["Dead or Alive", "Magic Place"])
     end
 
-    it "offers the long-running select and keeps it in the show-more link" do
-      get partner_url(partner, host:, params: { long_running: "on", days: 1 })
+    it "keeps the event types in the show-more link" do
+      get partner_url(partner, host:, params: { types: %w[one_off long_running], days: 1 })
 
-      expect(frame).to have_select("Long-running events", selected: "Show long-running events")
-      expect(frame.find_link("Show 1 more day")[:href]).to include("long_running=on")
+      expect(frame.find_link("Show 1 more day")[:href]).to include("types%5B%5D=one_off&types%5B%5D=long_running")
     end
 
     it "lists an event starting today once, in the day's list" do

@@ -16,10 +16,9 @@ module EventsHelper
       day: date.day,
       anchor: 'paginator',
       period: @period,
-      sort: @sort,
-      repeating: @repeating,
-      long_running: @long_running
+      sort: @sort
     }.compact_blank!
+    opts.merge!(@types.to_params) if @types
 
     events_by_date_path(opts)
   end

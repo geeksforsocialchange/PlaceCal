@@ -129,8 +129,7 @@ class EventsController < ApplicationController
   end
 
   def render_local_index
-    @repeating = params[:repeating] || 'on'
-    @long_running = params[:long_running] || 'on'
+    @types = EventTypes.from_params(params)
     @sort = params[:sort] || 'time'
     @selected_neighbourhood = params[:neighbourhood] if params[:neighbourhood].present? && Integer(params[:neighbourhood], exception: false)
     @region = current_region
@@ -139,8 +138,7 @@ class EventsController < ApplicationController
 
     @events = @query.call(
       period: @period,
-      repeating: @repeating,
-      long_running: @long_running,
+      types: @types,
       sort: @sort,
       neighbourhood_id: @selected_neighbourhood,
       tag_id: @region&.id
@@ -154,7 +152,7 @@ class EventsController < ApplicationController
           render Views::Sites::Events::IndexSimple.new(events: @events), layout: false
         else
           render Views::Sites::Events::Index.new(
-            events: @events, period: @period, sort: @sort, repeating: @repeating, long_running: @long_running,
+            events: @events, period: @period, sort: @sort, types: @types,
             current_day: @current_day, site: @site,
             selected_neighbourhood: @selected_neighbourhood,
             next_date: @next_date, truncated: @truncated,
@@ -195,7 +193,7 @@ class EventsController < ApplicationController
 
   # The same builder as the partner page's CSV export (app/services/events_csv.rb),
   # for the events currently on screen: whatever @events picked up from the
-  # index action's own period/sort/repeating/long-running/neighbourhood/region filters.
+  # index action's own period/sort/event type/neighbourhood/region filters.
   def render_events_csv
     track_csv_download
     site_url = current_site&.canonical_url || 'https://placecal.org'

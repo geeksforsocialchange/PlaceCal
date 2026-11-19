@@ -30,6 +30,8 @@ class Components::Sites::Filter < Components::Base
   DROPDOWN = 'dropdown-hidden:hidden bg-background shadow-dropdown p-3 absolute top-8 left-0 ' \
              'z-500 text-left whitespace-nowrap max-w-screen-inset overflow-x-auto'
   OPTION = 'py-1 grid grid-cols-auto-main gap-2 items-center'
+  # Radio buttons and checkboxes in the filter panels share one size and the theme's colour
+  CHOICE_INPUT = 'size-4 m-0 accent-primary cursor-pointer'
 
   def view_template
     return unless @items.any?

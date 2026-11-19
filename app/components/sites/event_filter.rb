@@ -11,8 +11,8 @@ class Components::Sites::EventFilter < Components::Base
                                'and aria-expanded whether the panel is open.',
                 link: 'The underlined label inside a toggle button, and the Today link.',
                 dropdown: 'The filter-and-sort panel. The state says whether it is open.',
-                group: 'One group of radio buttons in the panel: sort, period, repeating or long-running.',
-                option: 'One radio button and its label.',
+                group: 'One group of options in the panel: the sort and period radio buttons, or the event type checkboxes.',
+                option: 'One radio button or checkbox, and its label.',
                 label: 'An option\'s label.',
                 applied: 'The line saying what is applied, with its reset link. Only when something is.',
                 applied_reset: 'The link that clears what is applied.',
@@ -20,15 +20,14 @@ class Components::Sites::EventFilter < Components::Base
                 day_strip_list: 'The list of days inside the strip.',
                 day_strip_item: 'One day of the strip, holding its pill. The last is All upcoming (see the variant).'
               },
-              variants: { toggle_button: %i[date sort], group: %i[sort period repeating long_running], day_strip_item: %i[all] },
+              variants: { toggle_button: %i[date sort], group: %i[sort period types], day_strip_item: %i[all] },
               states: { toggle_button: %i[active], dropdown: %i[open closed] },
               tokens: %i[--color-background --color-foreground --color-primary --color-rules --color-rules-dark --font-sans --shadow-dropdown]
 
   prop :pointer, Date
   prop :period, _Nilable(String), default: nil
   prop :sort, _Nilable(String), default: nil
-  prop :repeating, _Nilable(String), default: nil
-  prop :long_running, _Nilable(String), default: nil
+  prop :types, ::EventTypes, default: -> { ::EventTypes.all }
   prop :today_url, String
   prop :today, _Boolean, default: false
   prop :site, _Nilable(::Site), default: nil
@@ -49,7 +48,6 @@ class Components::Sites::EventFilter < Components::Base
 
   def after_initialize
     @sort ||= 'time'
-    @long_running ||= 'on'
     @selected_neighbourhood = @selected_neighbourhood.to_i
   end
 
@@ -132,8 +130,7 @@ class Components::Sites::EventFilter < Components::Base
     hidden_field_tag(:period, day_strip_with_date_picker? ? 'day' : @period, id: nil,
                                                                              data: { date_picker_target: 'period' })
     hidden_field_tag(:sort, @sort, id: nil, data: { date_picker_target: 'sort' })
-    hidden_field_tag(:repeating, @repeating, id: nil, data: { date_picker_target: 'repeating' })
-    hidden_field_tag(:long_running, @long_running, id: nil, data: { date_picker_target: 'longRunning' })
+    @types.field_values.each { hidden_field_tag('types[]', it, id: nil, data: { date_picker_target: 'types' }) }
     hidden_field_tag(:region, @selected_region.slug, id: nil) if @selected_region
   end
 
@@ -185,8 +182,7 @@ class Components::Sites::EventFilter < Components::Base
   def day_strip_params
     params = {}
     params[:sort] = @sort if @sort.present? && @sort != 'time'
-    params[:repeating] = @repeating if @repeating.present? && @repeating != 'on'
-    params[:long_running] = @long_running if @long_running.present? && @long_running != 'on'
+    params.merge!(@types.to_params)
     params[:region] = @selected_region.slug if @selected_region
     params
   end
@@ -197,8 +193,7 @@ class Components::Sites::EventFilter < Components::Base
         safe_join([
           view_context.hidden_field_tag(:period, @period),
           view_context.hidden_field_tag(:sort, @sort),
-          view_context.hidden_field_tag(:repeating, @repeating),
-          view_context.hidden_field_tag(:long_running, @long_running),
+          *@types.field_values.map { view_context.hidden_field_tag('types[]', it, id: nil) },
           (@selected_region ? view_context.hidden_field_tag(:region, @selected_region.slug, id: nil) : nil),
           view_context.render(Components::Sites::Filter.new(
                                 name: 'neighbourhood',
@@ -245,7 +240,7 @@ class Components::Sites::EventFilter < Components::Base
 
   # Something other than the defaults is applied, so the closed toggle can say so.
   def filters_active?
-    @sort != 'time' || (@repeating.present? && @repeating != 'on') || (@long_running.present? && @long_running != 'on') || @period == 'week'
+    @sort != 'time' || !@types.all? || @period == 'week'
   end
 
   # What is applied, in words, with a way back to the plain listing. The
@@ -267,10 +262,7 @@ class Components::Sites::EventFilter < Components::Base
     parts << t('filters.applied.from_date', date: applied_date_label) if @period != 'day' && pointer_moved?
     parts << t('filters.period.week') if @period == 'week'
     parts << t('filters.applied.sorted_by_name') if @sort == 'summary'
-    parts << t('filters.applied.one_off_only') if @repeating == 'off'
-    parts << t('filters.applied.repeating_only') if @repeating == 'only'
-    parts << t('filters.applied.long_running_hidden') if @long_running == 'off'
-    parts << t('filters.applied.long_running_only') if @long_running == 'only'
+    @types.hidden.each { parts << t("filters.applied.types_hidden.#{it}") }
     parts
   end
 
@@ -304,9 +296,7 @@ class Components::Sites::EventFilter < Components::Base
     buf << view_context.tag.hr(class: DROPDOWN_RULE)
     buf << render_period_group
     buf << view_context.tag.hr(class: DROPDOWN_RULE)
-    buf << render_repeating_group
-    buf << view_context.tag.hr(class: DROPDOWN_RULE)
-    buf << render_long_running_group
+    buf << render_types_group
     buf
   end
 
@@ -326,23 +316,23 @@ class Components::Sites::EventFilter < Components::Base
     end
   end
 
-  def render_repeating_group
-    view_context.content_tag(:div, **part(:group, variant: :repeating)) do
-      render_radio('repeating', 'on', @repeating == 'on', t('filters.repeating.on')) +
-        render_radio('repeating', 'off', @repeating == 'off', t('filters.repeating.off')) +
-        render_radio('repeating', 'only', @repeating == 'only', t('filters.repeating.only'))
+  # The blank types[] keeps "none ticked" apart from a form that sent no types at all.
+  def render_types_group
+    view_context.content_tag(:div, **part(:group, variant: :types, role: 'group', aria: { label: t('filters.types.label') })) do
+      view_context.hidden_field_tag('types[]', '', id: nil) + safe_join(::EventTypes::ALL.map { render_type_checkbox(it) })
     end
   end
 
-  def render_long_running_group
-    view_context.content_tag(:div, **part(:group, variant: :long_running)) do
-      safe_join(%w[on off only].map { |value| render_radio('long_running', value, @long_running == value, t("filters.long_running.#{value}")) })
+  def render_type_checkbox(type)
+    view_context.content_tag(:div, **part(:option, class: Sites::Filter::OPTION)) do
+      view_context.check_box_tag('types[]', type, @types.include?(type), id: "types_#{type}", class: Sites::Filter::CHOICE_INPUT) +
+        view_context.label_tag("types_#{type}", t("filters.types.#{type}"), **part(:label))
     end
   end
 
   def render_radio(name, value, checked, label_text)
     view_context.content_tag(:div, **part(:option, class: Sites::Filter::OPTION)) do
-      view_context.radio_button_tag(name, value, checked, class: 'peer') +
+      view_context.radio_button_tag(name, value, checked, class: "peer #{Sites::Filter::CHOICE_INPUT}") +
         view_context.label_tag("#{name}_#{value}", label_text, **part(:label, class: 'peer-checked:font-bold'))
     end
   end

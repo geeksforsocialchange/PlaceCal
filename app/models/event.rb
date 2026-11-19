@@ -71,6 +71,13 @@ class Event < ApplicationRecord
   # Exhibitions and festivals: listed while they are on rather than only on their first day
   LONG_RUNNING_AFTER = 3.days
   LONG_RUNNING_SQL = "events.dtend > events.dtstart + interval '3 days'"
+  NOT_LONG_RUNNING_SQL = "(events.dtend IS NULL OR NOT (#{LONG_RUNNING_SQL}))".freeze
+  # Long-running wins over repeating, so every event is exactly one type
+  TYPE_SQL = {
+    'one_off' => "#{NOT_LONG_RUNNING_SQL} AND (events.rrule IS NULL OR events.rrule = 'false'::jsonb)",
+    'repeating' => "#{NOT_LONG_RUNNING_SQL} AND events.rrule <> 'false'::jsonb",
+    'long_running' => LONG_RUNNING_SQL
+  }.freeze
 
   # ==== Attributes ====
   # Columns marked (nullable) have no NOT NULL constraint in the DB.
@@ -139,11 +146,10 @@ class Event < ApplicationRecord
     where.not(matching.reduce(:or))
   }
 
-  scope :one_off_events_only, -> { where(rrule: false) }
-  scope :repeating_events_only, -> { where.not(rrule: false) }
-
   scope :long_running, -> { where(LONG_RUNNING_SQL) }
-  scope :not_long_running, -> { where("events.dtend IS NULL OR NOT (#{LONG_RUNNING_SQL})") }
+
+  # @param types [Array<String>] keys of TYPE_SQL
+  scope :of_types, ->(types) { types.empty? ? none : where(types.map { "(#{TYPE_SQL.fetch(it)})" }.join(' OR ')) }
 
   # Started before the day and not ended by its start
   scope :running_on, lambda { |day|

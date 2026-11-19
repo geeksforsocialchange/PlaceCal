@@ -424,18 +424,23 @@ RSpec.describe "Public Partners", type: :request do
       end
     end
 
-    it "renders successfully with repeating param as string" do
+    it "renders successfully with the old repeating param" do
       get partner_url(partner, host: "#{site.slug}.lvh.me", params: { repeating: "on" })
       expect(response).to be_successful
     end
 
-    it "renders successfully with default repeating param" do
+    it "renders successfully with the default event types" do
       get partner_url(partner, host: "#{site.slug}.lvh.me")
       expect(response).to be_successful
     end
 
-    it "renders successfully with repeating off" do
+    it "renders successfully with the old repeating off" do
       get partner_url(partner, host: "#{site.slug}.lvh.me", params: { repeating: "off" })
+      expect(response).to be_successful
+    end
+
+    it "renders successfully with no event type ticked" do
+      get partner_url(partner, host: "#{site.slug}.lvh.me", params: { period: "week", types: [""] })
       expect(response).to be_successful
     end
   end
@@ -506,13 +511,13 @@ RSpec.describe "Public Partners", type: :request do
         expect(html).to include("Show 2 more days")
       end
 
-      it "shows a repeating select with the filters.repeating options" do
+      it "shows the one-off and repeating checkboxes, ticked, under a Show label" do
         get partner_url(partner, host: "#{site.slug}.lvh.me")
 
-        expect(response.body).to match(/<select[^>]*name="repeating"/)
-        expect(response.body).to include("All events")
-        expect(response.body).to include("Only one-off events")
-        expect(response.body).to include("Only repeating events")
+        group = Capybara.string(response.body).find("[data-part='events-types'][role='group']")
+        expect(group).to have_css("##{group['aria-labelledby']}", text: "Show")
+        expect(group).to have_checked_field("One-off")
+        expect(group).to have_checked_field("Repeating")
       end
     end
 

@@ -56,7 +56,7 @@ class PartnersController < ApplicationController
           partner: @partner, site: @site, current_day: @current_day,
           map: @map, events: @events,
           period: @period, date_period: @date_period, sort: @sort,
-          repeating: @repeating, long_running: @long_running, offer_long_running: @offer_long_running != false, ongoing: @ongoing || [],
+          types: @types || EventTypes.all, offer_long_running: @offer_long_running != false, ongoing: @ongoing || [],
           no_event_message: @no_event_message, paginator: @paginator, show_monthly: @show_monthly || false,
           containing_sites: @containing_sites,
           days: @days, more_days: @more_days || 0,
@@ -140,8 +140,8 @@ class PartnersController < ApplicationController
 
   # Also reads the filters the view keeps, and finds the long-running events already on
   def events_query
-    @repeating, @long_running = params.values_at(:repeating, :long_running).map { it || 'on' }
-    @event_filters = { organiser_or_place: @event_partner_ids, repeating: @repeating, long_running: @long_running }
+    @types = EventTypes.from_params(params)
+    @event_filters = { organiser_or_place: @event_partner_ids, types: @types }
     EventsQuery.new(site: nil, day: @current_day).tap { @ongoing, @offer_long_running = it.running_and_offer(**@event_filters) }
   end
 

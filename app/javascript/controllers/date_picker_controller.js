@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus";
 
 // Date Picker Controller - Navigate on date selection
 export default class extends Controller {
-	static targets = ["input", "period", "sort", "repeating", "longRunning"];
+	static targets = ["input", "period", "sort", "types"];
 
 	open(event) {
 		event.preventDefault();
@@ -27,17 +27,14 @@ export default class extends Controller {
 		const [year, month, day] = date.split("-");
 		const period = this.hasPeriodTarget ? this.periodTarget.value : "week";
 		const sort = this.hasSortTarget ? this.sortTarget.value : "time";
-		const repeating = this.hasRepeatingTarget
-			? this.repeatingTarget.value
-			: "on";
-		const longRunning = this.hasLongRunningTarget
-			? this.longRunningTarget.value
-			: "on";
+		const query = new URLSearchParams({ period, sort });
+		// No types fields means all types; a blank one means none
+		this.typesTargets.forEach((field) => query.append("types[]", field.value));
 
 		const basePath = this.getBasePath();
 		const newUrl = `${basePath}/${year}/${parseInt(month)}/${parseInt(
 			day,
-		)}?period=${period}&sort=${sort}&repeating=${repeating}&long_running=${longRunning}#paginator`;
+		)}?${query}#paginator`;
 
 		const frame = document.querySelector("turbo-frame#events-browser");
 		if (frame) {

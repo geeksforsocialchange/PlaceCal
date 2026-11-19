@@ -11,8 +11,7 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
       pointer: today,
       period: "day",
       sort: "time",
-      repeating: "on",
-      today_url: "/events/2022/11/8?period=day&sort=time&repeating=on#paginator",
+      today_url: "/events/2022/11/8?period=day&sort=time#paginator",
       today: false
     }
   end
@@ -88,21 +87,29 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
       expect(page).to have_css("input[type='hidden'][name='sort'][value='time']", visible: :all)
     end
 
-    it "includes repeating hidden field" do
+    it "carries no event type fields for the default, beyond the panel's own blank one" do
       render_inline(described_class.new(**base_attrs))
 
-      expect(page).to have_css("input[type='hidden'][name='repeating'][value='on']", visible: :all)
+      expect(page.all("input[type='hidden'][name='types[]']", visible: :all).map(&:value)).to eq([""])
     end
 
-    it "includes long-running hidden fields, one for the date picker" do
-      render_inline(described_class.new(**base_attrs, long_running: "off"))
+    it "carries the ticked event types, one set for the date picker" do
+      render_inline(described_class.new(**base_attrs, types: EventTypes.new(%w[one_off long_running])))
 
-      expect(page).to have_css("input[type='hidden'][name='long_running'][value='off'][data-date-picker-target='longRunning']", visible: :all)
+      picker = page.all("input[type='hidden'][name='types[]'][data-date-picker-target='types']", visible: :all)
+      expect(picker.map(&:value)).to eq(%w[one_off long_running])
+    end
+
+    it "carries a blank event type when none are ticked" do
+      render_inline(described_class.new(**base_attrs, types: EventTypes.new([])))
+
+      picker = page.all("input[type='hidden'][name='types[]'][data-date-picker-target='types']", visible: :all)
+      expect(picker.map(&:value)).to eq([""])
     end
   end
 
   describe "active state on the filter toggle" do
-    it "is absent with the default sort, period and repeating" do
+    it "is absent with the default sort, period and event types" do
       render_inline(described_class.new(**base_attrs))
 
       expect(page).to have_no_css("[data-part='toggle-button'][data-state='active']")
@@ -114,14 +121,8 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
       expect(page).to have_css("button[data-part='toggle-button'][data-state='active']")
     end
 
-    it "marks the toggle when only one-off events are shown" do
-      render_inline(described_class.new(**base_attrs, repeating: "off"))
-
-      expect(page).to have_css("button[data-part='toggle-button'][data-state='active']")
-    end
-
-    it "marks the toggle when long-running events are hidden" do
-      render_inline(described_class.new(**base_attrs, long_running: "off"))
+    it "marks the toggle when an event type is unticked" do
+      render_inline(described_class.new(**base_attrs, types: EventTypes.new(%w[one_off repeating])))
 
       expect(page).to have_css("button[data-part='toggle-button'][data-state='active']")
     end
@@ -153,19 +154,12 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
       expect(page).to have_link("Reset filters", href: "/events#paginator")
     end
 
-    it "names the day, the sort and the repeats setting, with a reset link" do
-      render_inline(described_class.new(**base_attrs, sort: "summary", repeating: "off"))
+    it "names the day, the sort and the hidden event types, with a reset link" do
+      render_inline(described_class.new(**base_attrs, sort: "summary", types: EventTypes.new(%w[repeating])))
 
-      expect(page).to have_css("[data-scope='event-filter'][data-part='applied']", text: "Showing today, Sorted by name, One-off events only")
+      expect(page).to have_css("[data-scope='event-filter'][data-part='applied']",
+                               text: "Showing today, Sorted by name, One-off events hidden, Long-running events hidden")
       expect(page).to have_link("Reset filters", href: "/events#paginator")
-    end
-
-    it "names the long-running setting" do
-      render_inline(described_class.new(**base_attrs, long_running: "off"))
-      expect(page).to have_css("[data-part='applied']", text: "Showing today, Long-running events hidden")
-
-      render_inline(described_class.new(**base_attrs, long_running: "only"))
-      expect(page).to have_css("[data-part='applied']", text: "Showing today, Long-running events only")
     end
   end
 
@@ -233,49 +227,31 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
       end
     end
 
-    describe "repeating options" do
-      it "renders All events option" do
+    describe "event type checkboxes" do
+      it "offers a labelled group of checkboxes, all ticked by default" do
         render_inline(described_class.new(**base_attrs))
 
-        expect(page).to have_field("repeating_on", type: "radio")
-        expect(page).to have_text("All events")
+        group = page.find("[data-part='group'][data-variant='types'][role='group'][aria-label='Event types']")
+        expect(group).to have_checked_field("One-off events", type: "checkbox")
+        expect(group).to have_checked_field("Repeating events", type: "checkbox")
+        expect(group).to have_checked_field("Long-running events", type: "checkbox")
+        expect(group).to have_css("input[type='hidden'][name='types[]'][value='']", visible: :all)
       end
 
-      it "renders Only one-off events option" do
+      it "ticks only the chosen types" do
+        render_inline(described_class.new(**base_attrs, types: EventTypes.new(%w[long_running])))
+
+        expect(page).to have_unchecked_field("One-off events")
+        expect(page).to have_unchecked_field("Repeating events")
+        expect(page).to have_checked_field("Long-running events")
+      end
+
+      it "draws the checkboxes and the radio buttons at one size in the theme's colour" do
         render_inline(described_class.new(**base_attrs))
 
-        expect(page).to have_field("repeating_off", type: "radio")
-        expect(page).to have_text("Only one-off events")
-      end
-
-      it "renders Only repeating events option" do
-        render_inline(described_class.new(**base_attrs))
-
-        expect(page).to have_field("repeating_only", type: "radio")
-        expect(page).to have_text("Only repeating events")
-      end
-
-      it "checks current repeating option" do
-        render_inline(described_class.new(**base_attrs))
-
-        expect(page).to have_checked_field("repeating_on")
-      end
-    end
-
-    describe "long-running options" do
-      it "offers to show, hide or show only long-running events, showing them by default" do
-        render_inline(described_class.new(**base_attrs))
-
-        group = page.find("[data-part='group'][data-variant='long-running']")
-        expect(group).to have_checked_field("Show long-running events")
-        expect(group).to have_field("Hide long-running events", type: "radio")
-        expect(group).to have_field("Only long-running events", type: "radio")
-      end
-
-      it "checks the current option" do
-        render_inline(described_class.new(**base_attrs, long_running: "only"))
-
-        expect(page).to have_checked_field("long_running_only")
+        inputs = page.all("[data-part='dropdown'] input[type='radio'], [data-part='dropdown'] input[type='checkbox']", visible: :all)
+        expect(inputs.map { it[:type] }.uniq).to contain_exactly("radio", "checkbox")
+        expect(inputs.map { it[:class].split }).to all(include("size-4", "accent-primary"))
       end
     end
   end
@@ -432,18 +408,17 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
       expect(page).to have_link("All upcoming", href: "/events?period=future#paginator")
     end
 
-    it "carries non-default sort and repeating in the links" do
-      render_inline(described_class.new(**day_strip_attrs, sort: "summary", repeating: "off"))
+    it "carries non-default sort and event types in the links" do
+      render_inline(described_class.new(**day_strip_attrs, sort: "summary", types: EventTypes.new(%w[one_off repeating])))
 
-      expect(page).to have_link("Today", href: "/events/2022/11/8?period=day&repeating=off&sort=summary#paginator")
-      expect(page).to have_link("All upcoming", href: "/events?period=future&repeating=off&sort=summary#paginator")
+      expect(page).to have_link("Today", href: "/events/2022/11/8?period=day&sort=summary&types%5B%5D=one_off&types%5B%5D=repeating#paginator")
+      expect(page).to have_link("All upcoming", href: "/events?period=future&sort=summary&types%5B%5D=one_off&types%5B%5D=repeating#paginator")
     end
 
-    it "carries a non-default long-running setting in the links" do
-      render_inline(described_class.new(**day_strip_attrs, long_running: "only"))
+    it "carries a blank event type in the links when none are ticked" do
+      render_inline(described_class.new(**day_strip_attrs, types: EventTypes.new([])))
 
-      expect(page).to have_link("Today", href: "/events/2022/11/8?long_running=only&period=day#paginator")
-      expect(page).to have_link("All upcoming", href: "/events?long_running=only&period=future#paginator")
+      expect(page).to have_link("All upcoming", href: "/events?period=future&types%5B%5D=#paginator")
     end
 
     it "highlights the current day" do
@@ -541,11 +516,11 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
   end
 
   describe "filter groups" do
-    it "groups the sort, period, repeating and long-running options separately" do
+    it "groups the sort, period and event type options separately" do
       render_inline(described_class.new(**base_attrs))
 
-      groups = page.all("div[data-scope='event-filter'][data-part='group']").map { |group| group.all("input[type='radio']").map { |radio| radio[:name] }.uniq }
-      expect(groups).to eq([["sort"], ["period"], ["repeating"], ["long_running"]])
+      groups = page.all("div[data-scope='event-filter'][data-part='group']").map { |group| group.all("input:not([type='hidden'])").map { |input| input[:name] }.uniq }
+      expect(groups).to eq([["sort"], ["period"], ["types[]"]])
     end
   end
 
@@ -570,13 +545,13 @@ RSpec.describe Components::Sites::EventFilter, type: :component do
       end
     end
 
-    context "with repeating off" do
-      let(:attrs) { base_attrs.merge(repeating: "off") }
+    context "with repeating events unticked" do
+      let(:attrs) { base_attrs.merge(types: EventTypes.new(%w[one_off long_running])) }
 
-      it "checks hide repeats option" do
+      it "leaves the repeating box unticked" do
         render_inline(described_class.new(**attrs))
 
-        expect(page).to have_checked_field("repeating_off")
+        expect(page).to have_unchecked_field("types_repeating")
       end
     end
   end
