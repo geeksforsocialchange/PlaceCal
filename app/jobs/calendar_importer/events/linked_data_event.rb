@@ -2,11 +2,15 @@
 
 module CalendarImporter::Events
   class LinkedDataEvent < Base
-    EXCLUDED_STATUSES = %w[EventCancelled EventPostponed].freeze
+    imports title: 'name', description: 'description', start_time: 'startDate', end_time: 'endDate', repeats: nil,
+            location: 'location', webpage: 'url', online_link: nil, spaces_available: nil, status: 'eventStatus',
+            image: 'image', source_categories: 'keywords', source_organiser: 'organizer'
+
+    STATUSES = { 'EventCancelled' => 'cancelled', 'EventPostponed' => 'postponed' }.freeze
     # Not in Parsers::Base::CONTEXT, so compacting leaves it under its full IRI
     KEYWORDS = 'http://schema.org/keywords'
 
-    attr_reader :uid, :start_time, :end_time, :summary, :description, :location, :status
+    attr_reader :uid, :start_time, :end_time, :summary, :description, :location
 
     alias dtstart start_time
     alias dtend end_time
@@ -20,7 +24,7 @@ module CalendarImporter::Events
       @end_time = parse_timestamp(read_value_of(data, 'end_date'))
       @summary = data['name']
       @location = extract_location(data)
-      @status = data['http://schema.org/eventStatus']
+      @event_status = data['http://schema.org/eventStatus']
 
       # Repeating events share a URL, so we need to add the starttime as a param.
       # Otherwise, PlaceCal will assume they're all the same event and update instead of create.
@@ -69,10 +73,10 @@ module CalendarImporter::Events
       @start_time.present? && (@start_time > DateTime.now)
     end
 
-    # eventStatus is optional; postponed events have no date set yet, so the startDate shown would be wrong.
-    def not_cancelled?
-      status = @status.is_a?(Hash) ? @status['@id'] : @status
-      EXCLUDED_STATUSES.exclude?(status.to_s.sub(%r{\A(https?://schema\.org/|schema:)}, ''))
+    # eventStatus is optional; a postponed event keeps its old startDate, so it's shown on that date as postponed
+    def status
+      value = @event_status.is_a?(Hash) ? @event_status['@id'] : @event_status
+      STATUSES.fetch(value.to_s.sub(%r{\A(https?://schema\.org/|schema:)}, ''), 'scheduled')
     end
 
     def publisher_url

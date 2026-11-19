@@ -83,7 +83,7 @@ RSpec.describe "Importing iCal series with edited occurrences" do
     expect(listed.map(&:first)).to eq(["4 Nov 19:00", "11 Nov 19:00", "18 Nov 19:00", "25 Nov 19:00"])
   end
 
-  it "drops an occurrence cancelled with STATUS:CANCELLED" do
+  it "keeps an occurrence cancelled with STATUS:CANCELLED, marked cancelled" do
     cancelled = <<~ICS
       BEGIN:VEVENT
       UID:weekly@example.com
@@ -98,7 +98,26 @@ RSpec.describe "Importing iCal series with edited occurrences" do
     import(feed(series))
     import(feed(cancelled, series))
 
-    expect(listed.map(&:first)).to eq(["4 Nov 19:00", "11 Nov 19:00", "25 Nov 19:00"])
+    expect(listed.map(&:first)).to eq(["4 Nov 19:00", "11 Nov 19:00", "18 Nov 19:00", "25 Nov 19:00"])
+    expect(calendar.events.order(:dtstart).map(&:status)).to eq(%w[scheduled scheduled cancelled scheduled])
+  end
+
+  it "marks a standalone event cancelled when it's cancelled, and back when it's reinstated" do
+    talk = <<~ICS
+      BEGIN:VEVENT
+      UID:talk@example.com
+      DTSTART;TZID=Europe/London:20261120T190000
+      DTEND;TZID=Europe/London:20261120T200000
+      STATUS:CANCELLED
+      SUMMARY:Talk
+      END:VEVENT
+    ICS
+
+    import(feed(talk))
+    expect(calendar.events.sole.status).to eq("cancelled")
+
+    import(feed(talk.sub("STATUS:CANCELLED\n", "")))
+    expect(calendar.events.sole.status).to eq("scheduled")
   end
 
   it "retitles an occurrence edited without moving it" do

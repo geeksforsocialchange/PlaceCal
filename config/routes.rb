@@ -41,6 +41,7 @@ Rails.application.routes.draw do
     resources :calendars do
       collection do
         post :test_source
+        get :sources
       end
       member do
         post :import

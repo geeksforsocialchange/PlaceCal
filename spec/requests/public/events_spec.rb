@@ -513,6 +513,35 @@ RSpec.describe "Public Events", type: :request do
     end
   end
 
+  describe "GET /events/:id webpage button" do
+    let(:calendar) { create(:calendar, organiser: partner) }
+    let(:event) do
+      create(:event, organiser: partner, calendar:, address:, dtstart: 1.day.from_now, dtend: 1.day.from_now + 2.hours,
+                     publisher_url: "https://www.eventbrite.co.uk/e/1")
+    end
+
+    def button_text
+      get event_url(event, host: "#{site.slug}.lvh.me")
+      Nokogiri::HTML(response.body).css("a[href='https://www.eventbrite.co.uk/e/1']").map { it.text.strip }
+    end
+
+    it "says Book tickets when the calendar is on a ticketing platform" do
+      calendar.update_column(:importer_used, "eventbrite") # rubocop:disable Rails/SkipsModelValidations
+      expect(button_text).to include(I18n.t("events.show.book_tickets"))
+    end
+
+    it "says visit the webpage for other sources" do
+      calendar.update_column(:importer_used, "ical") # rubocop:disable Rails/SkipsModelValidations
+      expect(button_text).to include(I18n.t("events.show.visit_webpage"))
+    end
+
+    it "says visit the webpage for a cancelled event, even on a ticketing platform" do
+      calendar.update_column(:importer_used, "eventbrite") # rubocop:disable Rails/SkipsModelValidations
+      event.update!(status: "cancelled")
+      expect(button_text).to include(I18n.t("events.show.visit_webpage"))
+    end
+  end
+
   describe "GET /events/:id show content" do
     let(:event) do
       create(:event,
@@ -552,6 +581,37 @@ RSpec.describe "Public Events", type: :request do
       expect(event_ld).to be_present
       expect(event_ld["name"]).to eq("Community Workshop")
       expect(event_ld["startDate"]).to match(/^\d{4}-\d{2}-\d{2}T/)
+    end
+
+    context "when the event is cancelled" do
+      before { event.update!(status: "cancelled") }
+
+      it "says so above the details and marks it cancelled in the JSON-LD" do
+        get event_url(event, host: "#{site.slug}.lvh.me")
+        expect(response.body).to include(I18n.t("events.show.status_notice.cancelled"))
+        expect(Nokogiri::HTML(response.body).at_css("h1")[:class]).to include("line-through")
+        expect(Nokogiri::HTML(response.body).css(".line-through time.dt-start")).to be_present
+
+        json_ld_blocks = response.body.scan(%r{<script type="application/ld\+json">(.+?)</script>}m)
+        event_ld = json_ld_blocks.map { |m| JSON.parse(m[0]) }.find { |d| d["@type"] == "Event" }
+        expect(event_ld["eventStatus"]).to eq("https://schema.org/EventCancelled")
+      end
+
+      it "marks it cancelled in the iCal feed" do
+        get event_url(event, host: "#{site.slug}.lvh.me", format: :ics)
+        expect(response.body).to include("STATUS:CANCELLED")
+      end
+
+      it "keeps it in the events list, labelled" do
+        get events_url(host: "#{site.slug}.lvh.me")
+        expect(Nokogiri::HTML(response.body).at_css("[data-scope='event-status'][data-variant='cancelled']")).to be_present
+        expect(response.body).to include("Community Workshop")
+      end
+    end
+
+    it "gives an event that is going ahead no status in the iCal feed" do
+      get event_url(event, host: "#{site.slug}.lvh.me", format: :ics)
+      expect(response.body).not_to include("STATUS:")
     end
 
     it "includes site-level WebSite JSON-LD" do

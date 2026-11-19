@@ -4,8 +4,11 @@ module CalendarImporter
   module Parsers
     class Wix < Base
       NAME = 'Wix Events'
+      HANDBOOK_PAGE = 'wix'
       KEY = 'wix'
       DOMAINS = %w[wixsite.com].freeze
+
+      def self.event_class = Events::WixEvent
 
       # Detects Wix sites by:
       # 1. URL pattern for wixsite.com subdomains
@@ -90,7 +93,7 @@ module CalendarImporter
         data.filter_map do |event_data|
           next if event_data.dig('scheduling', 'config', 'scheduleTbd')
 
-          Events::WixEvent.new(event_data, base_url: extract_base_url)
+          self.class.event_class.new(event_data, base_url: extract_base_url)
         end
       end
 

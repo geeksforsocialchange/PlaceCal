@@ -19,6 +19,7 @@
 #  rrule                    :jsonb
 #  source_categories        :jsonb
 #  source_organiser         :string
+#  status                   :string           default("scheduled"), not null
 #  summary                  :text             not null
 #  summary_html             :string
 #  uid                      :string
@@ -65,6 +66,8 @@ class Event < ApplicationRecord
   VERSION_PRUNE_BATCH_SIZE = 5_000
   # Calendars with these strategies can import events that have no place, address or online link
   LOCATION_OPTIONAL_STRATEGIES = %w[event no_location online_only].freeze
+  # Cancelled and postponed events stay listed, marked as such, so people who planned to go find out
+  STATUSES = %w[scheduled cancelled postponed].freeze
 
   # ==== Attributes ====
   # Columns marked (nullable) have no NOT NULL constraint in the DB.
@@ -81,6 +84,7 @@ class Event < ApplicationRecord
   attribute :rrule,                    :json                        # nullable — Array<Hash{table: {frequency: String}}>, or false
   attribute :source_categories,        :json                        # nullable, Array<String> as the source gave them
   attribute :source_organiser,         :string                      # nullable, the organiser name the source gave
+  attribute :status,                   :string, default: 'scheduled' # NOT NULL, one of STATUSES
   attribute :summary,                  :text                        # NOT NULL
   attribute :summary_html,             :string                      # nullable, populated by HtmlRenderCache
   attribute :uid,                      :string                      # nullable
@@ -98,6 +102,7 @@ class Event < ApplicationRecord
 
   # ==== Validations ====
   validates :summary, :dtstart, :organiser, presence: true
+  validates :status, inclusion: { in: STATUSES }
   validate :require_location
   validate :unique_event, on: :create
 
@@ -149,6 +154,11 @@ class Event < ApplicationRecord
   end
 
   # ==== Instance methods ====
+  def cancelled? = status == 'cancelled'
+  def postponed? = status == 'postponed'
+
+  # Cancelled or postponed: not happening on the date listed
+  def called_off? = cancelled? || postponed?
 
   # @return [Neighbourhood, nil]
   def neighbourhood

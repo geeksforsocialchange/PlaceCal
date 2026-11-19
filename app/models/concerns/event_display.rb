@@ -20,9 +20,18 @@ module EventDisplay
     self.class.rrule_frequency(rrule)&.titleize
   end
 
+  # Whether the event's webpage is on a ticketing platform, going by the importer its calendar last used
+  def ticketed?
+    parser = CalendarImporter::CalendarImporter.parser_for_key(calendar&.importer_used)
+    parser.present? && parser::TICKETING
+  end
+
+  # Feeds without an end time give one equal to the start
+  def ends? = dtend.present? && dtend != dtstart
+
   # @return [String] formatted time range, e.g. "09:00 – 10:00"
   def time
-    if dtend
+    if ends?
       "#{dtstart.strftime('%H:%M')} – #{dtend.strftime('%H:%M')}"
     else
       dtstart.strftime('%H:%M')

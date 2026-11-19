@@ -11,11 +11,13 @@ class Components::Sites::Event < Components::Base
                 details: 'The row of detail lines.',
                 detail: 'One detail line, its icon then its text; the variant says which. Each line only when the event has it.',
                 organiser_prefix: 'Optional words before the organiser\'s name, such as "by ", inside the organiser detail. Blank in core; a theme fills it.',
-                icon: 'The svg icon at the start of each detail line.'
+                icon: 'The svg icon at the start of each detail line.',
+                status_notice: 'On the event\'s own page, the line saying it\'s cancelled or postponed; the variant says which. Only for an event that is called off.'
               },
-              variants: { root: %i[card page], detail: %i[time duration date repeats online organiser place] },
+              variants: { root: %i[card page], detail: %i[status time duration date repeats online organiser place],
+                          status_notice: Components::Shared::EventStatus::CALLED_OFF.map(&:to_sym) },
               states: { root: %i[online] },
-              tokens: %i[--color-foreground --color-primary --color-secondary --color-rules --text-detail --text-xl --text-md --font-weight-bold]
+              tokens: %i[--color-foreground --color-primary --color-secondary --color-rules --text-detail --text-xl --text-lg --text-md --font-weight-bold]
 
   prop :display_context, _Nilable(Symbol), default: nil
   prop :event, _Interface(:summary, :dtstart)  # Event model or test double
@@ -43,9 +45,12 @@ class Components::Sites::Event < Components::Base
   private
 
   def render_page_layout
-    Shared::Hero(summary, @site_tagline, section: t('events.show.section'), standfirst: (organiser_line if @organiser_byline))
+    Shared::Hero(summary, @site_tagline, section: t('events.show.section'), struck: called_off?, standfirst: (organiser_line if @organiser_byline))
     a(class: 'p-name u-url', href: event_path(id), hidden: true) { summary }
-    div(**part(:content, class: 'container-public')) { render_event_details }
+    div(**part(:content, class: 'container-public')) do
+      render_status_notice
+      render_event_details
+    end
   end
 
   def render_list_layout
@@ -58,14 +63,25 @@ class Components::Sites::Event < Components::Base
   def render_list_header
     div(**part(:header, class: 'grid md:grid-cols-main-auto md:items-center')) do
       h3(**part(:title, class: "inline-block mb-2.5#{' text-md' if @nested}")) do
-        link_to(summary, event_path(id), class: 'p-name u-url text-foreground no-underline', data: { turbo_frame: '_top' })
+        link_to(summary, event_path(id), class: "p-name u-url text-foreground #{called_off? ? 'line-through' : 'no-underline'}", data: { turbo_frame: '_top' })
       end
       div(**part(:neighbourhood, class: 'max-md:hidden')) { UI::Pill(variant: :neighbourhood, class: 'mt-3') { neighbourhood_name } } if neighbourhood_name && @show_neighbourhoods
     end
   end
 
+  def called_off? = Shared::EventStatus.called_off?(@event)
+
+  def struck_class = ('line-through' if called_off?)
+
+  def render_status_notice
+    return unless called_off?
+
+    p(**part(:status_notice, variant: @event.status.to_sym, class: 'mt-5 mb-0 text-lg font-bold')) { t("events.show.status_notice.#{@event.status}") }
+  end
+
   def render_event_details
     div(**part(:details, class: "flex flex-wrap items-center gap-x-4 gap-y-1 text-detail border-rules py-2 md:py-3 #{page? ? 'border-b-10' : 'border-y-3'}")) do
+      render_status_detail if called_off? && !page?
       render_date_detail
       render_time_detail
       render_detail(:duration, :event_duration, duration) if duration
@@ -76,12 +92,21 @@ class Components::Sites::Event < Components::Base
     end
   end
 
+  # The page says so in a sentence above the details instead
+  def render_status_detail
+    div(**detail(:status)) do
+      render_icon(:event_status)
+      whitespace
+      Shared::EventStatus(event: @event)
+    end
+  end
+
   def render_time_detail
-    div(**detail(:time)) do
+    div(**detail(:time, struck_class)) do
       render_icon(:event_time)
       whitespace
       time(class: 'dt-start', datetime: @event.dtstart.iso8601) { fmt_time(@event.dtstart) }
-      if @event.dtend
+      if ends?
         plain " \u2013 "
         time(class: 'dt-end', datetime: @event.dtend.iso8601) { end_time }
       end
@@ -89,7 +114,7 @@ class Components::Sites::Event < Components::Base
   end
 
   def render_date_detail
-    div(**detail(:date)) do
+    div(**detail(:date, struck_class)) do
       render_icon(:event_date)
       whitespace
       plain date
@@ -154,7 +179,7 @@ class Components::Sites::Event < Components::Base
   end
 
   def duration
-    return false unless @event.dtend
+    return false unless ends?
 
     mins = ((@event.dtend - @event.dtstart) / 60).to_i
     hours = mins / 60
@@ -181,6 +206,9 @@ class Components::Sites::Event < Components::Base
   def date
     formatted_date(@event.dtstart)
   end
+
+  # Feeds without an end time give one equal to the start
+  def ends? = @event.dtend.present? && @event.dtend != @event.dtstart
 
   def end_time
     return fmt_time(@event.dtend) unless multi_day?

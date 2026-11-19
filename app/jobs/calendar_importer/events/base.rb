@@ -7,6 +7,25 @@ module CalendarImporter::Events
     # status fills are_spaces_available; override is an event whose fields replace the series' on this date
     Occurrence = Struct.new(:start_time, :end_time, :status, :override, keyword_init: true)
 
+    # Each event field a source can fill, and the methods that can fill it
+    FIELDS = {
+      title: %i[summary], description: %i[description], start_time: %i[dtstart occurrences_between],
+      end_time: %i[dtend occurrences_between], repeats: %i[rrule], location: %i[location],
+      webpage: %i[publisher_url], online_link: %i[online_event_id], spaces_available: %i[occurrences_between],
+      status: %i[status], image: %i[image_url], source_categories: %i[source_categories],
+      source_organiser: %i[source_organiser]
+    }.freeze
+
+    class_attribute :field_map, instance_accessor: false, default: nil
+
+    # Names the source field read for each of FIELDS, nil for one left blank; merges over the parent's
+    def self.imports(**fields)
+      unknown = fields.keys - FIELDS.keys
+      raise ArgumentError, "Unknown event fields: #{unknown.join(', ')}" if unknown.any?
+
+      self.field_map = (field_map || {}).merge(fields).freeze
+    end
+
     def initialize(event)
       @event = event
     end
@@ -90,8 +109,12 @@ module CalendarImporter::Events
         publisher_url:,
         source_categories: Base.clean_list(source_categories).presence,
         source_organiser: Base.clean_list(source_organiser).first,
-        image_source_url: image_url.to_s.strip.presence }
+        image_source_url: image_url.to_s.strip.presence,
+        status: }
     end
+
+    # One of Event::STATUSES; sources that can mark an event cancelled or postponed override it
+    def status = 'scheduled'
 
     # Strings from the source, kept as text; they never become PlaceCal categories or partners
     def source_categories

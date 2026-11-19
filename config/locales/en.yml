@@ -701,6 +701,9 @@ en:
   # ===========================================================================
 
   events:
+    status:
+      cancelled: "Cancelled"
+      postponed: "Postponed"
     index:
       # Read out by screen readers when a filter or date change reloads the list.
       results_summary:
@@ -744,6 +747,9 @@ en:
       # A multi-day event's end date, shown before its end time
       end_date_format: "%-d %b"
     show:
+      status_notice:
+        cancelled: "This event has been cancelled."
+        postponed: "This event has been postponed. Check with the organiser for a new date."
       # Section name above the event page title, blank in core
       section: ""
       # Share and search description for an event with no description of its own.
@@ -754,6 +760,7 @@ en:
       meta_date_format: "%A %-d %B"
       contact_heading: "Contact information"
       visit_webpage: "Visit the webpage for this event"
+      book_tickets: "Book tickets"
       join_meeting: "Join this meeting"
       join_on: "Join on %{service}"
       online_heading: "Online"
@@ -972,6 +979,7 @@ en:
         public_contact_name: "Contact Name"
         public_contact_email: "Contact Email"
         public_contact_phone: "Contact Phone"
+        default_description: "Default event description"
 
       neighbourhood:
         <<: *default_attrs

@@ -16,7 +16,8 @@ class Components::Sites::EventRow < Components::Base
                 detail: 'One detail, its icon then its text; the variant says which. Each only when the event has it.',
                 icon: 'The svg icon at the start of each detail.'
               },
-              variants: { detail: %i[time place organiser repeats online] },
+              variants: { detail: %i[status time place organiser repeats online] },
+              states: { root: Components::Shared::EventStatus::CALLED_OFF.map(&:to_sym) },
               tokens: %i[--color-foreground --color-primary --color-secondary --color-rules --radius-sm --text-2xl --text-2xs --text-lg --text-sm
                          --leading-none --leading-tight --font-weight-bold --font-weight-extra-bold --tracking-wide]
 
@@ -26,11 +27,12 @@ class Components::Sites::EventRow < Components::Base
   prop :badge_zoom_level, _Nilable(String), default: nil
 
   def view_template
-    div(**part(:root, class: 'h-event grid grid-cols-date-row gap-4 items-start py-3')) do
+    div(**part(:root, state: (@event.status.to_sym if called_off?), class: 'h-event grid grid-cols-date-row gap-4 items-start py-3')) do
       render_date
       div do
         div(**part(:title, class: 'flex items-center justify-between gap-3 font-bold text-lg leading-tight pb-1.5 mb-1.5 border-b-3 border-rules')) do
-          link_to(@event.summary, event_path(@event), class: 'p-name u-url text-foreground no-underline hover:underline', data: { turbo_frame: '_top' })
+          link_to(@event.summary, event_path(@event), class: "p-name u-url text-foreground #{called_off? ? 'line-through' : 'no-underline hover:underline'}",
+                                                      data: { turbo_frame: '_top' })
           span(**part(:neighbourhood, class: 'max-md:hidden shrink-0')) { UI::Pill(variant: :neighbourhood) { neighbourhood_name } } if neighbourhood_name
         end
         render_details
@@ -41,7 +43,7 @@ class Components::Sites::EventRow < Components::Base
   private
 
   def render_date
-    time(**part(:date, class: 'dt-start block text-center bg-rules rounded-sm py-1.5 px-2'), datetime: @event.dtstart.iso8601) do
+    time(**part(:date, class: "dt-start block text-center bg-rules rounded-sm py-1.5 px-2#{' line-through' if called_off?}"), datetime: @event.dtstart.iso8601) do
       span(**part(:day, class: 'block text-2xl font-bold leading-none')) { @event.dtstart.day.to_s }
       span(**part(:month, class: 'block text-2xs uppercase tracking-wide font-extra-bold mt-1')) { I18n.l(@event.dtstart, format: '%b') }
     end
@@ -49,7 +51,8 @@ class Components::Sites::EventRow < Components::Base
 
   def render_details
     div(**part(:details, class: 'flex flex-wrap gap-x-4 gap-y-1 text-sm')) do
-      detail(:time, :event_time) { time_range }
+      detail(:status, :event_status) { Shared::EventStatus(event: @event) } if called_off?
+      detail(:time, :event_time, struck: called_off?) { time_range }
       detail(:place, :event_place) { place_name } if show_place?
       detail(:organiser, :partner) { UI::Link(href: partner_path(@event.organiser), variant: :thin, data: { turbo_frame: '_top' }) { truncated(@event.organiser.name, 25) } } if show_organiser?
       detail(:repeats, :event_repeats) { plain repeats } if repeats
@@ -57,13 +60,15 @@ class Components::Sites::EventRow < Components::Base
     end
   end
 
+  def called_off? = Shared::EventStatus.called_off?(@event)
+
   def online_label
     service = @event.online_address.service_name
     service ? t('events.card.online_on', service:) : t('events.card.online')
   end
 
-  def detail(name, icon_name, &)
-    span(**part(:detail, variant: name, class: 'inline-flex items-center gap-1')) do
+  def detail(name, icon_name, struck: false, &)
+    span(**part(:detail, variant: name, class: "inline-flex items-center gap-1#{' line-through' if struck}")) do
       raw(view_context.icon(icon_name, size: nil, css_class: 'size-5 text-secondary shrink-0', **part(:icon)))
       yield
     end

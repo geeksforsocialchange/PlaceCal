@@ -42,7 +42,7 @@ class ImportRun < ApplicationRecord
   scope :imported, -> { where(outcome: 'imported') }
   scope :latest_first, -> { order(started_at: :desc, id: :desc) }
 
-  # 0.4 => "under a second", 4.2 => "4s", 83 => "1m 23s", 120 => "2m"
+  # 0.4 => "<1s", 4.2 => "4s", 83 => "1m 23s", 120 => "2m"
   def self.duration_label(seconds)
     return I18n.t('admin.import_runs.took.under_a_second') if seconds < 1
 

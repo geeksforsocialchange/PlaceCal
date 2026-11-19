@@ -151,7 +151,6 @@ Lint/MissingSuper:
     - "app/components/**/*.rb"
     - "app/jobs/calendar_importer/events/eventbrite_event.rb"
     - "app/jobs/calendar_importer/events/ics_event.rb"
-    - "app/jobs/calendar_importer/events/manchester_uni_event.rb"
     - "app/jobs/calendar_importer/events/meetup_event.rb"
     - "app/policies/user_policy.rb"
 

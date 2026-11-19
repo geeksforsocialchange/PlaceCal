@@ -31,6 +31,14 @@ class Views::Admin::Calendars::FormTabSource < Views::Admin::Base
       )
 
       render_name_field
+      render_default_description_field
+    end
+  end
+
+  def render_default_description_field
+    Field(for: form.field_id(:default_description), label: attr_label(:calendar, :default_description),
+          hint: t('admin.calendars.fields.default_description_hint')) do |f|
+      raw form.input_field(:default_description, as: :text, class: 'textarea textarea-bordered w-full min-h-24', **f.aria)
     end
   end
 
@@ -84,6 +92,10 @@ class Views::Admin::Calendars::FormTabSource < Views::Admin::Base
               end
             end
           end
+        end
+        p(class: 'text-xs mt-3') do
+          link_to t('admin.calendars.sources.link'), sources_admin_calendars_path,
+                  target: '_blank', rel: 'noopener', class: 'link underline hover:no-underline text-placecal-orange-dark'
         end
         if calendar.importer_used.present?
           p(class: 'text-xs text-gray-600 mt-3 pt-3 border-t border-base-300') do

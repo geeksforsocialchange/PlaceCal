@@ -4,18 +4,31 @@
 module WebpVersions
   extend ActiveSupport::Concern
 
+  # Fixed, because ImageMagick otherwise keeps the source's quality and a high-quality JPEG becomes a larger WebP
+  QUALITY = 75
+
   class_methods do
     # webp_versions(standard: [420, 840]) adds a standard_webp version fitted inside 420 x 840
     def webp_versions(sizes)
       sizes.each do |name, dimensions|
         version :"#{name}_webp" do
           process resize_to_fit: dimensions
-          process convert: 'webp'
+          process :convert_to_webp
 
           define_method(:full_filename) { |for_file| "#{name}_webp_#{File.basename(for_file, '.*')}.webp" }
         end
       end
     end
+  end
+
+  # The quality in the URL changes it when the copies are remade, as a CDN keeps the old file at an unchanged URL
+  def url(*)
+    url = super
+    url && version_name.to_s.end_with?('webp') ? "#{url}?q=#{QUALITY}" : url
+  end
+
+  def convert_to_webp
+    minimagick! { |builder| builder.convert('webp').saver(quality: QUALITY) }
   end
 
   # webp_srcset(standard: '1x', retina: '2x'), or nil until every copy exists, so a page never offers a missing file

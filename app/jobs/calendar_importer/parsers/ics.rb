@@ -31,6 +31,7 @@ module CalendarImporter::Parsers
 
     # These constants are only used for the frontend interface
     NAME = 'Generic iCal / .ics'
+    HANDBOOK_PAGE = 'ical-generic'
     KEY = 'ical'
     DOMAINS = %w[
       calendar.google.com
@@ -39,6 +40,8 @@ module CalendarImporter::Parsers
       ics.teamup.com
       webcal://
     ].freeze
+
+    def self.event_class = CalendarImporter::Events::IcsEvent
 
     # Outlook names zones the Windows way, which icalendar can't resolve, so repeats keep one fixed offset
     WINDOWS_TIME_ZONES = {
@@ -110,7 +113,7 @@ module CalendarImporter::Parsers
       start_time = DateTime.parse(event.dtstart.value_ical) if event.dtstart
       end_time = DateTime.parse(event.dtend.value_ical) if event.dtend
 
-      CalendarImporter::Events::IcsEvent.new(event, start_time, end_time, overrides:)
+      self.class.event_class.new(event, start_time, end_time, overrides:)
     end
 
     # All-day and floating times have no zone, and icalendar-recurrence would read them in the process zone

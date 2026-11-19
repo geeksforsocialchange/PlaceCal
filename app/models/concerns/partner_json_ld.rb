@@ -115,7 +115,7 @@ module PartnerJsonLd
         '@id' => "#{base_url}/events/#{event.id}",
         'name' => event.summary,
         'startDate' => event.dtstart.in_time_zone('Europe/London').iso8601,
-        'eventStatus' => 'https://schema.org/EventScheduled',
+        'eventStatus' => event.json_ld_event_status,
         'eventAttendanceMode' => event.json_ld_attendance_mode
       }
       entry['endDate'] = event.dtend.in_time_zone('Europe/London').iso8601 if event.dtend

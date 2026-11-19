@@ -125,6 +125,7 @@ en:
     # Time phrases
     time:
       ago: "%{time} ago"
+      from_now: "in %{time}"
       added_ago: "Added %{time} ago"
       events_in_days: "Events in the next %{days} days"
       no_upcoming_in_days: "No upcoming events in the next %{days} days"
@@ -185,6 +186,7 @@ en:
 
     leftbar:
       build: "Build"
+      calendar_sources: "Calendar sources"
       content_types: "Content types"
       discord: "Discord"
       get_support: "Get support"
@@ -378,6 +380,7 @@ en:
         default_location_blank: "(No default location)"
         default_location_hint: "Used when strategy requires a fallback location"
         name_hint: "A simple description to help remember what this calendar is"
+        default_description_hint: 'Used as the description of imported events whose feed gives none, such as "Details are on our Discord". Events with their own description keep it. Takes effect at the next import.'
         partner_hint: "Which group organises these events?"
         partner_organiser: "Partner Organiser"
         source_placeholder: "https://your-domain.com/events.ics"
@@ -424,6 +427,8 @@ en:
         importing: "Importing..."
         import_finished: "Import finished"
         last_import: "Last import:"
+        next_check: "Next check:"
+        latest_run: "Latest run #%{id}"
         notices: "Import notices"
         occurrence_limit: '"%{summary}" repeats more than %{count} times, so only its first %{count} dates were imported.'
         pending: "Pending import"
@@ -443,6 +448,26 @@ en:
         source_categories: "Source categories"
         source_organiser: "Source organiser"
         upcoming_tab: "Upcoming (%{count})"
+      sources:
+        title: "What each calendar source imports"
+        intro: "Each row is a source PlaceCal can import events from. Each cell names the field PlaceCal reads from that source to fill the event field in its column."
+        source: "Source"
+        not_imported: "Not imported"
+        link: "See what each source imports"
+        fields:
+          title: "Title"
+          description: "Description"
+          start_time: "Start"
+          end_time: "End"
+          repeats: "Repeats"
+          location: "Event location"
+          webpage: "Event webpage"
+          online_link: "Meeting link"
+          spaces_available: "Spaces available"
+          status: "Cancelled or postponed"
+          image: "Image"
+          source_categories: "Source categories"
+          source_organiser: "Source organiser"
 
     # -------------------------------------------------------------------------
     # Jobs / Import Status
@@ -516,7 +541,7 @@ en:
         skipped: "Skipped"
         took: "Took"
       took:
-        under_a_second: "under a second"
+        under_a_second: "<1s"
         seconds:
           one: "%{count}s"
           other: "%{count}s"

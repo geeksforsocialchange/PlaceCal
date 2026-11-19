@@ -104,12 +104,14 @@ class Views::Sites::Events::Show < Views::Base
   def render_directory_layout
     Directory::PageHero(
       title: event.summary,
+      struck: event.called_off?,
       breadcrumbs: hero_breadcrumbs
     ) do
       render_hero_chips
     end
 
     div(class: 'container-public py-6') do
+      p(class: 'mb-6 text-lg font-bold') { t("events.show.status_notice.#{event.status}") } if event.called_off?
       div(class: 'lg:grid lg:grid-cols-sidebar lg:gap-8') do
         div do
           render_about_section
@@ -137,27 +139,29 @@ class Views::Sites::Events::Show < Views::Base
 
   def render_hero_chips
     div(class: 'flex flex-wrap gap-2 mt-4 mb-2') do
-      hero_chip(:event_date, event.dtstart.strftime('%a %-e %b'))
+      hero_chip(:event_date, event.dtstart.strftime('%a %-e %b'), struck: event.called_off?)
       render_hero_time
       hero_chip(:event_repeats, event.repeat_frequency) if event.repeat_frequency
       hero_chip(:event_online, event.online_address.service_name || t('directory.event_row.online')) if event.online_address.present?
     end
   end
 
-  def hero_chip(icon_name, text)
+  def hero_chip(icon_name, text, struck: false)
     UI::Pill(variant: :overlay) do
       raw(view_context.icon(icon_name, size: nil, css_class: 'w-3.5 h-3.5 shrink-0 opacity-80'))
-      plain text
+      span(class: ('line-through' if struck)) { text }
     end
   end
 
   def render_hero_time
     UI::Pill(variant: :overlay) do
       raw(view_context.icon(:event_time, size: nil, css_class: 'w-3.5 h-3.5 shrink-0 opacity-80'))
-      time(class: 'dt-start', datetime: event.dtstart.iso8601) { event.dtstart.strftime('%H:%M') }
-      if event.dtend
-        plain ' – '
-        time(class: 'dt-end', datetime: event.dtend.iso8601) { event.dtend.strftime('%H:%M') }
+      span(class: ('line-through' if event.called_off?)) do
+        time(class: 'dt-start', datetime: event.dtstart.iso8601) { event.dtstart.strftime('%H:%M') }
+        if event.ends?
+          plain ' – '
+          time(class: 'dt-end', datetime: event.dtend.iso8601) { event.dtend.strftime('%H:%M') }
+        end
       end
     end
   end
@@ -214,8 +218,8 @@ class Views::Sites::Events::Show < Views::Base
     UI::Card(variant: :panel, padding: :sm) do
       sidebar_heading(t('directory.events.show.information'))
       UI::Stack(gap: :sm) do
-        info_row(:event_date) { event.dtstart.strftime('%a %-e %b %Y') }
-        info_row(:event_time) { event.time }
+        info_row(:event_date, struck: event.called_off?) { event.dtstart.strftime('%a %-e %b %Y') }
+        info_row(:event_time, struck: event.called_off?) { event.time }
         info_row(:event_repeats) { event.repeat_frequency } if event.repeat_frequency
         if event.partner_at_location
           info_row(:event_place) do
@@ -274,7 +278,8 @@ class Views::Sites::Events::Show < Views::Base
   def render_event_link
     return if event.publisher_url.blank?
 
-    event_button(event.publisher_url, t('events.show.visit_webpage'))
+    label = event.ticketed? && !event.called_off? ? t('events.show.book_tickets') : t('events.show.visit_webpage')
+    event_button(event.publisher_url, label)
   end
 
   def render_online_link
@@ -287,10 +292,10 @@ class Views::Sites::Events::Show < Views::Base
     UI::Button(variant: :outline, href:) { label }
   end
 
-  def info_row(icon_name, &)
+  def info_row(icon_name, struck: false, &)
     div(class: 'flex items-center gap-2.5 text-sm text-foreground') do
       raw(view_context.icon(icon_name, size: '4'))
-      span(&)
+      span(class: ('line-through' if struck), &)
     end
   end
 
