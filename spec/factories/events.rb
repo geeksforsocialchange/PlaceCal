@@ -14,14 +14,18 @@
 #  image                    :string
 #  image_source_url         :string
 #  is_active                :boolean          default(TRUE), not null
+#  price_currency           :string
+#  price_from               :decimal(10, 2)
 #  publisher_url            :string
 #  raw_location_from_source :text
 #  rrule                    :jsonb
+#  sold_out                 :boolean
 #  source_categories        :jsonb
 #  source_organiser         :string
 #  status                   :string           default("scheduled"), not null
 #  summary                  :text             not null
 #  summary_html             :string
+#  ticket_url               :string
 #  uid                      :string
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null

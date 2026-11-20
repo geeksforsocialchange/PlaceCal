@@ -43,6 +43,17 @@ Each event keeps, as plain text, the categories and organiser name its source gi
 
 An event stores one image, downloaded from its source into `event.image` (`EventImageUploader`) when the source's URL for it, kept in `image_source_url`, changes. Eventbrite (`logo.original.url`), Ticket Tailor (`images.header`), Squarespace (`assetUrl`), Wix (`mainImage.url`), Ticketsolve (the `large` size of the first image), TicketSource (the first `images[].src`), JSON-LD (`image`) and iCal (`IMAGE`, or the first `ATTACH` that is an image; Google Drive links are fetched in their download form, which works when the file is shared publicly) give one. A download that fails leaves the event without an image and is retried on the next import that reads it. A file that isn't a JPEG, PNG, GIF or WebP image leaves it without one until the source's URL changes.
 
+### Ticket Data
+
+An event stores a ticket link (`ticket_url`, where tickets are bought when that isn't the webpage), the lowest ticket price (`price_from`, in pounds rather than pence, with `price_currency` as an ISO 4217 code; 0 is free and needs no currency) and whether it is sold out (`sold_out`, nil when the source doesn't say). A ticket link that is the same as the webpage isn't kept, nor is a price without a currency, unless it is 0.
+
+- Ticket Tailor: `checkout_url`, the lowest `ticket_types[].price` (pence) among types on sale, `currency`, and sold out only when `unavailable_status` says so, since `tickets_available` is also false before and after sales.
+- Wix: `registration.ticketing.lowestTicketPrice` and `soldOut`.
+- JSON-LD (and OutSavvy): `offers`. The price is the lowest single ticket's, preferring tickets not sold out, then an `AggregateOffer`'s `lowPrice` (a range of 0 to 0 is ignored). Sold out when every stated `availability` is `SoldOut` or `OutOfStock`; OutSavvy also says `OutOfStock` once sales close.
+- Eventbrite: a price of 0 when `is_free`.
+
+Other sources leave them blank. The event's JSON-LD offer uses the ticket link (or the webpage), the price and the availability.
+
 ### Address Resolution Order
 
 [Event#resolved_address](../app/models/event.rb) uses the first of:

@@ -12,7 +12,7 @@ module CalendarImporter::Events
       title: %i[summary], description: %i[description], start_time: %i[dtstart occurrences_between],
       end_time: %i[dtend occurrences_between], repeats: %i[rrule], location: %i[location],
       webpage: %i[publisher_url], online_link: %i[online_event_id], spaces_available: %i[occurrences_between],
-      status: %i[status], image: %i[image_url], source_categories: %i[source_categories],
+      ticket_url: %i[ticket_url], price: %i[price_from], sold_out: %i[sold_out], status: %i[status], image: %i[image_url], source_categories: %i[source_categories],
       source_organiser: %i[source_organiser]
     }.freeze
 
@@ -105,7 +105,41 @@ module CalendarImporter::Events
         source_categories: Base.clean_list(source_categories).presence,
         source_organiser: Base.clean_list(source_organiser).first,
         image_source_url: image_url.to_s.strip.presence,
-        status: }
+        status:,
+        **ticket_attributes }
+    end
+
+    # A ticket link the same as the webpage isn't kept; a price is kept only with a currency, except free
+    def ticket_attributes
+      link = ticket_url.to_s.strip.presence
+      link = nil if link == publisher_url.to_s.strip
+      price = Base.price(price_from)
+      currency = price_currency.to_s.strip.upcase.presence if price
+      currency = nil unless currency&.match?(/\A[A-Z]{3}\z/)
+      price = nil if currency.nil? && !price&.zero?
+
+      { ticket_url: link, price_from: price, price_currency: currency, sold_out: }
+    end
+
+    def ticket_url; end
+
+    # The lowest ticket price in the currency's main unit, as a number or numeric string
+    def price_from; end
+
+    def price_currency; end
+
+    # true or false when the source says, nil when it doesn't
+    def sold_out; end
+
+    # @return [BigDecimal, nil] a non-negative price, or nil for anything else
+    def self.price(value)
+      price = value.is_a?(Numeric) ? BigDecimal(value.to_s) : BigDecimal(value.to_s.strip, exception: false)
+      price if price&.finite? && !price.negative?
+    end
+
+    # Reads "true"/"false" strings as well as booleans; anything else is nil
+    def self.boolean(value)
+      ActiveModel::Type::Boolean.new.cast(value) if [true, false, 'true', 'false'].include?(value)
     end
 
     # One of Event::STATUSES; sources that can mark an event cancelled or postponed override it

@@ -6,7 +6,8 @@ module CalendarImporter::Events
             end_time: 'scheduling.config.endDate', repeats: nil,
             location: %w[location.fullAddress location.name location.address], webpage: 'slug', online_link: nil,
             spaces_available: nil, status: nil, image: 'mainImage.url', source_categories: 'categories.name',
-            source_organiser: nil
+            source_organiser: nil,
+            ticket_url: nil, price: %w[registration.ticketing.lowestTicketPrice.value registration.ticketing.currency], sold_out: 'registration.ticketing.soldOut'
 
     def initialize(event, base_url: nil)
       super(event)
@@ -41,6 +42,19 @@ module CalendarImporter::Events
       Array.wrap(@event['categories']).map { |category| category.is_a?(Hash) ? category['name'] : category }
     end
 
+    # lowestPrice is the formatted text, such as "£10.25"
+    def price_from
+      ticketing.dig('lowestTicketPrice', 'value')
+    end
+
+    def price_currency
+      ticketing.dig('lowestTicketPrice', 'currency') || ticketing['currency']
+    end
+
+    def sold_out
+      Base.boolean(ticketing['soldOut'])
+    end
+
     def dtstart
       parse_timestamp(scheduling_config['startDate'])
     end
@@ -59,6 +73,11 @@ module CalendarImporter::Events
     end
 
     private
+
+    def ticketing
+      ticketing = @event.dig('registration', 'ticketing')
+      ticketing.is_a?(Hash) ? ticketing : {}
+    end
 
     def scheduling_config
       @event.dig('scheduling', 'config') || {}

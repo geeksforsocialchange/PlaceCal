@@ -14,14 +14,18 @@
 #  image                    :string
 #  image_source_url         :string
 #  is_active                :boolean          default(TRUE), not null
+#  price_currency           :string
+#  price_from               :decimal(10, 2)
 #  publisher_url            :string
 #  raw_location_from_source :text
 #  rrule                    :jsonb
+#  sold_out                 :boolean
 #  source_categories        :jsonb
 #  source_organiser         :string
 #  status                   :string           default("scheduled"), not null
 #  summary                  :text             not null
 #  summary_html             :string
+#  ticket_url               :string
 #  uid                      :string
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
@@ -66,6 +70,18 @@ RSpec.describe Event, type: :model do
     it { is_expected.to validate_presence_of(:summary) }
     it { is_expected.to validate_presence_of(:dtstart) }
     it { is_expected.to validate_presence_of(:organiser) }
+    it { is_expected.to validate_numericality_of(:price_from).is_greater_than_or_equal_to(0).allow_nil }
+    it { is_expected.to allow_values("GBP", nil).for(:price_currency) }
+    it { is_expected.not_to allow_values("gbp", "£", "POUNDS").for(:price_currency) }
+  end
+
+  describe "ticket data" do
+    it "stores a price in pounds, a currency and an unknown sold-out state by default" do
+      event = create(:event, ticket_url: "https://example.com/tickets", price_from: "4.5", price_currency: "GBP")
+
+      expect(event.reload).to have_attributes(ticket_url: "https://example.com/tickets", price_from: BigDecimal("4.50"),
+                                              price_currency: "GBP", sold_out: nil)
+    end
   end
 
   describe "paper_trail" do

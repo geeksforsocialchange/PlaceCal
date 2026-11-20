@@ -93,14 +93,18 @@ module EventJsonLd
     }
   end
 
+  # An unknown sold_out is stated as InStock
   def build_json_ld_offers(data)
-    return if publisher_url.blank?
+    url = ticket_url.presence || publisher_url
+    return if url.blank?
 
     data['offers'] = {
       '@type' => 'Offer',
-      'url' => publisher_url,
-      'availability' => 'https://schema.org/InStock'
-    }
+      'url' => url,
+      'availability' => sold_out ? 'https://schema.org/SoldOut' : 'https://schema.org/InStock',
+      'price' => price_from && format('%.2f', price_from),
+      'priceCurrency' => price_currency.presence
+    }.compact
   end
 
   def build_json_ld_event_series(data, event_url)

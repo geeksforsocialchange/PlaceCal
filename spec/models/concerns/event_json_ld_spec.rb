@@ -169,5 +169,43 @@ RSpec.describe EventJsonLd do
         expect(data).not_to have_key("image")
       end
     end
+
+    context "offers" do
+      def offer_for(**attributes)
+        create(:event, publisher_url: "https://example.com/event", **attributes).to_json_ld(base_url:)["offers"]
+      end
+
+      def valid?(offer_data)
+        JSON::Validator.fully_validate(schema, data.merge("offers" => offer_data)).empty?
+      end
+
+      it "gives a priced event's ticket link, price and currency" do
+        offer = offer_for(ticket_url: "https://example.com/tickets", price_from: 4, price_currency: "GBP", sold_out: false)
+
+        expect(offer).to eq("@type" => "Offer", "url" => "https://example.com/tickets", "availability" => "https://schema.org/InStock",
+                            "price" => "4.00", "priceCurrency" => "GBP")
+        expect(valid?(offer)).to be(true)
+      end
+
+      it "gives a free event a price of 0 without needing a currency" do
+        offer = offer_for(price_from: 0)
+
+        expect(offer).to eq("@type" => "Offer", "url" => "https://example.com/event", "availability" => "https://schema.org/InStock",
+                            "price" => "0.00")
+        expect(valid?(offer)).to be(true)
+      end
+
+      it "says SoldOut for a sold-out event" do
+        expect(offer_for(sold_out: true)["availability"]).to eq("https://schema.org/SoldOut")
+      end
+
+      it "is the same as before for an event with no ticket data" do
+        expect(offer_for).to eq("@type" => "Offer", "url" => "https://example.com/event", "availability" => "https://schema.org/InStock")
+      end
+
+      it "is left out for an event with no link" do
+        expect(create(:event, publisher_url: nil, price_from: 4, price_currency: "GBP").to_json_ld(base_url:)).not_to have_key("offers")
+      end
+    end
   end
 end

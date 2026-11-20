@@ -4,7 +4,8 @@ module CalendarImporter::Events
   class ResidentAdvisor < Base
     imports title: 'title', description: 'content', start_time: 'startTime', end_time: 'endTime', repeats: nil,
             location: 'venue.address', webpage: 'contentUrl', online_link: nil, spaces_available: nil, status: 'title',
-            image: nil, source_categories: nil, source_organiser: nil
+            image: nil, source_categories: nil, source_organiser: nil,
+            ticket_url: nil, price: nil, sold_out: nil
 
     # RA marks a cancelled event only in its title, as "[CANCELLED] Name" or "[CANCELLED] - Name"
     CANCELLED_PREFIX = /\A\s*\[cancell?ed\]\s*\p{Pd}?\s*/i

@@ -43,7 +43,7 @@ RSpec.describe "Admin calendar sources", type: :request do
 
       it "has a column for each event field, in the words the admin and event pages use" do
         expect(headings).to eq(["Source", "Title", "Description", "Start", "End", "Repeats", "Event location", "Event webpage",
-                                "Meeting link", "Spaces available", "Cancelled or postponed", "Image", "Source categories",
+                                "Meeting link", "Spaces available", "Ticket link", "Price", "Sold out", "Cancelled or postponed", "Image", "Source categories",
                                 "Source organiser"])
       end
 
@@ -72,6 +72,10 @@ RSpec.describe "Admin calendar sources", type: :request do
         expect(rows["Ticket Solve"]["Event webpage"]).to eq("url")
         expect(rows["Resident Advisor"]["Cancelled or postponed"]).to eq("title")
         expect(rows["TicketSource"]["Image"]).to eq("images.src")
+        expect(rows["Ticket Tailor"]["Ticket link"]).to eq("checkout_url")
+        expect(rows["Wix Events"]["Sold out"]).to eq("registration.ticketing.soldOut")
+        expect(rows["Eventbrite"]["Price"]).to eq("is_free")
+        expect(rows["Ticket Solve"]["Sold out"]).to eq("Not imported")
       end
     end
   end

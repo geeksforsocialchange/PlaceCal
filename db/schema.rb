@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_19_100100) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_19_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -134,6 +134,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_19_100100) do
     t.jsonb "source_categories"
     t.string "source_organiser"
     t.string "status", default: "scheduled", null: false
+    t.string "ticket_url"
+    t.decimal "price_from", precision: 10, scale: 2
+    t.string "price_currency"
+    t.boolean "sold_out"
     t.index ["address_id"], name: "index_events_address_id"
     t.index ["calendar_id", "dtstart"], name: "index_events_calendar_id_dtstart"
     t.index ["calendar_id", "uid", "dtstart", "dtend"], name: "index_events_unique_per_calendar", unique: true, nulls_not_distinct: true
@@ -142,6 +146,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_19_100100) do
     t.index ["organiser_id", "dtstart"], name: "index_events_on_organiser_id_and_dtstart"
     t.index ["place_id"], name: "index_events_on_place_id"
     t.index ["uid"], name: "index_events_uid"
+    t.check_constraint "price_from >= 0::numeric", name: "events_price_from_not_negative"
   end
 
   create_table "import_run_events", force: :cascade do |t|
