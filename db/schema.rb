@@ -146,6 +146,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_19_120000) do
     t.index ["organiser_id", "dtstart"], name: "index_events_on_organiser_id_and_dtstart"
     t.index ["place_id"], name: "index_events_on_place_id"
     t.index ["uid"], name: "index_events_uid"
+    t.check_constraint "price_from >= 0::numeric", name: "events_price_from_not_negative"
   end
 
   create_table "import_run_events", force: :cascade do |t|
