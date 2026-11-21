@@ -11,7 +11,7 @@
 		"leaflet": "1.9.4",
 		"lint-staged": "17.6.0",
 		"playwright": "1.65.1",
-		"prettier": "3.9.10",
+		"prettier": "3.10.1",
 		"tom-select": "2.7.0"
 	},
 	"scripts": {
