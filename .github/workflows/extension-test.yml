@@ -61,7 +61,7 @@ jobs:
       # core's db/schema.rb, so a version behind core turns a core migration
       # into a red build in both theme repos.
       postgres:
-        image: postgres:18
+        image: postgres:19
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
