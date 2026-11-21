@@ -6,7 +6,7 @@
 		"@tailwindcss/cli": "4.3.5"
 	},
 	"devDependencies": {
-		"daisyui": "5.7.50",
+		"daisyui": "5.8.0",
 		"husky": "9.1.7",
 		"leaflet": "1.9.4",
 		"lint-staged": "17.6.0",
