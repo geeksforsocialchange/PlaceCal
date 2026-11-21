@@ -68,6 +68,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_19_120000) do
     t.datetime "checksum_updated_at"
     t.datetime "created_at", precision: nil, null: false
     t.text "critical_error"
+    t.datetime "failure_notified_at"
     t.datetime "feed_empty_since"
     t.bigint "import_job_id"
     t.datetime "import_started_at"

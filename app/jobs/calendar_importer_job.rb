@@ -27,7 +27,7 @@ class CalendarImporterJob < ApplicationJob
   end
 
   rescue_from UnsupportedFeed do |exception|
-    report_error exception, 'Calendar URL is not supported'
+    report_error exception, 'Calendar URL is not supported', notify: true
   end
 
   rescue_from InaccessibleFeed do |exception|
@@ -53,7 +53,7 @@ class CalendarImporterJob < ApplicationJob
   end
 
   rescue_from InvalidResponse do |exception|
-    report_error exception, 'Calendar URL returned un-parsable data'
+    report_error exception, 'Calendar URL returned un-parsable data', notify: true
   end
 
   rescue_from ActiveRecord::ActiveRecordError do |exception|
@@ -89,9 +89,9 @@ class CalendarImporterJob < ApplicationJob
 
   private
 
-  def report_error(exception, message)
+  def report_error(exception, message, notify: false)
     full_message = "#{message} for calendar #{calendar.name} (id #{calendar.id}):  #{exception}"
-    calendar.flag_error_import_job! full_message
+    calendar.flag_error_import_job!(full_message, notify:)
     finish_failed_run 'error', full_message
   end
 

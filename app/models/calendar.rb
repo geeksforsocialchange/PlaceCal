@@ -10,6 +10,7 @@
 #  checksum_updated_at  :datetime
 #  critical_error       :text
 #  default_description  :text
+#  failure_notified_at  :datetime
 #  feed_empty_since     :datetime
 #  import_started_at    :datetime
 #  importer_mode        :string           default("auto")
@@ -299,5 +300,6 @@ class Calendar < ApplicationRecord
     self.last_import_at = nil
     self.last_checksum = nil
     self.feed_empty_since = nil
+    self.failure_notified_at = nil
   end
 end

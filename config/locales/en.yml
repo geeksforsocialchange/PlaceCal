@@ -66,6 +66,16 @@ en:
       hidden_staff_alert:
         subject: "A partner has been hidden from PlaceCal"
         intro: "A partner (%{name}, id: %{id}) has been hidden by an admin user (%{moderator_email}, id: %{moderator_id}). Below is a copy of the email sent to that partner's admins, with the reason given for taking this action."
+    calendar_import:
+      import_failed:
+        subject: "Events from %{calendar} have stopped importing into PlaceCal"
+        intro: "PlaceCal can't import events from %{calendar}, a calendar for %{partner}. New events from it aren't appearing on PlaceCal, and the events already listed may be out of date."
+        reason:
+          bad_source: "PlaceCal couldn't reach or read the calendar's source. The reason it gave was:"
+          error: "Something went wrong while PlaceCal was importing the calendar. The reason it gave was:"
+        retry: "PlaceCal will keep trying to import it. We won't email you about this again unless the calendar starts working and then stops again."
+        link: "Check the calendar in PlaceCal"
+        support_html: "If you need help fixing it, get in touch with %{support}."
 
   join_mailer:
     join_us:
