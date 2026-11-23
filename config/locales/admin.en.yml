@@ -464,7 +464,19 @@ en:
         title: "What each calendar source imports"
         intro: "Each row is a source PlaceCal can import events from. Each cell names the field PlaceCal reads from that source to fill the event field in its column."
         source: "Source"
+        tier: "Tier"
+        any_website: "Any website"
         not_imported: "Not imported"
+        tiers:
+          gold:
+            label: "Gold: open standard"
+            description: "The source publishes its events in standard formats (iCal or schema.org)."
+          silver:
+            label: "Silver: official proprietary format"
+            description: "The platform's official API or feed, in its own proprietary format."
+          bronze:
+            label: "Bronze: unofficial proprietary format"
+            description: "Data the platform doesn't officially publish for reuse, which can change without notice."
         link: "See what each source imports"
         fields:
           title: "Title"

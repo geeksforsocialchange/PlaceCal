@@ -5,6 +5,7 @@ module CalendarImporter
     class Wix < Base
       NAME = 'Wix Events'
       HANDBOOK_PAGE = 'wix'
+      TIER = :bronze
       KEY = 'wix'
       DOMAINS = %w[wixsite.com].freeze
 
