@@ -66,10 +66,8 @@ module CalendarImporter::Parsers
         gcal: %r{^https?://calendar\.google\.com.*},
         outlook: %r{^https?://outlook\.(office365|live)\.com/owa/calendar/.*},
         webcal: %r{^webcal://},
-        mossley: %r{^https?://mossleycommunitycentre\.org\.uk},
         teamup: %r{^https?://ics\.teamup\.com/feed/.*},
         luma: %r{^https://api\.lu\.ma/ics/get\?},
-        consortium: %r{^https://www\.consortium\.lgbt/events/.*},
         generic: %r{^https?://.*\.ics$}
       }
       Regexp.union(allowlists.values)
