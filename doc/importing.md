@@ -91,19 +91,27 @@ Links to stream and social hosts (YouTube, Facebook, Instagram, LinkedIn and the
 
 `PARSERS` in [calendar_importer.rb](../app/jobs/calendar_importer/calendar_importer.rb), in detection order:
 
-| Parser              | Source URL                                                      | Reads                                                       |
-| ------------------- | --------------------------------------------------------------- | ----------------------------------------------------------- |
-| Eventbrite          | `eventbrite.com/o/…`, `eventbrite.co.uk/o/…`                    | The Eventbrite API, with the server-wide `EVENTBRITE_TOKEN` |
-| Generic iCal / .ics | Google Calendar, Outlook, Teamup, Luma, `webcal://`, `*.ics`    | The iCal feed                                               |
-| TicketSource        | `ticketsource.co.uk/<venue>`, `ticketsource.com/<venue>`        | The TicketSource API, with the calendar's API key           |
-| Meetup              | `meetup.com/<group>`                                            | The group's iCal feed                                       |
-| OutSavvy            | `outsavvy.com/organiser/<name>`                                 | Each event page's LD+JSON, found from the organiser page    |
-| Resident Advisor    | `ra.co/promoters/<id>`, `ra.co/clubs/<id>`                      | The ra.co GraphQL API                                       |
-| Squarespace         | `*.squarespace.com`, or a custom domain detected as Squarespace | The page's `?format=json` data                              |
-| Ticket Solve        | `*.ticketsolve.com`                                             | The XML feed                                                |
-| Ticket Tailor       | `tickettailor.com/events/<box office>`                          | The Ticket Tailor API, with the calendar's API key          |
-| Wix Events          | `*.wixsite.com`, or a custom domain detected as Wix             | Event JSON embedded in the page                             |
-| LD+JSON             | Any page                                                        | Schema.org events in the page's LD+JSON                     |
+| Parser              | Source URL                                                      | Reads                                                       | Tier   |
+| ------------------- | --------------------------------------------------------------- | ----------------------------------------------------------- | ------ |
+| Eventbrite          | `eventbrite.com/o/…`, `eventbrite.co.uk/o/…`                    | The Eventbrite API, with the server-wide `EVENTBRITE_TOKEN` | Silver |
+| Generic iCal / .ics | Google Calendar, Outlook, Teamup, Luma, `webcal://`, `*.ics`    | The iCal feed                                               | Gold   |
+| TicketSource        | `ticketsource.co.uk/<venue>`, `ticketsource.com/<venue>`        | The TicketSource API, with the calendar's API key           | Silver |
+| Meetup              | `meetup.com/<group>`                                            | The group's iCal feed                                       | Gold   |
+| OutSavvy            | `outsavvy.com/organiser/<name>`                                 | Each event page's LD+JSON, found from the organiser page    | Gold   |
+| Resident Advisor    | `ra.co/promoters/<id>`, `ra.co/clubs/<id>`                      | The ra.co GraphQL API                                       | Bronze |
+| Squarespace         | `*.squarespace.com`, or a custom domain detected as Squarespace | The page's `?format=json` data                              | Bronze |
+| Ticketsolve         | `*.ticketsolve.com`                                             | The XML feed                                                | Silver |
+| Ticket Tailor       | `tickettailor.com/events/<box office>`                          | The Ticket Tailor API, with the calendar's API key          | Silver |
+| Wix Events          | `*.wixsite.com`, or a custom domain detected as Wix             | Event JSON embedded in the page                             | Bronze |
+| JSON-LD             | Any page                                                        | Schema.org events in the page's LD+JSON                     | Gold   |
+
+Each parser's `TIER` says how open the source's format is:
+
+- **Gold, open standard:** the source publishes its events in standard formats (iCal or schema.org).
+- **Silver, official proprietary format:** the platform's official API or feed, in its own proprietary format.
+- **Bronze, unofficial proprietary format:** data the platform doesn't officially publish for reuse, which can change without notice.
+
+`GET /api/v1/calendar_sources` ([calendar_sources_controller.rb](../app/controllers/calendar_sources_controller.rb)) is the public list of these parsers as JSON: each one's name, domains, handbook page, tier, whether it needs an API key, and the event fields it fills. The handbook builds its table of supported sources from it. The admin's "Calendar sources" page shows the same data.
 
 ### Parser Detection
 
@@ -111,8 +119,8 @@ Links to stream and social hosts (YouTube, Facebook, Instagram, LinkedIn and the
 
 1. A URL matching a parser whose `skips_source_check?` is true (TicketSource, Ticket Tailor, Resident Advisor) uses that parser, without fetching the page.
 2. Otherwise the URL is fetched, and an error status fails the check.
-3. A set `importer_mode` picks the parser with that key. The legacy modes `out-savvy` and `dice-fm` map to LD+JSON.
-4. With `importer_mode` blank or `auto`, the first parser in `PARSERS` whose `handles_url?` matches is used. Squarespace and Wix also fetch the page to detect custom domains. LD+JSON is last because it downloads and parses the page.
+3. A set `importer_mode` picks the parser with that key. The legacy modes `out-savvy` and `dice-fm` map to JSON-LD.
+4. With `importer_mode` blank or `auto`, the first parser in `PARSERS` whose `handles_url?` matches is used. Squarespace and Wix also fetch the page to detect custom domains. JSON-LD is last because it downloads and parses the page.
 5. If nothing matches, the feed is unsupported. There is no fallback to iCal.
 
 ## Source URL Restrictions

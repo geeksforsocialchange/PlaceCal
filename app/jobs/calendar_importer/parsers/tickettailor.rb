@@ -9,6 +9,7 @@ module CalendarImporter
     class Tickettailor < ApiBase
       NAME = 'Ticket Tailor'
       HANDBOOK_PAGE = 'ticket-tailor'
+      TIER = :silver
       TICKETING = true
       KEY = 'tickettailor'
       DOMAINS = %w[www.tickettailor.com tickettailor.com].freeze

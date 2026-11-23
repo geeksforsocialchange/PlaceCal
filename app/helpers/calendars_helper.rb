@@ -42,6 +42,8 @@ module CalendarsHelper
 
   def calendar_import_sources
     parsers = CalendarImporter::CalendarImporter.public_parsers
-    parsers.sort_by { |parser| parser::NAME }.map { |parser| [parser::NAME, parser::DOMAINS] }
+    parsers.sort_by { |parser| parser::NAME }.map do |parser|
+      [parser::NAME, parser::DOMAINS.presence || [t('admin.calendars.sources.any_website')]]
+    end
   end
 end

@@ -42,7 +42,7 @@ RSpec.describe "Admin calendar sources", type: :request do
       end
 
       it "has a column for each event field, in the words the admin and event pages use" do
-        expect(headings).to eq(["Source", "Title", "Description", "Start", "End", "Repeats", "Event location", "Event webpage",
+        expect(headings).to eq(["Source", "Tier", "Title", "Description", "Start", "End", "Repeats", "Event location", "Event webpage",
                                 "Meeting link", "Spaces available", "Ticket link", "Price", "Sold out", "Cancelled or postponed", "Image", "Source categories",
                                 "Source organiser"])
       end
@@ -57,6 +57,18 @@ RSpec.describe "Admin calendar sources", type: :request do
         expect(links["Ticket Tailor"]).to eq("https://handbook.placecal.org/reference/supported-calendar-sources/ticket-tailor")
       end
 
+      it "gives each source its tier, with what the tiers mean under the table", :aggregate_failures do
+        expect(rows["Meetup"]["Tier"]).to eq("Gold: open standard")
+        expect(rows["Eventbrite"]["Tier"]).to eq("Silver: official proprietary format")
+        expect(rows["Wix Events"]["Tier"]).to eq("Bronze: unofficial proprietary format")
+        expect(page.css("dl dt").map { |term| term.text.strip }).to eq(["Gold: open standard", "Silver: official proprietary format",
+                                                                        "Bronze: unofficial proprietary format"])
+      end
+
+      it "says JSON-LD reads any website" do
+        expect(page.css("tbody tr").find { |row| row.at_css("th div").text.strip == "JSON-LD" }.css("th div").last.text).to eq("Any website")
+      end
+
       it "is linked from the admin menu" do
         expect(Nokogiri::HTML(response.body).at_css("nav a[href='#{sources_admin_calendars_path}']")).to be_present
       end
@@ -64,18 +76,18 @@ RSpec.describe "Admin calendar sources", type: :request do
       it "fills each cell from the source's event class", :aggregate_failures do
         expect(rows["Meetup"]).to eq(rows["Generic iCal / .ics"])
         expect(rows["Generic iCal / .ics"]["Title"]).to eq("SUMMARY")
-        expect(rows["Ticket Solve"]["Spaces available"]).to eq("status")
-        expect(rows["Ticket Solve"]["End"]).to eq("Not imported")
+        expect(rows["Ticketsolve"]["Spaces available"]).to eq("status")
+        expect(rows["Ticketsolve"]["End"]).to eq("Not imported")
         expect(rows["OutSavvy"]["Cancelled or postponed"]).to eq("eventStatus")
         expect(rows["Wix Events"]["Image"]).to eq("mainImage.url")
         expect(rows["Wix Events"]["Source organiser"]).to eq("Not imported")
-        expect(rows["Ticket Solve"]["Event webpage"]).to eq("url")
+        expect(rows["Ticketsolve"]["Event webpage"]).to eq("url")
         expect(rows["Resident Advisor"]["Cancelled or postponed"]).to eq("title")
         expect(rows["TicketSource"]["Image"]).to eq("images.src")
         expect(rows["Ticket Tailor"]["Ticket link"]).to eq("checkout_url")
         expect(rows["Wix Events"]["Sold out"]).to eq("registration.ticketing.soldOut")
         expect(rows["Eventbrite"]["Price"]).to eq("is_free")
-        expect(rows["Ticket Solve"]["Sold out"]).to eq("Not imported")
+        expect(rows["Ticketsolve"]["Sold out"]).to eq("Not imported")
       end
     end
   end

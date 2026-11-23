@@ -6,8 +6,9 @@
 
 module CalendarImporter::Parsers
   class Ticketsolve < Xml
-    NAME = 'Ticket Solve'
+    NAME = 'Ticketsolve'
     HANDBOOK_PAGE = 'ticketsolve'
+    TIER = :silver
     TICKETING = true
     KEY = 'ticket-solve'
     DOMAINS = %w[*.ticketsolve.com].freeze
