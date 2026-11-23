@@ -6,6 +6,24 @@ RSpec.describe CalendarImporter::Parsers::Ics do
   let(:blank_calendar) { Calendar.new }
   let(:parser) { described_class.new(blank_calendar) }
 
+  describe ".handles_url?" do
+    def handles?(source) = described_class.handles_url?(Calendar.new(source:)).present?
+
+    it "recognises the calendar services and any address ending in .ics", :aggregate_failures do
+      expect(handles?("https://calendar.google.com/calendar/ical/abc/public/basic.ics")).to be(true)
+      expect(handles?("https://outlook.office365.com/owa/calendar/abc/calendar.ics")).to be(true)
+      expect(handles?("webcal://example.org/feed")).to be(true)
+      expect(handles?("https://ics.teamup.com/feed/abc/0.ics")).to be(true)
+      expect(handles?("https://api.lu.ma/ics/get?entity=calendar&id=cal-abc")).to be(true)
+      expect(handles?("http://mossleycommunitycentre.org.uk/events.ics")).to be(true)
+    end
+
+    it "leaves other pages to the other importers", :aggregate_failures do
+      expect(handles?("https://mossleycommunitycentre.org.uk/whats-on")).to be(false)
+      expect(handles?("https://www.consortium.lgbt/events/")).to be(false)
+    end
+  end
+
   describe "#parse_remote_calendars" do
     it "parses ICS" do
       ics_data = file_fixture("family-action-org-uk.ics").read
