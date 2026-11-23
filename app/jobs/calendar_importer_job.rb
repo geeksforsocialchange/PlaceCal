@@ -34,6 +34,12 @@ class CalendarImporterJob < ApplicationJob
     report_bad_source_error exception.message
   end
 
+  # Declared above the network handler so Net:: timeouts, which subclass Timeout::Error, still match that one first
+  rescue_from Timeout::Error do |exception|
+    Rails.logger.warn("Import stopped for calendar #{@calendar_id}: #{exception.class} (#{exception.message})")
+    report_bad_source_error I18n.t('admin.calendars.wizard.source.too_slow', minutes: MAX_RUN_TIME.in_minutes.to_i)
+  end
+
   # Network timeouts and TLS failures are expected when scraping third-party
   # feeds that are slow or temporarily down. Treat them as an unreachable
   # source instead of letting them surface as unhandled exceptions (see issue
