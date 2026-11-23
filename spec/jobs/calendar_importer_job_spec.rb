@@ -88,6 +88,28 @@ RSpec.describe CalendarImporterJob do
       end
     end
 
+    context "when the import runs past MAX_RUN_TIME" do
+      before do
+        task = instance_double(CalendarImporter::CalendarImporterTask)
+        allow(CalendarImporter::CalendarImporterTask).to receive(:new).and_return(task)
+        allow(task).to receive(:run).and_raise(Timeout::Error, "execution expired")
+      end
+
+      it "does not raise and marks the source as too slow" do
+        expect { perform_import }.not_to raise_error
+
+        expect(calendar.reload.calendar_state).to eq("bad_source")
+        expect(calendar.critical_error)
+          .to eq(I18n.t("admin.calendars.wizard.source.too_slow", minutes: 2))
+      end
+
+      it "records the run as failed" do
+        perform_import
+
+        expect(calendar.import_runs.last).to have_attributes(outcome: "bad_source")
+      end
+    end
+
     context "when the Eventbrite parser's RestClient fetch times out" do
       # Eventbrite imports via RestClient (EventbriteSDK), not read_http_source,
       # so its timeouts are RestClient::Exceptions::ReadTimeout — not Net:: errors
