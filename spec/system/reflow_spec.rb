@@ -42,9 +42,11 @@ RSpec.describe "Reflow at 320px", :slow, type: :system do
     expect(page_width).to be <= 320
   end
 
-  context "with long social link addresses" do
+  context "with long contact addresses" do
     before do
-      riverside_hub.update!(social_links: ["https://www.facebook.com/profile.php?id=100064123456789012",
+      riverside_hub.update!(public_email: "shanelle_wintheiser_newsletters@riverside-community-hub.example",
+                            url: "https://www.riverside-community-hub.example.org/whats-on/this-week",
+                            social_links: ["https://www.facebook.com/profile.php?id=100064123456789012",
                                            "https://newsletters.riverside-community-hub.example.org/subscribe/weekly-digest"])
     end
 

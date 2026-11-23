@@ -11,6 +11,9 @@ class Components::Shared::ContactDetails < Components::Base
               variants: { item: %i[phone email website social] },
               tokens: %i[--color-foreground --color-primary]
 
+  # Addresses have no spaces to break at, so they must wrap anywhere to fit 320px
+  ADDRESS_LINK = 'min-w-0 wrap-anywhere'
+
   prop :partner, ::Partner
   prop :email, _Nilable(String), default: nil
   prop :phone, _Nilable(String), default: nil
@@ -107,7 +110,7 @@ class Components::Shared::ContactDetails < Components::Base
 
     span(**part(:item, variant: :email, class: 'contents')) do
       raw(view_context.icon(:contact_email, size: '4', css_class: 'mt-1'))
-      mail_to(@email, @email, target: '_blank')
+      mail_to(@email, @email, target: '_blank', class: ADDRESS_LINK)
     end
   end
 
@@ -116,7 +119,7 @@ class Components::Shared::ContactDetails < Components::Base
 
     span(**part(:item, variant: :website, class: 'contents')) do
       raw(view_context.icon(:contact_website, size: '4', css_class: 'mt-1'))
-      link_to(strip_url(@url), @url, target: '_blank', rel: 'noopener')
+      link_to(strip_url(@url), @url, target: '_blank', rel: 'noopener', class: ADDRESS_LINK)
     end
   end
 
@@ -126,8 +129,7 @@ class Components::Shared::ContactDetails < Components::Base
       if @social_labels == :network
         link_to(link.name, link.url, title: link.label, target: '_blank', rel: 'noopener')
       else
-        # A handle-less label is a whole address, which must wrap at 320px
-        a(href: link.url, target: '_blank', rel: 'noopener', class: 'min-w-0 wrap-anywhere') do
+        a(href: link.url, target: '_blank', rel: 'noopener', class: ADDRESS_LINK) do
           plain link.label
           network = network_for(link)
           network_name(network) if network
