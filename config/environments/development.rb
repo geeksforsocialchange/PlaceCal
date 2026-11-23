@@ -50,6 +50,7 @@ Rails.application.configure do
   config.active_storage.service = :local
 
   config.action_mailer.default_url_options = routes.default_url_options
+  config.action_mailer.preview_paths = [Rails.root.join('spec/mailers/previews').to_s]
 
   asset_url = routes.default_url_options[:protocol]
   asset_url += "://#{routes.default_url_options[:host]}"

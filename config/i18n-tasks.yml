@@ -60,3 +60,4 @@ ignore_unused:
   - "directory.pages.mcp.*"
   # OG card services resolve keys through a scoped `t` helper (scope: 'og_image').
   - "og_image.*"
+  - "mailers.calendar_import.import_failed.reason.*" # reason.#{state} in the import failed mail
