@@ -11,6 +11,9 @@ module CalendarImporter::Parsers
     PUBLIC = true
     # A ticketing platform, whose event pages are where people book
     TICKETING = false
+    # How open the source's format is: one of TIERS
+    TIER = nil
+    TIERS = %i[gold silver bronze].freeze
     NAME = ''
     # The source's page under HANDBOOK_SOURCES_URL
     HANDBOOK_PAGE = nil
@@ -37,6 +40,16 @@ module CalendarImporter::Parsers
 
     def self.requires_api_token?
       false
+    end
+
+    # @return [Hash] this source's entry in the public sources list
+    def self.as_source
+      field_map = event_class.field_map
+      {
+        key: self::KEY, name: self::NAME, domains: self::DOMAINS, handbook_page: self::HANDBOOK_PAGE,
+        tier: self::TIER, ticketing: self::TICKETING, requires_api_token: requires_api_token?,
+        imports: CalendarImporter::Events::Base::FIELDS.keys.select { |field| field_map[field].present? }
+      }
     end
 
     # @return [Class] the CalendarImporter::Events class this parser builds its events from

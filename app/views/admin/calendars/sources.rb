@@ -16,16 +16,30 @@ class Views::Admin::Calendars::Sources < Views::Admin::Base
           thead do
             tr do
               th(scope: 'col') { t('admin.calendars.sources.source') }
+              th(scope: 'col') { t('admin.calendars.sources.tier') }
               fields.each { |field| th(scope: 'col') { t("admin.calendars.sources.fields.#{field}") } }
             end
           end
           tbody { parsers.each { |parser| render_row(parser) } }
         end
       end
+      render_tiers
     end
   end
 
   private
+
+  def render_tiers
+    dl(class: 'px-6 py-5 border-t border-gray-200 text-sm text-gray-600 space-y-1') do
+      CalendarImporter::Parsers::Base::TIERS.each do |tier|
+        div do
+          dt(class: 'inline font-medium text-gray-900') { t("admin.calendars.sources.tiers.#{tier}.label") }
+          whitespace
+          dd(class: 'inline') { t("admin.calendars.sources.tiers.#{tier}.description") }
+        end
+      end
+    end
+  end
 
   def fields = CalendarImporter::Events::Base::FIELDS.keys
 
@@ -40,8 +54,9 @@ class Views::Admin::Calendars::Sources < Views::Admin::Base
             plain parser::NAME
           end
         end
-        div(class: 'text-xs font-normal text-gray-600') { parser::DOMAINS.join(', ') }
+        div(class: 'text-xs font-normal text-gray-600') { parser::DOMAINS.presence&.join(', ') || t('admin.calendars.sources.any_website') }
       end
+      td(class: 'whitespace-nowrap') { t("admin.calendars.sources.tiers.#{parser::TIER}.label") }
       fields.each { |field| td { render_cell(field_map[field]) } }
     end
   end

@@ -8,6 +8,7 @@ module CalendarImporter
     class Ticketsource < ApiBase
       NAME = 'TicketSource'
       HANDBOOK_PAGE = 'ticketsource'
+      TIER = :silver
       TICKETING = true
       KEY = 'ticketsource'
       DOMAINS = %w[www.ticketsource.co.uk ticketsource.co.uk www.ticketsource.com ticketsource.com].freeze

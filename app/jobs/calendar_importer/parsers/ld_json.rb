@@ -2,11 +2,12 @@
 
 module CalendarImporter::Parsers
   class LdJson < Base
-    NAME = 'LD+JSON'
+    NAME = 'JSON-LD'
     HANDBOOK_PAGE = 'json-ld-generic'
+    TIER = :gold
     KEY = 'ld-json'
 
-    DOMAINS = ['various'].freeze
+    DOMAINS = [].freeze
 
     def self.event_class = CalendarImporter::Events::LinkedDataEvent
 
