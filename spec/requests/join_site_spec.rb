@@ -138,6 +138,27 @@ RSpec.describe "Join marketing site", type: :request do
       expect(response.body.scan("<h1").size).to eq(1)
     end
 
+    describe "the homepage" do
+      let(:page) do
+        get "http://join.lvh.me/"
+        Nokogiri::HTML(response.body)
+      end
+
+      it "names both packages and links to pricing" do
+        expect(page.text).to include(I18n.t("join.pricing.packages.you_run.name"), I18n.t("join.pricing.packages.we_run.name"))
+        expect(page.css("a[href='/pricing']").map { |a| a.text.squish }).to include(I18n.t("join.home.plan.see_pricing"))
+      end
+
+      it "shows no prices" do
+        expect(page.text).not_to include("£")
+      end
+
+      it "labels the 6,000+ tile as conversations" do
+        value = page.xpath("//div[normalize-space(text())='#{I18n.t('join.home.stats.conversations_value')}']").first
+        expect(value.parent.text).to include(I18n.t("join.home.stats.conversations"))
+      end
+    end
+
     it "keeps acronyms in the audience kicker" do
       get "http://join.lvh.me/who-its-for/vcses"
       expect(response.body).to include(I18n.t("join.audiences.for_kicker", audience: I18n.t("join.audiences.vcses.title")))

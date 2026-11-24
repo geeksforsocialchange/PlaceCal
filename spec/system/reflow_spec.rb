@@ -23,6 +23,7 @@ RSpec.describe "Reflow at 320px", :slow, type: :system do
     "the directory partnerships listing" => -> { public_url("/partnerships") },
     "our story" => -> { public_url("/our-story") },
     "the get in touch form" => -> { public_url("/get-in-touch") },
+    "the join homepage" => -> { join_url("/") },
     "the join pricing page" => -> { join_url("/pricing") },
     "the book a demo form" => -> { join_url("/book-a-demo") },
     "a site's partners listing" => -> { "http://riverside.lvh.me:#{Capybara.current_session.server.port}/partners" }

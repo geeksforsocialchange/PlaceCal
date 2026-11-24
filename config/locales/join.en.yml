@@ -41,39 +41,57 @@ en:
       terms_of_use: Terms of use
       placecal_logo_alt: PlaceCal
     home:
-      title: Run PlaceCal in your community
-      description: PlaceCal is a not-for-profit, co-owned calendar platform for neighbourhoods. Set it up in your community.
+      title: Every community calendar in one place
+      description: PlaceCal brings every local group's events into one open listing, so people find what's on near them without Big Tech. Not-for-profit and co-owned by the partnerships that use it.
       hero:
         kicker: A calendar co-op for your community
-        title: Set up PlaceCal in your community.
-        intro: PlaceCal is a not-for-profit, co-owned calendar platform for neighbourhoods. We help councils, housing associations, community organisations, and cultural venues build one shared system for everything happening near them.
+        title: Every community calendar in one place.
+        intro: PlaceCal brings every local group's events into one open listing, so people find what's on near them without Big Tech. We help councils, housing associations, community organisations and cultural venues set one up for their area.
         cta_demo: Book a demo
         cta_how: How it works
-      stats:
-        partnerships: Partnerships live
-        partners: Community partners
-        events: Events this month
-        residents: Residents spoken to
-        residents_value: 6,000+
-      audiences:
-        kicker: Who it's for
-        heading: PlaceCal works differently for different people.
-        lede: Pick the one that describes you. Each has its own pitch, case study, and next step.
-      why:
-        kicker: Why PlaceCal
-        heading: Three big problems. One shared fix.
-        intro: "We spent years talking to over 6,000 people in Manchester about why community information was so hard to find. The answers were always the same:"
-        problems:
+      problem:
+        heading: Finding out what's happening on your street should be easy. It isn't.
+        paragraphs:
+          - Every neighbourhood has organisers who hold it together, running parents' groups, sewing circles and soup kitchens. But their information is scattered across Facebook, Instagram, WhatsApp, Nextdoor and posters, so many neighbours never hear about it.
+          - These centralised platforms are built to keep people scrolling in their bubble, not to help neighbours find each other. If you're older, new to an area, disabled, or don't read the language, it can be impossible to find out. Events run half-empty, and organisers give up.
+        research_intro: "We had over 6,000 conversations with older people in Manchester about why community information was so hard to find. The answers were always the same:"
+        findings:
           - Every institution builds their own directory, and none of them stay up to date
           - Community groups don't have time to maintain six different listings
           - Nobody trains anyone how to do any of this
         cta: Read our story
+      why_us:
+        heading: You're already doing the work. It just shouldn't be this hard for people to find out about it.
+        paragraphs:
+          - You know your neighbourhood and the groups in it. We know how to get all of them onto one calendar, because we've done it before, starting with age-friendly work on isolation in Hulme and Moss Side.
+          - Most platforms launch everywhere and reach already digitally-included early adopters. We do the opposite. We go neighbourhood by neighbourhood, and we'll help you get 100% of your community's information listed.
+          - PlaceCal is not-for-profit and co-owned by the partnerships that use it.
         quote: "“PlaceCal lets us focus on organising collaborative festivals across venues, rather than struggling to find out what's on.”"
         quote_by: Community partnership coordinator, Hulme
+      stats:
+        partnerships: Partnerships live
+        partners: Community partners
+        events: Events this month
+        conversations: Conversations
+        conversations_value: 6,000+
+      plan:
+        heading: Keep using the calendar you already have. PlaceCal does the rest.
+        paragraphs:
+          - "Three steps: find your local groups, link your calendars, share one listing for the whole neighbourhood."
+          - PlaceCal is designed to work with whichever tools groups already use, without stigmatising them or forcing anyone to change. We start with what is already there. Each source is rated gold, silver or bronze for openness, which gives you a way to talk with your groups about improving it when they're ready. The result is a decentralised network of event feeds, owned by the groups themselves.
+        ways_heading: Two ways to run it
+        see_pricing: See pricing
+      audiences:
+        kicker: Who it's for
+        heading: PlaceCal works differently for different people.
+        lede: Pick the one that describes you. Each has its own pitch, case study, and next step.
       features:
         kicker: What you get
         heading: Everything a hyperlocal calendar needs.
         see_all: See all features
+      purpose:
+        heading: Full rooms, fewer burned-out organisers, and nobody left out.
+        body: "This is community infrastructure: an accessible, not-for-profit, open record of everything happening, owned by the neighbourhood. When local groups are connected, a community can respond to a crisis in days, not months."
       cta:
         heading: Let's talk about your community.
         body: A 30-minute call. We listen, learn what you're trying to do, and tell you honestly whether PlaceCal is the right fit.
