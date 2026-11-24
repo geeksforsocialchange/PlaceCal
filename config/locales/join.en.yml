@@ -59,7 +59,7 @@ en:
         cta: Read our story
       approach:
         kicker: Our approach
-        heading: It shouldn't be this hard for people to find out about it.
+        heading: You're already doing the work. It shouldn't be this hard for people to find out about it.
         paragraphs:
           - You know your neighbourhood and the groups in it. We know how to get all of them onto one calendar, because we've done it before, starting with age-friendly work on isolation in Hulme and Moss Side.
           - Most platforms launch everywhere and reach already digitally-included early adopters. We do the opposite. We go neighbourhood by neighbourhood, and we'll help you get 100% of your community's information listed.
@@ -414,7 +414,6 @@ en:
         translation:
           title: Translation
           body: We can translate PlaceCal into other languages. We are looking for international partners, so get in touch if you want to bring it to your country.
-        cta: Talk to us
       faq:
         heading: FAQs
         items:

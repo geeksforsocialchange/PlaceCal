@@ -46,7 +46,7 @@ class Views::Join::Pricing < Views::Join::Base
     scope = "join.pricing.packages.#{key}"
     UI::Card(tag: :article, variant: :cream, padding: :xl) do
       UI::Stack(gap: :sm_md) do
-        UI::Kicker(as: :h2, tone: :accent) { t("#{scope}.name") }
+        UI::Heading(size: :section, tone: :strong, spacing: :none) { t("#{scope}.name") }
         UI::Cluster(gap: :xl, row_gap: :xs, align: :baseline) do
           price(t("#{scope}.setup_price"), t('join.pricing.setup'))
           price(t("#{scope}.monthly_price"), t('join.pricing.monthly'))
@@ -66,7 +66,7 @@ class Views::Join::Pricing < Views::Join::Base
   end
 
   def price(amount, label)
-    p(class: 'm-0 font-serif text-stat leading-tight text-foreground-dark') do
+    p(class: 'm-0 font-serif text-subhead leading-tight text-foreground-dark') do
       plain amount
       whitespace
       span(class: 'font-sans font-bold text-detail text-foreground') { label }
@@ -115,7 +115,6 @@ class Views::Join::Pricing < Views::Join::Base
         Join::Columns(align: :stretch) do |c|
           EXTRAS.each { |key, icon_name| c.column(6, fill: true) { render_extra(key, icon_name) } }
         end
-        div { UI::Button(variant: :ink_outline, href: join_demo_path) { t('join.pricing.extras.cta') } }
       end
     end
   end
