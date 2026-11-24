@@ -137,7 +137,7 @@ class Views::Directory::OurStory < Views::Base
       narrow('text-center') do
         UI::Stack(gap: :lg) do
           UI::Stack(gap: :md, align: :center) do
-            UI::Heading(size: :display, balance: true) { t("#{T}.turning.heading") }
+            UI::Heading(size: :section, balance: true) { t("#{T}.turning.heading") }
             # --color-foreground-dark (the design's text-on-colour brown) clears WCAG AA on the pink panel; the prior opacity-85 brown did not.
             UI::Text(tone: :strong, measure: :prose) { t("#{T}.turning.body") }
           end
@@ -152,7 +152,7 @@ class Views::Directory::OurStory < Views::Base
       narrow do
         UI::Card(variant: :highlight, padding: :xl) do
           UI::Cluster(gap: :lg, justify: :between) do
-            UI::Heading(size: :display, tone: :inherit, spacing: :none) { t("#{T}.cta.heading") }
+            UI::Heading(size: :section, tone: :inherit, spacing: :none) { t("#{T}.cta.heading") }
             UI::Button(variant: :light, size: :lg, href: @cta_path || get_in_touch_path) do
               plain @cta_label || t("#{T}.cta.button")
               span(aria_hidden: 'true') { safe('→') }

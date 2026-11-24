@@ -31,7 +31,7 @@ class Views::Join::Base < Views::Base
       div(class: 'max-w-(--width-prose-md) mx-auto text-center') do
         UI::Stack(gap: :md, align: :center) do
           UI::Kicker { kicker } if kicker
-          UI::Heading(size: :display, tone: :inherit, balance: true) { heading }
+          UI::Heading(size: :section, tone: :inherit, balance: true) { heading }
           UI::Text { body }
           UI::Button(variant: :ink, size: :lg, href: join_demo_path) { t('join.cta.button') }
         end
@@ -40,7 +40,7 @@ class Views::Join::Base < Views::Base
   end
 
   # A section's optional all-caps label over its serif heading. on_band takes the band's ink.
-  def section_heading(heading, kicker: nil, on_band: false, size: :display)
+  def section_heading(heading, kicker: nil, on_band: false, size: :section)
     UI::Kicker(tone: on_band ? :inherit : :accent) { kicker } if kicker
     UI::Heading(size:, tone: on_band ? :inherit : :strong, balance: true) { heading }
   end
