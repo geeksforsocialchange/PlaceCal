@@ -11,7 +11,7 @@ class Views::Join::Home < Views::Join::Base
     render_audiences
     render_why
     render_features
-    render_cta
+    render_cta(heading: t('join.home.cta.heading'), body: t('join.home.cta.body'), button: t('join.home.cta.button'))
   end
 
   private
@@ -117,16 +117,6 @@ class Views::Join::Home < Views::Join::Base
             span { safe(' &rarr;') }
           end
         end
-      end
-    end
-  end
-
-  def render_cta
-    section(class: 'py-12 bg-secondary') do
-      div(class: 'container-narrow text-center') do
-        UI::Heading(size: :title, tone: :strong, spacing: :md) { t('join.home.cta.heading') }
-        UI::Text(tone: :strong, spacing: :lg) { t('join.home.cta.body') }
-        UI::Button(variant: :dark, href: join_demo_path) { t('join.home.cta.button') }
       end
     end
   end

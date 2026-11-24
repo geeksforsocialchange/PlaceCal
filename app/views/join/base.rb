@@ -23,6 +23,16 @@ class Views::Join::Base < Views::Base
     end
   end
 
+  def render_cta(heading:, body:, button:)
+    section(class: 'py-12 bg-secondary') do
+      div(class: 'container-narrow text-center') do
+        UI::Heading(size: :title, tone: :strong, spacing: :md) { heading }
+        UI::Text(tone: :strong, spacing: :lg) { body }
+        UI::Button(variant: :dark, href: join_demo_path) { button }
+      end
+    end
+  end
+
   def section_intro(kicker:, heading:, lede: nil, center: false)
     div(class: "mb-7 #{'text-center' if center}") do
       UI::Kicker(tone: :muted, spacing: :xs) { kicker }

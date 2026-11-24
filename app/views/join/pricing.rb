@@ -1,26 +1,19 @@
 # frozen_string_literal: true
 
-# Table on wide screens, stacked cards under 900px. No JavaScript.
 class Views::Join::Pricing < Views::Join::Base
-  TIER_KEYS = %i[community organisation institution].freeze
-
-  # Same illustrations the rollout steps use on the old Our Story page.
-  ROLLOUT_ART = %w[
-    home/our_story/training.png
-    home/our_story/not_together.png
-    home/our_story/use_existing_tools.png
-    home/our_story/current_software.png
-  ].freeze
+  PACKAGE_KEYS = %i[you_run we_run].freeze
 
   def view_template
     content_for(:title) { t('join.pricing.title') }
     content_for(:description) { t('join.pricing.description') }
 
     render_hero
-    render_tiers
+    render_packages
+    render_compare
+    render_includes
     render_extras
-    render_rollout
     render_faq
+    render_cta(heading: t('join.pricing.cta.heading'), body: t('join.pricing.cta.body'), button: t('join.home.cta.button'))
   end
 
   private
@@ -33,6 +26,7 @@ class Views::Join::Pricing < Views::Join::Base
           UI::Stack(gap: :sm) do
             UI::Kicker(tone: :strong) { t('join.pricing.eyebrow') }
             h1(class: 'join-headline') { t('join.pricing.title') }
+            UI::Text(tone: :strong, measure: :prose) { t('join.pricing.lede') }
           end
           image_tag('home/our_story/collective_ownership.png', alt: '',
                                                                class: 'hidden md:block shrink-0 w-36 xl:w-48 h-auto')
@@ -41,84 +35,73 @@ class Views::Join::Pricing < Views::Join::Base
     end
   end
 
-  def render_tiers
+  def render_packages
     section(class: 'py-10') do
       div(class: 'container-public') do
-        UI::Stack(gap: :lg) do
-          render_compare_table
-          render_tier_cards
-          render_starter_strip
-          div(class: 'text-center') do
-            UI::Button(variant: :join, size: :lg, href: join_demo_path) { t('join.pricing.cta') }
+        UI::Stack(gap: :md) do
+          UI::Grid(cols: { md: 2 }) do
+            PACKAGE_KEYS.each { |key| render_package(key) }
           end
+          UI::Text(variant: :lede, tone: :muted) { t('join.pricing.packages.note') }
         end
       end
     end
   end
 
-  # Hidden under 900px so it never squishes: the cards take over there.
-  def render_compare_table
-    div(class: 'hidden lg:block') do
-      table(class: 'w-full border-collapse table-fixed') do
-        caption(class: 'sr-only') { t('join.pricing.table.caption') }
-        colgroup do
-          col(class: 'w-1/4')
-          TIER_KEYS.each { col }
-        end
-        # The tier details sit in their own row, so a cell's column header is just the tier name
-        thead do
-          tr do
-            td
-            TIER_KEYS.each { |tier| render_tier_column_header(tier) }
-          end
-          tr do
-            td
-            TIER_KEYS.each { |tier| render_tier_details(tier) }
-          end
-        end
-        tbody { t('join.pricing.rows').each { |row| render_compare_row(row) } }
-        tbody do
-          tr do
-            th(scope: 'rowgroup', colspan: 4, class: 'text-left px-4 pt-6 pb-2 border-b-2 border-rules') do
-              UI::Kicker(tone: :accent) { t('join.pricing.table.support_heading') }
+  def render_package(key)
+    UI::Card(tag: :article, padding: :lg) do
+      UI::Stack(gap: :sm) do
+        UI::Heading(size: :card) { t("join.pricing.packages.#{key}.name") }
+        p(class: 'font-serif text-2xl leading-tight text-foreground') { t("join.pricing.packages.#{key}.price") }
+        UI::Text(tone: :foreground) { t("join.pricing.packages.#{key}.who") }
+        UI::Text(tone: :muted) { t("join.pricing.packages.#{key}.what") }
+      end
+    end
+  end
+
+  # Two value columns fit a phone, so the table stays a table at every width.
+  def render_compare
+    section(class: 'py-10 bg-cream') do
+      div(class: 'container-public') do
+        UI::Stack(gap: :md) do
+          UI::Heading() { t('join.pricing.compare.heading') }
+          div(class: 'max-w-(--width-prose-lg)') do
+            table(class: 'w-full border-collapse table-fixed') do
+              caption(class: 'sr-only') { t('join.pricing.compare.caption') }
+              colgroup do
+                col(class: 'w-2/5')
+                PACKAGE_KEYS.each { col }
+              end
+              thead do
+                tr do
+                  td(class: 'border-b-2 border-foreground')
+                  PACKAGE_KEYS.each { |key| render_package_column_header(key) }
+                end
+              end
+              tbody { t('join.pricing.compare.rows').each { |row| render_compare_row(row) } }
             end
           end
-          t('join.pricing.support_rows').each { |row| render_compare_row(row) }
         end
       end
     end
   end
 
-  def render_tier_column_header(tier)
-    th(scope: 'col', class: 'text-left align-top px-4') do
-      UI::Kicker(tone: :accent) { t("join.pricing.tiers.#{tier}.name") }
-    end
-  end
-
-  def render_tier_details(tier)
-    td(class: 'align-top px-4 pb-4 border-b-2 border-foreground font-bold') do
-      p(class: 'font-serif text-base leading-tight text-foreground mt-2 mb-2.5 min-h-two-lines') do
-        t("join.pricing.tiers.#{tier}.who")
-      end
-      div(class: 'font-serif text-stat leading-none text-foreground whitespace-nowrap') do
-        span(class: 'text-detail text-tertiary') { "#{t('join.pricing.from')} " } if tier_from?(tier)
-        plain t("join.pricing.tiers.#{tier}.price")
-        span(class: 'text-detail text-tertiary') { t('join.pricing.per_month') }
-      end
-      div(class: 'text-sm text-tertiary mt-2 whitespace-nowrap') { t("join.pricing.tiers.#{tier}.setup") }
+  def render_package_column_header(key)
+    th(scope: 'col', class: 'text-left align-bottom px-2 md:px-4 pb-3 border-b-2 border-foreground') do
+      UI::Kicker(tone: :accent) { t("join.pricing.packages.#{key}.name") }
     end
   end
 
   def render_compare_row(row)
     tr do
-      th(scope: 'row', class: 'text-left align-top font-bold text-foreground text-base px-4 py-3.5 border-b border-rules') do
+      th(scope: 'row', class: 'text-left align-top font-bold text-foreground text-base px-2 md:px-4 py-3.5 border-b border-rules') do
         row[:label]
       end
       row[:values].each do |value|
-        td(class: 'align-top px-4 py-3.5 border-b border-rules text-base leading-normal') do
+        td(class: 'align-top px-2 md:px-4 py-3.5 border-b border-rules text-base leading-normal') do
           case value
           when true then included_mark
-          when false then excluded_mark
+          when nil then span(class: 'sr-only') { t('join.pricing.compare.not_included') }
           else plain value
           end
         end
@@ -127,72 +110,23 @@ class Views::Join::Pricing < Views::Join::Base
   end
 
   def included_mark
-    tick
-    span(class: 'sr-only') { t('join.pricing.table.included') }
-  end
-
-  def excluded_mark
-    span(class: 'text-rules text-md', aria_hidden: 'true') { '–' }
-    span(class: 'sr-only') { t('join.pricing.table.not_included') }
-  end
-
-  def tick(size: 20)
-    svg(width: size.to_s, height: size.to_s, viewBox: '0 0 24 24', fill: 'none',
+    svg(width: '20', height: '20', viewBox: '0 0 24 24', fill: 'none',
         stroke: 'currentColor', stroke_width: '2.5', stroke_linecap: 'round', stroke_linejoin: 'round',
         class: 'inline-flex shrink-0 text-secondary-deep', aria_hidden: 'true') do |s|
       s.polyline(points: '20 6 9 17 4 12')
     end
+    span(class: 'sr-only') { t('join.pricing.compare.included') }
   end
 
-  # Mobile (<900px): one stacked card per paid tier. No buttons on cards.
-  def render_tier_cards
-    div(class: 'grid gap-4 lg:hidden') do
-      TIER_KEYS.each { |tier| render_tier_card(tier) }
-    end
-  end
-
-  def render_tier_card(tier)
-    UI::Card(tag: :article, padding: :lg) do
-      UI::Stack(gap: :md) do
-        UI::Stack(gap: :sm) do
-          UI::Kicker(tone: :accent) { t("join.pricing.tiers.#{tier}.name") }
-          p(class: 'font-serif text-lg leading-snug text-foreground') { t("join.pricing.tiers.#{tier}.who_card") }
-          div(class: 'font-serif text-3xl leading-none text-foreground') do
-            span(class: 'block text-detail text-tertiary mb-0.5') { t('join.pricing.from') } if tier_from?(tier)
-            plain t("join.pricing.tiers.#{tier}.price")
-            span(class: 'text-detail text-tertiary') { " #{t('join.pricing.per_month')}" }
-          end
-          div(class: 'text-sm text-tertiary pb-4 border-b-2 border-rules') { t("join.pricing.tiers.#{tier}.setup_card") }
-        end
-        div(class: 'text-sm text-tertiary') do
-          b(class: 'font-serif font-regular text-md text-foreground') { t("join.pricing.tiers.#{tier}.spec_strong") }
-          plain t("join.pricing.tiers.#{tier}.spec_rest")
-        end
-        UI::Stack(as: :ul, gap: :sm) do
-          t("join.pricing.tiers.#{tier}.bullets").each do |bullet|
-            li(class: 'flex gap-2.5 text-detail leading-snug') do
-              tick(size: 18)
-              plain bullet
+  def render_includes
+    section(class: 'py-10') do
+      div(class: 'container-public') do
+        UI::Grid(cols: { lg: 2 }, gap: :xl) do
+          %i[includes joining].each do |key|
+            div do
+              UI::Heading(spacing: :md) { t("join.pricing.#{key}.heading") }
+              UI::Text(measure: :prose, spacing: :none) { t("join.pricing.#{key}.body") }
             end
-          end
-        end
-      end
-    end
-  end
-
-  # The free tier is deliberately pulled out of the comparison, not a
-  # fourth column.
-  def render_starter_strip
-    UI::Card(variant: :featured, tag: :aside, padding: :lg) do
-      # A column that turns into a row on wide screens, rather than a row that wraps.
-      div(class: 'flex flex-col lg:flex-row lg:items-center gap-x-10 gap-y-3') do
-        div(class: 'shrink-0') do
-          UI::Kicker(tone: :accent) { t('join.pricing.starter.name') }
-          div(class: 'font-serif text-2xl leading-tight text-foreground') { t('join.pricing.starter.price') }
-        end
-        UI::Stack(gap: :sm) do
-          t('join.pricing.starter.body').each do |paragraph|
-            UI::Text(tone: :foreground, measure: :prose) { paragraph }
           end
         end
       end
@@ -204,82 +138,23 @@ class Views::Join::Pricing < Views::Join::Base
       div(class: 'container-public') do
         UI::Stack(gap: :lg) do
           UI::Heading() { t('join.pricing.extras.heading') }
-          div(class: 'grid lg:grid-cols-2 gap-4') do
-            t('join.pricing.extras.addons').each { |addon| render_addon(addon) }
-            render_training_addon
-          end
-        end
-      end
-    end
-  end
-
-  def render_addon(addon)
-    UI::Card(padding: :lg, class: 'flex flex-col') do
-      UI::Heading(level: 3, size: :subhead, spacing: :sm) { addon[:title] }
-      UI::Text(tone: :muted, spacing: :md) { addon[:body] }
-      div(class: 'font-serif text-xl text-foreground mt-auto') do
-        plain t('join.pricing.extras.poa')
-        small(class: 'block font-sans text-sm font-semibold text-tertiary mt-0.5') do
-          t('join.pricing.extras.poa_note')
-        end
-      end
-    end
-  end
-
-  def render_training_addon
-    training = t('join.pricing.extras.training')
-    UI::Card(padding: :lg, class: 'flex flex-col') do
-      UI::Heading(level: 3, size: :subhead, spacing: :sm) { training[:title] }
-      UI::Text(tone: :muted, spacing: :sm) { training[:body] }
-      ul(class: 'list-none p-0 mt-auto mb-0') do
-        training[:rows].each do |row|
-          muted = row[:standard] ? 'text-tertiary' : ''
-          li(class: 'flex justify-between items-baseline py-2 border-b border-rules last:border-b-0 text-detail') do
-            span(class: muted) { row[:label] }
-            span(class: "font-serif text-md #{muted}") { row[:amount] }
-          end
-        end
-      end
-    end
-  end
-
-  # The shared four-step rollout as a vertical timeline: a tan spine down
-  # the rail, trimmed to start and end at the first and last circles.
-  def render_rollout
-    section(class: 'py-10') do
-      div(class: 'container-public') do
-        UI::Stack(gap: :md) do
-          UI::Heading() { t('join.rollout.heading') }
-          div(class: 'max-w-(--width-prose-lg)') do
-            t('join.rollout.steps').each_with_index do |step, index|
-              render_rollout_step(step, index)
+          UI::Grid(cols: { md: 2, lg: 3 }) do
+            t('join.pricing.extras.items').each do |item|
+              UI::Card(padding: :lg) do
+                UI::Heading(level: 3, size: :subhead, spacing: :sm) { item[:title] }
+                UI::Text(tone: :muted, spacing: :none) { item[:body] }
+              end
             end
           end
+          div { UI::Button(variant: :join, size: :lg, href: join_demo_path) { t('join.pricing.extras.cta') } }
         end
-      end
-    end
-  end
-
-  def render_rollout_step(step, index)
-    div(class: 'group/step grid grid-cols-rollout md:grid-cols-rollout-wide gap-x-5 md:gap-x-9 items-center py-6') do
-      div(class: 'relative self-stretch row-span-2 md:row-span-1 flex justify-center') do
-        # The spine runs through the row padding so the steps join up, and stops at the first and last circles.
-        span(class: 'absolute -inset-y-6 group-first/step:top-1/2 group-last/step:bottom-1/2 left-1/2 -translate-x-1/2 w-0.5 bg-rules')
-        UI::CircleBadge(size: :sm, md_size: :lg, tone: :secondary, class: 'relative z-1 self-center') { (index + 1).to_s }
-      end
-      div(class: 'col-start-2 md:col-start-auto mb-3 md:mb-0 flex justify-start md:justify-center') do
-        image_tag(ROLLOUT_ART[index], alt: '', class: 'w-32 md:w-42 h-auto') if ROLLOUT_ART[index]
-      end
-      div(class: 'col-start-2 md:col-start-auto') do
-        UI::Heading(level: 3, size: :subhead, spacing: :xs) { step[:title] }
-        UI::Text(tone: :muted, spacing: :none) { step[:body] }
       end
     end
   end
 
   # Native details/summary, no JS; the first item starts open.
   def render_faq
-    section(class: 'py-10 bg-cream') do
+    section(class: 'py-10') do
       div(class: 'container-public') do
         UI::Stack(gap: :md) do
           UI::Heading() { t('join.pricing.faq.heading') }
@@ -298,9 +173,5 @@ class Views::Join::Pricing < Views::Join::Base
         end
       end
     end
-  end
-
-  def tier_from?(tier)
-    I18n.exists?("join.pricing.tiers.#{tier}.from")
   end
 end

@@ -156,10 +156,27 @@ RSpec.describe "Join marketing site", type: :request do
       expect(response.body).not_to include("application/ld+json")
     end
 
-    it "heads the pricing table's columns with the tier name only" do
-      get "http://join.lvh.me/pricing"
-      headers = Nokogiri::HTML(response.body).css("table th[scope=col]").map { |th| th.text.squish }
-      expect(headers).to eq(%w[community organisation institution].map { |tier| I18n.t("join.pricing.tiers.#{tier}.name") })
+    describe "the pricing page" do
+      let(:page_text) do
+        get "http://join.lvh.me/pricing"
+        Nokogiri::HTML(response.body).text
+      end
+
+      it "heads the comparison table's columns with the two package names" do
+        get "http://join.lvh.me/pricing"
+        headers = Nokogiri::HTML(response.body).css("table th[scope=col]").map { |th| th.text.squish }
+        expect(headers).to eq(%w[you_run we_run].map { |key| I18n.t("join.pricing.packages.#{key}.name") })
+      end
+
+      it "shows both packages' prices" do
+        expect(page_text).to include(I18n.t("join.pricing.packages.you_run.price"), I18n.t("join.pricing.packages.we_run.price"))
+      end
+
+      it "mentions none of the retired tiers or prices" do
+        ["Starter", "£750", "£7,500", "£2,500", "Free, forever", "POA"].each do |retired|
+          expect(page_text).not_to include(retired)
+        end
+      end
     end
 
     it "keeps the work-in-progress notice off the directory" do

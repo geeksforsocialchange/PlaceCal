@@ -76,7 +76,7 @@ en:
         see_all: See all features
       cta:
         heading: Let's talk about your community.
-        body: A 30-minute call, no pitch deck. We listen, learn what you're trying to do, and tell you honestly whether PlaceCal is the right fit.
+        body: A 30-minute call. We listen, learn what you're trying to do, and tell you honestly whether PlaceCal is the right fit.
         button: Book a 30-min chat
     audiences:
       index:
@@ -329,132 +329,74 @@ en:
     # Our story is served by the directory's page (Views::Directory::OurStory,
     # copy under directory.pages.our_story), so there is no join-specific copy.
     pricing:
-      title: Plans and pricing
-      description: PlaceCal plans for community groups, VCSE organisations and institutions. Priced by who you are, and free forever for grassroots groups.
+      title: Two ways to join PlaceCal
+      description: "Two ways to join PlaceCal: you run it, or we run it for you. Setup and monthly prices for both, with training included."
       eyebrow: Pricing
-      per_month: /mo
-      from: from
-      table:
-        caption: PlaceCal pricing tiers compared by feature
+      lede: Every group in your area, in one shared calendar. Each group keeps the calendar it already uses. The only choice is who looks after it.
+      packages:
+        you_run:
+          name: You run it
+          price: £2,400 setup, £50 a month
+          who: For organisations with someone whose job is joining up groups.
+          what: We set it up with you and train your person. You keep it going.
+        we_run:
+          name: We run it
+          price: £3,500 setup, £500 a month
+          who: For councils, the NHS, universities and housing providers.
+          what: You tell us who should be on it. We connect them, keep it working and send you a monthly report.
+        note: No VAT currently applies. Training is included in both.
+      compare:
+        heading: Which one are you?
+        caption: Who does what in each package
         included: Included
         not_included: Not included
-        support_heading: Support
-      tiers:
-        community:
-          name: Community
-          who: Community groups with a bit of funding
-          who_card: Community groups that have secured a bit of funding.
-          price: £20
-          setup: + £750 one-off setup
-          setup_card: + £750 one-off setup
-          spec_strong: Up to 50
-          spec_rest: " groups"
-          bullets:
-            - Your own branded site, built with you
-            - Handbook, Discord and drop-in support
-        organisation:
-          name: Organisation
-          who: VCSE organisations with paid staff
-          who_card: VCSE organisations with full-time paid staff.
-          price: £50
-          setup: + £2,500 one-off setup
-          setup_card: + £2,500 one-off setup
-          spec_strong: Up to 200
-          spec_rest: " groups"
-          bullets:
-            - Everything in Community
-            - Custom domain and API access
-            - Email support
-        institution:
-          name: Institution
-          who: Councils, NHS, universities, housing
-          who_card: Councils, the NHS, universities, housing associations.
-          from: true
-          price: £500
-          setup: + £7,500 one-off setup
-          setup_card: + £7,500 setup, quoted
-          spec_strong: Any size
-          spec_rest: ", no cap"
-          bullets:
-            - Everything in Organisation
-            - Reporting and support guarantees
-            - Monthly 1:1 check-in
-      rows:
-        - label: Groups you can list
-          values: ["Up to 50", "Up to 200", "Any size, no cap"]
-        - label: Admin logins
-          values: ["1-2", "Up to 5", "Unlimited"]
-        - label: Example use case
-          values:
-            [
-              "Local community of interest",
-              "City-wide support group listing",
-              "Regional events directory",
-            ]
-        - label: Custom domain
-          values: [false, true, true]
-        - label: API access
-          values: [false, true, true]
-      support_rows:
-        - label: Monthly drop-ins
-          values: [true, true, true]
-        - label: Organiser handbook
-          values: [true, true, true]
-        - label: Discord community
-          values: [true, true, true]
-        - label: Email support
-          values: [false, true, true]
-        - label: Monthly 1:1 check-in
-          values: [false, false, true]
-        - label: Reporting and support guarantees
-          values: [false, false, true]
-      starter:
-        name: Starter
-        price: Free, forever
-        body:
-          - For grassroots groups with no paid staff and no funding yet. You curate a partnership of up to 20 groups on an existing PlaceCal site, supported at the monthly drop-ins, with the handbook and Discord community.
-          - When you're ready, we help you cost PlaceCal into a funding bid, including paying for your own time.
-      cta: Get in touch
+        # One value per package, in package order: a string, true for a tick, or null for nothing.
+        rows:
+          - label: Choosing the groups
+            values: ["You", "You"]
+          - label: Connecting their calendars
+            values: ["You", "Us"]
+          - label: Spotting and fixing breaks
+            values: ["You", "Us"]
+          - label: Monthly report
+            values: [null, true]
+          - label: Named contact and paperwork
+            values: [null, true]
+      includes:
+        heading: Both include
+        body: Your own site on your own web address. The organiser training course. The handbook, monthly drop-ins and email support.
+      joining:
+        heading: What you're joining
+        body: The groups already exist. They need help that meets them where they are. We've done that work in person, neighbourhood by neighbourhood, for years.
       extras:
-        heading: Extras
-        poa: POA
-        poa_note: Price on application
-        addons:
+        heading: If you need us there
+        items:
+          - title: On-the-ground onboarding
+            body: We come to you and get groups listed, in person.
+          - title: Starting a partnership
+            body: We help bring your groups together.
           - title: Extra sites
-            body: Running more than one neighbourhood or theme? Add another branded PlaceCal site alongside your main one.
-          - title: Bespoke hands-on support
-            body: "Support beyond your tier: hands-on onboarding where we map your partners and import their events, or a dedicated block of our time."
-          - title: Custom sites and development
-            body: Bespoke design, a build that goes beyond the standard site, or a feature you need for your programme. We scope it and price it per piece of work.
-          - title: Translation into other languages
-            body: We'd love to help set up PlaceCal in other countries, and we can do the translation for you.
-        training:
-          title: Organiser training course
-          body: Three sessions for the people who'll run your PlaceCal day to day. Pay what you can, standard rate £1,800.
-          rows:
-            - label: Project-funded
-              amount: £600
-            - label: Core-funded
-              amount: £1,200
-            - label: Institutions
-              amount: £2,400
-            - label: Standard rate
-              amount: £1,800
-              standard: true
+            body: Another neighbourhood or theme.
+          - title: White label
+            body: Your name and look, with PlaceCal behind it.
+          - title: Custom development
+            body: Something built for you.
+        cta: Talk to us
       faq:
         heading: Questions
         items:
-          - question: How does billing work?
-            answer: Billing is annual by invoice by default, with a 10% discount. Monthly payment by card is also available.
-          - question: I want to list several groups. Does that cost more?
-            answer: Your monthly service is priced by who you are, not by how many groups you list. Each tier has an approximate group guideline; it's not a hard limit, so if you're close to it, just talk to us.
-          - question: What counts as an Institution?
-            answer: The promises test, not size. If you need reporting, support guarantees and things in writing, you're an Institution. A big VCSE organisation happy without them stays at £50.
+          - question: Which one is right for us?
+            answer: "If a named person on your team will keep in touch with the groups, it's “you run it”. If not, it's “we run it”."
+          - question: Does it cost more to list more groups?
+            answer: No. The point is to get everyone on.
           - question: What if the fee is a barrier?
-            answer: Money should never be the reason your community can't use PlaceCal. If the fee is a barrier, talk to us.
+            answer: Talk to us. We can also help you cost it into a funding bid.
+      cta:
+        heading: Let's talk about your community
+        body: A 30-minute call. We listen, and tell you honestly whether PlaceCal is the right fit.
     demo:
       title: Book a 30-minute chat.
-      lede: No pitch deck. We listen, learn what you're trying to do, and tell you honestly whether PlaceCal is the right fit.
+      lede: We listen, learn what you're trying to do, and tell you honestly whether PlaceCal is the right fit.
       flash:
         success: Thanks, we've got your message and we'll be in touch to pick a time.
         error: Sorry, we couldn't send that. Please check the form below and try again.
