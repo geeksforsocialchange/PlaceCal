@@ -15,6 +15,7 @@ class Views::Join::Demo < Views::Join::Base
           h1(class: 'join-headline m-0 mb-2') { t('join.demo.title') }
           UI::Text(tone: :muted, measure: :prose_md, spacing: :none, class: 'mx-auto') { t('join.demo.lede') }
         end
+        div(class: 'mb-8') { Join::Quote(text: t('join.demo.quote'), by: t('join.demo.quote_by')) }
         Shared::ContactForm(contact_request:, url: join_demo_path)
       end
     end

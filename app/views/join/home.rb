@@ -45,6 +45,7 @@ class Views::Join::Home < Views::Join::Base
           div do
             UI::Heading(spacing: :md) { t('join.home.problem.heading') }
             t('join.home.problem.paragraphs').each { |paragraph| UI::Text(measure: :prose) { paragraph } }
+            div(class: 'mt-6') { Join::Quote(text: t('join.home.problem.quote'), by: t('join.home.problem.quote_by')) }
           end
           div do
             UI::Text(measure: :prose, spacing: :md) { t('join.home.problem.research_intro') }
@@ -74,7 +75,7 @@ class Views::Join::Home < Views::Join::Base
         end
         UI::Stack(gap: :lg) do
           render_stats
-          render_quote
+          Join::Quote(text: t('join.home.why_us.quote'), by: t('join.home.why_us.quote_by'), surface: :light)
         end
       end
     end
@@ -96,13 +97,6 @@ class Views::Join::Home < Views::Join::Base
         plain value.is_a?(Numeric) ? value.to_fs(:delimited) : value.to_s
       end
       div(class: 'allcaps-label mt-1.5') { label }
-    end
-  end
-
-  def render_quote
-    blockquote(class: 'bg-home-background border-l-5 border-secondary-deep rounded-sm p-6 m-0') do
-      p(class: 'font-serif text-card leading-snug mt-0 mb-3') { t('join.home.why_us.quote') }
-      UI::Kicker(as: :footer, tone: :muted) { t('join.home.why_us.quote_by') }
     end
   end
 
@@ -173,8 +167,13 @@ class Views::Join::Home < Views::Join::Base
   def render_purpose
     section(class: 'py-10 bg-home-background-3') do
       div(class: 'container-public') do
-        UI::Heading(spacing: :md) { t('join.home.purpose.heading') }
-        UI::Text(measure: :prose, spacing: :none) { t('join.home.purpose.body') }
+        UI::Grid(cols: { lg: 2 }, gap: :xl) do
+          div do
+            UI::Heading(spacing: :md) { t('join.home.purpose.heading') }
+            UI::Text(measure: :prose, spacing: :none) { t('join.home.purpose.body') }
+          end
+          div { Join::Quote(text: t('join.home.purpose.quote'), by: t('join.home.purpose.quote_by'), surface: :light) }
+        end
       end
     end
   end

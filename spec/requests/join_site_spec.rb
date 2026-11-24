@@ -165,6 +165,29 @@ RSpec.describe "Join marketing site", type: :request do
       end
     end
 
+    describe "testimonials" do
+      {
+        "/" => %w[join.home.problem join.home.why_us join.home.purpose],
+        "/pricing" => %w[join.pricing.joining],
+        "/book-a-demo" => %w[join.demo]
+      }.each do |path, scopes|
+        scopes.each do |scope|
+          it "quotes #{scope} on #{path} with its credit" do
+            get "http://join.lvh.me#{path}"
+            quotes = Nokogiri::HTML(response.body).css("blockquote").map do |quote|
+              [quote.at_css("p")&.text, quote.at_css("footer")&.text]
+            end
+            expect(quotes).to include([I18n.t("#{scope}.quote"), I18n.t("#{scope}.quote_by")])
+          end
+        end
+      end
+
+      it "credits no homepage quote to Hulme" do
+        get "http://join.lvh.me/"
+        expect(Nokogiri::HTML(response.body).css("blockquote").map(&:text).join).not_to include("Hulme")
+      end
+    end
+
     it "keeps acronyms in the audience kicker" do
       get "http://join.lvh.me/who-its-for/vcses"
       expect(response.body).to include(I18n.t("join.audiences.for_kicker", audience: I18n.t("join.audiences.vcses.title")))

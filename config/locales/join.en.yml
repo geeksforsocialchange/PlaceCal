@@ -60,14 +60,16 @@ en:
           - Community groups don't have time to maintain six different listings
           - Nobody trains anyone how to do any of this
         cta: Read our story
+        quote: "“People are saying they're bored and there's nothing to do - with this much on that's mad isn't it!”"
+        quote_by: Participant at an IT session for older people, Manchester
       why_us:
         heading: You're already doing the work. It just shouldn't be this hard for people to find out about it.
         paragraphs:
           - You know your neighbourhood and the groups in it. We know how to get all of them onto one calendar, because we've done it before, starting with age-friendly work on isolation in Hulme and Moss Side.
           - Most platforms launch everywhere and reach already digitally-included early adopters. We do the opposite. We go neighbourhood by neighbourhood, and we'll help you get 100% of your community's information listed.
           - PlaceCal is not-for-profit and co-owned by the partnerships that use it.
-        quote: "“PlaceCal lets us focus on organising collaborative festivals across venues, rather than struggling to find out what's on.”"
-        quote_by: Community partnership coordinator, Hulme
+        quote: "“We use PlaceCal regularly in terms of understanding the neighbourhood, and also sharing what's happening with others.”"
+        quote_by: Council neighbourhood team, Manchester
       stats:
         partnerships: Partnerships live
         partners: Community partners
@@ -91,6 +93,8 @@ en:
       purpose:
         heading: Full rooms, fewer burned-out organisers, and nobody left out.
         body: "This is community infrastructure: an accessible, not-for-profit, open record of everything happening, owned by the neighbourhood. When local groups are connected, a community can respond to a crisis in days, not months."
+        quote: "“As an organiser of a trans meetup group myself I couldn't believe how many events were happening each week, most of which I'd never heard of before.”"
+        quote_by: Trans meetup organiser, London
       cta:
         heading: Let's talk about your community.
         body: A 30-minute call. We listen, learn what you're trying to do, and tell you honestly whether PlaceCal is the right fit.
@@ -385,6 +389,8 @@ en:
       joining:
         heading: What you're joining
         body: The groups already exist. They need help that meets them where they are. We've done that work in person, neighbourhood by neighbourhood, for years.
+        quote: "“I am so pleased you think you can link to what we already have. I was quite concerned about setting up something additional as we don't have people with the skills or time to keep it all up to date.”"
+        quote_by: Community centre, Mossley
       extras:
         heading: If you need us there
         items:
@@ -414,6 +420,8 @@ en:
     demo:
       title: Book a 30-minute chat.
       lede: We listen, learn what you're trying to do, and tell you honestly whether PlaceCal is the right fit.
+      quote: "“Do I know what's happening locally? No. Having a tool to let people find this out themselves seems totally obvious.”"
+      quote_by: GP, Manchester
       flash:
         success: Thanks, we've got your message and we'll be in touch to pick a time.
         error: Sorry, we couldn't send that. Please check the form below and try again.

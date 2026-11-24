@@ -122,11 +122,14 @@ class Views::Join::Pricing < Views::Join::Base
     section(class: 'py-10') do
       div(class: 'container-public') do
         UI::Grid(cols: { lg: 2 }, gap: :xl) do
-          %i[includes joining].each do |key|
-            div do
-              UI::Heading(spacing: :md) { t("join.pricing.#{key}.heading") }
-              UI::Text(measure: :prose, spacing: :none) { t("join.pricing.#{key}.body") }
-            end
+          div do
+            UI::Heading(spacing: :md) { t('join.pricing.includes.heading') }
+            UI::Text(measure: :prose, spacing: :none) { t('join.pricing.includes.body') }
+          end
+          div do
+            UI::Heading(spacing: :md) { t('join.pricing.joining.heading') }
+            UI::Text(measure: :prose, spacing: :none) { t('join.pricing.joining.body') }
+            div(class: 'mt-6') { Join::Quote(text: t('join.pricing.joining.quote'), by: t('join.pricing.joining.quote_by')) }
           end
         end
       end
