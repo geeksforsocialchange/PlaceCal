@@ -13,7 +13,7 @@ class Components::UI::Pill < Components::Base
     # A chip on a dark hero, keeping the hero's text colour
     overlay: 'rounded-pill px-3 py-1 text-sm bg-overlay-light text-inherit',
     # A partner's or event's neighbourhood
-    neighbourhood: 'rounded-pill border border-primary px-2.5 py-0.5 max-md:px-2 text-sm max-md:text-xs font-semibold leading-snug text-foreground-dark',
+    neighbourhood: 'rounded-pill border border-primary px-2.5 py-0.5 max-md:px-2 text-sm max-md:text-xs font-semibold leading-snug text-foreground',
     # A page number or arrow in a paginator, square until the label is wider than it is tall
     page: 'rounded-pill justify-center min-w-9 h-9 px-2 text-sm font-bold bg-home-background-3 text-foreground hover:bg-primary hover:text-foreground-dark',
     # A letter in an A to Z index, square until the label is wider, such as "All"
