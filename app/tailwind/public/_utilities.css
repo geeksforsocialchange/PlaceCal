@@ -66,11 +66,11 @@
 	margin-bottom: --spacing(3);
 }
 
-/* Join site display headline: bigger than hero-title, used on join.placecal.org */
+/* Join site page headline: hero-title's size, balanced */
 @utility join-headline {
 	font-family: var(--font-serif);
 	font-weight: var(--font-weight-regular);
-	font-size: var(--text-headline);
+	font-size: var(--text-hero);
 	line-height: var(--leading-hero);
 	text-wrap: balance;
 	color: var(--color-foreground);

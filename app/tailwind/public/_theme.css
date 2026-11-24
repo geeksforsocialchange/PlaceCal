@@ -66,12 +66,10 @@
 	--text-stat: 2rem;
 	/* h1 */
 	--text-3xl: 2.2222rem;
-	/* directory hero and not-found titles (hero-title, text-hero); the local-site hero title is an h1 at --text-3xl */
+	/* directory hero, not-found and join page titles (hero-title, join-headline, text-hero); the local-site hero title is an h1 at --text-3xl */
 	--text-hero: clamp(2rem, 4vw, 2.8rem);
 	/* responsive section titles on marketing pages */
 	--text-display: clamp(1.8rem, 3.6vw, 2.5rem);
-	/* join site page headlines (join-headline) */
-	--text-headline: clamp(2.4rem, 5vw, 3.6rem);
 
 	--tracking-normal: normal;
 	--tracking-badge: 0.0867rem;
@@ -203,7 +201,6 @@ this file).
 	--text-3xl: var(--text-3xl);
 	--text-hero: var(--text-hero);
 	--text-display: var(--text-display);
-	--text-headline: var(--text-headline);
 
 	--tracking-normal: var(--tracking-normal);
 	--tracking-badge: var(--tracking-badge);

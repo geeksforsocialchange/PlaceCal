@@ -1,19 +1,22 @@
 # frozen_string_literal: true
 
 class Components::Join::Footer < Components::Join::Base
+  prop :flush, _Boolean, default: false
+
   def view_template
-    Shared::Footer(tagline: t('join.footer.tagline'), logo_alt: t('join.footer.placecal_logo_alt'), columns:)
+    Shared::Footer(tagline: t('join.footer.tagline'), logo_alt: t('join.footer.placecal_logo_alt'), columns:, flush: @flush)
   end
 
   private
 
   def columns
     [
-      [t('join.footer.audiences'), AUDIENCE_KEYS.map { |key| [t("join.audiences.#{key}.title"), audience_path(key)] }],
+      # The audience pages are unlinked until their copy is agreed.
+      # [t('join.footer.audiences'), AUDIENCE_KEYS.map { |key| [t("join.audiences.#{key}.title"), audience_path(key)] }],
       [t('join.footer.product'), [
         [t('join.footer.features'), join_features_path],
         [t('join.footer.pricing'), join_pricing_path],
-        [t('join.footer.book_demo'), join_demo_path],
+        [t('join.footer.book_call'), join_demo_path],
         [t('join.footer.directory'), apex_url]
       ]],
       [t('join.footer.about'), [

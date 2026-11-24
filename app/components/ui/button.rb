@@ -17,7 +17,10 @@ class Components::UI::Button < Components::Base
     # The same fill without the ring, for a row that clips overflow, e.g. the directory header's join call to action.
     secondary_flat: 'bg-secondary border-secondary text-foreground-dark hover:bg-foreground hover:border-foreground hover:text-background',
     # Dark fill that turns to the page colour on hover, outlined by a ring outside the border.
-    dark_invert: 'bg-foreground border-transparent ring-2 ring-foreground text-background hover:bg-background hover:text-foreground'
+    dark_invert: 'bg-foreground border-transparent ring-2 ring-foreground text-background hover:bg-background hover:text-foreground',
+    # Darker ink for the join site's coloured bands, where foreground text on salmon falls below AA.
+    ink: 'bg-foreground-dark border-foreground-dark text-background hover:bg-background hover:text-foreground-dark',
+    ink_outline: 'bg-transparent border-foreground-dark text-foreground-dark hover:bg-foreground-dark hover:text-background'
   }.freeze
 
   SIZES = {

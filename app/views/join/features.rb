@@ -21,10 +21,11 @@ class Views::Join::Features < Views::Join::Base
   private
 
   def render_planned
+    content_for(:join_footer_flush, true)
     section(class: 'py-12 bg-home-background-3', aria_labelledby: 'planned-heading') do
       div(class: 'container-public') do
         UI::Kicker(tone: :muted, spacing: :xs) { t('join.features.planned.kicker') }
-        UI::Heading(id: 'planned-heading', size: :title, spacing: :xs) { t('join.features.planned.title') }
+        UI::Heading(id: 'planned-heading', size: :section, spacing: :xs) { t('join.features.planned.title') }
         UI::Text(variant: :lede, tone: :muted, measure: :prose, spacing: :lg, pretty: true) { t('join.features.planned.lede') }
         UI::Grid(cols: { md: 2, lg: 4 }) do
           t('join.features.planned.items').each do |item|

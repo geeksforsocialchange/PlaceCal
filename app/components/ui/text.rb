@@ -2,8 +2,8 @@
 
 # A paragraph of running text. Its colour comes from the surrounding text unless tone: says otherwise.
 class Components::UI::Text < Components::Base
-  # :lede is the smaller paragraph under a section heading or on a card.
-  VARIANTS = { body: 'text-base leading-relaxed', lede: 'text-detail leading-relaxed' }.freeze
+  # :lede is the smaller paragraph under a section heading or on a card; :intro the larger one under a page title.
+  VARIANTS = { body: 'text-base leading-relaxed', lede: 'text-detail leading-relaxed', intro: 'text-md leading-normal' }.freeze
   TONES = { foreground: 'text-foreground', strong: 'text-foreground-dark', muted: 'text-tertiary', inherit: nil }.freeze
   MEASURES = { prose: 'max-w-(--width-prose)', prose_md: 'max-w-(--width-prose-md)', prose_lg: 'max-w-(--width-prose-lg)', none: nil }.freeze
   TAGS = %i[p div figcaption].freeze

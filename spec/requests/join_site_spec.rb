@@ -82,10 +82,16 @@ RSpec.describe "Join marketing site", type: :request do
       end
     end
 
-    it "shows one card per feature group on the homepage" do
+    it "lists each feature group's title on the homepage" do
       get "http://join.lvh.me/"
-      titles = Nokogiri::HTML(response.body).css("h3").map(&:text)
-      expect(titles).to include(*I18n.t("join.features.groups").pluck(:title))
+      items = Nokogiri::HTML(response.body).css("main li").map { |li| li.text.squish }
+      expect(items).to include(*I18n.t("join.features.groups").pluck(:title))
+    end
+
+    it "links nowhere to the audience pages while their copy is unagreed" do
+      get "http://join.lvh.me/"
+      hrefs = Nokogiri::HTML(response.body).css("a").pluck(:href)
+      expect(hrefs.grep(/who-its-for/)).to be_empty
     end
 
     it "404s an unknown audience" do
@@ -133,9 +139,59 @@ RSpec.describe "Join marketing site", type: :request do
       expect(response.body).not_to include('<meta name="robots"')
     end
 
-    it "has exactly one h1 on the homepage" do
-      get "http://join.lvh.me/"
-      expect(response.body.scan("<h1").size).to eq(1)
+    %w[/ /pricing].each do |path|
+      it "has exactly one h1 on #{path}" do
+        get "http://join.lvh.me#{path}"
+        expect(Nokogiri::HTML(response.body).css("h1").size).to eq(1)
+      end
+
+      it "offers a call, not a demo, on #{path}" do
+        get "http://join.lvh.me#{path}"
+        expect(Nokogiri::HTML(response.body).text).not_to include("Book a demo")
+      end
+    end
+
+    describe "the homepage" do
+      let(:page) do
+        get "http://join.lvh.me/"
+        Nokogiri::HTML(response.body)
+      end
+
+      it "shows no prices" do
+        expect(page.text).not_to include("£")
+      end
+
+      it "links the hero to the how it works section on the page" do
+        expect(page.at_css("a[href='#how-it-works']")&.text).to eq(I18n.t("join.home.hero.cta_how"))
+        expect(page.at_css("section#how-it-works h2")&.text).to eq(I18n.t("join.home.how.heading"))
+      end
+
+      it "lists the three steps in order" do
+        expect(page.css("ol h3").map(&:text)).to eq(I18n.t("join.home.how.steps"))
+      end
+    end
+
+    describe "testimonials" do
+      {
+        "/" => %w[join.home.problem join.home.how join.home.difference],
+        "/pricing" => %w[join.pricing.joining],
+        "/book-a-demo" => %w[join.demo]
+      }.each do |path, scopes|
+        scopes.each do |scope|
+          it "quotes #{scope} on #{path} with its credit" do
+            get "http://join.lvh.me#{path}"
+            quotes = Nokogiri::HTML(response.body).css("blockquote").map do |quote|
+              [quote.at_css("p")&.text, quote.at_css("footer")&.text]
+            end
+            expect(quotes).to include([I18n.t("#{scope}.quote"), I18n.t("#{scope}.quote_by")])
+          end
+        end
+      end
+
+      it "credits no homepage quote to Hulme" do
+        get "http://join.lvh.me/"
+        expect(Nokogiri::HTML(response.body).css("blockquote").map(&:text).join).not_to include("Hulme")
+      end
     end
 
     it "keeps acronyms in the audience kicker" do
@@ -156,10 +212,51 @@ RSpec.describe "Join marketing site", type: :request do
       expect(response.body).not_to include("application/ld+json")
     end
 
-    it "heads the pricing table's columns with the tier name only" do
-      get "http://join.lvh.me/pricing"
-      headers = Nokogiri::HTML(response.body).css("table th[scope=col]").map { |th| th.text.squish }
-      expect(headers).to eq(%w[community organisation institution].map { |tier| I18n.t("join.pricing.tiers.#{tier}.name") })
+    describe "the pricing page" do
+      let(:page) do
+        get "http://join.lvh.me/pricing"
+        Nokogiri::HTML(response.body)
+      end
+
+      it "prices both packages" do
+        %w[you_run we_run].each do |key|
+          card = page.css("article").find { |article| article.at_css("h2")&.text == I18n.t("join.pricing.packages.#{key}.name") }
+          expect(card.text.squish).to include(
+            "#{I18n.t("join.pricing.packages.#{key}.setup_price")} #{I18n.t('join.pricing.setup')}",
+            "#{I18n.t("join.pricing.packages.#{key}.monthly_price")} #{I18n.t('join.pricing.monthly')}"
+          )
+        end
+      end
+
+      it "spells out who does what in each package as text" do
+        %w[you_run we_run].each do |key|
+          card = page.css("article").find { |article| article.at_css("h2")&.text == I18n.t("join.pricing.packages.#{key}.name") }
+          rows = card.css("dl > div").map { |row| [row.at_css("dt").text, row.at_css("dd").text] }
+          expect(rows).to eq(I18n.t("join.pricing.packages.#{key}.rows").map { |row| [row[:label], row[:value]] })
+        end
+      end
+
+      it "answers all five questions" do
+        questions = I18n.t("join.pricing.faq.items")
+        expect(questions.size).to eq(5)
+        expect(page.css("dt").map(&:text)).to include(*questions.pluck(:question))
+      end
+
+      it "lists the four extras" do
+        titles = %w[theme apps development translation].map { |key| I18n.t("join.pricing.extras.#{key}.title") }
+        expect(page.css("h3").map(&:text)).to include(*titles)
+        expect(page.at_css("a[href='https://transdimension.uk']")&.text).to eq(I18n.t("join.pricing.extras.theme.link_text"))
+      end
+
+      it "links to the partnerships on the apex" do
+        expect(page.at_css("a[href='http://lvh.me/partnerships']")&.text).to eq(I18n.t("join.pricing.joining.cta"))
+      end
+
+      it "mentions none of the retired tiers or prices" do
+        ["Starter", "£750", "£7,500", "£2,500", "£3,500", "£500 a month", "Free, forever", "POA"].each do |retired|
+          expect(page.text).not_to include(retired)
+        end
+      end
     end
 
     it "keeps the work-in-progress notice off the directory" do
@@ -170,14 +267,21 @@ RSpec.describe "Join marketing site", type: :request do
     it "renders the join chrome, not the directory chrome" do
       get "http://join.lvh.me/"
       expect(response.body).to include(I18n.t("join.band.host"))
-      expect(response.body).to include(I18n.t("join.nav.book_demo"))
+      header_cta = Nokogiri::HTML(response.body).css("header a[href='/book-a-demo']").map { |a| a.text.squish }
+      expect(header_cta).to include(I18n.t("join.nav.book_call"))
     end
 
-    it "reuses the directory Our Story page with a join breadcrumb and book-a-demo CTA" do
+    it "reuses the directory Our Story page with the join hero and book-a-demo CTA" do
       get "http://join.lvh.me/our-story"
-      expect(response.body).to include(CGI.escapeHTML(I18n.t("directory.pages.our_story.hero_title")))
-      expect(response.body).to include(I18n.t("join.breadcrumbs.root"))
+      h1 = Nokogiri::HTML(response.body).at_css("h1.join-headline")
+      expect(h1.text.squish).to eq(I18n.t("directory.pages.our_story.hero_title"))
       expect(response.body).to include("/book-a-demo")
+    end
+
+    it "keeps the directory hero on the directory Our Story page" do
+      get "http://lvh.me/our-story"
+      expect(Nokogiri::HTML(response.body).at_css("h1.join-headline")).to be_nil
+      expect(response.body).to include(CGI.escapeHTML(I18n.t("directory.pages.our_story.hero_title")))
     end
   end
 

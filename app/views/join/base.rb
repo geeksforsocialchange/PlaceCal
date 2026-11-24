@@ -2,6 +2,8 @@
 
 # Base for join site pages. Copy lives under join.* in join.en.yml.
 class Views::Join::Base < Views::Base
+  include Components::Join::ApexUrl
+
   register_output_helper :icon
 
   private
@@ -23,11 +25,13 @@ class Views::Join::Base < Views::Base
     end
   end
 
-  def section_intro(kicker:, heading:, lede: nil, center: false)
-    div(class: "mb-7 #{'text-center' if center}") do
-      UI::Kicker(tone: :muted, spacing: :xs) { kicker }
-      UI::Heading(spacing: :none) { heading }
-      p(class: "text-detail text-tertiary leading-relaxed mt-2 mb-0 max-w-(--width-prose) #{'mx-auto' if center}") { lede } if lede
-    end
+  def render_cta(heading:, body:, kicker: nil)
+    Join::ClosingCta(heading:, body:, kicker:)
+  end
+
+  # A section's optional all-caps label over its serif heading. on_band takes the band's ink.
+  def section_heading(heading, kicker: nil, on_band: false, size: :section)
+    UI::Kicker(tone: on_band ? :inherit : :accent) { kicker } if kicker
+    UI::Heading(size:, tone: on_band ? :inherit : :strong, balance: true) { heading }
   end
 end

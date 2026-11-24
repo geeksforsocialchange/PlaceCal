@@ -1,22 +1,29 @@
 # frozen_string_literal: true
 
-# Linked card for one audience.
+# Card for one audience, linked to its page unless told otherwise.
 class Components::Join::AudienceCard < Components::Join::Base
   prop :audience, String, reader: :private
   # 2 when the grid sits directly under the page h1, so heading order never skips.
   prop :heading_level, Integer, default: 3
+  prop :linked, _Boolean, default: true
 
   def view_template
-    UI::Card(href: audience_path(audience), class: 'flex flex-col gap-2') do
+    UI::Card(href: (audience_path(audience) if @linked), class: 'flex flex-col gap-2') do
       div(class: 'aspect-square rounded-sm overflow-hidden bg-home-background-3 mb-1') do
         image_tag(AUDIENCES.fetch(audience), class: 'w-full h-full object-cover', alt: t("join.audiences.#{audience}.image_alt"))
       end
       UI::Heading(level: @heading_level, size: :card, spacing: :none) { t("join.audiences.#{audience}.title") }
       UI::Text(variant: :lede, tone: :muted, spacing: :none) { t("join.audiences.#{audience}.lede") }
-      div(class: 'mt-auto pt-1 text-secondary-strong font-bold text-detail') do
-        plain t('join.audiences.see_pitch')
-        span { safe(' &rarr;') }
-      end
+      render_see_pitch if @linked
+    end
+  end
+
+  private
+
+  def render_see_pitch
+    div(class: 'mt-auto pt-1 text-secondary-strong font-bold text-detail') do
+      plain t('join.audiences.see_pitch')
+      span { safe(' &rarr;') }
     end
   end
 end

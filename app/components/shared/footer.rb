@@ -6,9 +6,11 @@ class Components::Shared::Footer < Components::Base
   prop :logo_alt, String
   # [[heading, [[label, href], ...]], ...]
   prop :columns, _Array(Array)
+  # Drops the top margin so a page's closing full-width band meets the footer rule.
+  prop :flush, _Boolean, default: false
 
   def view_template(&brand_extra)
-    footer(class: 'bg-home-background border-t-5 border-rules mt-16 pt-10 pb-6 print:hidden') do
+    footer(class: ['bg-home-background border-t-5 border-rules pt-10 pb-6 print:hidden', ('mt-16' unless @flush)]) do
       div(class: 'container-public grid grid-cols-1 md:grid-cols-footer gap-8') do
         render_brand(&brand_extra)
         @columns.each { |title, links| render_column(title, links) }

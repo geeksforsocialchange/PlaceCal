@@ -17,7 +17,7 @@ en:
       features: Features
       our_story: Our story
       pricing: Pricing
-      book_demo: Book a demo
+      book_call: Book a call
     breadcrumbs:
       root: Join PlaceCal
       audiences: Who it's for
@@ -29,7 +29,7 @@ en:
       product: Product
       features: Features
       pricing: Pricing
-      book_demo: Book a demo
+      book_call: Book a call
       directory: placecal.org directory
       about: About
       our_story: Our story
@@ -41,43 +41,55 @@ en:
       terms_of_use: Terms of use
       placecal_logo_alt: PlaceCal
     home:
-      title: Run PlaceCal in your community
-      description: PlaceCal is a not-for-profit, co-owned calendar platform for neighbourhoods. Set it up in your community.
+      title: Every community calendar in one place
+      description: PlaceCal brings every local group's events into one open listing, so people find what's on near them without Big Tech. Not-for-profit and co-owned by the partnerships that use it.
       hero:
-        kicker: A calendar co-op for your community
-        title: Set up PlaceCal in your community.
-        intro: PlaceCal is a not-for-profit, co-owned calendar platform for neighbourhoods. We help councils, housing associations, community organisations, and cultural venues build one shared system for everything happening near them.
-        cta_demo: Book a demo
+        title: Every community calendar, in one place.
+        intro: PlaceCal brings every local group's events into one open listing, so people find what's on near them without Big Tech. We help councils, housing associations, community organisations and cultural venues set one up for their area.
+        image_alt: Four calendars from Google, Outlook, Facebook and iCloud feeding one shared listing
         cta_how: How it works
-      stats:
-        partnerships: Partnerships live
-        partners: Community partners
-        events: Events this month
-        residents: Residents spoken to
-        residents_value: 6,000+
-      audiences:
-        kicker: Who it's for
-        heading: PlaceCal works differently for different people.
-        lede: Pick the one that describes you. Each has its own pitch, case study, and next step.
-      why:
-        kicker: Why PlaceCal
-        heading: Three big problems. One shared fix.
-        intro: "We spent years talking to over 6,000 people in Manchester about why community information was so hard to find. The answers were always the same:"
-        problems:
-          - Every institution builds their own directory, and none of them stay up to date
-          - Community groups don't have time to maintain six different listings
-          - Nobody trains anyone how to do any of this
+      problem:
+        kicker: The problem
+        heading: Finding out what's happening on your street should be easy. It isn't.
+        paragraphs:
+          - Every neighbourhood has organisers who hold it together, running parents' groups, sewing circles and soup kitchens. But their information is scattered across Facebook, Instagram, WhatsApp, Nextdoor and posters, so many neighbours never hear about it.
+          - These centralised platforms are built to keep people scrolling in their bubble, not to help neighbours find each other. If you're older, new to an area, disabled, or don't read the language, it can be impossible to find out. Events run half-empty, and organisers give up.
+        quote: People are saying they're bored and there's nothing to do - with this much on that's mad isn't it!
+        quote_by: Participant at an IT session for older people, Manchester
         cta: Read our story
-        quote: "“PlaceCal lets us focus on organising collaborative festivals across venues, rather than struggling to find out what's on.”"
-        quote_by: Community partnership coordinator, Hulme
+      approach:
+        kicker: Our approach
+        heading: You're already doing the work. It shouldn't be this hard for people to find out about it.
+        paragraphs:
+          - You know your neighbourhood and the groups in it. We know how to get all of them onto one calendar, because we've done it before, starting with age-friendly work on isolation in Hulme and Moss Side.
+          - Most platforms launch everywhere and reach already digitally-included early adopters. We do the opposite. We go neighbourhood by neighbourhood, and we'll help you get 100% of your community's information listed.
+        closing: PlaceCal is not-for-profit and co-owned by the partnerships that use it.
+        image_alt: A crowd of neighbours of all ages at a winter event in Hulme Park, many in Santa hats
+      how:
+        kicker: How it works
+        heading: Keep using the calendars you already have. PlaceCal does the rest.
+        steps:
+          - Find your local groups
+          - Link your calendars
+          - Share one listing for the whole neighbourhood
+        body: PlaceCal is designed to work with whichever tools groups already use, without stigmatising them or forcing anyone to change. We start with what is already there. Each source is rated gold, silver or bronze for openness, which gives you a way to talk with your groups about improving it when they're ready. The result is a decentralised network of event feeds, owned by the groups themselves.
+        cta: Find out how to get started
+        quote: We use PlaceCal regularly in terms of understanding the neighbourhood, and also sharing what's happening with others.
+        quote_by: Council neighbourhood team, Manchester
+      difference:
+        kicker: The difference it makes
+        heading: Full rooms, fewer burned-out organisers, and nobody left out.
+        body: "This is community infrastructure: an accessible, not-for-profit, open record of everything happening, owned by the neighbourhood. When local groups are connected, a community can respond to a crisis in days, not months."
+        quote: As an organiser of a trans meetup group myself I couldn't believe how many events were happening each week, most of which I'd never heard of before.
+        quote_by: Trans meetup organiser, London
       features:
         kicker: What you get
         heading: Everything a hyperlocal calendar needs.
         see_all: See all features
       cta:
+        kicker: Get in touch
         heading: Let's talk about your community.
-        body: A 30-minute call, no pitch deck. We listen, learn what you're trying to do, and tell you honestly whether PlaceCal is the right fit.
-        button: Book a 30-min chat
+        body: A 30-minute call. We listen, learn what you're trying to do, and tell you honestly whether PlaceCal is the right fit.
     audiences:
       index:
         title: Who PlaceCal is for.
@@ -314,7 +326,10 @@ en:
           - title: Perfect Lighthouse scores
             icon: lightning
             body: 100 for performance, accessibility, best practices and SEO across our public pages.
-    # Shared by the audience-page aside and the pricing-page timeline.
+    # The closing call to action on home and pricing.
+    cta:
+      button: Book a call
+    # The audience pages' rollout aside.
     rollout:
       heading: A four-step rollout
       steps:
@@ -329,132 +344,97 @@ en:
     # Our story is served by the directory's page (Views::Directory::OurStory,
     # copy under directory.pages.our_story), so there is no join-specific copy.
     pricing:
-      title: Plans and pricing
-      description: PlaceCal plans for community groups, VCSE organisations and institutions. Priced by who you are, and free forever for grassroots groups.
+      title: Two ways to join PlaceCal
+      description: "Two ways to join PlaceCal: you run it, or we run it for you. Setup and monthly prices for both, with training included."
       eyebrow: Pricing
-      per_month: /mo
-      from: from
-      table:
-        caption: PlaceCal pricing tiers compared by feature
-        included: Included
-        not_included: Not included
-        support_heading: Support
-      tiers:
-        community:
-          name: Community
-          who: Community groups with a bit of funding
-          who_card: Community groups that have secured a bit of funding.
-          price: £20
-          setup: + £750 one-off setup
-          setup_card: + £750 one-off setup
-          spec_strong: Up to 50
-          spec_rest: " groups"
-          bullets:
-            - Your own branded site, built with you
-            - Handbook, Discord and drop-in support
-        organisation:
-          name: Organisation
-          who: VCSE organisations with paid staff
-          who_card: VCSE organisations with full-time paid staff.
-          price: £50
-          setup: + £2,500 one-off setup
-          setup_card: + £2,500 one-off setup
-          spec_strong: Up to 200
-          spec_rest: " groups"
-          bullets:
-            - Everything in Community
-            - Custom domain and API access
-            - Email support
-        institution:
-          name: Institution
-          who: Councils, NHS, universities, housing
-          who_card: Councils, the NHS, universities, housing associations.
-          from: true
-          price: £500
-          setup: + £7,500 one-off setup
-          setup_card: + £7,500 setup, quoted
-          spec_strong: Any size
-          spec_rest: ", no cap"
-          bullets:
-            - Everything in Organisation
-            - Reporting and support guarantees
-            - Monthly 1:1 check-in
-      rows:
-        - label: Groups you can list
-          values: ["Up to 50", "Up to 200", "Any size, no cap"]
-        - label: Admin logins
-          values: ["1-2", "Up to 5", "Unlimited"]
-        - label: Example use case
-          values:
-            [
-              "Local community of interest",
-              "City-wide support group listing",
-              "Regional events directory",
-            ]
-        - label: Custom domain
-          values: [false, true, true]
-        - label: API access
-          values: [false, true, true]
-      support_rows:
-        - label: Monthly drop-ins
-          values: [true, true, true]
-        - label: Organiser handbook
-          values: [true, true, true]
-        - label: Discord community
-          values: [true, true, true]
-        - label: Email support
-          values: [false, true, true]
-        - label: Monthly 1:1 check-in
-          values: [false, false, true]
-        - label: Reporting and support guarantees
-          values: [false, false, true]
-      starter:
-        name: Starter
-        price: Free, forever
-        body:
-          - For grassroots groups with no paid staff and no funding yet. You curate a partnership of up to 20 groups on an existing PlaceCal site, supported at the monthly drop-ins, with the handbook and Discord community.
-          - When you're ready, we help you cost PlaceCal into a funding bid, including paying for your own time.
-      cta: Get in touch
+      heading: How to join us
+      lede: PlaceCal gets every group in your area onto one shared calendar. Each group keeps the calendar it already uses. We can deliver this two ways depending on if you want to onboard the groups, or you want us to.
+      aria_label: The two packages
+      setup: setup
+      monthly: a month
+      packages:
+        you_run:
+          name: You run it
+          setup_price: £2,400
+          monthly_price: £50
+          who: For hands-on community organisers
+          what: We get you started and train you up. You keep it going.
+          rows:
+            - label: Choosing the groups
+              value: You
+            - label: Connecting their calendars
+              value: You
+            - label: Spotting and fixing breaks
+              value: You
+        we_run:
+          name: We run it
+          setup_price: £4,500
+          monthly_price: £450
+          who: Commission us to support community groups for you.
+          what: You tell us who should be on it. We connect them, support them, and send you a monthly report.
+          rows:
+            - label: Choosing the groups
+              value: You
+            - label: Connecting their calendars
+              value: Us
+            - label: Spotting and fixing breaks
+              value: Us
+            - label: Monthly report
+              value: Included
+            - label: Named contact and paperwork
+              value: Included
+      includes:
+        heading: Both include
+        items:
+          - Your own site listing your partners on your web address.
+          - Our comprehensive training course.
+          - Our handbook, monthly drop-ins and email support.
+      joining:
+        heading: What you're joining
+        paragraphs:
+          - The groups already exist. They need help that meets them where they are. We've done that work in person, neighbourhood by neighbourhood, for years.
+          - "Some are places: Manchester, London, Norwich and Torbay. Some are communities: The Trans Dimension, Queer Leeds, Climate Justice North East and Black British History."
+        cta: See who's using it
+        quote: I am so pleased you think you can link to what we already have. I was quite concerned about setting up something additional as we don't have people with the skills or time to keep it all up to date.
+        quote_by: Community centre, Mossley
       extras:
         heading: Extras
-        poa: POA
-        poa_note: Price on application
-        addons:
-          - title: Extra sites
-            body: Running more than one neighbourhood or theme? Add another branded PlaceCal site alongside your main one.
-          - title: Bespoke hands-on support
-            body: "Support beyond your tier: hands-on onboarding where we map your partners and import their events, or a dedicated block of our time."
-          - title: Custom sites and development
-            body: Bespoke design, a build that goes beyond the standard site, or a feature you need for your programme. We scope it and price it per piece of work.
-          - title: Translation into other languages
-            body: We'd love to help set up PlaceCal in other countries, and we can do the translation for you.
-        training:
-          title: Organiser training course
-          body: Three sessions for the people who'll run your PlaceCal day to day. Pay what you can, standard rate £1,800.
-          rows:
-            - label: Project-funded
-              amount: £600
-            - label: Core-funded
-              amount: £1,200
-            - label: Institutions
-              amount: £2,400
-            - label: Standard rate
-              amount: £1,800
-              standard: true
+        intro: We have been doing community development and building software side by side since 2017. If you need more than the two packages, this is the work we take on.
+        theme:
+          title: Your own theme
+          # %{link} is the link_text, linked to that site
+          body_html: "A complete design of your own, built with you. %{link} is one: its own name, look and web address, with PlaceCal behind it."
+          link_text: The Trans Dimension
+        apps:
+          title: White label, apps and integrations
+          body: Use our API to put your events inside your own website or app. We also build bespoke apps and website integrations.
+        development:
+          title: Community development
+          body: Hands-on work on the ground in your neighbourhoods. We come to you, bring groups together and get them listed, in person.
+        translation:
+          title: Translation
+          body: We can translate PlaceCal into other languages. We are looking for international partners, so get in touch if you want to bring it to your country.
       faq:
-        heading: Questions
+        heading: FAQs
         items:
-          - question: How does billing work?
-            answer: Billing is annual by invoice by default, with a 10% discount. Monthly payment by card is also available.
-          - question: I want to list several groups. Does that cost more?
-            answer: Your monthly service is priced by who you are, not by how many groups you list. Each tier has an approximate group guideline; it's not a hard limit, so if you're close to it, just talk to us.
-          - question: What counts as an Institution?
-            answer: The promises test, not size. If you need reporting, support guarantees and things in writing, you're an Institution. A big VCSE organisation happy without them stays at £50.
+          - question: Which one is right for us?
+            answer: "If a named person on your team will keep in touch with the groups, it's “you run it”. If not, it's “we run it”."
+          - question: Does it cost more to list more groups?
+            answer: No. The point is to get everyone on.
           - question: What if the fee is a barrier?
-            answer: Money should never be the reason your community can't use PlaceCal. If the fee is a barrier, talk to us.
+            answer: Talk to us. We can also help you cost it into a funding bid.
+          - question: Do you charge VAT?
+            answer: No VAT currently applies.
+          - question: Is training included?
+            answer: Yes. Training is included in both.
+      cta:
+        heading: Let's talk about your community
+        body: A 30-minute call. We listen, and tell you honestly whether PlaceCal is the right fit.
     demo:
       title: Book a 30-minute chat.
-      lede: No pitch deck. We listen, learn what you're trying to do, and tell you honestly whether PlaceCal is the right fit.
+      lede: We listen, learn what you're trying to do, and tell you honestly whether PlaceCal is the right fit.
+      quote: Do I know what's happening locally? No. Having a tool to let people find this out themselves seems totally obvious.
+      quote_by: GP, Manchester
       flash:
         success: Thanks, we've got your message and we'll be in touch to pick a time.
         error: Sorry, we couldn't send that. Please check the form below and try again.

@@ -2,6 +2,8 @@
 
 # A top-level Join model would be shadowed by this namespace in every view.
 class Components::Join::Base < Components::Base
+  include Components::Join::ApexUrl
+
   # Ordered: audience key to card image, so none exists without artwork.
   AUDIENCES = {
     'community_groups' => 'home/audiences/communities_square.jpg',
@@ -17,12 +19,6 @@ class Components::Join::Base < Components::Base
   AUDIENCE_SLUGS = AUDIENCE_KEYS.map { |key| slug_for(key) }.freeze
 
   private
-
-  # Absolute URL of the apex (the nationwide directory) from the join
-  # subdomain, e.g. https://placecal.org or http://lvh.me:3000.
-  def apex_url
-    "#{request.protocol}#{request.domain}#{request.port_string}"
-  end
 
   def audience_path(key)
     join_audience_path(self.class.slug_for(key))
