@@ -25,9 +25,8 @@ class Join::PagesController < ApplicationController
     render Views::Join::Features.new
   end
 
-  # The directory's Our Story page with the join hero and a closing CTA to book-a-demo.
   def our_story
-    render Views::Directory::OurStory.new(cta_path: join_demo_path, cta_label: t('join.nav.book_call'), join_hero: true)
+    render Views::Directory::OurStory.new(join_site: true)
   end
 
   def pricing

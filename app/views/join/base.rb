@@ -25,19 +25,8 @@ class Views::Join::Base < Views::Base
     end
   end
 
-  # The closing call to action on the salmon band, shared by home and pricing.
   def render_cta(heading:, body:, kicker: nil)
-    content_for(:join_footer_flush, true)
-    Join::Section(band: :salmon) do
-      div(class: 'max-w-(--width-prose-md) mx-auto text-center') do
-        UI::Stack(gap: :md, align: :center) do
-          UI::Kicker { kicker } if kicker
-          UI::Heading(size: :section, tone: :inherit, balance: true) { heading }
-          UI::Text { body }
-          UI::Button(variant: :ink, size: :lg, href: join_demo_path) { t('join.cta.button') }
-        end
-      end
-    end
+    Join::ClosingCta(heading:, body:, kicker:)
   end
 
   # A section's optional all-caps label over its serif heading. on_band takes the band's ink.

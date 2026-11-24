@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
-# Also served on the join site, which passes its own hero and closing CTA path.
+# Also served on the join site, with the join hero and closing band.
 class Views::Directory::OurStory < Views::Base
   T = 'directory.pages.our_story'
   IMAGE_BASE = 'home/our_story'
 
-  prop :cta_path, _Nilable(String), default: nil
-  prop :cta_label, _Nilable(String), default: nil
-  prop :join_hero, _Boolean, default: false
+  prop :join_site, _Boolean, default: false
 
   # Alternating illustration/text rows — rows 1 & 3 image-left, row 2 image-right.
   PROBLEMS = [
@@ -27,13 +25,13 @@ class Views::Directory::OurStory < Views::Base
     content_for(:og_page) { 'our_story' }
     content_for(:description) { t("#{T}.hero_lede") }
 
-    @join_hero ? render_join_hero : render_directory_hero
+    @join_site ? render_join_hero : render_directory_hero
     render_start
     render_quote
     render_problems
     render_turning
     render_solutions
-    render_cta
+    @join_site ? render_join_cta : render_cta
   end
 
   private
@@ -163,14 +161,18 @@ class Views::Directory::OurStory < Views::Base
     end
   end
 
+  def render_join_cta
+    Join::ClosingCta(kicker: t('join.home.cta.kicker'), heading: t('join.home.cta.heading'), body: t('join.home.cta.body'))
+  end
+
   def render_cta
     section(class: 'pt-12 pb-4') do
       narrow do
         UI::Card(variant: :highlight, padding: :xl) do
           UI::Cluster(gap: :lg, justify: :between) do
             UI::Heading(size: :section, tone: :inherit, spacing: :none) { t("#{T}.cta.heading") }
-            UI::Button(variant: :light, size: :lg, href: @cta_path || get_in_touch_path) do
-              plain @cta_label || t("#{T}.cta.button")
+            UI::Button(variant: :light, size: :lg, href: get_in_touch_path) do
+              plain t("#{T}.cta.button")
               span(aria_hidden: 'true') { safe('→') }
             end
           end
