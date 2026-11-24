@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-# Also served on the join site, which passes its own closing CTA path.
+# Also served on the join site, which passes its own hero and closing CTA path.
 class Views::Directory::OurStory < Views::Base
   T = 'directory.pages.our_story'
   IMAGE_BASE = 'home/our_story'
 
   prop :cta_path, _Nilable(String), default: nil
-  prop :root_label, _Nilable(String), default: nil
   prop :cta_label, _Nilable(String), default: nil
+  prop :join_hero, _Boolean, default: false
 
   # Alternating illustration/text rows — rows 1 & 3 image-left, row 2 image-right.
   PROBLEMS = [
@@ -27,14 +27,7 @@ class Views::Directory::OurStory < Views::Base
     content_for(:og_page) { 'our_story' }
     content_for(:description) { t("#{T}.hero_lede") }
 
-    Directory::PageHero(
-      breadcrumb_label: t("#{T}.heading"),
-      root_label: @root_label,
-      kicker: t("#{T}.heading"),
-      title: t("#{T}.hero_title"),
-      subtitle: t("#{T}.hero_lede")
-    )
-
+    @join_hero ? render_join_hero : render_directory_hero
     render_start
     render_quote
     render_problems
@@ -44,6 +37,29 @@ class Views::Directory::OurStory < Views::Base
   end
 
   private
+
+  def render_directory_hero
+    Directory::PageHero(
+      breadcrumb_label: t("#{T}.heading"),
+      kicker: t("#{T}.heading"),
+      title: t("#{T}.hero_title"),
+      subtitle: t("#{T}.hero_lede")
+    )
+  end
+
+  def render_join_hero
+    Join::Section(band: :salmon) do
+      Join::Columns() do |c|
+        c.column(8) do
+          UI::Stack(gap: :md) do
+            UI::Kicker() { t("#{T}.heading") }
+            h1(class: 'join-headline text-foreground-darker') { t("#{T}.hero_title") }
+            UI::Text(variant: :intro) { t("#{T}.hero_lede") }
+          end
+        end
+      end
+    end
+  end
 
   # Decisively narrower than the hero: a near-equal width reads as misaligned.
   def narrow(classes = '', &)

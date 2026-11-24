@@ -271,11 +271,17 @@ RSpec.describe "Join marketing site", type: :request do
       expect(header_cta).to include(I18n.t("join.nav.book_call"))
     end
 
-    it "reuses the directory Our Story page with a join breadcrumb and book-a-demo CTA" do
+    it "reuses the directory Our Story page with the join hero and book-a-demo CTA" do
       get "http://join.lvh.me/our-story"
-      expect(response.body).to include(CGI.escapeHTML(I18n.t("directory.pages.our_story.hero_title")))
-      expect(response.body).to include(I18n.t("join.breadcrumbs.root"))
+      h1 = Nokogiri::HTML(response.body).at_css("h1.join-headline")
+      expect(h1.text.squish).to eq(I18n.t("directory.pages.our_story.hero_title"))
       expect(response.body).to include("/book-a-demo")
+    end
+
+    it "keeps the directory hero on the directory Our Story page" do
+      get "http://lvh.me/our-story"
+      expect(Nokogiri::HTML(response.body).at_css("h1.join-headline")).to be_nil
+      expect(response.body).to include(CGI.escapeHTML(I18n.t("directory.pages.our_story.hero_title")))
     end
   end
 
