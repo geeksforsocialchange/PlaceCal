@@ -2,6 +2,8 @@
 
 # Base for join site pages. Copy lives under join.* in join.en.yml.
 class Views::Join::Base < Views::Base
+  include Components::Join::ApexUrl
+
   register_output_helper :icon
 
   private
@@ -23,21 +25,23 @@ class Views::Join::Base < Views::Base
     end
   end
 
-  def render_cta(heading:, body:, button:)
-    section(class: 'py-12 bg-secondary') do
-      div(class: 'container-narrow text-center') do
-        UI::Heading(size: :title, tone: :strong, spacing: :md) { heading }
-        UI::Text(tone: :strong, spacing: :lg) { body }
-        UI::Button(variant: :dark, href: join_demo_path) { button }
+  # The closing call to action on the salmon band, shared by home and pricing.
+  def render_cta(heading:, body:, kicker: nil)
+    Join::Section(band: :salmon) do
+      div(class: 'max-w-(--width-prose-md) mx-auto text-center') do
+        UI::Stack(gap: :md, align: :center) do
+          UI::Kicker { kicker } if kicker
+          UI::Heading(size: :display, tone: :inherit, balance: true) { heading }
+          UI::Text { body }
+          UI::Button(variant: :ink, size: :lg, href: join_demo_path) { t('join.cta.button') }
+        end
       end
     end
   end
 
-  def section_intro(kicker:, heading:, lede: nil, center: false)
-    div(class: "mb-7 #{'text-center' if center}") do
-      UI::Kicker(tone: :muted, spacing: :xs) { kicker }
-      UI::Heading(spacing: :none) { heading }
-      p(class: "text-detail text-tertiary leading-relaxed mt-2 mb-0 max-w-(--width-prose) #{'mx-auto' if center}") { lede } if lede
-    end
+  # A section's optional all-caps label over its serif heading. on_band takes the band's ink.
+  def section_heading(heading, kicker: nil, on_band: false, size: :display)
+    UI::Kicker(tone: on_band ? :inherit : :accent) { kicker } if kicker
+    UI::Heading(size:, tone: on_band ? :inherit : :strong, balance: true) { heading }
   end
 end

@@ -7,7 +7,10 @@ class Components::UI::Card < Components::Base
     featured: 'bg-cream-warm border-2 border-rules',
     panel: 'bg-home-background-3',
     # Dark text keeps AA on the secondary fill of every colour theme.
-    highlight: 'bg-secondary text-foreground-dark'
+    highlight: 'bg-secondary text-foreground-dark',
+    cream: 'bg-cream border-2 border-rules',
+    # A cream card picked out from a :cream one beside it, such as the fuller package on join pricing
+    cream_strong: 'bg-cream border-2 border-foreground-dark'
   }.freeze
 
   PADDING = { none: nil, sm: 'p-4', md: 'p-5', lg: 'p-6', xl: 'p-8' }.freeze

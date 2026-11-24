@@ -1,18 +1,27 @@
 # frozen_string_literal: true
 
-# A testimonial with its credit. Takes translated strings.
+# A pull quote with its credit. Takes translated strings.
 class Components::Join::Quote < Components::Join::Base
-  # Pick the surface that differs from the section behind it: the page itself is the :light colour.
-  SURFACES = { light: 'bg-home-background', shaded: 'bg-home-background-3' }.freeze
+  register_output_helper :icon
+
+  # :on_primary darkens the mark and credit, which fall below AA on the green band.
+  TONES = {
+    default: { ink: 'text-foreground-dark', mark: 'text-secondary', credit: :muted },
+    on_primary: { ink: 'text-foreground-darker', mark: nil, credit: :inherit }
+  }.freeze
 
   prop :text, String
   prop :by, String
-  prop :surface, _Union(*SURFACES.keys), default: :shaded
+  prop :tone, _Union(*TONES.keys), default: :default
 
   def view_template
-    blockquote(class: "#{SURFACES[@surface]} border-l-5 border-secondary-deep rounded-sm p-6 m-0") do
-      p(class: 'font-serif text-card leading-snug mt-0 mb-3') { @text }
-      UI::Kicker(as: :footer, tone: :muted) { @by }
+    tone = TONES[@tone]
+    blockquote(class: "m-0 #{tone[:ink]}") do
+      UI::Stack(gap: :md) do
+        span(class: ['block', tone[:mark]].compact.join(' ')) { icon(:home_quote_open, size: '12') }
+        p(class: 'font-serif text-xl leading-snug') { @text }
+        UI::Kicker(as: :footer, tone: tone[:credit]) { @by }
+      end
     end
   end
 end

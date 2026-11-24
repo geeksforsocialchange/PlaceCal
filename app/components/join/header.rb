@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 # Header for the join site: a salmon band cross-linking back to the directory,
-# then the shared nil-site navigation with a "Book a demo" CTA.
+# then the shared nil-site navigation with a "Book a call" CTA.
 class Components::Join::Header < Components::Join::Base
   def view_template
     render_band
     render Components::Shared::Navigation.new(
       navigation: nav_items,
       site: nil,
-      cta_label: t('join.nav.book_demo'),
+      cta_label: t('join.nav.book_call'),
       cta_path: join_demo_path,
       home_heading: false
     )

@@ -6,7 +6,7 @@ class Join::PagesController < ApplicationController
   invisible_captcha only: %i[demo_create]
 
   def home
-    render Views::Join::Home.new(stats: DirectoryStatsQuery.fetch_cached)
+    render Views::Join::Home.new
   end
 
   def audiences
@@ -28,7 +28,7 @@ class Join::PagesController < ApplicationController
   # The directory's Our Story page, reused in the join chrome with the
   # closing CTA pointed at book-a-demo.
   def our_story
-    render Views::Directory::OurStory.new(cta_path: join_demo_path, cta_label: t('join.nav.book_demo'),
+    render Views::Directory::OurStory.new(cta_path: join_demo_path, cta_label: t('join.nav.book_call'),
                                           root_label: t('join.breadcrumbs.root'))
   end
 

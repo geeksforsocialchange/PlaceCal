@@ -14,7 +14,7 @@ class Components::Join::Footer < Components::Join::Base
       [t('join.footer.product'), [
         [t('join.footer.features'), join_features_path],
         [t('join.footer.pricing'), join_pricing_path],
-        [t('join.footer.book_demo'), join_demo_path],
+        [t('join.footer.book_call'), join_demo_path],
         [t('join.footer.directory'), apex_url]
       ]],
       [t('join.footer.about'), [
