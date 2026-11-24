@@ -4,10 +4,10 @@
 # @display width page
 class UI::CardPreview < Lookbook::Preview
   # @label Variants
-  # @notes `:outlined` is the default; `:featured` sets one card apart; `:panel` groups a sidebar section or filter form; `:highlight` is a call to action; `:cream` and `:cream_strong` are join cards.
+  # @notes `:outlined` is the default; `:featured` sets one card apart; `:panel` groups a sidebar section or filter form; `:highlight` is a call to action; `:cream` is a join card.
   def variants
     render(Grid.new do |g|
-      %i[outlined featured panel highlight cream cream_strong].each do |variant|
+      %i[outlined featured panel highlight cream].each do |variant|
         g.render(Components::UI::Card.new(variant:)) do
           g.strong { ":#{variant}" }
           g.p(class: "mt-2 mb-0") { "A short line of card text." }

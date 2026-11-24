@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Views::Join::Pricing < Views::Join::Base
-  PACKAGES = { you_run: :cream, we_run: :cream_strong }.freeze
+  PACKAGES = %i[you_run we_run].freeze
   EXTRAS = { theme: :app_window, apps: :code, development: :users, translation: :languages }.freeze
   THEME_EXAMPLE_URL = 'https://transdimension.uk'
 
@@ -37,14 +37,14 @@ class Views::Join::Pricing < Views::Join::Base
   def render_packages
     Join::Section(aria_label: t('join.pricing.aria_label')) do
       Join::Columns(align: :stretch) do |c|
-        PACKAGES.each { |key, variant| c.column(6, fill: true) { render_package(key, variant) } }
+        PACKAGES.each { |key| c.column(6, fill: true) { render_package(key) } }
       end
     end
   end
 
-  def render_package(key, variant)
+  def render_package(key)
     scope = "join.pricing.packages.#{key}"
-    UI::Card(tag: :article, variant:, padding: :xl) do
+    UI::Card(tag: :article, variant: :cream, padding: :xl) do
       UI::Stack(gap: :sm_md) do
         UI::Kicker(as: :h2, tone: :accent) { t("#{scope}.name") }
         UI::Cluster(gap: :xl, row_gap: :xs, align: :baseline) do
