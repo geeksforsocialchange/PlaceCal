@@ -88,6 +88,12 @@ RSpec.describe "Join marketing site", type: :request do
       expect(titles).to include(*I18n.t("join.features.groups").pluck(:title))
     end
 
+    it "links nowhere to the audience pages while their copy is unagreed" do
+      get "http://join.lvh.me/"
+      hrefs = Nokogiri::HTML(response.body).css("a").pluck(:href)
+      expect(hrefs.grep(/who-its-for/)).to be_empty
+    end
+
     it "404s an unknown audience" do
       get "http://join.lvh.me/who-its-for/pigeon-fanciers"
       expect(response).to have_http_status(:not_found)

@@ -36,7 +36,8 @@ class Components::Join::Header < Components::Join::Base
 
   def nav_items
     [
-      [t('join.nav.audiences'), join_audiences_path],
+      # The audience pages are unlinked until their copy is agreed.
+      # [t('join.nav.audiences'), join_audiences_path],
       [t('join.nav.features'), join_features_path],
       [t('join.nav.our_story'), join_our_story_path],
       [t('join.nav.pricing'), join_pricing_path]

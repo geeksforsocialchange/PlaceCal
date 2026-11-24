@@ -9,7 +9,8 @@ class Components::Join::Footer < Components::Join::Base
 
   def columns
     [
-      [t('join.footer.audiences'), AUDIENCE_KEYS.map { |key| [t("join.audiences.#{key}.title"), audience_path(key)] }],
+      # The audience pages are unlinked until their copy is agreed.
+      # [t('join.footer.audiences'), AUDIENCE_KEYS.map { |key| [t("join.audiences.#{key}.title"), audience_path(key)] }],
       [t('join.footer.product'), [
         [t('join.footer.features'), join_features_path],
         [t('join.footer.pricing'), join_pricing_path],

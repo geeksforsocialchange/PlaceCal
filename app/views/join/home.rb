@@ -138,11 +138,10 @@ class Views::Join::Home < Views::Join::Base
         section_intro(
           kicker: t('join.home.audiences.kicker'),
           heading: t('join.home.audiences.heading'),
-          lede: t('join.home.audiences.lede'),
           center: true
         )
         UI::Grid(cols: { md: 2, lg: 3 }) do
-          Join::Base::AUDIENCE_KEYS.each { |key| Join::AudienceCard(audience: key) }
+          Join::Base::AUDIENCE_KEYS.each { |key| Join::AudienceCard(audience: key, linked: false) }
         end
       end
     end
