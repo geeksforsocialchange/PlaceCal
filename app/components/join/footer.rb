@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 class Components::Join::Footer < Components::Join::Base
+  prop :flush, _Boolean, default: false
+
   def view_template
-    Shared::Footer(tagline: t('join.footer.tagline'), logo_alt: t('join.footer.placecal_logo_alt'), columns:)
+    Shared::Footer(tagline: t('join.footer.tagline'), logo_alt: t('join.footer.placecal_logo_alt'), columns:, flush: @flush)
   end
 
   private

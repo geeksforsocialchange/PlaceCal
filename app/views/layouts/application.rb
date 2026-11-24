@@ -84,7 +84,7 @@ class Views::Layouts::Application < Phlex::HTML
             yield
           end
           if join_site?
-            Join::Footer()
+            Join::Footer(flush: content_for?(:join_footer_flush))
           elsif site.nil?
             Directory::Footer()
           elsif (footer_class = theme.footer_class)

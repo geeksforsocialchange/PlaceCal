@@ -27,6 +27,7 @@ class Views::Join::Base < Views::Base
 
   # The closing call to action on the salmon band, shared by home and pricing.
   def render_cta(heading:, body:, kicker: nil)
+    content_for(:join_footer_flush, true)
     Join::Section(band: :salmon) do
       div(class: 'max-w-(--width-prose-md) mx-auto text-center') do
         UI::Stack(gap: :md, align: :center) do

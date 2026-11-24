@@ -21,6 +21,7 @@ class Views::Join::Features < Views::Join::Base
   private
 
   def render_planned
+    content_for(:join_footer_flush, true)
     section(class: 'py-12 bg-home-background-3', aria_labelledby: 'planned-heading') do
       div(class: 'container-public') do
         UI::Kicker(tone: :muted, spacing: :xs) { t('join.features.planned.kicker') }
