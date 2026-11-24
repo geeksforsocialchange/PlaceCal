@@ -68,7 +68,10 @@ class Views::Join::Home < Views::Join::Base
             UI::Text(measure: :prose_md) { strong { t('join.home.approach.closing') } }
           end
         end
-        c.column(4) { image_tag('home/our_story/training.png', alt: '', class: 'block w-full h-auto') }
+        c.column(4) do
+          image_tag('join/hulme-park-winter.jpg', alt: t('join.home.approach.image_alt'),
+                                                  class: 'block w-full h-auto rounded-card')
+        end
       end
     end
   end
