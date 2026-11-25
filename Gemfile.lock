@@ -261,7 +261,7 @@ GEM
       activesupport (>= 6.1)
     graphiql-rails (1.10.5)
       railties
-    graphql (2.6.15)
+    graphql (2.6.16)
       base64
       fiber-storage
       logger
