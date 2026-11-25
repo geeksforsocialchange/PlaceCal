@@ -12,7 +12,7 @@ class LocationRuleReport
   # What the event page shows: the venue name (Event#partner_at_location) and the event's own address
   Shown = Data.define(:place, :address) do
     def key
-      [place&.id, address && [*address.street_lines, address.postcode].map { |line| line.to_s.squish.downcase }]
+      [place&.id, address&.all_address_lines&.map { |line| line.squish.downcase }]
     end
 
     def nothing?
@@ -45,7 +45,7 @@ class LocationRuleReport
     end
   end
 
-  # @return [Integer] upcoming events on a calendar
+  # @return [Integer] upcoming events on a calendar, less those whose postcode couldn't be looked up
   def checked
     tally && @checked
   end
@@ -195,8 +195,8 @@ class LocationRuleReport
     [event.id, event.summary, event.calendar_id, event.calendar.name, event.calendar.strategy, change.kind, change.current.to_s, change.new.to_s]
   end
 
-  # Summaries and location text come from outside feeds, and a spreadsheet runs a cell starting with = + - @ as a formula
+  # Summaries and location text come from outside feeds, and a spreadsheet can run a cell starting with = + - @ tab or return as a formula
   def spreadsheet_safe(value)
-    value.is_a?(String) && value.start_with?('=', '+', '-', '@') ? "'#{value}" : value
+    value.is_a?(String) && value.start_with?('=', '+', '-', '@', "\t", "\r") ? "'#{value}" : value
   end
 end

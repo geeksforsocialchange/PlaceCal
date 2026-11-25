@@ -21,7 +21,7 @@ RSpec.describe LocationRuleReport do
   end
 
   def oak_hall_address
-    create(:address, street_address: "Oak Hall", street_address2: "5 Elm Street", postcode: "ZZMB 1RS")
+    create(:address, street_address: "Oak Hall", street_address2: "5 Elm Street", city: "Millbrook", postcode: "ZZMB 1RS")
   end
 
   before do
@@ -99,6 +99,44 @@ RSpec.describe LocationRuleReport do
       change = described_class.new.changes.sole
 
       expect(change.new.to_s).to eq("Riverside Community Hub, Oak Hall, 5 Elm Street, ZZMB 1RS, 1 River Road, ZZMB 1RS")
+    end
+  end
+
+  describe "comparing addresses" do
+    it "leaves out an address that prints the same, even with a line moved into the city" do
+      old = create(:address, street_address: "Oak Hall", street_address2: "Millbrook", city: nil, postcode: "ZZMB 1RS")
+      event_on(calendar_with("event"), "Oak Hall, Millbrook, ZZMB 1RS", address: old)
+
+      expect(described_class.new.changes).to be_empty
+    end
+
+    it "lists an old address with no city when the new one prints a city" do
+      old = create(:address, street_address: "Oak Hall", street_address2: "5 Elm Street", city: nil, postcode: "ZZMB 1RS")
+      event_on(calendar_with("event"), oak_hall, address: old)
+
+      change = described_class.new.changes.sole
+
+      expect([change.current.to_s, change.new.to_s, change.kind]).to eq(["Oak Hall, 5 Elm Street, ZZMB 1RS", "Oak Hall, 5 Elm Street, Millbrook, ZZMB 1RS", "address"])
+    end
+
+    it "shows no venue name for a hidden place, now or under the rule", :aggregate_failures do
+      hub.update!(hidden: true, hidden_reason: "Test", hidden_blame_id: 1)
+      event_on(calendar_with("place", place: hub), "", place: hub, address: hub.address)
+
+      report = described_class.new
+
+      expect(report.changes).to be_empty
+      expect(report.checked).to eq(1)
+    end
+
+    it "lists an event whose hidden place gives way to a visible venue" do
+      library = create(:oldtown_library)
+      library.update!(hidden: true, hidden_reason: "Test", hidden_blame_id: 1)
+      event_on(calendar_with("event"), "Riverside Community Hub, 1 River Road, ZZMB 1RS", place: library, address: library.address)
+
+      change = described_class.new.changes.sole
+
+      expect([change.current.place, change.new.place]).to eq([nil, hub])
     end
   end
 
@@ -195,6 +233,16 @@ RSpec.describe LocationRuleReport do
     end
   end
 
+  it "escapes CSV cells that start with a tab or a carriage return", :aggregate_failures do
+    calendar = calendar_with("no_location")
+    event_on(calendar, oak_hall, summary: "\tTab")
+    event_on(calendar, oak_hall, summary: "\rReturn")
+
+    summaries = CSV.parse(described_class.new.to_csv).drop(1).map { |row| row[1] }
+
+    expect(summaries).to contain_exactly("'\tTab", "'\rReturn")
+  end
+
   it "writes nothing to the database" do
     event_on(calendar_with("no_location"), oak_hall)
     event_on(calendar_with("room_number", place: hub), "Room 4", place: hub, address: hub.address)
@@ -204,5 +252,12 @@ RSpec.describe LocationRuleReport do
       described_class.new.to_text
       described_class.new.to_csv
     end.not_to(change(&counts))
+  end
+
+  it "refuses to write while it runs" do
+    event_on(calendar_with("no_location"), oak_hall)
+    allow(CalendarImporter::LocationRule).to(receive(:new).and_wrap_original { |original, **args| original.call(**args, save: true) })
+
+    expect { described_class.new.to_text }.to raise_error(ActiveRecord::ReadOnlyError)
   end
 end

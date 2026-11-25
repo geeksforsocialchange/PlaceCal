@@ -21,7 +21,7 @@ class CalendarImporter::LocationResolver
   # A location that is only a link is a meeting or a webpage, not an unreadable street address
   ONLINE_LINK = %r{\Ahttps?://\S+\z}i
 
-  # The location text split on ", " with the postcode removed, e.g.
+  # The location text split on commas with the postcode and punctuation-only parts removed, e.g.
   # "Age UK Hall, 1 Duke Street, Manchester M1 2AB" with postcode "M1 2AB" gives ["Age UK Hall", "1 Duke Street", "Manchester"].
   # @return [Array<String>]
   def self.location_components(location, postcode)
@@ -29,9 +29,9 @@ class CalendarImporter::LocationResolver
     postcode_pattern = /\b#{Regexp.escape(postcode)}\b/i if postcode.present?
 
     location.to_s
-            .split(', ')
+            .split(/\s*,\s*/)
             .map { |component| postcode_pattern ? component.gsub(postcode_pattern, '').strip : component.strip }
-            .compact_blank
+            .grep_v(/\A[[:punct:]\s]*\z/)
   end
 
   # @return [Symbol, nil] why the event's location text couldn't be read as an address (see Address.build_from_components_with_reason)

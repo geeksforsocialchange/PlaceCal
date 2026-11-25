@@ -229,6 +229,12 @@ RSpec.describe CalendarImporter::LocationResolver do
 
       expect(resolver.send(:event_location_components)).to eq(["Ukrainian Centre", "Age UK Hall", "12 Duke Street", "Manchester"])
     end
+
+    it "ignores a trailing comma and the spacing around commas", :aggregate_failures do
+      expect(described_class.location_components("Oak Hall, 5 Elm Street, ZZMB 1RS, ", "ZZMB 1RS")).to eq(["Oak Hall", "5 Elm Street"])
+      expect(described_class.location_components("Oak Hall, 5 Elm Street, ZZMB 1RS,", "ZZMB 1RS")).to eq(["Oak Hall", "5 Elm Street"])
+      expect(described_class.location_components("Oak Hall ,5 Elm Street,, - ,ZZMB 1RS", "ZZMB 1RS")).to eq(["Oak Hall", "5 Elm Street"])
+    end
   end
 
   describe "room_number strategy" do
