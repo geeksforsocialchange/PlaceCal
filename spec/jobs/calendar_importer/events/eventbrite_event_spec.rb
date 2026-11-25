@@ -76,4 +76,22 @@ RSpec.describe CalendarImporter::Events::EventbriteEvent do
       expect(event.price_from).to eq(0)
     end
   end
+
+  context "when the event has no description" do
+    let(:payload) { base_payload.except("description") }
+
+    it "gives no description and still builds its attributes" do
+      expect(event.description).to be_nil
+      expect(event.attributes).to include(summary: "Queer Lit Social", description: "")
+    end
+  end
+
+  context "when the event has no name" do
+    let(:payload) { base_payload.except("name") }
+
+    it "gives a blank title, which the event's validation then rejects" do
+      expect(event.summary).to be_nil
+      expect(event.attributes[:summary]).to eq("")
+    end
+  end
 end

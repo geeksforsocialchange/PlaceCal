@@ -122,6 +122,7 @@ RSpec.describe CalendarImporterJob do
       {
         "times out" => ->(stub) { stub.to_timeout },
         "times out at the socket" => ->(stub) { stub.to_raise(Errno::ETIMEDOUT) },
+        "times out writing" => ->(stub) { stub.to_raise(Net::WriteTimeout) },
         "fails TLS" => ->(stub) { stub.to_raise(OpenSSL::SSL::SSLError.new("certificate verify failed")) }
       }.each do |failure, stub_with|
         it "marks the source unreachable when it #{failure}" do

@@ -75,19 +75,33 @@ module CalendarImporter::Parsers
 
     private
 
+    # A short list is worse than none: the import deletes every upcoming event missing from it
     def fetch_events
       events = []
       page = 1
+      first = last = nil
       loop do
         json = get_json("organizers/#{organizer_id}/events/?expand=venue&page=#{page}", "Eventbrite organiser events page #{page}")
         raise InvalidResponse, 'Eventbrite responded without an events list' unless events_page?(json)
 
+        last = json['pagination']
+        first ||= last
+        raise InvalidResponse, 'Eventbrite changed the page count mid-list' if last['page_count'] != first['page_count']
+
         events.concat(json['events'])
-        break if page >= json['pagination']['page_count']
+        break if page >= last['page_count']
 
         page += 1
       end
+      check_complete!(events, first, last)
       events
+    end
+
+    def check_complete!(events, first, last)
+      raise InvalidResponse, 'Eventbrite reported more events after the last page' if last['has_more_items'] == true
+
+      total = first['object_count']
+      raise InvalidResponse, "Eventbrite listed #{events.size} of #{total} events" if total.is_a?(Integer) && events.size < total
     end
 
     def events_page?(json)
@@ -106,7 +120,8 @@ module CalendarImporter::Parsers
         retry_on: DROPPED_CONNECTION_ERRORS,
         retry_if: ->(r) { TRANSIENT_HTTP_STATUSES.include?(r.code) }
       ) do
-        HTTParty.get("#{API_BASE_URL}/#{path}", headers: request_headers)
+        # Not following redirects keeps the token from being sent to another host
+        HTTParty.get("#{API_BASE_URL}/#{path}", headers: request_headers, follow_redirects: false)
       end
 
       raise TransientFailure, "#{context}: HTTP #{response.code}" if TRANSIENT_HTTP_STATUSES.include?(response.code)

@@ -12,11 +12,11 @@ module CalendarImporter::Events
     end
 
     def summary
-      @event['name']['text']
+      @event.dig('name', 'text')
     end
 
     def description
-      @event['description']['html']
+      @event.dig('description', 'html')
     end
 
     def publisher_url
@@ -57,13 +57,13 @@ module CalendarImporter::Events
     end
 
     def dtstart
-      DateTime.parse(@event['start']['utc'])
+      DateTime.parse(@event.dig('start', 'utc'))
     rescue StandardError
       nil
     end
 
     def dtend
-      DateTime.parse(@event['end']['utc'])
+      DateTime.parse(@event.dig('end', 'utc'))
     rescue StandardError
       nil
     end

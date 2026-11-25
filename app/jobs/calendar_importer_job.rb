@@ -40,8 +40,8 @@ class CalendarImporterJob < ApplicationJob
     report_bad_source_error I18n.t('admin.calendars.wizard.source.too_slow', minutes: MAX_RUN_TIME.in_minutes.to_i)
   end
 
-  # Mostly from parsers that fetch outside Parsers::Base.read_http_source, which maps the Net and SSL errors itself
-  rescue_from Net::ReadTimeout, Net::OpenTimeout, Errno::ETIMEDOUT, OpenSSL::SSL::SSLError do |exception|
+  # Net and SSL errors arrive from fetches outside Parsers::Base.read_http_source; ETIMEDOUT from any fetch
+  rescue_from Net::ReadTimeout, Net::OpenTimeout, Net::WriteTimeout, Errno::ETIMEDOUT, OpenSSL::SSL::SSLError do |exception|
     Rails.logger.warn(
       "Calendar source unreachable for calendar #{@calendar_id}: " \
       "#{exception.class} (#{exception.message})"

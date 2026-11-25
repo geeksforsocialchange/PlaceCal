@@ -15,9 +15,14 @@ VCR.configure do |c|
 
   # Filter sensitive API keys from cassettes
   c.before_record do |interaction|
-    # Scrub Authorization headers (used by TicketTailor Basic Auth etc.)
-    interaction.request.headers["Authorization"] = ["Basic FILTERED"] if interaction.request.headers["Authorization"]
+    # Scrub Authorization headers, keeping the scheme (Ticket Tailor's Basic, Eventbrite's Bearer)
+    if (authorization = interaction.request.headers["Authorization"])
+      interaction.request.headers["Authorization"] = ["#{authorization.first.to_s.split.first} FILTERED"]
+    end
   end
+
+  # Eventbrite also echoes its token back in the X-Rate-Limit response header
+  c.filter_sensitive_data("<EVENTBRITE_TOKEN>") { ENV.fetch("EVENTBRITE_TOKEN", nil) }
 end
 
 WebMock.disable_net_connect!(allow_localhost: true, allow: [/lvh\.me/])

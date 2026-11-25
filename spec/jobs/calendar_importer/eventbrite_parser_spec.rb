@@ -23,8 +23,9 @@ RSpec.describe CalendarImporter::Parsers::Eventbrite do
       "end" => { "utc" => "2030-01-01T20:00:00Z" }, "online_event" => false }
   end
 
-  def events_page(page, ids, page_count:)
-    { status: 200, body: { pagination: { page_number: page, page_count: }, events: ids.map { api_event(it) } }.to_json }
+  def events_page(page, ids, page_count:, **pagination)
+    body = { pagination: { page_number: page, page_count:, **pagination }, events: ids.map { api_event(it) } }
+    { status: 200, body: body.to_json }
   end
 
   def description(html) = { status: 200, body: { description: html }.to_json }
@@ -120,6 +121,67 @@ RSpec.describe CalendarImporter::Parsers::Eventbrite do
       stub_request(:get, organiser_api).to_timeout
 
       expect { parser.download_calendar }.to raise_error(Net::OpenTimeout)
+    end
+
+    context "when the list may be incomplete" do
+      before { stub_request(:get, organiser_api).to_return(status: 200, body: "{}") }
+
+      it "imports a complete two-page feed" do
+        stub_request(:get, events_page_url(1)).to_return(events_page(1, %w[1 2], page_count: 2, object_count: 3, has_more_items: true))
+        stub_request(:get, events_page_url(2)).to_return(events_page(2, %w[3], page_count: 2, object_count: 3, has_more_items: false))
+        stub_request(:get, %r{/description/\z}).to_return(description("<p>Full</p>"))
+
+        expect(parser.download_calendar.pluck("id")).to eq(%w[1 2 3])
+      end
+
+      it "returns no events for an organiser with none" do
+        stub_request(:get, events_page_url(1)).to_return(events_page(1, [], page_count: 0, object_count: 0, has_more_items: false))
+
+        expect(parser.download_calendar).to eq([])
+      end
+
+      it "raises InvalidResponse when the last page says more events follow" do
+        stub_request(:get, events_page_url(1)).to_return(events_page(1, %w[1], page_count: 1, has_more_items: true))
+
+        expect { parser.download_calendar }.to raise_error(CalendarImporter::Exceptions::InvalidResponse, /more events/)
+      end
+
+      it "raises InvalidResponse when the page count changes while the list is read" do
+        stub_request(:get, events_page_url(1)).to_return(events_page(1, %w[1], page_count: 2))
+        stub_request(:get, events_page_url(2)).to_return(events_page(2, %w[2], page_count: 3))
+
+        expect { parser.download_calendar }.to raise_error(CalendarImporter::Exceptions::InvalidResponse, /page count/)
+      end
+
+      it "raises InvalidResponse when fewer events arrive than the first page counted" do
+        stub_request(:get, events_page_url(1)).to_return(events_page(1, %w[1], page_count: 2, object_count: 4))
+        stub_request(:get, events_page_url(2)).to_return(events_page(2, %w[2], page_count: 2, object_count: 4))
+
+        expect { parser.download_calendar }.to raise_error(CalendarImporter::Exceptions::InvalidResponse, /2 of 4/)
+      end
+    end
+
+    it "raises ApiError for a redirect without following it" do
+      stub_request(:get, organiser_api).to_return(status: 302, headers: { "Location" => "https://elsewhere.example/" })
+
+      expect { parser.download_calendar }.to raise_error(described_class::ApiError, /HTTP 302/)
+      expect(a_request(:get, "https://elsewhere.example/")).not_to have_been_made
+    end
+
+    it "skips an event with no title as invalid and imports the rest" do
+      stub_request(:get, source_url).to_return(status: 200, body: "<html></html>")
+      stub_request(:get, organiser_api).to_return(status: 200, body: "{}")
+      untitled = api_event("2").except("name", "description")
+      body = { pagination: { page_number: 1, page_count: 1 }, events: [api_event("1"), untitled] }
+      stub_request(:get, events_page_url(1)).to_return(status: 200, body: body.to_json)
+      stub_request(:get, %r{/description/\z}).to_return(status: 200, body: { description: nil }.to_json)
+      saved = create(:calendar, source: source_url, strategy: "no_location", importer_mode: "eventbrite")
+      saved.update!(calendar_state: "in_worker")
+
+      CalendarImporter::CalendarImporterTask.new(saved, Time.zone.today, true).run
+
+      expect(saved.reload.calendar_state).to eq("idle")
+      expect(saved.events.pluck(:summary)).to eq(["Event 1"])
     end
 
     [401, 403].each do |status|
