@@ -46,7 +46,7 @@ RSpec.describe "Calendar sources list", type: :request do
 
   it "lists only the event fields a source fills", :aggregate_failures do
     expect(sources["ical"]["imports"]).to include("title", "repeats", "online_link")
-    expect(sources["ticket-solve"]["imports"]).to include("spaces_available")
-    expect(sources["ticket-solve"]["imports"]).not_to include("end_time", "sold_out")
+    expect(sources["ticket-solve"]["imports"]).to include("sold_out")
+    expect(sources["ticket-solve"]["imports"]).not_to include("end_time", "price")
   end
 end

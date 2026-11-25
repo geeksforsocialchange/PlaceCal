@@ -148,7 +148,7 @@ RSpec.describe CalendarImporter::OccurrenceSync do
     expect(result).to have_attributes(created: [], failures: [])
   end
 
-  describe "are_spaces_available" do
+  describe "a date's own sold-out state" do
     let(:from_date) { Time.zone.local(2030, 1, 1) }
 
     def sync_event(data)
@@ -162,60 +162,49 @@ RSpec.describe CalendarImporter::OccurrenceSync do
       ).call
     end
 
-    def row_for(data)
-      calendar.events.find_by!(uid: data.uid)
+    def sold_out_by_date(data)
+      calendar.events.where(uid: data.uid).order(:dtstart).pluck(:sold_out)
     end
 
-    it "writes an occurrence's status" do
-      data = CalendarImporter::Events::TicketsolveEvent.new(Nokogiri::XML(<<~XML).at_css("show"))
+    def ticketsolve_show(*statuses)
+      dates = statuses.each_with_index.map do |status, index|
+        "<event><opening_time_iso>2030-02-0#{index + 1}T19:00:00+00:00</opening_time_iso><status>#{status}</status></event>"
+      end
+      CalendarImporter::Events::TicketsolveEvent.new(Nokogiri::XML(<<~XML).at_css("show"))
         <show id="ts-1">
           <name>A show</name>
           <description>About the show</description>
           <url>https://example.ticketsolve.com/shows/1</url>
-          <events><event><opening_time_iso>2030-02-01T19:00:00+00:00</opening_time_iso><status>available</status></event></events>
+          <events>#{dates.join}</events>
         </show>
       XML
-
-      sync_event(data)
-
-      expect(row_for(data).are_spaces_available).to eq("available")
     end
 
-    it "clears it when the source's occurrences have no status" do
+    it "saves each Ticketsolve date's own state, and nil for a status it doesn't know" do
+      sync_event(ticketsolve_show("sold out", "available", " Sold Out ", "on sale soon", ""))
+
+      expect(sold_out_by_date(ticketsolve_show)).to eq([true, false, true, nil, nil])
+    end
+
+    it "updates a date whose status changes" do
+      sync_event(ticketsolve_show("sold out", "available"))
+      sync_event(ticketsolve_show("available", "sold out"))
+
+      expect(sold_out_by_date(ticketsolve_show)).to eq([false, true])
+    end
+
+    it "keeps the event's own state for a source with no per-date state" do
       data = CalendarImporter::Events::TickettailorEvent.new(
         "id" => "tt-1",
         "name" => "A Ticket Tailor event",
+        "tickets_available" => "true",
         "start" => { "date" => "2030-02-01", "time" => "19:00", "iso" => "2030-02-01T19:00:00+00:00" },
         "end" => { "date" => "2030-02-01", "time" => "21:00", "iso" => "2030-02-01T21:00:00+00:00" }
       )
-      sync_event(data)
-      row_for(data).update!(are_spaces_available: "Sold out")
 
       sync_event(data)
 
-      expect(row_for(data).are_spaces_available).to be_nil
-    end
-
-    it "leaves it untouched for iCal occurrences" do
-      ical = Icalendar::Calendar.parse(<<~ICS).first.events.first
-        BEGIN:VCALENDAR
-        VERSION:2.0
-        PRODID:-//PlaceCal//Test//EN
-        BEGIN:VEVENT
-        UID:ics-1
-        DTSTART:20300201T190000Z
-        DTEND:20300201T210000Z
-        SUMMARY:An iCal event
-        END:VEVENT
-        END:VCALENDAR
-      ICS
-      data = CalendarImporter::Events::IcsEvent.new(ical, ical.dtstart, ical.dtend)
-      sync_event(data)
-      row_for(data).update!(are_spaces_available: "Sold out")
-
-      sync_event(data)
-
-      expect(row_for(data).are_spaces_available).to eq("Sold out")
+      expect(sold_out_by_date(data)).to eq([false])
     end
   end
 

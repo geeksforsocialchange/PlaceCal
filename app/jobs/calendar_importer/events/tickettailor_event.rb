@@ -3,7 +3,7 @@
 module CalendarImporter::Events
   class TickettailorEvent < Base
     imports title: 'name', description: 'description', start_time: 'start.iso', end_time: 'end.iso', repeats: nil,
-            location: %w[venue.name venue.postal_code], webpage: 'url', online_link: nil, spaces_available: nil,
+            location: %w[venue.name venue.postal_code], webpage: 'url', online_link: nil,
             status: nil, image: 'images.header', source_categories: nil, source_organiser: nil,
             ticket_url: 'checkout_url', price: %w[ticket_types.price currency], sold_out: %w[tickets_available unavailable_status]
 

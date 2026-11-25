@@ -6,7 +6,7 @@ module CalendarImporter::Events
             location: 'LOCATION', webpage: %w[URL LOCATION],
             online_link: %w[X-GOOGLE-CONFERENCE X-MICROSOFT-SKYPETEAMSMEETINGURL X-MICROSOFT-ONLINEMEETINGCONFLINK
                             X-ZOOM-MEETING-URL LOCATION DESCRIPTION],
-            spaces_available: nil, status: 'STATUS', image: %w[IMAGE ATTACH], source_categories: 'CATEGORIES',
+            status: 'STATUS', image: %w[IMAGE ATTACH], source_categories: 'CATEGORIES',
             source_organiser: 'ORGANIZER',
             ticket_url: nil, price: nil, sold_out: nil
 
@@ -93,7 +93,7 @@ module CalendarImporter::Events
         overrides.reject(&:private?).map(&:overriding_occurrence).select { |occurrence| window.cover?(occurrence.start_time) }
     end
 
-    # iCal has no availability, so are_spaces_available is left as it is
+    # An overriding event's fields replace the series' on its date
     def attributes_for(occurrence)
       return attributes unless occurrence.override
 
