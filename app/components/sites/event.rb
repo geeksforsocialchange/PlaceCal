@@ -93,13 +93,8 @@ class Components::Sites::Event < Components::Base
       render_detail(:online, :event_online, online_label) if online?
       render_organiser if show_organiser?
       render_place if show_place?
-      render_tickets
+      render_detail(:tickets, :ticket, ticket_summary) if page? && ticket_summary
     end
-  end
-
-  def render_tickets
-    text = page? ? ticket_summary : ticket_label
-    render_detail(:tickets, :ticket, text) if text
   end
 
   # The page says so in a sentence above the details instead
@@ -115,8 +110,24 @@ class Components::Sites::Event < Components::Base
     div(**detail(:time, struck_class)) do
       render_icon(:event_time)
       whitespace
-      long_running?(@event) ? render_until : render_time_range
+      parts = time_line_parts
+      parts.one? ? parts.first.call : span { render_time_line(parts) }
     end
+  end
+
+  # Inline text, so a long line wraps after a comma; the times keep the flex spacing of a line with no other parts
+  def render_time_line(parts)
+    parts.each_with_index do |part, index|
+      plain t('events.card.time_line_separator') if index.positive?
+      part.is_a?(Proc) ? span(class: 'inline-flex') { part.call } : plain(part)
+    end
+  end
+
+  # The card adds its ticket label to the time line; the page gives it a line of its own
+  def time_line_parts
+    parts = [-> { long_running?(@event) ? render_until : render_time_range }]
+    label = ticket_label unless page?
+    label ? parts << label : parts
   end
 
   def render_time_range

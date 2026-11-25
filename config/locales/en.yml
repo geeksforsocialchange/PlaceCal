@@ -729,6 +729,7 @@ en:
       currency_units:
         GBP: "£"
         EUR: "€"
+        USD: "$"
     # Events running more than 3 days show their dates in place of a time range
     long_running:
       from_until: "From %{from} until %{to}"
@@ -757,6 +758,8 @@ en:
       organiser_prefix: ""
       online: "Online"
       online_on: "Online on %{service}"
+      # Between the parts of a card's time line, such as its times and its price
+      time_line_separator: ", "
       duration_hours:
         one: "%{count} hour"
         other: "%{count} hours"

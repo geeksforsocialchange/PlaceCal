@@ -12,7 +12,6 @@ RSpec.describe Components::Shared::TicketDetails, type: :component do
   end
 
   {
-    "the site card" => ->(event) { Components::Sites::Event.new(event:) },
     "the site row" => ->(event) { Components::Sites::EventRow.new(event:) },
     "the directory row" => ->(event) { Components::Directory::EventRow.new(event:) }
   }.each do |name, build|
@@ -65,6 +64,39 @@ RSpec.describe Components::Shared::TicketDetails, type: :component do
     end
   end
 
+  describe "on the site card's time line" do
+    def time_line(**attrs)
+      allow(event).to receive_messages(**attrs) if attrs.any?
+      render_inline(Components::Sites::Event.new(event:))
+      page.find("[data-part='detail'][data-variant='time']").text.squish
+    end
+
+    it("adds Free after the times") { expect(time_line(price_from: BigDecimal(0))).to eq("7pm – 9pm, Free") }
+    it("adds the price after the times") { expect(time_line(price_from: BigDecimal(5), price_currency: "GBP")).to eq("7pm – 9pm, From £5") }
+    it("says sold out in place of the price") { expect(time_line(price_from: BigDecimal(5), price_currency: "GBP", sold_out: true)).to eq("7pm – 9pm, Sold out") }
+    it("adds it after a start time with no end") { expect(time_line(dtend: nil, price_from: BigDecimal(0))).to eq("7pm, Free") }
+
+    it "adds it after a long-running event's dates" do
+      Timecop.travel(Time.zone.local(2026, 11, 1)) do
+        expect(time_line(dtend: Time.zone.parse("2027-01-17 17:00"), price_from: BigDecimal(0))).to eq("From 19 Nov until 17 Jan 2027, Free")
+      end
+    end
+
+    it "shows only the times with no ticket data" do
+      expect(time_line).to eq("7pm – 9pm")
+      expect(page).to have_no_css("[data-variant='tickets'], [data-icon-name='ticket']")
+    end
+
+    it "shows no price for a cancelled event" do
+      expect(time_line(status: "cancelled", price_from: BigDecimal(5), price_currency: "GBP")).to eq("7pm – 9pm")
+    end
+
+    it "gives no line of its own to the price" do
+      time_line(price_from: BigDecimal(0))
+      expect(page).to have_no_css("[data-variant='tickets']")
+    end
+  end
+
   describe "on the event page's details line" do
     def summary
       render_inline(Components::Sites::Event.new(event:, display_context: :page))
@@ -100,7 +132,8 @@ RSpec.describe Components::Shared::TicketDetails, type: :component do
     it("drops the pence from a whole amount") { expect(label("12", "GBP")).to eq("From £12") }
     it("keeps both places of pence") { expect(label("4.5", "GBP")).to eq("From £4.50") }
     it("uses the euro sign") { expect(label("10", "EUR")).to eq("From €10") }
-    it("puts the code before a currency with no symbol") { expect(label("15", "USD")).to eq("From USD 15") }
+    it("uses the dollar sign") { expect(label("15", "USD")).to eq("From $15") }
+    it("puts the code before a currency with no symbol") { expect(label("15", "CHF")).to eq("From CHF 15") }
     it("groups thousands") { expect(label("1250", "GBP")).to eq("From £1,250") }
 
     it "shows no price for an amount with no currency" do

@@ -63,7 +63,7 @@ class Sites::EventPreview < Lookbook::Preview
   end
 
   # @label Tickets, list view
-  # @notes Free, the lowest price, or sold out, which wins over the price.
+  # @notes After the times on the time line: Free, the lowest price, or sold out, which wins over the price.
   def tickets_card
     render CardList.new(TicketPreviewSupport.events)
   end
