@@ -7,7 +7,7 @@ class LocationRuleReport
   BATCH_SIZE = 1000
   NONE = '(none)'
   HEADERS = ['Event ID', 'Summary', 'Calendar ID', 'Calendar', 'Strategy', 'Changes', 'Current location', 'New location'].freeze
-  STRATEGY_HEADERS = ['Strategy', 'Events', 'Would change'].freeze
+  STRATEGY_HEADERS = ['Strategy', 'Events', 'Place changes', 'Address only'].freeze
 
   # What the event page shows: the venue name (Event#partner_at_location) and the event's own address
   Shown = Data.define(:place, :address) do
@@ -25,12 +25,16 @@ class LocationRuleReport
   end
 
   Change = Data.define(:event, :current, :new) do
+    def place?
+      current.place != new.place
+    end
+
     def kind
-      [('place' if current.place != new.place), ('address' if current.key.last != new.key.last)].compact.join(' and ')
+      [('place' if place?), ('address' if current.key.last != new.key.last)].compact.join(' and ')
     end
   end
 
-  StrategyCount = Struct.new(:events, :changes)
+  StrategyCount = Struct.new(:events, :place_changes, :address_changes)
 
   # @param calendar [Calendar]
   # @return [Array(Partner, Boolean)] the default location and room number flag the calendar's strategy carries over to
@@ -96,7 +100,7 @@ class LocationRuleReport
   def check_events
     @checked = @no_calendar = @lookup_unavailable = 0
     @changes = []
-    @by_strategy = Hash.new { |hash, strategy| hash[strategy] = StrategyCount.new(0, 0) }
+    @by_strategy = Hash.new { |hash, strategy| hash[strategy] = StrategyCount.new(0, 0, 0) }
     @without_location = { organiser_address: 0, no_organiser_address: 0 }
     @rules = {}
     @shown = {}
@@ -120,8 +124,9 @@ class LocationRuleReport
     current = shown(event.place, event.address)
     return if current.key == new.key
 
-    count.changes += 1
-    @changes << Change.new(event:, current:, new:)
+    change = Change.new(event:, current:, new:)
+    change.place? ? count.place_changes += 1 : count.address_changes += 1
+    @changes << change
   end
 
   # Events in a series share their location text, so each calendar's text is worked out once
@@ -151,7 +156,7 @@ class LocationRuleReport
   def summary_lines
     [
       "Upcoming events checked: #{checked}",
-      "Would change: #{changes.size}",
+      "Would change: #{changes.size} (place: #{changes.count(&:place?)}, address only: #{changes.count { |change| !change.place? }})",
       "No place or address under the rule: #{without_location.values.sum} " \
       "(organiser has an address: #{without_location[:organiser_address]}, organiser has none: #{without_location[:no_organiser_address]})",
       "Not checked, no calendar: #{no_calendar}",
@@ -160,18 +165,19 @@ class LocationRuleReport
   end
 
   def strategy_rows
-    by_strategy.sort.map { |strategy, count| [strategy, count.events.to_s, count.changes.to_s] }
+    by_strategy.sort.map { |strategy, count| [strategy, count.events.to_s, count.place_changes.to_s, count.address_changes.to_s] }
   end
 
-  # Identical changes to one series print once, with every event id
+  # Identical changes to one series print once, with every event id, place changes first
   def calendar_lines
     changes.group_by { |change| change.event.calendar }.flat_map do |calendar, calendar_changes|
-      groups = calendar_changes.group_by { |change| [change.event.summary, change.current.to_s, change.new.to_s] }
+      groups = calendar_changes.sort_by.with_index { |change, i| [change.place? ? 0 : 1, i] }
+                               .group_by { |change| [change.place?, change.event.summary, change.current.to_s, change.new.to_s] }
       [
         '',
         "Calendar #{calendar.id}: #{calendar.name} (#{calendar.strategy}), #{calendar_changes.size} #{calendar_changes.one? ? 'event' : 'events'}",
-        *groups.map do |(summary, current, new), group|
-          "  #{summary} (#{group.size == 1 ? 'event' : 'events'} #{group.map { |change| change.event.id }.join(', ')}): #{current} -> #{new}"
+        *groups.map do |(place, summary, current, new), group|
+          "  #{place ? '[place]' : '[address]'} #{summary} (#{group.size == 1 ? 'event' : 'events'} #{group.map { |change| change.event.id }.join(', ')}): #{current} -> #{new}"
         end
       ]
     end

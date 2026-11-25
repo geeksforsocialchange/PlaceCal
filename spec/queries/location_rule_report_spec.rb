@@ -103,15 +103,16 @@ RSpec.describe LocationRuleReport do
   end
 
   describe "#by_strategy" do
-    it "counts events and changes for each strategy" do
+    it "counts events, place changes and address only changes for each strategy" do
       calendar = calendar_with("place", place: hub)
       event_on(calendar, oak_hall, place: hub, address: hub.address)
+      event_on(calendar, "Riverside Community Hub, 1 River Road, ZZMB 1RS", place: hub, address: hub.address)
       event_on(calendar, "", place: hub, address: hub.address)
       event_on(calendar_with("no_location"), "")
 
-      counts = described_class.new.by_strategy.transform_values { |count| [count.events, count.changes] }
+      counts = described_class.new.by_strategy.transform_values { |count| [count.events, count.place_changes, count.address_changes] }
 
-      expect(counts).to eq("place" => [2, 1], "no_location" => [1, 0])
+      expect(counts).to eq("place" => [3, 1, 1], "no_location" => [1, 0, 0])
     end
   end
 
@@ -156,24 +157,26 @@ RSpec.describe LocationRuleReport do
   end
 
   describe "#to_text" do
-    it "prints the totals, the strategy table and each calendar's changes, with one line per series" do
+    it "prints the totals, the strategy table and each calendar's changes, place changes first and one line per series" do
       calendar = calendar_with("no_location", name: "Hub Calendar")
       first = event_on(calendar, oak_hall, summary: "Yoga")
       second = event_on(calendar, oak_hall, summary: "Yoga")
       third = event_on(calendar, "", summary: "Choir")
+      at_hub = event_on(calendar, "Riverside Community Hub, 1 River Road, ZZMB 1RS", summary: "Quiz")
 
       expect(described_class.new.to_text).to eq(<<~TEXT.chomp)
-        Upcoming events checked: 3
-        Would change: 2
+        Upcoming events checked: 4
+        Would change: 3 (place: 1, address only: 2)
         No place or address under the rule: 1 (organiser has an address: 1, organiser has none: 0)
         Not checked, no calendar: 0
         Not checked, postcode lookup unavailable: 0
 
-        Strategy     Events  Would change
-        no_location       3             2
+        Strategy     Events  Place changes  Address only
+        no_location       4              1             2
 
-        Calendar #{calendar.id}: Hub Calendar (no_location), 2 events
-          Yoga (events #{first.id}, #{second.id}): (none) -> Oak Hall, 5 Elm Street, Millbrook, ZZMB 1RS
+        Calendar #{calendar.id}: Hub Calendar (no_location), 3 events
+          [place] Quiz (event #{at_hub.id}): (none) -> Riverside Community Hub, Riverside Community Hub, 1 River Road, Millbrook, ZZMB 1RS
+          [address] Yoga (events #{first.id}, #{second.id}): (none) -> Oak Hall, 5 Elm Street, Millbrook, ZZMB 1RS
       TEXT
       expect(third).to be_persisted
     end

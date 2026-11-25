@@ -20,7 +20,7 @@ RSpec.describe "events:location_rule_changes", type: :task do
   end
 
   it "prints the text report when given no arguments" do
-    expect { run_task }.to output(/Would change: 1.*\(none\) -> Oak Hall/m).to_stdout
+    expect { run_task }.to output(/Would change: 1 \(place: 0, address only: 1\).*\[address\] .*\(none\) -> Oak Hall/m).to_stdout
   end
 
   it "prints CSV" do
