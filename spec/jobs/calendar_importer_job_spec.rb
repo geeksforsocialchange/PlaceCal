@@ -110,30 +110,63 @@ RSpec.describe CalendarImporterJob do
       end
     end
 
-    context "when the Eventbrite parser's RestClient fetch times out" do
-      # Eventbrite imports via RestClient (EventbriteSDK), not read_http_source,
-      # so its timeouts are RestClient::Exceptions::ReadTimeout — not Net:: errors
-      # — and propagate through the importer task to this job-level backstop (#3100).
+    context "when the Eventbrite API can't be reached" do
       let(:calendar) do
         create(:eventbrite_calendar, importer_mode: "eventbrite")
           .tap { |c| c.update!(calendar_state: "in_queue") }
       end
+      let(:api) { %r{\Ahttps://www\.eventbriteapi\.com/v3/} }
 
-      before do
-        # The Eventbrite source page is reachable (check_source! passes)...
-        stub_request(:get, calendar.source).to_return(status: 200, body: "ok")
-        # ...but the Eventbrite API fetch (RestClient via EventbriteSDK) times out.
-        allow(EventbriteSDK::Organizer).to receive(:retrieve)
-          .and_raise(RestClient::Exceptions::ReadTimeout)
+      before { stub_request(:get, calendar.source).to_return(status: 200, body: "ok") }
+
+      {
+        "times out" => ->(stub) { stub.to_timeout },
+        "times out at the socket" => ->(stub) { stub.to_raise(Errno::ETIMEDOUT) },
+        "fails TLS" => ->(stub) { stub.to_raise(OpenSSL::SSL::SSLError.new("certificate verify failed")) }
+      }.each do |failure, stub_with|
+        it "marks the source unreachable when it #{failure}" do
+          stub_with.call(stub_request(:get, api))
+
+          expect { perform_import }.not_to raise_error
+          expect(calendar.reload.calendar_state).to eq("bad_source")
+          expect(calendar.critical_error)
+            .to eq(I18n.t("admin.calendars.wizard.source.unreachable"))
+        end
       end
 
-      it "does not raise and marks the source unreachable" do
-        expect { perform_import }.not_to raise_error
+      it "puts the calendar in the error state when its name doesn't resolve" do
+        stub_request(:get, api).to_raise(SocketError.new("getaddrinfo: nodename nor servname provided"))
 
-        expect(calendar.reload.calendar_state).to eq("bad_source")
-        expect(calendar.critical_error)
-          .to eq(I18n.t("admin.calendars.wizard.source.unreachable"))
+        expect { perform_import }.to raise_error(SocketError)
+        expect(calendar.reload.calendar_state).to eq("error")
+        expect(calendar.feed_empty_since).to be_nil
       end
+    end
+  end
+
+  describe "Eventbrite API failures that are not network errors" do
+    let(:calendar) do
+      create(:eventbrite_calendar, importer_mode: "eventbrite")
+        .tap { |c| c.update!(calendar_state: "in_queue") }
+    end
+
+    before { stub_request(:get, calendar.source).to_return(status: 200, body: "ok") }
+
+    it "puts the calendar in the error state and reports a rejected token" do
+      stub_request(:get, %r{\Ahttps://www\.eventbriteapi\.com/v3/}).to_return(status: 401, body: "{}")
+
+      expect { perform_import }.to raise_error(CalendarImporter::Parsers::Eventbrite::ApiError, /HTTP 401/)
+      expect(calendar.reload.calendar_state).to eq("error")
+      expect(calendar.feed_empty_since).to be_nil
+    end
+
+    it "puts the calendar in the error state when the body isn't JSON" do
+      stub_request(:get, %r{\Ahttps://www\.eventbriteapi\.com/v3/}).to_return(status: 200, body: "<html>Service page</html>")
+
+      expect { perform_import }.not_to raise_error
+      expect(calendar.reload.calendar_state).to eq("error")
+      expect(calendar.critical_error).to include("un-parsable data")
+      expect(calendar.feed_empty_since).to be_nil
     end
   end
 

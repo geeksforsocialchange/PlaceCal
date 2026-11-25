@@ -215,7 +215,6 @@ GEM
       actionmailer (>= 5.0)
       devise (>= 4.6)
     diff-lcs (1.6.2)
-    domain_name (0.7.20261031)
     dotenv (3.2.0)
     dotenv-rails (3.2.0)
       dotenv (= 3.2.0)
@@ -229,8 +228,6 @@ GEM
     erubi (1.13.1)
     et-orbi (1.4.2)
       tzinfo
-    eventbrite_sdk (3.6.0)
-      rest-client (~> 2.0)
     factory_bot (6.6.0)
       activesupport (>= 6.1.0)
     factory_bot_rails (6.5.1)
@@ -276,9 +273,6 @@ GEM
       reline
     htmlbeautifier (1.4.3)
     htmlentities (4.4.2)
-    http-accept (1.7.0)
-    http-cookie (1.1.6)
-      domain_name (~> 0.5)
     httparty (0.24.3)
       csv
       mini_mime (>= 1.0.0)
@@ -419,7 +413,6 @@ GEM
       net-protocol
     net-ssh (7.3.10)
       logger
-    netrc (0.11.0)
     nio4r (2.7.5)
     nokogiri (1.19.7-aarch64-linux-gnu)
       racc (~> 1.4)
@@ -576,11 +569,6 @@ GEM
     responders (3.2.1)
       actionpack (>= 7.0)
       railties (>= 7.0)
-    rest-client (2.1.0)
-      http-accept (>= 1.7.0, < 2.0)
-      http-cookie (>= 1.0.2, < 2.0)
-      mime-types (>= 1.16, < 4.0)
-      netrc (~> 0.8)
     rexml (3.4.4)
     rouge (5.1.0)
       strscan (~> 3.1)
@@ -761,7 +749,6 @@ DEPENDENCIES
   devise_invitable (~> 2.0)
   dotenv-rails
   enumerize
-  eventbrite_sdk
   factory_bot_rails
   faker
   foreman

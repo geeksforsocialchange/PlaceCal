@@ -12,10 +12,16 @@ RSpec.describe CalendarImporter::CalendarImporterTask, "when Eventbrite keeps fa
     create(:event, calendar:, organiser: calendar.organiser, dtstart: 1.month.from_now, dtend: 1.month.from_now + 2.hours)
   end
 
+  let(:api) { "https://www.eventbriteapi.com/v3/organizers/12345678" }
+
+  def events_page(page, events: [], page_count: 1)
+    { status: 200, body: { pagination: { page_number: page, page_count: }, events: }.to_json }
+  end
+
   before do
     allow(CalendarImporter::Parsers::Base).to receive(:sleep)
     stub_request(:get, url).to_return(status: 200, body: "<html></html>")
-    allow(EventbriteSDK::Organizer).to receive(:retrieve).and_raise(EventbriteSDK::InternalServerError.new("internal server error"))
+    stub_request(:get, "#{api}/").to_return(status: 500, body: "{}")
   end
 
   def import
@@ -36,19 +42,19 @@ RSpec.describe CalendarImporter::CalendarImporterTask, "when Eventbrite keeps fa
   end
 
   it "skips the whole import when a later page fails, rather than importing a partial list" do
-    first_page = []
-    first_page.define_singleton_method(:next_page) { raise EventbriteSDK::InternalServerError, "internal server error" }
-    allow(EventbriteSDK::Organizer).to receive(:retrieve).and_return(double(events: double(with_expansion: double(page: first_page))))
+    stub_request(:get, "#{api}/").to_return(status: 200, body: "{}")
+    stub_request(:get, "#{api}/events/?expand=venue&page=1").to_return(events_page(1, page_count: 2))
+    stub_request(:get, "#{api}/events/?expand=venue&page=2").to_return(status: 503, body: "")
     import
 
     expect(calendar.notices.sole).to include("Eventbrite didn't respond")
     expect(Event.exists?(upcoming_event.id)).to be(true)
+    expect(calendar.feed_empty_since).to be_nil
   end
 
   it "still treats an organiser with no events as an empty feed" do
-    no_events = []
-    no_events.define_singleton_method(:next_page) { [] }
-    allow(EventbriteSDK::Organizer).to receive(:retrieve).and_return(double(events: double(with_expansion: double(page: no_events))))
+    stub_request(:get, "#{api}/").to_return(status: 200, body: "{}")
+    stub_request(:get, "#{api}/events/?expand=venue&page=1").to_return(events_page(1))
     import
 
     expect(calendar.feed_empty_since).to be_present

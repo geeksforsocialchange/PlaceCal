@@ -3,13 +3,7 @@
 require "rails_helper"
 
 RSpec.describe CalendarImporter::Events::EventbriteEvent do
-  subject(:event) { described_class.new(sdk_event) }
-
-  # Mirror production: the parser hands us EventbriteSDK::Event resources, not
-  # bare attribute objects. `venue` is a declared relationship, so the resource
-  # always responds to it, while `[]` raises NoMethodError for a venue that was
-  # never expanded into the payload. A bare Attributes double hides that.
-  let(:sdk_event) { EventbriteSDK::Event.new(payload) }
+  subject(:event) { described_class.new(payload) }
 
   let(:base_payload) do
     {
@@ -62,6 +56,24 @@ RSpec.describe CalendarImporter::Events::EventbriteEvent do
 
     it "returns no location" do
       expect(event.location).to be_nil
+    end
+  end
+
+  context "when the event is online" do
+    let(:payload) { base_payload.merge("online_event" => true) }
+
+    it "links to the Eventbrite page as an indirect online address" do
+      address = OnlineAddress.find(event.online_event_id)
+
+      expect(address).to have_attributes(url: "https://www.eventbrite.co.uk/e/123", link_type: "indirect")
+    end
+  end
+
+  context "when the event is free" do
+    let(:payload) { base_payload.merge("is_free" => true) }
+
+    it "gives a price of 0" do
+      expect(event.price_from).to eq(0)
     end
   end
 end

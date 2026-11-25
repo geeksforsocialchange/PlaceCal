@@ -30,8 +30,10 @@ module CalendarSourceResolver
     token = ENV.fetch('EVENTBRITE_TOKEN', nil)
     return if token.blank?
 
-    response = RestClient::Request.execute(method: :get, url: "#{EventbriteSDK::BASE}/events/#{event_id}/",
-                                           headers: { Authorization: "Bearer #{token}" }, timeout: TIMEOUT)
+    response = HTTParty.get("#{CalendarImporter::Parsers::Eventbrite::API_BASE_URL}/events/#{event_id}/",
+                            headers: { 'Authorization' => "Bearer #{token}" }, timeout: TIMEOUT)
+    return unless response.success?
+
     organizer_id = JSON.parse(response.body)['organizer_id'].to_s
     return unless organizer_id.match?(/\A\d+\z/)
 
