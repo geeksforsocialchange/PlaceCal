@@ -20,14 +20,7 @@ module CalendarImporter::Parsers
     HANDBOOK_SOURCES_URL = 'https://handbook.placecal.org/reference/supported-calendar-sources'
     KEY = ''
 
-    # Third-party event sources intermittently return rate-limit (429) and
-    # server-error (5xx) responses. These are transient upstream failures, not
-    # problems with our request, so they're worth retrying with backoff before
-    # giving up (see AppSignal incidents #311/#331 for the Eventbrite case that
-    # motivated this). 408 Request Timeout is included as a transient network
-    # hiccup. This is the HTTParty (status-code) view of "transient"; the
-    # RestClient/SDK exception-class equivalent is Eventbrite::TRANSIENT_HTTP_ERRORS
-    # — keep the two in sync when adding a status.
+    # Upstream hiccups (timeout, rate limit, server errors) worth retrying with backoff
     TRANSIENT_HTTP_STATUSES = [408, 429, 500, 502, 503, 504].freeze
     HTTP_MAX_RETRIES = 3
     HTTP_RETRY_BACKOFF = 2 # seconds, multiplied by the attempt number
@@ -100,17 +93,8 @@ module CalendarImporter::Parsers
       calendar.source =~ allowlist_pattern
     end
 
-    # Run a block, retrying transient HTTP failures with a linear backoff before
-    # giving up. Two retry triggers are supported so this works across the
-    # different HTTP clients the parsers use:
-    #
-    #   retry_on: a list of exception classes to retry (e.g. RestClient's typed
-    #             5xx/429 errors, raised by the Eventbrite SDK).
-    #   retry_if: a predicate on the block's return value (e.g. an HTTParty
-    #             response whose .code is a transient status).
-    #
-    # Once retries are exhausted the last exception is re-raised (or the last
-    # result returned) so the caller decides how to degrade.
+    # Retries exceptions in retry_on, and results retry_if matches, with a linear backoff.
+    # Once retries run out it re-raises the last exception or returns the last result.
     def self.with_http_retries(context, retry_on: [], retry_if: nil, max_retries: HTTP_MAX_RETRIES)
       attempt = 0
 

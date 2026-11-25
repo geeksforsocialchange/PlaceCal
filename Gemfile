@@ -16,7 +16,6 @@ gem 'stimulus-rails'              # Stimulus JS controllers
 gem 'turbo-rails'                 # Turbo Drive/Frames/Streams
 
 # Calendar importers
-gem 'eventbrite_sdk'              # Eventbrite API client
 gem 'httparty'                    # HTTP requests for feed fetching
 gem 'icalendar'                   # ICS feed parsing
 gem 'icalendar-recurrence'        # Recurring event expansion

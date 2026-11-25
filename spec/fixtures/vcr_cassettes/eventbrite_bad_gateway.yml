@@ -88,7 +88,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -154,7 +154,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 145/2000 reset=170s, key:EHZBSVSIVEULAXFMKJ 145/2000
+          - token:<EVENTBRITE_TOKEN> 145/2000 reset=170s, key:EHZBSVSIVEULAXFMKJ 145/2000
             reset=170s
         Pragma:
           - no-cache
@@ -196,7 +196,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -262,7 +262,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 146/2000 reset=170s, key:EHZBSVSIVEULAXFMKJ 146/2000
+          - token:<EVENTBRITE_TOKEN> 146/2000 reset=170s, key:EHZBSVSIVEULAXFMKJ 146/2000
             reset=170s
         Pragma:
           - no-cache
@@ -303,7 +303,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -369,7 +369,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 147/2000 reset=169s, key:EHZBSVSIVEULAXFMKJ 147/2000
+          - token:<EVENTBRITE_TOKEN> 147/2000 reset=169s, key:EHZBSVSIVEULAXFMKJ 147/2000
             reset=169s
         Pragma:
           - no-cache
@@ -410,7 +410,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -476,7 +476,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 148/2000 reset=169s, key:EHZBSVSIVEULAXFMKJ 148/2000
+          - token:<EVENTBRITE_TOKEN> 148/2000 reset=169s, key:EHZBSVSIVEULAXFMKJ 148/2000
             reset=169s
         Pragma:
           - no-cache
@@ -517,7 +517,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -583,7 +583,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 149/2000 reset=168s, key:EHZBSVSIVEULAXFMKJ 149/2000
+          - token:<EVENTBRITE_TOKEN> 149/2000 reset=168s, key:EHZBSVSIVEULAXFMKJ 149/2000
             reset=168s
         Pragma:
           - no-cache
@@ -624,7 +624,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -690,7 +690,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 150/2000 reset=168s, key:EHZBSVSIVEULAXFMKJ 150/2000
+          - token:<EVENTBRITE_TOKEN> 150/2000 reset=168s, key:EHZBSVSIVEULAXFMKJ 150/2000
             reset=168s
         Pragma:
           - no-cache
@@ -731,7 +731,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -797,7 +797,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 151/2000 reset=168s, key:EHZBSVSIVEULAXFMKJ 151/2000
+          - token:<EVENTBRITE_TOKEN> 151/2000 reset=168s, key:EHZBSVSIVEULAXFMKJ 151/2000
             reset=168s
         Pragma:
           - no-cache
@@ -870,7 +870,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -936,7 +936,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 152/2000 reset=167s, key:EHZBSVSIVEULAXFMKJ 152/2000
+          - token:<EVENTBRITE_TOKEN> 152/2000 reset=167s, key:EHZBSVSIVEULAXFMKJ 152/2000
             reset=167s
         Pragma:
           - no-cache
@@ -977,7 +977,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -1043,7 +1043,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 153/2000 reset=167s, key:EHZBSVSIVEULAXFMKJ 153/2000
+          - token:<EVENTBRITE_TOKEN> 153/2000 reset=167s, key:EHZBSVSIVEULAXFMKJ 153/2000
             reset=167s
         Pragma:
           - no-cache
@@ -1084,7 +1084,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -1150,7 +1150,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 154/2000 reset=166s, key:EHZBSVSIVEULAXFMKJ 154/2000
+          - token:<EVENTBRITE_TOKEN> 154/2000 reset=166s, key:EHZBSVSIVEULAXFMKJ 154/2000
             reset=166s
         Pragma:
           - no-cache
@@ -1191,7 +1191,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -1257,7 +1257,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 155/2000 reset=166s, key:EHZBSVSIVEULAXFMKJ 155/2000
+          - token:<EVENTBRITE_TOKEN> 155/2000 reset=166s, key:EHZBSVSIVEULAXFMKJ 155/2000
             reset=166s
         Pragma:
           - no-cache
@@ -1298,7 +1298,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -1364,7 +1364,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 156/2000 reset=166s, key:EHZBSVSIVEULAXFMKJ 156/2000
+          - token:<EVENTBRITE_TOKEN> 156/2000 reset=166s, key:EHZBSVSIVEULAXFMKJ 156/2000
             reset=166s
         Pragma:
           - no-cache
@@ -1405,7 +1405,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -1471,7 +1471,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 157/2000 reset=165s, key:EHZBSVSIVEULAXFMKJ 157/2000
+          - token:<EVENTBRITE_TOKEN> 157/2000 reset=165s, key:EHZBSVSIVEULAXFMKJ 157/2000
             reset=165s
         Pragma:
           - no-cache
@@ -1512,7 +1512,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -1578,7 +1578,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 158/2000 reset=165s, key:EHZBSVSIVEULAXFMKJ 158/2000
+          - token:<EVENTBRITE_TOKEN> 158/2000 reset=165s, key:EHZBSVSIVEULAXFMKJ 158/2000
             reset=165s
         Pragma:
           - no-cache
@@ -1619,7 +1619,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -1685,7 +1685,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 159/2000 reset=165s, key:EHZBSVSIVEULAXFMKJ 159/2000
+          - token:<EVENTBRITE_TOKEN> 159/2000 reset=165s, key:EHZBSVSIVEULAXFMKJ 159/2000
             reset=165s
         Pragma:
           - no-cache
@@ -1726,7 +1726,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -1792,7 +1792,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 160/2000 reset=164s, key:EHZBSVSIVEULAXFMKJ 160/2000
+          - token:<EVENTBRITE_TOKEN> 160/2000 reset=164s, key:EHZBSVSIVEULAXFMKJ 160/2000
             reset=164s
         Pragma:
           - no-cache
@@ -1833,7 +1833,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -1899,7 +1899,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 161/2000 reset=164s, key:EHZBSVSIVEULAXFMKJ 161/2000
+          - token:<EVENTBRITE_TOKEN> 161/2000 reset=164s, key:EHZBSVSIVEULAXFMKJ 161/2000
             reset=164s
         Pragma:
           - no-cache
@@ -1940,7 +1940,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -2006,7 +2006,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 162/2000 reset=163s, key:EHZBSVSIVEULAXFMKJ 162/2000
+          - token:<EVENTBRITE_TOKEN> 162/2000 reset=163s, key:EHZBSVSIVEULAXFMKJ 162/2000
             reset=163s
         Pragma:
           - no-cache
@@ -2047,7 +2047,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -2113,7 +2113,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 163/2000 reset=163s, key:EHZBSVSIVEULAXFMKJ 163/2000
+          - token:<EVENTBRITE_TOKEN> 163/2000 reset=163s, key:EHZBSVSIVEULAXFMKJ 163/2000
             reset=163s
         Pragma:
           - no-cache
@@ -2154,7 +2154,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -2220,7 +2220,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 164/2000 reset=163s, key:EHZBSVSIVEULAXFMKJ 164/2000
+          - token:<EVENTBRITE_TOKEN> 164/2000 reset=163s, key:EHZBSVSIVEULAXFMKJ 164/2000
             reset=163s
         Pragma:
           - no-cache
@@ -2261,7 +2261,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -2327,7 +2327,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 165/2000 reset=162s, key:EHZBSVSIVEULAXFMKJ 165/2000
+          - token:<EVENTBRITE_TOKEN> 165/2000 reset=162s, key:EHZBSVSIVEULAXFMKJ 165/2000
             reset=162s
         Pragma:
           - no-cache
@@ -2368,7 +2368,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -2434,7 +2434,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 166/2000 reset=162s, key:EHZBSVSIVEULAXFMKJ 166/2000
+          - token:<EVENTBRITE_TOKEN> 166/2000 reset=162s, key:EHZBSVSIVEULAXFMKJ 166/2000
             reset=162s
         Pragma:
           - no-cache
@@ -2475,7 +2475,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -2541,7 +2541,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 167/2000 reset=161s, key:EHZBSVSIVEULAXFMKJ 167/2000
+          - token:<EVENTBRITE_TOKEN> 167/2000 reset=161s, key:EHZBSVSIVEULAXFMKJ 167/2000
             reset=161s
         Pragma:
           - no-cache
@@ -2582,7 +2582,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -2648,7 +2648,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 168/2000 reset=161s, key:EHZBSVSIVEULAXFMKJ 168/2000
+          - token:<EVENTBRITE_TOKEN> 168/2000 reset=161s, key:EHZBSVSIVEULAXFMKJ 168/2000
             reset=161s
         Pragma:
           - no-cache
@@ -2689,7 +2689,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -2755,7 +2755,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 169/2000 reset=161s, key:EHZBSVSIVEULAXFMKJ 169/2000
+          - token:<EVENTBRITE_TOKEN> 169/2000 reset=161s, key:EHZBSVSIVEULAXFMKJ 169/2000
             reset=161s
         Pragma:
           - no-cache
@@ -2796,7 +2796,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -2862,7 +2862,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 170/2000 reset=160s, key:EHZBSVSIVEULAXFMKJ 170/2000
+          - token:<EVENTBRITE_TOKEN> 170/2000 reset=160s, key:EHZBSVSIVEULAXFMKJ 170/2000
             reset=160s
         Pragma:
           - no-cache
@@ -2903,7 +2903,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -2969,7 +2969,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 171/2000 reset=160s, key:EHZBSVSIVEULAXFMKJ 171/2000
+          - token:<EVENTBRITE_TOKEN> 171/2000 reset=160s, key:EHZBSVSIVEULAXFMKJ 171/2000
             reset=160s
         Pragma:
           - no-cache
@@ -3010,7 +3010,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -3076,7 +3076,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 172/2000 reset=160s, key:EHZBSVSIVEULAXFMKJ 172/2000
+          - token:<EVENTBRITE_TOKEN> 172/2000 reset=160s, key:EHZBSVSIVEULAXFMKJ 172/2000
             reset=160s
         Pragma:
           - no-cache
@@ -3117,7 +3117,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -3183,7 +3183,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 173/2000 reset=159s, key:EHZBSVSIVEULAXFMKJ 173/2000
+          - token:<EVENTBRITE_TOKEN> 173/2000 reset=159s, key:EHZBSVSIVEULAXFMKJ 173/2000
             reset=159s
         Pragma:
           - no-cache
@@ -3224,7 +3224,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -3290,7 +3290,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 174/2000 reset=159s, key:EHZBSVSIVEULAXFMKJ 174/2000
+          - token:<EVENTBRITE_TOKEN> 174/2000 reset=159s, key:EHZBSVSIVEULAXFMKJ 174/2000
             reset=159s
         Pragma:
           - no-cache
@@ -3331,7 +3331,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -3397,7 +3397,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 175/2000 reset=159s, key:EHZBSVSIVEULAXFMKJ 175/2000
+          - token:<EVENTBRITE_TOKEN> 175/2000 reset=159s, key:EHZBSVSIVEULAXFMKJ 175/2000
             reset=159s
         Pragma:
           - no-cache
@@ -3438,7 +3438,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -3504,7 +3504,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 176/2000 reset=158s, key:EHZBSVSIVEULAXFMKJ 176/2000
+          - token:<EVENTBRITE_TOKEN> 176/2000 reset=158s, key:EHZBSVSIVEULAXFMKJ 176/2000
             reset=158s
         Pragma:
           - no-cache
@@ -3545,7 +3545,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -3611,7 +3611,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 177/2000 reset=158s, key:EHZBSVSIVEULAXFMKJ 177/2000
+          - token:<EVENTBRITE_TOKEN> 177/2000 reset=158s, key:EHZBSVSIVEULAXFMKJ 177/2000
             reset=158s
         Pragma:
           - no-cache
@@ -3652,7 +3652,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -3718,7 +3718,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 178/2000 reset=158s, key:EHZBSVSIVEULAXFMKJ 178/2000
+          - token:<EVENTBRITE_TOKEN> 178/2000 reset=158s, key:EHZBSVSIVEULAXFMKJ 178/2000
             reset=158s
         Pragma:
           - no-cache
@@ -3759,7 +3759,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -3825,7 +3825,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 179/2000 reset=157s, key:EHZBSVSIVEULAXFMKJ 179/2000
+          - token:<EVENTBRITE_TOKEN> 179/2000 reset=157s, key:EHZBSVSIVEULAXFMKJ 179/2000
             reset=157s
         Pragma:
           - no-cache
@@ -3866,7 +3866,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -3932,7 +3932,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 180/2000 reset=157s, key:EHZBSVSIVEULAXFMKJ 180/2000
+          - token:<EVENTBRITE_TOKEN> 180/2000 reset=157s, key:EHZBSVSIVEULAXFMKJ 180/2000
             reset=157s
         Pragma:
           - no-cache
@@ -3973,7 +3973,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -4039,7 +4039,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 181/2000 reset=157s, key:EHZBSVSIVEULAXFMKJ 181/2000
+          - token:<EVENTBRITE_TOKEN> 181/2000 reset=157s, key:EHZBSVSIVEULAXFMKJ 181/2000
             reset=157s
         Pragma:
           - no-cache
@@ -4080,7 +4080,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -4146,7 +4146,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 182/2000 reset=156s, key:EHZBSVSIVEULAXFMKJ 182/2000
+          - token:<EVENTBRITE_TOKEN> 182/2000 reset=156s, key:EHZBSVSIVEULAXFMKJ 182/2000
             reset=156s
         Pragma:
           - no-cache
@@ -4187,7 +4187,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -4253,7 +4253,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 183/2000 reset=156s, key:EHZBSVSIVEULAXFMKJ 183/2000
+          - token:<EVENTBRITE_TOKEN> 183/2000 reset=156s, key:EHZBSVSIVEULAXFMKJ 183/2000
             reset=156s
         Pragma:
           - no-cache
@@ -4326,7 +4326,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -4392,7 +4392,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 184/2000 reset=156s, key:EHZBSVSIVEULAXFMKJ 184/2000
+          - token:<EVENTBRITE_TOKEN> 184/2000 reset=156s, key:EHZBSVSIVEULAXFMKJ 184/2000
             reset=156s
         Pragma:
           - no-cache
@@ -4465,7 +4465,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -4531,7 +4531,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 185/2000 reset=155s, key:EHZBSVSIVEULAXFMKJ 185/2000
+          - token:<EVENTBRITE_TOKEN> 185/2000 reset=155s, key:EHZBSVSIVEULAXFMKJ 185/2000
             reset=155s
         Pragma:
           - no-cache
@@ -4604,7 +4604,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -4670,7 +4670,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 186/2000 reset=155s, key:EHZBSVSIVEULAXFMKJ 186/2000
+          - token:<EVENTBRITE_TOKEN> 186/2000 reset=155s, key:EHZBSVSIVEULAXFMKJ 186/2000
             reset=155s
         Pragma:
           - no-cache
@@ -4711,7 +4711,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -4777,7 +4777,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 187/2000 reset=154s, key:EHZBSVSIVEULAXFMKJ 187/2000
+          - token:<EVENTBRITE_TOKEN> 187/2000 reset=154s, key:EHZBSVSIVEULAXFMKJ 187/2000
             reset=154s
         Pragma:
           - no-cache
@@ -4818,7 +4818,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -4884,7 +4884,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 188/2000 reset=154s, key:EHZBSVSIVEULAXFMKJ 188/2000
+          - token:<EVENTBRITE_TOKEN> 188/2000 reset=154s, key:EHZBSVSIVEULAXFMKJ 188/2000
             reset=154s
         Pragma:
           - no-cache
@@ -4925,7 +4925,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -4991,7 +4991,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 189/2000 reset=154s, key:EHZBSVSIVEULAXFMKJ 189/2000
+          - token:<EVENTBRITE_TOKEN> 189/2000 reset=154s, key:EHZBSVSIVEULAXFMKJ 189/2000
             reset=154s
         Pragma:
           - no-cache
@@ -5045,7 +5045,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -5111,7 +5111,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 190/2000 reset=153s, key:EHZBSVSIVEULAXFMKJ 190/2000
+          - token:<EVENTBRITE_TOKEN> 190/2000 reset=153s, key:EHZBSVSIVEULAXFMKJ 190/2000
             reset=153s
         Pragma:
           - no-cache
@@ -5165,7 +5165,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -5231,7 +5231,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 191/2000 reset=153s, key:EHZBSVSIVEULAXFMKJ 191/2000
+          - token:<EVENTBRITE_TOKEN> 191/2000 reset=153s, key:EHZBSVSIVEULAXFMKJ 191/2000
             reset=153s
         Pragma:
           - no-cache
@@ -5283,7 +5283,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -5349,7 +5349,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 192/2000 reset=153s, key:EHZBSVSIVEULAXFMKJ 192/2000
+          - token:<EVENTBRITE_TOKEN> 192/2000 reset=153s, key:EHZBSVSIVEULAXFMKJ 192/2000
             reset=153s
         Pragma:
           - no-cache
@@ -5390,7 +5390,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -5456,7 +5456,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 193/2000 reset=152s, key:EHZBSVSIVEULAXFMKJ 193/2000
+          - token:<EVENTBRITE_TOKEN> 193/2000 reset=152s, key:EHZBSVSIVEULAXFMKJ 193/2000
             reset=152s
         Pragma:
           - no-cache
@@ -5497,7 +5497,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -5563,7 +5563,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 194/2000 reset=152s, key:EHZBSVSIVEULAXFMKJ 194/2000
+          - token:<EVENTBRITE_TOKEN> 194/2000 reset=152s, key:EHZBSVSIVEULAXFMKJ 194/2000
             reset=152s
         Pragma:
           - no-cache
@@ -5604,7 +5604,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -5670,7 +5670,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 195/2000 reset=151s, key:EHZBSVSIVEULAXFMKJ 195/2000
+          - token:<EVENTBRITE_TOKEN> 195/2000 reset=151s, key:EHZBSVSIVEULAXFMKJ 195/2000
             reset=151s
         Pragma:
           - no-cache
@@ -5711,7 +5711,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -5777,7 +5777,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 196/2000 reset=151s, key:EHZBSVSIVEULAXFMKJ 196/2000
+          - token:<EVENTBRITE_TOKEN> 196/2000 reset=151s, key:EHZBSVSIVEULAXFMKJ 196/2000
             reset=151s
         Pragma:
           - no-cache
@@ -5818,7 +5818,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -5884,7 +5884,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 197/2000 reset=151s, key:EHZBSVSIVEULAXFMKJ 197/2000
+          - token:<EVENTBRITE_TOKEN> 197/2000 reset=151s, key:EHZBSVSIVEULAXFMKJ 197/2000
             reset=151s
         Pragma:
           - no-cache
@@ -5925,7 +5925,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -5991,7 +5991,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 198/2000 reset=150s, key:EHZBSVSIVEULAXFMKJ 198/2000
+          - token:<EVENTBRITE_TOKEN> 198/2000 reset=150s, key:EHZBSVSIVEULAXFMKJ 198/2000
             reset=150s
         Pragma:
           - no-cache
@@ -6032,7 +6032,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -6098,7 +6098,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 199/2000 reset=150s, key:EHZBSVSIVEULAXFMKJ 199/2000
+          - token:<EVENTBRITE_TOKEN> 199/2000 reset=150s, key:EHZBSVSIVEULAXFMKJ 199/2000
             reset=150s
         Pragma:
           - no-cache
@@ -6139,7 +6139,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -6205,7 +6205,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 200/2000 reset=149s, key:EHZBSVSIVEULAXFMKJ 200/2000
+          - token:<EVENTBRITE_TOKEN> 200/2000 reset=149s, key:EHZBSVSIVEULAXFMKJ 200/2000
             reset=149s
         Pragma:
           - no-cache
@@ -6246,7 +6246,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -6312,7 +6312,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 201/2000 reset=149s, key:EHZBSVSIVEULAXFMKJ 201/2000
+          - token:<EVENTBRITE_TOKEN> 201/2000 reset=149s, key:EHZBSVSIVEULAXFMKJ 201/2000
             reset=149s
         Pragma:
           - no-cache
@@ -6353,7 +6353,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -6419,7 +6419,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 202/2000 reset=148s, key:EHZBSVSIVEULAXFMKJ 202/2000
+          - token:<EVENTBRITE_TOKEN> 202/2000 reset=148s, key:EHZBSVSIVEULAXFMKJ 202/2000
             reset=148s
         Pragma:
           - no-cache
@@ -6460,7 +6460,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -6526,7 +6526,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 203/2000 reset=148s, key:EHZBSVSIVEULAXFMKJ 203/2000
+          - token:<EVENTBRITE_TOKEN> 203/2000 reset=148s, key:EHZBSVSIVEULAXFMKJ 203/2000
             reset=148s
         Pragma:
           - no-cache
@@ -6567,7 +6567,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -6633,7 +6633,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 204/2000 reset=148s, key:EHZBSVSIVEULAXFMKJ 204/2000
+          - token:<EVENTBRITE_TOKEN> 204/2000 reset=148s, key:EHZBSVSIVEULAXFMKJ 204/2000
             reset=148s
         Pragma:
           - no-cache
@@ -6674,7 +6674,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -6740,7 +6740,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 205/2000 reset=147s, key:EHZBSVSIVEULAXFMKJ 205/2000
+          - token:<EVENTBRITE_TOKEN> 205/2000 reset=147s, key:EHZBSVSIVEULAXFMKJ 205/2000
             reset=147s
         Pragma:
           - no-cache
@@ -6781,7 +6781,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -6847,7 +6847,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 206/2000 reset=147s, key:EHZBSVSIVEULAXFMKJ 206/2000
+          - token:<EVENTBRITE_TOKEN> 206/2000 reset=147s, key:EHZBSVSIVEULAXFMKJ 206/2000
             reset=147s
         Pragma:
           - no-cache
@@ -6888,7 +6888,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -6954,7 +6954,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 207/2000 reset=146s, key:EHZBSVSIVEULAXFMKJ 207/2000
+          - token:<EVENTBRITE_TOKEN> 207/2000 reset=146s, key:EHZBSVSIVEULAXFMKJ 207/2000
             reset=146s
         Pragma:
           - no-cache
@@ -7034,7 +7034,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -7100,7 +7100,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 208/2000 reset=146s, key:EHZBSVSIVEULAXFMKJ 208/2000
+          - token:<EVENTBRITE_TOKEN> 208/2000 reset=146s, key:EHZBSVSIVEULAXFMKJ 208/2000
             reset=146s
         Pragma:
           - no-cache
@@ -7141,7 +7141,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -7207,7 +7207,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 209/2000 reset=145s, key:EHZBSVSIVEULAXFMKJ 209/2000
+          - token:<EVENTBRITE_TOKEN> 209/2000 reset=145s, key:EHZBSVSIVEULAXFMKJ 209/2000
             reset=145s
         Pragma:
           - no-cache
@@ -7248,7 +7248,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -7314,7 +7314,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 210/2000 reset=145s, key:EHZBSVSIVEULAXFMKJ 210/2000
+          - token:<EVENTBRITE_TOKEN> 210/2000 reset=145s, key:EHZBSVSIVEULAXFMKJ 210/2000
             reset=145s
         Pragma:
           - no-cache
@@ -7355,7 +7355,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -7421,7 +7421,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 211/2000 reset=145s, key:EHZBSVSIVEULAXFMKJ 211/2000
+          - token:<EVENTBRITE_TOKEN> 211/2000 reset=145s, key:EHZBSVSIVEULAXFMKJ 211/2000
             reset=145s
         Pragma:
           - no-cache
@@ -7462,7 +7462,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -7528,7 +7528,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 212/2000 reset=144s, key:EHZBSVSIVEULAXFMKJ 212/2000
+          - token:<EVENTBRITE_TOKEN> 212/2000 reset=144s, key:EHZBSVSIVEULAXFMKJ 212/2000
             reset=144s
         Pragma:
           - no-cache
@@ -7569,7 +7569,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -7635,7 +7635,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 213/2000 reset=144s, key:EHZBSVSIVEULAXFMKJ 213/2000
+          - token:<EVENTBRITE_TOKEN> 213/2000 reset=144s, key:EHZBSVSIVEULAXFMKJ 213/2000
             reset=144s
         Pragma:
           - no-cache
@@ -7676,7 +7676,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -7742,7 +7742,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 214/2000 reset=143s, key:EHZBSVSIVEULAXFMKJ 214/2000
+          - token:<EVENTBRITE_TOKEN> 214/2000 reset=143s, key:EHZBSVSIVEULAXFMKJ 214/2000
             reset=143s
         Pragma:
           - no-cache
@@ -7783,7 +7783,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -7849,7 +7849,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 215/2000 reset=143s, key:EHZBSVSIVEULAXFMKJ 215/2000
+          - token:<EVENTBRITE_TOKEN> 215/2000 reset=143s, key:EHZBSVSIVEULAXFMKJ 215/2000
             reset=143s
         Pragma:
           - no-cache
@@ -7890,7 +7890,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -7956,7 +7956,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 216/2000 reset=143s, key:EHZBSVSIVEULAXFMKJ 216/2000
+          - token:<EVENTBRITE_TOKEN> 216/2000 reset=143s, key:EHZBSVSIVEULAXFMKJ 216/2000
             reset=143s
         Pragma:
           - no-cache
@@ -7997,7 +7997,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -8063,7 +8063,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 217/2000 reset=142s, key:EHZBSVSIVEULAXFMKJ 217/2000
+          - token:<EVENTBRITE_TOKEN> 217/2000 reset=142s, key:EHZBSVSIVEULAXFMKJ 217/2000
             reset=142s
         Pragma:
           - no-cache
@@ -8104,7 +8104,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -8170,7 +8170,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 218/2000 reset=142s, key:EHZBSVSIVEULAXFMKJ 218/2000
+          - token:<EVENTBRITE_TOKEN> 218/2000 reset=142s, key:EHZBSVSIVEULAXFMKJ 218/2000
             reset=142s
         Pragma:
           - no-cache
@@ -8211,7 +8211,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -8277,7 +8277,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 219/2000 reset=141s, key:EHZBSVSIVEULAXFMKJ 219/2000
+          - token:<EVENTBRITE_TOKEN> 219/2000 reset=141s, key:EHZBSVSIVEULAXFMKJ 219/2000
             reset=141s
         Pragma:
           - no-cache
@@ -8318,7 +8318,7 @@ http_interactions:
         User-Agent:
           - rest-client/2.1.0 (darwin23 arm64) ruby/3.3.6p108
         Authorization:
-          - Bearer NU7EONA4XGXFJGWV5CBJ
+          - Bearer <EVENTBRITE_TOKEN>
         Accept-Encoding:
           - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
         Host:
@@ -8384,7 +8384,7 @@ http_interactions:
         Strict-Transport-Security:
           - max-age=63072000; includeSubDomains; preload
         X-Rate-Limit:
-          - token:NU7EONA4XGXFJGWV5CBJ 220/2000 reset=141s, key:EHZBSVSIVEULAXFMKJ 220/2000
+          - token:<EVENTBRITE_TOKEN> 220/2000 reset=141s, key:EHZBSVSIVEULAXFMKJ 220/2000
             reset=141s
         Pragma:
           - no-cache

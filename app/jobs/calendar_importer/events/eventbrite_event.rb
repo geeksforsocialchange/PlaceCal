@@ -12,11 +12,11 @@ module CalendarImporter::Events
     end
 
     def summary
-      @event['name']['text']
+      @event.dig('name', 'text')
     end
 
     def description
-      @event['description']['html']
+      @event.dig('description', 'html')
     end
 
     def publisher_url
@@ -24,20 +24,17 @@ module CalendarImporter::Events
     end
 
     def image_url
-      @event.to_h.dig('logo', 'original', 'url')
+      @event.dig('logo', 'original', 'url')
     end
 
     # The event list gives no prices, only whether the event is free
     def price_from
-      0 if @event.to_h['is_free'] == true
+      0 if @event['is_free'] == true
     end
 
-    # The venue only arrives via the `expand=venue` expansion. The SDK defines
-    # `venue` as a relationship, so the resource always responds to it while
-    # `[]` raises for the absent key. Read the raw attribute hash instead, which
-    # simply lacks the key when Eventbrite omits the venue (e.g. online events).
+    # Absent or null for events with no venue, such as online ones
     def place
-      @place ||= @event.to_h['venue']
+      @place ||= @event['venue']
     end
 
     def location
@@ -60,13 +57,13 @@ module CalendarImporter::Events
     end
 
     def dtstart
-      DateTime.parse(@event['start']['utc'])
+      DateTime.parse(@event.dig('start', 'utc'))
     rescue StandardError
       nil
     end
 
     def dtend
-      DateTime.parse(@event['end']['utc'])
+      DateTime.parse(@event.dig('end', 'utc'))
     rescue StandardError
       nil
     end

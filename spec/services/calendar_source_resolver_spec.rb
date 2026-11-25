@@ -29,10 +29,19 @@ RSpec.describe CalendarSourceResolver do
         expect(result.source).to eq("https://www.eventbrite.com/o/85889707613")
       end
 
-      it "gives up when the event doesn't exist" do
+      it "gives up when the event doesn't exist, and logs why" do
+        allow(Rails.logger).to receive(:warn)
         stub_request(:get, event_api).to_return(status: 404, body: { error: "NOT_FOUND" }.to_json)
 
         expect(described_class.call("https://www.eventbrite.co.uk/e/918839984127")).to be_nil
+        expect(Rails.logger).to have_received(:warn).with(/Calendar source lookup failed for .*HTTP 404/)
+      end
+
+      it "gives up on a redirect without following it" do
+        stub_request(:get, event_api).to_return(status: 301, headers: { "Location" => "https://elsewhere.example/" })
+
+        expect(described_class.call("https://www.eventbrite.co.uk/e/918839984127")).to be_nil
+        expect(a_request(:get, "https://elsewhere.example/")).not_to have_been_made
       end
 
       it "gives up when Eventbrite times out" do

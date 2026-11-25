@@ -3,6 +3,7 @@
 # Finds the importable calendar behind an Eventbrite event link or a Luma page, or nil.
 module CalendarSourceResolver
   Result = Data.define(:kind, :source)
+  class LookupFailed < StandardError; end
 
   EVENTBRITE_EVENT = %r{\Ahttps?://www\.eventbrite\.(com|co\.uk)/e/(?:[^/?#]*-)?(\d+)/?(?:[?#]|\z)}
   LUMA_PAGE = %r{\Ahttps?://(?:www\.)?(?:lu\.ma|luma\.com)/([A-Za-z0-9_-]+)/?(?:[?#]|\z)}
@@ -30,8 +31,11 @@ module CalendarSourceResolver
     token = ENV.fetch('EVENTBRITE_TOKEN', nil)
     return if token.blank?
 
-    response = RestClient::Request.execute(method: :get, url: "#{EventbriteSDK::BASE}/events/#{event_id}/",
-                                           headers: { Authorization: "Bearer #{token}" }, timeout: TIMEOUT)
+    # Not following redirects keeps the token from being sent to another host
+    response = HTTParty.get("#{CalendarImporter::Parsers::Eventbrite::API_BASE_URL}/events/#{event_id}/",
+                            headers: { 'Authorization' => "Bearer #{token}" }, timeout: TIMEOUT, follow_redirects: false)
+    raise LookupFailed, "Eventbrite answered HTTP #{response.code}" unless response.success?
+
     organizer_id = JSON.parse(response.body)['organizer_id'].to_s
     return unless organizer_id.match?(/\A\d+\z/)
 

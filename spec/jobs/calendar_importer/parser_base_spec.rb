@@ -42,11 +42,11 @@ RSpec.describe CalendarImporter::Parsers::Base do
     it "retries the configured exceptions with backoff, then re-raises" do
       calls = 0
       expect do
-        described_class.with_http_retries("ctx", retry_on: [RestClient::TooManyRequests]) do
+        described_class.with_http_retries("ctx", retry_on: [Errno::ECONNRESET]) do
           calls += 1
-          raise RestClient::TooManyRequests
+          raise Errno::ECONNRESET
         end
-      end.to raise_error(RestClient::TooManyRequests)
+      end.to raise_error(Errno::ECONNRESET)
 
       expect(calls).to eq(described_class::HTTP_MAX_RETRIES + 1)
       expect(described_class).to have_received(:sleep).exactly(described_class::HTTP_MAX_RETRIES).times
@@ -55,11 +55,11 @@ RSpec.describe CalendarImporter::Parsers::Base do
     it "does not retry exceptions that are not configured" do
       calls = 0
       expect do
-        described_class.with_http_retries("ctx", retry_on: [RestClient::TooManyRequests]) do
+        described_class.with_http_retries("ctx", retry_on: [Errno::ECONNRESET]) do
           calls += 1
-          raise RestClient::Unauthorized
+          raise ArgumentError
         end
-      end.to raise_error(RestClient::Unauthorized)
+      end.to raise_error(ArgumentError)
 
       expect(calls).to eq(1)
     end
