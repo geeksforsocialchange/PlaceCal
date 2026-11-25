@@ -154,6 +154,32 @@ RSpec.describe "Ticket link, price and sold-out state from each source" do
     end
   end
 
+  describe "Ticketsolve" do
+    let(:calendar) { create(:calendar, name: "Z-Arts", source: "https://z-arts.ticketsolve.com/shows.xml", strategy: "no_location") }
+
+    before do
+      Timecop.travel(Time.zone.local(2018, 7, 1)) do
+        VCR.use_cassette("Z-Arts_Calendar", allow_playback_repeats: true) do
+          calendar.update!(calendar_state: "in_worker")
+          CalendarImporter::CalendarImporterTask.new(calendar, Time.zone.today, true).run
+        end
+      end
+    end
+
+    it "saves each date's own sold-out state from its status" do
+      dates = calendar.events.where(summary: "Digital Stars").order(:dtstart).pluck(:dtstart, :sold_out)
+
+      expect(dates).to eq([[Time.zone.parse("2018-07-10 17:00 +01:00"), false], [Time.zone.parse("2018-07-17 17:00 +01:00"), true]])
+      expect(calendar.events.pluck(:sold_out).uniq).to contain_exactly(true, false)
+    end
+
+    it "shows a sold-out date as sold out in its row" do
+      row = calendar.events.find_by!(summary: "Digital Stars", sold_out: true)
+
+      expect(ApplicationController.render(Components::Sites::EventRow.new(event: row), layout: false)).to include(I18n.t("events.tickets.sold_out"))
+    end
+  end
+
   describe "importing" do
     it "saves the ticket data on each event" do
       calendar = create(:calendar, source: "https://www.tickettailor.com/events/testorg", api_token: "sk_test_placeholder", strategy: "no_location")

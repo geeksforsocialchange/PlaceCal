@@ -30,6 +30,12 @@ class Sites::EventRowPreview < Lookbook::Preview
                        PreviewSupport.sample_event(id: 2, summary: "Summer Fair", status: "postponed"))
   end
 
+  # @label Tickets
+  # @notes Free, the lowest price, or sold out, which wins over the price.
+  def tickets
+    render_inline_rows(*TicketPreviewSupport.events)
+  end
+
   private
 
   def render_inline_rows(*events)

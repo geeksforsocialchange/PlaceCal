@@ -4,7 +4,7 @@ module CalendarImporter::Events
   class EventbriteEvent < Base
     imports title: 'name.text', description: 'description.html', start_time: 'start.utc', end_time: 'end.utc',
             repeats: nil, location: %w[venue.name venue.address], webpage: 'url', online_link: %w[online_event url],
-            spaces_available: nil, status: nil, image: 'logo.original.url', source_categories: nil, source_organiser: nil,
+            status: nil, image: 'logo.original.url', source_categories: nil, source_organiser: nil,
             ticket_url: nil, price: 'is_free', sold_out: nil
 
     def uid

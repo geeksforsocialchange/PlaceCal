@@ -51,6 +51,7 @@ An event stores a ticket link (`ticket_url`, where tickets are bought when that 
 - Wix: `registration.ticketing.lowestTicketPrice` and `soldOut`.
 - JSON-LD (and OutSavvy): `offers`. The price is the lowest single ticket's, preferring tickets not sold out, then an `AggregateOffer`'s `lowPrice` (a range of 0 to 0 is ignored). Sold out when every stated `availability` is `SoldOut` or `OutOfStock`; OutSavvy also says `OutOfStock` once sales close.
 - Eventbrite: a price of 0 when `is_free`.
+- Ticketsolve: each date's own `status`, so one show's dates can differ: "sold out" is sold out, "available" is not, and any other status leaves it unknown.
 
 Other sources leave them blank. The event's JSON-LD offer uses the ticket link (or the webpage), the price and the availability.
 

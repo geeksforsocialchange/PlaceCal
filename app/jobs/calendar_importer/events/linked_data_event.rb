@@ -3,7 +3,7 @@
 module CalendarImporter::Events
   class LinkedDataEvent < Base
     imports title: 'name', description: 'description', start_time: 'startDate', end_time: 'endDate', repeats: nil,
-            location: %w[location.address location.name], webpage: 'url', online_link: nil, spaces_available: nil, status: 'eventStatus',
+            location: %w[location.address location.name], webpage: 'url', online_link: nil, status: 'eventStatus',
             image: 'image', source_categories: 'keywords', source_organiser: %w[organizer performer],
             ticket_url: 'offers.url', price: %w[offers.price offers.lowPrice offers.priceCurrency], sold_out: 'offers.availability'
 

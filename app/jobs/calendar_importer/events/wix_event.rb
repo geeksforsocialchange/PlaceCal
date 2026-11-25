@@ -5,7 +5,7 @@ module CalendarImporter::Events
     imports title: 'title', description: %w[full_description description], start_time: 'scheduling.config.startDate',
             end_time: 'scheduling.config.endDate', repeats: nil,
             location: %w[location.fullAddress location.name location.address], webpage: 'slug', online_link: nil,
-            spaces_available: nil, status: nil, image: 'mainImage.url', source_categories: 'categories.name',
+            status: nil, image: 'mainImage.url', source_categories: 'categories.name',
             source_organiser: nil,
             ticket_url: nil, price: %w[registration.ticketing.lowestTicketPrice.value registration.ticketing.currency], sold_out: 'registration.ticketing.soldOut'
 

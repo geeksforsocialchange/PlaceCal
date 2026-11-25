@@ -34,6 +34,12 @@ class Directory::EventRowPreview < Lookbook::Preview
     render RowGrid.new(events)
   end
 
+  # @label Tickets
+  # @notes Free, the lowest price, or sold out, which wins over the price.
+  def tickets
+    render RowGrid.new(TicketPreviewSupport.events)
+  end
+
   private
 
   def sample_events

@@ -4,6 +4,7 @@
 class Components::Sites::EventRow < Components::Base
   include Components::Shared::EventRowDetails
   include Components::Shared::LongRunningDates
+  include Components::Shared::TicketDetails
 
   theme_scope :event_row,
               parts: {
@@ -17,7 +18,7 @@ class Components::Sites::EventRow < Components::Base
                 detail: 'One detail, its icon then its text; the variant says which. Each only when the event has it.',
                 icon: 'The svg icon at the start of each detail.'
               },
-              variants: { detail: %i[status time place organiser repeats online] },
+              variants: { detail: %i[status time place organiser repeats online tickets] },
               states: { root: Components::Shared::EventStatus::CALLED_OFF.map(&:to_sym) },
               tokens: %i[--color-foreground --color-primary --color-secondary --color-rules --radius-sm --text-2xl --text-2xs --text-lg --text-sm
                          --leading-none --leading-tight --font-weight-bold --font-weight-extra-bold --tracking-wide]
@@ -58,6 +59,7 @@ class Components::Sites::EventRow < Components::Base
       detail(:organiser, :partner) { UI::Link(href: partner_path(@event.organiser), variant: :thin, data: { turbo_frame: '_top' }) { truncated(@event.organiser.name, 25) } } if show_organiser?
       detail(:repeats, :event_repeats) { plain repeats } if repeats
       detail(:online, :event_online) { plain online_label } if @event.online_address.present?
+      detail(:tickets, :ticket) { plain ticket_label } if ticket_label
     end
   end
 

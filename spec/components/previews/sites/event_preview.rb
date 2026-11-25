@@ -20,6 +20,7 @@ class Sites::EventPreview < Lookbook::Preview
   end
 
   # @label Postponed, list view
+  # @notes The status leads the time line and the times are struck through; a called-off event shows no price.
   def postponed_card
     render Components::Sites::Event.new(event: PreviewSupport.sample_event(status: "postponed"))
   end
@@ -60,6 +61,18 @@ class Sites::EventPreview < Lookbook::Preview
   # @notes The date line gives the whole range, with no time line.
   def long_running_page
     render Components::Sites::Event.new(display_context: :page, event: LongRunningPreviewSupport.event)
+  end
+
+  # @label Tickets, list view
+  # @notes After the times on the time line: Free, the lowest price, or sold out, which wins over the price.
+  def tickets_card
+    render CardList.new(TicketPreviewSupport.events)
+  end
+
+  # @label Tickets, page view
+  # @notes The price, and that it's sold out when it is.
+  def tickets_page
+    render Components::Sites::Event.new(display_context: :page, event: TicketPreviewSupport.events[2])
   end
 
   # @label Repeating event

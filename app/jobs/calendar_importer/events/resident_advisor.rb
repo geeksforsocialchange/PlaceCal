@@ -3,7 +3,7 @@
 module CalendarImporter::Events
   class ResidentAdvisor < Base
     imports title: 'title', description: 'content', start_time: 'startTime', end_time: 'endTime', repeats: nil,
-            location: 'venue.address', webpage: 'contentUrl', online_link: nil, spaces_available: nil, status: 'title',
+            location: 'venue.address', webpage: 'contentUrl', online_link: nil, status: 'title',
             image: nil, source_categories: nil, source_organiser: nil,
             ticket_url: nil, price: nil, sold_out: nil
 

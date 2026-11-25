@@ -43,7 +43,7 @@ RSpec.describe "Admin calendar sources", type: :request do
 
       it "has a column for each event field, in the words the admin and event pages use" do
         expect(headings).to eq(["Source", "Tier", "Title", "Description", "Start", "End", "Repeats", "Event location", "Event webpage",
-                                "Meeting link", "Spaces available", "Ticket link", "Price", "Sold out", "Cancelled or postponed", "Image", "Source categories",
+                                "Meeting link", "Ticket link", "Price", "Sold out", "Cancelled or postponed", "Image", "Source categories",
                                 "Source organiser"])
       end
 
@@ -76,7 +76,6 @@ RSpec.describe "Admin calendar sources", type: :request do
       it "fills each cell from the source's event class", :aggregate_failures do
         expect(rows["Meetup"]).to eq(rows["Generic iCal / .ics"])
         expect(rows["Generic iCal / .ics"]["Title"]).to eq("SUMMARY")
-        expect(rows["Ticketsolve"]["Spaces available"]).to eq("status")
         expect(rows["Ticketsolve"]["End"]).to eq("Not imported")
         expect(rows["OutSavvy"]["Cancelled or postponed"]).to eq("eventStatus")
         expect(rows["Wix Events"]["Image"]).to eq("mainImage.url")
@@ -87,7 +86,7 @@ RSpec.describe "Admin calendar sources", type: :request do
         expect(rows["Ticket Tailor"]["Ticket link"]).to eq("checkout_url")
         expect(rows["Wix Events"]["Sold out"]).to eq("registration.ticketing.soldOut")
         expect(rows["Eventbrite"]["Price"]).to eq("is_free")
-        expect(rows["Ticketsolve"]["Sold out"]).to eq("Not imported")
+        expect(rows["Ticketsolve"]["Sold out"]).to eq("status")
       end
     end
   end

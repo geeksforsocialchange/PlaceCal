@@ -5,7 +5,6 @@
 # Table name: events
 #
 #  id                       :bigint           not null, primary key
-#  are_spaces_available     :string
 #  description              :text
 #  description_html         :string
 #  dtend                    :datetime
@@ -87,7 +86,6 @@ class Event < ApplicationRecord
 
   # ==== Attributes ====
   # Columns marked (nullable) have no NOT NULL constraint in the DB.
-  attribute :are_spaces_available,     :string                      # nullable
   attribute :description,              :text                        # nullable
   attribute :description_html,         :string                      # nullable, populated by HtmlRenderCache
   attribute :dtend,                    :datetime                    # nullable

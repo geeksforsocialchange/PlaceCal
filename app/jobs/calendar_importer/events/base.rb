@@ -4,15 +4,15 @@ module CalendarImporter::Events
   class Base
     ALLOWED_TAGS = %w[p a strong b em i ul ol li blockquote h3 h4 h5 h6 br].freeze
 
-    # status fills are_spaces_available; override is an event whose fields replace the series' on this date
-    Occurrence = Struct.new(:start_time, :end_time, :status, :override, keyword_init: true)
+    # sold_out is the date's own state when the source gives one; override is an event whose fields replace the series' on this date
+    Occurrence = Struct.new(:start_time, :end_time, :sold_out, :override, keyword_init: true)
 
     # Each event field a source can fill, and the methods that can fill it
     FIELDS = {
       title: %i[summary], description: %i[description], start_time: %i[dtstart occurrences_between],
       end_time: %i[dtend occurrences_between], repeats: %i[rrule], location: %i[location],
-      webpage: %i[publisher_url], online_link: %i[online_event_id], spaces_available: %i[occurrences_between],
-      ticket_url: %i[ticket_url], price: %i[price_from], sold_out: %i[sold_out], status: %i[status], image: %i[image_url], source_categories: %i[source_categories],
+      webpage: %i[publisher_url], online_link: %i[online_event_id],
+      ticket_url: %i[ticket_url], price: %i[price_from], sold_out: %i[sold_out occurrences_between], status: %i[status], image: %i[image_url], source_categories: %i[source_categories],
       source_organiser: %i[source_organiser]
     }.freeze
 
@@ -158,7 +158,7 @@ module CalendarImporter::Events
     end
 
     def attributes_for(occurrence)
-      attributes.merge(are_spaces_available: occurrence.status)
+      occurrence.sold_out.nil? ? attributes : attributes.merge(sold_out: occurrence.sold_out)
     end
 
     def publisher_url; end

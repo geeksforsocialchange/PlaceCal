@@ -5,7 +5,6 @@
 # Table name: events
 #
 #  id                       :bigint           not null, primary key
-#  are_spaces_available     :string
 #  description              :text
 #  description_html         :string
 #  dtend                    :datetime

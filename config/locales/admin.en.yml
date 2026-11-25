@@ -487,7 +487,6 @@ en:
           location: "Event location"
           webpage: "Event webpage"
           online_link: "Meeting link"
-          spaces_available: "Spaces available"
           ticket_url: "Ticket link"
           price: "Price"
           sold_out: "Sold out"

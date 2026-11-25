@@ -2,10 +2,13 @@
 
 module CalendarImporter::Events
   class TicketsolveEvent < Base
+    # A date's status; any other value leaves whether it's sold out unknown
+    SOLD_OUT_STATUSES = { 'sold out' => true, 'available' => false }.freeze
+
     imports title: 'name', description: 'description', start_time: 'opening_time_iso', end_time: nil, repeats: nil,
-            location: 'venue.name', webpage: 'url', online_link: nil, spaces_available: 'status', status: nil,
+            location: 'venue.name', webpage: 'url', online_link: nil, status: nil,
             image: 'images.image.url', source_categories: 'event_category', source_organiser: nil,
-            ticket_url: nil, price: nil, sold_out: nil
+            ticket_url: nil, price: nil, sold_out: 'status'
 
     def uid
       @event.attribute('id').text
@@ -45,7 +48,7 @@ module CalendarImporter::Events
       @event.css('events').flat_map do |events|
         events.xpath('event').map do |event|
           Occurrence.new(start_time: Time.zone.parse(event.at_css('opening_time_iso').text),
-                         status: event.at_css('status').text)
+                         sold_out: SOLD_OUT_STATUSES[event.at_css('status')&.text.to_s.strip.downcase])
         end
       end
     end
