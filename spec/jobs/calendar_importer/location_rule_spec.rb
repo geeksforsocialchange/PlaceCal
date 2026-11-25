@@ -50,6 +50,68 @@ RSpec.describe CalendarImporter::LocationRule do
     end
   end
 
+  describe "an event at the default location's building written differently" do
+    def venue(name, *lines, **attrs)
+      address = create(:address, street_address: lines[0], street_address2: lines[1], street_address3: lines[2], postcode: "ZZMB 2OT")
+      create(:partner, name:, address:, can_be_assigned_events: false, **attrs)
+    end
+
+    def at_default?(text, default)
+      result_of(text, default_location: default) == CalendarImporter::LocationRule::Result.new(place: default, address: default.address, match: :default_location)
+    end
+
+    before { create(:oldtown_ward) }
+
+    it "matches a part of the text to the default location's name" do
+      expect(at_default?("Oldtown Library, Heritage Lane, ZZMB 2OT", library)).to be(true)
+    end
+
+    it "matches a numbered street line written with an abbreviation, case and punctuation", :aggregate_failures do
+      default = venue("Caledonian Hall", "86 Caledonian Road")
+
+      expect(at_default?("Back Room, 86 caledonian rd., ZZMB 2OT", default)).to be(true)
+      expect(at_default?("Side Door, 86 Caledonian Rd & Mews, ZZMB 2OT", venue("Mews Hall", "86 Caledonian Road and Mews"))).to be(true)
+    end
+
+    it "matches a numbered street on the second line of a default stored as name, street and town" do
+      default = venue("Moss Side Millennium Powerhouse", "Moss Side Millennium Powerhouse", "140 Raby Street", "Manchester")
+
+      expect(at_default?("Main Hall, 140 Raby St, ZZMB 2OT", default)).to be(true)
+    end
+
+    it "never matches on an unnumbered line such as an area or town", :aggregate_failures do
+      default = venue("Powerhouse", "Powerhouse Building", "Hulme", "Manchester")
+
+      expect(at_default?("Other Hall, Hulme, ZZMB 2OT", default)).to be(false)
+      expect(at_default?("Other Hall, Manchester, ZZMB 2OT", default)).to be(false)
+    end
+
+    it "never matches an unnumbered street by line c, though the first line check still matches the same first line", :aggregate_failures do
+      default = venue("Oldtown Hall", "Heritage Lane")
+
+      expect(at_default?("Other Hall, Heritage Lane, ZZMB 2OT", default)).to be(false)
+      expect(at_default?("Heritage Lane, ZZMB 2OT", default)).to be(true)
+    end
+
+    it "needs the same postcode" do
+      expect(result_of("Oldtown Library, 5 Elm Street, ZZMB 1RS", default_location: library)).to have_attributes(place: nil, match: :event_address)
+    end
+
+    it "matches a hidden default location, or one with event matching on", :aggregate_failures do
+      hidden = venue("Hidden Hall", "3 Quiet Lane", hidden: true, hidden_reason: "Test", hidden_blame_id: 1)
+      matching = venue("Matching Hall", "4 Quiet Lane", can_be_assigned_events: true)
+
+      expect(at_default?("Hidden Hall, ZZMB 2OT", hidden)).to be(true)
+      expect(at_default?("Rear Entrance, 4 Quiet Ln, ZZMB 2OT", matching)).to be(true)
+    end
+
+    it "gives the event its own address when the default location has no address" do
+      default = build(:partner, name: "Oak Hall", address: nil)
+
+      expect(result_of(oak_hall, default_location: default)).to have_attributes(place: nil, match: :event_address)
+    end
+  end
+
   describe "an event without a valid address" do
     it "uses the default location and its address, and says why the text wasn't an address", :aggregate_failures do
       rule = rule("The park by the river", default_location: library)

@@ -5,6 +5,12 @@
 class CalendarImporter::LocationRule
   Result = CalendarImporter::LocationResolver::Result
 
+  # Street words written either way in feeds and partner records
+  STREET_WORDS = {
+    'road' => 'rd', 'street' => 'st', 'avenue' => 'ave', 'lane' => 'ln', 'drive' => 'dr', 'close' => 'cl',
+    'place' => 'pl', 'square' => 'sq', 'court' => 'ct', '&' => 'and'
+  }.freeze
+
   # @return [Symbol, nil] why the location text couldn't be read as an address (see Address.build_from_components_with_reason)
   attr_reader :unreadable_address_reason
 
@@ -50,8 +56,7 @@ class CalendarImporter::LocationRule
 
     venue = Partner.matching_venue_for(address)
     return Result.new(place: venue, address:, match: :matched_venue) if venue
-    # A feed that gives its own venue's address still shows the default location's name
-    return default_location_result if address.same_building_as?(default_location&.address)
+    return default_location_result if default_building?(address)
 
     Result.new(place: nil, address:, match: :event_address)
   end
@@ -62,10 +67,28 @@ class CalendarImporter::LocationRule
     Result.new(place: default_location, address: default_location.address, match: :default_location)
   end
 
+  # A feed that gives its own venue's address still shows the default location
+  def default_building?(address)
+    building = default_location&.address
+    return false unless building && Address.building_key(address.postcode, nil) == Address.building_key(building.postcode, nil)
+    return true if address.same_building_as?(building)
+
+    # Only the name or a numbered street line, since area and town lines are shared by neighbouring venues
+    names = [default_location.name, *building.street_lines.grep(/\d/)].map { |name| normalise(name) }.compact_blank
+    components.any? { |component| names.include?(normalise(component)) }
+  end
+
+  def normalise(text)
+    text.to_s.downcase.gsub(/[^a-z0-9&]+/, ' ').gsub('&', ' & ').split.map { |word| STREET_WORDS.fetch(word, word) }.join(' ')
+  end
+
+  def components
+    @components ||= CalendarImporter::LocationResolver.location_components(location, postcode)
+  end
+
   def event_address
     return if location.blank?
 
-    components = CalendarImporter::LocationResolver.location_components(location, postcode)
     address, reason = Address.build_from_components_with_reason(components, postcode, save: @save)
     @unreadable_address_reason = reason unless link?
     address
