@@ -16,9 +16,23 @@ module PostcodeLookup
   # @return [Hash, nil] the postcodes.io result data, or nil when the postcode doesn't exist
   # @raise [Unavailable] when the lookup service isn't responding
   def self.call(postcode)
-    Geocoder.search(postcode).first&.data
+    cache = ActiveSupport::IsolatedExecutionState[:postcode_lookup_cache]
+    return cache[postcode] if cache&.key?(postcode)
+
+    result = Geocoder.search(postcode).first&.data
+    cache[postcode] = result if cache
+    result
   rescue *OUTAGE_ERRORS => e
     raise Unavailable, "Postcode lookup failed: #{e.class}: #{e.message}"
+  end
+
+  # Looks each postcode up once within the block; an outage is not remembered
+  def self.cached
+    previous = ActiveSupport::IsolatedExecutionState[:postcode_lookup_cache]
+    ActiveSupport::IsolatedExecutionState[:postcode_lookup_cache] = previous || {}
+    yield
+  ensure
+    ActiveSupport::IsolatedExecutionState[:postcode_lookup_cache] = previous
   end
 
   # Like call, but treats an outage as no result, for callers with no way to report it

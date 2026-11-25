@@ -49,4 +49,41 @@ RSpec.describe PostcodeLookup do
 
     expect(described_class.call_or_nil(postcode)).to be_nil
   end
+
+  describe ".cached" do
+    it "asks the service once per postcode inside the block, and every time outside it" do
+      lookup = stub_request(:get, postcodes_io).to_return(status: 200, headers: { "Content-Type" => "application/json" },
+                                                          body: { status: 200, result: { postcode: "M1 1AE" } }.to_json)
+
+      described_class.cached { 2.times { described_class.call(postcode) } }
+      described_class.call(postcode)
+
+      expect(lookup).to have_been_requested.twice
+    end
+
+    it "shares the outer block's answers inside a nested block, and forgets them once the outer block ends" do
+      lookup = stub_request(:get, postcodes_io).to_return(status: 200, headers: { "Content-Type" => "application/json" },
+                                                          body: { status: 200, result: { postcode: "M1 1AE" } }.to_json)
+
+      described_class.cached do
+        described_class.call(postcode)
+        described_class.cached { described_class.call(postcode) }
+        described_class.call(postcode)
+      end
+      described_class.call(postcode)
+
+      expect(lookup).to have_been_requested.twice
+    end
+
+    it "doesn't remember an outage" do
+      lookup = stub_request(:get, postcodes_io).to_timeout.then.to_return(status: 200, headers: { "Content-Type" => "application/json" },
+                                                                          body: { status: 200, result: { postcode: "M1 1AE" } }.to_json)
+
+      described_class.cached do
+        expect { described_class.call(postcode) }.to raise_error(described_class::Unavailable)
+        expect(described_class.call(postcode)).to include("postcode" => "M1 1AE")
+      end
+      expect(lookup).to have_been_requested.twice
+    end
+  end
 end

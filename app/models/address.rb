@@ -79,15 +79,20 @@ class Address < ApplicationRecord
   end
 
   # Like build_from_components, but says why no address could be built.
-  # @return [Array(Address, nil)] the saved address
+  # @param save [Boolean] false validates the address without saving it
+  # @return [Array(Address, nil)] the address, saved unless save is false
   # @return [Array(nil, Symbol)] nil and one of :no_street, :no_postcode, :postcode_not_found, :lookup_unavailable, :outside_neighbourhoods
-  def self.build_from_components_with_reason(components, postcode)
+  def self.build_from_components_with_reason(components, postcode, save: true)
     return [nil, :no_street] if components.blank?
     return [nil, :no_postcode] if postcode.blank?
 
     address = Address.new(street_address: components[0], street_address2: components[1], street_address3: components[2], postcode:,
                           drop_repeated_place_names: true)
-    address.save ? [address, nil] : [nil, address.unreadable_reason]
+    if save ? address.save : address.valid?
+      [address, nil]
+    else
+      [nil, address.unreadable_reason]
+    end
   end
 
   # Delete addresses not referenced by any partner or event.

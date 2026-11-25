@@ -103,6 +103,16 @@ namespace :events do
     puts format == 'csv' ? report.to_csv : report.to_text
   end
 
+  # e.g. rails "events:location_rule_changes[csv]"
+  desc 'list upcoming events whose shown location would change under the single location rule (read only)'
+  task :location_rule_changes, %i[format] => :environment do |_t, args|
+    format = args[:format].presence || 'text'
+    abort 'format must be text or csv' unless %w[text csv].include?(format)
+
+    report = LocationRuleReport.new
+    puts format == 'csv' ? report.to_csv : report.to_text
+  end
+
   desc 'clean up OnlineAddresses'
   task refresh_online_addresses: :environment do
     Event.where.not(online_address_id: nil).map do |e|

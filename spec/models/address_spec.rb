@@ -246,6 +246,16 @@ RSpec.describe Address, type: :model do
       expect(described_class.build_from_components_with_reason(["1 High Street"], "ZZMB 1RS").last).to be_nil
     end
 
+    it "validates without saving when told not to", :aggregate_failures do
+      expect do
+        address, reason = described_class.build_from_components_with_reason(%w[Venue Millbrook], "ZZMB 1RS", save: false)
+        expect(address).to have_attributes(new_record?: true, street_address2: nil, city: "Millbrook")
+        expect(reason).to be_nil
+        allow(PostcodeLookup).to receive(:call).and_return(nil)
+        expect(described_class.build_from_components_with_reason(["Venue"], "ZZMB 2OT", save: false)).to eq([nil, :postcode_not_found])
+      end.not_to change(described_class, :count)
+    end
+
     describe "dropping parts that repeat a place name from the postcode lookup" do
       def street_lines_for(components, postcode = "ZZMB 1RS")
         address = described_class.build_from_components(components, postcode)
