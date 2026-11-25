@@ -20,6 +20,7 @@ class Sites::EventPreview < Lookbook::Preview
   end
 
   # @label Postponed, list view
+  # @notes The status leads the time line and the times are struck through; a called-off event shows no price.
   def postponed_card
     render Components::Sites::Event.new(event: PreviewSupport.sample_event(status: "postponed"))
   end

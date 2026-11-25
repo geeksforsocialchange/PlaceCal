@@ -71,9 +71,9 @@ RSpec.describe Components::Shared::TicketDetails, type: :component do
       page.find("[data-part='detail'][data-variant='time']").text.squish
     end
 
-    it("adds Free after the times") { expect(time_line(price_from: BigDecimal(0))).to eq("7pm – 9pm, Free") }
-    it("adds the price after the times") { expect(time_line(price_from: BigDecimal(5), price_currency: "GBP")).to eq("7pm – 9pm, From £5") }
-    it("says sold out in place of the price") { expect(time_line(price_from: BigDecimal(5), price_currency: "GBP", sold_out: true)).to eq("7pm – 9pm, Sold out") }
+    it("adds Free after the times") { expect(time_line(price_from: BigDecimal(0))).to eq("7pm \u2013 9pm, Free") }
+    it("adds the price after the times") { expect(time_line(price_from: BigDecimal(5), price_currency: "GBP")).to eq("7pm \u2013 9pm, From £5") }
+    it("says sold out in place of the price") { expect(time_line(price_from: BigDecimal(5), price_currency: "GBP", sold_out: true)).to eq("7pm \u2013 9pm, Sold out") }
     it("adds it after a start time with no end") { expect(time_line(dtend: nil, price_from: BigDecimal(0))).to eq("7pm, Free") }
 
     it "adds it after a long-running event's dates" do
@@ -83,12 +83,37 @@ RSpec.describe Components::Shared::TicketDetails, type: :component do
     end
 
     it "shows only the times with no ticket data" do
-      expect(time_line).to eq("7pm – 9pm")
+      expect(time_line).to eq("7pm \u2013 9pm")
       expect(page).to have_no_css("[data-variant='tickets'], [data-icon-name='ticket']")
     end
 
-    it "shows no price for a cancelled event" do
-      expect(time_line(status: "cancelled", price_from: BigDecimal(5), price_currency: "GBP")).to eq("7pm – 9pm")
+    context "when the event is called off" do
+      def struck = page.find("[data-variant='time'] s.line-through").text.squish
+      def status_word = page.find("[data-variant='time'] [data-scope='event-status']")
+
+      it "leads with the status, strikes the times and shows no price" do
+        expect(time_line(status: "cancelled", price_from: BigDecimal(5), price_currency: "GBP")).to eq("Cancelled, 7pm \u2013 9pm")
+        expect(struck).to eq("7pm \u2013 9pm")
+        expect(status_word.text).to eq(I18n.t("events.status.cancelled"))
+        expect(status_word[:class]).to eq("font-bold")
+        expect(page).to have_no_css("[data-variant='time'].line-through, [data-variant='status']")
+      end
+
+      it "says postponed" do
+        expect(time_line(status: "postponed")).to eq("Postponed, 7pm \u2013 9pm")
+      end
+
+      it "strikes a start time with no end" do
+        expect(time_line(status: "cancelled", dtend: nil)).to eq("Cancelled, 7pm")
+        expect(struck).to eq("7pm")
+      end
+
+      it "strikes a long-running event's dates" do
+        Timecop.travel(Time.zone.local(2026, 11, 1)) do
+          expect(time_line(status: "cancelled", dtend: Time.zone.parse("2027-01-17 17:00"))).to eq("Cancelled, From 19 Nov until 17 Jan 2027")
+        end
+        expect(struck).to eq("From 19 Nov until 17 Jan 2027")
+      end
     end
 
     it "gives no line of its own to the price" do

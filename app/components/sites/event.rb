@@ -17,7 +17,7 @@ class Components::Sites::Event < Components::Base
                 icon: 'The svg icon at the start of each detail line.',
                 status_notice: 'On the event\'s own page, the line saying it\'s cancelled or postponed; the variant says which. Only for an event that is called off.'
               },
-              variants: { root: %i[card page], detail: %i[status time duration date repeats online organiser place tickets],
+              variants: { root: %i[card page], detail: %i[time duration date repeats online organiser place tickets],
                           status_notice: Components::Shared::EventStatus::CALLED_OFF.map(&:to_sym) },
               states: { root: %i[online] },
               tokens: %i[--color-foreground --color-primary --color-secondary --color-rules --text-detail --text-xl --text-lg --text-md --font-weight-bold]
@@ -84,7 +84,6 @@ class Components::Sites::Event < Components::Base
 
   def render_event_details
     div(**part(:details, class: "flex flex-wrap items-center gap-x-4 gap-y-1 text-detail border-rules py-2 md:py-3 #{page? ? 'border-b-10' : 'border-y-3'}")) do
-      render_status_detail if called_off? && !page?
       render_date_detail
       # The page's date line already says the range
       render_time_detail unless page? && long_running?(@event)
@@ -97,37 +96,37 @@ class Components::Sites::Event < Components::Base
     end
   end
 
-  # The page says so in a sentence above the details instead
-  def render_status_detail
-    div(**detail(:status)) do
-      render_icon(:event_status)
-      whitespace
-      Shared::EventStatus(event: @event)
-    end
-  end
-
   def render_time_detail
-    div(**detail(:time, struck_class)) do
+    div(**detail(:time, (struck_class if page?))) do
       render_icon(:event_time)
       whitespace
       parts = time_line_parts
-      parts.one? ? parts.first.call : span { render_time_line(parts) }
+      parts.one? ? render_times : span { render_time_line(parts) }
     end
   end
+
+  def render_times = long_running?(@event) ? render_until : render_time_range
 
   # Inline text, so a long line wraps after a comma; the times keep the flex spacing of a line with no other parts
   def render_time_line(parts)
     parts.each_with_index do |part, index|
       plain t('events.card.time_line_separator') if index.positive?
-      part.is_a?(Proc) ? span(class: 'inline-flex') { part.call } : plain(part)
+      case part
+      when :times then span(class: 'inline-flex') { render_times }
+      when :struck_times then s(class: 'inline-flex line-through') { render_times }
+      when :status then Shared::EventStatus(event: @event, look: :inline)
+      else plain(part)
+      end
     end
   end
 
-  # The card adds its ticket label to the time line; the page gives it a line of its own
+  # The card leads a called-off event's time line with its status, or ends it with the ticket label; the page gives each a line of its own
   def time_line_parts
-    parts = [-> { long_running?(@event) ? render_until : render_time_range }]
-    label = ticket_label unless page?
-    label ? parts << label : parts
+    return [:times] if page?
+    return %i[status struck_times] if called_off?
+
+    label = ticket_label
+    label ? [:times, label] : [:times]
   end
 
   def render_time_range
