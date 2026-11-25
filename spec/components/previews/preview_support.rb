@@ -13,7 +13,7 @@ module PreviewSupport
   EventMock = Struct.new(
     :id, :dtstart, :dtend, :summary, :description,
     :partner_at_location, :address, :rrule, :neighbourhood,
-    :online_address, :organiser, :status
+    :online_address, :organiser, :status, :price_from, :price_currency, :sold_out
   ) do
     def to_param = id.to_s
   end

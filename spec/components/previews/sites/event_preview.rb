@@ -62,6 +62,18 @@ class Sites::EventPreview < Lookbook::Preview
     render Components::Sites::Event.new(display_context: :page, event: LongRunningPreviewSupport.event)
   end
 
+  # @label Tickets, list view
+  # @notes Free, the lowest price, or sold out, which wins over the price.
+  def tickets_card
+    render CardList.new(TicketPreviewSupport.events)
+  end
+
+  # @label Tickets, page view
+  # @notes The price, and that it's sold out when it is.
+  def tickets_page
+    render Components::Sites::Event.new(display_context: :page, event: TicketPreviewSupport.events[2])
+  end
+
   # @label Repeating event
   def repeating_event
     render Components::Sites::Event.new(display_context: :list, event: PreviewSupport.sample_repeating_event)

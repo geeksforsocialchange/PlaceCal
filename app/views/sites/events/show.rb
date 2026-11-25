@@ -2,6 +2,7 @@
 
 class Views::Sites::Events::Show < Views::Base
   include Components::Shared::LongRunningDates
+  include Components::Shared::TicketDetails
 
   register_value_helper :html_to_plaintext
 
@@ -14,7 +15,7 @@ class Views::Sites::Events::Show < Views::Base
               parts: {
                 root: 'Everything under the event\'s details row on its page.',
                 description: 'The event\'s description, as its organiser wrote it (paragraphs, lists, headings).',
-                links: 'The buttons under the description: the event\'s webpage and a join link for streams. Only when the event has them.',
+                links: 'The buttons under the description: booking tickets, the event\'s webpage and a join link for streams. Only when the event has them.',
                 columns: 'The description and links beside the event\'s image, like the partner page. Only when the event has an image.',
                 aside: 'The column beside the description, holding the event\'s image. Only when the event has an image.',
                 image: 'The box holding the event\'s image, the same as a partner page\'s. Only when the event has one.',
@@ -149,6 +150,7 @@ class Views::Sites::Events::Show < Views::Base
       end
       hero_chip(:event_repeats, event.repeat_frequency) if event.repeat_frequency
       hero_chip(:event_online, event.online_address.service_name || t('directory.event_row.online')) if event.online_address.present?
+      hero_chip(:ticket, ticket_summary) if ticket_summary
     end
   end
 
@@ -182,8 +184,10 @@ class Views::Sites::Events::Show < Views::Base
         end
       end
       div(class: 'mt-3') do
-        render_event_link
-        render_online_link
+        UI::Cluster() do
+          render_event_link
+          render_online_link
+        end
       end
     end
   end
@@ -286,10 +290,21 @@ class Views::Sites::Events::Show < Views::Base
   # ── Shared bits ──
 
   def render_event_link
-    return if event.publisher_url.blank?
+    booking_url = book_tickets_url
+    webpage_url = event.publisher_url.presence
+    if booking_url
+      event_button(booking_url, t('events.show.book_tickets'))
+      event_button(webpage_url, t('events.show.visit_webpage')) if webpage_url && webpage_url != booking_url
+    elsif (url = webpage_url || event.ticket_url.presence)
+      event_button(url, t('events.show.visit_webpage'))
+    end
+  end
 
-    label = event.ticketed? && !event.called_off? ? t('events.show.book_tickets') : t('events.show.visit_webpage')
-    event_button(event.publisher_url, label)
+  # The separate ticket link, or the webpage when it's on a ticketing platform
+  def book_tickets_url
+    return if event.called_off? || event.sold_out
+
+    event.ticket_url.presence || (event.publisher_url.presence if event.ticketed?)
   end
 
   def render_online_link

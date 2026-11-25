@@ -3,6 +3,7 @@
 class Components::Directory::EventRow < Components::Directory::Base
   include Components::Shared::EventRowDetails
   include Components::Shared::LongRunningDates
+  include Components::Shared::TicketDetails
 
   prop :event, _Interface(:summary, :dtstart)
   prop :context_partner, _Nilable(::Partner), default: nil
@@ -41,6 +42,7 @@ class Components::Directory::EventRow < Components::Directory::Base
         render_meta_organiser if show_organiser?
         render_meta_repeats if repeats
         render_meta_online if @event.online_address.present?
+        render_meta_tickets if ticket_label
       end
     end
   end
@@ -101,6 +103,13 @@ class Components::Directory::EventRow < Components::Directory::Base
     span(class: 'inline-flex items-center gap-1') do
       render_icon(:event_online)
       plain @event.online_address.service_name || t('directory.event_row.online')
+    end
+  end
+
+  def render_meta_tickets
+    span(class: 'inline-flex items-center gap-1') do
+      render_icon(:ticket)
+      plain ticket_label
     end
   end
 

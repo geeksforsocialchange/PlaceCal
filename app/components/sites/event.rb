@@ -2,6 +2,7 @@
 
 class Components::Sites::Event < Components::Base
   include Components::Shared::LongRunningDates
+  include Components::Shared::TicketDetails
 
   theme_scope :event,
               parts: {
@@ -16,7 +17,7 @@ class Components::Sites::Event < Components::Base
                 icon: 'The svg icon at the start of each detail line.',
                 status_notice: 'On the event\'s own page, the line saying it\'s cancelled or postponed; the variant says which. Only for an event that is called off.'
               },
-              variants: { root: %i[card page], detail: %i[status time duration date repeats online organiser place],
+              variants: { root: %i[card page], detail: %i[status time duration date repeats online organiser place tickets],
                           status_notice: Components::Shared::EventStatus::CALLED_OFF.map(&:to_sym) },
               states: { root: %i[online] },
               tokens: %i[--color-foreground --color-primary --color-secondary --color-rules --text-detail --text-xl --text-lg --text-md --font-weight-bold]
@@ -92,7 +93,13 @@ class Components::Sites::Event < Components::Base
       render_detail(:online, :event_online, online_label) if online?
       render_organiser if show_organiser?
       render_place if show_place?
+      render_tickets
     end
+  end
+
+  def render_tickets
+    text = page? ? ticket_summary : ticket_label
+    render_detail(:tickets, :ticket, text) if text
   end
 
   # The page says so in a sentence above the details instead

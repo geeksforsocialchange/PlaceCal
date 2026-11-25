@@ -542,6 +542,99 @@ RSpec.describe "Public Events", type: :request do
     end
   end
 
+  describe "GET /events/:id ticket details" do
+    let(:calendar) { create(:calendar, organiser: partner) }
+    let(:webpage) { "https://example.org/ceilidh" }
+    let(:checkout) { "https://tickets.example.org/ceilidh" }
+    let(:event) do
+      create(:event, organiser: partner, calendar:, address:, dtstart: 1.day.from_now, dtend: 1.day.from_now + 2.hours, publisher_url: webpage)
+    end
+    let(:book) { I18n.t("events.show.book_tickets") }
+    let(:visit) { I18n.t("events.show.visit_webpage") }
+    let(:td_site) { create(:site, slug: "td-site", theme: "transdimension").tap { it.neighbourhoods << ward } }
+
+    def fetch(host)
+      get event_url(event, host:)
+      Nokogiri::HTML(response.body)
+    end
+
+    # Each button's words and where it goes, in page order
+    def buttons(host)
+      fetch(host).css("a[href='#{webpage}'], a[href='#{checkout}']").map { [it.text.strip, it[:href]] }
+    end
+
+    def importer(key) = calendar.update_column(:importer_used, key) # rubocop:disable Rails/SkipsModelValidations
+
+    before do
+      importer("ical")
+      td_site
+    end
+
+    { "a core site" => "test-site.lvh.me", "Trans Dimension" => "td-site.lvh.me", "the directory" => "lvh.me" }.each do |name, host|
+      context "on #{name}" do
+        it "shows an event with no ticket data as before: the webpage button and no price" do
+          html = fetch(host)
+          expect(buttons(host)).to eq([[visit, webpage]])
+          expect(html.css("[data-variant='tickets'], [data-icon-name='ticket']")).to be_empty
+        end
+
+        it "books from a separate ticket link and keeps the webpage button" do
+          event.update!(ticket_url: checkout)
+          expect(buttons(host)).to eq([[book, checkout], [visit, webpage]])
+        end
+
+        it "books from the ticket link when there is no webpage" do
+          event.update!(ticket_url: checkout, publisher_url: nil)
+          expect(buttons(host)).to eq([[book, checkout]])
+        end
+
+        it "keeps Book tickets on a ticketing platform's webpage with no ticket link" do
+          importer("eventbrite")
+          expect(buttons(host)).to eq([[book, webpage]])
+        end
+
+        it "only links the webpage, in its own words, once sold out" do
+          importer("eventbrite")
+          event.update!(ticket_url: checkout, sold_out: true)
+          expect(buttons(host)).to eq([[visit, webpage]])
+        end
+
+        it "links the ticket page in the webpage's words when sold out with no webpage" do
+          event.update!(ticket_url: checkout, publisher_url: nil, sold_out: true)
+          expect(buttons(host)).to eq([[visit, checkout]])
+        end
+
+        it "says a sold-out event's price and that it's sold out" do
+          event.update!(price_from: 7.5, price_currency: "GBP", sold_out: true)
+          expect(fetch(host).text).to include("From £7.50, sold out")
+        end
+
+        it "says Free for a free event" do
+          event.update!(price_from: 0)
+          expect(fetch(host).at_css("[data-icon-name='ticket']").parent.text.strip).to eq(I18n.t("events.tickets.free"))
+        end
+
+        it "shows nothing for an unknown sold-out state" do
+          event.update!(price_from: 5, price_currency: "GBP", sold_out: nil)
+          html = fetch(host)
+          expect(html.at_css("[data-icon-name='ticket']").parent.text.strip).to eq("From £5")
+          expect(html.text).not_to include(I18n.t("events.tickets.sold_out"))
+        end
+      end
+    end
+
+    it "puts the price on the details line of a site's event page" do
+      event.update!(price_from: 5, price_currency: "GBP")
+      expect(fetch("test-site.lvh.me").at_css("[data-scope='event'][data-part='detail'][data-variant='tickets']").text.strip).to eq("From £5")
+    end
+
+    it "labels the event's row in the events listing" do
+      event.update!(price_from: 5, price_currency: "GBP", sold_out: true)
+      get events_url(host: "test-site.lvh.me")
+      expect(Nokogiri::HTML(response.body).at_css("[data-variant='tickets']").text.strip).to eq(I18n.t("events.tickets.sold_out"))
+    end
+  end
+
   describe "GET /events/:id show content" do
     let(:event) do
       create(:event,

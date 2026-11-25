@@ -720,6 +720,15 @@ en:
     status:
       cancelled: "Cancelled"
       postponed: "Postponed"
+    tickets:
+      free: "Free"
+      from: "From %{price}"
+      sold_out: "Sold out"
+      price_sold_out: "%{price}, sold out"
+      # Symbols for ISO 4217 codes; any other currency shows its code before the amount
+      currency_units:
+        GBP: "£"
+        EUR: "€"
     # Events running more than 3 days show their dates in place of a time range
     long_running:
       from_until: "From %{from} until %{to}"
