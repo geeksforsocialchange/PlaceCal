@@ -273,7 +273,7 @@ GEM
       reline
     htmlbeautifier (1.4.3)
     htmlentities (4.4.2)
-    httparty (0.24.3)
+    httparty (0.25.1)
       csv
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
